@@ -1,0 +1,17 @@
+.o2_editorPlugin_redHeader{
+    overflow: hidden;
+    text-align: center;
+    margin-top: 3.5cm;
+}
+.o2_editorPlugin_redHeader_content{
+    color: red;
+    font-size: 1.8cm;
+    font-family: "宋体", serif;
+    line-height: normal;
+    /*font-weight: bold;*/
+    overflow: hidden;
+}
+.o2_editorPlugin_redHeader_info{
+    color: #888888;
+    font-weight: normal;
+}

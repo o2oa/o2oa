@@ -16,11 +16,11 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
         var addressObj = layout.desktop.serviceAddressList[this.json.contextRoot];
 
         if (addressObj){
-            this.address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            this.address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
-            this.address = "http://"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+            this.address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
         }
     },
     //_getConfigParameters: function(){

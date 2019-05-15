@@ -90,7 +90,7 @@ MWF.xApplication.process.ProcessManager.ViewExplorer.View = new Class({
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/viewIcon/lnk.png",
 			"title": this.data.name,
-            "par": "process.ViewDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
+            "par": "process.ViewDesigner#{\"appId\": \"query.ViewDesigner"+this.data.id+"\", \"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
 		};
 	},
 //	deleteItem: function(e){

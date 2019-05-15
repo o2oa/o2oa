@@ -1,6 +1,7 @@
 {
     "node": {
-        "margin": "50px 0px 10px 0px",
+        //"margin": "50px 0px 10px 0px",
+        "margin": "10px 0px",
         "overflow": "hidden",
         "background-color": "#f0f0f0",
         "position": "absolute",
@@ -14,6 +15,13 @@
     "scrollNode" : {
         "overflow-x": "scroll",
         "overflow-y": "scroll"
+    },
+    "scrollNode_inContainer" : {
+        "overflow-x": "scroll",
+        "overflow-y": "scroll",
+//        "overflow-x": "hidden",
+//        "overflow-y": "hidden",
+        "background-color" : "#f0f0f0"
     },
     "contentWarpNode" : {
         //"width": "1170px",

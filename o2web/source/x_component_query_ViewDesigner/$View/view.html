@@ -293,10 +293,49 @@
                     </tr>
                     <tr>
                         <td class="editTableTitle">数据类型:</td>
-                        <td class="editTableValue"><select onchange="if (this.selectedIndex==2){$('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'block'); $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'block')}else{$('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none'); $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'none')}; if (this.selectedIndex==0){$('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'block'); $('text{$.id}viewFilterTextFormulaSelector2').setStyle('display', 'block')}else{$('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'none'); $('text{$.id}viewFilterTextFormulaSelector2').setStyle('display', 'none')}">
+                        <td class="editTableValue"><select
+                                onchange="if (this.selectedIndex==2){
+                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector2').setStyle('display', 'none');
+                                }else if (this.selectedIndex==3){
+                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector2').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector2').setStyle('display', 'none');
+                                }else if (this.selectedIndex==4){
+                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector2').setStyle('display', 'block');
+                                }else{
+                                    $('text{$.id}viewFilterDateFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterDateOnlyFormulaSelector2').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTimeOnlyFormulaSelector2').setStyle('display', 'none');
+                                }
+
+                                if (this.selectedIndex==0){
+                                    $('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'block');
+                                    $('text{$.id}viewFilterTextFormulaSelector2').setStyle('display', 'block')
+                                }else{
+                                    $('text{$.id}viewFilterTextFormulaSelector').setStyle('display', 'none');
+                                    $('text{$.id}viewFilterTextFormulaSelector2').setStyle('display', 'none')
+                                }">
                             <option value="textValue" selected>文本</option>
                             <option value="numberValue">数字</option>
-                            <option value="datetimeValue">日期</option>
+                            <option value="dateTimeValue">日期时间</option>
+                            <option value="dateValue">日期</option>
+                            <option value="timeValue">时间</option>
                             <option value="booleanValue">布尔</option>
                         </select></td>
                     </tr>
@@ -335,6 +374,8 @@
                                 <input type="text" class="editTableInput" style="display: block" onkeypress="$('text{$.id}viewFilterTextFormulaSelector').getElements('input').set('checked', false)"/>
                                 <input type="number" class="editTableInput" style="display: none"/>
                                 <input type="text" class="editTableInput" style="display: none" readonly/>
+                                <input type="text" class="editTableInput" style="display: none" readonly/>
+                                <input type="text" class="editTableInput" style="display: none" readonly/>
                                 <select style="display: none">
                                     <option value="true" selected>是(True)</option>
                                     <option value="false">否(False)</option>
@@ -358,6 +399,31 @@
                             </tr>
                         </table>
                     </div>
+                    <div style="display: none" id="text{$.id}viewFilterDateOnlyFormulaSelector">
+                        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                            <tr>
+                                <td class="editTableTitle"></td>
+                                <td class="editTableValue">
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="display: none" id="text{$.id}viewFilterTimeOnlyFormulaSelector">
+                        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                            <tr>
+                                <td class="editTableTitle"></td>
+                                <td class="editTableValue">
+                                    <input onclick="$('text{$.id}viewFilterValueArea').getElements('input')[4].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
                     <div style="display: block" id="text{$.id}viewFilterTextFormulaSelector">
                         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                             <tr>
@@ -380,6 +446,8 @@
                                     <input type="text" class="editTableInput" style="display: block" onkeypress="$('text{$.id}viewFilterTextFormulaSelector2').getElements('input').set('checked', false)"/>
                                     <input type="number" class="editTableInput" style="display: none"/>
                                     <input type="text" class="editTableInput" style="display: none" readonly/>
+                                    <input type="text" class="editTableInput" style="display: none" readonly/>
+                                    <input type="text" class="editTableInput" style="display: none" readonly/>
                                     <select style="display: none">
                                         <option value="true" selected>是(True)</option>
                                         <option value="false">否(False)</option>
@@ -399,6 +467,30 @@
                                         <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[2].set('value', this.value)" name="text{$.id}viewFilterDateFormula2" type="radio" value="@time" />当前时间
                                         <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[2].set('value', this.value)" name="text{$.id}viewFilterDateFormula2" type="radio" value="@date" />当天
 
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display: none" id="text{$.id}viewFilterDateOnlyFormulaSelector2">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@year" />当前年度
+                                        <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@season" />当前季度
+                                        <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@month" />当前月份<br/>
+                                        <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[3].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@date" />当天
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="display: none" id="text{$.id}viewFilterTimeOnlyFormulaSelector2">
+                            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                                <tr>
+                                    <td class="editTableTitle"></td>
+                                    <td class="editTableValue">
+                                        <input onclick="$('text{$.id}viewFilterValueArea2').getElements('input')[4].set('value', this.value)" name="text{$.id}viewFilterDateFormula" type="radio" value="@time" />当前时间
                                     </td>
                                 </tr>
                             </table>

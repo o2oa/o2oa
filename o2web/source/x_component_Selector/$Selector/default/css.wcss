@@ -1,7 +1,7 @@
 {
 	"maskNode": {
 		"background-color": "#666",
-		"opacity": 0.6,
+		"opacity": 0.4,
 		"z-index":1000
 	},
 	"containerNode": {

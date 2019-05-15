@@ -252,7 +252,8 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             "position": "center",
             "edge": "center"
         });
-        var p = this.handwritingNode.getPosition(this.form.app.content);
+        //var p = this.handwritingNode.getPosition(this.form.app.content);
+        var p = this.handwritingNode.getPosition(this.handwritingNode.getOffsetParent());
         var top = p.y;
         var left = p.x;
         if (p.y<0) top = 10;
@@ -263,6 +264,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         });
     },
     createHandwriting: function(){
+	    debugger;
         this.handwritingNode = new Element("div", {"styles": this.form.css.handwritingNode}).inject(this.node, "after");
         var size = this.node.getSize();
         var y = Math.max(size.y, 320);
@@ -298,7 +300,8 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
                         this.previewNode.destroy();
                         this.previewNode = null;
                     }
-                    this.previewNode = new Element("img", {"src": base64Image}).inject(this.node);
+                    debugger;
+                    if(this.json.isHandwritingPreview!=="no") this.previewNode = new Element("img", {"src": base64Image}).inject(this.node);
                     this.handwritingNode.hide();
                     // this.page.get("div_image").node.set("src",base64Image);
                 }.bind(this),

@@ -103,13 +103,13 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
         this.action.invoke({"name": "removeStat", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
     },
 
-    saveStatement: function( data, success, failure, async){
-        if ( data.id ){
-            this.action.invoke({"name": "updateStatement", "async": async, "parameter": { "flag" : data.id  }, "data" : data, "success": success, "failure": failure});
-        }else{
-            this.action.invoke({"name": "createStatement", "async": async, "data" : data, "success": success, "failure": failure});
-        }
-    },
+    // saveStatement: function( data, success, failure, async){
+    //     if ( data.id ){
+    //         this.action.invoke({"name": "updateStatement", "async": async, "parameter": { "flag" : data.id  }, "data" : data, "success": success, "failure": failure});
+    //     }else{
+    //         this.action.invoke({"name": "createStatement", "async": async, "data" : data, "success": success, "failure": failure});
+    //     }
+    // },
 
     saveTable: function(data, success, failure){
         if (!data.isNewTable){
@@ -120,39 +120,66 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
     },
     updateTable: function(tableData, success, failure){
         var data = Object.clone(tableData);
-        data.data = JSON.encode(tableData.data);
+        data.draftData = JSON.encode(tableData.draftData);
         data.query = tableData.application;
         data.queryName = tableData.applicationName;
-        this.action.invoke({"name": "updateTable", "data": data, "parameter": {"id": data.id},"success": success,"failure": failure});
+        this.action.invoke({"name": "updateTable", "data": data, "parameter": {"flag": data.id},"success": success,"failure": failure});
     },
     addTable: function(tableData, success, failure){
         var data = Object.clone(tableData);
-        data.data = JSON.encode(tableData.data);
+        data.draftData = JSON.encode(tableData.draftData);
         data.query = tableData.application;
         data.queryName = tableData.applicationName;
 
         if (!data.id){
             this.getUUID(function(id){
                 data.id = id;
-                this.action.invoke({"name": "addStat","data": data, "success": function(json){
+                this.action.invoke({"name": "createTable","data": data, "success": function(json){
                     tableData.isNewTable = false;
                     if (success) success(json);
                 },"failure": failure});
             }.bind(this));
         }else{
-            this.action.invoke({"name": "addStat","data": data, "success": function(json){
+            this.action.invoke({"name": "createTable","data": data, "success": function(json){
                 tableData.isNewTable = false;
                 if (success) success(json);
             },"failure": failure});
         }
     },
-    // saveTable: function( data, success, failure, async){
-    //     if ( data.id ){
-    //         this.action.invoke({"name": "updateTable", "async": async, "parameter": { "flag" : data.id  }, "data" : data, "success": success, "failure": failure});
-    //     }else{
-    //         this.action.invoke({"name": "createTable", "async": async, "data" : data, "success": success, "failure": failure});
-    //     }
-    // },
+    saveStatement: function(data, success, failure){
+        if (!data.isNewStatement){
+            this.updateStatement(data, success, failure);
+        }else{
+            this.addStatement(data, success, failure);
+        }
+    },
+    updateStatement: function(statementData, success, failure){
+        var data = Object.clone(statementData);
+        data.query = statementData.application;
+        data.queryName = statementData.applicationName;
+        delete data.tableObj;
+        this.action.invoke({"name": "updateStatement", "data": data, "parameter": {"flag": data.id},"success": success,"failure": failure});
+    },
+    addStatement: function(statementData, success, failure){
+        var data = Object.clone(statementData);
+        data.query = statementData.application;
+        data.queryName = statementData.applicationName;
+        delete data.tableObj;
+        if (!data.id){
+            this.getUUID(function(id){
+                data.id = id;
+                this.action.invoke({"name": "createStatement","data": data, "success": function(json){
+                        statementData.isNewStatement = false;
+                        if (success) success(json);
+                    },"failure": failure});
+            }.bind(this));
+        }else{
+            this.action.invoke({"name": "createStatement","data": data, "success": function(json){
+                    statementData.isNewStatement = false;
+                    if (success) success(json);
+                },"failure": failure});
+        }
+    },
 
     saveRow: function(tableFlag, data, success, failure, async){
         if ( data.id ){

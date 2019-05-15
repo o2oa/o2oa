@@ -274,7 +274,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                 this.contentNode.setStyle("margin-left", width+1);
                 this.viewListNode.setStyle("width", width);
                 //this.tab.pages.each(function(page){
-                    this.view.setViewWidth();
+                (this.view || this.table).setViewWidth();
                 //});
             }.bind(this)
         });
@@ -307,7 +307,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                 this.contentNode.setStyle("margin-left", width+1);
                 this.viewListNode.setStyle("width", width);
                 //this.tab.pages.each(function(page){
-                    this.view.setViewWidth();
+                (this.view || this.table).setViewWidth();
                 //});
             }.bind(this)
         });
@@ -339,39 +339,42 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
     //打开视图
     loadViewByData: function(node, e){
         var view = node.retrieve("view");
+        if (!view.isNewView){
+            var openNew = true;
+            //for (var i = 0; i<this.tab.pages.length; i++){
+            //    if (view.id==this.tab.pages[i].view.data.id){
+            //        this.tab.pages[i].showTabIm();
+            //        openNew = false;
+            //        break;
+            //    }
+            //}
+            if (openNew){
+                //this.loadViewData(view.id, function(vdata){
+                //    var view = new MWF.xApplication.process.ViewDesigner.View(this, vdata);
+                //    view.load();
+                //}.bind(this));
 
-        var openNew = true;
-        //for (var i = 0; i<this.tab.pages.length; i++){
-        //    if (view.id==this.tab.pages[i].view.data.id){
-        //        this.tab.pages[i].showTabIm();
-        //        openNew = false;
-        //        break;
-        //    }
-        //}
-        if (openNew){
-            //this.loadViewData(view.id, function(vdata){
-            //    var view = new MWF.xApplication.process.ViewDesigner.View(this, vdata);
-            //    view.load();
-            //}.bind(this));
+                var _self = this;
 
-            var _self = this;
-            var options = {
-                "onQueryLoad": function(){
-                    this.actions = _self.actions;
-                    this.category = _self;
-                    this.options.id = view.id;
-                    this.application = _self.application;
-                    this.explorer = _self.explorer;
-                }
-            };
-            this.desktop.openApplication(e, "query.ViewDesigner", options);
+                var options = {
+                    "appId": "query.ViewDesigner"+view.id,
+                    "onQueryLoad": function(){
+                        this.actions = _self.actions;
+                        this.category = _self;
+                        this.options.id = view.id;
+                        this.application = _self.application;
+                        this.explorer = _self.explorer;
+                    }
+                };
+                this.desktop.openApplication(e, "query.ViewDesigner", options);
+            }
         }
     },
 
 
 	//loadContentNode------------------------------
     loadContentNode: function(){
-		this.contentToolbarNode = new Element("div#contentToolbarNode", {
+		this.contentToolbarNode = new Element("div", {
 			"styles": this.css.contentToolbarNode
 		}).inject(this.contentNode);
 		if (!this.options.readMode) this.loadContentToolbar();
@@ -399,6 +402,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 			MWF.require("MWF.widget.Toolbar", function(){
 				this.toolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
 				this.toolbar.load();
+                if (this.table) if (this.table.checkToolbars) this.table.checkToolbars();
 				if (callback) callback();
 			}.bind(this));
 		}.bind(this));
@@ -613,7 +617,8 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 		
 		this.propertyDomArea.setStyle("height", ""+domHeight+"px");
 		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
-		
+
+		if (this.table) this.view = this.table;
 		if (this.view){
 			if (this.view.currentSelectedModule){
 				if (this.view.currentSelectedModule.property){
@@ -770,18 +775,13 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 	},
 
     saveView: function(){
-        //if (this.tab.showPage){
-            //var view = this.tab.showPage.view;
-            this.view.save(function(){
-                //if (view==this.view){
-                    var name = this.view.data.name;
-                    this.setTitle(MWF.APPDVD.LP.title + "-"+name);
-                    this.options.desktopReload = true;
-                    this.options.id = this.view.data.id;
-                //}
-            }.bind(this));
-        //}
-	},
+        this.view.save(function(){
+            var name = this.view.data.name;
+            this.setTitle(MWF.APPDVD.LP.title + "-"+name);
+            this.options.desktopReload = true;
+            this.options.id = this.view.data.id;
+        }.bind(this));
+    },
     saveViewAs: function(){
         this.view.saveAs();
 	},

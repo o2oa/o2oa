@@ -1,12 +1,12 @@
 {
   "pcData":{
     "json": {
-      "id": "e0426b19-e5c7-47f4-9cb9-2a5fddca5823",
+      "id": "",
       "name": "标准表单模板",
       "type": "Form",
       "mode": "PC",
       "description": "",
-      "application": "45475aa6-1651-4014-ae6b-625f9dd5948b",
+      "application": "",
       "applicationName": "001test",
       "styles": {
         "background-color": "#f0f0f0"

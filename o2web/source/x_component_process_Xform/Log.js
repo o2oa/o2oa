@@ -81,8 +81,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         var height = 200;
         var width = 300;
         if (layout.mobile){
-            width = 160;
-            height = 240;
+            // width = 160;
+            // height = 240;
+            var size = img.getSize();
+            width = 200;
+            height = 200*(size.y/size.x);
         }
         img.setStyles({"width": ""+width+"px", "height": ""+height+"px"});
 
@@ -485,7 +488,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
     getMediaOpinionUrl: function(att){
         var action = MWF.Actions.get("x_processplatform_assemble_surface");
         var url = action.action.actions["getAttachmentStream"].uri;
-        if (!this.form.businessData.work){
+        if (this.form.businessData.workCompleted){
             url = action.action.actions["getWorkcompletedAttachmentStream"].uri;
             url = url.replace("{id}", att.id);
             url = url.replace("{workCompletedId}", this.form.businessData.workCompleted.id);

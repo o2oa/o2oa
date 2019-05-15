@@ -170,8 +170,9 @@ o2.LP.desktop = {
         "attendanceAppealAcceptMessage" : "考勤申述通过",
         "attendanceAppealAccept": "{subject}",
         "attendanceAppealRejectMessage" : "考勤申述未通过",
-        "attendanceAppealReject": "{subject}"
+        "attendanceAppealReject": "{subject}",
 
+        "customMessage": "您收到一条消息："
     },
     "styleMenu": {
         "default": "默认",
@@ -258,6 +259,7 @@ o2.LP.widget = {
     "createFolder": "创建文件夹",
     "rename": "重命名",
     "property": "属性",
+    "refuseUpload": "禁止文件上传",
 
     "list": "列表",
     "sequence": "序列",
@@ -365,4 +367,7 @@ o2.LP.authentication = {
     "resetPasswordFailWord" : "请核对您的用户名和短信验证码。",
     "backtoModify" : "返回修改",
     "pageNotFound" : "404错误，未找到服务或服务器已断开"
+};
+o2.LP.script = {
+    "error": "脚本运行错误，请查看以下详细信息"
 };

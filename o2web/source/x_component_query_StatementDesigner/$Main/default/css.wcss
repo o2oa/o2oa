@@ -1,0 +1,153 @@
+{
+    "statementListNode": {
+        "width": "260px",
+        "overflow": "hidden",
+        "border": "1px solid #505050",
+        "height": "100%",
+        "float": "left",
+        "background-color": "#EEE"
+    },
+    "designerNode": {
+        "width": "320px",
+        "min-width": "300px",
+        "overflow": "hidden",
+        "float": "right",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+	"contentNode": {
+	    "margin-left": "261px",
+		"margin-right": "320px",
+		"border-right": "1px solid #505050",
+		"border-left": "1px solid #505050",
+		"background-color": "#FFF",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	},
+    "statementListTitleNode": {
+        "height": "26px",
+        "background-color": "#505050",
+        "border-radius": "0px",
+        "margin": "2px",
+        "color": "#FFF",
+        "line-height": "26px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "padding-left": "10px",
+        "clear": "both"
+    },
+    "statementListResizeNode": {
+        "width": "3px",
+        "float": "right",
+        "background-color": "#505050",
+        "margin-right": "2px",
+        "cursor": "col-resize"
+    },
+    "statementListAreaSccrollNode": {
+        "margin": "4px",
+        "margin-right": "8px",
+        "overflow": "hidden",
+        "background-color": "#FFF",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-bottom": "1px solid #DDD",
+        "border-right": "1px solid #DDD"
+    },
+    "statementListAreaNode": {
+        "overflow": "hidden"
+    },
+    "listStatementItem": {
+        "height": "24px",
+        "line-height": "24px",
+        "margin": "3px 10px 0px 10px",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "color": "#333"
+    },
+    "listStatementItem_over": {
+        "background": "#e8eef7"
+    },
+    "listStatementItem_current": {
+        "background": "#48638f",
+        "color": "#FFF"
+    },
+    "listStatementItemIcon": {
+        "height": "24px",
+        "width": "26px",
+        "background": "url("+"/x_component_query_StatementDesigner/$Main/default/statement.png) no-repeat center center",
+        "float": "left"
+    },
+    "listStatementItemText": {
+        "height": "24px",
+        "margin-left": "28px",
+        "white-space": "nowrap"
+    },
+    "contentToolbarNode": {
+		"height": "30px",
+		"background-color": "#EEE"
+	},
+    "editContentNode": {
+		"overflow": "hidden",
+		"background": "#CCC",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none"
+	},
+	"designNode": {
+		"margin": "15px",
+		"box-shadow": "0px 0px 20px #606060",
+		"background": "#FFF",
+		"-webkit-user-select": "none",
+		"overflow": "hidden",
+		"background": "url("+"/x_component_query_ViewDesigner/$Main/default/designerBg.png)",
+		"-moz-user-select": "none"
+	},
+	"designerTitleNode": {
+		"height": "26px",
+		"background-color": "#505050",
+		"border-radius": "0px",
+		"margin": "2px",
+		"color": "#FFF",
+		"line-height": "26px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"padding-left": "10px",
+		"clear": "both"
+	},
+	"designerResizeBar": {
+        "width": "3px",
+        "float": "left",
+        "background-color": "#505050",
+        "margin-left": "2px",
+        "cursor": "col-resize"
+    },
+    "designerContentNode": {
+		"background-color": "#EEE",
+		"border-radius": "0px",
+		"margin": "2px",
+		"margin-left": "7px",
+		"padding-right": "0px",
+		"overflow": "hidden"
+	},
+	"designerContentResizeNode": {
+        "height": "3px",
+        "background-color": "#505050",
+        "cursor": "row-resize"
+    },
+    "designerStatementArea": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "margin": "2px",
+        "font-family": "Verdana, Geneva, sans-serif",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-bottom": "1px solid #DDD",
+        "border-right": "1px solid #DDD"
+    },
+    "designerContentArea": {
+        "height": "100%",
+		"overflow": "hidden",
+		"margin-bottom": "2px",
+		"background-color": "#ffffff"
+	}
+
+}

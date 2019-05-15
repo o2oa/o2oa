@@ -644,7 +644,7 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         });
         this.listNode.addEvents({
             "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
-            "mouseover": function(){if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode_over)}.bind(this),
+            "mouseover": function(){debugger; if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode_over)}.bind(this),
             "mouseout": function(){if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode)}.bind(this)
         });
     },

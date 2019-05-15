@@ -95,18 +95,22 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
     //打开视图
     loadViewByData: function(node, e){
         var view = node.retrieve("view");
-        if (openNew){
-            var _self = this;
-            var options = {
-                "onQueryLoad": function(){
-                    this.actions = _self.actions;
-                    this.category = _self;
-                    this.options.id = view.id;
-                    this.application = _self.application;
-                    this.explorer = _self.explorer;
-                }
-            };
-            this.desktop.openApplication(e, "query.StatDesigner", options);
+        if (!view.isNewView){
+            var openNew = true;
+            if (openNew){
+                var _self = this;
+                var options = {
+                    "appId": "query.StatDesigner"+view.id,
+                    "onQueryLoad": function(){
+                        this.actions = _self.actions;
+                        this.category = _self;
+                        this.options.id = view.id;
+                        this.application = _self.application;
+                        this.explorer = _self.explorer;
+                    }
+                };
+                this.desktop.openApplication(e, "query.StatDesigner", options);
+            }
         }
     },
 	

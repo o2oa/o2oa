@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="/o2_lib/htmleditor/ckeditor4114/ckeditor.js"></script>
+  <title>Document Editor</title>
+  <style type="text/css">
+    /* Minimal styling to center the editor in this sample */
+    body {
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+    .container {
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2><label for="editor1">Document Editor</label></h2>
+  <textarea id="editor1">
+		&lt;h2 style="text-align: center;"&gt;The Flavorful Tuscany Meetup&lt;/h2&gt;
+		&lt;p style="text-align: center;"&gt;&lt;span style="color: #007ac9;"&gt;&lt;strong&gt;Welcome letter&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+		&lt;p&gt;Dear Guest,&lt;/p&gt;
+		&lt;p&gt;We are delighted to welcome you to the annual &lt;em&gt;Flavorful Tuscany Meetup&lt;/em&gt; and hope you will enjoy the programme as well as your stay at the Bilancino Hotel.&lt;/p&gt;
+		&lt;p&gt;Please find below the full schedule of the event.&lt;/p&gt;
+		&lt;table class="schedule" cellpadding="15" cellspacing="0" style="border-collapse:collapse;width:100%;"&gt;
+			&lt;thead&gt;
+				&lt;tr&gt;
+					&lt;th colspan="2" scope="col" style="background-color: #F2F9FF; text-align: center; font-size: 21px;"&gt;&lt;span&gt;Saturday, July 14&lt;/span&gt;&lt;/th&gt;
+				&lt;/tr&gt;
+			&lt;/thead&gt;
+			&lt;tbody&gt;
+				&lt;tr&gt;
+					&lt;td style="white-space:nowrap;"&gt;&lt;span&gt;9:30 AM - 11:30 AM&lt;/span&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;span&gt;Americano vs. Brewed - “know your coffee” session with &lt;strong&gt;Stefano Garau&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td style="white-space:nowrap;"&gt;&lt;span&gt;1:00 PM - 3:00 PM&lt;/span&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;span&gt;Pappardelle al pomodoro - live cooking session with &lt;strong&gt;Rita Fresco&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td style="white-space:nowrap;"&gt;&lt;span&gt;5:00 PM - 8:00 PM&lt;/span&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;span&gt;Tuscan vineyards at a glance - wine-tasting session with &lt;strong&gt;Frederico Riscoli&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/tbody&gt;
+		&lt;/table&gt;
+		&lt;blockquote&gt;
+			&lt;p&gt;The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors during an intense one-day stay at one of the top hotels of the region. All the sessions are lead by top chefs passionate about their profession. I would certainly recommend to save the date in your calendar for this one!&lt;/p&gt;
+			&lt;p&gt;Angelina Calvino, food journalist&lt;/p&gt;
+		&lt;/blockquote&gt;
+		&lt;p&gt;Please arrive at the Bilancino Hotel reception desk at least &lt;strong&gt;half an hour earlier&lt;/strong&gt; to make sure that the registration process goes as smoothly as possible.&lt;/p&gt;
+		&lt;p&gt;We look forward to welcoming you to the event.&lt;/p&gt;
+		&lt;p&gt;&lt;/p&gt;
+		&lt;p&gt;&lt;strong&gt;Victoria Valc&lt;/strong&gt;&lt;/p&gt;
+		&lt;p&gt;&lt;strong&gt;Event Manager&lt;/strong&gt;&lt;/p&gt;
+		&lt;p&gt;&lt;strong&gt;Bilancino Hotel&lt;/strong&gt;&lt;/p&gt;
+	</textarea>
+</div>
+<script>
+  CKEDITOR.inline( 'editor1', {
+    toolbar: [
+      { name: 'document', items: [ 'Print' ] },
+      { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
+      { name: 'styles', items: [ 'Format', 'Font', 'FontSize' ] },
+      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat', 'CopyFormatting' ] },
+      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+      { name: 'align', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+      { name: 'links', items: [ 'Link', 'Unlink' ] },
+      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+      { name: 'insert', items: [ 'Image', 'Table' ] },
+      { name: 'tools', items: [ 'Maximize' ] },
+      { name: 'editing', items: [ 'Scayt' ] }
+    ]});
+</script>
+</body>
+</html>

@@ -196,10 +196,14 @@ MWF.xApplication.ANN.Model.Context = new Class({
         this.getData(this.load.bind(this));
     },
     getData: function(callback){
-        o2.Actions.get("x_query_assemble_designer").getModel(this.data.id, function(json){
-            this.data = json.data;
+        if (this.data.id){
+            o2.Actions.get("x_query_assemble_designer").getModel(this.data.id, function(json){
+                this.data = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
             if (callback) callback();
-        }.bind(this));
+        }
     },
     reload: function(){
         this.contentNode.empty();

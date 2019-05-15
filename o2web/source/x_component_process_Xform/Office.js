@@ -170,7 +170,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         }
     },
     show: function(){
-        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.form.app.appId){
+        if ((layout.desktop.currentApp && layout.desktop.currentApp.appId===this.form.app.appId) || this.form.app.inBrowser){
             var display = this.officeNode.retrieve("officeDisplay");
             if (display) this.officeNode.setStyle("display", display);
             if (this.officeOCX) this.officeOCX.Activate(true);
@@ -181,7 +181,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
 
     getFormId: function(){
-        var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
+        var id = (!this.form.businessData.workCompleted) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
         return "form"+this.json.id+id;
     },
     getFileName: function(){
@@ -196,15 +196,15 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             case "ppt":
                 ename = "pptx";
         }
-        var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
+        var id = (!this.form.businessData.workCompleted) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
         return "file"+this.json.id+id+"."+ename;
     },
     getOfficeObjectId: function(){
-        var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
+        var id = (!this.form.businessData.workCompleted) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
         return "NTKOOCX"+this.json.id+id;
     },
     getFileInputName: function(){
-        var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
+        var id = (!this.form.businessData.workCompleted) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
         return "fileInput"+this.json.id+id;
     },
     getTempleteUrl: function(){
@@ -250,7 +250,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         if (file){
             this.file = file;
             var url = "";
-            if (this.form.businessData.work){
+            if (!this.form.businessData.workCompleted){
                 url = this.form.workAction.action.actions.getAttachmentData.uri;
                 url = url.replace("{id}", encodeURIComponent(file.id));
                 return this.form.workAction.action.address+url.replace("{workid}", encodeURIComponent(this.form.businessData.work.id));
@@ -285,6 +285,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     startRevisions: function(){
         if (this.officeOCX && (this.officeOCX.DocType==1 || this.officeOCX.DocType==6)){
             this.officeOCX.ActiveDocument.Application.UserName = layout.desktop.session.user.name;
+            this.officeOCX.ActiveDocument.Application.UserInitials = layout.desktop.session.user.name;
+
             if (!this.isNew){
                 this.officeOCX.ActiveDocument.TrackRevisions = true;
                 this.officeOCX.ActiveDocument.showRevisions = false;
@@ -361,7 +363,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             case "menu_showHistory":
                 this.showHistory(button);
                 break;
-            case "menu_redFile":
+            case "menu_redfile":
                 this.redFile();
                 break;
             case "menu_seal":
@@ -377,11 +379,12 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                     var attc = this.form.all[att];
                     if (attc){
                         attc.attachmentController.attachments.each(function(a){
-                            if (this.options.files.indexOf(a.data.extension.toLowerCase())!==-1){
-                                button._loadMenuItem(this.createMenuActionMenuItem(a.data.id, a.data.name, "14.png", "openAttachment:"+a.data.id+":"+att+":"+a.data.name));
+                            if (a.data.control.allowEdit){
+                                if (this.options.files.indexOf(a.data.extension.toLowerCase())!==-1){
+                                    button._loadMenuItem(this.createMenuActionMenuItem(a.data.id, a.data.name, "14.png", "openAttachment:"+a.data.id+":"+att+":"+a.data.name));
+                                }
                             }
                         }.bind(this));
-
                     }
                 }.bind(this));
         }
@@ -398,12 +401,12 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             if (this.form.businessData.workCompleted){
                 MWF.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompletedUrl(id, this.form.businessData.workCompleted.id, function(url){
                     this.openedAttachment = {"id": id, "site": site, "name": name};
-                    this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
+                    this.officeOCX.BeginOpenFromURL(url, true, this.readonly || this.json.isAttReadonly );
                 }.bind(this));
             }else{
                 MWF.Actions.get("x_processplatform_assemble_surface").getAttachmentUrl(id, this.form.businessData.work.id, function(url){
                     this.openedAttachment = {"id": id, "site": site, "name": name};
-                    this.officeOCX.BeginOpenFromURL(url, true, this.readonly);
+                    this.officeOCX.BeginOpenFromURL(url, true, this.readonly || this.json.isAttReadonly);
                 }.bind(this));
             }
         }
@@ -566,16 +569,16 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             }
         }
     },
-    openOfficeHistory: function(e, dlg){
+    openOfficeHistory: function(e, dlg, button){
         var fileName = e.target.getParent().get("value");
-        if (this.form.businessData.work){
+        if (!this.form.businessData.workCompleted){
             url = this.form.workAction.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(fileName));
             url = this.form.workAction.action.address+url.replace("{workid}", encodeURIComponent(this.form.businessData.work.id));
         }else{
             url = this.form.workAction.action.actions.getWorkcompletedAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(fileName));
-            url = this.form.workAction.action.address+url.replace("{workid}", encodeURIComponent(this.form.businessData.workCompleted.id));
+            url = this.form.workAction.action.address+url.replace("{workCompletedId}", encodeURIComponent(this.form.businessData.workCompleted.id));
         }
         dlg.close();
         this.save();
@@ -1276,7 +1279,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     getHTMLFileName: function(){
         //var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.id;
-        var id = (this.form.businessData.work) ? this.form.businessData.work.id : this.form.businessData.workCompleted.workId;
+        var id = (!this.form.businessData.workCompleted) ? this.form.businessData.work.id : this.form.businessData.workCompleted.workId;
         return id+this.json.id+".mht";
     },
     saveHTML: function(){
@@ -1320,7 +1323,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         if (file){
             //this.file = file;
             var url = "";
-            if (this.form.businessData.work){
+            if (!this.form.businessData.workCompleted){
                 url = this.form.workAction.action.actions.getAttachmentData.uri;
                 url = url.replace("{id}", encodeURIComponent(file.id));
                 return this.form.workAction.action.address+url.replace("{workid}", encodeURIComponent(this.form.businessData.work.id));
@@ -1408,21 +1411,23 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
 
 
         }else{
-            this.node.setStyles({
-                "overflow": "hidden",
-                "background-color": "#f3f3f3",
-                "min-height": "24px",
-                "padding": "18px"
-            });
+            if (this.json.isShowSummary!==false){
+                this.node.setStyles({
+                    "overflow": "hidden",
+                    "background-color": "#f3f3f3",
+                    "min-height": "24px",
+                    "padding": "18px"
+                });
 
-            var str = this.getData();
-            if (layout.mobile || COMMON.Browser.Platform.isMobile){
-                if (str.length>300) str = str.substr(0,300)+"……";
+                var str = this.getData();
+                if (layout.mobile || COMMON.Browser.Platform.isMobile){
+                    if (str.length>300) str = str.substr(0,300)+"……";
+                }
+
+                var text = new Element("div", {
+                    "text": str
+                }).inject(this.node);
             }
-
-            var text = new Element("div", {
-                "text": str
-            }).inject(this.node);
         }
         var text = MWF.xApplication.process.Xform.LP.openOfficeInfor;
         text = text.replace("{type}", this.json.officeType);

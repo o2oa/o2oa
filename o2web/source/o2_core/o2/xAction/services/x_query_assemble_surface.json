@@ -26,6 +26,7 @@
   "listRowNext" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/next/{count}" },
   "listRowPrev" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}" },
   "listRowSelectWhere" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/select/where/{where}" }, //通过where 获取表中的数据,格式为jpql语法,o.name='zhangsan'
+  "listRowCountWhere" : { "uri" : "/jaxrs/table/{tableFlag}/row/count/where/{where}" },
   "getRow" : { "uri": "/jaxrs/table/{tableFlag}/row/{id}" }, //获取表中某一行数据
   "updateRow":{ "uri": "/jaxrs/table/{tableFlag}/row/{id}", "method": "PUT" }, //更新指定表中指定行数据.
   "insertRow":{ "uri": "/jaxrs/table/{tableFlag}/row", "method": "POST" },//插入一行

@@ -170,6 +170,7 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
 
         this.designer.propertyLastStartTimeNode.set("text", this.data.lastStartTime || "");
         this.designer.propertyLastEndTimeNode.set("text", this.data.lastEndTime || "");
+        this.designer.propertyAppointmentTimeNode.set("text", this.data.appointmentTime || "");
 
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
 

@@ -75,27 +75,60 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
         o2.release(this);
 	},
 	_dragIn: function(module){
+        module.onDragModule = this;
 		module.inContainer = null;
 		module.parentContainer = this.parentContainer;
 		module.nextModule = this;
-		this.parentContainer.node.setStyles({"border": "1px solid #ffa200"});
-		var copyNode = module._getCopyNode();
-		copyNode.inject(this.node, "before");
+		//this.parentContainer.node.setStyles({"border": "1px solid #ffa200"});
+
+        this.node.setStyles({"border": "1px solid #ffa200"});
+
+        //this._showInjectAction( module );
+
+        if (module.controlMode){
+            if (module.copyNode) module.copyNode.hide();
+        }else{
+            var copyNode = module._getCopyNode(this);
+            copyNode.show();
+            copyNode.inject(this.node, "before");
+        }
+
+		// var copyNode = module._getCopyNode();
+		// copyNode.inject(this.node, "before");
 	},
+    _setControlModeNode: function(){
+        if (this.controlMode){
+            if (this.copyNode) this.copyNode.hide();
+        }else{
+            if (this.onDragModule) this.onDragModule._dragIn(this);
+        }
+    },
+
 	_dragOut: function(module){
 		module.inContainer = null;
 		module.parentContainer = null;
 		module.nextModule = null;
-		this.parentContainer.node.setStyles(this.parentContainer.css.moduleNode);
-		this.parentContainer.node.setStyles(this.parentContainer.json.styles);
+
+		//this.parentContainer.node.setStyles(this.parentContainer.css.moduleNode);
+		//this.parentContainer.node.setStyles(this.parentContainer.json.styles);
+        this.node.setStyles(this.css.moduleNode);
+        this.setCustomStyles();
+
+        //this._hideInjectAction();
+
 		var copyNode = module._getCopyNode();
 		copyNode.setStyle("display", "none");
 	},
-	_dragDrop: function(module){
-	//	this.node.setStyles(this.css.moduleNode);
-	//	this.node.setStyles(this.json.styles);
-		this.parentContainer.node.setStyles(this.parentContainer.css.moduleNode);
-		this.parentContainer.setCustomStyles();
+	_dragDrop: function(module, flag){
+        var f = flag || !(new Event(event)).control;
+        if( f ){
+            this.node.setStyles(this.css.moduleNode);
+            this.setCustomStyles();
+        }
+
+		//this.parentContainer.node.setStyles(this.parentContainer.css.moduleNode);
+		//this.parentContainer.setCustomStyles();
+        //this._hideInjectAction();
 	},
     copy: function(e){
         var newModule = this.copyTo();

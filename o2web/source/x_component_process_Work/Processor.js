@@ -66,10 +66,10 @@ MWF.xApplication.process.Work.Processor = new Class({
     outRoute: function(node){
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
-                node.setStyle("background-color", "#E3E3E3");
+                node.setStyles(this.css.routeNode);
             }
         }else{
-            node.setStyle("background-color", "#E3E3E3");
+            node.setStyles(this.css.routeNode);
         }
     },
     selectRoute: function(node){
@@ -120,12 +120,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.handwriting();
         }.bind(this));
 
-        if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
-            this.audioRecordAction = new Element("div", {"styles": this.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
-            this.audioRecordAction.addEvent("click", function(){
-                this.audioRecord();
-            }.bind(this));
-        }
+        // if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
+        //     this.audioRecordAction = new Element("div", {"styles": this.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
+        //     this.audioRecordAction.addEvent("click", function(){
+        //         this.audioRecord();
+        //     }.bind(this));
+        // }
 
         MWF.require("MWF.widget.ScrollBar", function(){
             new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
@@ -198,9 +198,12 @@ MWF.xApplication.process.Work.Processor = new Class({
     createHandwriting: function(){
         this.handwritingNode = new Element("div", {"styles": this.css.handwritingNode}).inject(this.node, "after");
         var size = (this.options.mediaNode || this.node).getSize();
-        var y = Math.max(size.y, 320);
-        var x = Math.max(size.x, 480);
-
+        var y = size.y;
+        var x = size.x;
+        if (!layout.mobile){
+            y = Math.max(size.y, 320);
+            x = Math.max(size.x, 480);
+        }
         // for (k in this.node.style){
         //     if (this.node.style[k]) this.handwritingNode.style[k] = this.node.style[k];
         // }

@@ -1,0 +1,18 @@
+.o2_editorPlugin_doc_Page {
+    width: 15.6cm;
+    height: 22.5cm;
+    padding: 3.7cm 2.6cm 3.5cm 2.8cm;
+    margin: 30px auto;
+    border: 0px #D3D3D3 solid;
+    border-radius: 5px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    letter-spacing:-0.01cm;
+}
+.o2_editorPlugin_doc_Page_content {
+    width: 100%;
+    height: 100%;
+}

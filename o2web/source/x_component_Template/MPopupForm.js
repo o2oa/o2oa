@@ -18,10 +18,11 @@ var MPopupForm = new Class({
         "hasTopIcon" : false,
         "hasTopContent" : false,
         "hasIcon": true,
-        "hasScroll" : true,
         "hasBottom": true,
         "hasMask" : true,
         "closeByClickMask" : false,
+        "hasScroll" : true,
+        "scrollType" : "",
 
         "title": "",
         "draggable": false,
@@ -151,6 +152,20 @@ var MPopupForm = new Class({
                     },
                     "click": function (e) {
                         e.stopPropagation();
+                    },
+                    "mousewheel": function (e) {
+                        if (e.stopPropagation) e.stopPropagation();
+                        else e.cancelBubble = true;
+
+                        if (e.preventDefault) e.preventDefault();
+                        else e.returnValue = false;
+                    },
+                    "DOMMouseScroll": function (e) {
+                        if (e.stopPropagation) e.stopPropagation();
+                        else e.cancelBubble = true;
+
+                        if (e.preventDefault) e.preventDefault();
+                        else e.returnValue = false;
                     }
                 }
             }).inject( this.container || this.app.content);
@@ -256,24 +271,29 @@ var MPopupForm = new Class({
 
         if( this.options.hasScroll ){
             //this.setScrollBar(this.formTableContainer)
-            MWF.require("MWF.widget.ScrollBar", function () {
-                new MWF.widget.ScrollBar(this.formTableContainer, {
-                    "indent": false,
-                    "style": "xApp_TaskList",
-                    "where": "before",
-                    "distance": 30,
-                    "friction": 4,
-                    "axis": {"x": false, "y": true},
-                    "onScroll": function (y) {
-                        //var scrollSize = _self.viewContainerNode.getScrollSize();
-                        //var clientSize = _self.viewContainerNode.getSize();
-                        //var scrollHeight = scrollSize.y - clientSize.y;
-                        //if (y + 200 > scrollHeight && _self.view && _self.view.loadElementList) {
-                        //    if (!_self.view.isItemsLoaded) _self.view.loadElementList();
-                        //}
-                    }
-                });
-            }.bind(this));
+            if( this.options.scrollType == "window" ){
+                this.formContentNode.setStyle("overflow","auto");
+                this.formTableContainer.setStyle("overflow","visible");
+            }else{
+                MWF.require("MWF.widget.ScrollBar", function () {
+                    new MWF.widget.ScrollBar(this.formTableContainer, {
+                        "indent": false,
+                        "style": "xApp_TaskList",
+                        "where": "before",
+                        "distance": 30,
+                        "friction": 4,
+                        "axis": {"x": false, "y": true},
+                        "onScroll": function (y) {
+                            //var scrollSize = _self.viewContainerNode.getScrollSize();
+                            //var clientSize = _self.viewContainerNode.getSize();
+                            //var scrollHeight = scrollSize.y - clientSize.y;
+                            //if (y + 200 > scrollHeight && _self.view && _self.view.loadElementList) {
+                            //    if (!_self.view.isItemsLoaded) _self.view.loadElementList();
+                            //}
+                        }
+                    });
+                }.bind(this));
+            }
         }
     },
     _setCustom : function(){
@@ -567,10 +587,15 @@ var MPopupForm = new Class({
                 if( allSize.y < parseInt(height) )height = allSize.y;
             }
         }
-        "string" == typeof width && (1 < width.length && "%" == width.substr(width.length - 1, 1)) && (width = parseInt(limitWidth * parseInt(width, 10) / 100, 10));
-        "string" == typeof height && (1 < height.length && "%" == height.substr(height.length - 1, 1)) && (height = parseInt(limitHeight * parseInt(height, 10) / 100, 10));
-        this.options.minWidth > width && (width = this.options.minWidth);
-        this.options.minHeight > height && (height = this.options.minHeight);
+
+        //if( width != "auto" ){
+            "string" == typeof width && (1 < width.length && "%" == width.substr(width.length - 1, 1)) && (width = parseInt(limitWidth * parseInt(width, 10) / 100, 10));
+            this.options.minWidth > width && (width = this.options.minWidth);
+        //}
+        //if( height != "auto" ){
+            "string" == typeof height && (1 < height.length && "%" == height.substr(height.length - 1, 1)) && (height = parseInt(limitHeight * parseInt(height, 10) / 100, 10));
+            this.options.minHeight > height && (height = this.options.minHeight);
+        //}
 
         var styles = {
             "width": "" + width + "px",
@@ -598,8 +623,6 @@ var MPopupForm = new Class({
             styles.left = "" + parseInt((limitWidth - width) / 2, 10) + "px";
             styles.right = "auto";
         }
-        //top = top || parseInt((limitHeight - height) / 2, 10);
-        //left = left || parseInt((limitWidth - width) / 2, 10);
 
         if( this.formAreaNode )this.formAreaNode.setStyles(styles);
 
@@ -614,6 +637,7 @@ var MPopupForm = new Class({
 
     },
     setNodesSize: function(width, height){
+        //if( height == "auto" )return;
         this.options.minWidth > width && (width = this.options.minWidth);
         this.options.minHeight > height && (height = this.options.minHeight);
 
@@ -641,6 +665,11 @@ var MPopupForm = new Class({
         var tablePaddingTop = parseFloat( this.formTableContainer.getStyle( "padding-top" )) || 0;
         var tablePaddingTBottom = parseFloat( this.formTableContainer.getStyle( "padding-bottom" )) || 0;
         var formTableHeight = contentHeight - marginTop - marginBottom - paddingTop - paddingBottom - tablePaddingTop - tablePaddingTBottom;
+
+        if( this.options.scrollType == "window" ){
+            formTableHeight = formTableHeight - 10;
+        }
+
         this.formTableContainer.setStyles({
             "height": "" + formTableHeight + "px"
         });

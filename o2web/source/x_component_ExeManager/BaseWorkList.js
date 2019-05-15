@@ -61,7 +61,7 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
                 this.checkedDoc = this.view.getCheckedItems();
                 this.removeDocument(e);
             }.bind(this)
-        })
+        });
         this.toolBarSearchDiv = new Element("div.toolBarSearchDiv",{"styles":this.css.toolBarSearchDiv}).inject(this.toolBarDiv);
         this.toolBarSearchInput = new Element("input.toolBarSearchInput",{
             "styles":this.css.toolBarSearchInput
@@ -72,7 +72,7 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
                     this.searchView(this.toolBarSearchInput.get("value"))
                 }
             }.bind(this)
-        })
+        });
         this.toolBarSearchActionBtn = new Element("div.toolBarSearchBtn",{
             "styles":this.css.toolBarSearchBtn,
             "text": this.lp.baseWorkList.searchAction
@@ -81,7 +81,7 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
             "click":function(e){
                 this.searchView(this.toolBarSearchInput.get("value"))
             }.bind(this)
-        })
+        });
         //this.toolBarSearchResetBtn = new Element("div.toolBarSearchBtn",{
         //    "styles":this.css.toolBarSearchBtn,
         //    "text":"重置"
@@ -90,20 +90,20 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
         this.toolBarStatusDiv = new Element("div.toolBarStatusDiv",{
             "styles":this.css.toolBarStatusDiv
         }).inject(this.toolBarDiv);
-        this.toolBarStatusDiv.setStyle("display","none")
-        this.toolBarStatusAllDiv = new Element("div.toolBarStatusAllDiv",{styles:this.css.toolBarStatusAllDiv}).inject(this.toolBarStatusDiv)
+        this.toolBarStatusDiv.setStyle("display","none");
+        this.toolBarStatusAllDiv = new Element("div.toolBarStatusAllDiv",{styles:this.css.toolBarStatusAllDiv}).inject(this.toolBarStatusDiv);
         this.toolBarStatusPercentDiv = new Element("div.toolBarStatusPercentDiv",{styles:this.css.toolBarStatusPercentDiv}).inject(this.toolBarStatusDiv)
     },
     removeDocument:function(e) {
         var _self = this;
         var flag = true;
         this.app.confirm("warn",e,this.lp.baseWorkList.warnTitle,this.lp.baseWorkList.warnContent,300,120,function(){
-            _self.toolBarStatusDiv.setStyle("display","")
+            _self.toolBarStatusDiv.setStyle("display","");
             //removeDoc(_self.checkedDoc)
-            __self = this
+            __self = this;
             var removeDocs = _self.checkedDoc;
             var removeDocsLen = removeDocs.length;
-            var removeDocCurLen = 0
+            var removeDocCurLen = 0;
 
             var timeInt = window.setInterval(function(){
                 if(removeDocs.length==0 || !flag){
@@ -112,16 +112,16 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
                     _self.reload();
                     _self.resizeWindow();
                 }else{
-                    removeDocCurLen ++
-                    var _width = removeDocCurLen / removeDocsLen
-                    _width = _width  * _self.toolBarStatusAllDiv.getSize().x
-                    _self.toolBarStatusPercentDiv.set("text",removeDocCurLen+"/"+removeDocsLen)
-                    _self.toolBarStatusPercentDiv.setStyles({"width":_width+"px"})
+                    removeDocCurLen ++;
+                    var _width = removeDocCurLen / removeDocsLen;
+                    _width = _width  * _self.toolBarStatusAllDiv.getSize().x;
+                    _self.toolBarStatusPercentDiv.set("text",removeDocCurLen+"/"+removeDocsLen);
+                    _self.toolBarStatusPercentDiv.setStyles({"width":_width+"px"});
                     if( flag && removeDocs[0].data && removeDocs[0].data.id){
                         _self.actions.deleteBaseWork(removeDocs[0].data.id,function(json){
 
                         }.bind(_self),function(xhr,error,text){
-                            _self.app.notice(_self.lp.baseWorkList.removeResult.failure+":"+removeDocs[0].data.title,"error")
+                            _self.app.notice(_self.lp.baseWorkList.removeResult.failure+":"+removeDocs[0].data.title,"error");
                             flag = false
                         }.bind(_self),false)
                     }
@@ -139,7 +139,7 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
 
     createContentDiv: function(key){
         if(this.contentDiv) this.contentDiv.destroy();
-        this.contentDiv = new Element("div.contentDiv",{"styles":this.css.contentDiv}).inject(this.middleContent)
+        this.contentDiv = new Element("div.contentDiv",{"styles":this.css.contentDiv}).inject(this.middleContent);
 
         if(this.scrollBar && this.scrollBar.scrollVAreaNode){
             this.scrollBar.scrollVAreaNode.destroy()
@@ -169,8 +169,8 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
             filterLikeContent:key
         };
 
-        if(this.view) delete this.view
-        this.view =  new  MWF.xApplication.ExeManager.BaseWorkList.View(this.contentDiv, this.app, {explorer:this,lp : this.lp.baseWorkList, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:"",filterData:filter } )
+        if(this.view) delete this.view;
+        this.view =  new  MWF.xApplication.ExeManager.BaseWorkList.View(this.contentDiv, this.app, {explorer:this,lp : this.lp.baseWorkList, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:"",filterData:filter } );
         this.view.load();
 
 
@@ -199,7 +199,7 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
         }
 
     }
-})
+});
 
 
 
@@ -237,7 +237,7 @@ MWF.xApplication.ExeManager.BaseWorkList.View = new Class({
             "onPostSave" : function(){
                 this.view.explorer.contentChanged = true;
             }.bind(this)
-        })
+        });
         this.workForm.load();
 
 
@@ -255,7 +255,7 @@ MWF.xApplication.ExeManager.BaseWorkList.View = new Class({
 
     }
 
-})
+});
 
 MWF.xApplication.ExeManager.BaseWorkList.Document = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
@@ -269,14 +269,14 @@ MWF.xApplication.ExeManager.BaseWorkList.Document = new Class({
                 _self.view.explorer.explorer.resizeWindow();
             }.bind(_self),function(xhr,error,text){
                 _self.view.explorer.explorer.showErrorMsg(xhr,error,text);
-            }.bind(_self),false)
+            }.bind(_self),false);
 
             this.close();
         },function(){
             this.close();
         })
     }
-})
+});
 
 
 MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
@@ -317,10 +317,10 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
     load: function () {
         if(this.data.id){
             this.actions.getBaseWorkDetails(this.data.id, function (json) {
-                this.data.workSplitAndDescription = json.data.workDetail
-                this.data.specificActionInitiatives = json.data.progressAction
-                this.data.cityCompanyDuty = json.data.dutyDescription
-                this.data.milestoneMark = json.data.landmarkDescription
+                this.data.workSplitAndDescription = json.data.workDetail;
+                this.data.specificActionInitiatives = json.data.progressAction;
+                this.data.cityCompanyDuty = json.data.dutyDescription;
+                this.data.milestoneMark = json.data.landmarkDescription;
                 this.data.importantMatters = json.data.majorIssuesDescription
             }.bind(this),null,false)
         }
@@ -382,12 +382,12 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
 
             this.formTopIconNode = new Element("div", {
                 "styles": this.css.formTopIconNode
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             this.formTopTextNode = new Element("div", {
                 "styles": this.css.formTopTextNode,
                 "text": this.options.title + ( this.data.title ? ("-" + this.data.title ) : "" )
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             if (this.options.closeAction) {
                 this.formTopCloseActionNode = new Element("div", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
@@ -398,7 +398,7 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
 
             this.formTopContentNode = new Element("div", {
                 "styles": this.css.formTopContentNode
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             this._createTopContent();
 
@@ -406,6 +406,9 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
     },
     _createTopContent: function () {
 
+    },
+    _close: function(){
+        if(this.formMarkNode)this.formMarkNode.destroy()
     },
     _createTableContent: function () {
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
@@ -448,7 +451,7 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
             "       <div styles='formTableValueDiv' item='attachments'></div>"+
             "   </td>" +
             "</tr>"+
-            "</table>"
+            "</table>";
         this.formTableArea.set("html", html);
 
         this.loadForm();
@@ -527,7 +530,7 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
                     }.bind(this),null,false)
                 }
             }.bind(this)
-        })
+        });
         this.attachment.load();
     },
     _createBottomContent: function () {
@@ -542,12 +545,12 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
         }.bind(this));
 
     }
-})
+});
 
 function removeDoc(obj){
-    alert("before="+obj.length)
+    alert("before="+obj.length);
     //obj = obj.splice(0)
-    alert("after="+obj.length)
+    alert("after="+obj.length);
     window.setInterval(function(){
         alert("in="+obj.length)
     },2000)

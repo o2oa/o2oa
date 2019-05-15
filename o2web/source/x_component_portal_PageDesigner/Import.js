@@ -222,7 +222,7 @@ MWF.FormImport.Html = new Class({
 
                     var html = doc.body.get("html");
                     this.form.node.empty();
-                    var formHtml = this.node.outerHTML;
+                    var formHtml = this.form.node.outerHTML;
                     var arr = formHtml.split(/\>\s*\</);
                     html = arr[0]+">"+html+"<"+arr[1];
 

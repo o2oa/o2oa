@@ -87,7 +87,7 @@ MWF.xApplication.Meeting.Main = new Class({
         }
 
         this.topMenu = new Element("div", {"styles": this.css.topMenu}).inject(this.node);
-        this.contentNode = new Element("div", {"styles":  this.inContainer ? this.css.contentNode_inContainer : this.css.contentNode}).inject(this.node);
+        this.contentNode = new Element("div.contentNode", {"styles":  this.inContainer ? this.css.contentNode_inContainer : this.css.contentNode}).inject(this.node);
         //this.bottomMenu = new Element("div", {"styles": this.css.bottomMenu}).inject(this.node);
         this.loadTopMenus();
         if( this.options.sideBarEnable ){
@@ -591,7 +591,13 @@ MWF.xApplication.Meeting.Main = new Class({
         };
     },
     reload: function( ){
-        this.refresh()
+        if( this.inContainer ){
+            if( this.currentView && this.currentView.reload ){
+                this.currentView.reload();
+            }
+        }else{
+            this.refresh()
+        }
     },
     loadSideBar : function(){
         this.sideBar = new MWF.xApplication.Meeting.SideBar(this.node, this);
