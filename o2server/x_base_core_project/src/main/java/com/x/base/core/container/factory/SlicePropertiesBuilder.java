@@ -22,6 +22,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_dm = "dm.jdbc.driver.DmDriver";
 	public static String driver_sqlserver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	public static String driver_gbase = "com.gbasedbt.jdbc.IfxDriver";
+	public static String driver_kingbase = "com.kingbase.Driver";
 	/** 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
 	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
@@ -32,6 +33,8 @@ public class SlicePropertiesBuilder {
 	public static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary";
 	public static String dictionary_sqlserver = "sqlserver(schemaCase=preserve)";
 	public static String dictionary_gbase = "com.x.base.core.openjpa.jdbc.sql.GBaseDictionary";
+	public static String dictionary_kingbase = "com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary";
+//	public static String dictionary_kingbase = "org.apache.openjpa.jdbc.sql.KingbaseDictionary";
 
 	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
 	public static String validationQuery_oracle = "select 1 from dual";
@@ -42,6 +45,7 @@ public class SlicePropertiesBuilder {
 	public static String validationQuery_dm = "select getdate()";
 	public static String validationQuery_sqlserver = "select 1";
 	public static String validationQuery_gbase = "select 1";
+	public static String validationQuery_kingbase = "select 1";
 
 	public static Map<String, String> getPropertiesDBCP(List<DataMapping> list) throws Exception {
 		try {
@@ -54,16 +58,13 @@ public class SlicePropertiesBuilder {
 			/**
 			 * 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema
 			 */
-			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_db2)) {
-				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
-			}
-			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix)) {
-				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
-			}
-			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_gbase)) {
-				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
-			}
-			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm)) {
+
+			if ((StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_db2))
+					|| (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix))
+					|| (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_gbase))
+					|| (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm))
+					|| (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm))
+					|| (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_kingbase))) {
 				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			properties.put("openjpa.slice.Lenient", "false");
@@ -179,6 +180,10 @@ public class SlicePropertiesBuilder {
 				String url = dataMapping.getUrl();
 				str += ",validationQuery=" + validationQuery_sqlserver + ", driverClassName=" + driver_sqlserver
 						+ ", url=" + url;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_kingbase)) {
+				String url = dataMapping.getUrl();
+				str += ",validationQuery=" + validationQuery_kingbase + ", driverClassName=" + driver_kingbase
+						+ ", url=" + url;
 			}
 			return str;
 		} catch (Exception e) {
@@ -225,6 +230,10 @@ public class SlicePropertiesBuilder {
 				String url = dataMapping.getUrl();
 				str += ", validationQuery=" + validationQuery_sqlserver + ", driverClassName=" + driver_sqlserver
 						+ ", url=" + url;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_kingbase)) {
+				String url = dataMapping.getUrl();
+				str += ", validationQuery=" + validationQuery_kingbase + ", driverClassName=" + driver_kingbase
+						+ ", url=" + url;
 			}
 			return str;
 		} catch (Exception e) {
@@ -253,6 +262,8 @@ public class SlicePropertiesBuilder {
 				return driver_dm;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_sqlserver)) {
 				return driver_sqlserver;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_kingbase)) {
+				return driver_kingbase;
 			}
 			throw new Exception("database jdbc driver miss match:" + dataMapping.getUrl());
 		} catch (Exception e) {
@@ -292,6 +303,8 @@ public class SlicePropertiesBuilder {
 				return dictionary_dm;
 			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:sqlserver:")) {
 				return dictionary_sqlserver;
+			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:kingbase:")) {
+				return dictionary_kingbase;
 			}
 			throw new Exception("database jdbc driver miss match:" + dataMapping.getUrl());
 		} catch (Exception e) {
