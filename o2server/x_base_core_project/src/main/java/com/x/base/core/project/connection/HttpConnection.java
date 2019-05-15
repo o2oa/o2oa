@@ -82,32 +82,6 @@ public class HttpConnection {
 		return XGsonBuilder.instance().fromJson(result, collectionType);
 	}
 
-//	public static String postAsString(String address, List<NameValuePair> heads, byte[] bytes) throws Exception {
-//		HttpURLConnection connection = prepare(address, heads);
-//		connection.setRequestMethod("POST");
-//		connection.setDoOutput(true);
-//		connection.setDoInput(true);
-//		connection.connect();
-//		doOutput(connection, bytes);
-//		String str = readResultString(connection);
-//		connection.disconnect();
-//		return str;
-//	}
-//
-//	public static <T> T postAsObject(String address, List<NameValuePair> heads, byte[] bytes, Class<T> cls)
-//			throws Exception {
-//		String result = postAsString(address, heads, bytes);
-//		return XGsonBuilder.instance().fromJson(result, cls);
-//	}
-//
-//	public static <T> List<T> postAsObjects(String address, List<NameValuePair> heads, byte[] bytes, Class<T> cls)
-//			throws Exception {
-//		Type collectionType = new TypeToken<ArrayList<T>>() {
-//		}.getType();
-//		String result = postAsString(address, heads, bytes);
-//		return XGsonBuilder.instance().fromJson(result, collectionType);
-//	}
-
 	public static String putAsString(String address, List<NameValuePair> heads, String body) throws Exception {
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod("PUT");

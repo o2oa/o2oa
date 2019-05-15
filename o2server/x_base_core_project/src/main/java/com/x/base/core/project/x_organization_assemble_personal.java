@@ -19,6 +19,8 @@ public class x_organization_assemble_personal extends AssembleA {
 		dependency.containerEntities.add("com.x.organization.core.entity.UnitDuty");
 		dependency.containerEntities.add("com.x.organization.core.entity.Custom");
 		dependency.containerEntities.add("com.x.organization.core.entity.Definition");
+		dependency.containerEntities.add("com.x.organization.core.entity.accredit.Trust");
+		dependency.containerEntities.add("com.x.organization.core.entity.accredit.TrustLog");
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
 	}

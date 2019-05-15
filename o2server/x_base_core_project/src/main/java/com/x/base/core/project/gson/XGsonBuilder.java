@@ -86,6 +86,18 @@ public class XGsonBuilder {
 		return null;
 	}
 
+	public static Boolean extractBoolean(JsonElement jsonElement, String name) {
+		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
+			JsonElement element = extract(jsonElement, name);
+			if (null != element && element.isJsonPrimitive()) {
+				JsonPrimitive jsonPrimitive = element.getAsJsonPrimitive();
+				if (jsonPrimitive.isBoolean())
+					return jsonPrimitive.getAsBoolean();
+			}
+		}
+		return null;
+	}
+
 	public static List<String> extractStringList(JsonElement jsonElement, String name) {
 		List<String> list = new ArrayList<>();
 		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {

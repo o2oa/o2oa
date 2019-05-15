@@ -38,6 +38,6 @@ public class x_okr_assemble_control extends AssembleA {
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
 		dependency.storeJars.add(x_okr_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+		// dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 	}
 }

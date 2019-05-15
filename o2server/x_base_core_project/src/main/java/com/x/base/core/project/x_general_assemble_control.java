@@ -12,8 +12,8 @@ public class x_general_assemble_control extends AssembleA {
 		super();
 		dependency.containerEntities.add("com.x.general.core.entity.area.District");
 		dependency.storageTypes.add(StorageType.file.toString());
-		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 		dependency.storeJars.add(x_general_core_entity.class.getSimpleName());
 	}
 }

@@ -921,10 +921,11 @@ public class Config {
 					Messages custom = BaseTools.readObject(PATH_CONFIG_MESSAGES, Messages.class);
 					if (null != custom) {
 						custom.entrySet().stream().forEach(o -> {
-							List<String> consumers = obj.getConsumers(o.getKey());
-							consumers = ListUtils.union(consumers,
-									ListTools.trim(o.getValue().getConsumers(), true, true));
-							obj.put(o.getKey(), new Message(consumers));
+//							List<String> consumers = obj.getConsumers(o.getKey());
+//							consumers = ListUtils.union(consumers,
+//									ListTools.trim(o.getValue().getConsumers(), true, true));
+//							obj.put(o.getKey(), new Message(consumers));
+							obj.put(o.getKey(), new Message(o.getValue().getConsumers()));
 						});
 					}
 					instance().messages = obj;

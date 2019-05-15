@@ -8,4 +8,11 @@ public class CacheControlFactory {
 		cc.setNoCache(true);
 		return cc;
 	}
+
+	public static CacheControl getMaxAge(Integer max) {
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(max);
+		return cc;
+	}
+
 }

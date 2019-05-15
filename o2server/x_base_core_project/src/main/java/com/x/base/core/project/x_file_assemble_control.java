@@ -14,8 +14,8 @@ public class x_file_assemble_control extends AssembleA {
 		dependency.containerEntities.add("com.x.file.core.entity.personal.Attachment");
 		dependency.containerEntities.add("com.x.file.core.entity.open.File");
 		dependency.storageTypes.add(StorageType.file.toString());
-		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 		dependency.storeJars.add(x_file_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());

@@ -65,7 +65,7 @@ public class MessageConnector {
 
 	public static final String TYPE_CUSTOM_CREATE = "custom_create";
 
-	public static final String CONSUME_IM = "im";
+	public static final String CONSUME_WS = "ws";
 
 	public static final String CONSUME_PMS = "pms";
 

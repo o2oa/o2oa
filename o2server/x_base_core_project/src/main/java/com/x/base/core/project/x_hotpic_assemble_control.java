@@ -17,7 +17,7 @@ public class x_hotpic_assemble_control extends AssembleA {
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
 		dependency.storeJars.add(x_hotpic_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 		dependency.storeJars.add(x_cms_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_bbs_core_entity.class.getSimpleName());
 	}

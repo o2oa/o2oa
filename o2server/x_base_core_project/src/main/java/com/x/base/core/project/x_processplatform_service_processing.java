@@ -50,8 +50,8 @@ public class x_processplatform_service_processing extends ServiceA {
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
 		dependency.storeJars.add(x_processplatform_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 		dependency.storeJars.add(x_query_core_entity.class.getSimpleName());
 	}
 }

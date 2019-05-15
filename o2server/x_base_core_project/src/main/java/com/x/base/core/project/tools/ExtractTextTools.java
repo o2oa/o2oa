@@ -21,16 +21,15 @@ import org.junit.Test;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
 
+import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
 public class ExtractTextTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ExtractTextTools.class);
 
-	private static Tesseract tesseract = null;
+	private static ITesseract tesseract = null;
 
 	private static Tika tika = null;
 
@@ -147,11 +146,12 @@ public class ExtractTextTools {
 		return null;
 	}
 
-	private static Tesseract tesseractInstance() throws Exception {
+	private static ITesseract tesseractInstance() throws Exception {
 		if (null == tesseract) {
 			synchronized (ExtractTextTools.class) {
 				if (null == tesseract) {
-					tesseract = new Tesseract();
+//					tesseract = new Tesseract();
+					ITesseract tesseract = new Tesseract();
 					tesseract.setDatapath(Config.dir_commons_tess4j_tessdata().getAbsolutePath());// 设置训练库的位置
 					tesseract.setLanguage(Config.query().getTessLanguage());// 中文识别
 				}
