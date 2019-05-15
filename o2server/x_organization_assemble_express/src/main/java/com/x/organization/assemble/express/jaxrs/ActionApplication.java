@@ -10,6 +10,8 @@ import com.x.organization.assemble.express.jaxrs.identity.IdentityAction;
 import com.x.organization.assemble.express.jaxrs.person.PersonAction;
 import com.x.organization.assemble.express.jaxrs.personattribute.PersonAttributeAction;
 import com.x.organization.assemble.express.jaxrs.role.RoleAction;
+import com.x.organization.assemble.express.jaxrs.trust.TrustAction;
+import com.x.organization.assemble.express.jaxrs.trustlog.TrustLogAction;
 import com.x.organization.assemble.express.jaxrs.unit.UnitAction;
 import com.x.organization.assemble.express.jaxrs.unitattribute.UnitAttributeAction;
 import com.x.organization.assemble.express.jaxrs.unitduty.UnitDutyAction;
@@ -25,6 +27,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(UnitAction.class);
 		classes.add(UnitAttributeAction.class);
 		classes.add(UnitDutyAction.class);
+		classes.add(TrustAction.class);
+		classes.add(TrustLogAction.class);
 		return classes;
 	}
 
