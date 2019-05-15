@@ -28,6 +28,20 @@
         "opacity": 1,
         "position": "absolute"
     },
+    "processNodeMobile_from": {
+        "width": "480px",
+        "min-height": "280px",
+        "height": "auto",
+        "z-index":300,
+        "background-color": "#eeeeee",
+        "overflow": "hidden",
+        "border": "0px",
+        "border-radius": "0px",
+        "box-shadow": "0px",
+        "opacity": 1,
+        "position": "absolute"
+    },
+
     "processNode": {
         "width": "480px",
         "min-height": "280px",
@@ -35,6 +49,16 @@
         "opacity": 1,
         "overflow": "hidden"
     },
+    "processNodeMobile": {
+        "width": "480px",
+        "min-height": "280px",
+        "height": "auto",
+        "opacity": 1,
+        "top":"0px",
+        "left": "0px",
+        "overflow": "hidden"
+    },
+
     "routeSelectorTile": {
         "overflow": "hidden",
         "height": "24px",

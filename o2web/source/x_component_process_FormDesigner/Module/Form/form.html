@@ -41,6 +41,7 @@
                 <td colspan="2" class="editTableValue"><b>流转后提示框:</b>
                     <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'block');}" name="isPrompt" text{($.isPrompt!==false)?'checked':''} type="radio" value="ture"/>是
                     <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'none'); }" name="isPrompt" text{($.isPrompt===false)?'checked':''} type="radio" value="false"/>否
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(仅用于新浏览器窗口打开时)</span>
                 </td>
             </tr>
         </table>
@@ -86,6 +87,10 @@
         <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
 
 	</div>
+    <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
+        <div class="MWFDefaultActionArea" name="defaultTools"></div>
+        <div class="MWFActionArea" name="tools"></div>
+    </div>
 	<div title="事件"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>

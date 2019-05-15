@@ -26,7 +26,7 @@
 		"width": "18px",
 		"opacity": 0.5,
 		"background": "#ffa200",
-		"display": "inline-block",
+		"display": "block",
 		"line-height": "2px",
 		"font-size": "2px"
 	},

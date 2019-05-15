@@ -64,8 +64,7 @@
   "stopLearning": {"uri": "/jaxrs/neural/stop/learn/model/{modelFlag}"},
   "resetStatus": {"uri": "/jaxrs/neural/model/{modelFlag}/reset/status"},
 
-  "listStatementNext" : {"uri": "/jaxrs/statement/list/{id}/next/{count}"},
-  "listStatementPrev" : {"uri": "/jaxrs/statement/list/{id}/prev/{count}"},
+  "listStatement" : {"uri": "/jaxrs/statement/list/query/{flag}"},
   "getStatement" : { "uri": "/jaxrs/statement/{flag}" },
   "updateStatement":{ "uri": "/jaxrs/statement/{flag}", "method": "PUT" },
   "createStatement":{ "uri": "/jaxrs/statement", "method": "POST" },
@@ -80,6 +79,10 @@
   "updateTable":{ "uri": "/jaxrs/table/{flag}", "method": "PUT" },
   "createTable":{ "uri": "/jaxrs/table", "method": "POST" },
   "deleteTable" : { "uri": "/jaxrs/table/{flag}", "method": "DELETE" },
+  "statusBuild": { "uri": "/jaxrs/table/{flag}/status/build"},
+  "statusDraft": { "uri": "/jaxrs/table/{flag}/status/draft"},
+  "executeJpql": {"uri": "/jaxrs/table/{flag}/execute", "method": "POST"},
+
 
   "listRowNext" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/next/{count}" },
   "listRowPrev" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}" },

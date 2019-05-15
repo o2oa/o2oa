@@ -163,6 +163,7 @@ MWF.xApplication.Common.Main = new Class({
             "maxSize": function(){},
             "restore": function(){},
             "setCurrent": function(){},
+			"setUncurrent": function(){},
             "hide": function(){},
             "maxOrRestoreSize": function(){},
             "restoreSize": function(){},
@@ -184,13 +185,22 @@ MWF.xApplication.Common.Main = new Class({
         // 	debugger;
         //     this.fireAppEvent("resize");
         // }.bind(this));
-        window.onbeforeunload = function(e){
-            this.fireAppEvent("queryClose");
-        }.bind(this);
+		window.addEventListener("beforeunload", function(e) {
+			this.fireAppEvent("queryClose");
+		}.bind(this));
+		window.addEventListener("pagehide", function(e) {
+			this.fireAppEvent("queryClose");
+		}.bind(this));
+
+		// window.onbeforeunload = function(e){
+        //     this.fireAppEvent("queryClose");
+        // }.bind(this);
 
         this.fireAppEvent("postLoadWindow");
         this.fireAppEvent("queryLoadApplication");
         this.setContentEvent();
+
+        if (this.stylePath) o2.loadCss(this.stylePath);
         this.loadApplication(function(){
             this.fireAppEvent("postLoadApplication");
         }.bind(this));
@@ -304,11 +314,11 @@ MWF.xApplication.Common.Main = new Class({
         this.desktop.refreshApp(this);
     },
 	close: function(){
-		this.fireAppEvent("queryClose");
-		this.setUncurrent();
         if (this.inBrowser){
             window.close();
         }else{
+			this.fireAppEvent("queryClose");
+			this.setUncurrent();
             this.window.close(function(){
                 this.taskitem.destroy();
                 this.window = null;

@@ -333,7 +333,9 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             ////如果设置了权限，那么options里需要有 对应的设置项才会展现
             // 比如 item.access == isAdmin 那么 this.options.isAdmin要为true才展现
             if (item.access && !this.options[item.access])return;
+            if( item.condition && !this.getConditionResult(item.condition))return;
             if (item.head.access && !this.options[item.head.access])return;
+            if( item.head.condition && !this.getConditionResult(item.head.condition))return;
             if( item.name == "$checkbox" && !this.options.checkboxEnable  )return;
 
             var headItemNode = this.formatElement(headNode, item.head);
@@ -376,6 +378,14 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         }.bind(this));
         this.fireEvent("postCreateViewHead");
         this._postCreateViewHead( headNode )
+    },
+    getConditionResult: function (str) {
+        var flag = true;
+        if (str && str.substr(0, 8) == "function") { //"function".length
+            eval("var fun = " + str);
+            flag = fun.call(this, this.data);
+        }
+        return flag;
     },
     setEventStyle: function (node, setting, bingObj, data) {
         var _self = this;
@@ -738,11 +748,26 @@ MWF.xApplication.Template.Explorer.ComplexDocument = new Class({
 
         //this.documentAreaNode =  new Element("td", {"styles": this.css.documentNode}).inject(this.node);
 
+        this._load()
+    },
+    reload : function(){
+        this.preNode = this.node;
+        this.node = this.view.documentNodeTemplate.clone().inject(this.preNode,"after");
+        this.preNode.destroy();
+        this._load()
+    },
+    _load : function(){
+        var _self = this;
         this.view.template.items.each(function (item) {
-            if( item.access && this._getItemAccess(item) ){
-                this.loadItem(item.name, item.content, item.nodeTemplate)
-            }else{
-                this.loadItem(item.name, item.content, item.nodeTemplate)
+            var flag = true;
+            if( item.condition ){
+                flag = this.getConditionResult( item.condition );
+            }
+            if( flag && item.access ){
+                flag = this._getItemAccess(item);
+            }
+            if( flag ){
+                this.loadItem(item.name, item.content, item.nodeTemplate);
             }
         }.bind(this));
 

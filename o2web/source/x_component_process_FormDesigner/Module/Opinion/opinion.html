@@ -27,6 +27,13 @@
                     <input type="radio" name="isAudio" value="no" text{($.isAudio=='no')?'checked':''}/>否
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">手写预览:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isHandwritingPreview" value="yes" text{($.isHandwritingPreview!='no')?'checked':''}/>是
+                    <input type="radio" name="isHandwritingPreview" value="no" text{($.isHandwritingPreview=='no')?'checked':''}/>否
+                </td>
+            </tr>
         </table>
 		
 		<div class="MWFMaplist" name="styles" title="样式"></div>

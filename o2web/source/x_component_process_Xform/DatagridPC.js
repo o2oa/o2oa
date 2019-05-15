@@ -192,11 +192,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			this._createMoveLineAction(cell);
 		}else{
 			cell.set("MWFId", id);
-			cell.set("text", text);
+
+			var module = this.editModules[idx-1];
+			if( module && module.json.type == "ImageClipper" ){
+				this._createImage( cell, module, text )
+			}else{
+				cell.set("text", text);
+			}
 			cell.addEvent("click", function(e){
 				this._editLine(e.target);
 			}.bind(this));
-		};
+		}
 		var json = this.form._getDomjson(cell);
 
 		if (json){
@@ -346,7 +352,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                 }
 
 				if (cell){
-					cell.set("text", data.text.join(", "));
+					if( module.json.type == "ImageClipper" ){
+						this._createImage( cell, module, data.text );
+					}else{
+						cell.set("text", data.text.join(", "));
+					}
 				}else{
 					this._createNewEditTd(newTr, idx, editorTds[idx].get("id"), data.text.join(", "), titleThs.length-1);
 				}
@@ -387,6 +397,23 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         this.fireEvent("completeLineEdit");
 
         return true;
+	},
+	_createImage : function( cell, module, data ){
+		cell.empty();
+		if( !data )return;
+		var img = new Element("img",{
+			src : MWF.xDesktop.getImageSrc( data )
+		}).inject( cell, "top" );
+		if( module.json.clipperType == "size" ){
+			var width = module.json.imageWidth;
+			var height = module.json.imageHeight;
+			if (width && height) {
+				img.setStyles({
+					width: width + "px",
+					height: height + "px"
+				})
+			}
+		}
 	},
 	_editorTrGoBack: function(){
 		this.editorTr.setStyle("display", "none");
@@ -589,8 +616,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                         for (key in cellData){
                         	var v = cellData[key];
 
-                            var text = this._getValueText(index, v);
-                            cell.set("text", text);
+							var module = this.editModules[index];
+							if( module && module.json.type == "ImageClipper" ){
+								this._createImage( cell, module, v )
+							}else{
+								var text = this._getValueText(index, v);
+								cell.set("text", text);
+							}
+
 
 							// if (typeOf(v)==="array"){
 							// 	var textArray = [];

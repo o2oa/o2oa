@@ -11,13 +11,28 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
             "noElement": MWF.xApplication.query.QueryManager.LP.table.noStatNoticeText
         }
     },
+    initialize: function(node, actions, options){
+        this.setOptions(options);
+        this.setTooltip();
+
+        this.path = "/x_component_query_QueryManager/$Explorer/";
+        this.cssPath = "/x_component_query_QueryManager/$Explorer/"+this.options.style+"/css.wcss";
+
+        this._loadCss();
+
+        this.actions = actions;
+        this.node = $(node);
+        this.initData();
+    },
     saveItemAsUpdate: function(someItem, data, success, failure){
         var item = this.app.options.application;
         var id = item.id;
         var name = item.name;
 
-        var dataJson = (data.data) ? JSON.decode(data.data): "";
-        data.data = dataJson;
+        //var dataJson = (data.data) ? JSON.decode(data.data): "";
+        var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
+        data.status = "draft";
+        data.draftData = draftDataJson;
         data.data.id = someItem.id;
         data.id = someItem.id;
         data.isNewTable = false;
@@ -115,7 +130,7 @@ MWF.xApplication.query.QueryManager.TableExplorer.Table= new Class({
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/tableIcon/lnk.png",
 			"title": this.data.name,
-			"par": "query.TableDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.data.query+"\"}"
+			"par": "query.TableDesigner#{\"appId\": \"query.TableDesigner"+this.data.id+"\", \"id\": \""+this.data.id+"\", \"applicationId\": \""+this.data.query+"\"}"
 		};
 	},
     deleteTable: function(callback){

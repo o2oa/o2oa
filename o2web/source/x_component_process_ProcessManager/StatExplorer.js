@@ -73,7 +73,7 @@ MWF.xApplication.process.ProcessManager.StatExplorer.Stat = new Class({
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/statIcon/lnk.png",
 			"title": this.data.name,
-            "par": "process.StatDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
+            "par": "process.StatDesigner#{\"appId\": \"query.StatDesigner"+this.data.id+"\", \"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
 		};
 	},
 //	deleteItem: function(e){

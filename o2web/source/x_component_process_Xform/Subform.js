@@ -10,6 +10,14 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
             }
         }.bind(this));
     },
+    reload: function(){
+        this.node.empty();
+        this.getSubform(function(){
+            if (this.subformData){
+                this.loadSubform();
+            }
+        }.bind(this));
+    },
     loadCss: function(){
         if (this.subformData.json.css && this.subformData.json.css.code){
             var cssText = this.form.parseCSS(this.subformData.json.css.code);

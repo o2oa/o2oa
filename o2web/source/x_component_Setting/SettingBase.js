@@ -20,7 +20,7 @@ MWF.xApplication.Setting.BasePersonDocument = new Class({
             "value": this.explorer.personData.passwordPeriod
         });
         this.baseAdminPasswordInput = new MWF.xApplication.Setting.Document.Input(this.explorer, this.node, {
-            "lp": {"title": this.lp.base_adminPassword, "infor": this.lp.base_adminPassword_infor, "action": this.lp.base_adminPassword_action},
+            "lp": {"title": this.lp.base_adminPassword, "infor": this.lp.base_adminPassword_infor, "action": this.lp.base_adminPassword_action, "confirm": this.lp.base_adminPassword_confirm},
             "data": {"key": "tokenData", "valueKey": "password", "notEmpty": false},
             "value": this.explorer.tokenData.password
         });
@@ -101,7 +101,7 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
             "data": {"key": "tokenData", "valueKey": "ssos", "notEmpty": false },
             "value": this.explorer.tokenData.ssos,
             "itemTitle": "{client}",
-            "addItem": {"client": "", "key": ""},
+            "addItem": {"enable": true, "client": "", "key": ""},
             "icon": "sso.png"
         });
         this.baseOauthsInput = new MWF.xApplication.Setting.Document.List(this.explorer, this.node, {
@@ -109,7 +109,7 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
             "data": {"key": "tokenData", "valueKey": "oauths", "notEmpty": false },
             "value": this.explorer.tokenData.oauths,
             "itemTitle": "{clientId}",
-            "addItem": {"clientId": "", "mapping": {}},
+            "addItem": {"enable": true, "clientId": "", "mapping": {}},
             "icon": "sso.png"
         });
 

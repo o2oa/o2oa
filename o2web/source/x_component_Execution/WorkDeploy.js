@@ -463,13 +463,13 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
 
                         this.app.createShade(null,"正在导入，请稍后.....");
 
-                        this.actions.importBaseWork(centerId,function(json){
+                        this.actions.importBaseWork(centerId,formData,file,function(json){
                             this.reloadTableContent(centerId);
                             this.app.destroyShade()
                         }.bind(this),function(xhr,text,error){
                             this.showErrorMessage(xhr,text,error);
                             this.app.destroyShade()
-                        }.bind(this),formData,file);
+                        }.bind(this));
 
 
                         //this.actions.importBaseWork(centerId,function(json){
@@ -485,6 +485,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
             }.bind(this));
             var fileNode = this.uploadFileAreaNode.getFirst();
             //alert(13)
+            debugger;
             //alert(this.uploadFileAreaNode.get("html"))
             fileNode.click();
             //this.uploadFileAreaNode.destroy();

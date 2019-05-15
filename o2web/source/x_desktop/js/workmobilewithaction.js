@@ -139,102 +139,78 @@ o2.addReady(function(){
                 };
 
                 layout.loadWork = function(options){
-                    var method = "";
-                    var id = "";
-                    if (options.taskid){
-                        method = "getTask";
-                        id = options.taskid;
-                    }else if (options.taskcompletedid) {
-                        method = "getTaskCompleted";
-                        id = options.taskcompletedid;
-                    }else if (options.readid) {
-                        method = "getRead";
-                        id = options.readid;
-                    }else if (options.readid) {
-                        method = "getReaded";
-                        id = options.readid;
-                    }else if (options.reviewid) {
-                        method = "getReview";
-                        id = options.reviewid;
-                    }
-                    var workMethod = "";
-                    var workid = "";
-                    if (method && id){
-                        this.action[method](id, function(json){
-                            if (json.data.workCompleted){
-                                workMethod = "getJobByWorkCompletedMobile";
-                                workid = json.data.workCompleted
-                            }else{
-                                workMethod = "getJobByWorkMobile";
-                                workid = json.data.work
-                            }
-                        }.bind(this), null, false);
+                    // var method = "";
+                    // var id = "";
+                    // if (options.taskid){
+                    //     method = "getTask";
+                    //     id = options.taskid;
+                    // }else if (options.taskcompletedid) {
+                    //     method = "getTaskCompleted";
+                    //     id = options.taskcompletedid;
+                    // }else if (options.readid) {
+                    //     method = "getRead";
+                    //     id = options.readid;
+                    // }else if (options.readid) {
+                    //     method = "getReaded";
+                    //     id = options.readid;
+                    // }else if (options.reviewid) {
+                    //     method = "getReview";
+                    //     id = options.reviewid;
+                    // }
+
+                    var id = options.workCompletedId || options.workId || options.workid || options.workcompletedid;
+                    if (id){
+                        o2.Actions.invokeAsync([
+                            {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
+                            {"action": this.action, "name": "loadWork"},
+                            {"action": this.action, "name": "getWorkControl"},
+                            {"action": this.action, "name": "getWorkLog"},
+                            {"action": this.action, "name": "listAttachments"}
+                        ], {"success": function(json_form, json_work, json_control, json_log, json_att){
+                                if (json_work && json_control && json_form && json_log && json_att){
+                                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
+                                    if (this.mask) this.mask.hide();
+                                    //if (layout.mobile) this.loadMobileActions();
+                                    this.openWork();
+                                } else{
+                                    layout.errorWork();
+                                }
+                            }.bind(this), "failure": function(){}}, [id, true, true, true], id);
                     }
 
-                    if (!workMethod || !workid){
-                        if (options.workid) {
-                            workMethod = "getJobByWorkMobile";
-                            workid = options.workid;
-                        }else if (options.workcompletedid){
-                            workMethod = "getJobByWorkCompletedMobile";
-                            workid = options.workcompletedid;
-                        }
-                    }
-                    if (workMethod && workid){
-                        this.action[workMethod](function(json){
-                            if (this.mask) this.mask.hide();
-                            this.parseData(json.data);
-                            this.openWork();
-                            if( this.control.allowSave || this.control.allowProcessing ){
-                                $("MWF_form_action_save").getParent().setStyle("display","");
-                            }else{
-                                $("MWF_form_action_save").getParent().getPrevious().setStyle("height","100%");
-                            }
-                            if( this.control.allowSave ){
-                                var action = $("MWF_form_action_save");
-                                action.setStyle("display","");
-                                action.addEvents({
-                                    "click": function(){
-                                        this.appForm.saveWork();
-                                    }.bind(this),
-                                    "touchstart": function(){
-                                        this.setStyle("background-color", "#EEEEEE");
-                                    },
-                                    "touchcancel": function(){
-                                        this.setStyle("background-color", "#ffffff");
-                                    },
-                                    "touchend": function(){
-                                        this.setStyle("background-color", "#ffffff");
-                                    }
-                                });
-                            }else{
-                                $("MWF_form_action_save").setStyle("display","none")
-                            }
-                            if( this.control.allowProcessing ){
-                                var action = $("MWF_form_action_process");
-                                action.setStyle("display","");
-                                action.addEvents({
-                                    "click": function(){
-                                        this.appForm.processWork();
-                                    }.bind(this),
-                                    "touchstart": function(){
-                                        this.setStyle("background-color", "#EEEEEE");
-                                    },
-                                    "touchcancel": function(){
-                                        this.setStyle("background-color", "#ffffff");
-                                    },
-                                    "touchend": function(){
-                                        this.setStyle("background-color", "#ffffff");
-                                    }
-                                });
-                            }else{
-                                $("MWF_form_action_process").setStyle("display","none")
-                            }
 
-                        }.bind(this), function(xhr){
-                            this.errorWork(xhr);
-                        }.bind(this), workid);
-                    }
+                    // var workMethod = "";
+                    // var workid = "";
+                    // if (method && id){
+                    //     this.action[method](id, function(json){
+                    //         if (json.data.workCompleted){
+                    //             workMethod = "getJobByWorkCompletedMobile";
+                    //             workid = json.data.workCompleted
+                    //         }else{
+                    //             workMethod = "getJobByWorkMobile";
+                    //             workid = json.data.work
+                    //         }
+                    //     }.bind(this), null, false);
+                    // }
+                    //
+                    // if (!workMethod || !workid){
+                    //     if (options.workid) {
+                    //         workMethod = "getJobByWorkMobile";
+                    //         workid = options.workid;
+                    //     }else if (options.workcompletedid){
+                    //         workMethod = "getJobByWorkCompletedMobile";
+                    //         workid = options.workcompletedid;
+                    //     }
+                    // }
+                    // if (workMethod && workid){
+                    //     this.action[workMethod](function(json){
+                    //         if (this.mask) this.mask.hide();
+                    //         this.parseData(json.data);
+                    //         this.openWork();
+                    //     }.bind(this), function(xhr){
+                    //         this.errorWork(xhr);
+                    //     }.bind(this), workid);
+                    // }
 
                     // var method = "";
                     // var id = "";
@@ -284,24 +260,47 @@ o2.addReady(function(){
                     //}
                     return null;
                 };
-                layout.parseData = function(data){
-                    //   this.setTitle(this.options.title+"-"+data.work.title);
+                layout.parseData = function(workData, controlData, formData, logData, attData){
+                    debugger;
+                    var title = workData.work.title;
+                    //this.setTitle(this.options.title+"-"+title);
 
-                    this.activity = data.activity;
-                    this.data = data.data;
-                    this.taskList = data.taskList;
-                    this.currentTask = this.getCurrentTaskData(data);
-                    this.taskList = data.taskList;
-                    this.readList = data.readList;
-                    this.work = data.work;
-                    this.workCompleted = data.workCompleted;
-                    this.workLogList = data.workLogList;
-                    this.attachmentList = data.attachmentList;
-                    this.inheritedAttachmentList = data.inheritedAttachmentList;
-                    this.control = data.control;
-                    this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
-                    this.formInfor = data.form;
+                    this.activity = workData.activity;
+                    this.data = workData.data;
+                    this.taskList = workData.taskList;
+                    this.currentTask = this.getCurrentTaskData(workData);
+                    this.taskList = workData.taskList;
+                    this.readList = workData.readList;
+                    this.work = workData.work;
+                    this.workCompleted = (workData.work.completedTime) ? workData.work : null;
+
+                    this.workLogList = logData;
+                    this.attachmentList = attData;
+                    //this.inheritedAttachmentList = data.inheritedAttachmentList;
+
+                    this.control = controlData;
+                    this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                    delete formData.data;
+                    this.formInfor = formData;
                 };
+                // layout.parseData = function(data){
+                //     //   this.setTitle(this.options.title+"-"+data.work.title);
+                //
+                //     this.activity = data.activity;
+                //     this.data = data.data;
+                //     this.taskList = data.taskList;
+                //     this.currentTask = this.getCurrentTaskData(data);
+                //     this.taskList = data.taskList;
+                //     this.readList = data.readList;
+                //     this.work = data.work;
+                //     this.workCompleted = data.workCompleted;
+                //     this.workLogList = data.workLogList;
+                //     this.attachmentList = data.attachmentList;
+                //     this.inheritedAttachmentList = data.inheritedAttachmentList;
+                //     this.control = data.control;
+                //     this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
+                //     this.formInfor = data.form;
+                // };
                 layout.openWork = function(){
                     if (this.form){
                         MWF.xDesktop.requireApp("process.Xform", "Form", function(){
@@ -459,7 +458,7 @@ o2.addReady(function(){
                         }
                         var dlg = new MWF.xDesktop.Dialog({
                             "title": title,
-                            "style": style || "flat",
+                            "style": style || "o2",
                             "top": y,
                             "left": x-20,
                             "fromTop":y,

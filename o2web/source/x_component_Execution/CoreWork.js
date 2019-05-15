@@ -54,12 +54,12 @@ MWF.xApplication.Execution.CoreWork = new Class({
 
             this.formTopIconNode = new Element("div", {
                 "styles": this.css.formTopIconNode
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             this.formTopTextNode = new Element("div", {
                 "styles": this.css.formTopTextNode,
                 "text": this.options.title
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             if (this.options.closeAction) {
                 this.formTopCloseActionNode = new Element("div.formTopCloseActionNode", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
@@ -70,7 +70,7 @@ MWF.xApplication.Execution.CoreWork = new Class({
 
             this.formTopContentNode = new Element("div", {
                 "styles": this.css.formTopContentNode
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             this._createTopContent();
 
@@ -83,7 +83,7 @@ MWF.xApplication.Execution.CoreWork = new Class({
             "<span styles='formTopContentTitle' lable='draftDepartment'></span>" +
             "    <span styles='formTopContentValue' item='draftDepartment'></span>" +
             "<span styles='formTopContentTitle' lable='draftDate'></span>" +
-            "    <span styles='formTopContentValue' item='draftDate'></span>"
+            "    <span styles='formTopContentValue' item='draftDate'></span>";
         this.formTopContentNode.set("html", html);
 
         var form = new MForm(this.formTopContentNode, {
@@ -163,7 +163,7 @@ MWF.xApplication.Execution.CoreWork = new Class({
         var workContentNode = new Element("div", {
             "styles": this.css.workContentNode
         }).inject(workContentArea);
-        var list = new MWF.xApplication.Execution.CoreWork.MyWorkView(workContentNode, this.app, this, { templateUrl : this.path+"listItem.json" })
+        var list = new MWF.xApplication.Execution.CoreWork.MyWorkView(workContentNode, this.app, this, { templateUrl : this.path+"listItem.json" });
         list.load();
     },
     createSplitWorkList : function(){
@@ -179,7 +179,7 @@ MWF.xApplication.Execution.CoreWork = new Class({
         var workContentNode = new Element("div", {
             "styles": this.css.workContentNode
         }).inject(workContentArea);
-        var list = new MWF.xApplication.Execution.CoreWork.MyWorkView(workContentNode, this.app, this, { templateUrl : this.path+"listItem.json" })
+        var list = new MWF.xApplication.Execution.CoreWork.MyWorkView(workContentNode, this.app, this, { templateUrl : this.path+"listItem.json" });
         list.load();
     }
 })
@@ -236,7 +236,7 @@ MWF.xApplication.Execution.CoreWork.MyWorkView = new Class({
             "count": 0,
             "position": 0,
             "message": ""
-        }
+        };
         if (callback) callback(json);
     },
     _removeDocument: function(documentData, all){
@@ -252,7 +252,7 @@ MWF.xApplication.Execution.CoreWork.MyWorkView = new Class({
         this.workForm = new MWF.xApplication.Execution.WorkForm(this, this.actions, documentData, {
             "isNew": false,
             "isEdited": false
-        })
+        });
         this.workForm.load();
     },
     _queryCreateViewNode: function(){
@@ -268,7 +268,7 @@ MWF.xApplication.Execution.CoreWork.MyWorkView = new Class({
 
     }
 
-})
+});
 
 MWF.xApplication.Execution.CoreWork.MyWorkDocument = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
@@ -279,7 +279,7 @@ MWF.xApplication.Execution.CoreWork.MyWorkDocument = new Class({
         this.workForm = new MWF.xApplication.Execution.WorkForm(this, this.actions, this.data, {
             "isNew": true,
             "isEdited": false
-        })
+        });
         this.workForm.load();
     },
     _queryCreateDocumentNode:function( itemData ){
@@ -291,6 +291,6 @@ MWF.xApplication.Execution.CoreWork.MyWorkDocument = new Class({
     //open: function(){
     //    alert("open")
     //}
-})
+});
 
 

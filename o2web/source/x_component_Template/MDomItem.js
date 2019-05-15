@@ -121,8 +121,10 @@ var MDomItem = new Class({
         calendarOptions : null, //日期选择器的设置项
         orgWidgetOptions : null //org组件的选项
     },
-    initialize: function (container, options , form, app, css ) {
-        this.form = form;
+    initialize: function (container, options , parent, app, css ) {
+        this.form = parent;
+        this.tr = parent;
+        this.parent = parent;
         this.app = app;
         this.container = $(container);
         this.css = css;
@@ -135,7 +137,6 @@ var MDomItem = new Class({
         //this.setOptions(options);
 
         this.valSeparator = /,|;|\^\^|\|/; //如果是多值对象，作为用户选择的多个值的分隔符
-        //this.parent = parent;
         this.mElement = this.container;	//容器
         this.items = [];
 
@@ -347,7 +348,15 @@ var MDomItem = new Class({
                 this.setWarning(warningText, "empty");
             }else{
                 if( this.app && this.app.notice ){
-                    this.app.notice(warningText,"error",this.container);
+
+                    if (!this.container.isIntoView()){
+                        var pNode = this.container.getParent();
+                        while (pNode && ((pNode.getScrollSize().y-(pNode.getComputedSize().height+1)<=0) || pNode.getStyle("overflow")==="visible")) pNode = pNode.getParent();
+                        if (!pNode) pNode = document.body;
+                        pNode.scrollToNode(this.container, "bottom");
+                    }
+                    var y = this.container.getSize().y;
+                    this.app.notice(warningText,"error",this.container, {"x": "right", "y": "top"}, { x : 10, y : y });
                 }
                 if( !this.options.validImmediately ){
                     if( ["text","password","textarea","select","multiselect"].contains( this.options.type ) ){
@@ -463,7 +472,16 @@ var MDomItem = new Class({
             }else if( this.options.warningType == "single" ){
                 this.setWarning(msgs, "invaild");
             }else{
-                this.app.notice(msgs.join("\n"),"error", this.container );
+                if( this.app && this.app.notice ) {
+                    if (!this.container.isIntoView()) {
+                        var pNode = this.container.getParent();
+                        while (pNode && ((pNode.getScrollSize().y - (pNode.getComputedSize().height + 1) <= 0) || pNode.getStyle("overflow") === "visible")) pNode = pNode.getParent();
+                        if (!pNode) pNode = document.body;
+                        pNode.scrollToNode(this.container, "bottom");
+                    }
+                    var y = this.container.getSize().y;
+                    this.app.notice(msgs.join("\n"), "error", this.container, {"x": "right", "y": "top"}, { x : 10, y : y });
+                }
             }
             this.fireEvent("empty", this);
         }else{

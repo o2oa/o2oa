@@ -53,7 +53,12 @@ MWF.xApplication.process.FormDesigner.LP = {
 			"delete": "删除",
 			"add": "添加",
 			"script": "脚本",
-            "styleBrush": "格式刷"
+            "styleBrush": "格式刷",
+            "insertTop" : "插入到顶部",
+            "insertBottom" : "插入到底部",
+            "insertBefore" : "插入到前面",
+            "insertAfter" : "插入到后面",
+            "injectNotice" : "按住Ctrl松开鼠标精确定位"
 		},
 
         "actionbar": {

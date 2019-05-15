@@ -5,20 +5,21 @@
         "line-height": "30px",
         "font-size": "14px",
         "font-weight": "bold",
-        "background-color": "#6681a5",
-        "color": "#FFF",
+        "background-color": "#eeeeee",
+        "color": "#333",
         "padding-left": "20px"
     },
     "routeSelectorArea": {
         "overflow": "hidden",
         "min-height": "40px",
+        "background-color": "#ffffff",
         "padding": "0xp 20px"
     },
     "routeNode": {
         "float": "left",
         "margin-left": "20px",
         "border-radius": "5px",
-        "background-color": "#E3E3E3",
+        "background-color": "#ffffff",
         "height": "24px",
         "line-height": "24px",
         "margin-top": "8px",
@@ -43,26 +44,24 @@
         "line-height": "30px",
         "font-size": "14px",
         "font-weight": "bold",
-        "background-color": "#6681a5",
-        "color": "#FFF",
+        "background-color": "#eeeeee",
+        "color": "#333333",
         "padding-left": "20px"
     },
     "routeOpinionArea": {
         "height": "129px",
-        "border-bottom": "1px solid #6681a5",
+        "border-bottom": "0px solid #6681a5",
     },
 
     "inputOpinionNode": {
         "height": "129px",
-        "width": "79%",
-        "float": "left",
-        "border-left": "1px solid #6681a5",
-        "border-right": "1px solid #6681a5",
+        "border-left": "0px solid #6681a5",
+        "border-right": "0px solid #6681a5",
         "background-color": "#EEE"
     },
     "selectIdeaNode": {
         "height": "129px",
-        "width": "20%",
+        "display": "none",
         "float": "right",
         "background-color": "#eee",
         "overflow": "hidden"
@@ -87,53 +86,57 @@
     "buttonsArea": {
         "height": "50px",
         "overflow": "hidden",
+        "clear": "both",
+        "margin-top": "10px"
     },
 
     "okButton": {
-        "height": "30px",
-        "width": "100px",
+        "height": "40px",
+        "width": "50%",
         "border-radius": "5px",
         "background-color": "#6681a5",
         "color": "#FFF",
-        "float": "right",
-        "margin-right": "20px",
-        "margin-top": "10px",
+        "float": "left",
+        "margin-left": "10px",
         "cursor": "pointer"
     },
     "okIconNode": {
-        "height": "30px",
+        "height": "40px",
         "width": "40px",
         "float": "left",
         "background": "url("+"/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
-        "font-size": "14px",
+        "font-size": "16px",
         "margin-left": "40px",
-        "line-height": "28px"
+        "margin-right": "40px",
+        "line-height": "40px",
+        "text-align": "center"
     },
 
     "cancelButton": {
-        "height": "28px",
-        "width": "78px",
+        "height": "40px",
+        "width": "40%",
         "border": "1px solid #999",
         "border-radius": "5px",
         "background-color": "#fff",
         "color": "#999",
         "float": "right",
-        "margin-right": "20px",
-        "margin-top": "10px",
+        "margin-right": "10px",
         "cursor": "pointer"
     },
     "cancelIconNode": {
-        "height": "28px",
+        "height": "40px",
         "width": "33px",
         "float": "left",
         "background": "url("+"/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
-        "font-size": "14px",
+        "font-size": "16px",
         "margin-left": "33px",
-        "line-height": "26px"
+        "margin-right": "33px",
+        "line-height": "40px",
+        "text-align": "center"
     },
     "inputTextarea": {
         "font-family": "微软雅黑",
@@ -155,13 +158,13 @@
 
     "inputOpinionHandwritingAction": {
         "float": "right",
-        "border": "1px solid #6681a5",
+        "overflow": "hidden",
+        "border": "1px solid #dddddd",
         "border-radius": "3px",
         "cursor": "pointer",
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
         "background": "url("+"/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
@@ -183,6 +186,7 @@
     },
 
     "inputOpinionAudioRecordAction": {
+        "display": "none",
         "float": "right",
         "border": "1px solid #6681a5",
         "border-radius": "3px",
@@ -190,7 +194,6 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
         "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     }
 

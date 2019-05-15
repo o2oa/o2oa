@@ -92,6 +92,10 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         this.valueNumberInput = inputs[5];
         this.valueDatetimeInput = inputs[6];
         this.valueBooleanInput = selects[3];
+        this.valueDateInput = inputs[7];
+        this.valueTimeInput = inputs[8];
+
+        this.datatypeInput.addEvent("change")
 
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
@@ -102,6 +106,18 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 "onComplate": function(){
                     this.node.getElement("#"+id+"viewFilterDateFormulaSelector").getElements("input").set("checked", false);
                 }.bind(this)
+            });
+            new MWF.widget.Calendar(this.valueDateInput, {
+                "style": "xform",
+                "isTime": false,
+                "target": this.app.content,
+                "format": "%Y-%m-%d"
+            });
+            new MWF.widget.Calendar(this.valueTimeInput, {
+                "style": "xform",
+                "timeOnly": true,
+                "target": this.app.content,
+                "format": "%H:%M:%S"
             });
         }.bind(this));
 
@@ -123,6 +139,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.valueTextInput2 = inputs[0] || null;
             this.valueNumberInput2 = inputs[1] || null;
             this.valueDatetimeInput2 = inputs[2] || null;
+            this.valueDateInput2 = inputs[3] || null;
+            this.valueTimeInput2 = inputs[4] || null;
             this.valueBooleanInput2 = div.getElement("select") || null;
 
             MWF.require("MWF.widget.Calendar", function(){
@@ -134,6 +152,18 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                     "onComplate": function(){
                         this.node.getElement("#"+id+"viewFilterDateFormulaSelector2").getElements("input").set("checked", false);
                     }.bind(this)
+                });
+                new MWF.widget.Calendar(this.valueDateInput2, {
+                    "style": "xform",
+                    "isTime": false,
+                    "target": this.app.content,
+                    "format": "%Y-%m-%d"
+                });
+                new MWF.widget.Calendar(this.valueTimeInput2, {
+                    "style": "xform",
+                    "timeOnly": true,
+                    "target": this.app.content,
+                    "format": "%H:%M:%S"
                 });
             }.bind(this));
 
@@ -152,10 +182,14 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 this.valueTextInput.setStyle("display", "block");
                 this.valueNumberInput.setStyle("display", "none");
                 this.valueDatetimeInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
                 this.valueBooleanInput.setStyle("display", "none");
                 if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "block");
                 if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
                 if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
                 if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
                 break;
             case "numberValue":
@@ -163,19 +197,56 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 this.valueNumberInput.setStyle("display", "block");
                 this.valueDatetimeInput.setStyle("display", "none");
                 this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
                 if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
                 if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "block");
                 if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
                 if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
                 break;
             case "datetimeValue":
+            case "dateTimeValue":
                 this.valueTextInput.setStyle("display", "none");
                 this.valueNumberInput.setStyle("display", "none");
                 this.valueDatetimeInput.setStyle("display", "block");
                 this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
                 if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
                 if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
                 if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "block");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "dateValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "block");
+                this.valueTimeInput.setStyle("display", "none");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "block");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "timeValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "block");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "block");
                 if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
                 break;
             case "booleanValue":
@@ -186,6 +257,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
                 if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
                 if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
                 if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "block");
                 break;
         }
@@ -321,17 +394,27 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         var value2 = "";
         switch (formatType){
             case "textValue":
-                value = this.valueTextInput.get("value");
-                value2 = (this.valueTextInput2) ? this.valueTextInput2.get("value") : "";
+                value = this.valueTextInput.get("value") || "";
+                value2 = (this.valueTextInput2) ? (this.valueTextInput2.get("value") || "") : "";
                 break;
             case "numberValue":
                 value = this.valueNumberInput.get("value").toFloat();
                 value2 = (this.valueNumberInput2) ? this.valueNumberInput2.get("value").toFloat() : "";
                 break;
             case "datetimeValue":
-                value = this.valueDatetimeInput.get("value");
-                value2 = (this.valueDatetimeInput2) ? this.valueDatetimeInput2.get("value") : "";
+            case "dateTimeValue":
+                value = this.valueDatetimeInput.get("value") || "";
+                value2 = (this.valueDatetimeInput2) ? (this.valueDatetimeInput2.get("value") || "") : "";
                 break;
+            case "dateValue":
+                value = this.valueDateInput.get("value") || "";
+                value2 = (this.valueDateInput2) ? (this.valueDateInput2.get("value") || "") : "";
+                break;
+            case "timeValue":
+                value = this.valueTimeInput.get("value") || "";
+                value2 = (this.valueTimeInput2) ? (this.valueTimeInput2.get("value") || "") : "";
+                break;
+
             case "booleanValue":
                 value = this.valueBooleanInput.options[this.valueBooleanInput.selectedIndex].value;
                 value2 = (this.valueBooleanInput2) ? this.valueBooleanInput2.options[this.valueBooleanInput.selectedIndex].value : "";
@@ -354,8 +437,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             "type": type,
             "comparison": comparison,
             "formatType": formatType,
-            "value": (value || ""),
-            "otherValue": (value2 || ""),
+            "value": value,
+            "otherValue": value2,
             "code": this.scriptData
         }
     },
@@ -394,8 +477,17 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 if (this.valueNumberInput2) this.valueNumberInput2.set("value", data.otherValue);
                 break;
             case "datetimeValue":
+            case "dateTimeValue":
                 this.valueDatetimeInput.set("value", data.value);
                 if (this.valueDatetimeInput2) this.valueDatetimeInput2.set("value", data.otherValue);
+                break;
+            case "dateValue":
+                this.valueDateInput.set("value", data.value);
+                if (this.valueDateInput2) this.valueDateInput2.set("value", data.otherValue);
+                break;
+            case "timeValue":
+                this.valueTimeInput.set("value", data.value);
+                if (this.valueTimeInput2) this.valueTimeInput2.set("value", data.otherValue);
                 break;
             case "booleanValue":
 
@@ -480,7 +572,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
     },
     getText: function(){
         var lp = this.app.lp.filter;
-        return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " \""+(this.data.value || "")+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+        return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " \""+this.data.value+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
     },
     reload: function(data){
         this.data = data;

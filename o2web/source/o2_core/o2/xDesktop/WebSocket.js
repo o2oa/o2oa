@@ -6,17 +6,43 @@ MWF.xDesktop.WebSocket = new Class({
     Implements: [Options, Events],
     options: {},
     initialize: function(options){
-        var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
+        debugger;
+        var addressObj = layout.desktop.serviceAddressList["x_message_assemble_communicate"];
         this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+
+        // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
+        // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
         //var ws = "ws://hbxa01.bf.ctc.com/x_collaboration_assemble_websocket/ws/collaboration";
 
+        //使用轮询方式处理消息.....
+        // this.webSocket = {
+        //     "readyState":"1",
+        //     "close": function(){},
+        //     "open": function(){}
+        // };
+        // window.setInterval(function(){
+        //     o2.Actions.get("")
+        // }, 10000);
+
+        ///*暂时不启用WebSocket了------------
         this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
 
-        this.webSocket = new WebSocket(this.ws);
+        try{
+            this.webSocket = new WebSocket(this.ws);
+        }catch(e){
+            //WebSocket.close();
+            //this.webSocket = new WebSocket(this.ws);
+            if (this.webSocket){
+                this.close();
+                this.webSocket = new WebSocket(this.ws);
+            }
+        }
+        //this.webSocket = new WebSocket(this.ws);
         this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
         this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
         this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
         this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
+        //---------------------------------*/
     },
     onOpen: function(e){
        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
@@ -25,6 +51,7 @@ MWF.xDesktop.WebSocket = new Class({
        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
     onMessage: function(e){
+        debugger;
         if (e.data){
             try{
                 var data = JSON.decode(e.data);
@@ -40,30 +67,44 @@ MWF.xDesktop.WebSocket = new Class({
                     default:
                         switch (data.type){
                             case "task":
+                            case "task_create":
+                            case "task_urge":
+                            case "task_expire":
+                            case "task_press":
                                 this.receiveTaskMessage(data);
                                 break;
                             case "read":
+                            case "read_create":
                                 this.receiveReadMessage(data);
                                 break;
                             case "review":
                                 this.receiveReviewMessage(data);
                                 break;
                             case "fileEditor":
+                            case "attachment_editor":
+                            case "attachment_editorCancel":
+                            case "attachment_editorModify":
                                 this.receiveFileEditorMessage(data);
                                 break;
                             case "fileShare":
+                            case "attachment_share":
+                            case "attachment_shareCancel":
                                 this.receiveFileShareMessage(data);
                                 break;
                             case "meetingInvite":
+                            case "meeting_invite":
                                 this.receiveMeetingInviteMessage(data);
                                 break;
                             case "meetingCancel":
+                            case "meeting_cancel":
                                 this.receiveMeetingCancelMessage(data);
                                 break;
                             case "meetingAccept":
+                            case "meeting_accept":
                                 this.receiveMeetingAcceptMessage(data);
                                 break;
                             case "meetingReject":
+                            case "meeting_reject":
                                 this.receiveMeetingRejectMessage(data);
                                 break;
                             case "attendanceAppealInvite":
@@ -75,6 +116,12 @@ MWF.xDesktop.WebSocket = new Class({
                             case "attendanceAppealReject":
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
+                            case "calendar_alarm":
+                                this.receiveAttendanceAppealRejectMessage(data);
+                                break;
+                            case "custom_create":
+                                this.receiveCustomMessage(data);
+                                break;
                             default:
                         }
                 }
@@ -82,21 +129,22 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     onError: function(e){
-
+        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
     },
     close: function(){
-        this.webSocket.close();
+        if (this.webSocket) this.webSocket.close();
+        //WebSocket.close();
     },
     send: function(msg){
-        if (!this.webSocket || this.webSocket.readyState != 1) {
-            this.initialize();
-        }
-        try{
-            this.webSocket.send(JSON.encode(msg));
-        }catch(e){
-            this.initialize();
-            this.webSocket.send(JSON.encode(msg));
-        }
+        // if (!this.webSocket || this.webSocket.readyState != 1) {
+        //     this.initialize();
+        // }
+        // try{
+        //     this.webSocket.send(JSON.encode(msg));
+        // }catch(e){
+        //     this.initialize();
+        //     this.webSocket.send(JSON.encode(msg));
+        // }
 
     },
 
@@ -104,85 +152,76 @@ MWF.xDesktop.WebSocket = new Class({
         if (layout.desktop.widgets["IMIMWidget"]) layout.desktop.widgets["IMIMWidget"].receiveChatMessage(data);
         //if (layout.desktop.top.userPanel) layout.desktop.top.userPanel.receiveChatMessage(data);
     },
+    openWork: function(id, e){
+        o2.Actions.get("x_processplatform_assemble_surface").getWorkInfor(id, function(){
+            var options = {"workId": id, "appId": "process.Work"+id};
+            layout.desktop.openApplication(e, "process.Work", options);
+        }.bind(this), function(){
+            layout.desktop.openApplication(e, "process.TaskCenter", null, {
+                "status": {
+                    "navi": "task"
+                }
+            });
+        }.bind(this));
+    },
     receiveTaskMessage: function(data){
-        //data.task
-        var action = new MWF.xDesktop.Actions.RestActions("/o2_core/o2/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
-        action.invoke({
-            "name": "getTask",
-            "parameter": {"id": data.task},
-            "success": function(json){
-                var task = json.data;
-                var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
-                content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+task.applicationName+"</font>;  "+
-                "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+task.processName+"</font>";
-                var msg = {
-                    "subject": MWF.LP.desktop.messsage.taskMessage,
-                    "content": content
-                };
-                var messageItem = layout.desktop.message.addMessage(msg);
-                var tooltipItem = layout.desktop.message.addTooltip(msg);
-                tooltipItem.contentNode.addEvent("click", function(e){
-                    layout.desktop.message.hide();
-                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                        "status": {
-                            "navi": "task"
-                        }
-                    });
-                });
-
-                messageItem.contentNode.addEvent("click", function(e){
-                    layout.desktop.message.addUnread(-1);
-                    layout.desktop.message.hide();
-                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                        "status": {
-                            "navi": "task"
-                        }
-                    });
-                });
-            }.bind(this),
-            failure: function(){}
-        });
+        var task = data.body;
+        //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
+        var content = data.title;
+        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+task.applicationName+"</font>;  "+
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+task.processName+"</font>";
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.taskMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            this.openWork(task.work,e);
+        }.bind(this));
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            this.openWork(task.work,e);
+        }.bind(this));
     },
     receiveReadMessage: function(data){
-        var action = new MWF.xDesktop.Actions.RestActions("/o2_core/o2/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
-        action.invoke({
-            "name": "getRead",
-            "parameter": {"id": data.read},
-            "success": function(json){
-                var read = json.data;
-                var content = MWF.LP.desktop.messsage.receiveRead+"《"+read.title+"》. ";
-                content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+read.applicationName+"</font>;  "+
-                "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+read.processName+"</font>";
-                var msg = {
-                    "subject": MWF.LP.desktop.messsage.readMessage,
-                    "content": content
-                };
-                var messageItem = layout.desktop.message.addMessage(msg);
-                var tooltipItem = layout.desktop.message.addTooltip(msg);
-                tooltipItem.contentNode.addEvent("click", function(e){
-                    layout.desktop.message.hide();
-                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                        "status": {
-                            "navi": "read"
-                        }
-                    });
-                });
+        var read = data.body;
+        //var content = MWF.LP.desktop.messsage.receiveRead+"《"+read.title+"》. ";
+        var content = data.title;
+        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+read.applicationName+"</font>;  "+
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+read.processName+"</font>";
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.readMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            this.openWork(read.work,e);
+        }.bind(this));
 
-                messageItem.contentNode.addEvent("click", function(e){
-                    layout.desktop.message.addUnread(-1);
-                    layout.desktop.message.hide();
-                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                        "status": {
-                            "navi": "read"
-                        }
-                    });
-                });
-            }.bind(this),
-            failure: function(){}
-        });
-
-
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            this.openWork(read.work,e);
+        }.bind(this));
     },
+    receiveCustomMessage: function(data){
+        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"</font>"+data.body;
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.readMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+    },
+
+
+
+
     receiveReviewMessage: function(data){
         var content = MWF.LP.desktop.messsage.receiveReview+"《"+data.title+"》. ";
         content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+data.applicationName+"</font>;  "+

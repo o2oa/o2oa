@@ -344,6 +344,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 //			this.morph.start({"opacity": 0}).chain(function(){
 				this.container.setStyle("display", "none");
 				if (this.iframe) this.iframe.destroy();
+				debugger;
+
             if (layout.desktop.offices){
                 Object.each(layout.desktop.offices, function(office){
                     office.show();

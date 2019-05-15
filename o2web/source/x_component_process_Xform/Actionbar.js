@@ -32,10 +32,10 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                                 "id": "action_readed",
                                 "control": "allowReadProcessing",
                                 "condition": "",
-                                "read": false
+                                "read": true
                             }
                         ];
-                        this.form.businessData.control.allowReflow =
+                        //this.form.businessData.control.allowReflow =
 
                         //this.json.defaultTools.push(o);
                         this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
@@ -129,13 +129,14 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
         }
         if (!noCondition) if (tool.condition){
             var hideFlag = this.form.Macro.exec(tool.condition, this);
-            flag = !hideFlag;
+            flag = flag && (!hideFlag);
         }
         if (tool.id == "action_processWork"){
             if (!this.form.businessData.task){
                 flag = false;
             }
         }
+        if (tool.id == "action_rollback") tool.read = true;
         if (readonly) if (!tool.read) flag = false;
         if (flag){
             var actionNode = new Element("div", {
@@ -193,6 +194,10 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     },
     rollback: function(e){
         this.form.rollback(e);
+    },
+    pressWork: function(e){
+        this.form.pressWork(e);
     }
+
 
 }); 

@@ -38,15 +38,17 @@ o2.widget.Arraylist = new Class({
 		this.titleNode = new Element("div", {
 			"styles": this.css.titleNode
 		}).inject(this.container);
-		
-		this.titleActionNode = new Element("div", {
-			"styles": this.css.titleActionNode,
-			"events": {
-				"click": function(e){
-					this.addNewItem(null, "top");
-				}.bind(this)
-			}
-		}).inject(this.titleNode);
+
+		if (this.options.isAdd){
+            this.titleActionNode = new Element("div", {
+                "styles": this.css.titleActionNode,
+                "events": {
+                    "click": function(e){
+                        this.addNewItem(null, "top");
+                    }.bind(this)
+                }
+            }).inject(this.titleNode);
+		}
 		
 		this.titleTextNode = new Element("div", {
 			"styles": this.css.titleTextNode,
@@ -151,7 +153,7 @@ o2.widget.Arraylist.Item = new Class({
 				e.target.setStyles(this.arraylist.css.contentItemNode);
 			}.bind(this),
 			"click": function(e){
-				this.arraylist.addNewItem(this);
+				if (this.options.isAdd) this.arraylist.addNewItem(this);
 			}.bind(this)
 		});
 		
@@ -251,7 +253,7 @@ o2.widget.Arraylist.Item = new Class({
 		
 		if (addNewItem){
 			this.arraylist.notAddItem = false;
-			this.arraylist.addNewItem(this);
+            if (this.arraylist.options.isAdd) this.arraylist.addNewItem(this);
 		}else{
 			this.arraylist.notAddItem = true;
 		}
