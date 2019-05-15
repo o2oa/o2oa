@@ -26,10 +26,6 @@
 		</dependency>
 		<dependency>
 			<groupId>o2oa</groupId>
-			<artifactId>x_collaboration_core_message</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>o2oa</groupId>
 			<artifactId>x_file_core_entity</artifactId>
 		</dependency>
 	</dependencies>
