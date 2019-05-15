@@ -199,7 +199,7 @@ o2.widget.Maplist = new Class({
 				e.target.setStyles(this.css.contentStartNode);
 			}.bind(this),
 			"click": function(e){
-				this.addNewItem(null, "top");
+				if (this.options.isAdd) this.addNewItem(null, "top");
 			}.bind(this)
 		});
 		
@@ -219,7 +219,7 @@ o2.widget.Maplist = new Class({
 				e.target.setStyles(this.css.contentEndNode);
 			}.bind(this),
 			"click": function(e){
-				this.addNewItem(null, "bottom");
+                if (this.options.isAdd) this.addNewItem(null, "bottom");
 			}.bind(this)
 		});
 		this.loadContent(obj);
@@ -325,7 +325,7 @@ o2.widget.Maplist.Item = new Class({
 				e.target.setStyles(this.maplist.css.contentItemNode);
 			}.bind(this),
 			"click": function(e){
-				this.maplist.addNewItem(this);
+                if (this.maplist.options.isAdd) this.maplist.addNewItem(this);
 			}.bind(this)
 		});
 		
@@ -442,7 +442,7 @@ o2.widget.Maplist.Item = new Class({
 		
 		if (addNewItem){
 			this.maplist.notAddItem = false;
-			this.maplist.addNewItem(this);
+            if (this.maplist.options.isAdd) this.maplist.addNewItem(this);
 		}else{
 			this.maplist.notAddItem = true;
 		}
@@ -508,7 +508,7 @@ o2.widget.Maplist.Style.Item = new Class({
                 e.target.setStyles(this.maplist.css.contentItemNode);
             }.bind(this),
             "click": function(e){
-                this.maplist.addNewItem(this);
+                if (this.maplist.options.isAdd) this.maplist.addNewItem(this);
             }.bind(this)
         });
 
@@ -707,7 +707,7 @@ o2.widget.Maplist.Style.Item = new Class({
 
         if (addNewItem){
             this.maplist.notAddItem = false;
-            this.maplist.addNewItem(this);
+            if (this.maplist.options.isAdd) this.maplist.addNewItem(this);
         }else{
             this.maplist.notAddItem = true;
         }

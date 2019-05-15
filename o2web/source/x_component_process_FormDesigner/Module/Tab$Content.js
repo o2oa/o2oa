@@ -6,7 +6,23 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 	options: {
 		"style": "default",
 		"propertyPath": "/x_component_process_FormDesigner/Module/Tab$Content/tab$Content.html",
-		"actions": []
+		"actions": [],
+		"injectActions" : [
+			{
+				"name" : "top",
+				"styles" : "injectActionTop",
+				"event" : "click",
+				"action" : "injectTop",
+				"title": MWF.APPFD.LP.formAction["insertTop"]
+			},
+			{
+				"name" : "bottom",
+				"styles" : "injectActionBottom",
+				"event" : "click",
+				"action" : "injectBottom",
+				"title": MWF.APPFD.LP.formAction["insertBottom"]
+			}
+		]
 	},
 	
 	initialize: function(tab, page, options){

@@ -665,11 +665,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var addressObj = layout.desktop.serviceAddressList[contextRoot];
         var address = "";
         if (addressObj){
-            address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
-            address = "http://"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+            address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
         }
         return address;
     },
@@ -1324,11 +1324,13 @@ debugger;
 				tab.load();
 				var tabPages = [];
 				tabNodes.each(function(node){
-					var page = tab.addTab(node, node.get("title"), false);
-					tabPages.push(page);
-					page.contentScrollNode = new Element("div", {"styles": {"height": "100%", "overflow": "hidden"}}).inject(page.contentNodeArea);
-					node.inject(page.contentScrollNode);
-					this.setScrollBar(page.contentScrollNode, "small", null, null);
+				    if (node.getStyle("display")!="none"){
+                        var page = tab.addTab(node, node.get("title"), false);
+                        tabPages.push(page);
+                        page.contentScrollNode = new Element("div", {"styles": {"height": "100%", "overflow": "hidden"}}).inject(page.contentNodeArea);
+                        node.inject(page.contentScrollNode);
+                        this.setScrollBar(page.contentScrollNode, "small", null, null);
+                    }
 				}.bind(this));
 				tabPages[0].showTab();
 				

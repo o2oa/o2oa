@@ -77,7 +77,7 @@
     "listViewItemIcon": {
         "height": "24px",
         "width": "26px",
-        "background": "url("+"/x_component_query_DictionaryDesigner/$Main/default/dictionary.png) no-repeat center center",
+        "background": "url("+"/x_component_query_StatDesigner/$Main/default/stat.png) no-repeat center center",
         "float": "left"
     },
     "listViewItemText": {

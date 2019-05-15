@@ -228,7 +228,7 @@ o2.widget.Dialog = o2.DL = new Class({
 				var button = new Element("input", {
 					"type": "button",
 					"value": bt.text,
-					"styles": this.css.button,
+					"styles": bt.styles || this.css.button,
 					"events": {
 						"click": function(e){bt.action.call(this, this, e)}.bind(this)
 					}
@@ -358,8 +358,25 @@ o2.widget.Dialog = o2.DL = new Class({
 	},
 	reCenter: function(){
 		var size = this.node.getSize();
-		var container = this.options.container || $(document.body);
+		var container = $(document.body);
+		if (layout.desktop.currentApp){
+			container = layout.desktop.currentApp.content;
+		}else{
+			if (this.options.container){
+				if (this.options.container.getSize().y<$(document.body).getSize().y){
+					container = this.options.container;
+				}
+			}
+		}
+
+		// if (this.options.container){
+		// 	if (this.options.container.getSize().y<$(document.body).getSize().y){
+		// 		container = this.options.container;
+		// 	}
+		// }
+
         var p = o2.getCenter(size, container, container);
+        if (p.y<0) p.y = 0;
         this.options.top = p.y;
         this.options.left = p.x;
         this.css.to.top = this.options.top+"px";

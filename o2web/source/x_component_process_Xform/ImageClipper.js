@@ -3,14 +3,13 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Module,
     initialize: function(node, json, form, options){
-
         this.node = $(node);
         this.node.store("module", this);
         this.json = json;
         this.form = form;
         this.field = true;
     },
-	_loadUserInterface: function(){
+    _loadUserInterface: function(){
         this.field = true;
         this.node.empty();
         var data = this._getBusinessData();
@@ -18,7 +17,11 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
             var img = new Element("img",{
                 src : MWF.xDesktop.getImageSrc( data )
             });
-            if( this.json.clipperType == "size" ){
+            if (layout.mobile || COMMON.Browser.Platform.isMobile) {
+                img.setStyles({
+                    "max-width": "90%"
+                })
+            }else if( this.json.clipperType == "size" ){
                 var width = this.json.imageWidth;
                 var height = this.json.imageHeight;
                 if( width && height ){
@@ -30,7 +33,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
             }
             img.inject( this.node );
         }
-        if( this.readonly )return;
+        if( this.readonly || this.json.isReadonly )return;
 
         var divBottom = new Element("div").inject( this.node );
         var button = new Element("button").inject(divBottom);
@@ -43,12 +46,36 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
         button.addEvent("click", function(){
             this.validationMode();
             var d = this._getBusinessData();
-            this.selectImage( d, function(data){
-                this.setData( data ? data.id : "" );
-                this.validation();
-            }.bind(this));
+            if (layout.mobile){
+                o2.imageClipperCallback = function( str ){
+                    var data = JSON.parse( str );
+                    this.setData( data ? data.fileId : "" );
+                    this.validation();
+                    o2.imageClipperCallback = null;
+                }.bind(this);
+                var jsonString = JSON.stringify({
+                    "mwfId" : this.json.id,
+                    "callback" : "o2.imageClipperCallback",
+                    "referencetype":"processPlatformJob",
+                    "reference": this.form.businessData.work.job
+                });
+                if( window.o2android && window.o2android.uploadImage2FileStorage ){
+                    window.o2android.uploadImage2FileStorage(jsonString)
+                }else{
+                    window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
+                }
+            }else{
+                this.selectImage( d, function(data){
+                    this.setData( data ? data.id : "" );
+                    this.validation();
+                }.bind(this));
+            }
         }.bind(this));
 	},
+    getTextData : function(){
+        var value = this._getBusinessData() || "";
+        return {"value": [value], "text": [value]};
+    },
     getData: function( data ){
         return this._getBusinessData() || "";
     },
@@ -60,13 +87,17 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
         var img = new Element("img",{
             src : MWF.xDesktop.getImageSrc( data )
         }).inject( this.node, "top" );
-        if( this.json.clipperType == "size" ){
+        if (layout.mobile || COMMON.Browser.Platform.isMobile) {
+            img.setStyles({
+                "max-width": "90%"
+            })
+        }else if( this.json.clipperType == "size" ){
             var width = this.json.imageWidth;
             var height = this.json.imageHeight;
-            if( width && height ){
+            if (width && height) {
                 img.setStyles({
-                    width : width+"px",
-                    height : height+"px"
+                    width: width + "px",
+                    height: height + "px"
                 })
             }
         }

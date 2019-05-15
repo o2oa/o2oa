@@ -34,6 +34,7 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Tree", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Log", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Monitor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Iframe", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Documenteditor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Htmleditor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Office", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Attachment", null, false);

@@ -262,7 +262,7 @@ var MForm = new Class({
                 return;
             var text = obj.text + (self.options.hasColon ? "：" : "");
             if (self.options.showNotEmptyFlag && obj.notEmpty) {
-                el.set("html","<span style='color:red;'>*</span>" + text)
+                el.set("html", text + "<span style='color:red;'>*</span>")
             } else {
                 el.set("text",text);
             }

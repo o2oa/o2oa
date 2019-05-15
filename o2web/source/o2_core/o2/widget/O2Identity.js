@@ -431,6 +431,21 @@ o2.widget.O2QueryStat = new Class({
         }
     }
 });
+o2.widget.O2QueryTable = new Class({
+    Extends: o2.widget.O2View,
+    getPersonData: function(){
+        if (!this.data.query){
+            var data = null;
+            o2.Actions.get("x_query_assemble_surface").getTableById(this.data.id, function(json){
+                data = json.data
+            }, null, false);
+            this.data = data;
+            return data;
+        }else{
+            return this.data;
+        }
+    }
+});
 o2.widget.O2FormField = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){

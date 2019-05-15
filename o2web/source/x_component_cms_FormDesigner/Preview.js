@@ -4,12 +4,14 @@ MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "previewPath": COMMON.contentPath+"/cmspreview.html",
+        "previewPath": "/x_desktop/cmspreview.html",
         "size": null
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
+        var href = window.location.href;
+        if (href.indexOf("debugger")!=-1) this.options.previewPath = "/x_desktop/preview.html?debugger";
 
         this.path = "/x_component_process_FormDesigner/$Preview/";
         this.cssPath = "/x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";

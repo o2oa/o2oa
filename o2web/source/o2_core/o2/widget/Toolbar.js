@@ -193,29 +193,33 @@ o2.widget.ToolbarButton = new Class({
 	},
 	setDisable: function(flag){
 		if (flag){
-			this.options.disable = true;
-			this.node.set("styles", this.toolbar.css.buttonDisable);
-			if (this.picNode){
-				this.picNode.set("styles", this.toolbar.css.buttonImgDivDisable);
-				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				var ext = src.substr(src.lastIndexOf("."), src.length);
-				src = src.substr(0, src.lastIndexOf("."));
-				src = src+"_gray"+ext;
-				img.set("src", src);
+			if (!this.options.disable){
+                this.options.disable = true;
+                this.node.set("styles", this.toolbar.css.buttonDisable);
+                if (this.picNode){
+                    this.picNode.set("styles", this.toolbar.css.buttonImgDivDisable);
+                    var img = this.picNode.getElement("img");
+                    var src = img.get("src");
+                    var ext = src.substr(src.lastIndexOf("."), src.length);
+                    src = src.substr(0, src.lastIndexOf("."));
+                    src = src+"_gray"+ext;
+                    img.set("src", src);
+                }
+                if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDivDisable);
 			}
-			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDivDisable);
 		}else{
-            this.options.disable = false;
-			this.node.set("styles", this.toolbar.css.button);
-			if (this.picNode){
-				this.picNode.set("styles", this.toolbar.css.buttonImgDiv);
-				var img = this.picNode.getElement("img");
-				var src = img.get("src");
-				src = src.replace("_gray", "");
-				img.set("src", src);
-			}
-			if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDiv);
+            if (this.options.disable){
+                this.options.disable = false;
+                this.node.set("styles", this.toolbar.css.button);
+                if (this.picNode){
+                    this.picNode.set("styles", this.toolbar.css.buttonImgDiv);
+                    var img = this.picNode.getElement("img");
+                    var src = img.get("src");
+                    src = src.replace("_gray", "");
+                    img.set("src", src);
+                }
+                if (this.textNode) this.textNode.set("styles", this.toolbar.css.buttonTextDiv);
+            }
 		}
 	},
 	_createImageNode: function(src){
@@ -265,6 +269,7 @@ o2.widget.ToolbarButton = new Class({
 		if (this.modifiyStyle) if (!this.options.disable){this.node.set("styles", this.toolbar.css.buttonUp);};
 	},
 	_buttonClick: function(e){
+		debugger;
 		if (!this.options.disable){
 			if (this.options.action){
 				if (typeOf(this.options.action)==="string"){

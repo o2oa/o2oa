@@ -29,7 +29,8 @@ MWF.xApplication.Profile.Main = new Class({
         this.action.getPerson(function(json){
             this.personData = json.data;
             this.personData.personIcon = this.action.getPersonIcon();
-            this.content.loadHtml(this.path+this.options.style+"/view.html", {"bind": {"data": this.personData, "lp": this.lp}}, function(){
+
+            this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser)? "viewBrowser": "view")+".html", {"bind": {"data": this.personData, "lp": this.lp}}, function(){
                 this.loadContent()
             }.bind(this));
         }.bind(this));
@@ -42,6 +43,7 @@ MWF.xApplication.Profile.Main = new Class({
 
     loadContent: function(){
         var pageConfigNodes = this.content.getElements(".o2_profile_configNode");
+
         this.contentNode = this.content.getElement(".o2_profile_contentNode");
         MWF.require("MWF.widget.Tab", function(){
             this.tab = new MWF.widget.Tab(this.contentNode, {"style": "profile"});
@@ -58,7 +60,12 @@ MWF.xApplication.Profile.Main = new Class({
             }
 
             this.loadInforConfigActions();
-            this.loadLayoutConfigActions();
+            if (!this.inBrowser){
+                this.loadLayoutConfigActions();
+            }else{
+
+            }
+
             this.loadIdeaConfigActions();
             this.loadPasswordConfigActions();
             this.loadSSOConfigAction();
@@ -149,7 +156,8 @@ MWF.xApplication.Profile.Main = new Class({
     },
 
     loadIdeaConfigActions: function(){
-        this.ideasArea = this.tab.pages[2].contentNode.getElement("textarea");
+        var i = (this.inBrowser)? 1 : 2;
+        this.ideasArea = this.tab.pages[i].contentNode.getElement("textarea");
         this.ideasSaveAction = this.ideasArea.getNext();
         this.ideasSaveDefaultAction = this.ideasSaveAction.getNext() || null;
 
@@ -185,11 +193,12 @@ MWF.xApplication.Profile.Main = new Class({
     },
 
     loadPasswordConfigActions: function(){
-        var inputs = this.tab.pages[3].contentNode.getElements("input");
+        var i = (this.inBrowser)? 2 : 3;
+        var inputs = this.tab.pages[i].contentNode.getElements("input");
         this.oldPasswordInputNode = inputs[0];
         this.passwordInputNode = inputs[1];
         this.morePasswordInputNode = inputs[2];
-        this.savePasswordAction = this.tab.pages[3].contentNode.getElement(".o2_profile_savePasswordAction");
+        this.savePasswordAction = this.tab.pages[i].contentNode.getElement(".o2_profile_savePasswordAction");
 
         this.oldPasswordInputNode.addEvents({
             "blur": function(){this.removeClass("o2_profile_inforContentInput_focus");},
@@ -209,7 +218,8 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this));
     },
     loadSSOConfigAction: function(){
-        this.ssoConfigAreaNode = this.tab.pages[4].contentNode.getElement(".o2_profile_ssoConfigArea");
+        var i = (this.inBrowser)? 3 : 4;
+        this.ssoConfigAreaNode = this.tab.pages[i].contentNode.getElement(".o2_profile_ssoConfigArea");
         MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
             json.data.each(function(d){
                 var node = new Element("a", {
@@ -426,7 +436,8 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this) );
     },
     checkPassowrdStrength: function(pwd){
-        var passwordStrengthNode = this.tab.pages[3].contentNode.getElement(".o2_profile_passwordStrengthArea");
+        var i = (this.inBrowser)? 2 : 3;
+        var passwordStrengthNode = this.tab.pages[i].contentNode.getElement(".o2_profile_passwordStrengthArea");
         var nodes = passwordStrengthNode.getElements(".o2_profile_passwordStrengthColor");
         var lowColorNode = nodes[0];
         var middleColorNode = nodes[1];

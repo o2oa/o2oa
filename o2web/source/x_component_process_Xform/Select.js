@@ -103,16 +103,18 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 	setOptions: function(){
 		var optionItems = this.getOptions();
         if (!optionItems) optionItems = [];
-		optionItems.each(function(item){
-			var tmps = item.split("|");
-			var text = tmps[0];
-			var value = tmps[1] || text;
+        if (o2.typeOf(optionItems)==="array"){
+			optionItems.each(function(item){
+				var tmps = item.split("|");
+				var text = tmps[0];
+				var value = tmps[1] || text;
 
-			var option = new Element("option", {
-				"value": value,
-				"text": text
-			}).inject(this.node);
-		}.bind(this));
+				var option = new Element("option", {
+					"value": value,
+					"text": text
+				}).inject(this.node);
+			}.bind(this));
+		}
 	},
 	addOption: function(text, value){
         var option = new Element("option", {

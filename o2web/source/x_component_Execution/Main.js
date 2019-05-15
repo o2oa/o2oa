@@ -31,9 +31,7 @@ MWF.xApplication.Execution.Main = new Class({
 		this.lp = MWF.xApplication.Execution.LP;
 	},
 	loadApplication: function(callback){
-
 		this.user = layout.desktop.session.user.name;
-
 		this.distinguishedName = layout.desktop.session.user.distinguishedName;
 		//this.loginUser = layout.desktop.session.user.name;
 		this.userGender = layout.desktop.session.user.genderType;

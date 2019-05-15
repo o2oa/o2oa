@@ -1040,7 +1040,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent'>"+(this.data.description || "")+"</td>";
         if (this.data.control.allowEdit){
             html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent'></td>" +
-                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'>"+this.data.description+"</td></tr>";
+                "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'></td></tr>";
             html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent'>"+(this.data.orderNumber || "")+"</td></tr>";
         }
 

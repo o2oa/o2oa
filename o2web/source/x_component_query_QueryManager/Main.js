@@ -196,7 +196,7 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.statementConfigurator.app = this;
             this.statementConfigurator.load();
         }.bind(this));
-    },
+    }
 });
 
 MWF.xApplication.query.QueryManager.Menu = new Class({

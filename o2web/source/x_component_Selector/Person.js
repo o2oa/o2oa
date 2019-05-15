@@ -92,6 +92,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setMaskResize: function(){
         var size = this.container.getSize();
+        this.mask.resize();
         this.maskInterval = window.setInterval(function(){
             var resize = this.container.getSize();
             if ((size.x!==resize.x) || (size.y!==resize.y)){
@@ -103,9 +104,10 @@ MWF.xApplication.Selector.Person = new Class({
         }.bind(this), 66);
     },
     loadPc: function(){
+        debugger;
         this.css.maskNode["z-index"] = this.options.zIndex;
         var position = this.container.getPosition(this.container.getOffsetParent());
-        this.mask= new Mask(this.container, {
+        this.mask = new Mask(this.container, {
             "destroyOnHide": true,
             "style": this.css.maskNode,
             "useIframeShim": true,
@@ -117,6 +119,18 @@ MWF.xApplication.Selector.Person = new Class({
                     "left": ""+position.x+"px"
                 });
             }
+            //
+            // "destroyOnHide": true,
+            // "style": this.css.maskNode,
+            // "useIframeShim": true,
+            // "iframeShimOptions": {"browsers": true},
+            // "onShow": function(){
+            //     this.shim.shim.setStyles({
+            //         "opacity": 0,
+            //         "top": ""+position.y+"px",
+            //         "left": ""+position.x+"px"
+            //     });
+            // }
         });
         this.mask.show();
         this.setMaskResize();
@@ -989,7 +1003,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
     },
     selected: function(){
-        if ((this.selector.options.count.toInt()===0) || (this.selector.selectedItems.length+1)<=this.selector.options.count){
+        var count = this.selector.options.maxCount || this.selector.options.count;
+        if (!count) count = 0;
+        if ((count.toInt()===0) || (this.selector.selectedItems.length+1)<=count){
             this.isSelected = true;
             this.node.setStyles(this.selector.css.selectorItem_selected);
             this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
@@ -999,7 +1015,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
         }else{
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+this.selector.options.count+"个选项", this.selector.node);
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
     },
     unSelected: function(){
