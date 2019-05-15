@@ -1,5 +1,5 @@
 var Describe = function() {
-//20180730
+	// 20180730
 }
 
 Describe.splitValue = function(str) {
@@ -38,7 +38,7 @@ Describe.doPost = function(address, m, data) {
 			xhrFields : {
 				'withCredentials' : true
 			},
-			data : ((m.contentType.indexOf('application/json') > -1) ? JSON.stringify(data) : data)
+			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
 			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
@@ -55,7 +55,7 @@ Describe.doPost = function(address, m, data) {
 			xhrFields : {
 				'withCredentials' : true
 			},
-			data : ((m.contentType.indexOf('application/json') > -1) ? JSON.stringify(data) : data)
+			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		});
 	}
 }
@@ -74,7 +74,7 @@ Describe.doPut = function(address, m, data) {
 			xhrFields : {
 				'withCredentials' : true
 			},
-			data : ((m.contentType.indexOf('application/json') > -1) ? JSON.stringify(data) : data)
+			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		}).always(function(resultJson) {
 			$('#result').html(JSON.stringify(resultJson, null, 4));
 			Describe.writeOut(m.outs, resultJson);
@@ -91,7 +91,7 @@ Describe.doPut = function(address, m, data) {
 			xhrFields : {
 				'withCredentials' : true
 			},
-			data : ((m.contentType.indexOf('application/json') > -1) ? JSON.stringify(data) : data)
+			data : ((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter) ? JSON.stringify(data) : data)
 		});
 	}
 }
@@ -269,6 +269,14 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
+								if (m.useStringParameter) {
+									txt += '<fieldset><legend>String</legend>';
+									txt += '<table><tr><td>';
+									txt += '<textarea id="string" style="height:300px; width:600px; padding:1px; border:1px #000000 solid"/>';
+									txt += '</td><td>string</td></tr>';
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
 								if (m.outs && m.outs.length > 0) {
 									txt += '<fieldset id="outs"><legend>Out</legend>';
 									txt += '<table>';
@@ -318,6 +326,8 @@ Describe.prototype = {
 												});
 											} else if (m.useJsonElementParameter) {
 												data = $.parseJSON($('#jsonElement').val());
+											} else if (m.useStringParameter) {
+												data = $('#string').val();
 											}
 											Describe.doPost(address, m, data);
 											break;
@@ -340,6 +350,8 @@ Describe.prototype = {
 												});
 											} else if (m.useJsonElementParameter) {
 												data = $.parseJSON($('#jsonElement').val());
+											} else if (m.useStringParameter) {
+												data = $('#string').val();
 											}
 											Describe.doPut(address, m, data);
 											break;

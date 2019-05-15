@@ -12,6 +12,8 @@ import com.x.organization.assemble.personal.jaxrs.password.PasswordAction;
 import com.x.organization.assemble.personal.jaxrs.person.PersonAction;
 import com.x.organization.assemble.personal.jaxrs.regist.RegistAction;
 import com.x.organization.assemble.personal.jaxrs.reset.ResetAction;
+import com.x.organization.assemble.personal.jaxrs.trust.TrustAction;
+import com.x.organization.assemble.personal.jaxrs.trustlog.TrustLogAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -24,6 +26,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(IconAction.class);
 		classes.add(DefinitionAction.class);
 		classes.add(CustomAction.class);
+		classes.add(TrustAction.class);
+		classes.add(TrustLogAction.class);
 		return classes;
 	}
 }

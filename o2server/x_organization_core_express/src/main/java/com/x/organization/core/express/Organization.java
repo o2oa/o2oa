@@ -12,6 +12,8 @@ import com.x.organization.core.express.identity.IdentityFactory;
 import com.x.organization.core.express.person.PersonFactory;
 import com.x.organization.core.express.personattribute.PersonAttributeFactory;
 import com.x.organization.core.express.role.RoleFactory;
+import com.x.organization.core.express.trust.TrustFactory;
+import com.x.organization.core.express.trustlog.TrustLogFactory;
 import com.x.organization.core.express.unit.UnitFactory;
 import com.x.organization.core.express.unitattribute.UnitAttributeFactory;
 import com.x.organization.core.express.unitduty.UnitDutyFactory;
@@ -94,6 +96,24 @@ public class Organization {
 			this.unitDuty = new UnitDutyFactory(context);
 		}
 		return unitDuty;
+	}
+
+	private TrustFactory trust;
+
+	public TrustFactory trust() throws Exception {
+		if (null == this.trust) {
+			this.trust = new TrustFactory(context);
+		}
+		return trust;
+	}
+
+	private TrustLogFactory trustLog;
+
+	public TrustLogFactory trustLog() throws Exception {
+		if (null == this.trustLog) {
+			this.trustLog = new TrustLogFactory(context);
+		}
+		return trustLog;
 	}
 
 	/** 根据个人身份获取组织 */

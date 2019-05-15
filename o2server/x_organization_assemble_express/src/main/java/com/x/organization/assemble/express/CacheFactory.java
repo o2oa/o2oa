@@ -9,6 +9,7 @@ import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.accredit.Trust;
 
 import net.sf.ehcache.Ehcache;
 
@@ -16,7 +17,7 @@ public class CacheFactory {
 
 	public static Ehcache getOrganizationCache() {
 		return ApplicationCache.instance().getCache(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class,
-				Role.class, Person.class, PersonAttribute.class, Group.class);
+				Role.class, Person.class, PersonAttribute.class, Group.class, Trust.class);
 	}
 
 	public static Ehcache getIdentityCache() {
@@ -25,6 +26,10 @@ public class CacheFactory {
 
 	public static Ehcache getUnitCache() {
 		return ApplicationCache.instance().getCache(Unit.class);
+	}
+
+	public static Ehcache getTrustCache() {
+		return ApplicationCache.instance().getCache(Trust.class);
 	}
 
 	public static Ehcache getUnitAttributeCache() {
@@ -60,6 +65,6 @@ public class CacheFactory {
 		ApplicationCache.notify(UnitDuty.class);
 		ApplicationCache.notify(Group.class);
 		ApplicationCache.notify(Role.class);
+		ApplicationCache.notify(Trust.class);
 	}
-
 }
