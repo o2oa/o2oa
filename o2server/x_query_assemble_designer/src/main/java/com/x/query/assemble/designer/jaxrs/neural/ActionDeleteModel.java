@@ -32,6 +32,8 @@ class ActionDeleteModel extends BaseAction {
 			}
 			this.cleanOutValue(business, model);
 			this.cleanInValue(business, model);
+			this.cleanInText(business, model);
+			this.cleanOutText(business, model);
 			this.cleanEntry(business, model);
 			emc.beginTransaction(Model.class);
 			emc.remove(model, CheckRemoveType.all);

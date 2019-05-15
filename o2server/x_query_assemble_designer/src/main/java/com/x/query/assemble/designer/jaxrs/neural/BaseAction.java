@@ -8,8 +8,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.neural.Entry;
+import com.x.query.core.entity.neural.InText;
 import com.x.query.core.entity.neural.InValue;
 import com.x.query.core.entity.neural.Model;
+import com.x.query.core.entity.neural.OutText;
 import com.x.query.core.entity.neural.OutValue;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -35,6 +37,30 @@ abstract class BaseAction extends StandardJaxrsAction {
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(InValue.class);
 			count = count + business.entityManagerContainer().delete(InValue.class, os);
+			business.entityManagerContainer().commit();
+		}
+		return count;
+	}
+
+	protected Long cleanInText(Business business, Model project) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(InText.class, InText.model_FIELDNAME,
+				project.getId());
+		Long count = 0L;
+		for (List<String> os : ListTools.batch(ids, 2000)) {
+			business.entityManagerContainer().beginTransaction(InText.class);
+			count = count + business.entityManagerContainer().delete(InText.class, os);
+			business.entityManagerContainer().commit();
+		}
+		return count;
+	}
+
+	protected Long cleanOutText(Business business, Model project) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(OutText.class, OutText.model_FIELDNAME,
+				project.getId());
+		Long count = 0L;
+		for (List<String> os : ListTools.batch(ids, 2000)) {
+			business.entityManagerContainer().beginTransaction(OutText.class);
+			count = count + business.entityManagerContainer().delete(OutText.class, os);
 			business.entityManagerContainer().commit();
 		}
 		return count;
