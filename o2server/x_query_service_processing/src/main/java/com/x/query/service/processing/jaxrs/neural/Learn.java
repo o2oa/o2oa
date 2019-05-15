@@ -307,13 +307,7 @@ public class Learn {
 		}
 		return count;
 	}
-
-//	private void saveNeuralNetwork(NeuralNetwork<MomentumBackpropagation> neuralNetwork, model model,
-//			String surffix) throws Exception {
-//		File file = new File(Config.base(), "local/temp/" + model.getName() + "_" + surffix + ".nnet");
-//		neuralNetwork.save(file.getAbsolutePath());
-//	}
-
+	
 	private void saveDataSet(DataSet dataSet, Model model, String surffix) throws Exception {
 		File file = new File(Config.base(), "local/temp/" + model.getName() + "_" + surffix + ".txt");
 		dataSet.save(file.getAbsolutePath());

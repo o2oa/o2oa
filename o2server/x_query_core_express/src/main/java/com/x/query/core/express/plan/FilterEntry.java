@@ -27,6 +27,10 @@ public class FilterEntry extends GsonPropertyObject {
 
 	public static final String FORMAT_DATETIMEVALUE = "dateTimeValue";
 
+	public static final String FORMAT_DATEVALUE = "dateValue";
+
+	public static final String FORMAT_TIMEVALUE = "timeValue";
+
 	public static final String DEFINE_TIME = "@time";
 
 	public static final String DEFINE_DATE = "@date";
@@ -83,13 +87,37 @@ public class FilterEntry extends GsonPropertyObject {
 				return true;
 			}
 		case FORMAT_DATETIMEVALUE:
-			if (DateTools.isDateTimeOrDateOrTime(value)) {
+			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+				return true;
+			} else {
+				return false;
+			}
+		case FORMAT_DATEVALUE:
+			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
+				return true;
+			} else {
+				return false;
+			}
+		case FORMAT_TIMEVALUE:
+			if (DateTools.isDateTimeOrDateOrTime(value) || StringUtils.equalsIgnoreCase(DEFINE_TIME, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_DATE, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_MONTH, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_SEASON, value)
+					|| StringUtils.equalsIgnoreCase(DEFINE_YEAR, value)) {
 				return true;
 			} else {
 				return false;
 			}
 		case FORMAT_NUMBERVALUE:
-			if (NumberUtils.isNumber(value)) {
+			if (NumberUtils.isCreatable(value)) {
 				return true;
 			} else {
 				return false;
@@ -179,81 +207,46 @@ public class FilterEntry extends GsonPropertyObject {
 					p = cb.and(p, cb.equal(root.get(Item_.numberValue), doubleValue));
 				}
 			}
-		} else if (StringUtils.equals(this.formatType, FORMAT_DATETIMEVALUE)) {
-			/* 时间值比较 */
+		} else if (StringUtils.equals(this.formatType, FORMAT_DATEVALUE)) {
+			/* 日期值比较 */
 			if (StringUtils.isNotEmpty(compareValue)) {
+				Date value = null;
+				Date otherValue = null;
 				if (DateTools.isDateTime(compareValue)) {
-					Date dateTimeValue = DateTools.parseDateTime(compareValue);
-					if (Comparison.isNotEquals(this.comparison)) {
-						/** 不等于返回等于值,在外部运算 */
-						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateTimeValue)),
-								cb.equal(root.get(Item_.dateTimeValue), dateTimeValue)));
-					} else if (Comparison.isGreaterThan(this.comparison)) {
-						p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), dateTimeValue));
-					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), dateTimeValue));
-					} else if (Comparison.isLessThan(this.comparison)) {
-						p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), dateTimeValue));
-					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), dateTimeValue));
-					} else if (Comparison.isBetween(this.comparison)) {
-						if (StringUtils.isNotEmpty(compareOtherValue) && DateTools.isDateTime(compareOtherValue)) {
-							Date dateTimeOtherValue = DateTools.parseDateTime(compareOtherValue);
-							if (null != dateTimeOtherValue) {
-								p = cb.and(p,
-										cb.between(root.get(Item_.dateTimeValue), dateTimeValue, dateTimeOtherValue));
-							}
-						}
-					} else {
-						p = cb.and(p, cb.equal(root.get(Item_.dateTimeValue), dateTimeValue));
-					}
+					value = DateTools.parseDateTime(compareValue);
 				} else if (DateTools.isDate(compareValue)) {
-					Date dateValue = DateTools.parseDate(compareValue);
+					value = DateTools.parseDate(compareValue);
+				}
+				if (DateTools.isDateTime(compareOtherValue)) {
+					otherValue = DateTools.parseDateTime(compareOtherValue);
+				} else if (DateTools.isDate(compareOtherValue)) {
+					otherValue = DateTools.parseDate(compareOtherValue);
+				}
+				if (null != otherValue) {
+					otherValue = DateTools.ceilDate(otherValue, 0);
+				}
+				if (null != value) {
+					value = DateTools.ceilDate(value, 0);
 					if (Comparison.isNotEquals(this.comparison)) {
 						/** 不等于返回等于值,在外部运算 */
 						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateValue)),
-								cb.equal(root.get(Item_.dateValue), dateValue)));
+								cb.equal(root.get(Item_.dateValue), value)));
 					} else if (Comparison.isGreaterThan(this.comparison)) {
-						p = cb.and(p, cb.greaterThan(root.get(Item_.dateValue), dateValue));
+						p = cb.and(p, cb.greaterThan(root.get(Item_.dateValue), value));
 					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateValue), dateValue));
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateValue), value));
 					} else if (Comparison.isLessThan(this.comparison)) {
-						p = cb.and(p, cb.lessThan(root.get(Item_.dateValue), dateValue));
+						p = cb.and(p, cb.lessThan(root.get(Item_.dateValue), value));
 					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateValue), dateValue));
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateValue), value));
 					} else if (Comparison.isBetween(this.comparison)) {
-						if (StringUtils.isNotEmpty(compareOtherValue) && DateTools.isDate(compareOtherValue)) {
-							Date dateOtherValue = DateTools.parseDate(compareOtherValue);
-							if (null != dateOtherValue) {
-								p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), dateValue, dateOtherValue));
-							}
+						if (null != otherValue) {
+							p = cb.and(p, cb.between(root.get(Item_.dateValue), value, otherValue));
+						} else {
+							throw new Exception("unkown comparison:" + this.comparison);
 						}
 					} else {
 						p = cb.and(p, cb.equal(root.get(Item_.dateValue), value));
-					}
-				} else if (DateTools.isTime(compareValue)) {
-					Date timeValue = DateTools.parseTime(compareValue);
-					if (Comparison.isNotEquals(this.comparison)) {
-						/** 不等于返回等于值,在外部运算 */
-						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.timeValue)),
-								cb.equal(root.get(Item_.timeValue), timeValue)));
-					} else if (Comparison.isGreaterThan(this.comparison)) {
-						p = cb.and(p, cb.greaterThan(root.get(Item_.timeValue), timeValue));
-					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.timeValue), timeValue));
-					} else if (Comparison.isLessThan(this.comparison)) {
-						p = cb.and(p, cb.lessThan(root.get(Item_.timeValue), timeValue));
-					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.timeValue), timeValue));
-					} else if (Comparison.isBetween(this.comparison)) {
-						if (StringUtils.isNotEmpty(compareOtherValue) && DateTools.isTime(compareOtherValue)) {
-							Date timeOtherValue = DateTools.parseTime(compareOtherValue);
-							if (null != timeOtherValue) {
-								p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), timeValue, timeOtherValue));
-							}
-						}
-					} else {
-						p = cb.and(p, cb.equal(root.get(Item_.timeValue), value));
 					}
 				} else if (StringUtils.equals(compareValue, DEFINE_DATE)
 						|| StringUtils.equals(compareValue, DEFINE_MONTH)
@@ -276,38 +269,183 @@ public class FilterEntry extends GsonPropertyObject {
 					}
 					if (Comparison.isNotEquals(this.comparison)) {
 						/** 不等于返回等于值,在外部运算 */
-						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateTimeValue)),
-								cb.between(root.get(Item_.dateTimeValue), floor, ceil)));
+						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateValue)),
+								cb.between(root.get(Item_.dateValue), floor, ceil)));
 					} else if (Comparison.isGreaterThan(this.comparison)) {
-						p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), ceil));
+						p = cb.and(p, cb.greaterThan(root.get(Item_.dateValue), ceil));
 					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), floor));
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateValue), floor));
 					} else if (Comparison.isLessThan(this.comparison)) {
-						p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), floor));
+						p = cb.and(p, cb.lessThan(root.get(Item_.dateValue), floor));
 					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), ceil));
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateValue), ceil));
 					} else if (Comparison.isBetween(this.comparison)) {
-						p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), floor, ceil));
+						// throw new Exception("unkown comparison:" + this.comparison);
 					} else {
 						throw new Exception("unkown comparison:" + this.comparison);
 					}
 				} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
 					if (Comparison.isNotEquals(this.comparison)) {
 						/** 不等于返回等于值,在外部运算 */
-						throw new Exception("unkown comparison:" + this.comparison);
+						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateValue)),
+								cb.equal(root.get(Item_.dateValue), new Date())));
 					} else if (Comparison.isGreaterThan(this.comparison)) {
-						p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), new Date()));
+						p = cb.and(p, cb.greaterThan(root.get(Item_.dateValue), new Date()));
 					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), new Date()));
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateValue), new Date()));
 					} else if (Comparison.isLessThan(this.comparison)) {
-						p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), new Date()));
+						p = cb.and(p, cb.lessThan(root.get(Item_.dateValue), new Date()));
 					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
-						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), new Date()));
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateValue), new Date()));
+					} else if (Comparison.isBetween(this.comparison)) {
+						// throw new Exception("unkown comparison:" + this.comparison);
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_TIMEVALUE)) {
+			/* 时间值比较 */
+			if (StringUtils.isNotEmpty(compareValue)) {
+				Date value = null;
+				Date otherValue = null;
+				if (DateTools.isDateTime(compareValue)) {
+					value = DateTools.parseDateTime(compareValue);
+				} else if (DateTools.isTime(compareValue)) {
+					value = DateTools.parseTime(compareValue);
+				}
+				if (DateTools.isDateTime(compareOtherValue)) {
+					otherValue = DateTools.parseDateTime(compareOtherValue);
+				} else if (DateTools.isTime(compareOtherValue)) {
+					otherValue = DateTools.parseTime(compareOtherValue);
+				}
+				if (null != value) {
+					if (Comparison.isNotEquals(this.comparison)) {
+						/** 不等于返回等于值,在外部运算 */
+						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.timeValue)),
+								cb.equal(root.get(Item_.timeValue), value)));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(Item_.timeValue), value));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.timeValue), value));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(Item_.timeValue), value));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.timeValue), value));
+					} else if (Comparison.isBetween(this.comparison)) {
+						if (null != otherValue) {
+							p = cb.and(p, cb.between(root.get(Item_.timeValue), value, otherValue));
+						}
+					} else {
+						p = cb.and(p, cb.equal(root.get(Item_.timeValue), value));
+					}
+				} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
+					if (Comparison.isNotEquals(this.comparison)) {
+						/** 不等于返回等于值,在外部运算 */
+						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.timeValue)),
+								cb.equal(root.get(Item_.timeValue), new Date())));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(Item_.timeValue), new Date()));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.timeValue), new Date()));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(Item_.timeValue), new Date()));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.timeValue), new Date()));
 					} else if (Comparison.isBetween(this.comparison)) {
 						throw new Exception("unkown comparison:" + this.comparison);
 					} else {
 						throw new Exception("unkown comparison:" + this.comparison);
 					}
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_DATETIMEVALUE)) {
+			Date value = null;
+			Date otherValue = null;
+			if (DateTools.isDateTime(compareValue)) {
+				value = DateTools.parseDateTime(compareValue);
+			} else if (DateTools.isDate(compareValue)) {
+				value = DateTools.parseDate(compareValue);
+			}
+			if (DateTools.isDateTime(compareOtherValue)) {
+				otherValue = DateTools.parseDateTime(compareOtherValue);
+			} else if (DateTools.isDate(compareOtherValue)) {
+				otherValue = DateTools.parseDate(compareOtherValue);
+			}
+			if (null != value) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					/** 不等于返回等于值,在外部运算 */
+					p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateTimeValue)),
+							cb.equal(root.get(Item_.dateTimeValue), value)));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), value));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), value));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), value));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), value));
+				} else if (Comparison.isBetween(this.comparison)) {
+					if (null != otherValue) {
+						p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), value, otherValue));
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				} else {
+					p = cb.and(p, cb.equal(root.get(Item_.dateTimeValue), value));
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_DATE) || StringUtils.equals(compareValue, DEFINE_MONTH)
+					|| StringUtils.equals(compareValue, DEFINE_SEASON)
+					|| StringUtils.equals(compareValue, DEFINE_YEAR)) {
+				Date floor = null;
+				Date ceil = null;
+				if (StringUtils.equals(compareValue, DEFINE_DATE)) {
+					floor = DateTools.floorDate(new Date(), 0);
+					ceil = DateTools.ceilDate(new Date(), 0);
+				} else if (StringUtils.equals(compareValue, DEFINE_MONTH)) {
+					floor = DateTools.floorMonth(new Date(), 0);
+					ceil = DateTools.ceilMonth(new Date(), 0);
+				} else if (StringUtils.equals(compareValue, DEFINE_SEASON)) {
+					floor = DateTools.floorSeason(new Date(), 0);
+					ceil = DateTools.ceilSeason(new Date(), 0);
+				} else {
+					floor = DateTools.floorYear(new Date(), 0);
+					ceil = DateTools.ceilYear(new Date(), 0);
+				}
+				if (Comparison.isNotEquals(this.comparison)) {
+					/** 不等于返回等于值,在外部运算 */
+					p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateTimeValue)),
+							cb.between(root.get(Item_.dateTimeValue), floor, ceil)));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), ceil));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), floor));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), floor));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), ceil));
+				} else if (Comparison.isBetween(this.comparison)) {
+					// p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), floor, ceil));
+				} else {
+					throw new Exception("unkown comparison:" + this.comparison);
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					/** 不等于返回等于值,在外部运算 */
+					p = cb.and(p, cb.or(cb.isNull(root.get(Item_.dateTimeValue)),
+							cb.equal(root.get(Item_.dateTimeValue), new Date())));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(Item_.dateTimeValue), new Date()));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Item_.dateTimeValue), new Date()));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(Item_.dateTimeValue), new Date()));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(Item_.dateTimeValue), new Date()));
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					throw new Exception("unkown comparison:" + this.comparison);
 				}
 			}
 		} else {

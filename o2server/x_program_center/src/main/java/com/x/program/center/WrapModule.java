@@ -29,6 +29,9 @@ public class WrapModule extends GsonPropertyObject {
 
 	@FieldDescribe("说明")
 	private String description;
+	
+	@FieldDescribe("下载次数")
+	private Integer downloadCount;
 
 	@FieldDescribe("流程")
 	private List<WrapProcessPlatform> processPlatformList = new ArrayList<>();
@@ -148,6 +151,14 @@ public class WrapModule extends GsonPropertyObject {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public Integer getDownloadCount() {
+		return downloadCount;
+	}
+
+	public void setDownloadCount(Integer downloadCount) {
+		this.downloadCount = downloadCount;
 	}
 
 }

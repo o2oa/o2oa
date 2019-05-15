@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -14,8 +15,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -55,7 +56,19 @@ class ActionExecute extends BaseAction {
 			EntityManager em = emc.get(cls);
 			Query query = em.createQuery(statement.getData());
 			for (Entry<String, Object> en : parameter.entrySet()) {
-				query.setParameter(en.getKey(), en.getValue());
+				if (StringUtils.equals(en.getKey(), "firstResult") && (en.getValue() != null)) {
+					int firstResult = NumberUtils.toInt(en.getValue().toString(), -1);
+					if (firstResult > 0) {
+						query.setFirstResult(firstResult);
+					}
+				} else if (StringUtils.equals(en.getKey(), "maxResults") && (en.getValue() != null)) {
+					int maxResults = NumberUtils.toInt(en.getValue().toString(), -1);
+					if (maxResults > 0) {
+						query.setMaxResults(maxResults);
+					}
+				} else {
+					query.setParameter(en.getKey(), en.getValue());
+				}
 			}
 			Object data = null;
 			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
