@@ -166,7 +166,6 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                 var action = MWF.Actions.get("x_organization_assemble_express");
                 var data = {"name":this.data.name, "unit":""};
                 var count = this.selector.options.units.length;
-                alert(count)
                 var i = 0;
                 this.selector.options.units.each(function(u){
                     if (typeOf(u)==="string"){

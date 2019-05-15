@@ -543,6 +543,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         this.loadingAreaNode.destroy();
                         this.loadingAreaNode = null;
                     }
+                    this.fireEvent("loadView");
                 }.bind(this));
                 // this.lookupAction.invoke({"name": "lookup","async": true, "data": (data || null), "parameter": {"view": this.json.name, "application": this.json.application},"success": function(json){
                 //     this.viewData = json.data;

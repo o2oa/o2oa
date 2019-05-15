@@ -73,7 +73,7 @@ MWF.xApplication.process.Xform.LP = {
     "addSplitWorkInfor": "您已为当前工作增加了分支",
 
     "deleteWorkTitle": "删除文件确认",
-    "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>"},
+    "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>", "text": "注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？"},
     "workDelete": "已经删除文件",
     "amount": "▌总计",
     "delete": "删除",

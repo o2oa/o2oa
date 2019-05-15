@@ -92,5 +92,11 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             this.action.invoke({"name": "getWorkDataByPath","async": async, "parameter": {"id": id.work, "path": p},	"success": success,	"failure": failure, "urlEncode":false});
         }
 
+    },
+    getJobDataByPath: function(id, path, success, failure, async){
+        var p = path.replace(/\./g, "/");
+        this.action.invoke({"name": "getJobDataByPath","async": async, "parameter": {"id": id, "path": p},	"success": success,	"failure": failure, "urlEncode":false});
     }
+
+
 });

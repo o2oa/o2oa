@@ -5,7 +5,7 @@ MWF.APPDTBD = MWF.xApplication.query.TableDesigner;
 
 MWF.xDesktop.requireApp("query.TableDesigner", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
-MWF.xDesktop.requireApp("query.ViewDesigner", "Property", null, false);
+MWF.xDesktop.requireApp("query.TableDesigner", "Property", null, false);
 
 MWF.xApplication.query.TableDesigner.Table = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View,
@@ -27,7 +27,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
         this.designer = designer;
         this.data = data;
-        if (!this.data.data) this.data.data = {};
+        if (!this.data.draftData) this.data.draftData = {};
         this.parseData();
 
         this.node = this.designer.designNode;
@@ -49,6 +49,9 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
     },
+    parseData: function(){
+        this.json = this.data;
+    },
     load : function(){
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
@@ -67,78 +70,248 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }.bind(this));
 
         this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
-        this.createColmunEditTable();
+        this.designer.propertyTitleNode.set("text", this.designer.lp.clumn);
+        this.designer.propertyDomPercent = 0.5;
+        this.designer.loadPropertyContentResize();
+        this.createColumnEditTable();
 
         this.loadView();
+        this.refreshNode.setStyles(this.css.tableRunNode);
+        if (!this.data.buildSuccess){
+            this.refreshNode.hide();
+            this.addColumnNode.hide();
+        }
 
         this.selected();
         this.setEvent();
 
         this.setViewWidth();
         this.designer.addEvent("resize", this.setViewWidth.bind(this));
-    },
-    createColmunEditTable: function(){
-        this.colmunListTable = new Element("table", {"styles": this.css.colmunListTable}).inject(this.domListNode);
-        var tr = this.colmunListTable.insertRow(-1);
-        var td = tr.insertCell();
 
+        this.checkToolbars();
     },
-    changeViewSelected: function(){
-        if (this.json.view){
-            if (!this.queryView){
-                this.designer.actions.getView(this.json.view, function(view){
-                    this.queryView = JSON.decode(view.data.data);
-                    this.items.each(function(item){
-                        item.changeViewSelected(this.queryView);
-                    }.bind(this));
-                    this.checkIsGroupRadioDisplay();
-                }.bind(this));
-            }else{
-                this.items.each(function(item){
-                    item.changeViewSelected(this.queryView);
-                }.bind(this));
-                this.checkIsGroupRadioDisplay();
-            }
-        }else{
-            //item.changeViewSelected();
-        }
+    setEvent: function(){
+        this.areaNode.addEvent("click", this.selected.bind(this));
+        this.refreshNode.addEvent("click", function(e){
+            this.loadViewData();
+            e.stopPropagation();
+        }.bind(this));
+        this.addColumnNode.addEvent("click", function(e){
+            debugger;
+            this.addLine();
+            e.stopPropagation();
+        }.bind(this));
     },
-    checkIsGroupRadioDisplay: function(){
-
-        if (this.property){
-            var groupNode = this.property.propertyContent.getElement(".MWFIsGroupArea");
-            if (groupNode){
-                if (this.queryView.group.column){
-                    groupNode.setStyle("display", "block");
-                }else{
-                    this.json.data.calculate.isGroup = false;
-                    var radios = groupNode.getElements("input");
-                    for (var i=0; i<radios.length; i++){
-                        if (radios[i].value=="false"){
-                            radios[i].set("checked", true);
-                            break;
-                        }
+    addLine: function(){
+        var data = this.getNewData();
+        this.createNewLineDlg(data);
+    },
+    createNewLineDlg: function(data){
+        var div = new Element("div", {"styles": {"margin": "10px 10px 0px 10px", "padding": "5px", "height": "400px", "width": "440px", "overflow": "hidden"}});
+        var options ={
+            "content": div,
+            "title": this.designer.lp.addLine,
+            "container": this.designer.content,
+            "width": 500,
+            "mask": false,
+            "height": 530,
+            "buttonList": [
+                {
+                    "text": this.designer.lp.ok,
+                    "action": function(){
+                        this.saveNewLine(dlg);
+                    }.bind(this)
+                },
+                {
+                    "text": this.designer.lp.cancel,
+                    "action": function(){dlg.close();}.bind(this),
+                    "styles": {
+                        "border": "1px solid #999",
+                        "background-color": "#f3f3f3",
+                        "color": "#666666",
+                        "height": "30px",
+                        "border-radius": "5px",
+                        "min-width": "80px",
+                        "margin": "10px 5px"
                     }
-                    this.hideGroupTitle();
-                    groupNode.setStyle("display", "none");
                 }
+            ],
+            "onResize": function(){
+                var size = dlg.content.getSize();
+                var width = size.x-60;
+                var height = size.y - 30;
+                div.setStyles({
+                    "width": ""+width+"px",
+                    "height": ""+height+"px",
+                });
+            }
+        }
+        var dlg = o2.DL.open(options);
+
+        o2.require("o2.widget.JavascriptEditor", function(){
+            dlg.editor = new o2.widget.JavascriptEditor(div, {"option": {"mode": "json"}});
+            dlg.editor.load(function(){
+                debugger;
+                dlg.editor.editor.setValue(JSON.stringify(data, null, "\t"));
+            }.bind(this));
+        }.bind(this), false);
+
+        return dlg;
+    },
+    saveNewLine: function(dlg){
+        var str = dlg.editor.editor.getValue();
+        try{
+            var data = JSON.parse(str);
+            this.designer.actions.insertRow(this.data.id, data, function(){
+                if (this.lastSelectJPQL) this.runJpql(this.lastSelectJPQL);
+                this.designer.notice(this.designer.lp.newLineSuccess, "success");
+                dlg.close();
+            }.bind(this));
+        }catch(e){
+            this.designer.notice(this.designer.lp.newLineSuccess, "error");
+        }
+
+    },
+    getNewData: function(){
+        var data = JSON.parse(this.data.data);
+        var newLineData = {};
+        data.fieldList.each(function(field){
+            switch (field.type) {
+                case "string":
+                    newLineData[field.name] = "";
+                    break;
+                case "integer":
+                case "long":
+                case "double":
+                    newLineData[field.name] = 0;
+                    break;
+                case "date":
+                    var str = new Date().format("%Y-%m-%d");
+                    newLineData[field.name] = str;
+                    break;
+                case "time":
+                    var str = new Date().format("%H:%M:%S");
+                    newLineData[field.name] = str;
+                    break;
+                case "dateTime":
+                    var str = new Date().format("db");
+                    newLineData[field.name] = str;
+                    break;
+                case "boolean":
+                    newLineData[field.name] = true;
+                    break;
+                case "stringList":
+                case "integerList":
+                case "longList":
+                case "doubleList":
+                    newLineData[field.name] = [];
+                    break;
+                case "stringLob":
+                    newLineData[field.name] = "";
+                    break;
+                case "stringMap":
+                    newLineData[field.name] = {};
+                    break;
+            }
+        }.bind(this));
+        return newLineData;
+    },
+    checkToolbars: function(){
+        if (this.designer.toolbar){
+            var buildBtn = this.designer.toolbar.childrenButton[1];
+            var draftBtn = this.designer.toolbar.childrenButton[2];
+
+            buildBtn.setDisable(true);
+            draftBtn.setDisable(true);
+
+            if (!this.data.isNewTable) buildBtn.setDisable(false);
+            if (this.data.status=="build") draftBtn.setDisable(false);
+        }
+    },
+    createColumnEditTable: function(){
+        this.columnListTable = new Element("table", {"styles": this.css.columnListTable}).inject(this.domListNode);
+        this.columnListHeaderTr = this.columnListTable.insertRow(-1).setStyles(this.css.columnListTr);
+        this.columnListHeaderTr.insertCell().setStyles(this.css.columnListHeaderTd).set("text", this.designer.lp.name);
+        this.columnListHeaderTr.insertCell().setStyles(this.css.columnListHeaderTd).set("text", this.designer.lp.description);
+        this.columnListHeaderTr.insertCell().setStyles(this.css.columnListHeaderTd).set("text", this.designer.lp.type);
+
+        this.columnListEditTr = this.columnListTable.insertRow(-1).setStyles(this.css.columnListEditTr);
+        var td = this.columnListEditTr.insertCell().setStyles(this.css.columnListTd);
+        this.columnListEditNameInput = new Element("input", {"styles": this.css.columnListEditInput}).inject(td);
+
+        td = this.columnListEditTr.insertCell().setStyles(this.css.columnListTd);
+        this.columnListEditDescriptionInput = new Element("input", {"styles": this.css.columnListEditInput}).inject(td);
+
+        td = this.columnListEditTr.insertCell().setStyles(this.css.columnListTd);
+        this.columnListEditTypeSelect = new Element("select", {"styles": this.css.columnListEditSelect}).inject(td);
+        //var options = '<option value=""></option>';
+        var options = '<option value="string">string</option>';
+        options += '<option value="integer">integer</option>';
+        options += '<option value="long">long</option>';
+        options += '<option value="double">double</option>';
+        options += '<option value="boolean">boolean</option>';
+        options += '<option value="date">date</option>';
+        options += '<option value="time">time</option>';
+        options += '<option value="dateTime">dateTime</option>';
+        options += '<option value="stringList">stringList</option>';
+        options += '<option value="integerList">integerList</option>';
+        options += '<option value="longList">longList</option>';
+        options += '<option value="doubleList">doubleList</option>';
+        options += '<option value="booleanList">booleanList</option>';
+        options += '<option value="stringLob">stringLob</option>';
+        options += '<option value="stringMap">stringMap</option>';
+        this.columnListEditTypeSelect.set("html", options);
+
+        this.columnListEditTypeSelect.addEvents({
+            "change": function(e){
+                this.checkAddColumn();
+            }.bind(this)
+        });
+        this.columnListEditNameInput.addEvents({
+            "keydown": function(e){
+                if (e.code==13) this.checkAddColumn();
+            }.bind(this)
+        });
+        this.columnListEditDescriptionInput.addEvents({
+            "keydown": function(e){
+                if (e.code==13) this.checkAddColumn();
+            }.bind(this)
+        });
+    },
+    checkColumnName: function(name){
+        var rex = /^\d+|\.|\#|\s|\@|\&|\*|\(|\)|\=|\+|\!|\^|\$|\%|\;|\"|\{|\}|\[|\]|\||\\|\,|\.|\?|\/|\:|\;|\'|\"|\<|\>/g;
+        if (rex.test(name)){
+            this.designer.notice(this.designer.lp.errorName, "error");
+            return false;
+        }
+        return true;
+    },
+    checkAddColumn: function(){
+        var name = this.columnListEditNameInput.get("value");
+        var description = this.columnListEditDescriptionInput.get("value");
+        var type = this.columnListEditTypeSelect.options[this.columnListEditTypeSelect.selectedIndex].value;
+        if (name && this.checkColumnName(name)){
+            if (!this.json.draftData.fieldList) this.json.draftData.fieldList = [];
+            var columnNames = this.json.draftData.fieldList.map(function(item){ return item.name; });
+            if ((columnNames.indexOf(name)!=-1)){
+                this.designer.notice(this.designer.lp.duplicateName, "error");
+                this.columnListEditNameInput.focus();
+            }else{
+                var o = {
+                    "name": name,
+                    "description": description,
+                    "type": type
+                }
+                this.addColumn(o);
+                this.columnListEditNameInput.set("value", "");
+                this.columnListEditDescriptionInput.set("value", "");
+                this.columnListEditNameInput.focus();
             }
         }
     },
-    checkIsGroupRadio: function(){
-        if (!this.queryView){
-            this.designer.actions.getView(this.json.view, function(view){
-                this.queryView = JSON.decode(view.data.data);
-                this.checkIsGroupRadioDisplay();
-            }.bind(this));
-        }else{
-            this.checkIsGroupRadioDisplay();
-        }
-    },
-
     showProperty: function(){
         if (!this.property){
-            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
+            this.property = new MWF.xApplication.query.TableDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
                 "path": this.options.propertyPath,
                 "onPostLoad": function(){
                     this.property.show();
@@ -149,101 +322,30 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.property.show();
         }
     },
-
-    loadViewData: function(){
-//查询表数据
-        if (this.data.id){
-            this.saveSilence(function(){
-                this.viewContentBodyNode.empty();
-                this.viewContentTableNode = new Element("table", {
-                    "styles": this.css.viewContentTableNode,
-                    "border": "0px",
-                    "cellPadding": "0",
-                    "cellSpacing": "0"
-                }).inject(this.viewContentBodyNode);
-
-                this.designer.actions.loadStat(this.data.id, null, function(json){
-                    var entries = {};
-                    json.data.calculate.calculateList.each(function(entry){entries[entry.id] = entry;}.bind(this));
-
-                    if (this.json.data.calculate.isGroup){
-                        if (json.data.calculateGrid.length){
-                            json.data.calculateGrid.each(function(d){
-                                // var groupColumn = null;
-                                // for (var c = 0; c<json.data.calculate.calculateList.length; c++){
-                                //     if (json.data.calculate.calculateList[c].column === json.data.group.column){
-                                //         groupColumn = json.data.calculate.calculateList[c];
-                                //         break;
-                                //     }
-                                // }
-
-                                var tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
-                                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                                // if (groupColumn){
-                                //     td.set("text", (groupColumn.code) ? MWF.Macro.exec(groupColumn.code, {"value": d.group, "data": json.data}) : d.group);
-                                // }else{
-                                     td.set("text", d.group);
-                                // }
-
-                                //td.set("text", d.group);
-                                td.setStyle("font-weight", "bold");
-                                d.list.each(function(c){
-                                    var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                                    td.set("text", (entries[c.column].code) ? MWF.Macro.exec(entries[c.column].code, {"value": c.value, "data": json.data}) : c.value);
-                                }.bind(this));
-
-                            }.bind(this));
-                        }
-                        if (json.data.calculateAmountGrid){
-                            var tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
-                            var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                            td.set("text", this.designer.lp.amount);
-                            td.setStyles({"font-weight": "bold", "color": "#0000FF"});
-                            json.data.calculateAmountGrid.each(function(c){
-                                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                                td.set("text", c.value);
-                                td.setStyles({"font-weight": "bold", "color": "#0000FF"});
-                            }.bind(this));
-                        }
-                    }else{
-                        if (json.data.calculateGrid.length){
-                            var tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
-                            json.data.calculateGrid.each(function(d){
-                                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
-                                td.set("text", d.value);
-                            }.bind(this));
-                        }
-                    }
-                    this.setContentColumnWidth();
-                    this.setContentHeight();
-
-                }.bind(this));
-            }.bind(this));
+    addColumn: function(data){
+        var json;
+        if (!data){
+            if (!this.json.draftData.fieldList) this.json.draftData.fieldList = [];
+            var columnNames = this.json.draftData.fieldList.map(function(item){ return item.name; });
+            var name = "column";
+            var i=1;
+            while(columnNames.indexOf(name)!=-1){
+                name = "column"+i;
+                i++;
+            }
+            json = {
+                "name": name,
+                "type":"string",
+                "description": this.designer.lp.newColumn
+            };
+        }else{
+            json = data;
         }
-    },
-
-    addColumn: function(){
-
-        if (!this.json.draftData.fieldList) this.json.draftData.fieldList = [];
-        var colmunNames = this.json.draftData.fieldList.map(function(item){ return item.name; });
-        var name = "colmun";
-        var i=1;
-        while(colmunNames.indexOf(name)!=-1){
-            name = "colmun_"+i;
-            i++;
-        }
-        var json = {
-            "name": name,
-            "type":"string",
-            "description":"新建列"
-        };
 
         this.json.draftData.fieldList.push(json);
         var column = new MWF.xApplication.query.TableDesigner.Table.Column(json, this);
         this.items.push(column);
         column.selected();
-
-        if (this.property) this.property.loadStatColumnSelect();
 
         if (this.viewContentTableNode){
             var trs = this.viewContentTableNode.getElements("tr");
@@ -266,175 +368,197 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             }.bind(this));
         }
     },
-
     saveSilence: function(callback){
         if (!this.data.name){
-            this.designer.notice(this.designer.lp.notice.inputName, "error");
+            this.designer.notice(this.designer.lp.inputTableName, "error");
             return false;
         }
-        // if (!this.data.view){
-        //     this.designer.notice(this.designer.lp.notice.inputView, "error");
-        //     return false;
-        // }
-        if (!this.checkViewAndColumn()){
-            this.designer.notice(this.designer.lp.notice.errorViewColumn, "error");
+        if (!this.json.draftData.fieldList.length){
+            this.designer.notice(this.designer.lp.errorFieldList, "error");
             return false;
         }
-
-        this.designer.actions.saveStat(this.data, function(json){
+        this.designer.actions.saveTable(this.data, function(json){
             this.data.id = json.data.id;
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
             }
+            this.checkToolbars();
             if (callback) callback();
         }.bind(this));
     },
     save: function(callback){
-        //if (this.designer.tab.showPage==this.page){
-
         if (!this.data.name){
-            this.designer.notice(this.designer.lp.notice.inputName, "error");
+            this.designer.notice(this.designer.lp.inputTableName, "error");
             return false;
         }
-        // if (!this.data.view){
-        //     this.designer.notice(this.designer.lp.notice.inputView, "error");
-        //     return false;
-        // }
-        if (!this.checkViewAndColumn()){
-            this.designer.notice(this.designer.lp.notice.errorViewColumn, "error");
+        if (!this.json.draftData.fieldList.length){
+            this.designer.notice(this.designer.lp.errorFieldList, "error");
             return false;
         }
-        //}
-        this.designer.actions.saveStat(this.data, function(json){
-            this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
+        this.designer.actions.saveTable(this.data, function(json){
+            this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
 
             this.data.id = json.data.id;
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
             }
+            this.checkToolbars();
             if (callback) callback();
         }.bind(this));
     },
-    checkViewAndColumn: function(){
-        // if (this.json.view){
-        var flag = true;
-        for (var i = 0; i<this.items.length; i++){
-            if (!this.items[i].checkColumn()) flag = false;
-        }
-        return flag;
-        // }else{
-        //     return false;
-        // }
+    unSelected: function(){
+        this.currentSelectedModule = null;
+        return true;
     },
-    _setEditStyle: function(name, input, oldValue){
+    statusBuild: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.statusBuildTitle, MWF.APPDTBD.LP.statusBuildInfor, 420, 120, function(){
+            _self.designer.actions.statusBuild(_self.data.id, function(json){
+                debugger;
+                this.designer.notice(this.designer.lp.statusBuild_success, "success", this.node, {"x": "left", "y": "bottom"});
+                this.designer.actions.getTable(json.data.id, function(tjson){
+                    this.data.status = tjson.data.status;
+                    this.checkToolbars();
+                }.bind(this));
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    statusDraft: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.statusDraftTitle, {"html": MWF.APPDTBD.LP.statusDraftInfor}, 450, 120, function(){
+            this.close();
+            _self.designer.confirm("warn", e, MWF.APPDTBD.LP.statusDraftTitle, {"html": MWF.APPDTBD.LP.statusDraftInforAgain}, 480, 120, function(){
+                _self.designer.actions.statusDraft(_self.data.id, function(json){
+                    this.designer.notice(this.designer.lp.statusDraft_success, "success", this.node, {"x": "left", "y": "bottom"});
+                    this.designer.actions.getTable(json.data.id, function(tjson){
+                        this.data.status = tjson.data.status;
+                        this.checkToolbars();
+                    }.bind(this));
+                }.bind(_self));
+                this.close();
+            }, function(){
+                this.close();
+            }, null);
 
-        // if (name=="view"){
-        //     if (this.data.view!=oldValue){
-        //         this.viewContentBodyNode.empty();
-        //         this.designer.actions.getView(this.json.view, function(view){
-        //             this.queryView = JSON.decode(view.data.data);
-        //         }.bind(this), null, false);
-        //
-        //         this.changeViewSelected();
-        //         this.checkViewAndColumn();
-        //     }
+        }, function(){
+            this.close();
+        }, null);
+    },
+    buildAllView: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, MWF.APPDTBD.LP.buildAllViewInfor, 480, 120, function(){
+            _self.designer.actions.buildAllTable(function(json){
+                this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    setContentHeight: function(){
+        var size = this.areaNode.getSize();
+        var titleSize = this.viewTitleNode.getSize()
+        debugger;
+        var height = size.y-titleSize.y-2;
+        // if (this.jpqlAreaNode){
+        //     var jpqlSize = this.jpqlAreaNode.getComputedSize();
+        //     height = height - jpqlSize.totalHeight;
         // }
-        if (name=="data.calculate.isGroup"){
-            this.viewContentBodyNode.empty();
-            if (this.data.data.calculate.isGroup){
-                this.showGroupTitle();
-            }else{
-                this.hideGroupTitle();
-            }
+
+        this.viewContentScrollNode.setStyle("height", height);
+
+        var contentSize = this.viewContentBodyNode.getSize();
+        if (height<contentSize.y) height = contentSize.y+10;
+
+        this.viewContentNode.setStyle("height", height);
+        this.contentLeftNode.setStyle("height", height);
+        this.contentRightNode.setStyle("height", height);
+        //this.viewContentBodyNode.setStyle("min-height", height);
+    },
+    createJpqlAreaNode: function(callback){
+        if (!this.jpqlAreaNode){
+            this.viewTitleNode.setStyles(this.css.viewTitleNode_run);
+            this.refreshNode.setStyles(this.css.tableRunNode_run);
+            this.addColumnNode.setStyles(this.css.addColumnNode_run);
+
+            this.jpqlAreaNode = new Element("div", {
+                "styles": this.css.jpqlAreaNode
+            }).inject(this.viewTitleContentNode, "top");
+
+            this.jpqlEditor = new MWF.xApplication.query.TableDesigner.Table.JPQLRunner(this.jpqlAreaNode, this.refreshNode, this);
+            this.jpqlEditor.load(function(){
+                this.jpqlEditor.setJpql("slect", "select o from "+this.data.name+" o", 0, 50);
+                if (callback) callback();
+            }.bind(this));
+            this.setContentHeight();
+        }else{
+            if (callback) callback();
         }
-        if (name=="data.calculate.title"){
-            if (!this.data.data.calculate.title){
-                this.data.data.calculate.title = this.designer.lp.category;
-            }
-            if (this.data.data.calculate.title!= oldValue){
-                if (this.groupTitleNode){
-                    this.groupTitleNode.getFirst().getFirst().set("text", this.data.data.calculate.title);
+    },
+    runJpql: function(jpql){
+        this.designer.actions.executeJpql(this.data.id, jpql, function(json){
+            this.loadViewMask.hide();
+
+            if (jpql.type!="select"){
+                this.designer.notice(this.designer.lp.jpqlRunSuccess, "success");
+                if (this.lastSelectJPQL) this.runJpql(this.lastSelectJPQL);
+            }else{
+                this.lastSelectJPQL = jpql;
+                this.viewContentBodyNode.empty();
+                this.viewContentTableNode = new Element("table", {
+                    "styles": this.css.viewContentTableNode,
+                    "border": "0px",
+                    "cellPadding": "0",
+                    "cellSpacing": "0"
+                }).inject(this.viewContentBodyNode);
+
+                if (json.data.length){
+                    json.data.each(function(line, idx){
+                        new MWF.xApplication.query.TableDesigner.Table.DataLine(line, this);
+                    }.bind(this));
+                    this.setContentColumnWidth();
+                    this.setContentHeight();
                 }
             }
-        }
-    },
-    showGroupTitle: function(){
-        if (!this.groupTitleNode) this.createGroupTitltNode();
-    },
-    hideGroupTitle: function(){
-        if (this.groupTitleNode){
-            this.groupTitleNode.destroy();
-            this.groupTitleNode = null;
-        }
-    },
-    createGroupTitltNode: function(){
-        this.data.data.calculate.title = this.data.data.calculate.title || this.designer.lp.category;
 
-        this.groupTitleNode = new Element("td", {"styles": this.css.viewGroupTitleNode});
-        var node = new Element("div", {
-            "styles": this.css.viewGroupTitleColumnNode
-        }).inject(this.groupTitleNode);
-        var textNode = new Element("div", {
-            "styles": this.css.viewGroupTitleColumnTextNode,
-            "text": this.data.data.calculate.title
-        }).inject(node);
-        if (this.items.length){
-            this.groupTitleNode.inject(this.items[0].areaNode, "before");
-        }else{
-            this.groupTitleNode.inject(this.viewTitleTrNode);
-        }
-    },
-    saveAs: function(){
-
-        var form = new MWF.xApplication.query.StatDesigner.Stat.NewNameForm(this, {
-            name : this.data.name + "_" + MWF.xApplication.query.StatDesigner.LP.copy,
-            view : this.data.view,
-            query : this.data.query || this.data.application,
-            queryName :	this.data.queryName || this.data.applicationName
-        }, {
-            onSave : function( data, callback ){
-                this._saveAs( data, callback );
-            }.bind(this)
-        }, {
-            app: this.designer
-        });
-        form.edit()
-    },
-    explode: function(){},
-    implode: function(){},
-    _saveAs : function( data , callback){
-        var _self = this;
-
-        var d = Object.clone( this.data );
-
-        d.isNewView = true;
-        d.id = this.designer.actions.getUUID();
-        d.name = data.name;
-        d.alias = "";
-        d.query = data.query;
-        d.queryName = data.queryName;
-        d.application = data.query;
-        d.applicationName = data.queryName;
-        d.view = data.view;
-        //d.pid = d.id + d.id;
-
-        //delete d[this.data.id+"viewFilterType"];
-        //d[d.id+"viewFilterType"]="custom";
-
-        if( d.data.calculate && d.data.calculate.calculateList ){
-            d.data.calculate.calculateList.each( function( entry ){
-                entry.id = (new MWF.widget.UUID).id;
-            }.bind(this));
-        }
-
-        this.designer.actions.saveStat(d, function(json){
-            this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
-            if (callback) callback();
+        }.bind(this), function(xhr, text, error){
+            this.loadViewMask.hide();
+            if (xhr.status!=0){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+            }
         }.bind(this));
-    }
-    //_setEditStyle: function(){}
+    },
+    loadViewData: function(){
+        if (this.data.buildSuccess){
+            if (this.data.id){
+                o2.require("o2.widget.Mask", null, false);
+                this.loadViewMask = new o2.widget.Mask();
+                this.loadViewMask.loadNode(this.viewAreaNode);
 
+                this.createJpqlAreaNode(function(){
+                    var jpql = this.jpqlEditor.getJpql();
+                    this.runJpql(jpql);
+                }.bind(this));
+            }
+        }
+    }
 });
+
 
 
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
@@ -450,46 +574,224 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
         this.load();
 	},
     createDomListItem: function(){
-        this.listNode = new Element("div", {"styles": this.css.cloumnListNode});
-        if (this.next){
-            this.listNode.inject(this.next.listNode, "before");
-        }else{
-            this.listNode.inject(this.domListNode);
-        }
-        var listIconNode = new Element("div", {"styles": this.css.cloumnListIconNode}).inject(this.listNode);
-        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
+	    //this.view.columnListEditTr;
+        var idx = this.view.columnListTable.rows.length;
+        this.listNode = this.view.columnListTable.insertRow(idx-1).setStyles(this.css.cloumnListNode);
+        this.listNode.insertCell().setStyles(this.css.columnListTd).set("text", this.json.name);
+        this.listNode.insertCell().setStyles(this.css.columnListTd).set("text", this.json.description);
+        this.listNode.insertCell().setStyles(this.css.columnListTd).set("text", this.json.type);
         this.resetTextNode();
+    },
+    selected: function(){
+        debugger;
+        if (this.view.currentSelectedModule){
+            if (this.view.currentSelectedModule==this){
+                return true;
+            }else{
+                if (!this.view.currentSelectedModule.unSelected()) return true;
+            }
+        }
+        this.node.setStyles(this.css.viewTitleColumnNode_selected);
+        this.listNode.setStyles(this.css.cloumnListNode_selected);
+
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+
+        this.view.currentSelectedModule = this;
+        this.isSelected = true;
+        this._showActions();
+        this.showProperty();
+    },
+    unSelected: function(){
+        if (this.checkColumn()){
+            this.resetTextNode();
+            this.view.currentSelectedModule = null;
+            //this.node.setStyles(this.css.viewTitleColumnNode);
+            if (this.isError){
+                this.node.setStyles(this.css.viewTitleColumnNode_error)
+            }else{
+                this.node.setStyles(this.css.viewTitleColumnNode)
+            }
+
+            this.listNode.setStyles(this.css.cloumnListNode);
+            this.isSelected = false;
+            this._hideActions();
+            this.hideProperty();
+            return true;
+        }
+        return false;
+    },
+    checkColumn: function(){
+        debugger;
+        var tds = this.listNode.getElements("td");
+        var nameInput = tds[0].getFirst();
+        var descriptionInput = tds[1].getFirst();
+        var select = tds[2].getFirst();
+
+        if (nameInput && nameInput.tagName.toString().toLowerCase()=="input"){
+            var name = tds[0].getFirst().get("value");
+            var description = tds[1].getFirst().get("value");
+            var type = tds[2].getFirst().options[tds[2].getFirst().selectedIndex].value;
+
+            if (name && name!==this.json.name && this.view.checkColumnName(name)){
+                if (!this.view.json.draftData.fieldList) this.view.json.draftData.fieldList = [];
+                var columnNames = this.view.json.draftData.fieldList.map(function(item){ return item.name; });
+                if ((columnNames.indexOf(name)!=-1)){
+                    this.view.designer.notice(this.view.designer.lp.duplicateName, "error");
+                    tds[0].getFirst().focus();
+                    return false;
+                }else{
+                    this.json.name = name;
+                    this.json.description = description;
+                    this.json.type = type;
+                    return true;
+                }
+            }else if (name==this.json.name){
+                this.json.name = name;
+                this.json.description = description;
+                this.json.type = type;
+                return true;
+            }else{
+                this.view.designer.notice(this.view.designer.lp.inputName, "error");
+                tds[0].getFirst().focus();
+                return false;
+            }
+        }
+        return true;
     },
 
     showProperty: function(){
-        if (!this.property){
-            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
-                "path": this.propertyPath,
-                "onPostLoad": function(){
-                    this.property.show();
-                    this.changeViewSelected();
-                }.bind(this)
-            });
-            this.property.load();
-        }else{
-            this.property.show();
-        }
+        var tds = this.listNode.getElements("td");
+        tds[0].empty();
+        tds[1].empty();
+        tds[2].empty();
+        var nameInput = new Element("input", {"styles": this.css.columnListEditModifyInput, "value": this.json.name}).inject(tds[0]);
+        var descriptionInput = new Element("input", {"styles": this.css.columnListEditModifyInput, "value": this.json.description}).inject(tds[1]);
+
+        var select = new Element("select", {"styles": this.css.columnListEditModifySelect}).inject(tds[2]);
+        //var options = '<option value=""></option>';
+        var options = '<option '+((this.json.type=='string') ? 'selected' : '')+' value="string">string</option>';
+        options += '<option '+((this.json.type=='integer') ? 'selected' : '')+' value="integer">integer</option>';
+        options += '<option '+((this.json.type=='long') ? 'selected' : '')+' value="long">long</option>';
+        options += '<option '+((this.json.type=='double') ? 'selected' : '')+' value="double">double</option>';
+        options += '<option '+((this.json.type=='boolean') ? 'selected' : '')+' value="boolean">boolean</option>';
+        options += '<option '+((this.json.type=='date') ? 'selected' : '')+' value="date">date</option>';
+        options += '<option '+((this.json.type=='time') ? 'selected' : '')+' value="time">time</option>';
+        options += '<option '+((this.json.type=='dateTime') ? 'selected' : '')+' value="dateTime">dateTime</option>';
+        options += '<option '+((this.json.type=='stringList') ? 'selected' : '')+' value="stringList">stringList</option>';
+        options += '<option '+((this.json.type=='integerList') ? 'selected' : '')+' value="integerList">integerList</option>';
+        options += '<option '+((this.json.type=='longList') ? 'selected' : '')+' value="longList">longList</option>';
+        options += '<option '+((this.json.type=='doubleList') ? 'selected' : '')+' value="doubleList">doubleList</option>';
+        options += '<option '+((this.json.type=='booleanList') ? 'selected' : '')+' value="booleanList">booleanList</option>';
+        options += '<option '+((this.json.type=='stringLob') ? 'selected' : '')+' value="stringLob">stringLob</option>';
+        options += '<option '+((this.json.type=='stringMap') ? 'selected' : '')+' value="stringMap">stringMap</option>';
+        select.set("html", options);
+
+        nameInput.focus();
+
+        select.addEvents({
+            "change": function(e){
+                if (this.checkColumn()) this.resetColumnTextNode();
+            }.bind(this),
+            "click": function(e){e.stopPropagation()}
+        });
+        nameInput.addEvents({
+            "keydown": function(e){ if (e.code==13) if (this.checkColumn()) this.resetColumnTextNode(); }.bind(this),
+            "change": function(e){ if (this.checkColumn()) this.resetColumnTextNode(); }.bind(this),
+            "click": function(e){e.stopPropagation()}
+        });
+        descriptionInput.addEvents({
+            "keydown": function(e){ if (e.code==13) if (this.checkColumn()) this.resetColumnTextNode(); }.bind(this),
+            "change": function(e){ if (this.checkColumn()) this.resetColumnTextNode(); }.bind(this),
+            "click": function(e){e.stopPropagation()}
+        });
     },
+    hideProperty: function(){
+        var tds = this.listNode.getElements("td");
+        tds[0].empty().set("text", this.json.name);
+        tds[1].empty().set("text", this.json.description);
+        tds[2].empty().set("text", this.json.type);
+    },
+    resetColumnTextNode: function(){
+        var text = (this.json.description) ? this.json.name+"("+this.json.description+")" : this.json.name;
+        this.textNode.set("text", text);
+    },
+    resetTextNode: function(){
+        var text = (this.json.description) ? this.json.name+"("+this.json.description+")" : this.json.name;
 
-    _setEditStyle: function(name, input, oldValue){
-        if (name=="displayName") this.resetTextNode();
-        if (name=="column") this.checkColumn();
-        if (name=="view"){
-            if (this.json.view!=oldValue){
-                this.view.viewContentBodyNode.empty();
-                this.view.designer.actions.getView(this.json.view, function(view){
-                    this.queryView = JSON.decode(view.data.data);
-                }.bind(this), null, false);
+        this.textNode.set("text", text);
+        this.listNode.getFirst().set("text", this.json.name);
+        this.listNode.getFirst().getNext().set("text", this.json.description);
+        this.listNode.getLast().set("text", this.json.type);
+    },
+    "delete": function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.view.designer.confirm("warn", e, MWF.APPDTBD.LP.deleteColumnTitle, MWF.APPDTBD.LP.deleteColumn, 300, 120, function(){
+            _self.destroy();
 
-                this.changeViewSelected();
-                //this.checkViewAndColumn();
-            }
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    destroy: function(){
+        if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
+        if (this.actionArea) this.actionArea.destroy();
+        if (this.listNode) this.listNode.destroy();
+        if (this.property) this.property.propertyContent.destroy();
+
+        var idx = this.view.items.indexOf(this);
+
+        if (this.view.viewContentTableNode){
+            var trs = this.view.viewContentTableNode.getElements("tr");
+            trs.each(function(tr){
+                tr.deleteCell(idx);
+            }.bind(this));
         }
+
+        if (this.view.json.draftData.fieldList) this.view.json.draftData.fieldList.erase(this.json);
+        this.view.items.erase(this);
+        this.areaNode.destroy();
+        this.view.selected();
+        this.view.setViewWidth();
+        MWF.release(this);
+        delete this;
+    },
+    addColumn: function(e, data){
+        var json;
+        if (!data){
+            if (!this.view.json.draftData.fieldList) this.view.json.draftData.fieldList = [];
+            var columnNames = this.view.json.draftData.fieldList.map(function(item){ return item.name; });
+            var name = "column";
+            var i=1;
+            while(columnNames.indexOf(name)!=-1){
+                name = "column"+i;
+                i++;
+            }
+            json = {
+                "name": name,
+                "type":"string",
+                "description": this.view.designer.lp.newColumn
+            };
+        }else{
+            json = data;
+        }
+
+        this.view.json.draftData.fieldList.push(json);
+        var column = new MWF.xApplication.query.TableDesigner.Table.Column(json, this.view, this);
+        this.view.items.push(column);
+        column.selected();
+
+        if (this.view.viewContentTableNode){
+            var trs = this.view.viewContentTableNode.getElements("tr");
+            trs.each(function(tr){
+                new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr)
+            }.bind(this));
+            //this.setContentColumnWidth();
+        }
+        this.view.setViewWidth();
+        this.view.addColumnNode.scrollIntoView(true);
     },
 
     _createIconAction: function(){
@@ -510,193 +812,284 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
                 "title": MWF.APPDVD.LP.action["delete"]
             });
         }
+    }
+});
+
+MWF.xApplication.query.TableDesigner.Table.DataLine = new Class({
+    initialize: function(data, table){
+        this.table = table;
+        this.lineData = data;
+        this.tableData = this.table.data;
+        this.tableContentTableNode = this.table.viewContentTableNode;
+        this.css = this.table.css;
+        this.load();
     },
 
-    resetTextNode: function(){
-        var text = (this.json.description) ? this.json.name : this.json.name+"("+this.json.description+")";
-        var listText = (this.json.description) ? this.json.name+"("+this.json.description+")" : this.json.name;
-        listText += " - "+this.json.type;
+    load: function(){
+        this.tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.tableContentTableNode);
 
-        this.textNode.set("text", text);
-        this.listNode.getLast().set("text", listText);
+        this.tableData.draftData.fieldList.each(function(c, i){
+            var d = this.lineData[c.name];
+            var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.tr);
+            td.store("field", c);
 
-        if (this.view.property) this.view.property.loadStatColumnSelect();
-    },
-    "delete": function(e){
-        var _self = this;
-        if (!e) e = this.node;
-        this.view.designer.confirm("warn", e, MWF.APPDSTD.LP.notice.deleteColumnTitle, MWF.APPDSTD.LP.notice.deleteColumn, 300, 120, function(){
-            _self.destroy();
+            if (d!=undefined){
 
-            this.close();
-        }, function(){
-            this.close();
-        }, null);
-    },
-
-    addColumn: function(e, data){
-        MWF.require("MWF.widget.UUID", function(){
-            var json;
-            if (data){
-                json = Object.clone(data);
-                json.id = (new MWF.widget.UUID).id;
-                json.column = (new MWF.widget.UUID).id;
+                var t = o2.typeOf(d);
+                switch (t){
+                    case "array":
+                        td.store("data", d);
+                        td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>[...]</div>");
+                        break;
+                    case "object":
+                        td.store("data", d);
+                        td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>{...}</div>");
+                        break;
+                    default:
+                        td.set("text", d);
+                }
             }else{
-                var id = (new MWF.widget.UUID).id;
-                json = {
-                    "id": id,
-                    "column": "",
-                    "displayName": this.view.designer.lp.unnamed,
-                    "calculateType": "sum",
-                    "orderType": "original",
-                    "orderEffectType": "key"
-                };
+                switch (c.type){
+                    case "stringList":
+                    case "integerList":
+                    case "longList":
+                    case "doubleList":
+                    case "booleanList":
+                        td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>[...]</div>");
+                        break;
+                    case "stringLob":
+                        td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>...</div>");
+                        break;
+                    case "stringMap":
+                        td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>{...}</div>");
+                        break;
+                    default:
+                        td.set("text", "");
+                }
             }
 
-            var idx = this.view.json.data.calculate.calculateList.indexOf(this.json);
-            this.view.json.data.calculate.calculateList.splice(idx, 0, json);
-
-            var column = new MWF.xApplication.query.StatDesigner.Stat.Column(json, this.view, this);
-            this.view.items.splice(idx, 0, column);
-            column.selected();
-            if (this.view.property) this.view.property.loadStatColumnSelect();
-
-            if (this.view.viewContentTableNode){
-                var trs = this.view.viewContentTableNode.getElements("tr");
-                trs.each(function(tr){
-                    var td = tr.insertCell(idx);
-                    td.setStyles(this.css.viewContentTdNode);
+            if (td.getFirst()){
+                td.getFirst().addEvent("click", function(e){
+                    this.getFieldValue(e.target.getParent());
                 }.bind(this));
             }
-            this.view.setViewWidth();
-
         }.bind(this));
     },
+    createObjectValueDlg: function(target){
+        var div = new Element("div", {"styles": {"margin": "10px 10px 0px 10px", "padding": "5px", "overflow": "hidden"}});
+        //var node = new Element("div", {"styles": {"margin": "10px 10px 0px 10px", "padding": "5px", "overflow": "hidden"}}).inject(div);
+        var p = target.getPosition(this.table.designer.content);
+        var s = target.getSize();
+        var size = this.table.designer.content.getSize();
+        var top = p.y;
+        var left = (p.x+s.x/2)-180;
+        if (top+400+10>size.y) top = size.y-400-10;
+        if (left+360+10>size.x) left = size.x-360-10;
+        if (top<10) top = 10;
+        if (left<10) left = 10;
+        var fromTop = p.y+s.y/2;
+        var fromLeft = p.x+s.x/2;
 
-    _setNodeMove: function(droppables, e){
-        this._setMoveNodePosition(e);
-        var movePosition = this.moveNode.getPosition();
-        var moveSize = this.moveNode.getSize();
-        var contentPosition = this.content.getPosition();
-        var contentSize = this.content.getSize();
-
-        var nodeDrag = new Drag.Move(this.moveNode, {
-            "droppables": droppables,
-            "limit": {
-                "x": [contentPosition.x, contentPosition.x+contentSize.x],
-                "y": [movePosition.y, movePosition.y+moveSize.y]
-            },
-            "onEnter": function(dragging, inObj){
-                if (!this.moveFlagNode) this.createMoveFlagNode();
-                this.moveFlagNode.inject(inObj, "before");
-            }.bind(this),
-            "onLeave": function(dragging, inObj){
-                if (this.moveFlagNode){
-                    this.moveFlagNode.dispose();
+        var options ={
+            "content": div,
+            "isTitle": false,
+            "container": this.table.designer.content,
+            "width": 360,
+            "height": 400,
+            "top": top,
+            "left": left,
+            "fromTop": fromTop,
+            "fromLeft": fromLeft,
+            "buttonList": [
+                {
+                    "text": this.table.designer.lp.close,
+                    "action": function(){dlg.close();}.bind(this)
                 }
-            }.bind(this),
-            "onDrop": function(dragging, inObj){
-                if (inObj){
-                    this.areaNode.inject(inObj, "before");
-                    var column = inObj.retrieve("column");
-                    this.listNode.inject(column.listNode, "before");
-                    var idx = this.view.json.data.calculate.calculateList.indexOf(column.json);
-
-                    this.view.json.data.calculate.calculateList.erase(this.json);
-                    this.view.items.erase(this);
-
-                    this.view.json.data.calculate.calculateList.splice(idx, 0, this.json);
-                    this.view.items.splice(idx, 0, this);
-
-                    if (this.moveNode) this.moveNode.destroy();
-                    if (this.moveFlagNode) this.moveFlagNode.destroy();
-                    this._setActionAreaPosition();
-                }else{
-                    if (this.moveNode) this.moveNode.destroy();
-                    if (this.moveFlagNode) this.moveFlagNode.destroy();
-                }
-            }.bind(this),
-            "onCancel": function(dragging){
-                if (this.moveNode) this.moveNode.destroy();
-                if (this.moveFlagNode) this.moveFlagNode.destroy();
-            }.bind(this)
-        });
-        nodeDrag.start(e);
+            ]
+        }
+        var dlg = o2.DL.open(options);
+        return dlg;
     },
-    changeViewSelected: function(json){
+    getFieldValue: function(node){
+        var field = node.retrieve("field")
+        this.loadFieldValue(field.name, function(){
+            var value = this.lineData[field.name];
+            var dlg = this.createObjectValueDlg(node);
+            var listNode = dlg.content.getFirst();
 
-        if (json){
-            this.changeViewColumnOptions(json);
-        }else{
-            if (this.json.view){
-                if (!this.queryView){
-                    this.view.designer.actions.getView(this.json.view, function(view){
-                        this.queryView = JSON.decode(view.data.data);
-                        this.changeViewColumnOptions(this.queryView);
+            switch (field.type){
+                case "stringList":
+                case "integerList":
+                case "longList":
+                case "doubleList":
+                case "booleanList":
+                    o2.require("o2.widget.Arraylist", function(){
+                        var list = new o2.widget.Arraylist(listNode, {
+                            "style": "table",
+                            "title": field.name,
+                            "isAdd": false,
+                            "isDelete": false,
+                            "isModify": false
+                        });
+                        list.load(value);
                     }.bind(this));
-                }else{
-                    this.changeViewColumnOptions(this.queryView);
-                }
+                    break;
+                case "stringLob":
+                    td.set("html", "<div style='background-color:#dddddd; cursor: pointer;float: left; padding: 3px; font-size: 10px;'>...</div>");
+                    break;
+                case "stringMap":
+                    o2.require("o2.widget.Maplist", function(){
+                        var list = new o2.widget.Maplist(listNode, {
+                            "style": "table",
+                            "title": field.name,
+                            "isAdd": false,
+                            "isDelete": false,
+                            "isModify": false
+                        });
+                        list.load(value);
+                    }.bind(this));
+                    break;
+            }
+        }.bind(this));
+    },
+    loadFieldValue: function(name, callback){
+        if (name){
+            if (this.lineData[name]){
+                if (callback) callback();
             }else{
-                this.changeViewColumnOptions(json);
+                this.table.designer.actions.getRow(this.tableData.id, this.lineData.id, function(json){
+                    this.lineData = json.data;
+                    if (callback) callback();
+                }.bind(this));
             }
         }
+    }
+});
+
+MWF.xApplication.query.TableDesigner.Table.JPQLRunner = new Class({
+    initialize: function(node, runNode, table){
+        this.table = table;
+        this.node = node;
+        this.runNode = runNode;
+        this.css = this.table.css;
+        this.lp = this.table.designer.lp;
+        //this.select = select;
     },
-    changeViewColumnOptions: function(json){
-        if (this.property){
-            var nodes = this.property.propertyContent.getElements(".MWFViewColumnSelect");
-            nodes.each(function(node){
-                node.empty();
-                if (json){
-                    new Element("option", {
-                        "value": "",
-                        "text": "(none)",
-                        "selected": (!this.json.column)
-                    }).inject(node);
-                    json.selectList.each(function(col){
-                        var o = new Element("option", {
-                            "value": col.column,
-                            "text": col.displayName,
-                            "selected": (col.column==this.json.column)
-                        }).inject(node);
-                    }.bind(this));
-                }else{
-                    this.json.column = "";
-                }
+    load: function(callback){
+        this.optionArea = new Element("div", {"styles": this.css.jpqlOptionArea}).inject(this.node);
+        //this.contentArea = new Element("div", {"styles": this.css.jpqlContentArea}).inject(this.node);
+        this.contentWhereArea = new Element("div", {"styles": this.css.jpqlContentWhereArea}).inject(this.node);
+        this.loadOptions();
+        //this.loadSelectEditor(callback);
+        this.loadEditor(callback);
+    },
+    loadOptions: function(){
+        var html = "<table cellpadding='0' cellspacing='0' style='height:30px'><tr>";
+        html += "<td style='padding: 0 5px'>"+this.lp.jpqlType+"</td>";
+        html += "<td style='padding: 0 5px'><select><option value='select'>select</option><option value='update'>update</option><option value='delete'>delete</option></select></td>";
+        html += "<td style='padding: 0 5px'>"+this.lp.jpqlFromResult+"</td>";
+        html += "<td style='padding: 0 5px'><input type='number' value='1'/></td>";
+        html += "<td style='padding: 0 5px'>"+this.lp.jpqlMaxResult+"</td>";
+        html += "<td style='padding: 0 5px'><input type='number' value='50'/></td>";
+        // html += "<td style='padding: 0 5px'>"+this.lp.jpqlSelectTitle+"</td>";
+        // html += "<td style='padding: 0 5px'><input readonly type='text' value='"+this.select+"'/></td>";
+        // html += "<td style='padding: 0 5px'>"+this.lp.inputWhere+"</td>";
+        html += "</tr></table>";
+        this.optionArea.set("html", html);
+        this.jpqlTypeSelect = this.optionArea.getElement("select");
+        var inputs = this.optionArea.getElements("input");
+        this.fromResultInput = inputs[0];
+        this.maxResultsInput = inputs[1];
+        this.jpqlTypeSelect.setStyles(this.css.jpqlTypeSelect);
+        this.fromResultInput.setStyles(this.css.jpqlOptionInput);
+        this.maxResultsInput.setStyles(this.css.jpqlOptionInput);
+
+        this.jpqlTypeSelect.addEvent("change", function(){
+            var type = this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].value;
+            this.changeType(type, true);
+        }.bind(this));
+        // inputs[2].setStyles(this.css.jpqlOptionInput);
+        // inputs[2].setStyle("width", "200px")
+    },
+    // loadSelectEditor: function(){
+    //     this.contentArea.set("text", this.select);
+    //     o2.require("o2.widget.ace", function(){
+    //         o2.widget.ace.load(function(){
+    //             o2.load("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+    //                 var highlight = ace.require("ace/ext/static_highlight");
+    //                 highlight(this.contentArea, {mode: "ace/mode/jql", theme: "ace/theme/tomorrow", "fontSize": 16});
+    //             }.bind(this));
+    //         }.bind(this));
+    //     }.bind(this));
+    // },
+    loadEditor: function(callback){
+        o2.require("o2.widget.JavascriptEditor", function(){
+            this.editor = new o2.widget.JavascriptEditor(this.contentWhereArea, {"title": "JPQL", "option": {"mode": "sql"}});
+            this.editor.load(function(){
+                this.editor.editor.on("change", function(){
+                    this.checkJpqlType();
+                }.bind(this));
+                if (callback) callback();
             }.bind(this));
-        }
+        }.bind(this), false);
     },
-    checkColumn: function(){
-        var flag = true;
-        if (!this.queryView){
-            if (this.json.view){
-                this.view.designer.actions.getView(this.json.view, function(view){
-                    this.queryView = JSON.decode(view.data.data);
-                }.bind(this), null, false);
+    checkJpqlType: function(){
+        var str = this.editor.editor.getValue();
+        var jpql_select = /^select/i;
+        var jpql_update = /^update/i;
+        var jpql_delete = /^delete/i;
+        if (jpql_select.test(str)) return this.changeType("select");
+        if (jpql_update.test(str)) return this.changeType("update");
+        if (jpql_delete.test(str)) return this.changeType("delete");
+    },
+    changeType: function(type, force){
+        if (type != this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].value || force){
+            for (var i=0; i<this.jpqlTypeSelect.options.length; i++){
+                if (this.jpqlTypeSelect.options[i].value==type){
+                    this.jpqlTypeSelect.options[i].set("selected", true);
+                    break;
+                }
+            }
+            if (type!="select"){
+                var tds = this.optionArea.getElements("td");
+                tds[2].hide();
+                tds[3].hide();
+                tds[4].hide();
+                tds[5].hide();
             }else{
-                this.errorMark();
-                return false;
+                var tds = this.optionArea.getElements("td");
+                tds[2].show();
+                tds[3].show();
+                tds[4].show();
+                tds[5].show();
             }
         }
-
-        var col = this.queryView.selectList.filter(function(c){
-            return (c.column==this.json.column);
-        }.bind(this));
-        if (!col.length){
-            this.errorMark();
-            flag = false;
-        }else{
-            this.errorMark(true);
-        }
-        return flag;
     },
-    errorMark: function(flag){
-        if (flag){
-            this.isError = false;
-            if (!this.isSelected) this.node.setStyles(this.css.viewTitleColumnNode);
-        }else{
-            this.isError = true;
-            if (!this.isSelected) this.node.setStyles(this.css.viewTitleColumnNode_error);
+    setJpql: function(type, jpql, firstResult, maxResults){
+        if (this.editor){
+            if (this.editor.editor) this.editor.editor.setValue(jpql);
+        }
+        if (this.jpqlTypeSelect){
+            for (var i=0; i<this.jpqlTypeSelect.options.length; i++){
+                if (this.jpqlTypeSelect.options[i].value==type.toString().toLowerCase()){
+                    this.jpqlTypeSelect.options[i].set("selected", true);
+                    break;
+                }
+            }
+        }
+        if (this.fromResultInput) this.fromResultInput.set("value", firstResult);
+        if (this.maxResultsInput) this.maxResultsInput.set("value", maxResults);
+    },
+    getJpql: function(){
+        var jpql = this.editor.editor.getValue();
+        var type = this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].get("value");
+        var fromResult = this.fromResultInput.get("value");
+        var maxResults = this.maxResultsInput.get("value");
+        return {
+            "data": jpql,
+            "type": type,
+            "firstResult": fromResult.toInt(),
+            "maxResults": maxResults.toInt()
         }
     }
 });

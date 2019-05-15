@@ -722,7 +722,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 "<div styles='bindTipArea'>"+
                 "   <div styles='bindTipIconArea'></div>" +
                 "   <div styles='bindTipTextArea'>"+
-                "       <div>打开<div styles='bindTipLinkArea'>O2APP</div>扫一扫</div>" +
+                "       <div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>" +
                 "       <div>登录网页版</div>" +
                 "</div>";
 
@@ -768,8 +768,11 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             this.options.height = parseInt(this.options.height) + this.oauthArea.getSize().y ;
             this.isPlusOauthSize = true;
         }
-        if( !this.captchaLogin ){
+        if( this.oauthListNode || (!this.captchaLogin && !this.bindLogin) ){ //留高度给二维码
             this.options.height = this.options.height - 60;
+        }
+        if( this.oauthListNode && this.captchaLogin ){
+            this.options.height = this.options.height + 60;
         }
     },
     loadOauthContent : function(){

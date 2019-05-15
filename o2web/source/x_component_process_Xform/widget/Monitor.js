@@ -76,7 +76,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (!this.process){
             this.logProcessChartNode.empty();
             this.loadToolbar();
-            this.paperNode =  new Element("div", {"styles": this.css.paperNode}).inject(this.logProcessChartNode);
+            this.paperNode =  new Element("div", {"styles": (layout.mobile) ? this.css.paperNodeMobile : this.css.paperNode}).inject(this.logProcessChartNode);
             //this.paperNode.addEvent("scroll", function(){
             //    this.setCountNodePosition();
             //}.bind(this));
@@ -111,6 +111,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     },
 
     logPlay: function(){
+        debugger;
         if (this.process){
             this.isPlaying = true;
             this.toolbar.childrenButton[0].setDisable(true);
@@ -158,8 +159,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
     },
     playMoveByRoutePoint: function(points, callback){
+        debugger;
         var p = {"x": this.playIcon.attr("x").toFloat(), "y": this.playIcon.attr("y").toFloat()};
         var toP = points.shift();
+
         var d = MWFRaphael.getPointDistance(p, toP);
         var ms = d/0.2;
 
@@ -256,6 +259,15 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         MWFRaphael.load(function(){
             this.paperInNode =  new Element("div", {"styles": this.css.paperInNode}).inject(this.paperNode);
             this.paper = Raphael(this.paperInNode, "98%", "99%");
+            if (layout.mobile){
+                var s = this.paper.canvas.getSize();
+                var x = s.x*2;
+                var y = s.y*2;
+                this.paper.canvas.set({
+                    "viewBox": "0 0 "+x+" "+y+"",
+                    "preserveAspectRatio": "xMinYMin meet"
+                });
+            }
             this.paper.container = this.paperNode;
 
             MWF.xDesktop.requireApp("process.ProcessDesigner", "Process", function(){

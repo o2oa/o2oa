@@ -83,7 +83,8 @@
     "text": "流程回溯",
     "id": "action_rollback",
     "control": "allowRollback",
-    "condition": ""
+    "condition": "",
+    "read": true
   },
   {
     "type": "MWFToolBarButton",
@@ -104,6 +105,17 @@
     "text": "打印",
     "id": "action_print",
     "control": "",
+    "condition": "",
+    "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "press.png",
+    "title": "催促办理",
+    "action": "pressWork",
+    "text": "催促办理",
+    "id": "action_press",
+    "control": "allowPress",
     "condition": "",
     "read": true
   }

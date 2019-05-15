@@ -42,6 +42,14 @@
                 <td class="editTableTitle">图标:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">新建检查:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
+                    <br/>(选择“是”：未保存过的流程实例不会保留)
+                </td>
+            </tr>
         </table>
     </div>
     <div title="编号"  class="MWFTab">

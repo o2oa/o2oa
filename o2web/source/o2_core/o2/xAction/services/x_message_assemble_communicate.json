@@ -3,5 +3,14 @@
   "delete": {"uri": "/jaxrs/mass/{id}", "method": "DELETE"},
   "get": {"uri": "/jaxrs/mass/{id}"},
   "list": {"uri": "/jaxrs/mass/list/{id}/next/{count}"},
-  "enableType": {"uri": "/jaxrs/mass/enable/type"}
+  "enableType": {"uri": "/jaxrs/mass/enable/type"},
+
+  "mqList": {"uri": "/jaxrs/consume/list/{consume}/count/{count}"},
+  "mqUpdate": {"uri": "/jaxrs/consume/type/{type}", "method": "PUT"},
+  "mqUpdateSingle": {"uri": "/jaxrs/consume/{id}/type/{type}"},
+
+  "messageListAll": {"uri": "/jaxrs/consume/list/{consume}/count/{count}"},
+  "messageList": {"uri": "/jaxrs/consume/list/{consume}/currentperson/count/{count}"},
+  "messageUpdate": {"uri": "/jaxrs/consume/type/{type}", "method": "PUT"},
+  "messageUpdateSingle": {"uri": "/jaxrs/consume/{id}/type/{type}"}
 }

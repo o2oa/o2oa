@@ -27,12 +27,14 @@ MWF.xApplication.Meeting.WeekView = new Class({
     },
 
     resetNodeSize: function(){
-        if( this.app.inContainer )return;
+
         var size = this.container.getSize();
         var y = size.y-60;
 
         this.node.setStyle("height", ""+y+"px");
-        this.node.setStyle("margin-top", "60px");
+        if( !this.app.inContainer  ){
+            this.node.setStyle("margin-top", "60px");
+        }
 
 
         var sideBarSize = this.app.sideBar ?  this.app.sideBar.getSize() : { x : 0, y:0 };
@@ -209,7 +211,7 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
         return date.decrement("day", decrementDay);
     },
     resetBodySize: function(){
-        if( this.app.inContainer )return;
+        //if( this.app.inContainer )return;
         var size = this.container.getSize();
         var titleSize = this.titleNode.getSize();
         var y = size.y-titleSize.y;

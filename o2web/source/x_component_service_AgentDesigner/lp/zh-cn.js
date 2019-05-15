@@ -14,6 +14,8 @@ MWF.xApplication.service.AgentDesigner.LP = {
         "cron" : "定时任务corn表达式",
         "lastStartTime" : "最近开始时间",
         "lastEndTime" : "最近结束时间",
+        "appointmentTime" : "预计下次执行时间",
+
         "true" : "是",
         "false" : "否",
         "enable" : "点击启用",

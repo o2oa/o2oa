@@ -25,7 +25,7 @@ MWF.xApplication.process.FormDesigner.Module.Htmleditor = MWF.FCHtmleditor = new
 	
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
-			"MWFType": "itmleditor",
+			"MWFType": "htmleditor",
 			"id": this.json.id,
 			"styles": this.css.moduleNodeMove,
 			"events": {

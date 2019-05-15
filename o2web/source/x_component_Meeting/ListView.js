@@ -45,6 +45,7 @@ MWF.xApplication.Meeting.ListView = new Class({
         //    this.node.setStyle("height", ""+y+"px");
         //}
 
+        //if( this.app.inContainer )return;
         var size = this.container.getSize();
         var y = size.y-60;
         this.node.setStyle("margin-top", "60px");
@@ -136,20 +137,30 @@ MWF.xApplication.Meeting.ListView = new Class({
     },
     show: function(){
         this.node.setStyles(this.css.node);
-        var fx = new Fx.Morph(this.node, {
-            "duration": "800",
-            "transition": Fx.Transitions.Expo.easeOut
-        });
-        this.app.fireAppEvent("resize");
-        fx.start({
-            "opacity": 1,
-            "left": "0px"
-        }).chain(function(){
+
+        if( this.app.inContainer ){
             this.node.setStyles({
+                "opacity": 1,
                 "position": "static",
                 "width": "auto"
             });
-        }.bind(this));
+        }else{
+            var fx = new Fx.Morph(this.node, {
+                "duration": "800",
+                "transition": Fx.Transitions.Expo.easeOut
+            });
+            this.app.fireAppEvent("resize");
+            fx.start({
+                "opacity": 1,
+                "left": "0px"
+            }).chain(function(){
+                this.node.setStyles({
+                    "position": "static",
+                    "width": "auto"
+                });
+            }.bind(this));
+        }
+
     },
     reload: function(){
         this.app.reload();

@@ -97,7 +97,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 if (option.withCredentials===false){
                     credentials = false;
                 }
-                res = MWF.restful(method, uri, data, callback, async, credentials);
+                res = MWF.restful(method, uri, data, callback, async, credentials, option.cache);
             }
         }.bind(this));
         return res

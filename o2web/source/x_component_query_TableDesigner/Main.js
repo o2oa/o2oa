@@ -85,20 +85,24 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
         });
     },
     //打开数据表
-    loadViewByData: function(node, e){
+    loadTableByData: function(node, e){
         var table = node.retrieve("table");
-        if (openNew){
-            var _self = this;
-            var options = {
-                "onQueryLoad": function(){
-                    this.actions = _self.actions;
-                    this.category = _self;
-                    this.options.id = table.id;
-                    this.application = _self.application;
-                    this.explorer = _self.explorer;
-                }
-            };Table
-            this.desktop.openApplication(e, "query.TableDesigner", options);
+        if (!table.isNewTable){
+            var openNew = true;
+            if (openNew){
+                var _self = this;
+                var options = {
+                    "appId": "query.TableDesigner"+table.id,
+                    "onQueryLoad": function(){
+                        this.actions = _self.actions;
+                        this.category = _self;
+                        this.options.id = table.id;
+                        this.application = _self.application;
+                        this.explorer = _self.explorer;
+                    }
+                };
+                this.desktop.openApplication(e, "query.TableDesigner", options);
+            }
         }
     },
 	
@@ -137,7 +141,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
 		this.actions.getTable(id, function(json){
 			if (json){
 				var data = json.data;
-                data.data = JSON.decode(data.data);
+                data.draftData = JSON.decode(data.draftData);
 
                 if (!this.application){
                     this.actions.getApplication(data.query, function(json){
@@ -154,20 +158,42 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     saveView: function(){
         this.view.save(function(){
             var name = this.view.data.name;
-            this.setTitle(MWF.APPDSTD.LP.title + "-"+name);
+            this.setTitle(MWF.APPDTBD.LP.title + "-"+name);
             this.options.desktopReload = true;
             this.options.id = this.view.data.id;
         }.bind(this));
     },
-    saveViewAs: function(){
-        this.view.saveAs();
+    statusBuild: function(){
+        this.view.statusBuild();
 	},
-    dictionaryExplode: function(){
-        this.view.explode();
+    statusDraft: function(){
+        this.view.statusDraft();
     },
-    dictionaryImplode: function(){
-        this.view.implode();
+    buildAllView: function(){
+        this.view.buildAllView();
+    },
+    tableHelp: function(){
+        var content = new Element("div", {"styles": {"margin": "20px"}});
+        content.set("html", this.lp.tableHelp);
+        o2.DL.open({
+            "title": "table help",
+            "content": content,
+            "width": 500,
+            "height": 300,
+            "buttonList": [
+                {
+                    "text": "ok",
+                    "action": function(){this.close();}
+                }
+            ]
+        });
     }
+    // dictionaryExplode: function(){
+    //     this.view.explode();
+    // },
+    // dictionaryImplode: function(){
+    //     this.view.implode();
+    // }
 	//recordStatus: function(){
 	//	return {"id": this.options.id};
 	//},

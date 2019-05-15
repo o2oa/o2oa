@@ -89,25 +89,24 @@ MWF.xApplication.process.Work.Main = new Class({
         }else{
             this.loadWork();
         }
-
     },
     loadWork: function(){
         // var method = "";
-        var id = this.options.workCompletedId || this.options.workId;
+        var id = this.options.workCompletedId || this.options.workId || this.options.workid || this.options.workcompletedid;
         // var methods = {
         //     "loadWork": false,
         //     "getWorkControl": false,
         //     "getForm": false
         // };
+        debugger;
         if (id){
-            debugger;
-            MWF.Actions.invokeAsync([
+            o2.Actions.invokeAsync([
+                {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
                 {"action": this.action, "name": "loadWork"},
                 {"action": this.action, "name": "getWorkControl"},
-                {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
                 {"action": this.action, "name": "getWorkLog"},
                 {"action": this.action, "name": "listAttachments"}
-            ], {"success": function(json_work, json_control, json_form, json_log, json_att){
+            ], {"success": function(json_form, json_work, json_control, json_log, json_att){
                 if (json_work && json_control && json_form && json_log && json_att){
                     this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
                     if (this.mask) this.mask.hide();
@@ -116,7 +115,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 } else{
                     this.close();
                 }
-            }.bind(this), "failure": function(){}}, id);
+            }.bind(this), "failure": function(){}}, [id, true, true, true], id);
         }
     },
     parseData: function(workData, controlData, formData, logData, attData){

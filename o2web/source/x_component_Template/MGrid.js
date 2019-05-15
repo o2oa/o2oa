@@ -6,7 +6,7 @@ var MGrid = new Class({
         style: "default",
         isNew: false,
         isEdited: false,
-        showNotEmptyFlag : true,
+        showNotEmptyFlag : false,
         verifyType : "batch",	//batch一起校验，或alert弹出
         //batch，所有item的错误都校验，每个item所有错误一起校验，错误显示在Item的字段后或指定区域；
         //batchSingle, 所有item的错误都校验，每个item只校验一个错误，错误显示在Item的字段后或指定区域；
@@ -27,6 +27,8 @@ var MGrid = new Class({
         tableAttributes : null,
         thAttributes : null,
         tdAttributes : null,
+
+        textOnly : false,
 
         tableClass : "formTable",
         thClass : "formTableTitle",
@@ -75,8 +77,8 @@ var MGrid = new Class({
         this.trObjs_removed = null;
         this.trObjs_new = null;
 
-        this.thTemplate = null;	//属性  lable button_add
-        this.trTemplate = null; //属性 item sequence button_remove lable
+        this.thTemplate = null;	//属性  lable button_add styles class
+        this.trTemplate = null; //属性 item sequence button_remove lable styles class
 
         this.valSeparator = /,|;|\^\^|\|/g; //如果是多值对象，作为用户选择的多个值的分隔符
     },
@@ -108,23 +110,29 @@ var MGrid = new Class({
         this.trObjs_removed = {};
         this.trObjs_new = {};
         this.trList = [];
-        (this.options.isEdited || this.options.isNew) ? this.loadEdit() : this.loadRead();
+        if( this.options.textOnly ){
+            this.loadTextOnly();
+        }else{
+            (this.options.isEdited || this.options.isNew) ? this.loadEdit() : this.loadRead();
+        }
         this.fireEvent("postLoad", [this]);
 
     },
     setTrTemplate: function( template ){
         if( typeOf( template ) == "string"){
-            this.trTemplate = this.string2DOM( template )[0];
+            this.trTemplate = $(this.string2DOM( template )[0]);
         }else{
-            this.trTemplate = template;
+            this.trTemplate = $(template);
         }
+        this.formatStyles( this.trTemplate );
     },
     setThTemplate : function( template ){
         if( typeOf( template ) == "string"){
-            this.thTemplate = this.string2DOM( template )[0]
+            this.thTemplate = $(this.string2DOM( template )[0])
         }else{
-            this.thTemplate = template;
+            this.thTemplate = $(template);
         }
+        this.formatStyles( this.thTemplate );
     },
     loadEdit:function(){
         if( !this.isSourceDataEmpty ){
@@ -148,7 +156,29 @@ var MGrid = new Class({
             this.createTr( this.itemTemplate, true );
         }
     },
-    loadRead : function(){
+    loadRead:function(){
+        if( !this.isSourceDataEmpty ){
+            if( typeOf( this.data ) != "array" ){
+                this.data = [ this.data ]
+            }
+            for( var i=0; i<this.data.length; i++ ){
+                var d = this.data[i];
+                var items = this.itemTemplate;
+                for (var it in d ){
+                    if ( items[ it ] ){
+                        items[ it ].value  = d[it];
+                    }
+                }
+                this.createTr( items, false, null, d );
+            }
+            for( var it in this.itemTemplate ){
+                this.itemTemplate[it].value = "";
+            }
+        }else if( this.options.isCreateTrOnNull ){
+            this.createTr( this.itemTemplate, true );
+        }
+    },
+    loadTextOnly : function(){
         if( !this.isSourceDataEmpty ){
             if( typeOf( this.data ) != "array" ){
                 this.data = [ this.data ]
@@ -162,10 +192,10 @@ var MGrid = new Class({
                     }
                 }
                 //this.createTr( items, false );
-                this.createTr_read( items );
+                this.createTr_textOnly( items );
             }
         }else if( this.options.isCreateTrOnNull ){
-            this.createTr_read( this.itemTemplate );
+            this.createTr_textOnly( this.itemTemplate );
         }
     },
     createTable : function( itemData ){
@@ -189,76 +219,6 @@ var MGrid = new Class({
             this.fireEvent( "postCreateTable", [this] );
         }
     },
-    createTr_read : function( itemData ){
-        var self = this;
-        this.trIndex ++;
-        if( this.trTemplate ){
-            this.createTr_read_byTemplate( itemData );
-        }else{
-            this.createTr_read_noTemplate( itemData );
-        }
-    },
-    createTr_read_byTemplate : function( itemData ){
-        var tr = Object.clone( this.trTemplate );
-        tr.set( "data-id", "_"+ this.trIndex );
-        var labelContainers = tr.getElements("[lable]");
-        var itemContainers = tr.getElements("[item]");
-        var sequenceContainers = tr.getElements( "[sequence]" );
-
-        labelContainers.each(function( el ) {
-            var obj = itemData[el.get("lable")];
-            if (!obj)return;
-            if(obj.text)el.set("text", obj.text);
-        });
-
-        itemContainers.each(function( el ) {
-            var obj = itemData[el.get("item")];
-            if (!obj)return;
-            var val = obj.value ? obj.value : "";
-            if( obj.selectValue && obj.selectText ){
-                var vals = this.replaceText( val.replace(/\n/g,"<br/>"), obj.selectValue, obj.selectText );
-                val = vals.join(",");
-            }else{
-                val = val.replace(/\n/g,"<br/>").replace( this.valSeparator,"," )
-            }
-            el.set("html", val );
-        }.bind(this));
-
-        sequenceContainers.set("text", this.trIndex );
-    },
-    createTr_read_noTemplate : function( itemData ){
-        var tr = new Element("tr" , { "data-id" : "_"+this.trIndex });
-        if( this.options.hasSequence  ){
-            var td = new Element("td", { align : "center", text : this.trIndex }).inject( tr );
-            if( this.options.sequenceClass && this.css[this.options.sequenceClass] )td.setStyles(this.css[this.options.sequenceClass]);
-        }
-
-        var attr = {};
-        if( this.options.tdAlign )attr.align = this.options.tdAlign;
-
-        var idx = 1;
-        for (var it in itemData ){
-            var tdAttributes = {};
-            if(this.options.tdAttributes && this.options.tdAttributes["_"+idx] ){
-                tdAttributes = this.options.tdAttributes["_"+idx];
-            }
-            var obj = itemData[it];
-            var val = obj.value || "";
-            if( obj.selectValue && obj.selectText ){
-                var vals = this.replaceText( val.replace(/\n/g,"<br/>"), obj.selectValue, obj.selectText );
-                val = vals.join(",");
-            }else{
-                val = val.replace(/\n/g,"<br/>").replace( this.valSeparator,"," )
-            }
-            var td = new Element("td", tdAttributes).inject( tr );
-            td.set( "text", val );
-            if( this.options.tdAlign )td.set( "align" , this.options.tdAlign);
-            if( this.options.tdClass && this.css[this.options.tdClass] )td.setStyles(this.css[this.options.tdClass]);
-            idx ++;
-        }
-        tr.inject( this.table );
-
-    },
     createHead : function( itemData ){
         if( !this.options.isCreateTh )return;
         if( this.thTemplate ){
@@ -268,16 +228,22 @@ var MGrid = new Class({
         }
     },
     createHead_byTemplate : function( itemData ){
+        var showNotEmptyFlag = this.options.showNotEmptyFlag;
+        var isEdited = this.options.isEdited;
         var th = this.tableHead = this.thTemplate;
         var labelContainers = th.getElements("[lable]");
         labelContainers.each(function(el) {
-            var obj = itemData[el.get("lable")];
+            var lable = el.get("lable");
+            var obj = itemData[lable];
             if (!obj)return;
             if(obj.text)el.set("text", obj.text);
+            if( showNotEmptyFlag && itemData[lable].notEmpty && isEdited ){
+                new Element( "span" , { styles : { color : "red" }, text : "*" }).inject( el )
+            }
         });
-        if( this.options.hasOperation && this.options.isEdited ){
+        if( this.options.hasOperation && isEdited ){
             var add_button = th.getElement("[button_add]");
-            this.createAddButton( add_button );
+            if( add_button )this.createAddButton( add_button );
         }
         th.inject( this.table );
     },
@@ -301,7 +267,7 @@ var MGrid = new Class({
             }
 
             var th = new Element("th").inject(tr);
-            if( this.options.showNotEmptyFlag && this.itemTemplate[it].notEmpty ){
+            if( this.options.showNotEmptyFlag && this.itemTemplate[it].notEmpty && this.options.isEdited ){
                 new Element( "span" , { styles : { color : "red", text : "*" } }).inject( th )
             }
             th.set( align );
@@ -420,10 +386,11 @@ var MGrid = new Class({
         this.fireEvent("postCreateTr",[this, trObj]);
     },
     replaceTr : function( oldTrObjOr_Index, data, isNew, unid, sourceData ){
+        var oldTrObj;
         if( typeof oldTrObjOr_Index == "string" ){ //如果传入的是  _index
-            var oldTrObj = this.trObjs[ oldTrObjOr_Index ];
+            oldTrObj = this.trObjs[ oldTrObjOr_Index ];
         }else{
-            var oldTrobj = oldTrObjOr_Index;
+            oldTrObj = oldTrObjOr_Index;
         }
         var itemData = this.itemTemplate;
         for (var it in data ){
@@ -532,6 +499,85 @@ var MGrid = new Class({
         }
         return vals;
     },
+
+
+    createTr_textOnly : function( itemData ){
+        var self = this;
+        this.trIndex ++;
+        if( this.trTemplate ){
+            this.createTr_textOnly_byTemplate( itemData );
+        }else{
+            this.createTr_textOnly_noTemplate( itemData );
+        }
+    },
+    createTr_textOnly_byTemplate : function( itemData ){
+        var tr = this.trTemplate.clone();
+        tr.set( "data-id", "_"+ this.trIndex );
+        var labelContainers = tr.getElements("[lable]");
+        var itemContainers = tr.getElements("[item]");
+        var sequenceContainers = tr.getElements( "[sequence]" );
+
+        labelContainers.each(function( el ) {
+            var obj = itemData[el.get("lable")];
+            if (!obj)return;
+            if(obj.text)el.set("text", obj.text);
+        });
+
+        itemContainers.each(function( el ) {
+            var obj = itemData[el.get("item")];
+            if (!obj)return;
+            var val = obj.value ? obj.value : "";
+            var valtype = typeOf( val );
+            if( valtype === "string" )val = val.replace(/\n/g,"<br/>");
+            if( obj.selectValue && obj.selectText ){
+                var vals = this.replaceText( val, obj.selectValue, obj.selectText );
+                val = vals.join(",");
+            }else{
+                if( valtype === "string" )val = val.replace( this.valSeparator,"," );
+            }
+            el.set("html", val );
+        }.bind(this));
+
+        sequenceContainers.set("text", this.trIndex );
+
+        tr.inject( this.table );
+    },
+    createTr_textOnly_noTemplate : function( itemData ){
+        var tr = new Element("tr" , { "data-id" : "_"+this.trIndex });
+        if( this.options.hasSequence  ){
+            var td = new Element("td", { align : "center", text : this.trIndex }).inject( tr );
+            if( this.options.sequenceClass && this.css[this.options.sequenceClass] )td.setStyles(this.css[this.options.sequenceClass]);
+        }
+
+        var attr = {};
+        if( this.options.tdAlign )attr.align = this.options.tdAlign;
+
+        var idx = 1;
+        for (var it in itemData ){
+            var tdAttributes = {};
+            if(this.options.tdAttributes && this.options.tdAttributes["_"+idx] ){
+                tdAttributes = this.options.tdAttributes["_"+idx];
+            }
+            var obj = itemData[it];
+            var val = obj.value || "";
+            var valtype = typeOf( val );
+            if( valtype === "string" )val = val.replace(/\n/g,"<br/>");
+            if( obj.selectValue && obj.selectText ){
+                var vals = this.replaceText( val, obj.selectValue, obj.selectText );
+                val = vals.join(",");
+            }else{
+                if( valtype === "string" )val = val.replace( this.valSeparator,"," )
+            }
+            var td = new Element("td", tdAttributes).inject( tr );
+            td.set( "text", val );
+            if( this.options.tdAlign )td.set( "align" , this.options.tdAlign);
+            if( this.options.tdClass && this.css[this.options.tdClass] )td.setStyles(this.css[this.options.tdClass]);
+            idx ++;
+        }
+        tr.inject( this.table );
+
+    },
+
     getResult : function( verify, separator, isAlert, onlyModified, keepAllData ){
         var result = [];
         var trObjs = this.trObjs;
@@ -610,7 +656,21 @@ var MGrid = new Class({
             div.dispose();
             return el;
         }
-    }
+    },
+    formatStyles: function( container ){
+        container.getElements("[styles]").each(function(el){
+            var styles = el.get("styles");
+            if( styles && this.css[styles] ){
+                el.setStyles( this.css[styles] )
+            }
+        }.bind(this));
+        container.getElements("[class]").each(function(el){
+            var className = el.get("class");
+            if( className && this.css[className] ){
+                el.setStyles( this.css[className] )
+            }
+        }.bind(this))
+    },
 });
 
 var MGridTr = new Class({
@@ -643,47 +703,52 @@ var MGridTr = new Class({
         this.app = this.parent.app;
     },
     load:function(){
-        if( this.options.isEdited ){
-            this.create_Edit();
-        }else{
-            this.create_Read();
-        }
+        //if( this.options.isEdited ){
+        //    this.create_Edit();
+        //}else{
+        //    this.create_Read();
+        //}
+        this.create();
     },
-    create_Read : function(){
-        var tr = this.mElement = new Element("tr", { "data-id" : this.options.id }).inject(this.container);
-
-        var attr = {};
-        if( this.options.align )attr.align = this.options.align;
-
-        var styles = {};
-        if( this.options.className && this.css[this.options.className] )styles = this.css[this.options.className];
-
-        if( this.options.hasSequence  ){
-            var td = this.sequenceTd = new Element("td", { align : "center", text : ( this.options.indexText || this.options.index) }).inject( tr );
-            if( this.parent.options.sequenceClass && this.css[this.parent.options.sequenceClass] )td.setStyles(this.css[this.parent.options.sequenceClass]);
-        }
-
-        var idx = 1;
-        for (var it in this.itemData ){
-            var tdAttr = this.options.tdAttributes && this.options.tdAttributes["_"+idx] ? this.options.tdAttributes["_"+idx] : {};
-            var td = new Element("td", { "text" : this.itemData[it].value }).inject( tr );
-            td.set( attr );
-            td.set( tdAttr );
-            td.setStyle( styles );
-            idx++;
-        }
+    reload : function( data ){
+        if( !data )data = this.getResult(false, null, false, false, true );
+        this.parent.replaceTr( this, data, this.options.isNew, this.options.objectId, this.sourceData )
     },
-    create_Edit : function(e, el){
+    //create_Read : function(){
+    //    var tr = this.mElement = new Element("tr", { "data-id" : this.options.id }).inject(this.container);
+    //
+    //    var attr = {};
+    //    if( this.options.align )attr.align = this.options.align;
+    //
+    //    var styles = {};
+    //    if( this.options.className && this.css[this.options.className] )styles = this.css[this.options.className];
+    //
+    //    if( this.options.hasSequence  ){
+    //        var td = this.sequenceTd = new Element("td", { align : "center", text : ( this.options.indexText || this.options.index) }).inject( tr );
+    //        if( this.parent.options.sequenceClass && this.css[this.parent.options.sequenceClass] )td.setStyles(this.css[this.parent.options.sequenceClass]);
+    //    }
+    //
+    //    var idx = 1;
+    //    for (var it in this.itemData ){
+    //        var tdAttr = this.options.tdAttributes && this.options.tdAttributes["_"+idx] ? this.options.tdAttributes["_"+idx] : {};
+    //        var td = new Element("td", { "text" : this.itemData[it].value }).inject( tr );
+    //        td.set( attr );
+    //        td.set( tdAttr );
+    //        td.setStyle( styles );
+    //        idx++;
+    //    }
+    //},
+    create : function(e, el){
         if( this.template ){
-            this.create_Edit_byTemplate( e, el );
+            this.create_byTemplate( e, el );
         }else{
-            this.create_Edit_noTemplate( e, el );
+            this.create_noTemplate( e, el );
         }
     },
     setSequenceText : function( text ){
         if(this.sequenceTd)this.sequenceTd.set("text",text);
     },
-    create_Edit_byTemplate : function(){
+    create_byTemplate : function(){
         this.mElement = this.template;
         this.mElement.set("data-id", this.options.id );
 
@@ -713,7 +778,7 @@ var MGridTr = new Class({
         this.mElement.setStyle("display","");
         this.mElement.inject( this.container );
     },
-    create_Edit_noTemplate : function(){
+    create_noTemplate : function(){
         this.mElement = new Element("tr", { "data-id" : this.options.id });
 
         var attr = {};
@@ -752,15 +817,17 @@ var MGridTr = new Class({
         }
         this.mElement.inject( this.container );
     },
-    createItem : function( container, itData ){
+    createItem : function( container, itData ) {
         //if( itData.disable )return;
-
+        itData.isEdited = this.options.isEdited;
         itData.objectId = itData.name;
-        var item = new MDomItem(container, itData, this, this.app, this.css );
-        if( this.parent.options.verifyType == "batchSingle" ){
-            item.options.warningType = "single";
-        }else{
-            item.options.warningType = this.parent.options.verifyType;
+        var item = new MDomItem(container, itData, this, this.app, this.css);
+        if (this.options.isEdited){
+            if (this.parent.options.verifyType == "batchSingle") {
+                item.options.warningType = "single";
+            } else {
+                item.options.warningType = this.parent.options.verifyType;
+            }
         }
         item.options.name = itData.name + "_" + this.options.index;
         item.index = this.options.index;

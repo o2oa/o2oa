@@ -259,17 +259,17 @@
         r.send();
     };
 
-    _restful = function(method, address, data, callback, async, withCredentials){
+    _restful = function(method, address, data, callback, async, withCredentials, cache){
         var loadAsync = (async !== false);
         var credentials = (withCredentials !== false);
         address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
-
+        var noCache = !cache;
         var res = new Request.JSON({
             url: address,
             secure: false,
             method: method,
             emulation: false,
-            noCache: true,
+            noCache: noCache,
             async: loadAsync,
             withCredentials: credentials,
             onSuccess: function(responseJSON, responseText){

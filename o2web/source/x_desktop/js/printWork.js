@@ -98,19 +98,39 @@ o2.addReady(function(){
                 };
 
                 layout.loadWork = function(options){
-                    var id = options.workid || options.workcompletedid;
-                    var application = options.app;
-                    var form = options.form;
-                    var method = (options.workid) ? "getJobByWorkAssignForm" : "getJobByWorkCompletedAssignForm";
-                    if (method && id){
-                        this.action[method](function(json){
-                            if (this.mask) this.mask.hide();
-                            this.parseData(json.data);
-                            this.openWork();
-                        }.bind(this), function(xhr){
-                            this.errorWork(xhr);
-                        }, id, form);
+                    var id = options.workCompletedId || options.workId || options.workid || options.workcompletedid;
+                    if (id){
+                        o2.Actions.invokeAsync([
+                            {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
+                            {"action": this.action, "name": "loadWork"},
+                            {"action": this.action, "name": "getWorkControl"},
+                            {"action": this.action, "name": "getWorkLog"},
+                            {"action": this.action, "name": "listAttachments"}
+                        ], {"success": function(json_form, json_work, json_control, json_log, json_att){
+                                if (json_work && json_control && json_form && json_log && json_att){
+                                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
+                                    if (this.mask) this.mask.hide();
+                                    //if (layout.mobile) this.loadMobileActions();
+                                    this.openWork();
+                                } else{
+                                    layout.errorWork();
+                                }
+                            }.bind(this), "failure": function(){}}, [id, true, true, true], id);
                     }
+
+                    // var id = options.workid || options.workcompletedid;
+                    // var application = options.app;
+                    // var form = options.form;
+                    // var method = (options.workid) ? "getJobByWorkAssignForm" : "getJobByWorkCompletedAssignForm";
+                    // if (method && id){
+                    //     this.action[method](function(json){
+                    //         if (this.mask) this.mask.hide();
+                    //         this.parseData(json.data);
+                    //         this.openWork();
+                    //     }.bind(this), function(xhr){
+                    //         this.errorWork(xhr);
+                    //     }, id, form);
+                    // }
 
                     //if (options.workid){
                     //    var method = "getJobByWorkAssignForm";
@@ -163,22 +183,44 @@ o2.addReady(function(){
 
                     return null;
                 };
-                layout.parseData = function(data){
-                    //   this.setTitle(this.options.title+"-"+data.work.title);
+                layout.parseData = function(workData, controlData, formData, logData, attData){
+                    var title = workData.work.title;
+                    //this.setTitle(this.options.title+"-"+title);
 
-                    this.activity = data.activity;
-                    this.data = data.data;
-                    this.taskList = data.taskList;
-                    this.currentTask = this.getCurrentTaskData(data);
-                    this.taskList = data.taskList;
-                    this.work = data.work;
-                    this.workCompleted = data.workCompleted;
-                    this.workLogList = data.workLogList;
-                    this.attachmentList = data.attachmentList;
-                    this.inheritedAttachmentList = data.inheritedAttachmentList;
-                    this.control = data.control;
-                    this.form = JSON.decode(MWF.decodeJsonString(data.form.data));
+                    this.activity = workData.activity;
+                    this.data = workData.data;
+                    this.taskList = workData.taskList;
+                    this.currentTask = this.getCurrentTaskData(workData);
+                    this.taskList = workData.taskList;
+                    this.readList = workData.readList;
+                    this.work = workData.work;
+                    this.workCompleted = (workData.work.completedTime) ? workData.work : null;
+
+                    this.workLogList = logData;
+                    this.attachmentList = attData;
+                    //this.inheritedAttachmentList = data.inheritedAttachmentList;
+
+                    this.control = controlData;
+                    this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                    delete formData.data;
+                    this.formInfor = formData;
                 };
+                // layout.parseData = function(data){
+                //     //   this.setTitle(this.options.title+"-"+data.work.title);
+                //
+                //     this.activity = data.activity;
+                //     this.data = data.data;
+                //     this.taskList = data.taskList;
+                //     this.currentTask = this.getCurrentTaskData(data);
+                //     this.taskList = data.taskList;
+                //     this.work = data.work;
+                //     this.workCompleted = data.workCompleted;
+                //     this.workLogList = data.workLogList;
+                //     this.attachmentList = data.attachmentList;
+                //     this.inheritedAttachmentList = data.inheritedAttachmentList;
+                //     this.control = data.control;
+                //     this.form = JSON.decode(MWF.decodeJsonString(data.form.data));
+                // };
                 layout.fireEvent = function(){},
                     layout.openWork = function(){
                         MWF.xDesktop.requireApp("process.Xform", "Form", function(){

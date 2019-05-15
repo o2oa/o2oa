@@ -5,7 +5,7 @@ MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xApplication.ExeManager.options = { 
 	multitask: false,
 	executable: true
-}
+};
 MWF.xApplication.ExeManager.Main = new Class({
 	Extends: MWF.xApplication.Common.Main, 
 	Implements: [Options, Events],
@@ -58,7 +58,7 @@ MWF.xApplication.ExeManager.Main = new Class({
 		var topList = this.lp.main.topBarList;
 		for(var l in topList){
 			var topBarLi = new Element("li.topBarLi",{"styles": this.css.topBarLi,"id":l}).inject(this.topBarContent);
-			var _self = this
+			var _self = this;
 			topBarLi.addEvents({
 				"mouseover":function(){ //alert(_self.currentTopBarTab)
 					if(_self.currentTopBarTab!=this.get("id")){
@@ -73,7 +73,7 @@ MWF.xApplication.ExeManager.Main = new Class({
 				"click" : function(){
 					_self.openContent( this );
 				}
-			})
+			});
 			//this.topBarTodoImg = new Element("img",{"styles": this.css.topBarTodoImg,"src": this.path+"default/icon/Outline-104.png"}).inject(this.topBarTodoLi);
 			var topBarSpan = new Element("span",{"styles": this.css.topBarSpan,"text":topList[l]}).inject(topBarLi);
 		}

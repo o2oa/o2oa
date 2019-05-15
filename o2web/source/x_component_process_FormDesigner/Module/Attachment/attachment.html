@@ -54,6 +54,30 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许上传类型:</td>
+                <td class="editTableValue">
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('word')!=-1)?'checked':''} value="word">WORD文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('excel')!=-1)?'checked':''} value="excel">EXCEL文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('ppt')!=-1)?'checked':''} value="ppt">PPT文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('ppt')!=-1)?'checked':''} value="txt">文本文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('pic')!=-1)?'checked':''} value="pic">图片文件
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('pdf')!=-1)?'checked':''} value="pdf">PDF文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('zip')!=-1)?'checked':''} value="zip">压缩文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('audio')!=-1)?'checked':''} value="audio">音频文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('video')!=-1)?'checked':''} value="video">视频文档<br/>
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('other')!=-1)?'checked':''} value="other">其他
+                    <input type="text" name="attachmentExtOtherType" value="text{$.attachmentExtOtherType}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许上传大小（M）:</td>
+                <td class="editTableValue">
+                    <input type="text" name="attachmentSize" value="text{$.attachmentSize || 0}" class="editTableInput"/>
+                    <br />
+                    <div style="text-align:center">“0”表示上传大小没有限制</div>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许上传数量:</td>
                 <td class="editTableValue">
                     <input type="text" name="attachmentCount" value="text{$.attachmentCount}" class="editTableInput"/>

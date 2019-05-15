@@ -4,8 +4,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <title></title>
-    <script src="../o2_core/o2.min.js?v=2.0.0"></script>
-    <script src="../o2_core/compatible.min.js?v=2.0.0"></script>
+    <script src="../o2_core/o2.min.js?v=2.0.8"></script>
+    <script src="../o2_core/compatible.min.js?v=2.0.8"></script>
     <script src="../o2_lib/Decimal.js"></script>
     <script>
         function getServiceAddress(config, callback){
@@ -76,6 +76,7 @@
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("xtoken");
                     var client = uri.getData("client");
+                    var redirect = uri.getData("redirect");
                     if (xtoken){
                         var res = new Request.JSON({
                             //url: "http://hbxa01.bf.ctc.com:20080/x_organization_assemble_authentication/jaxrs/sso",
@@ -85,7 +86,11 @@
                             noCache: true,
                             withCredentials: true,
                             onSuccess: function(responseJSON, responseText){
-                                window.location = "/";
+                                if (redirect){
+                                    window.location = redirect;
+                                }else{
+                                    window.location = "/";
+                                }
                             }.bind(this),
                             onFailure: function(xhr){
                                 window.location = "/";
@@ -99,7 +104,11 @@
 
                         res.send(JSON.encode(json));
                     }else{
-                        window.location = "/"
+                        if (redirect){
+                            window.location = redirect;
+                        }else{
+                            window.location = "/";
+                        }
                     }
                 });
             });

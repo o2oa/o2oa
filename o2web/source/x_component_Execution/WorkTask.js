@@ -64,7 +64,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
             }.bind(this),null,false);
         }
 
-        this.tabLocation = ""
+        this.tabLocation = "";
         this.middleContent = this.app.middleContent;
         this.middleContent.setStyles({"margin-top":"0px","border":"0px solid #f00"});
         this.createNaviContent();
@@ -101,7 +101,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.app.openWorkReport()
                 }.bind(this)
-            })
+            });
         var naviContentImg = new Element("img.naviContentImg",{
             "styles":this.css.naviContentImg,
             "src":"/x_component_Execution/$WorkReportList/default/icon/Prototype-100.png"
@@ -158,7 +158,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                     isCreate = true;
                 }
             }
-        }.bind(this),null,false)
+        }.bind(this),null,false);
         if(isCreate){
 
             this.rightCategoryNewDiv = new Element("div.rightCategoryNewDiv",{
@@ -201,7 +201,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                     //alert("中心工作点击");
                     this.clickWorkTaskNavi("center")
                 }.bind(this)
-            })
+            });
         this.baseWorkLi = new Element("li.baseWorkLi",{
             "styles":this.css.rightCategoryItemLi,
             "text": MWF.xApplication.Execution.LP.workTask.baseWork
@@ -212,7 +212,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                     this.clickWorkTaskNavi("base");
 
                 }.bind(this)
-            })
+            });
 
         this.rightSearchDiv = new Element("div.rightSearchDiv",{"styles":this.css.rightSearchDiv}).inject(this.contentDiv);
     },
@@ -245,7 +245,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickCenterWorkTaskNavi("drafter")
                 }.bind(this)
-            })
+            });
         this.rightDeployTabLi = new Element("li.rightDeployTabLi", {
             "styles": this.css.rightDeployTabLi,
             "text" :MWF.xApplication.Execution.LP.workTask.centerWorkDeploy
@@ -254,7 +254,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickCenterWorkTaskNavi("deploy")
                 }.bind(this)
-            })
+            });
         this.rightArchiveTabLi = new Element("li.rightArchiveTabLi", {
             "styles": this.css.rightArchiveTabLi,
             "text" :MWF.xApplication.Execution.LP.workTask.centerWorkArchive
@@ -263,7 +263,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickCenterWorkTaskNavi("archive")
                 }.bind(this)
-            })
+            });
 
         rightSearchBarSpan = new Element("span.rightSearchBarSpan",{
             "styles":this.css.rightSearchBarSpan
@@ -278,7 +278,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                         this.searchAction();
                     }
                 }.bind(this)
-            })
+            });
         this.rightSearchBarSearch = new Element("div.rightSearchBarSearch",{
             "styles":this.css.rightSearchBarSearch,
             "text" : MWF.xApplication.Execution.LP.workTask.search
@@ -323,7 +323,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myDrafter")
                 }.bind(this)
-            })
+            });
         //我部署的
         this.baseDeployTabLi = new Element("li.baseDeployTabLi", {
             "styles": this.css.baseTabLi,
@@ -333,7 +333,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myDeploy");
                 }.bind(this)
-            })
+            });
 
         //我负责的
         this.baseDoTabLi = new Element("li.baseDoTabLi", {
@@ -344,7 +344,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myDo");
                 }.bind(this)
-            })
+            });
         //我协助的
         this.baseAssistTabLi = new Element("li.baseAssistTabLi", {
             "styles": this.css.baseTabLi,
@@ -354,7 +354,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myAssist");
                 }.bind(this)
-            })
+            });
         //我阅知的
         this.baseReadTabLi = new Element("li.baseReadTabLi", {
             "styles": this.css.baseTabLi,
@@ -364,7 +364,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myRead");
                 }.bind(this)
-            })
+            });
 
         if(this.appointSwitch && this.appointSwitch.toUpperCase() == "OPEN"){
             //我委派的
@@ -389,7 +389,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                 "click":function(){
                     this.clickBaseWorkTaskNavi("myArchive");
                 }.bind(this)
-            })
+            });
 
         rightSearchBarSpan = new Element("span.rightSearchBarSpan",{
             "styles":this.css.rightSearchBarSpan
@@ -404,7 +404,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
                         this.searchAction();
                     }
                 }.bind(this)
-            })
+            });
         this.rightSearchBarSearch = new Element("div.rightSearchBarSearch",{
             "styles":this.css.rightSearchBarSearch,
             "text" : MWF.xApplication.Execution.LP.workTask.search
@@ -419,7 +419,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
     clickBaseWorkTaskNavi : function( str ){
         this.workNavi2 = str || "myDo";
         if( str == "myDrafter" ) {
-            this.changeBaseWork(this.baseDrafterTabLi)
+            this.changeBaseWork(this.baseDrafterTabLi);
             this.loadBaseWorkList("myDrafter");
         }else if(str =="myDeploy"){
                 this.changeBaseWork(this.baseDeployTabLi);
@@ -428,19 +428,19 @@ MWF.xApplication.Execution.WorkTask = new Class({
             this.changeBaseWork(this.baseDoTabLi);
             this.loadBaseWorkList("myDo");
         }else if( str == "myAssist" ){
-            this.changeBaseWork(this.baseAssistTabLi)
+            this.changeBaseWork(this.baseAssistTabLi);
             this.loadBaseWorkList("myAssist");
         }else if( str == "myRead" ){
-            this.changeBaseWork(this.baseReadTabLi)
+            this.changeBaseWork(this.baseReadTabLi);
             this.loadBaseWorkList("myRead");
         }else if( str == "myAppoint") {
-            this.changeBaseWork(this.baseAppointTabLi)
+            this.changeBaseWork(this.baseAppointTabLi);
             this.loadBaseWorkList("myAppoint");
         }else if( str == "myArchive"){
-            this.changeBaseWork(this.baseArchiveTabLi)
+            this.changeBaseWork(this.baseArchiveTabLi);
             this.loadBaseWorkList("myArchive");
         }else{
-            this.changeBaseWork(this.baseDoTabLi)
+            this.changeBaseWork(this.baseDoTabLi);
             this.loadBaseWorkList("myDo");
         }
     },
@@ -472,8 +472,8 @@ MWF.xApplication.Execution.WorkTask = new Class({
 
     },
     createTableContent:function(json,colsJson){
-        var trHtml = "<tr>"
-            trHtml+="<td>fffff</td>"
+        var trHtml = "<tr>";
+            trHtml+="<td>fffff</td>";
         trHtml += "</tr>";
         this.taskTable.set("html",this.taskTable.get("html")+trHtml)
     },
@@ -514,7 +514,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
             templateUrl = this.path+"listItemArchive.json";
         }
 
-        this.centerView =  new  MWF.xApplication.Execution.WorkTask.CenterWorkView(this.rightContentDiv, this.app, {explorer:this,lp : this.lp.centerWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter } )
+        this.centerView =  new  MWF.xApplication.Execution.WorkTask.CenterWorkView(this.rightContentDiv, this.app, {explorer:this,lp : this.lp.centerWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter } );
         this.centerView.load();
 
     },
@@ -542,7 +542,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
             this.scrollBar.scrollVAreaNode.destroy()
         }
         MWF.require("MWF.widget.ScrollBar", function () {
-            if(this.scrollBar) delete this.scrollBar
+            if(this.scrollBar) delete this.scrollBar;
             this.scrollBar =  new MWF.widget.ScrollBar(this.rightContentDiv, {
                 "indent": false,
                 "style": "xApp_TaskList",
@@ -563,7 +563,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
 
         }.bind(this),false);
 
-        this.baseView =  new  MWF.xApplication.Execution.WorkTask.BaseWorkView(this.rightContentDiv, this.app, {lp : this.lp.baseWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter} )
+        this.baseView =  new  MWF.xApplication.Execution.WorkTask.BaseWorkView(this.rightContentDiv, this.app, {lp : this.lp.baseWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter} );
         //this.baseView.options.templateUrl =
         this.baseView.load();
     },
@@ -580,11 +580,11 @@ MWF.xApplication.Execution.WorkTask = new Class({
         //    this.rightSearchBarInput.focus();
         //    return false;
         //}
-        var filterData = {}
+        var filterData = {};
         filterData.workTitle = this.rightSearchBarInput.get("value");
 
         if(this.tabLocation == "centerDrafter"){
-            this.app.workTask.loadCenterWorkList("drafter")
+            this.app.workTask.loadCenterWorkList("drafter");
             this.loadCenterWorkList("drafter",filterData);
         }else if(this.tabLocation == "centerDeploy"){
             this.loadCenterWorkList("deploy",filterData);
@@ -610,7 +610,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
         }
     }
 
-})
+});
 
 
 MWF.xApplication.Execution.WorkTask.WorkForm = new Class({
@@ -671,15 +671,15 @@ MWF.xApplication.Execution.WorkTask.WorkForm = new Class({
             });
     },
     _createBottomContent: function(){
-        var html = "<span style='color:#f59353'>"+MWF.xApplication.Execution.LP.workTask.popUp.createNewTask.title+"</span>："+MWF.xApplication.Execution.LP.workTask.popUp.createNewTask.explain
-        html += "<br><span style='color:#f59353'>"+MWF.xApplication.Execution.LP.workTask.popUp.createAddTask.title+"</span>："+MWF.xApplication.Execution.LP.workTask.popUp.createAddTask.explain
+        var html = "<span style='color:#f59353'>"+MWF.xApplication.Execution.LP.workTask.popUp.createNewTask.title+"</span>："+MWF.xApplication.Execution.LP.workTask.popUp.createNewTask.explain;
+        html += "<br><span style='color:#f59353'>"+MWF.xApplication.Execution.LP.workTask.popUp.createAddTask.title+"</span>："+MWF.xApplication.Execution.LP.workTask.popUp.createAddTask.explain;
         this.createExplainDiv = new Element("div.createExplainDiv",{
             "styles":this.css.createExplainDiv,
             "html":html
         }).inject(this.formBottomNode);
     }
 
-})
+});
 
 
 
@@ -697,12 +697,12 @@ MWF.xApplication.Execution.WorkTask.CenterWorkView = new Class({
         var filter = this.options.filterData || {};
 
         if(category=="deploy"){
-            this.tabLocation = "centerDeploy"
+            this.tabLocation = "centerDeploy";
             this.actions.getCenterWorkDeployListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="drafter"){
-            this.tabLocation = "centerDrafter"
+            this.tabLocation = "centerDrafter";
             this.actions.getCenterWorkDrafterListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
@@ -710,12 +710,12 @@ MWF.xApplication.Execution.WorkTask.CenterWorkView = new Class({
             //    if (callback)callback(json);
             //}.bind(this))
         }else if(category=="archive"){
-            this.tabLocation = "centerArchive"
+            this.tabLocation = "centerArchive";
             this.actions.getCenterWorkArchiveListNext(id,count,filter,function(json){
                 if(callback)callback(json)
             }.bind(this))
         }else{
-            this.tabLocation = "centerDeploy"
+            this.tabLocation = "centerDeploy";
             this.actions.getCenterWorkDeployListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
@@ -747,7 +747,7 @@ MWF.xApplication.Execution.WorkTask.CenterWorkView = new Class({
                 "isEdited":isEditedBool,"centerWorkId":documentData.id,
                 onReloadView : function( data ){
                     tab = "deploy";
-                    if(data && data.tab && data.tab == "drafter") tab = "drafter"
+                    if(data && data.tab && data.tab == "drafter") tab = "drafter";
                     this.explorer.explorer.createRightContentDiv("center",tab);
                 }.bind(this)
             } );
@@ -805,7 +805,7 @@ MWF.xApplication.Execution.WorkTask.CenterWorkDocument = new Class({
     //open: function(){
     //    alert("open")
     //}
-})
+});
 
 
 
@@ -825,32 +825,32 @@ MWF.xApplication.Execution.WorkTask.BaseWorkView = new Class({
 
 
         if(category=="myDrafter"){   //我的草稿
-            this.tabLocation = "baseDrafter"
+            this.tabLocation = "baseDrafter";
             this.actions.getBaseWorkListMyDrafterNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="myDeploy"){  //我部署的
-            this.tabLocation = "baseDeploy"
+            this.tabLocation = "baseDeploy";
             this.actions.getBaseWorkListMyDeployNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="myDo"){ //我负责的
-            this.tabLocation = "baseDo"
+            this.tabLocation = "baseDo";
             this.actions.getBaseWorkListMyDoNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="myAssist"){ //我协助的
-            this.tabLocation = "baseAssist"
+            this.tabLocation = "baseAssist";
             this.actions.getBaseWorkListMyAssistNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="myRead"){ //我阅知的
-            this.tabLocation = "baseRead"
+            this.tabLocation = "baseRead";
             this.actions.getBaseWorkListMyReadNext(id, count, filter, function (json) {
                 if (callback)callback(json);
             }.bind(this))
         }else if(category=="myAppoint"){   //我委托的
-            this.tabLocation = "baseAppoint"
+            this.tabLocation = "baseAppoint";
             this.actions.getBaseWorkListMyAppointNext(id, count,filter,function(json){
                 if (callback)callback(json)
             }.bind(this))
@@ -985,7 +985,7 @@ MWF.xApplication.Execution.WorkTask.BaseWorkDocument = new Class({
         MWF.xDesktop.requireApp("Execution", "WorkReport", function(){
             var data = {
                 workId : this.data.id
-            }
+            };
 
             var workReport = new MWF.xApplication.Execution.WorkReport(this, this.app.restActions,data,{
                 "isNew": false,
@@ -1013,7 +1013,7 @@ MWF.xApplication.Execution.WorkTask.BaseWorkDocument = new Class({
                 completeDateLimit : this.data.completeDateLimit,
                 reportCycle: this.data.reportCycle,
                 reportDayInCycle: this.data.reportDayInCycle
-            }
+            };
             if(this.data.id){
                 this.actions.getBaseWorkDetails(this.data.id, function (json) {
                     data.workSplitAndDescription = json.data.workDetail
@@ -1050,7 +1050,7 @@ MWF.xApplication.Execution.WorkTask.BaseWorkDocument = new Class({
 
     },
     action_unAppoint:function(e){
-        var _self = this
+        var _self = this;
         _self.view.app.confirm("warn",e,_self.view.app.lp.workTask.submitWarn.warnTitle,_self.view.app.lp.workTask.submitWarn.warnContent,300,120,function(){
             data = {
                 workId : _self.data.id
@@ -1067,7 +1067,7 @@ MWF.xApplication.Execution.WorkTask.BaseWorkDocument = new Class({
                 }else{
                     this.app.notice( errorText,"error");
                 }
-            }.bind(_self),false)
+            }.bind(_self),false);
 
             _self.view.app.workTask.createRightContentDiv("base","myAppoint");
             this.close(0)
@@ -1139,12 +1139,12 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
 
             this.formTopIconNode = new Element("div.formTopIconNode", {
                 "styles": this.css.formTopIconNode
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             this.formTopTextNode = new Element("div.formTopTextNode", {
                 "styles": this.css.formTopTextNode,
                 "text": this.app.lp.workTask.appoint.appointTitle
-            }).inject(this.formTopNode)
+            }).inject(this.formTopNode);
 
             if (this.options.closeAction) {
                 this.formTopCloseActionNode = new Element("div.formTopCloseActionNode", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
@@ -1164,7 +1164,7 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
     },
     _createTableContent: function () {
         var table = new Element("table",{"width":"100%",border:"0",cellpadding:"5",cellspacing:"0"}).inject(this.formTableArea);
-        table.setStyles({"margin-top":"40px"})
+        table.setStyles({"margin-top":"40px"});
         var tr = new Element("tr").inject(table);
         var td = new Element("td",{
             text : this.app.lp.workTask.appoint.appointFor,
@@ -1175,12 +1175,12 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
         this.appointPerson = new Element("input",{
             "readonly": true
         }).inject(td);
-        this.appointPerson.setStyles({"width":"90%","height":"20px"})
+        this.appointPerson.setStyles({"width":"90%","height":"20px"});
         this.appointPerson.addEvents({
             "click":function(){
                 this.selectPerson(this.appointPerson,"identity",1)
             }.bind(this)
-        })
+        });
         tr = new Element("tr").inject(table);
         td = new Element("td",{
             "text" : this.app.lp.workTask.appoint.appointOpinion,
@@ -1189,7 +1189,7 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
 
 
         td = new Element("td").inject(tr);
-        this.appointOpinion = new Element("textarea").inject(td)
+        this.appointOpinion = new Element("textarea").inject(td);
         this.appointOpinion.setStyles({"width":"90%","height":"50px"})
 
 
@@ -1218,18 +1218,18 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
     ok:function(){
 
         if(this.appointPerson.get("value")==""){
-            this.app.notice(this.app.lp.workTask.appoint.personEmpty,"error")
+            this.app.notice(this.app.lp.workTask.appoint.personEmpty,"error");
             return false;
         }
         if(this.appointOpinion.get("value")==""){
-            this.app.notice(this.app.lp.workTask.appoint.opinionEmpty,"error")
+            this.app.notice(this.app.lp.workTask.appoint.opinionEmpty,"error");
             return false;
         }
         var submitData = {
             workId : this.data.workId,
             undertakerIdentity : this.appointPerson.get("value"),
             authorizeOpinion : this.appointOpinion.get("value")
-        }
+        };
         this.actions.appointBaseWork(submitData,function(json){
             this.close();
             this.fireEvent("reloadView");

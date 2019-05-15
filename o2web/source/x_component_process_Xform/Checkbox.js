@@ -78,38 +78,40 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 	setOptions: function(){
 		var radioValues = this.getOptions();
         if (!radioValues) radioValues = [];
-        var flag = (new MWF.widget.UUID).toString();
-		radioValues.each(function(item){
-			var tmps = item.split("|");
-			var text = tmps[0];
-			var value = tmps[1] || text;
+        if (o2.typeOf(radioValues)==="array"){
+            var flag = (new MWF.widget.UUID).toString();
+            radioValues.each(function(item){
+                var tmps = item.split("|");
+                var text = tmps[0];
+                var value = tmps[1] || text;
 
-			var radio = new Element("input", {
-				"type": "checkbox",
-				"name": this.json.properties.name || flag+this.json.id,
-				"value": value,
-				"showText": text,
-				"styles": this.json.buttonStyles
-			}).inject(this.node);
-			radio.appendText(text, "after");
+                var radio = new Element("input", {
+                    "type": "checkbox",
+                    "name": this.json.properties.name || flag+this.json.id,
+                    "value": value,
+                    "showText": text,
+                    "styles": this.json.buttonStyles
+                }).inject(this.node);
+                radio.appendText(text, "after");
 
-            radio.addEvent("click", function(){
-                this.validationMode();
-                if (this.validation()) this._setBusinessData(this.getInputData("change"));
-            }.bind(this));
+                radio.addEvent("click", function(){
+                    this.validationMode();
+                    if (this.validation()) this._setBusinessData(this.getInputData("change"));
+                }.bind(this));
 
-            Object.each(this.json.events, function(e, key){
-                if (e.code){
-                    if (this.options.moduleEvents.indexOf(key)!=-1){
-                    }else{
-                        radio.addEvent(key, function(event){
-                            return this.form.Macro.fire(e.code, this, event);
-                        }.bind(this));
+                Object.each(this.json.events, function(e, key){
+                    if (e.code){
+                        if (this.options.moduleEvents.indexOf(key)!=-1){
+                        }else{
+                            radio.addEvent(key, function(event){
+                                return this.form.Macro.fire(e.code, this, event);
+                            }.bind(this));
+                        }
                     }
-                }
-            }.bind(this));
+                }.bind(this));
 
-		}.bind(this));
+            }.bind(this));
+        }
 	},
     _setValue: function(value){
         this._setBusinessData(value);

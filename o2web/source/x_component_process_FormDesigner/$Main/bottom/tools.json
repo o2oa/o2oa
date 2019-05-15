@@ -155,6 +155,11 @@
     "text": "Iframe",
     "className": "Iframe"
   },
+  "documenteditor": {
+    "icon": "documenteditor.png",
+    "text": "公文编辑器",
+    "className": "Documenteditor"
+  },
   "htmledit": {
     "icon": "htmleditor.png",
     "text": "HTML编辑器",
