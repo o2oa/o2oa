@@ -43,6 +43,32 @@ public class ResponseFactory {
 		}
 	}
 
+	private static CacheControl maxAgeCacheControl = CacheControlFactory.getMaxAge(259200);
+
+	public static <T> Response getMaxAgeActionResultResponse(ActionResult<T> result) {
+		if (result.getType().equals(ActionResult.Type.error)) {
+			if ((result.throwable instanceof CallbackPromptException)) {
+				return Response.ok(callbackError(result)).cacheControl(maxAgeCacheControl).build();
+			} else {
+				return Response.serverError().entity(result.toJson()).cacheControl(maxAgeCacheControl).build();
+			}
+		} else {
+			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
+				WoFile wo = (WoFile) result.getData();
+				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
+						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
+				WoText wo = (WoText) result.getData();
+				return Response.ok(wo.getText()).cacheControl(maxAgeCacheControl).type(HttpMediaType.TEXT_PLAIN_UTF_8)
+						.build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
+				return Response.ok(callback((WoCallback) result.getData())).cacheControl(maxAgeCacheControl).build();
+			} else {
+				return Response.ok(result.toJson()).cacheControl(maxAgeCacheControl).build();
+			}
+		}
+	}
+
 	private static String callback(WoCallback woCallback) {
 		ActionResult<Object> result = new ActionResult<>();
 		result.setData(woCallback.getObject());

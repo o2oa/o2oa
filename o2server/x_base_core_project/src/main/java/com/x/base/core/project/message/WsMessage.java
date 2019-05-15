@@ -2,9 +2,9 @@ package com.x.base.core.project.message;
 
 import com.google.gson.JsonElement;
 
-public class ImMessage extends Message {
+public class WsMessage extends Message {
 
-	public ImMessage() {
+	public WsMessage() {
 
 	}
 

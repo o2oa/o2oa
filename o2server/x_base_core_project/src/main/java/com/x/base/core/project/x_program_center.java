@@ -37,7 +37,8 @@ public class x_program_center extends AssembleC {
 		dependency.storeJars.add(x_program_center_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_attendance_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_cms_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
+//		dependency.storeJars.add(x_collaboration_core_entity.class.getSimpleName());
+		dependency.storeJars.add(x_message_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_component_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_file_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_meeting_core_entity.class.getSimpleName());

@@ -18,6 +18,6 @@ public class x_meeting_assemble_control extends AssembleA {
 		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
 		dependency.storeJars.add(x_meeting_core_entity.class.getSimpleName());
-		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
+		// dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 	}
 }

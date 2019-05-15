@@ -32,12 +32,6 @@ public class LogLevel extends ConfigObject {
 	private String x_meeting_assemble_control = "";
 
 	@FieldDescribe("是否启用调试")
-	private String x_collaboration_service_message = "";
-
-	@FieldDescribe("是否启用调试")
-	private String x_collaboration_assemble_websocket = "";
-
-	@FieldDescribe("是否启用调试")
 	private String x_organization_assemble_authentication = "";
 
 	@FieldDescribe("是否启用调试")
@@ -202,14 +196,6 @@ public class LogLevel extends ConfigObject {
 
 	public String x_meeting_assemble_control() {
 		return this.get(this.x_meeting_assemble_control);
-	}
-
-	public String x_collaboration_service_message() {
-		return this.get(this.x_collaboration_service_message);
-	}
-
-	public String x_collaboration_assemble_websocket() {
-		return this.get(this.x_collaboration_assemble_websocket);
 	}
 
 	public String x_organization_assemble_authentication() {

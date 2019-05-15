@@ -138,7 +138,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 				body);
 	}
 
-	public ActionResponse postQuery(String applicationName, String uri, String body) throws Exception {
+	public ActionResponse postQuery(String applicationName, String uri, Object body) throws Exception {
 		return this.postQuery(false, applicationName, uri, body);
 	}
 
