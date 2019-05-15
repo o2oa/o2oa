@@ -9721,6 +9721,8 @@ var Mask = this.Mask = new Class({
 		if (this.options.maskMargins) opt.styles.push('margin');
 
 		var dim = this.target.getComputedSize(opt);
+		var s = this.target.getSize();
+		if (dim.totalHeight<s.y) dim.totalHeight = s.y;
 		if (this.target == document.body){
 			this.element.setStyles({width: 0, height: 0});
 			var win = window.getScrollSize();

@@ -41,7 +41,7 @@ MWF.xApplication.Meeting.RoomView = new Class({
         this.roomTopArea = new Element("div.roomTopArea", {"styles": this.css.roomTopArea}).inject(this.roomArea);
 
         this.scrollNode = new Element("div", {
-            "styles": this.css.scrollNode
+            "styles":  this.app.inContainer ? this.css.scrollNode_inContainer : this.css.scrollNode
         }).inject(this.roomArea);
         this.contentWarpNode = new Element("div", {
             "styles": this.css.contentWarpNode
@@ -281,7 +281,15 @@ MWF.xApplication.Meeting.RoomView = new Class({
     },
 
     resetNodeSize: function(){
+        //if( this.app.inContainer )return;
         var size = this.container.getSize();
+
+        if( !this.app.inContainer ){
+            var y = size.y-50;
+            this.node.setStyle("height", ""+y+"px");
+            this.node.setStyle("margin-top", "50px");
+        }
+
         var dateSize = this.roomDateArea.getSize();
         var topSize = this.roomTopArea.getSize();
 
@@ -359,20 +367,28 @@ MWF.xApplication.Meeting.RoomView = new Class({
     },
     show: function(){
         this.node.setStyles(this.css.node);
-        var fx = new Fx.Morph(this.node, {
-            "duration": "800",
-            "transition": Fx.Transitions.Expo.easeOut
-        });
-        this.app.fireAppEvent("resize");
-        fx.start({
-            "opacity": 1,
-            "left": "0px"
-        }).chain(function(){
+        if( this.app.inContainer ){
             this.node.setStyles({
+                "opacity": 1,
                 "position": "static",
                 "width": "auto"
             });
-        }.bind(this));
+        }else{
+            var fx = new Fx.Morph(this.node, {
+                "duration": "800",
+                "transition": Fx.Transitions.Expo.easeOut
+            });
+            this.app.fireAppEvent("resize");
+            fx.start({
+                "opacity": 1,
+                "left": "0px"
+            }).chain(function(){
+                this.node.setStyles({
+                    "position": "static",
+                    "width": "auto"
+                });
+            }.bind(this));
+        }
     },
     recordStatus : function(){
         var id = "";
@@ -690,7 +706,7 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
 
         this.descriptionNode = new Element("div", {
             "styles": this.css.meetingDescriptionNode,
-            "text" : available ? this.data.description : this.app.lp.noPermission
+            "text" : available ? this.data.summary : this.app.lp.noPermission
         }).inject(this.contentNode);
         if( !available || rejected )this.descriptionNode.setStyle("color" , "#ccc");
 

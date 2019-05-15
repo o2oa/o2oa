@@ -44,7 +44,7 @@ MWF.xApplication.Meeting.MeetingView = new Class({
         this.todayNode.set("text", d+","+w);
 
         this.scrollNode = new Element("div", {
-            "styles": this.css.scrollNode
+            "styles":  this.app.inContainer ? this.css.scrollNode_inContainer : this.css.scrollNode
         }).inject(this.node);
         this.contentWarpNode = new Element("div", {
             "styles": this.css.contentWarpNode
@@ -105,8 +105,18 @@ MWF.xApplication.Meeting.MeetingView = new Class({
         }).inject(this.monthSelectContainer);
     },
     resetNodeSize: function(){
+        //if( this.app.inContainer )return;
         var size = this.container.getSize();
+
+        if( !this.app.inContainer ){
+            var y = size.y-60;
+            this.node.setStyle("height", ""+y+"px");
+            this.node.setStyle("margin-top", "60px");
+        }
+
         var titleSize = this.titleNode.getSize();
+
+
 
         var y = size.y-titleSize.y-60;
 
@@ -196,20 +206,29 @@ MWF.xApplication.Meeting.MeetingView = new Class({
     },
     show: function(){
         this.node.setStyles(this.css.node);
-        var fx = new Fx.Morph(this.node, {
-            "duration": "800",
-            "transition": Fx.Transitions.Expo.easeOut
-        });
-        this.app.fireAppEvent("resize");
-        fx.start({
-            "opacity": 1,
-            "left": "0px"
-        }).chain(function(){
+        if( this.app.inContainer ){
             this.node.setStyles({
+                "opacity": 1,
                 "position": "static",
                 "width": "auto"
             });
-        }.bind(this))
+        }else{
+            var fx = new Fx.Morph(this.node, {
+                "duration": "800",
+                "transition": Fx.Transitions.Expo.easeOut
+            });
+            this.app.fireAppEvent("resize");
+            fx.start({
+                "opacity": 1,
+                "left": "0px"
+            }).chain(function(){
+                this.node.setStyles({
+                    "position": "static",
+                    "width": "auto"
+                });
+            }.bind(this))
+        }
+
     },
     reload: function(){
         this.date = (this.days.length > 0 ? this.days[0].date.clone() : this.date);

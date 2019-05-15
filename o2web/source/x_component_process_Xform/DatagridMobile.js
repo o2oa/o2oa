@@ -191,8 +191,14 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         for (key in cellData){
                             var v = cellData[key];
 
-                            text = this._getValueText(index, v);
-                            cell.set("text", text);
+                            var module = this.editModules[index];
+                            if( module && module.json.type == "ImageClipper" ){
+                                this._createImage( cell, module, v )
+                            }else{
+                                text = this._getValueText(index, v);
+                                cell.set("text", text);
+                            }
+
 
                             // if (typeOf(v)==="array"){
                             //     var textArray = [];
@@ -259,8 +265,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                         for (key in cellData){
                             var v = cellData[key];
 
-                            text = this._getValueText(index, v);
-                            cell.set("text", text);
+                            var module = this.editModules[index];
+                            if( module && module.json.type == "ImageClipper" ){
+                                this._createImage( cell, module, v )
+                            }else{
+                                text = this._getValueText(index, v);
+                                cell.set("text", text);
+                            }
 
                             // if (typeOf(v)==="object"){
                             //     cell.set("text", v.name+((v.unitName) ? "("+v.unitName+")" : ""));
@@ -332,6 +343,16 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         addAction.addEvent("click", function(e){
             _self._addLine();
         });
+    },
+    _createImage : function( cell, module, data ){
+        cell.empty();
+        if( !data )return;
+        var img = new Element("img",{
+            src : MWF.xDesktop.getImageSrc( data )
+        }).inject( cell, "top" );
+        img.setStyles({
+            "max-width": "90%"
+        })
     },
     _createItemTitleNode: function(node, idx){
         var n = idx+1;
@@ -548,7 +569,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var cell;
                 if (dataRow){
                     cell = dataRow.getElement("td");
-                    cell.set("text", data.text.join(", "));
+
+                    if( module.json.type == "ImageClipper" ){
+                        this._createImage( cell, module, data.text );
+                    }else{
+                        cell.set("text", data.text.join(", "));
+                    }
                 }else{
                     dataRow = table.insertRow(idx);
                     var datath = new Element("th").inject(dataRow);
@@ -559,7 +585,11 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     cell.set("MWFId", tds[idx].get("id"));
 
                     var cellData = data[th.get("id")];
-                    cell.set("text", data.text.join(", "));
+                    if( module.json.type == "ImageClipper" ){
+                        this._createImage( cell, module, data.text );
+                    }else{
+                        cell.set("text", data.text.join(", "));
+                    }
                 }
             }else{
                 if (!dataRow) {

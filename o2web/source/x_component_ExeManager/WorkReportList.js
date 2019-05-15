@@ -368,6 +368,9 @@ MWF.xApplication.ExeManager.WorkReportList.WorkReportForm = new Class({
         }
 
     },
+    _close: function(){
+        if(this.formMarkNode)this.formMarkNode.destroy()
+    },
     createTopNode: function () {
         if (!this.formTopNode) {
             this.formTopNode = new Element("div.formTopNode", {

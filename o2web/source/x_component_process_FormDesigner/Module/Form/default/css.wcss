@@ -9,7 +9,8 @@
 	"formMobileNode": {
         "border": "1px dashed #333",
         "overflow": "hidden",
-        "line-height": "2px"
+        "line-height": "2px",
+        "position": "relative"
     },
 	"moduleNode": {
 		"border": "1px dashed #333",
@@ -63,11 +64,11 @@
 		"border-bottom": "1px solid #EEE",
 		"border-right": "1px solid #EEE"
 	},
-	propertyRefreshFormNode: {
+	"propertyRefreshFormNode": {
 	    "width": "24px",
 	    "height": "24px",
 	    "float": "right",
-	    "background": "url("+"/x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
+	    "background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
 	    "cursor": "pointer"
 	},
 	"processIconNode": {
@@ -99,5 +100,183 @@
         "margin-top": "4px",
         "margin-right": "5px",
         "cursor": "pointer"
-    }
+    },
+  	"injectActionArea" : {
+	  "display": "block",
+	  //	"width": 18*this.options.actions.length,
+	  "position": "absolute",
+	  "width" : "0px",
+	  "height" : "0px",
+	  "background-color": "#f9f9f9",
+//	  "padding": "1px",
+//	  "padding-right": "0px",
+	  "border": "0px solid #AAA",
+	  "border-radius" : "50%",
+	  "box-shadow": "0px 0px 10px #999",
+	  "overflow" : "hidden",
+	  //"opacity": 0.8,
+	  "background": "rgba(249,249,249,.7)",
+	  "z-index": 100
+	},
+	"injectActionArea_to" : {
+      "width" : "120px",
+      "height" : "120px",
+    },
+	"injectActionTopBGNode" : {
+	  "overflow": "hidden",
+	  "position": "absolute",
+	  "top": "-11.5%",
+	  "left": "25%",
+	  "width": "50%",
+	  "height": "50%",
+	  "transform-origin": "50% 50%",
+	  "-ms-transform":"rotate(45deg)", /* IE 9 */
+	  "-webkit-transform":"rotate(45deg)", /* Safari and Chrome */
+	  "transform": "rotate(45deg)",
+	  "border-right" : "1px solid #AAA",
+//	  "background": "-webkit-linear-gradient(45deg, #666666, #cccccc)",
+//      "background": "-o-linear-gradient(45deg, #666666, #cccccc)",
+//      "background": "-moz-linear-gradient(45deg, #666666, #cccccc)",
+//      "background": "linear-gradient(45deg, #666666, #cccccc)"
+
+//	  "height" : "40px",
+//	  "width" : "120px",
+//	  "text-align" : "center"
+	},
+  "injectActionLeftBGNode" : {
+	"overflow": "hidden",
+	"position": "absolute",
+	"top": "25%",
+	"left": "-11.5%",
+	"width": "50%",
+	"height": "50%",
+	"transform-origin": "50% 50%",
+	"-ms-transform":"rotate(-45deg)", /* IE 9 */
+	"-webkit-transform":"rotate(-45deg)", /* Safari and Chrome */
+	"transform": "rotate(-45deg)",
+	"border-right" : "1px solid #AAA"
+  },
+  "injectActionRightBGNode" : {
+	"overflow": "hidden",
+	"position": "absolute",
+	"top": "25%",
+	"right": "-11.5%",
+	"width": "50%",
+	"height": "50%",
+	"transform-origin": "50% 50%",
+	"-ms-transform":"rotate(-135deg)", /* IE 9 */
+	"-webkit-transform":"rotate(-135deg)", /* Safari and Chrome */
+	"transform": "rotate(-135deg)",
+	"border-top" : "1px solid #AAA"
+  },
+  "injectActionBottomBGNode" : {
+	"overflow": "hidden",
+	"position": "absolute",
+	"bottom": "-11.5%",
+	"right": "25%",
+	"width": "50%",
+	"height": "50%",
+	"transform-origin": "50% 50%",
+	"-ms-transform":"rotate(-225deg)", /* IE 9 */
+	"-webkit-transform":"rotate(-225deg)", /* Safari and Chrome */
+	"transform": "rotate(-225deg)",
+	"border-bottom" : "1px solid #AAA"
+  },
+  "injectActionBefore" : {
+	"cursor" : "pointer",
+	"position": "absolute",
+	"height" : "40px",
+	"width" : "40px",
+	"top" : "8px",
+	"left" : "48px",
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_before.png) no-repeat left center"
+  },
+  "injectActionAfter" : {
+	"cursor" : "pointer",
+	"position": "absolute",
+	"height" : "24px",
+	"width" : "24px",
+	"bottom" : "8px",
+	"left" : "48px",
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_after.png) no-repeat left center"
+  },
+  "injectActionTop" : {
+	"cursor" : "pointer",
+	"position": "absolute",
+	"height" : "24px",
+	"width" : "24px",
+	"left" : "8px",
+	"top" : "48px",
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_top.png) no-repeat left center"
+  },
+  "injectActionBottom" : {
+	"cursor" : "pointer",
+	"position": "absolute",
+	"height" : "24px",
+	"width" : "24px",
+	"right" : "8px",
+	"top" : "48px",
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_bottom.png) no-repeat left center"
+  },
+
+//  "injectActionTopNode" : {
+//	  "height" : "40px",
+//	  "width" : "120px",
+//	  "text-align" : "center"
+//  },
+//  "injectActionMiddleNode" : {
+//	"height" : "120px",
+//	"width" : "120px",
+//	"overflow" : "hidden"
+//  },
+//  "injectActionBottomNode" : {
+//	"height" : "40px",
+//	"width" : "120px",
+//	"text-align" : "center"
+//  },
+//
+//  "injectActionMiddleItemNode" : {
+//	"height" : "40px",
+//	"width" : "40px",
+//	"float" : "left"
+//  },
+//  "injectActionNodeStyles": {
+//	"width": "24px",
+//	"height": "24px",
+//	"margin": "0px auto",
+//	"padding-top" : "8px",
+//	"background-color" : "#fff",
+//	//"border": "1px solid #F1F1F1",
+//	"cursor": "pointer"
+//	//"opacity": 1
+//  },
+  "injectActionCancelNode": {
+	"width": "30px",
+	"height": "30px",
+	"border-radius" : "30px",
+	"margin": "0px auto",
+	"padding-top" : "5px",
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel.png) no-repeat left center",
+	"background-color" : "#fff",
+	"cursor": "pointer",
+	"position" : "absolute",
+	"top" : "45px",
+	"left" : "45px"
+	//"opacity": 1
+  },
+  "injectActionCancelNode_over": {
+	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel_over.png) no-repeat left center"
+  },
+  "injectNoticeNode" : {
+	"height" : "20px",
+	"line-height" : "20px",
+	"padding-left" : "5px",
+	"width" : "145px",
+	"background-color" : "#333",
+	"color" : "#fff",
+	"position" : "absolute",
+	"top" : "110%",
+	"left" : "-2px",
+	"font-size" : "12px"
+  }
 }

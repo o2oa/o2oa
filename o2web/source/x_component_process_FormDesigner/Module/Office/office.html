@@ -95,7 +95,15 @@
 				</tr>
 			</table>
 		</div>
-
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>无法启用控件时显示摘要:</b>
+					<input type="radio" name="isShowSummary" value="true" text{($.isShowSummary!==false)?'checked':''}/>是
+					<input type="radio" name="isShowSummary" value="false" text{($.isShowSummary===false)?'checked':''}/>否
+				</td>
+			</tr>
+		</table>
 		<div class="MWFMaplist" name="styles" title="样式"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

@@ -8,6 +8,9 @@
         "border-bottom": "1px solid #999",
         "cursor": "pointer"
     },
+    "viewTitleNode_run": {
+        "height": "140px"
+    },
     "viewContentScrollNode": {
         "overflow": "hidden",
         "border-bottom": "0px solid #999",
@@ -71,9 +74,15 @@
         "float": "left"
     },
     "addColumnNode": {
-        "width": "30px",
+        "width": "29px",
         "height": "40px",
         "background": "url("+"/x_component_query_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
+        "float": "right"
+    },
+    "addColumnNode_run": {
+        "width": "29px",
+        "height": "140px",
+        "background-position-y": "110px",
         "float": "right"
     },
 
@@ -133,22 +142,7 @@
         "font-size": "12px",
         "margin-top": "5px"
     },
-    "cloumnListNode": {
-        "height": "26px",
-        "padding": "0px 5px",
-        "line-height": "26px",
-        "font-size": "12px",
-        "cursor": "pointer",
-        "border-bottom": "1px dotted #999",
-        "background-color": "#FFF",
-        "color": "#333"
-    },
-    "cloumnListNode_selected": {
-        "background-color": "#cce2ff"
-    },
-    "cloumnListNode_over": {
-        "background-color": "#eaf1fa"
-    },
+
     "cloumnListIconNode": {
         "height": "26px",
         "width": "26px",
@@ -351,8 +345,104 @@
         "color": "#1133FF",
         "white-space": "nowrap"
     },
-    "colmunListTable": {
+    "columnListTable": {
         "width": "100%",
+    },
+    "columnListEditTr": {
+        "height": "20px",
+        "background-color": "#f3f3f3",
+    },
+    "cloumnListNode": {
+        "height": "20px",
+        "background-color": "#f3f3f3",
+    },
+    "cloumnListNode_over":{
+        "background-color": "#eaf1fa"
+    },
+    "cloumnListNode_selected": {
+        "background-color": "#cce2ff"
+    },
+    "columnListHeaderTd": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-weight": "bold",
+        "background-color": "#eaf1fa",
+        "text-align": "center",
         "border-bottom": "1px dotted #999",
+        "border-right": "1px dotted #999"
+    },
+    "columnListTd": {
+        "height": "20px",
+        "line-height": "20px",
+        "border-bottom": "1px dotted #999",
+        "border-right": "1px dotted #999"
+    },
+    "columnListEditInput": {
+        "width": "98%",
+        "border": "0px",
+        "height": "18px",
+        "line-height": "20px",
+    },
+    "columnListEditModifyInput": {
+        "width": "98%",
+        "border": "0px",
+        "height": "18px",
+        "line-height": "20px",
+        "background-color": "#ffffff"
+    },
+    "columnListEditSelect": {
+        "border": "0px",
+        "width": "100%",
+        "height": "18px",
+        "margin-top": "1px",
+        "line-height": "20px",
+    },
+    "columnListEditModifySelect": {
+        "border": "0px",
+        "width": "100%",
+        "height": "18px",
+        "margin-top": "1px",
+        "line-height": "20px",
+        "background-color": "#ffffff"
+    },
+    "tableRunNode": {
+        "width": "30px",
+        "height": "40px",
+        "background": "url("+"/x_component_query_TableDesigner/$Table/default/icon/play.png) center center no-repeat",
+        "float": "left"
+    },
+    "tableRunNode_run": {
+        "width": "30px",
+        "height": "140px",
+        "background-position-y": "10px",
+        "float": "left"
+    },
+    "jpqlAreaNode": {
+        "height": "98px",
+        "background-color": "#ffffff",
+        "border": "1px solid #bbbbbb",
+    },
+    "jpqlOptionArea": {
+        "height": "34px",
+        "line-height": "34px",
+        "border-bottom": "1px solid #bbbbbb",
+        "background-color": "#eeeeee"
+    },
+    "jpqlContentArea": {
+        "overflow": "hidden",
+        "height": "20px"
+    },
+    "jpqlContentWhereArea": {
+        "overflow": "hidden",
+        "height": "63px"
+    },
+    "jpqlOptionInput": {
+        "width": "40px",
+        "border": "1px solid #cccccc",
+        "color": "#666666"
+    },
+    "jpqlTypeSelect": {
+        "border": "1px solid #cccccc",
+        "color": "#666666"
     }
 }

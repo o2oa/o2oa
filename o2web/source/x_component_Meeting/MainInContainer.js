@@ -2,16 +2,9 @@
 //MWF.xApplication.Meeting = MWF.xApplication.Meeting || {};
 //MWF.xApplication.Meeting.options = MWF.xApplication.Meeting.options || {};
 //MWF.xDesktop.requireApp("Meeting", "MainInContainer", null, false);
-//MWF.xApplication.Meeting.MainInContainer2 = new Class({
-//    Extends: MWF.xApplication.Meeting.MainInContainer,
-//    loadLayout: function(){
-//        this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
-//        this.toWeek();
-//    }
-//});
-//var container = this.form.get("weekViewContainer").node;
-//var scrollNode = this.target.app.node;
-//var meeting = new MWF.xApplication.Meeting.MainInContainer2( this.target.app.desktop, {}, container, this.target.app.content , scrollNode );
+//var container = this.form.get("div").node;
+//var scrollNode = container;
+//var meeting = new MWF.xApplication.Meeting.MainInContainer( this.form.getApp().desktop, {}, container, this.form.getApp().content , scrollNode );
 //meeting.load();
 
 MWF.xDesktop.requireApp("Meeting", "lp.zh-cn", null, false);
@@ -79,7 +72,7 @@ MWF.xApplication.Meeting.MainInContainer = new Class({
     createNode: function(){
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div.reportNode", {
-            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden", "position":"relative","background-color":"#f0f0f0"}
         }).inject(this.container);
     }
 });

@@ -7,6 +7,12 @@
         "box-shadow": "0px 0px 20px #606060",
         "height": "600px"
     },
+    "paperNodeMobile": {
+        "overflow": "auto",
+        "background-color": "#FFF",
+        "background-image": "url("+"/x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
+        "height": "600px"
+    },
     "paperInNode": {
         "height": "600px",
         "width": "99%"

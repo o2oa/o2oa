@@ -30,7 +30,7 @@ MWF.xApplication.Meeting.DayView = new Class({
     load: function(){
         this.days = [];
         this.scrollNode = new Element("div", {
-            "styles": this.css.scrollNode
+            "styles":  this.css.scrollNode //this.app.inContainer ? this.css.scrollNode_inContainer : this.css.scrollNode
         }).inject(this.container);
         this.contentWarpNode = new Element("div", {
             "styles": this.css.contentWarpNode
@@ -76,6 +76,7 @@ MWF.xApplication.Meeting.DayView = new Class({
 
     },
     resetNodeSize: function(){
+        //if( this.app.inContainer )return;
         var size = this.container.getSize();
 
         var leftNodeSize = this.leftNode ? this.leftNode.getSize() : {x:0,y:0};
@@ -94,7 +95,9 @@ MWF.xApplication.Meeting.DayView = new Class({
         var dayCount = (availableX/330).toInt();
 
         this.scrollNode.setStyle("height", ""+(size.y-60)+"px");
-        this.scrollNode.setStyle("margin-top", "60px");
+        if( !this.app.inContainer ){
+            this.scrollNode.setStyle("margin-top", "60px");
+        }
         this.scrollNode.setStyle("margin-right", sideBarSize.x);
 
         if (this.contentWarpNode){
@@ -201,25 +204,34 @@ MWF.xApplication.Meeting.DayView = new Class({
         }.bind(this));
 
     },
-    show: function(){
+    show: function() {
         //this.app.addEvent("resize", this.resetNodeSizeFun );
         this.scrollNode.setStyles(this.css.scrollNode);
-        this.scrollNode.setStyles({"display" : ""});
-        var fx = new Fx.Morph(this.scrollNode, {
-            "duration": "800",
-            "transition": Fx.Transitions.Expo.easeOut
-        });
-        this.app.fireAppEvent("resize");
-        fx.start({
-            "opacity": 1,
-            "left": "0px"
-        }).chain(function(){
-            this.scrollNode.setStyles({
+        this.scrollNode.setStyles({"display": ""});
+        if (this.app.inContainer) {
+            this.node.setStyles({
+                "opacity": 1,
                 "position": "static",
                 "width": "auto",
-                "display" : ""
+                "display": ""
             });
-        }.bind(this));
+        } else {
+            var fx = new Fx.Morph(this.scrollNode, {
+                "duration": "800",
+                "transition": Fx.Transitions.Expo.easeOut
+            });
+            this.app.fireAppEvent("resize");
+            fx.start({
+                "opacity": 1,
+                "left": "0px"
+            }).chain(function () {
+                this.scrollNode.setStyles({
+                    "position": "static",
+                    "width": "auto",
+                    "display": ""
+                });
+            }.bind(this));
+        }
     },
     reload: function(){
         this.date = (this.days.length > 0 ? this.days[0].date.clone() : this.date);

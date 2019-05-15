@@ -55,16 +55,12 @@ MWF.xAction.RestActions = MWF.Actions = {
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             }
         };
+        debugger;
         actions.each(function(action, i){
             var par = (i<parlen) ? args[i+2] : args[parlen+1];
             if (par){
                 var actionArgs = (o2.typeOf(par)==="array") ? par : [par];
-                actionArgs.push(function(json){
-                    jsons[i] = json;
-                    res.push(true);
-                    cb();
-                });
-                actionArgs.push(function(xhr, text, error){
+                actionArgs.unshift(function(xhr, text, error){
                     res.push(false);
                     if (!cbf){
                         _doError(xhr, text, error);
@@ -73,6 +69,13 @@ MWF.xAction.RestActions = MWF.Actions = {
                     }
                     cb();
                 });
+
+                actionArgs.unshift(function(json){
+                    jsons[i] = json;
+                    res.push(true);
+                    cb();
+                });
+
                 action.action[action.name].apply(action.action, actionArgs);
             }else{
                 action.action[action.name](function(){
@@ -137,6 +140,7 @@ MWF.xAction.RestActions.Action = new Class({
                 }
                 async = (n>++i) ? functionArguments[i] : null;
                 urlEncode = (n>++i) ? functionArguments[i] : true;
+                cache = (n>++i) ? functionArguments[i] : false;
             }else{
                 parameters.each(function(p, x){
                     parameter[p] = (n>x) ? functionArguments[x] : null;
@@ -153,8 +157,9 @@ MWF.xAction.RestActions.Action = new Class({
                 failure = (n>++i) ? functionArguments[i] : null;
                 async = (n>++i) ? functionArguments[i] : null;
                 urlEncode = (n>++i) ? functionArguments[i] : true;
+                cache = (n>++i) ? functionArguments[i] : false;
             }
-            return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode});
+            return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
         }.bind(this);
     }
 });

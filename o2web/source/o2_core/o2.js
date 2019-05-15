@@ -53,7 +53,7 @@
     }
     this.o2 = {
         "version": {
-            "v": '2.0.0',
+            "v": '2.0.9',
             "build": "2018.11.22",
             "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
         },
@@ -62,7 +62,7 @@
             "path": "/o2_core/o2"
         },
         "language": _lp,
-        "splitStr": /(,\s*){1}|(;\s*){1}/g
+        "splitStr": /\s*(?:,|;)\s*/
     };
     
     var _attempt = function(){
@@ -286,7 +286,8 @@
         "ie_adapter": ["/o2_lib/o2/ie_adapter.js"],
         "jquery": ["/o2_lib/jquery/jquery.min.js"],
         "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["/o2_lib/htmleditor/ckeditor462/ckeditor.js"],
+        "ckeditor": ["/o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
+        "ckeditor5": ["/o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
         "raphael": ["/o2_lib/raphael/raphael.js"],
         "d3": ["/o2_lib/d3/d3.min.js"],
         "ace": ["/o2_lib/ace/src-noconflict/ace.js","/o2_lib/ace/src-noconflict/ext-language_tools.js"],

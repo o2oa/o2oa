@@ -1,6 +1,7 @@
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.widget.JsonTemplate", null, false);
-MWF.xApplication.query.TableDesigner.Property = MWF.FVProperty = new Class({
+MWF.xApplication.query.TableDesigner = MWF.xApplication.query.TableDesigner || {};
+MWF.xApplication.query.TableDesigner.Property = MWF.FTProperty = new Class({
 	Extends: MWF.widget.Common,
 	Implements: [Options, Events],
 	options: {
@@ -52,14 +53,14 @@ MWF.xApplication.query.TableDesigner.Property = MWF.FVProperty = new Class({
                     this.loadPropertyTab();
                     this.loadPersonInput();
                     this.loadPersonSelectInput();
-                    this.loadViewSelect();
-                    this.loadStatColumnSelect();
+                    // this.loadViewSelect();
+                    // this.loadStatColumnSelect();
                     this.loadArrayList();
                     this.loadScriptArea();
                     this.loadJSONArea();
 
                     //this.view.changeViewSelected();
-                    this.module.changeViewSelected();
+                    //this.module.changeViewSelected();
                 }
             }.bind(this));
         }else{
@@ -588,55 +589,55 @@ MWF.xApplication.query.TableDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
         }
     },
-    loadViewSelect: function(){
-        var viewNodes = this.propertyContent.getElements(".MWFViewSelect");
-        if (viewNodes.length){
-            this.getViewList(function(){
-                viewNodes.each(function(node){
-                    var select = new Element("select").inject(node);
-                    select.addEvent("change", function(e){
-                        var viewId = e.target.options[e.target.selectedIndex].value;
-                        var viewName = e.target.options[e.target.selectedIndex].get("text");
-                        this.setValue(e.target.getParent("div").get("name"), viewId);
-                        this.setValue(e.target.getParent("div").get("name")+"Name", viewName);
-                    }.bind(this));
-                    this.setViewSelectOptions(node, select);
-
-                    var refreshNode = new Element("div", {"styles": this.view.css.propertyRefreshFormNode}).inject(node);
-                    refreshNode.addEvent("click", function(e){
-                        this.getViewList(function(){
-                            this.setViewSelectOptions(node, select);
-                        }.bind(this), true);
-                    }.bind(this));
-                    //select.addEvent("click", function(e){
-                    //    this.setFormSelectOptions(node, select);
-                    //}.bind(this));
-                }.bind(this));
-            }.bind(this));
-        }
-    },
-    setViewSelectOptions: function(node, select){
-        var name = node.get("name");
-        select.empty();
-        var option = new Element("option", {"text": "(none)"}).inject(select);
-        this.views.each(function(view){
-            var option = new Element("option", {
-                "text": view.name,
-                "value": view.id,
-                "selected": (this.data[name]==view.id)
-            }).inject(select);
-        }.bind(this));
-    },
-    getViewList: function(callback, refresh){
-        if (!this.views || refresh){
-            this.view.designer.actions.listView(this.view.designer.application.id, function(json){
-                this.views = json.data;
-                if (callback) callback();
-            }.bind(this));
-        }else{
-            if (callback) callback();
-        }
-    },
+    // loadViewSelect: function(){
+    //     var viewNodes = this.propertyContent.getElements(".MWFViewSelect");
+    //     if (viewNodes.length){
+    //         this.getViewList(function(){
+    //             viewNodes.each(function(node){
+    //                 var select = new Element("select").inject(node);
+    //                 select.addEvent("change", function(e){
+    //                     var viewId = e.target.options[e.target.selectedIndex].value;
+    //                     var viewName = e.target.options[e.target.selectedIndex].get("text");
+    //                     this.setValue(e.target.getParent("div").get("name"), viewId);
+    //                     this.setValue(e.target.getParent("div").get("name")+"Name", viewName);
+    //                 }.bind(this));
+    //                 this.setViewSelectOptions(node, select);
+    //
+    //                 var refreshNode = new Element("div", {"styles": this.view.css.propertyRefreshFormNode}).inject(node);
+    //                 refreshNode.addEvent("click", function(e){
+    //                     this.getViewList(function(){
+    //                         this.setViewSelectOptions(node, select);
+    //                     }.bind(this), true);
+    //                 }.bind(this));
+    //                 //select.addEvent("click", function(e){
+    //                 //    this.setFormSelectOptions(node, select);
+    //                 //}.bind(this));
+    //             }.bind(this));
+    //         }.bind(this));
+    //     }
+    // },
+    // setViewSelectOptions: function(node, select){
+    //     var name = node.get("name");
+    //     select.empty();
+    //     var option = new Element("option", {"text": "(none)"}).inject(select);
+    //     this.views.each(function(view){
+    //         var option = new Element("option", {
+    //             "text": view.name,
+    //             "value": view.id,
+    //             "selected": (this.data[name]==view.id)
+    //         }).inject(select);
+    //     }.bind(this));
+    // },
+    // getViewList: function(callback, refresh){
+    //     if (!this.views || refresh){
+    //         this.view.designer.actions.listView(this.view.designer.application.id, function(json){
+    //             this.views = json.data;
+    //             if (callback) callback();
+    //         }.bind(this));
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
     loadScriptArea: function(){
 
         var scriptAreas = this.propertyContent.getElements(".MWFScriptArea");

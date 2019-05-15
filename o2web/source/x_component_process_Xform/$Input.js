@@ -156,7 +156,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _setValue: function(value){
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
-        if (this.readonly) this.node.set("text", value);
+        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
     },
 	_loadValue: function(){
         this._setValue(this.getValue());
@@ -193,7 +193,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 		return this.getInputData();
 	},
     getInputData: function(){
-        return this.node.getFirst().get("value");
+        if (this.node.getFirst()){
+            return this.node.getFirst().get("value");
+        }else{
+            return this._getBusinessData();
+        }
     },
     resetData: function(){
         this.setData(this.getValue());

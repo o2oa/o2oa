@@ -34,7 +34,7 @@ MWF.xApplication.ExeManager.Attachment = new Class({
             "isDownload": true,
             "isSizeChange": this.options.isSizeChange,
             "readonly": (!this.options.isNew && !this.options.isEdited ) ? true : false
-        }
+        };
         this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
         this.attachmentController.load();
 

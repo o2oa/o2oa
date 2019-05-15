@@ -1272,6 +1272,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         if( this.formMaskNode )this.formMaskNode.destroy();
         this.formAreaNode.destroy();
         this.fireEvent("postClose");
+        debugger;
         if( this.waitReload )this.view.reload();
         delete this;
     }

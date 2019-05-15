@@ -39,7 +39,7 @@ MWF.xApplication.Execution.StatForm = new Class({
     },
     load: function () {
         this.centerWorkId = this.options.centerWorkId;
-        this.centerWorkData = {}
+        this.centerWorkData = {};
         this.getCenterWork(this.centerWorkId);
 
         if (this.options.isNew) {

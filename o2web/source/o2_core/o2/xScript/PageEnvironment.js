@@ -1004,5 +1004,24 @@ MWF.xScript.PageEnvironment = function(ev){
     this.status = ev.status;
     this.session = layout.desktop.session;
     this.Actions = o2.Actions;
+
+    this.query = function(option){
+        // options = {
+        //      "name": "statementName",
+        //      "data": "json data",
+        //      "firstResult": 1,
+        //      "maxResults": 100,
+        //      "success": function(){},
+        //      "error": function(){},
+        //      "async": true or false, default is true
+        // }
+        if (option){
+            var json = (option.data) || {};
+            if (option.firstResult) json.firstResult = option.firstResult.toInt();
+            if (option.maxResults) json.maxResults = option.maxResults.toInt();
+            o2.Actions.get("x_query_assemble_surface").executeStatement(option.name, json, success, error, options.async);
+        }
+    };
+    this.Table = MWF.xScript.createTable();
 };
 

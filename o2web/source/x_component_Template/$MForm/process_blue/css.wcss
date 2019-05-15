@@ -1,0 +1,122 @@
+{
+  "inputText": {
+    "width": "100%",
+    "height": "26px",
+    "color": "#666",
+    "border" : "0px",
+    "border-bottom": "1px solid #ccc",
+    "padding-right" : "20px",
+    "background": "url(/x_component_process_Xform/$Form/default/icon/inputtext.png) 99% center no-repeat"
+  },
+  "inputRadio" : {
+    "float" : "left",
+    "margin-right" : "5px"
+  },
+  "inputTime" : {
+    "width": "100%",
+    "height": "26px",
+    "color": "#666",
+    "border" : "0px",
+    "border-bottom": "1px solid #ccc",
+    "padding-right" : "20px",
+    "background": "url(/x_component_process_Xform/$Form/default/icon/calendar.png) 99% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "100%",
+    "height": "26px",
+    "color": "#666",
+    "border" : "0px",
+    "border-bottom": "1px solid #ccc",
+    "padding-right" : "20px",
+    "background": "url(/x_component_process_Xform/$Form/default/icon/selectperson.png) 99% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "100%",
+    "color": "#666",
+    "border" : "0px",
+    "border-bottom": "1px solid #ccc"
+  },
+  "inputSelect" : {
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "26px"
+  },
+
+  "inputOkButton" : {
+    "background": "#4898F3",
+    "border-radius": "4px",
+    "width" : "250px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "18px"
+  },
+  "inputCancelButton" : {
+    "background": "#f0f0f0",
+    "border-radius": "4px",
+    "width" : "130px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "color" : "#666",
+    "border" : "0px",
+    "margin-left" : "20px",
+    "font-size" : "18px",
+    "cursor" : "pointer"
+  },
+  "inputCancelButton_long" : {
+    "background": "#f0f0f0",
+    "border-radius": "4px",
+    "width" : "400px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "color" : "#666",
+    "border" : "0px",
+    "margin-left" : "20px",
+    "font-size" : "18px",
+    "cursor" : "pointer"
+  },
+
+  "formTable" : {
+    "border" : "1px solid #ddd",
+    "border-collapse" : "collapse",
+    "margin" : "10px 0px",
+    "font-size" : "14px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold",
+    "border" : "1px solid #ccc",
+    "border-collapse" : "collapse"
+  },
+  "formTableTitle" : {
+    "background-color":"#fff",
+    "color":"#333",
+    "font-weight":"bold",
+    "height":"30px",
+    "line-height":"30px",
+    "text-align":"right",
+    "border" : "1px solid #ddd"
+  },
+  "formTableValue" : {
+    "color" : "#333",
+    "background-color" : "#fff",
+    "text-align": "left",
+    "border" : "1px solid #ddd",
+    "border-collapse" : "collapse"
+  },
+  "formTableValue_Input" : {
+    "padding-right" : "21px",
+    "color" : "#333",
+    "background-color" : "#fff",
+    "text-align": "left",
+    "border" : "1px solid #ddd",
+    "border-collapse" : "collapse"
+  }
+}
+

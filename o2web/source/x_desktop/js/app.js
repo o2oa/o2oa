@@ -113,6 +113,7 @@ o2.addReady(function(){
                     }
                     app.appId = appId;
                     layout.app = app;
+                    layout.desktop.currentApp = app;
                 };
                 layout.load = function(){
                     this.isAuthentication(function(){
