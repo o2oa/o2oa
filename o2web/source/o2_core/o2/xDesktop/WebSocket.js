@@ -8,7 +8,9 @@ MWF.xDesktop.WebSocket = new Class({
     initialize: function(options){
         debugger;
         var addressObj = layout.desktop.serviceAddressList["x_message_assemble_communicate"];
-        this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+        var wsDefaultPort = window.location.protocol==="https:" ? 443 : 80;
+        var wsProtocol = wsDefaultPort===443 ? "wss://" : "ws://";
+        this.ws = wsProtocol+addressObj.host+(addressObj.port===wsDefaultPort ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
 
         // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
         // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";

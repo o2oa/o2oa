@@ -13,7 +13,7 @@
 		<module>x_bbs_core_entity</module>
 		<module>x_calendar_core_entity</module>
 		<module>x_cms_core_entity</module>
-		<module>x_collaboration_core_entity</module>
+		<!-- <module>x_collaboration_core_entity</module> -->
 		<module>x_component_core_entity</module>
 		<module>x_file_core_entity</module>
 		<module>x_general_core_entity</module>
@@ -28,14 +28,14 @@
 		<module>x_query_core_entity</module>
 		<!-- <module>x_report_core_entity</module> <module>x_strategydeploy_core_entity</module> -->
 		<module>x_program_center_core_entity</module>
-		<module>x_collaboration_core_message</module>
+		<!-- <module>x_collaboration_core_message</module> -->
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_assemble_control</module>
-		<module>x_collaboration_assemble_websocket</module>
-		<module>x_collaboration_service_message</module>
+		<!-- <module>x_collaboration_assemble_websocket</module> -->
+		<!-- <module>x_collaboration_service_message</module> -->
 		<module>x_component_assemble_control</module>
 		<module>x_file_assemble_control</module>
 		<module>x_general_assemble_control</module>
@@ -769,6 +769,7 @@
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_collaboration_core_entity</artifactId>
@@ -781,6 +782,7 @@
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
