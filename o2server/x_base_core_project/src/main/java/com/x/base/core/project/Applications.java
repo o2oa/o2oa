@@ -232,16 +232,4 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			}
 		}).collect(Collectors.joining("/"));
 	}
-
-	public List<String> listContainEntity(String name) {
-		List<String> os = new ArrayList<>();
-		this.entrySet().stream().forEach(o -> {
-			if (!o.getValue().isEmpty()) {
-				if (o.getValue().get(0).getDependency().containerEntities.contains(name)) {
-					os.add(o.getKey());
-				}
-			}
-		});
-		return os;
-	}
 }

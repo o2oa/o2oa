@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -26,7 +28,7 @@ public class ActionListViewRecordByPerson extends BaseAction {
 		Boolean check = true;		
 
 		if( check ){
-			if( name == null || name.isEmpty() ){
+			if( StringUtils.isEmpty(name) ){
 				check = false;
 				Exception exception = new ExceptionPersonNameEmpty();
 				result.error( exception );

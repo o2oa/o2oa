@@ -15,6 +15,19 @@ public class MessageConnector {
 
 	private static Gson gson = XGsonBuilder.instance();
 
+	public static final String TYPE_APPLICATION_CREATE = "application_create";
+
+	public static final String TYPE_APPLICATION_UPDATE = "application_update";
+
+	public static final String TYPE_APPLICATION_DELETE = "application_delete";
+
+	public static final String TYPE_PROCESS_CREATE = "process_create";
+
+	public static final String TYPE_PROCESS_UPDATE = "process_update";
+
+	public static final String TYPE_PROCESS_DELETE = "process_delete";
+
+	/* 有新的工作通过消息节点 */
 	public static final String TYPE_ACTIVITY_MESSAGE = "activity_message";
 
 	public static final String TYPE_TASK_CREATE = "task_create";

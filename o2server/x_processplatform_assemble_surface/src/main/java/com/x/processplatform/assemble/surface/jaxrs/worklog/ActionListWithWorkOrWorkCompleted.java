@@ -157,7 +157,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						WorkLog.arrivedActivityType_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME,
 						WorkLog.arrivedActivityAlias_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
 						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.connected_FIELDNAME,
-						WorkLog.splitting_FIELDNAME),
+						WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME, WorkLog.arrivedGroup_FIELDNAME,
+						WorkLog.fromOpinionGroup_FIELDNAME, WorkLog.arrivedOpinionGroup_FIELDNAME),
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();
@@ -216,7 +217,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -4432508672641778924L;
-		
+
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
 				WoTaskCompleted.class,
 				ListTools.toList(TaskCompleted.id_FIELDNAME, TaskCompleted.person_FIELDNAME,

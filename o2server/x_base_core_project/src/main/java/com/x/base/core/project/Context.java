@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.openjpa.enhance.PCRegistry;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
@@ -25,8 +26,8 @@ import org.quartz.impl.matchers.EverythingMatcher;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -47,7 +48,7 @@ public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
-	/** 从servletContext中抽取context */
+	/* 从servletContext中抽取context */
 	public static Context fromServletContext(ServletContext servletContext) throws Exception {
 		Object o = servletContext.getAttribute(Context.class.getName());
 		if (null == o) {
@@ -57,7 +58,7 @@ public class Context extends AbstractContext {
 		}
 	}
 
-	/** 从servletRequest中抽取context */
+	/* 从servletRequest中抽取context */
 	public static Context fromServletRequest(ServletRequest servletRequest) throws Exception {
 		Object o = servletRequest.getServletContext().getAttribute(Context.class.getName());
 		if (null == o) {
@@ -109,11 +110,11 @@ public class Context extends AbstractContext {
 		return this.name;
 	}
 
-	/* Storage资源 */
-	private volatile StorageMappings storageMappings;
+//	/* Storage资源 */
+//	private volatile StorageMappings storageMappings;
 
-	public StorageMappings storageMappings() {
-		return this.storageMappings;
+	public StorageMappings storageMappings() throws Exception {
+		return Config.storageMappings();
 	}
 
 	/* 是否已经初始化完成 */
@@ -163,16 +164,16 @@ public class Context extends AbstractContext {
 		this.scheduler.start();
 	}
 
-	/** 可以自定义缓存清空消息处理器 */
-	public static Context concrete(ServletContextEvent servletContextEvent,
-			AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue) throws Exception {
-		Context context = concrete(servletContextEvent);
-		if (null != clearCacheRequestQueue) {
-			context.clearCacheRequestQueue = clearCacheRequestQueue;
-			context.startQueue(clearCacheRequestQueue);
-		}
-		return context;
-	}
+//	/** 可以自定义缓存清空消息处理器 */
+//	public static Context concrete(ServletContextEvent servletContextEvent,
+//			AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue) throws Exception {
+//		Context context = concrete(servletContextEvent);
+//		if (null != clearCacheRequestQueue) {
+//			context.clearCacheRequestQueue = clearCacheRequestQueue;
+//			context.startQueue(clearCacheRequestQueue);
+//		}
+//		return context;
+//	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
 		/* 强制忽略ssl服务器认证 */
@@ -181,18 +182,18 @@ public class Context extends AbstractContext {
 		Context context = new Context();
 		context.contextPath = servletContext.getContextPath();
 		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
-		context.clazzInstance = (Deployable) context.clazz.newInstance();
+//		context.clazzInstance = (Deployable) context.clazz.newInstance();
+		context.module = context.clazz.getAnnotation(Module.class);
 		context.name = getName(context.clazz);
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
-		context.initDatasFromCenters();
-		context.initStoragesFromCenters();
+		context.initDatas();
 		context.scheduleLocal(ReportToCenter.class, 0, ReportToCenter.INTERVAL);
-		context.initialized = true;
 		servletContext.setAttribute(context.getClass().getName(), context);
+		context.initialized = true;
 		return context;
 	}
 
@@ -268,40 +269,19 @@ public class Context extends AbstractContext {
 		}
 	}
 
-	private void initDatasFromCenters() throws Exception {
-		if (ListTools.isNotEmpty(clazzInstance.dependency.containerEntities)) {
-			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
-					clazzInstance.dependency.containerEntities.size());
-			DataMappings dataMappings = null;
-			do {
-				try {
-					ActionResponse rep = CipherConnectionAction.get(false,
-							Config.x_program_centerUrlRoot() + "datamappings");
-					dataMappings = rep.getData(DataMappings.class);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} while (null == dataMappings);
-			EntityManagerContainerFactory.init(path, dataMappings, this.clazzInstance.dependency.containerEntities);
-		}
-	}
+//	private void initDatas() throws Exception {
+//		if (ListTools.isNotEmpty(clazzInstance.dependency.containerEntities)) {
+//			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+//					clazzInstance.dependency.containerEntities.size());
+//			EntityManagerContainerFactory.init(path, AnnotationUtils.this.clazzInstance.dependency.containerEntities);
+//		}
+//	}
 
-	private void initStoragesFromCenters() throws Exception {
-		if (ListTools.isNotEmpty(clazzInstance.dependency.storageTypes)) {
-			logger.print("{} loading storages, type size:{}.", this.clazz.getName(),
-					clazzInstance.dependency.storageTypes.size());
-			StorageMappings storageMappings = null;
-			do {
-				try {
-					ActionResponse rep = CipherConnectionAction.get(false,
-							Config.x_program_centerUrlRoot() + "storagemappings");
-					storageMappings = rep.getData(StorageMappings.class);
-				} catch (Exception e) {
-					e.printStackTrace();
-					Thread.sleep(5000);
-				}
-			} while (null == storageMappings);
-			this.storageMappings = storageMappings;
+	private void initDatas() throws Exception {
+		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
+			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+					this.module.containerEntities().length);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
 		}
 	}
 

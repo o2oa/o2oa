@@ -26,8 +26,14 @@ public class CommandFactory {
 	public static final Pattern stop_pattern = Pattern
 			.compile("^ {0,}stop {0,}(data|storage|center|application|web|all|) {0,}$", Pattern.CASE_INSENSITIVE);
 
+	public static final Pattern dump_path_pattern = Pattern.compile("^ {0,}dump (data|storage) path (.+) (.+)$",
+			Pattern.CASE_INSENSITIVE);
+
 	public static final Pattern dump_pattern = Pattern.compile("^ {0,}dump {0,}(data|storage) (.+)$",
 			Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern restore_path_pattern = Pattern
+			.compile("^ {0,}restore {1,}(data|storage) {1,}path {1,}(.+) {1,}(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern restore_pattern = Pattern.compile(
 			"^ {0,}restore {0,}(data|storage) {0,}([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9]) (.+)$",
@@ -68,6 +74,9 @@ public class CommandFactory {
 
 	public static final Pattern show_cpu_pattern = Pattern.compile("^ {0,}show cpu ([1-9][0-9]*) ([1-9][0-9]*) {0,}$",
 			Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern show_dataSource_pattern = Pattern
+			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {

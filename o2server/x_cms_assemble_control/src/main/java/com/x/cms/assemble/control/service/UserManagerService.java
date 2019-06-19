@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
@@ -160,7 +162,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public String getPersonNameWithIdentity( String identity ) throws Exception {
-		if (identity == null || identity.isEmpty()) {
+		if ( StringUtils.isEmpty( identity )) {
 			throw new Exception("identity is null!");
 		}
 		Business business = null;
@@ -203,7 +205,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public List<String> listIdentitiesWithPerson( String userName ) throws Exception {
-		if (userName == null || userName.isEmpty()) {
+		if ( StringUtils.isEmpty( userName )) {
 			throw new Exception("userName is null!");
 		}
 		Business business = null;
@@ -274,10 +276,10 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public boolean isHasPlatformRole( String personName, String roleName) throws Exception {
-		if ( personName == null || personName.isEmpty()) {
+		if ( StringUtils.isEmpty( personName )) {
 			throw new Exception("personName is null!");
 		}
-		if (roleName == null || roleName.isEmpty()) {
+		if ( StringUtils.isEmpty( roleName )) {
 			throw new Exception("roleName is null!");
 		}
 		List<String> roleList = null;
@@ -324,7 +326,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			identityNames = listIdentitiesWithPerson( personName );
 			LogUtil.INFO("identityNames:", identityNames );
-			if( identity == null || identity.isEmpty() ) {
+			if( StringUtils.isEmpty( identity ) ) {
 				if ( identityNames.size() == 0 ) {
 					throw new Exception("perons has no identity.");
 				} else if ( identityNames.size() > 0 ) {
@@ -333,7 +335,7 @@ public class UserManagerService {
 			}else {
 				//判断传入的身份是否合法
 				identityName = this.findIdentity( identityNames, identity );
-				if ( null == identity || identity.isEmpty() ) {
+				if ( StringUtils.isEmpty( identity ) ) {
 					identityName = identityNames.get(0);
 				}
 			}

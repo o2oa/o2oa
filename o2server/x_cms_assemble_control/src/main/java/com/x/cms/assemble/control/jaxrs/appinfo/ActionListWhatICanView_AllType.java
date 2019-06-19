@@ -77,6 +77,7 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 		if(ListTools.isNotEmpty( wos)) {
 			SortTools.asc( wos, "appInfoSeq");
 		}
+		cache.put(new Element( cacheKey, wos ));
 		result.setData(wos);
 		return result;
 	}

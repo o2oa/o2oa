@@ -18,6 +18,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Hint;
@@ -174,6 +175,7 @@ class ActionDelete extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(application.getId());
 			result.setData(wo);
+			MessageFactory.application_delete(application);
 			return result;
 		}
 	}

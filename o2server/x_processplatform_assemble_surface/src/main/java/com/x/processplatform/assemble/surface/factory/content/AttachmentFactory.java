@@ -41,13 +41,6 @@ public class AttachmentFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	// public boolean multiReferenced(Attachment attachment) throws Exception {
-	// Business business = this.business();
-	// Long count = business.work().countWithAttachment(attachment.getId())
-	// + business.workCompleted().countWithAttachment(attachment.getId());
-	// return (count > 1) ? true : false;
-	// }
-
 	public Long countWithJob(String job) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Attachment.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

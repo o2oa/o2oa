@@ -86,8 +86,6 @@ public class CollectLog extends BaseAction {
 				} else {
 					logger.info("无法登录到云服务器.");
 				}
-			} else {
-				logger.info("系统没有启用O2云服务器连接.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

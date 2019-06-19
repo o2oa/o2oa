@@ -21,7 +21,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionEmptyExtension;
 import com.x.cms.assemble.control.queue.DataImportStatus;
 import com.x.cms.common.excel.reader.DocumentExcelReader;
 import com.x.cms.common.excel.reader.ExcelReadRuntime;
@@ -50,11 +49,11 @@ public class ActionImportDataExcel extends BaseAction {
 		Boolean check = true;
 		Gson gson = null;
 		
-		String importBatchName = categoryId + "_" + new DateOperation().getNowTimeChar();
+		String importBatchName = categoryId + "_" + DateOperation.getNowTimeChar();
 		String personName = effectivePerson.getDistinguishedName();
 		
 		
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty(categoryId) ){
 			check = false;
 			Exception exception = new ExceptionCategoryIdEmpty();
 			result.error( exception );
@@ -207,7 +206,7 @@ public class ActionImportDataExcel extends BaseAction {
 				ExcelReaderUtil.readExcel( new DocumentExcelReader(), fileName, inputStream, excelReadRuntime );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExcelReadException(e);
+				Exception exception = new ExceptionExcelRead(e);
 				logger.error( e, effectivePerson, request, null);
 				result.error(exception);
 			}

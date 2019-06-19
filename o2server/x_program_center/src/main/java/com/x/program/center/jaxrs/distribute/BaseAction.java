@@ -1,14 +1,10 @@
 package com.x.program.center.jaxrs.distribute;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,7 +12,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.Application;
-import com.x.base.core.project.AssembleA;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.WebServer;
@@ -24,29 +19,16 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.ThisApplication;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static CopyOnWriteArrayList<Class<? extends AssembleA>> assembles;
+	protected static CopyOnWriteArrayList<Class<?>> assembles;
 
-	private static String HOST_LOCALHOST = "localhost";
+	protected static String HOST_LOCALHOST = "localhost";
 
 	private String getHost(HttpServletRequest request) throws Exception {
 		URL url = new URL(request.getRequestURL().toString());
 		return url.getHost();
 	}
-
-	// private boolean isUndefindHost(String host) {
-	// if (StringUtils.isEmpty(host) || StringUtils.equalsIgnoreCase(host,
-	// HOST_LOCALHOST)
-	// || StringUtils.startsWith(host, "127.0.0.")) {
-	// return true;
-	// }
-	// return false;
-	// }
 
 	/* 判断请求是否来自proxyHost,center,application,web都需要单独判断 */
 	private Boolean fromProxy(HttpServletRequest request, String source) throws Exception {
@@ -191,27 +173,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		return map;
 	}
-
-//	@SuppressWarnings("unchecked")
-//	private List<Class<? extends AssembleA>> listAssemble() throws Exception {
-//		if (null == assembles) {
-//			synchronized (BaseAction.class) {
-//				if (null == assembles) {
-//					try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-//						assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
-//						List<ClassInfo> list = new ArrayList<>();
-//						list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
-//						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
-//								.collect(Collectors.toList());
-//						for (ClassInfo info : list) {
-//							assembles.add((Class<AssembleA>) Class.forName(info.getName()));
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return assembles;
-//	}
 
 	public static class WoAssemble extends GsonPropertyObject {
 

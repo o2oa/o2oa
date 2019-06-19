@@ -100,7 +100,7 @@ public class UnitDuty extends SliceJpaObject {
 	@FieldDescribe("名称,同一组织下不可重名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists = @CitationNotExist(fields = name_FIELDNAME, type = UnitDuty.class, equals = @Equal(property = "unit", field = "unit")))
+	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = name_FIELDNAME, type = UnitDuty.class, equals = @Equal(property = "unit", field = "unit")))
 	private String name;
 
 	public static final String unique_FIELDNAME = "unique";
@@ -138,7 +138,7 @@ public class UnitDuty extends SliceJpaObject {
 			+ IndexNameMiddle + identityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + identityList_FIELDNAME + ElementIndexNameSuffix)
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + identityList_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Identity.class) })
 	private List<String> identityList;

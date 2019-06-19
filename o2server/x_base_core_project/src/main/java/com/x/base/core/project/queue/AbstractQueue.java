@@ -98,6 +98,10 @@ public abstract class AbstractQueue<T> {
 		}
 	}
 
+	public Boolean isEmpty() {
+		return this.queue.isEmpty();
+	}
+	
 	private static class StopSignal {
 	}
 }

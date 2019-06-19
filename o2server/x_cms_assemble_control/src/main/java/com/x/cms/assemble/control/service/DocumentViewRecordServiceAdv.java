@@ -1,12 +1,17 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentViewRecord;
@@ -63,16 +68,24 @@ public class DocumentViewRecordServiceAdv {
 	 * @param personName
 	 * @throws Exception
 	 */
-	public void addViewRecord( String docId, String personName ) throws Exception {
+	public Long addViewRecord( String docId, String personName ) throws Exception {
 		DocumentViewRecord documentViewRecord = null;
 		Document document = null;
 		Business business = null;
+		Long viewCount = 0L;
 		List<String> ids = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			emc.beginTransaction( DocumentViewRecord.class );
+			
 			ids = business.documentViewRecordFactory().listByDocAndPerson( docId, personName );
-			if( ids != null && !ids.isEmpty() ){
+			document = emc.find( docId, Document.class );
+			
+			if( document == null ) {
+				throw new Exception("document not exists!ID:" + docId );
+			}
+			
+			if( ListTools.isNotEmpty( ids )){
 				int i = 0;
 				for( String id : ids ){
 					i++;
@@ -90,7 +103,6 @@ public class DocumentViewRecordServiceAdv {
 					}
 				}
 			}else{
-				document = emc.find( docId, Document.class );
 				if( document != null ){
 					documentViewRecord = new DocumentViewRecord();
 					documentViewRecord.setAppId( document.getAppId() );
@@ -105,21 +117,27 @@ public class DocumentViewRecordServiceAdv {
 					documentViewRecord.setViewerTopUnitName( userManagerService.getTopUnitNameWithPerson( personName ));
 					documentViewRecord.setViewerUnitName( userManagerService.getUnitNameWithPerson( personName ));
 					emc.persist( documentViewRecord, CheckPersistType.all ); 
-				}else{
-					throw new Exception("document is not exits, system can not save view record.id:" + docId );
 				}
 			}
 			emc.commit();
+			
+			emc.beginTransaction( Document.class );
+			viewCount = business.documentViewRecordFactory().sumWithDocmentId( docId );
+			document.setViewCount( viewCount );
+			emc.check( document, CheckPersistType.all ); 
+			emc.commit();
+			
 		} catch ( Exception e ) {
 			throw e;
-		}
+		}		
+		return viewCount;
 	}
 	
 	public List<DocumentViewRecord> listNextWithDocIds( String id, String docId, Integer count, String order) throws Exception {
 		if( docId == null ){
 			throw new Exception("docId is null!");
 		}
-		if( order == null || order.isEmpty() ){
+		if( StringUtils.isEmpty( order ) ){
 			order = "DESC";
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -192,9 +210,8 @@ public class DocumentViewRecordServiceAdv {
 			throw new Exception("stay_yeanumr_viewRecord is null!");
 		}
 		//1、计算三年期限的时间点，三年前的1月1日, 最好再加一年
-		DateOperation dateOperation = new DateOperation();
-		Integer year = dateOperation.getYearNumber( new Date() );
-		Date limitDate = dateOperation.getDateFromString( ( year-4 ) + "-01-01 00:00:00");
+		Integer year = DateOperation.getYearNumber( new Date() );
+		Date limitDate = DateOperation.getDateFromString( ( year-4 ) + "-01-01 00:00:00");
 		cleanWithDate( limitDate );
 	}
 	
@@ -224,6 +241,43 @@ public class DocumentViewRecordServiceAdv {
 				}
 				emc.commit();
 			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据指定ID列表查询已读文档ID列表
+	 * @param ids
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listReadDocId( List<String> ids, EffectivePerson effectivePerson ) throws Exception {
+		if( ListTools.isEmpty(  ids ) ) {
+			return new ArrayList<>();
+		}
+		if( effectivePerson == null ) {
+			return new ArrayList<>();
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business( emc );
+			return business.documentViewRecordFactory().listReadDocId( ids, effectivePerson.getDistinguishedName() );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<String> listDocIdsWithFilter(List<String> queryCategoryIds, EffectivePerson effectivePerson ) throws Exception {
+		if( ListTools.isEmpty(  queryCategoryIds ) ) {
+			return new ArrayList<>();
+		}
+		if( effectivePerson == null ) {
+			return new ArrayList<>();
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business( emc );
+			return business.documentViewRecordFactory().listReadDocIdWithCategory( queryCategoryIds, effectivePerson.getDistinguishedName() );
 		} catch ( Exception e ) {
 			throw e;
 		}

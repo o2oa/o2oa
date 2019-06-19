@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
 
+import com.x.base.core.container.LogLevel;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class DataServer extends ConfigObject {
 
@@ -43,6 +43,12 @@ public class DataServer extends ConfigObject {
 	private Boolean jmxEnable;
 	@FieldDescribe("H2数据库缓存大小,设置H2用于作为缓存的内存大小,以M作为单位,这里默认为512M.")
 	private Integer cacheSize;
+	@FieldDescribe("默认日志级别")
+	private LogLevel logLevel = LogLevel.WARN;
+
+	public LogLevel getLogLevel() {
+		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
+	}
 
 	public Boolean getJmxEnable() {
 		return BooleanUtils.isTrue(this.jmxEnable);
@@ -110,6 +116,10 @@ public class DataServer extends ConfigObject {
 
 	public void setCacheSize(Integer cacheSize) {
 		this.cacheSize = cacheSize;
+	}
+
+	public void setLogLevel(LogLevel logLevel) {
+		this.logLevel = logLevel;
 	}
 
 }

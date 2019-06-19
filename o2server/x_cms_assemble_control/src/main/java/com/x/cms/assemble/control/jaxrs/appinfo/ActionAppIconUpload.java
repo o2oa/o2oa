@@ -21,7 +21,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.URLParameterGetException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.URLParameterGetException;
 import com.x.cms.common.image.maincolor.ImageMainColorUtil;
 import com.x.cms.core.entity.AppInfo;
 

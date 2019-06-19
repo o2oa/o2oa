@@ -178,17 +178,17 @@ public class ScriptAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "获取脚本信息以及依赖脚本内容.", action = ActionGetScriptNested.class)
 	@POST
-	@Path("{uniqueName}/app/{appId}")
+	@Path("{uniqueName}/app/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getScriptNested(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本唯一标识") @PathParam("uniqueName") String uniqueName,
-			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId, 
+			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag, 
 			JsonElement jsonElement) {
 		ActionResult<ActionGetScriptNested.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetScriptNested().execute( request, effectivePerson, uniqueName, appId, jsonElement );
+			result = new ActionGetScriptNested().execute( request, effectivePerson, uniqueName, flag, jsonElement );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);

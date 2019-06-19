@@ -16,6 +16,9 @@ import com.x.cms.assemble.control.factory.AppDictItemFactory;
 import com.x.cms.assemble.control.factory.AppInfoFactory;
 import com.x.cms.assemble.control.factory.CategoryExtFactory;
 import com.x.cms.assemble.control.factory.CategoryInfoFactory;
+import com.x.cms.assemble.control.factory.CmsBatchOperationFactory;
+import com.x.cms.assemble.control.factory.DocumentCommendFactory;
+import com.x.cms.assemble.control.factory.DocumentCommentInfoFactory;
 import com.x.cms.assemble.control.factory.DocumentFactory;
 import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
 import com.x.cms.assemble.control.factory.FileFactory;
@@ -52,7 +55,6 @@ public class Business {
 	private CategoryExtFactory categoryExtFactory;
 	private FileInfoFactory fileInfoFactory;
 	private LogFactory logFactory;
-	@SuppressWarnings("rawtypes")
 	private DocumentFactory documentFactory;
 	private DocumentViewRecordFactory documentViewRecordFactory;
 	private FormFactory formFactory;
@@ -68,7 +70,31 @@ public class Business {
 	private Organization organization;
 	private ItemFactory itemFactory;
 	private FormFieldFactory formFieldFactory;
+	private CmsBatchOperationFactory cmsBatchOperationFactory;
+	private DocumentCommendFactory documentCommendFactory;
+	private DocumentCommentInfoFactory documentCommentInfoFactory;
 
+	public CmsBatchOperationFactory cmsBatchOperationFactory() throws Exception {
+		if (null == this.cmsBatchOperationFactory) {
+			this.cmsBatchOperationFactory = new CmsBatchOperationFactory(this);
+		}
+		return cmsBatchOperationFactory;
+	}
+	
+	public DocumentCommentInfoFactory documentCommentInfoFactory() throws Exception {
+		if (null == this.documentCommentInfoFactory) {
+			this.documentCommentInfoFactory = new DocumentCommentInfoFactory(this);
+		}
+		return documentCommentInfoFactory;
+	}
+	
+	public DocumentCommendFactory documentCommendFactory() throws Exception {
+		if (null == this.documentCommendFactory) {
+			this.documentCommendFactory = new DocumentCommendFactory(this);
+		}
+		return documentCommendFactory;
+	}
+	
 	public FileFactory fileFactory() throws Exception {
 		if (null == this.fileFactory) {
 			this.fileFactory = new FileFactory(this);
@@ -219,10 +245,10 @@ public class Business {
 	}
 
 	public boolean isHasPlatformRole( String personName, String roleName) throws Exception {
-		if ( personName == null || personName.isEmpty()) {
+		if ( StringUtils.isEmpty( personName ) ) {
 			throw new Exception("personName is null!");
 		}
-		if (roleName == null || roleName.isEmpty()) {
+		if ( StringUtils.isEmpty( roleName )) {
 			throw new Exception("roleName is null!");
 		}
 		List<String> roleList = null;

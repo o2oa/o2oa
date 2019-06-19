@@ -27,13 +27,13 @@ class ActionCreate extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		List<Message> messages = new ArrayList<>();
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			List<String> consumers = Config.messages().getConsumers(wi.getType());
 			Instant instant = this.instant(effectivePerson, business, wi, consumers);
-			List<Message> messages = new ArrayList<>();
 			if (ListTools.isNotEmpty(consumers)) {
 				for (String consumer : consumers) {
 					Message message = null;
@@ -63,7 +63,6 @@ class ActionCreate extends BaseAction {
 					messages.add(message);
 				}
 			}
-
 			emc.beginTransaction(Instant.class);
 			emc.persist(instant, CheckPersistType.all);
 			if (ListTools.isNotEmpty(messages)) {
@@ -73,38 +72,37 @@ class ActionCreate extends BaseAction {
 				}
 			}
 			emc.commit();
-
-			/* 开始发送,由于要回写所以先要commit */
-			for (Message message : messages) {
-				switch (message.getConsumer()) {
-				case MessageConnector.CONSUME_WS:
-					ThisApplication.wsConsumeQueue.send(message);
-					break;
-				case MessageConnector.CONSUME_PMS:
-					ThisApplication.pmsConsumeQueue.send(message);
-					break;
-				case MessageConnector.CONSUME_DINGDING:
-					ThisApplication.dingdingConsumeQueue.send(message);
-					break;
-				case MessageConnector.CONSUME_ZHENGWUDINGDING:
-					ThisApplication.zhengwuDingdingConsumeQueue.send(message);
-					break;
-				case MessageConnector.CONSUME_QIYEWEIXIN:
-					ThisApplication.qiyeweixinConsumeQueue.send(message);
-					break;
-				case MessageConnector.CONSUME_CALENDAR:
-					ThisApplication.calendarConsumeQueue.send(message);
-					break;
-				default:
-					break;
-				}
-			}
-
-			Wo wo = new Wo();
-			wo.setValue(true);
-			result.setData(wo);
-			return result;
+			/* emc上下文根必须结束掉,下面要直接调用发送队列,发送队列中会再次开启emc */
 		}
+		/* 开始发送,由于要回写所以先要commit */
+		for (Message message : messages) {
+			switch (message.getConsumer()) {
+			case MessageConnector.CONSUME_WS:
+				ThisApplication.wsConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_PMS:
+				ThisApplication.pmsConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_DINGDING:
+				ThisApplication.dingdingConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_ZHENGWUDINGDING:
+				ThisApplication.zhengwuDingdingConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_QIYEWEIXIN:
+				ThisApplication.qiyeweixinConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_CALENDAR:
+				ThisApplication.calendarConsumeQueue.send(message);
+				break;
+			default:
+				break;
+			}
+		}
+		Wo wo = new Wo();
+		wo.setValue(true);
+		result.setData(wo);
+		return result;
 	}
 
 	private Instant instant(EffectivePerson effectivePerson, Business business, Wi wi, List<String> consumers) {

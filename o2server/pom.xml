@@ -13,7 +13,7 @@
 		<module>x_bbs_core_entity</module>
 		<module>x_calendar_core_entity</module>
 		<module>x_cms_core_entity</module>
-		<module>x_collaboration_core_entity</module>
+		<!--module>x_collaboration_core_entity</module -->
 		<module>x_component_core_entity</module>
 		<module>x_file_core_entity</module>
 		<module>x_general_core_entity</module>
@@ -26,16 +26,16 @@
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
 		<module>x_query_core_entity</module>
-		<!-- <module>x_report_core_entity</module> <module>x_strategydeploy_core_entity</module> -->
+		<module>x_teamwork_core_entity</module>
 		<module>x_program_center_core_entity</module>
-		<module>x_collaboration_core_message</module>
+		<!--module>x_collaboration_core_message</module -->
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_assemble_control</module>
-		<module>x_collaboration_assemble_websocket</module>
-		<module>x_collaboration_service_message</module>
+		<!--module>x_collaboration_assemble_websocket</module -->
+		<!--module>x_collaboration_service_message</module -->
 		<module>x_component_assemble_control</module>
 		<module>x_file_assemble_control</module>
 		<module>x_general_assemble_control</module>
@@ -46,7 +46,6 @@
 		<module>x_okr_assemble_control</module>
 		<module>x_organization_assemble_authentication</module>
 		<module>x_organization_assemble_control</module>
-		<!-- module>x_organization_assemble_custom</module> -->
 		<module>x_organization_assemble_express</module>
 		<module>x_organization_assemble_personal</module>
 		<module>x_portal_assemble_designer</module>
@@ -58,7 +57,7 @@
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
-		<!-- <module>x_report_assemble_control</module> <module>x_strategydeploy_assemble_control</module> -->
+		<module>x_teamwork_assemble_control</module>
 		<module>x_program_center</module>
 		<module>x_console</module>
 	</modules>
@@ -143,6 +142,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.6.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>1.6</version>
 			<scope>provided</scope>
@@ -163,6 +174,12 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
 			<version>9.3.25.v20180904</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-quickstart</artifactId>
+			<version>9.4.18.v20190429</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -333,12 +350,8 @@
 			<version>2.10.6</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.1.12</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- dependency> <groupId>com.alibaba</groupId> <artifactId>druid</artifactId> 
+			<version>1.1.12</version> <scope>provided</scope> </dependency -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -456,6 +469,14 @@
 				<version>2.4.2</version>
 				<configuration>
 					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -597,6 +618,66 @@
 								<target>
 									<ant antfile="../build_common.xml">
 										<target name="describe" />
+									</ant>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>createWebXml</id>
+							<!-- <phase>generate-sources</phase> -->
+							<phase>none</phase>
+							<configuration>
+								<target>
+									<ant antfile="../build_common.xml">
+										<target name="createWebXml" />
+									</ant>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>checkAssemble</id>
+							<!-- <phase>generate-sources</phase> -->
+							<phase>none</phase>
+							<configuration>
+								<target>
+									<ant antfile="../build_common.xml">
+										<target name="checkAssemble" />
+									</ant>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>checkService</id>
+							<!-- <phase>generate-sources</phase> -->
+							<phase>none</phase>
+							<configuration>
+								<target>
+									<ant antfile="../build_common.xml">
+										<target name="checkService" />
+									</ant>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>checkCore</id>
+							<!-- <phase>generate-sources</phase> -->
+							<phase>none</phase>
+							<configuration>
+								<target>
+									<ant antfile="../build_common.xml">
+										<target name="checkCore" />
 									</ant>
 								</target>
 							</configuration>
@@ -771,18 +852,6 @@
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
-				<artifactId>x_collaboration_core_entity</artifactId>
-				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>o2oa</groupId>
-				<artifactId>x_collaboration_core_message</artifactId>
-				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
@@ -892,6 +961,12 @@
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
+				<version>${project.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>o2oa</groupId>
+				<artifactId>x_teamwork_core_entity</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>

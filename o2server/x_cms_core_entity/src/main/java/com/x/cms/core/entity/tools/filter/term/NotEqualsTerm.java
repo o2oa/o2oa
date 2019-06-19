@@ -6,6 +6,13 @@ public class NotEqualsTerm {
 	
 	private Object value = null;
 	
+	public NotEqualsTerm() {}
+	
+	public NotEqualsTerm( String name, Object value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

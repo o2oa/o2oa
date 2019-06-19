@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imgscalr.Scalr;
 
@@ -19,12 +20,6 @@ import com.x.base.core.project.http.WrapOutString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoBase64Encode;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoIdEmpty;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoIsNotImage;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoNotExists;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoQueryById;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionFileInfoSizeInvalid;
 import com.x.cms.core.entity.FileInfo;
 
 import net.sf.ehcache.Element;
@@ -33,6 +28,7 @@ public class ActionImageToBase64 extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionImageToBase64.class );
 	
+	@SuppressWarnings("deprecation")
 	protected ActionResult<WrapOutString> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, String size ) throws Exception {
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		WrapOutString wrap = null;
@@ -47,7 +43,7 @@ public class ActionImageToBase64 extends BaseAction {
 			result.setData(wrap);
 		} else {
 			if( check ){
-				if( id == null || id.isEmpty() ){
+				if( StringUtils.isEmpty(id) ){
 					check = false;
 					Exception exception = new ExceptionFileInfoIdEmpty();
 					result.error( exception );
@@ -126,7 +122,7 @@ public class ActionImageToBase64 extends BaseAction {
 	}
 
 	private boolean isImage(FileInfo fileInfo) {
-		if( fileInfo == null || fileInfo.getExtension() == null || fileInfo.getExtension().isEmpty() ){
+		if( fileInfo == null || StringUtils.isEmpty(fileInfo.getExtension()) ){
 			return false;
 		}
 		if( "jpg".equalsIgnoreCase( fileInfo.getExtension() )){

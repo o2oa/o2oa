@@ -18,8 +18,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
-import com.x.cms.assemble.control.jaxrs.queryviewdesign.exception.ExceptionAppInfoNotExists;
-import com.x.cms.assemble.control.jaxrs.queryviewdesign.exception.ExceptionQueryViewAppIdEmpty;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.QueryView;
 

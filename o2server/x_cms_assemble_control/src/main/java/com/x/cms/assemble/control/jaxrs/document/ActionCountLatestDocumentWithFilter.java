@@ -122,7 +122,7 @@ public class ActionCountLatestDocumentWithFilter extends BaseAction {
 		
 			// 从数据库中查询符合条件的对象总数
 			try {
-				total = documentInfoServiceAdv.countWithCondition( queryCategoryIds, wi.getTitle(), 
+				total = documentInfoServiceAdv.countWithCondition( null, queryCategoryIds, wi.getTitle(), 
 						wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
 						wi.getCreatorUnitNameList(),
 						wi.getImportBatchNames(), personNames, unitNames, groupNames,  manager, lastedPublishTime );

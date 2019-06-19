@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,10 +22,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
-import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ExceptionNoPermission;
-import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ExceptionViewNotExists;
-import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ExceptionViewQueryByIdEmpty;
-import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ExceptionWrapInViewIdEmpty;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
@@ -52,7 +50,7 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if( check ){
-			if( wi.getViewId() == null || wi.getViewId().isEmpty() ){
+			if( StringUtils.isEmpty(wi.getViewId()) ){
 				check = false;
 				Exception exception = new ExceptionWrapInViewIdEmpty();
 				result.error( exception );

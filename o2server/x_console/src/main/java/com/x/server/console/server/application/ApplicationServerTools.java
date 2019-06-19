@@ -16,27 +16,15 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.annotations.AnnotationConfiguration;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
-import org.eclipse.jetty.deploy.providers.WebAppProvider;
-import org.eclipse.jetty.plus.webapp.EnvConfiguration;
-import org.eclipse.jetty.plus.webapp.PlusConfiguration;
-import org.eclipse.jetty.server.Handler;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.webapp.Configuration.ClassList;
-import org.eclipse.jetty.webapp.FragmentConfiguration;
-import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -59,60 +47,76 @@ import io.github.classgraph.ScanResult;
 
 public class ApplicationServerTools extends JettySeverTools {
 
-	// private static String project_class_prefix = "com.x.base.core.project.";
-
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
 	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 5;
 	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 100;
 
-	protected static String PATH_WEBAPPS = "servers/applicationServer/webapps";
-	protected static String PATH_WORK = "servers/applicationServer/work";
-
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
-		if (BooleanUtils.isTrue(applicationServer.getRedeploy())) {
-			cleanDirectory(Config.dir_servers_applicationServer_work());
-			cleanDirectory(Config.dir_servers_applicationServer_webapps());
-			List<ClassInfo> classInfoList = listOfficial();
-			logger.print("start to deploy official module, size:{}.", classInfoList.size());
-			for (ClassInfo info : classInfoList) {
-				Class<?> clz = Class.forName(info.getName());
-				Module module = clz.getAnnotation(Module.class);
-				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
-					/* 检查store目录是否存在war文件 */
-					File war = new File(Config.dir_store(), info.getSimpleName() + ".war");
-					if (war.exists()) {
-						/* 创建空tempDirectory目录 */
-						FileUtils.forceMkdir(
-								new File(Config.dir_servers_applicationServer_work(), info.getSimpleName()));
-						createOfficialDeployDescriptor(info);
-					}
-				}
-			}
-			List<String> customWars = listCustom();
-			if (!customWars.isEmpty()) {
-				logger.print("start to deploy custom module, size:{}.", customWars.size());
-				for (String str : customWars) {
-					File war = new File(Config.dir_custom(), str);
-					if (war.exists()) {
-						/* 创建空tempDirectory目录 */
-						// FileUtils.forceMkdir(new File(Config, FilenameUtils.getBaseName(str)));
-						customDeployDescriptor(war);
-					}
-				}
+		List<ClassInfo> officialClassInfos = listOfficial();
+
+		List<String> customNames = listCustom();
+
+		cleanWorkDirectory(officialClassInfos, customNames);
+
+		HandlerList handlers = new HandlerList();
+
+		logger.print("start to deploy official module, size:{}.", officialClassInfos.size());
+
+		for (ClassInfo info : officialClassInfos) {
+			Class<?> clz = Class.forName(info.getName());
+			/* 检查store目录是否存在war文件 */
+			File war = new File(Config.dir_store(), info.getSimpleName() + ".war");
+			File dir = new File(Config.dir_servers_applicationServer_work(), info.getSimpleName());
+			if (war.exists()) {
+				modified(war, dir);
+				QuickStartWebApp webApp = new QuickStartWebApp();
+				webApp.setAutoPreconfigure(false);
+				webApp.setDisplayName(clz.getSimpleName());
+				webApp.setContextPath("/" + clz.getSimpleName());
+				webApp.setResourceBase(dir.getAbsolutePath());
+				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
+				webApp.setExtraClasspath(calculateExtraClassPath(clz));
+				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+				// webApp.setDefaultsDescriptor(new File(Config.dir_commons(),
+				// "webdefault_a.xml").getAbsolutePath());
+				handlers.addHandler(webApp);
+			} else if (dir.exists()) {
+				FileUtils.forceDelete(dir);
 			}
 		}
+
+		logger.print("start to deploy custom module, size:{}.", customNames.size());
+
+		for (String name : customNames) {
+			File war = new File(Config.dir_custom(), name + ".war");
+			File dir = new File(Config.dir_servers_applicationServer_work(), name);
+			if (war.exists()) {
+				modified(war, dir);
+				String className = contextParamProject(dir);
+				URLClassLoader classLoader = new URLClassLoader(
+						new URL[] { new File(dir, "WEB-INF/classes").toURI().toURL() });
+				Class<?> cls = classLoader.loadClass(className);
+				QuickStartWebApp webApp = new QuickStartWebApp();
+				webApp.setAutoPreconfigure(false);
+				webApp.setPreconfigure(false);
+				webApp.setDisplayName(name);
+				webApp.setContextPath("/" + name);
+				webApp.setResourceBase(dir.getAbsolutePath());
+				webApp.setDescriptor(dir + "/WEB-INF/web.xml");
+				webApp.setExtraClasspath(calculateExtraClassPath(cls));
+				handlers.addHandler(webApp);
+			} else if (dir.exists()) {
+				FileUtils.forceDelete(dir);
+			}
+		}
+
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		server.setAttribute("maxFormContentSize", 1024 * 1024 * 1024 * 10);
-
-		ClassList classlist = ClassList.setServerDefault(server);
-		classlist.addAfter(FragmentConfiguration.class.getName(), EnvConfiguration.class.getName(),
-				PlusConfiguration.class.getName());
-		classlist.addBefore(JettyWebXmlConfiguration.class.getName(), AnnotationConfiguration.class.getName());
 
 		if (applicationServer.getSslEnable()) {
 			addHttpsConnector(server, applicationServer.getPort());
@@ -120,29 +124,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			addHttpConnector(server, applicationServer.getPort());
 		}
 
-		ContextHandlerCollection contexts = new ContextHandlerCollection();
-		DeploymentManager deployer = new DeploymentManager();
-		deployer.setContextAttribute("org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern", "nothing.jar");
-		deployer.setContexts(contexts);
-
-		WebAppProvider webAppProvider = new WebAppProvider();
-		webAppProvider.setMonitoredDirName(Config.dir_servers_applicationServer_webapps().getAbsolutePath());
-		webAppProvider.setDefaultsDescriptor(new File(Config.dir_commons(), "webdefault_a.xml").getAbsolutePath());
-		webAppProvider.setScanInterval(applicationServer.getScanInterval());
-		webAppProvider.setExtractWars(true);
-		webAppProvider.setConfigurationManager(new PropertiesConfigurationManager());
-		deployer.addAppProvider(webAppProvider);
-		server.addBean(deployer);
-
 		GzipHandler gzipHandler = new GzipHandler();
-		DefaultHandler defaultHandler = new DefaultHandler();
-
-		/** 禁止显示Contexts */
-		defaultHandler.setShowContexts(false);
-		/** 禁止显示icon */
-		defaultHandler.setServeIcon(false);
-		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] { contexts, defaultHandler });
 		gzipHandler.setHandler(handlers);
 		server.setHandler(gzipHandler);
 
@@ -159,7 +141,7 @@ public class ApplicationServerTools extends JettySeverTools {
 	}
 
 	private static List<ClassInfo> listOfficial() throws Exception {
-		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
 			List<ClassInfo> list = new ArrayList<>();
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
@@ -172,7 +154,11 @@ public class ApplicationServerTools extends JettySeverTools {
 			}
 			List<String> filters = new ArrayList<>();
 			for (ClassInfo info : list) {
-				filters.add(info.getName());
+				Class<?> clz = Class.forName(info.getName());
+				Module module = clz.getAnnotation(Module.class);
+				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
+					filters.add(info.getName());
+				}
 			}
 			filters = StringTools.includesExcludesWithWildcard(filters,
 					Config.currentNode().getApplication().getIncludes(),
@@ -183,7 +169,6 @@ public class ApplicationServerTools extends JettySeverTools {
 					os.add(info);
 				}
 			}
-
 			return os;
 		}
 	}
@@ -199,38 +184,6 @@ public class ApplicationServerTools extends JettySeverTools {
 		return list;
 	}
 
-	private static void customDeployDescriptor(File war) throws Exception {
-		File unzip_dir = new File(Config.dir_local_temp(), FilenameUtils.getBaseName(war.getName()));
-		FileUtils.forceMkdir(unzip_dir);
-		FileUtils.cleanDirectory(unzip_dir);
-		JarTools.unjar(FileUtils.readFileToByteArray(war), "WEB-INF", unzip_dir, true);
-		URLClassLoader classLoader = new URLClassLoader(
-				new URL[] { new File(unzip_dir, "WEB-INF/classes").toURI().toURL() });
-		String className = contextParamProject(unzip_dir);
-		Class<?> cls = classLoader.loadClass(className);
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		if (Config.currentNode().getQuickStartWebApp()) {
-			buffer.append("<Configure class=\"org.eclipse.jetty.quickstart.QuickStartWebApp\">");
-			buffer.append("<Set name=\"autoPreconfigure\">true</Set>");
-		} else {
-			buffer.append("<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\">");
-		}
-		buffer.append("<Set name=\"contextPath\">/" + FilenameUtils.getBaseName(war.getName()) + "</Set>");
-		buffer.append("<Set name=\"war\">" + war.getAbsolutePath() + "</Set>");
-		String extraClasspath = calculateExtraClassPath(cls);
-		buffer.append("<Set name=\"extraClasspath\">" + extraClasspath + "</Set>");
-		String tempDirectory = new File(Config.dir_servers_applicationServer_work(),
-				FilenameUtils.getBaseName(war.getAbsolutePath())).getAbsolutePath();
-		buffer.append("<Set name=\"tempDirectory\">" + tempDirectory + "</Set>");
-		buffer.append("</Configure>");
-		/* classLoader需要关闭 */
-		classLoader.close();
-		File file = new File(Config.dir_servers_applicationServer_webapps(),
-				FilenameUtils.getBaseName(war.getName()) + ".xml");
-		FileUtils.write(file, buffer.toString(), DefaultCharset.charset);
-	}
-
 	private static String contextParamProject(File dir) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -242,5 +195,31 @@ public class ApplicationServerTools extends JettySeverTools {
 		NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 		String str = nodes.item(0).getTextContent();
 		return StringUtils.trim(str);
+	}
+
+	private static void cleanWorkDirectory(List<ClassInfo> officialClassInfos, List<String> customNames)
+			throws Exception {
+		List<String> names = new ArrayList<>();
+		for (ClassInfo o : officialClassInfos) {
+			names.add(o.getSimpleName());
+		}
+		names.addAll(customNames);
+		for (String str : Config.dir_servers_applicationServer_work(true).list()) {
+			if (!names.contains(str)) {
+				FileUtils.forceDelete(new File(Config.dir_servers_applicationServer_work(), str));
+			}
+		}
+	}
+
+	private static void modified(File war, File dir) throws Exception {
+		File lastModified = new File(dir, "WEB-INF/lastModified");
+		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
+				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
+			if (dir.exists()) {
+				FileUtils.forceDelete(dir);
+			}
+			JarTools.unjar(war, "", dir, true);
+			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
+		}
 	}
 }

@@ -8,6 +8,13 @@ public class InTerm{
 	
 	private List<Object> value = null;
 
+	public InTerm() {}
+	
+	public InTerm( String name, List<Object> value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

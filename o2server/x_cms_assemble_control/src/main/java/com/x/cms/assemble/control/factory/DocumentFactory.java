@@ -9,9 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
@@ -20,16 +18,12 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import com.x.cms.core.entity.tools.DateOperation;
-
 /**
  * 文档信息基础功能服务类
  * 
  * @author O2LEE
- * @param <T>
  */
-public class DocumentFactory<T> extends AbstractFactory {
-
-	DateOperation dateOperation = new DateOperation();
+public class DocumentFactory extends AbstractFactory {
 	
 	public DocumentFactory(Business business) throws Exception {
 		super(business);
@@ -64,7 +58,6 @@ public class DocumentFactory<T> extends AbstractFactory {
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
 	
-	//@MethodDescribe("根据ID列示指定分类所有Document信息列表")
 	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -75,13 +68,101 @@ public class DocumentFactory<T> extends AbstractFactory {
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
 	
-	//@MethodDescribe("根据ID列示指定分类所有Document信息数量")
+	public List<String> listByCategoryIdAndAppName( String categoryId, String appName, Integer maxCount ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
+		p = cb.and( p, cb.equal(root.get( Document_.appName ), appName ) );
+		cq.select(root.get( Document_.id)).where(p);
+		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+	}
+	
+	public List<String> listByCategoryIdAndNotEqualAppName( String categoryId, String appName, Integer maxCount ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
+		p = cb.and( p, cb.notEqual(root.get( Document_.appName ), appName ) );
+		cq.select(root.get( Document_.id)).where(p);
+		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+	}
+	
+	public List<String> listByCategoryIdAndCategoryName( String categoryId, String categoryName, Integer maxCount ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
+		p = cb.and( p, cb.equal(root.get( Document_.categoryName ), categoryName ) );
+		cq.select(root.get( Document_.id)).where(p);
+		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+	}
+	
+	public List<String> listByCategoryIdAndNotEqualCategoryName( String categoryId, String categoryName, Integer maxCount ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
+		p = cb.and( p, cb.notEqual(root.get( Document_.categoryName ), categoryName ) );
+		cq.select(root.get( Document_.id)).where(p);
+		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+	}
+	
+	
 	public Long countByCategoryId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+	
+	public Long countByCategoryIdAndAppName( String categoryId, String appName ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		p = cb.and( p, cb.equal(root.get( Document_.appName ), appName ) );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+	
+	public Long countByCategoryIdAndNotEqualAppName( String categoryId, String appName ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		p = cb.and( p, cb.notEqual(root.get( Document_.appName ), appName ) );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+	
+	public Long countByCategoryIdAndCategoryName( String categoryId, String categoryName ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		p = cb.and( p, cb.equal(root.get( Document_.categoryName ), categoryName ) );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+	
+	public Long countByCategoryIdAndNotEqualsCategoryName( String categoryId, String categoryName ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		p = cb.and( p, cb.notEqual(root.get( Document_.categoryName ), categoryName ) );
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
@@ -109,6 +190,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 	/**
 	 * 分页查询用户可见的文档
 	 * @param maxCount
+	 * @param queryDocumentIds
 	 * @param viewAbleCategoryIds
 	 * @param title
 	 * @param publisherList
@@ -128,14 +210,14 @@ public class DocumentFactory<T> extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public List<Document> listNextWithCondition( 
-			Integer maxCount, List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList, 
+			Integer maxCount, List<String> queryDocumentIds, List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList, 
 			List<String> publishDateList,  List<String> statusList, String documentType, List<String> creatorUnitNameList, List<String> importBatchNames, List<String> personNames, List<String> unitNames, List<String> groupNames, 
 			Object sequenceFieldValue, String orderField, String order, Boolean manager, Date lastedPublishTime 
 	) throws Exception {
 		if( ListTools.isEmpty( viewAbleCategoryIds ) ){
 			order = "DESC";
 		}
-		if( order == null || order.isEmpty() ){
+		if( StringUtils.isEmpty(order) ){
 			order = "DESC";
 		}
 		Date startDate = null;
@@ -147,9 +229,12 @@ public class DocumentFactory<T> extends AbstractFactory {
 
 		//文档的分类必须在可见的分类列表内
 		Predicate p = root.get( Document_.id ).isNotNull();
+		if( ListTools.isNotEmpty( queryDocumentIds )) {
+			p = cb.and( p, root.get( Document_.id ).in( queryDocumentIds ));
+		}
 		if( ListTools.isNotEmpty( viewAbleCategoryIds )) {
-			p = root.get( Document_.categoryId ).in( viewAbleCategoryIds );
-		}	
+			p = cb.and( p, root.get( Document_.categoryId ).in( viewAbleCategoryIds ));
+		}		
 		if( !manager ) {
 			if( ListTools.isEmpty( viewAbleCategoryIds )) {
 				return null;
@@ -248,23 +333,23 @@ public class DocumentFactory<T> extends AbstractFactory {
 		}
 		if( createDateList != null && !createDateList.isEmpty() ){
 			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
 		}
 		if( publishDateList != null && !publishDateList.isEmpty() ){
 			if ( publishDateList.size() == 1 ) {
 				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( publishDateList.size() == 2 ){
 				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
 		}
@@ -316,6 +401,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 	
 	/**
 	 * 查询用户可见的文档数量
+	 * @param queryDocumentIds
 	 * @param viewAbleCategoryIds
 	 * @param title
 	 * @param publisherList
@@ -332,7 +418,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public Long countWithCondition( 
-			List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  List<String> publishDateList,  
+			List<String> queryDocumentIds, List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  List<String> publishDateList,  
 			List<String> statusList, String documentType, List<String>  creatorUnitNameList, List<String> importBatchNames, List<String> personNames, List<String> unitNames,
 			List<String> groupNames, Boolean manager, Date lastedPublishTime
 	) throws Exception {
@@ -341,6 +427,121 @@ public class DocumentFactory<T> extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<Document> root = cq.from( Document.class );
+
+		//文档的分类必须在可见的分类列表内
+		Predicate p = root.get( Document_.id ).isNotNull();
+		if( ListTools.isNotEmpty( queryDocumentIds )) {
+			p = cb.and( p, root.get( Document_.id ).in( queryDocumentIds ));
+		}
+		if( ListTools.isNotEmpty( viewAbleCategoryIds )) {
+			p = cb.and( p, root.get( Document_.categoryId ).in( viewAbleCategoryIds ));
+		}
+		if( !manager ) {
+			if( ListTools.isEmpty( viewAbleCategoryIds )) {
+				return null;
+			}
+			if( ListTools.isEmpty( personNames )) {
+				throw new Exception("personNames can not be empty, will user has not manager permission!");
+			}
+			//文档权限过滤
+			//文档权限过滤
+			Predicate permission = root.get( Document_.readPersonList ).in( personNames );
+			permission = cb.or( permission, root.get( Document_.authorPersonList ).in( personNames ) );
+			permission = cb.or( permission, root.get( Document_.managerList ).in( personNames ) );
+			if( ListTools.isNotEmpty( unitNames ) ) {
+				permission = cb.or( permission, root.get( Document_.readUnitList ).in( unitNames ) );
+				permission = cb.or( permission, root.get( Document_.authorUnitList ).in( unitNames ) );
+			}
+			if( ListTools.isNotEmpty( groupNames ) ) {
+				permission = cb.or( permission, root.get( Document_.readGroupList ).in( groupNames ) );
+				permission = cb.or( permission, root.get( Document_.authorGroupList ).in( groupNames ) );
+			}
+			
+			p = cb.and( p, permission );
+		}
+		
+		//根据最晚发布时间来过滤
+		if( lastedPublishTime != null ) {
+			p = cb.and( p, cb.greaterThan( root.get( Document_.publishTime ) , lastedPublishTime));
+		}
+		//组织查询条件
+		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals( documentType ) ){
+			p = cb.and( p, cb.equal( root.get( Document_.documentType ) , documentType));
+		}
+		if( ListTools.isNotEmpty( publisherList ) ){
+			p = cb.and( p, root.get( Document_.creatorPerson ).in( publisherList ));
+		}
+		if( StringUtils.isNotEmpty( title )){
+			p = cb.and( p, cb.like( root.get( Document_.title ), "%" + title + "%" ));
+		}
+		if( ListTools.isEmpty( statusList ) ){
+			p = cb.and( p, cb.equal(root.get( Document_.docStatus ), "published"));
+		}else{
+			p = cb.and( p, root.get( Document_.docStatus ).in( statusList ));
+		}
+		if( ListTools.isNotEmpty( importBatchNames )) {
+			p = cb.and( p, root.get( Document_.importBatchName ).in( importBatchNames ));
+		}
+		if( ListTools.isNotEmpty( creatorUnitNameList )) {
+			p = cb.and( p, root.get( Document_.creatorUnitName ).in( creatorUnitNameList ));
+		}
+		if( createDateList != null && !createDateList.isEmpty() ){
+			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
+				endDate = new Date();
+			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
+			}
+			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
+		}
+		if( publishDateList != null && !publishDateList.isEmpty() ){
+			if ( publishDateList.size() == 1 ) {
+				// 从开始时间（yyyy-MM-DD），到现在
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
+				endDate = new Date();
+			}else if( publishDateList.size() == 2 ){
+				// 从开始时间到结束时间（yyyy-MM-DD）
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
+			}
+			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
+		}
+
+		cq.select( cb.count( root ) );
+
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 查询用户可见的文档数量
+	 * @param viewAbleCategoryIds
+	 * @param title
+	 * @param publisherList
+	 * @param createDateList
+	 * @param publishDateList
+	 * @param statusList
+	 * @param documentType
+	 * @param importBatchName 
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @param manager
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listIdsWithCondition( 
+			List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  List<String> publishDateList,  
+			List<String> statusList, String documentType, List<String>  creatorUnitNameList, List<String> importBatchNames, List<String> personNames, List<String> unitNames,
+			List<String> groupNames, Boolean manager, Date lastedPublishTime, Integer maxCount
+	) throws Exception {
+		
+		Date startDate = null;
+		Date endDate = null;
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 
 		//文档的分类必须在可见的分类列表内
@@ -399,30 +600,32 @@ public class DocumentFactory<T> extends AbstractFactory {
 		}
 		if( createDateList != null && !createDateList.isEmpty() ){
 			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
 		}
 		if( publishDateList != null && !publishDateList.isEmpty() ){
 			if ( publishDateList.size() == 1 ) {
 				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( publishDateList.size() == 2 ){
 				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
 		}
 
-		cq.select( cb.count( root ) );
-
-		return em.createQuery(cq.where(p)).getSingleResult();
+		cq.select( root.get( Document_.id ) );
+		if( maxCount == null ) {
+			maxCount = 1000;
+		}
+		return em.createQuery(cq.where(p)).setMaxResults(maxCount).getResultList();
 	}
 
 	public List<Document> listMyDraft( String name, List<String> categoryIdList, String documentType ) throws Exception {
@@ -449,7 +652,6 @@ public class DocumentFactory<T> extends AbstractFactory {
 		Date endDate = null;
 		List<String> ids = new ArrayList<>();
 		List<Document> documents = null;
-		DateOperation dateOperation = new DateOperation();
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
@@ -485,23 +687,23 @@ public class DocumentFactory<T> extends AbstractFactory {
 		}
 		if( createDateList != null && !createDateList.isEmpty() ){
 			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
 		}
 		if( publishDateList != null && !publishDateList.isEmpty() ){
 			if ( publishDateList.size() == 1 ) {
 				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( publishDateList.size() == 2 ){
 				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
 		}
@@ -547,7 +749,6 @@ public class DocumentFactory<T> extends AbstractFactory {
 		Date startDate = null;
 		Date endDate = null;
 		List<String> ids = new ArrayList<>();
-		DateOperation dateOperation = new DateOperation();
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
@@ -603,11 +804,11 @@ public class DocumentFactory<T> extends AbstractFactory {
 		}			
 		if( createDateList != null && !createDateList.isEmpty() ){
 			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
 		}
@@ -615,12 +816,12 @@ public class DocumentFactory<T> extends AbstractFactory {
 		if( publishDateList != null && !publishDateList.isEmpty() ){
 			if ( publishDateList.size() == 1 ) {
 				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( publishDateList.size() == 2 ){
 				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
 		}

@@ -68,6 +68,16 @@ public class Manual extends Activity {
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
 
+	@FieldDescribe("分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
+	private String group;
+
+	@FieldDescribe("意见分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
+	private String opinionGroup;
+
 	@FieldDescribe("节点名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true)
@@ -494,12 +504,6 @@ public class Manual extends Activity {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowPress_FIELDNAME)
 	private Boolean allowPress;
-
-	public static final String group_FIELDNAME = "group";
-	@FieldDescribe("分组")
-	@CheckPersist(allowEmpty = true)
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
-	private String group;
 
 	public static final String resetRange_FIELDNAME = "resetRange";
 	@FieldDescribe("重置范围.")
@@ -1138,6 +1142,14 @@ public class Manual extends Activity {
 
 	public void setAllowPress(Boolean allowPress) {
 		this.allowPress = allowPress;
+	}
+
+	public String getOpinionGroup() {
+		return opinionGroup;
+	}
+
+	public void setOpinionGroup(String opinionGroup) {
+		this.opinionGroup = opinionGroup;
 	}
 
 //	public String getManualPressScript() {

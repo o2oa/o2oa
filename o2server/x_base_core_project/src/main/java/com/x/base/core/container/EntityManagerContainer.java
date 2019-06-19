@@ -1237,27 +1237,6 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
-//	public <T extends JpaObject> String conflict(Class<T> clz, T t) throws Exception {
-//		EntityManager em = this.get(clz);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		for (Field field : this.entityManagerContainerFactory.getFlagFields(clz)) {
-//			Object value = t.get(field.getName());
-//			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
-//				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-//				Root<T> root = cq.from(clz);
-//				Predicate p = cb.disjunction();
-//				for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
-//					p = cb.or(p, cb.equal(root.get(f.getName()), value));
-//				}
-//				p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
-//				if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
-//					return field.getName() + ":" + Objects.toString(value);
-//				}
-//			}
-//		}
-//		return null;
-//	}
-
 	public <T extends JpaObject> String conflict(Class<T> clz, T t) throws Exception {
 		EntityManager em = this.get(clz);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

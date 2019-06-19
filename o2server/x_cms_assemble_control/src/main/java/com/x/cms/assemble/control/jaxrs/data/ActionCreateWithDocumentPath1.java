@@ -7,7 +7,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.jaxrs.data.exception.ExceptionDocumentNotExist;
 import com.x.cms.core.entity.Document;
 
 class ActionCreateWithDocumentPath1 extends BaseAction {
@@ -19,7 +18,7 @@ class ActionCreateWithDocumentPath1 extends BaseAction {
 			Business business = new Business(emc);
 			Document document = emc.find(id, Document.class);
 			if (null == document) {
-				throw new ExceptionDocumentNotExist(id);
+				throw new ExceptionDocumentNotExists(id);
 			}
 			this.createData(business, document, jsonElement, path0, path1);
 			emc.commit();

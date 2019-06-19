@@ -22,7 +22,7 @@ public class AppInfoServiceAdv {
 	private AppInfoService appInfoService = new AppInfoService();
 
 	public AppInfo get( String id ) throws Exception {
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty(id )) {
 			throw new Exception("id is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -44,7 +44,7 @@ public class AppInfoServiceAdv {
 	}
 
 	public Long countCategoryByAppId(String id, String documentType) throws Exception {
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty(id )) {
 			throw new Exception("id is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -54,16 +54,27 @@ public class AppInfoServiceAdv {
 		}
 	}
 
-	public void delete(String id, EffectivePerson currentPerson, String documentType, Integer maxCount ) throws Exception {
-		if (id == null || id.isEmpty()) {
+	public void delete( String id, EffectivePerson currentPerson ) throws Exception {
+		if ( StringUtils.isEmpty(id )) {
 			throw new Exception("id is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			appInfoService.delete(emc, id, documentType, maxCount);
+			appInfoService.delete(emc, id );
 		} catch (Exception e) {
 			throw e;
 		}
 	}
+	
+//	public void delete(String id, EffectivePerson currentPerson, String documentType, Integer maxCount ) throws Exception {
+//		if (id == null || id.isEmpty()) {
+//			throw new Exception("id is null.");
+//		}
+//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//			appInfoService.delete(emc, id, documentType, maxCount);
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//	}
 
 	public List<AppInfo> listAll(String documentType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -98,21 +109,15 @@ public class AppInfoServiceAdv {
 			throw new Exception("appInfo is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			appInfo = appInfoService.save( emc, appInfo );
-			// 检查一下该应用栏目是否存在管理者
-			if( ListTools.isEmpty( appInfo.getManageablePersonList()) 
-					&& ListTools.isEmpty( appInfo.getManageableUnitList()) 
-					&&ListTools.isEmpty( appInfo.getManageableGroupList())) {
-				//如果不存在，则将当前登录者作为应用栏目的管理者
-				emc.beginTransaction( AppInfo.class );
+			// 检查一下该应用栏目是否存在管理者, 如果不存在，则将当前登录者作为应用栏目的管理者
+			if( ListTools.isEmpty( appInfo.getManageablePersonList())  && ListTools.isEmpty( appInfo.getManageableUnitList())  &&ListTools.isEmpty( appInfo.getManageableGroupList())) {
 				if( "xadmin".equalsIgnoreCase( currentPerson.getName() )) {
 					appInfo.addManageablePerson( "xadmin" );
 				}else {
 					appInfo.addManageablePerson( currentPerson.getDistinguishedName() );
 				}
-				emc.check( appInfo, CheckPersistType.all );
-				emc.commit();
 			}
+			appInfo = appInfoService.save( emc, appInfo );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -120,7 +125,7 @@ public class AppInfoServiceAdv {
 	}
 
 	public List<String> listByAppName(String appName) throws Exception {
-		if (appName == null || appName.isEmpty()) {
+		if ( StringUtils.isEmpty(appName )) {
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -142,7 +147,7 @@ public class AppInfoServiceAdv {
 	}
 	
 	public List<String> getWithAlias(String appAlias) throws Exception {
-		if (appAlias == null || appAlias.isEmpty()) {
+		if ( StringUtils.isEmpty(appAlias )) {
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -153,13 +158,13 @@ public class AppInfoServiceAdv {
 	}
 	
 	public void saveAppInfoIcon( String appId, String base64, String iconMainColor ) throws Exception {
-		if (appId == null || appId.isEmpty()) {
+		if ( StringUtils.isEmpty(appId )) {
 			throw new Exception("appId is null");
 		}
-		if (base64 == null || base64.isEmpty()) {
+		if ( StringUtils.isEmpty(base64 )) {
 			throw new Exception("base64 is null");
 		}
-		if (iconMainColor == null || iconMainColor.isEmpty()) {
+		if ( StringUtils.isEmpty(iconMainColor)) {
 			throw new Exception("iconMainColor is null");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -9,11 +9,11 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.Context;
-import com.x.base.core.project.Dependency;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.ListTools;
 
 public class ReportToCenter implements Job {
 
@@ -72,7 +72,6 @@ public class ReportToCenter implements Job {
 		report.setSslEnable(context.sslEnable());
 		report.setScheduleLocalRequestList(context.getScheduleLocalRequestList());
 		report.setScheduleRequestList(context.getScheduleRequestList());
-		report.setDependency(context.clazzInstance().dependency());
 		return report;
 	}
 
@@ -85,7 +84,6 @@ public class ReportToCenter implements Job {
 		private String token;
 		private Integer weight;
 		private Boolean sslEnable;
-		private Dependency dependency;
 
 		private List<ScheduleLocalRequest> scheduleLocalRequestList = new ArrayList<>();
 
@@ -183,14 +181,6 @@ public class ReportToCenter implements Job {
 			this.contextPath = contextPath;
 		}
 
-		public Dependency getDependency() {
-			return dependency;
-		}
-
-		public void setDependency(Dependency dependency) {
-			this.dependency = dependency;
-		}
-
 		public String getName() {
 			return name;
 		}
@@ -198,7 +188,6 @@ public class ReportToCenter implements Job {
 		public void setName(String name) {
 			this.name = name;
 		}
-
 	}
 
 	public static class Echo extends GsonPropertyObject {

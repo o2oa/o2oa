@@ -480,4 +480,92 @@ public class DocumentAction extends StandardJaxrsAction{
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
+	
+	@JaxrsMethodDescribe(value = "文档点赞.", action = ActionCommend.class)
+	@GET
+	@Path("{id}/commend")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response commend( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionCommend.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionCommend().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionUnCommend.class)
+	@GET
+	@Path("{id}/uncommend")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response unCommend( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionUnCommend.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionUnCommend().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "文档置顶.", action = ActionTopDocument.class)
+	@GET
+	@Path("{id}/top")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response top( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionTopDocument.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionTopDocument().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionUnTopDocument.class)
+	@GET
+	@Path("{id}/unTop")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response unTop( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionUnTopDocument.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionUnTopDocument().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
 }

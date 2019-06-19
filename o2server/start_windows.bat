@@ -53,6 +53,9 @@ if exist "%~dp0local\update" (
 		if exist "%~dp0local\update\o2server\index.html" (
 			copy "%~dp0local\update\o2server\index.html" "%~dp0"
 		)
+		if exist "%~dp0local\update\o2server\src.zip" (
+			copy "%~dp0local\update\o2server\src.zip" "%~dp0"
+		)
 		if exist "%~dp0start_windows.bat" (
 			copy "%~dp0local\update\o2server\start_windows.bat" "%~dp0"
 		)
@@ -61,6 +64,9 @@ if exist "%~dp0local\update" (
 		)
 		if exist "%~dp0console_windows.bat" (
 			copy "%~dp0local\update\o2server\console_windows.bat" "%~dp0"
+		)
+		if exist "%~dp0service_windows.bat" (
+			copy "%~dp0local\update\o2server\service_windows.bat" "%~dp0"
 		)
 		if exist "%~dp0start_linux.sh" (
 			copy "%~dp0local\update\o2server\start_linux.sh" "%~dp0"
@@ -88,6 +94,15 @@ if exist "%~dp0local\update" (
 		)
 		if exist "%~dp0console_aix.sh" (
 			copy "%~dp0local\update\o2server\console_aix.sh" "%~dp0"
+		)
+		if exist "%~dp0start_neokylin_loongson.sh" (
+			copy "%~dp0local\update\o2server\start_neokylin_loongson.sh" "%~dp0"
+		)
+		if exist "%~dp0stop_neokylin_loongson.sh" (
+			copy "%~dp0local\update\o2server\stop_neokylin_loongson.sh" "%~dp0"
+		)
+		if exist "%~dp0console_neokylin_loongson.sh" (
+			copy "%~dp0local\update\o2server\console_neokylin_loongson.sh" "%~dp0"
 		)
 		copy "%~dp0local\update\o2server\version.o2" "%~dp0"
 		rmdir /S/Q "%~dp0local\update"

@@ -8,6 +8,13 @@ public class BetweenTerm{
 	
 	private Collection<Object> value = null;
 
+	public BetweenTerm() {}
+	
+	public BetweenTerm( String name, Collection<Object> value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

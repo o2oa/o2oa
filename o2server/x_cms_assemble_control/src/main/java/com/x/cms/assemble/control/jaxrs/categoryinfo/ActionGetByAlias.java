@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -29,7 +31,7 @@ public class ActionGetByAlias extends BaseAction {
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
 		
-		if( alias == null || alias.isEmpty() ){
+		if( StringUtils.isEmpty(alias) ){
 			check = false;
 			Exception exception = new ExceptionIdEmpty();
 			result.error( exception );
@@ -45,7 +47,7 @@ public class ActionGetByAlias extends BaseAction {
 			if( check ){
 				try {
 					ids = categoryInfoServiceAdv.listByAlias( alias );
-					if( ids == null || ids.isEmpty() ){
+					if( ListTools.isEmpty(ids) ){
 						check = false;
 						Exception exception = new ExceptionCategoryInfoNotExists( alias );
 						result.error( exception );

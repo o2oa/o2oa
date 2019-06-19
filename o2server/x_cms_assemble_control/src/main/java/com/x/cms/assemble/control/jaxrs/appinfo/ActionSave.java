@@ -15,10 +15,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
+import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.View;
@@ -31,6 +32,7 @@ public class ActionSave extends BaseAction {
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
+		AppInfo old_appInfo = null;
 		AppInfo appInfo = null;
 		List<String> ids = null;
 		String identityName = null;
@@ -47,6 +49,34 @@ public class ActionSave extends BaseAction {
 			Exception exception = new ExceptionAppInfoProcess(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
+		}
+		
+		if (check) {
+			if ( StringUtils.isEmpty( wi.getAppName() ) ) {
+				check = false;
+				Exception exception = new ExceptionAppInfoNameEmpty();
+				result.error(exception);
+			}
+		}
+		
+		if (check) {//栏目不允许重名
+			try {
+				ids = appInfoServiceAdv.listByAppName( wi.getAppName());
+				if ( ListTools.isNotEmpty( ids ) ) {
+					for( String _id : ids ) {
+						if( !_id.equalsIgnoreCase( wi.getId() )) {
+							check = false;
+							Exception exception = new ExceptionAppInfoNameAlreadyExists( wi.getAppName());
+							result.error(exception);
+						}
+					}
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionAppInfoProcess(e, "系统根据应用栏目名称查询应用栏目信息对象时发生异常。AppName:" + wi.getAppName());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 		
 		if (check) {
@@ -71,8 +101,7 @@ public class ActionSave extends BaseAction {
 				unitName = userManagerService.getUnitNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e,
-						"系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -82,20 +111,11 @@ public class ActionSave extends BaseAction {
 				topUnitName = userManagerService.getTopUnitNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e,
-						"系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
-		}
-
-		if (check) {
-			if ( wi.getAppName() == null || wi.getAppName().isEmpty()) {
-				check = false;
-				Exception exception = new ExceptionAppInfoNameEmpty();
-				result.error(exception);
-			}
-		}
+		}		
 		if (check) {
 			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
 				wi.setDocumentType( "信息" );
@@ -105,26 +125,21 @@ public class ActionSave extends BaseAction {
 				}
 			}
 		}
-		if (check) {
+		
+		if (check) {//栏目不允许重名
+			if( StringUtils.isEmpty( wi.getId() )) {
+				wi.setId( AppInfo.createId() );
+			}
 			try {
-				ids = appInfoServiceAdv.listByAppName( wi.getAppName());
-				if (ids != null && !ids.isEmpty()) {
-					for (String tmp : ids) {
-						if (tmp != null && !tmp.trim().equals( wi.getId())) {
-							check = false;
-							Exception exception = new ExceptionAppInfoNameAlreadyExists( wi.getAppName());
-							result.error(exception);
-						}
-					}
-				}
+				old_appInfo = appInfoServiceAdv.get( wi.getId() );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e,
-						"系统根据应用栏目名称查询应用栏目信息对象时发生异常。AppName:" + wi.getAppName());
+				Exception exception = new ExceptionAppInfoProcess(e, "系统根据应用栏目ID查询应用栏目信息对象时发生异常。ID:" + wi.getId());
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		
 		if (check) {
 			wi.setCreatorIdentity(identityName);
 			wi.setCreatorPerson(effectivePerson.getDistinguishedName());
@@ -133,21 +148,27 @@ public class ActionSave extends BaseAction {
 			
 			try {
 				appInfo = appInfoServiceAdv.save( wi, effectivePerson );
-
+				Wo wo = new Wo();
+				wo.setId( appInfo.getId() );
+				result.setData( wo );
+				
+				if( old_appInfo != null ) {
+					//修改了栏目名称，增加删除栏目批量操作（对分类和文档）的信息
+					new CmsBatchOperationPersistService().addOperation( 
+							CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+							CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  appInfo.getId(), old_appInfo.getAppName(), "更新栏目名称：ID=" + appInfo.getId() );
+					new LogService().log(null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId(), "", "", "", "APPINFO", "更新");
+				}else {
+					new LogService().log(null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId(), "", "", "", "APPINFO", "新增");
+				}
+				
 				// 更新缓存
 				ApplicationCache.notify(AppInfo.class);
 				ApplicationCache.notify(AppDict.class);
 				ApplicationCache.notify(AppDictItem.class);
-				ApplicationCache.notify(CategoryInfo.class);
 				ApplicationCache.notify(View.class);
 				ApplicationCache.notify(ViewCategory.class);
 				ApplicationCache.notify(ViewFieldConfig.class);
-				ApplicationCache.notify(Document.class);
-
-				new LogService().log(null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId(), "", "", "", "APPINFO", "保存");
-				Wo wo = new Wo();
-				wo.setId( appInfo.getId() );
-				result.setData( wo );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAppInfoProcess(e, "应用栏目信息保存时发生异常。");

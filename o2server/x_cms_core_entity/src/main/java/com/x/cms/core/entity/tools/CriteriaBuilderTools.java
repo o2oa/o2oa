@@ -1,10 +1,12 @@
 package com.x.cms.core.entity.tools;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -22,7 +24,9 @@ import com.x.cms.core.entity.tools.filter.term.NotEqualsTerm;
 import com.x.cms.core.entity.tools.filter.term.NotInTerm;
 import com.x.cms.core.entity.tools.filter.term.NotMemberTerm;
 
+
 public class CriteriaBuilderTools {
+	
 	public static Predicate predicate_or( CriteriaBuilder criteriaBuilder, Predicate predicate, Predicate predicate_target ) {
 		if( predicate == null ) {
 			return predicate_target;	
@@ -193,10 +197,10 @@ public class CriteriaBuilderTools {
 	 * @return
 	 * @throws Exception
 	 */
-	public <T extends JpaObject, T_ extends SliceJpaObject_> List<T> listNextWithCondition(  EntityManager em, Class<T> cls, Class<T_> cls_, Integer maxCount, 
+	public static <T extends JpaObject, T_ extends SliceJpaObject_> List<T> listNextWithCondition(  EntityManager em, Class<T> cls, Class<T_> cls_, Integer maxCount, 
 			QueryFilter queryFilter, Object sequenceFieldValue,  String orderField, String order ) throws Exception {
 		
-		if( order == null || order.isEmpty() ){
+		if( StringUtils.isEmpty( order ) ){
 			order = "DESC";
 		}
 		if( StringUtils.isEmpty( orderField )){
@@ -231,5 +235,36 @@ public class CriteriaBuilderTools {
 		}
 		
 		return em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).getResultList();
+	}
+	
+	/**
+	 * 根据条件组织一个排序的语句
+	 * @param <T>
+	 * @param <T_>
+	 * @param cb
+	 * @param root
+	 * @param cls_
+	 * @param fieldName
+	 * @param orderType
+	 * @return
+	 */
+	public static <T extends JpaObject, T_ extends SliceJpaObject_>Order getOrder( CriteriaBuilder cb, Root<T> root, Class<T_> cls_, String fieldName, String orderType ) {
+		Boolean fieldExists = false;
+		Field[] fields = cls_.getDeclaredFields();
+		for( Field field : fields ) {
+			if( field.getName().equalsIgnoreCase( fieldName ) ) {
+				fieldName = field.getName(); //校正排序列的名称
+				fieldExists = true;
+			}
+		}
+		if( !fieldExists ) { //如果排序列不存在，就直接返回空，不排序，让SQL可以正常执行
+			return null;
+		}
+		
+		if( "desc".equalsIgnoreCase( orderType )) {
+			return cb.desc( root.get( fieldName ).as(String.class) );
+		}else {
+			return cb.asc( root.get( fieldName ).as(String.class) );
+		}
 	}
 }

@@ -24,7 +24,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.jaxrs.log.exception.ExceptionServiceLogic;
 
 @Path("log")
 @JaxrsDescribe("操作日志信息管理")

@@ -1,0 +1,14 @@
+{
+	"fieldList": [
+		{
+			"name": "clobString",
+			"description": "test",
+			"type": "stringLob"
+		},
+		{
+			"name": "str",
+			"description": "teststr",
+			"type": "string"
+		}
+	]
+}

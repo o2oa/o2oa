@@ -1,9 +1,12 @@
 package com.x.program.center.jaxrs.cachedispatch;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -23,34 +26,23 @@ class ActionDispatch extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		logger.debug("receive dispatch cache request: {}", XGsonBuilder.toJson(jsonElement));
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		for (String str : ThisApplication.context().applications().listContainEntity(wi.getClassName())) {
-			List<Application> apps = ThisApplication.context().applications().get(str);
-			if (ListTools.isNotEmpty(apps)) {
-				apps.stream().forEach(o -> {
-					String url = o.getUrlRoot() + "cache";
-					logger.debug("dispatch cache request to : {}", url);
-					try {
-						CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
+		Map<String, List<String>> map = (Map<String, List<String>>) Config.resource(Config.RESOUCE_CONTAINERENTITIES);
+		for (Entry<String, List<String>> entry : map.entrySet()) {
+			if (entry.getValue().contains(wi.getClassName())) {
+				List<Application> apps = ThisApplication.context().applications().get(entry.getKey());
+				if (ListTools.isNotEmpty(apps)) {
+					apps.stream().forEach(o -> {
+						String url = o.getUrlRoot() + "cache";
+						logger.debug("dispatch cache request to : {}", url);
+						try {
+							CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					});
+				}
 			}
 		}
-		// findApplicationWithEntity(wi.getClassName()).stream().forEach(c -> {
-//			List<Application> apps = ThisApplication.context().applications().get(c.getName());
-//			if (ListTools.isNotEmpty(apps)) {
-//				apps.stream().forEach(o -> {
-//					String url = o.getUrlRoot() + "cache";
-//					logger.debug("dispatch cache request to : {}", url);
-//					try {
-//						CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				});
-//			}
-//		});
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

@@ -18,6 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.jaxrs.form.ActionGetWithWorkOrWorkCompleted.WoWorkCompletedForm;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
@@ -76,6 +77,17 @@ class ActionGetWithWorkOrWorkCompletedMobile extends BaseAction {
 		WoWorkCompletedForm wo = new WoWorkCompletedForm();
 		if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
 			wo.setData(workCompleted.getFormMobileData());
+		} else if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
+			wo.setData(workCompleted.getFormData());
+		} else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
+			Form form = business.form().pick(workCompleted.getForm());
+			if (null != form) {
+				if (StringUtils.isNotEmpty(form.getMobileData())) {
+					wo.setData(form.getMobileData());
+				} else if (StringUtils.isNotEmpty(form.getData())) {
+					wo.setData(workCompleted.getFormData());
+				}
+			}
 		}
 		return wo;
 	}

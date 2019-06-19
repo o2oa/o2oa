@@ -103,9 +103,8 @@ public class LogService {
 			throw new Exception("stay_yearnum_operationLog is null!");
 		}
 		//1、计算三年期限的时间点，三年前的1月1日, 最好再加一年
-		DateOperation dateOperation = new DateOperation();
-		Integer year = dateOperation.getYearNumber( new Date() );
-		Date limitDate = dateOperation.getDateFromString( ( year-4 ) + "-01-01 00:00:00");
+		Integer year = DateOperation.getYearNumber( new Date() );
+		Date limitDate = DateOperation.getDateFromString( ( year-4 ) + "-01-01 00:00:00");
 		cleanWithDate( limitDate );
 	}
 	

@@ -7,8 +7,7 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 
 /**
- * Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
- * @author O2LEE
+ * Document变更标题时也需要更新一下热点图片里的数据
  *
  */
 public class QueueDocumentUpdate extends AbstractQueue<Document> {
@@ -23,7 +22,7 @@ public class QueueDocumentUpdate extends AbstractQueue<Document> {
 					x_hotpic_assemble_control.class, "changeTitle", hotPictureInfo
 			);
 		}catch( Exception e ) {
-		}		
+		}
 	}
 	
 	

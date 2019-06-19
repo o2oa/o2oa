@@ -48,7 +48,6 @@ public class CmsPermissionService{
 		Date endDate = null;
 		List<String> ids = new ArrayList<>();
 		List<Document> documents = null;
-		DateOperation dateOperation = new DateOperation();
 		EntityManager em = emc.get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
@@ -77,23 +76,23 @@ public class CmsPermissionService{
 		}
 		if( createDateList != null && !createDateList.isEmpty() ){
 			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
 		}
 		if( publishDateList != null && !publishDateList.isEmpty() ){
 			if ( publishDateList.size() == 1 ) {
 				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
 				endDate = new Date();
 			}else if( publishDateList.size() == 2 ){
 				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
 			}
 			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
 		}

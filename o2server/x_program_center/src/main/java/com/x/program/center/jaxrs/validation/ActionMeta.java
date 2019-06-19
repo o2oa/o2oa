@@ -31,9 +31,9 @@ class ActionMeta extends BaseAction {
 			meta.setDateTimeValue(new Date());
 			meta.setDateValue(new Date());
 			meta.setTimeValue(new Date());
-			meta.setIntegerValue(Integer.MAX_VALUE);
-			meta.setLongValue(Long.MAX_VALUE);
-			meta.setDoubleValue(Double.MAX_VALUE);
+			meta.setIntegerValue(123456789);
+			meta.setLongValue(123456789L);
+			meta.setDoubleValue(1233456789.987654321d);
 			meta.setListValueList(new ArrayList<>());
 			meta.getListValueList().add("AAA");
 			meta.getListValueList().add("BBB");

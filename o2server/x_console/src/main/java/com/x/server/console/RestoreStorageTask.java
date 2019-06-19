@@ -17,10 +17,10 @@ public class RestoreStorageTask implements Job {
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			logger.print("schedule restore storage task running.");
+			logger.print("schedule restore storage task start, restore from:{}.",
+					Config.currentNode().restoreData().path());
 			ActionRestoreStorage action = new ActionRestoreStorage();
-			action.execute(DateTools.parseDateTime(Config.currentNode().restoreStorage().date()),
-					Config.token().getPassword());
+			action.execute(Config.currentNode().restoreStorage().path(), Config.token().getPassword());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}

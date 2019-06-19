@@ -32,7 +32,7 @@ public class ActionSaveImportView extends BaseAction {
 		Wi wi = null;
 		Boolean check = true;
 
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty(categoryId) ){
 			check = false;
 			Exception exception = new ExceptionIdEmpty();
 			result.error( exception );

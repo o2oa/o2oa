@@ -48,7 +48,7 @@ public class ActionSave extends BaseAction {
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			identity = wi.getIdentity();
-			if( identity == null || identity.isEmpty() ) {
+			if( StringUtils.isEmpty( identity ) ) {
 				identity = wi.getCreatorIdentity();
 			}
 		} catch (Exception e ) {
@@ -78,7 +78,7 @@ public class ActionSave extends BaseAction {
 		}
 
 		if (check) {
-			if ( wi.getCategoryId() == null || wi.getCategoryId().isEmpty() ) {
+			if ( StringUtils.isEmpty( wi.getCategoryId() ) ) {
 				check = false;
 				Exception exception = new ExceptionDocumentCategoryIdEmpty();
 				result.error(exception);
@@ -120,7 +120,7 @@ public class ActionSave extends BaseAction {
 
 		// 查询分类设置的编辑表单
 		if (check) {
-			if (categoryInfo.getFormId() == null || categoryInfo.getFormId().isEmpty()) {
+			if ( StringUtils.isEmpty(categoryInfo.getFormId() )) {
 				check = false;
 				Exception exception = new ExceptionCategoryFormIdEmpty();
 				result.error(exception);

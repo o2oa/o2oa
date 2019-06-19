@@ -18,7 +18,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
-import com.x.cms.assemble.control.jaxrs.queryview.exception.ExceptionQueryViewNotExists;
 import com.x.cms.core.entity.element.QueryView;
 
 

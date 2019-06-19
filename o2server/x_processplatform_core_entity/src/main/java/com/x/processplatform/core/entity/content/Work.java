@@ -32,7 +32,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -72,7 +74,6 @@ public class Work extends SliceJpaObject {
 			this.serial = "";
 		}
 	}
-
 	/* 更新运行方法 */
 
 	public Work() {
@@ -98,13 +99,23 @@ public class Work extends SliceJpaObject {
 		}
 	}
 
+	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
+		this.manualTaskIdentityList = manualTaskIdentityList;
+		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
+			this.manualTaskIdentityText = "";
+		} else {
+			String text = StringUtils.join(OrganizationDefinition.name(manualTaskIdentityList), ",");
+			text = StringTools.utf8SubString(text, length_255B);
+			this.setManualTaskIdentityText(text);
+		}
+	}
+
 	/* 修改过的Set Get 方法 */
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
-	// @KeyIndex(name = TABLE + IndexNameMiddle + job_FIELDNAME + "111")
 	@CheckPersist(allowEmpty = false)
 	private String job;
 
@@ -297,6 +308,12 @@ public class Work extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manualTaskIdentityList;
+
+	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
+	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + manualTaskIdentityText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String manualTaskIdentityText;
 
 	/** Split Attribute */
 	public static final String splitting_FIELDNAME = "splitting";
@@ -596,10 +613,6 @@ public class Work extends SliceJpaObject {
 		return manualTaskIdentityList;
 	}
 
-	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
-		this.manualTaskIdentityList = manualTaskIdentityList;
-	}
-
 	public ActivityType getDestinationActivityType() {
 		return destinationActivityType;
 	}
@@ -722,6 +735,14 @@ public class Work extends SliceJpaObject {
 
 	public void setDataChanged(Boolean dataChanged) {
 		this.dataChanged = dataChanged;
+	}
+
+	public String getManualTaskIdentityText() {
+		return manualTaskIdentityText;
+	}
+
+	public void setManualTaskIdentityText(String manualTaskIdentityText) {
+		this.manualTaskIdentityText = manualTaskIdentityText;
 	}
 
 }

@@ -33,6 +33,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		List<Wo> wos = new ArrayList<>();
 		List<Document> documentList = null;
 		List<String> queryCategoryIds = new ArrayList<>();
+		List<String> queryDocumentIds = null;
 		
 		Boolean manager = false;
 		Boolean check = true;
@@ -65,6 +66,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		if( StringUtils.isEmpty( wi.getDocumentType() )) {
 			wi.setDocumentType( "信息" );
 		}
+		
 		try {
 			manager = userManagerService.isManager( request, effectivePerson );
 		} catch (Exception e) {
@@ -117,7 +119,7 @@ public class ActionListNextWithFilter extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-
+		
 		if (check) {
 			minutes = wi.getMinutes();
 			if ( minutes == null || minutes <= 0) {
@@ -125,9 +127,49 @@ public class ActionListNextWithFilter extends BaseAction {
 			}else {
 				lastedPublishTime = new Date ( new Date().getTime() - minutes*60*1000L );
 			}
+		}
+
+		if (check) {
+			//如果是查询未读或者已读的文档，需要查询一下范围内限定的文档ID
+			try {
+				if( "UNREAD".equalsIgnoreCase( wi.getReadFlag() )) {
+					List<String> readIds = documentViewRecordServiceAdv.listDocIdsWithFilter( queryCategoryIds, effectivePerson );
+					List<String> allIds = documentInfoServiceAdv.listIdsWithCondition( queryCategoryIds, wi.getTitle(), 
+							wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
+							wi.getCreatorUnitNameList(),
+							wi.getImportBatchNames(), personNames, unitNames, groupNames, manager, lastedPublishTime, 10000 );
+					if( ListTools.isNotEmpty( readIds )) {
+						if( ListTools.isNotEmpty( allIds )) {
+							queryDocumentIds = new ArrayList<>();
+							queryDocumentIds.add( "000-000-000" );
+							for( String _id : allIds ) {
+								queryDocumentIds.add( _id );
+							}
+						}
+						queryDocumentIds.removeAll( readIds );
+					}				
+				}else if( "READ".equalsIgnoreCase( wi.getReadFlag() ) ) {
+					//查询出所有符合条件的已读文档ID列表
+					queryDocumentIds = documentViewRecordServiceAdv.listDocIdsWithFilter( queryCategoryIds, effectivePerson );
+				}
+				
+				if( queryDocumentIds != null && queryDocumentIds.size() > 2000 ) {
+					check = false;
+					Exception exception = new ExceptionDocumentInfoProcess( "查询结果太多，请进一步通过条件缩小搜索范围。");
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在获取用户未读或者已读的文档ID列表时发生异常。");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
 			// 从数据库中查询符合条件的对象总数
 			try {
-				total = documentInfoServiceAdv.countWithCondition( queryCategoryIds, wi.getTitle(), 
+				total = documentInfoServiceAdv.countWithCondition( queryDocumentIds, queryCategoryIds, wi.getTitle(), 
 						wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
 						wi.getCreatorUnitNameList(),
 						wi.getImportBatchNames(), personNames, unitNames, groupNames, manager, lastedPublishTime );
@@ -140,7 +182,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		}
 		if (check) {
 			try {
-				documentList = documentInfoServiceAdv.listNextWithCondition( id, count, queryCategoryIds, wi.getTitle(), 
+				documentList = documentInfoServiceAdv.listNextWithCondition( id, count, queryDocumentIds, queryCategoryIds, wi.getTitle(), 
 						wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
 						wi.getCreatorUnitNameList(),
 						wi.importBatchNames, personNames, unitNames, groupNames, wi.getOrderField(), wi.getOrderType(), 	manager, lastedPublishTime );
@@ -260,11 +302,21 @@ public class ActionListNextWithFilter extends BaseAction {
 		
 		@FieldDescribe( "是否需要查询数据，默认不查询." )
 		private Boolean needData = false;
+		
+		@FieldDescribe( "是否已读：ALL|READ|UNREAD." )
+		private String readFlag = "ALL";
 
 		@FieldDescribe( "作为过滤条件的CMS文档关键字, 通常是标题, String, 模糊查询." )
-		private String title;
-
+		private String title;		
 		
+		public String getReadFlag() {
+			return readFlag;
+		}
+
+		public void setReadFlag(String readFlag) {
+			this.readFlag = readFlag;
+		}
+
 		public Integer getMinutes() {
 			return minutes;
 		}

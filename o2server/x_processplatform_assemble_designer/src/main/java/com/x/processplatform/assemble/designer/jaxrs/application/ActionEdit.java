@@ -14,6 +14,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionEdit extends BaseAction {
@@ -39,6 +40,7 @@ class ActionEdit extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(application.getId());
 			result.setData(wo);
+			MessageFactory.application_update(application);
 			return result;
 		}
 	}

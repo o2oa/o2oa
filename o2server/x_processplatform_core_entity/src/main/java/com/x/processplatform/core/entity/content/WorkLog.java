@@ -28,6 +28,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 @Entity
@@ -62,6 +63,31 @@ public class WorkLog extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public static WorkLog createFromWork(Work work, Activity activity, String token, Date date) throws Exception {
+		WorkLog o = new WorkLog();
+		o.setJob(work.getJob());
+		o.setWork(work.getId());
+		o.setProcess(work.getProcess());
+		o.setProcessName(work.getProcessName());
+		o.setApplication(work.getApplication());
+		o.setApplicationName(work.getApplicationName());
+		o.setFromActivity(activity.getId());
+		o.setFromActivityName(activity.getName());
+		o.setFromActivityAlias(activity.getAlias());
+		o.setFromActivityToken(token);
+		o.setFromActivityType(activity.getActivityType());
+		o.setFromGroup(activity.getGroup());
+		o.setFromOpinionGroup(activity.getOpinionGroup());
+		o.setSplitting(work.getSplitting());
+		o.setSplitToken(work.getSplitToken());
+		o.setSplitValue(work.getSplitValue());
+		o.setSplitTokenList(work.getSplitTokenList());
+		o.setFromTime(date);
+		o.setCompleted(false);
+		o.setConnected(false);
+		return o;
+	}
 
 	public WorkLog() {
 
@@ -138,6 +164,18 @@ public class WorkLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String fromActivityToken;
 
+	public static final String fromGroup_FIELDNAME = "fromGroup";
+	@FieldDescribe("开始分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromGroup_FIELDNAME)
+	private String fromGroup;
+
+	public static final String fromOpinionGroup_FIELDNAME = "fromOpinionGroup";
+	@FieldDescribe("开始意见分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromOpinionGroup_FIELDNAME)
+	private String fromOpinionGroup;
+
 	public static final String fromTime_FIELDNAME = "fromTime";
 	@FieldDescribe("开始时间.")
 	@Column(name = ColumnNamePrefix + fromTime_FIELDNAME)
@@ -181,6 +219,18 @@ public class WorkLog extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivityToken;
+
+	public static final String arrivedGroup_FIELDNAME = "arrivedGroup";
+	@FieldDescribe("到达分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + arrivedGroup_FIELDNAME)
+	private String arrivedGroup;
+
+	public static final String arrivedOpinionGroup_FIELDNAME = "arrivedOpinionGroup";
+	@FieldDescribe("到达意见分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + arrivedOpinionGroup_FIELDNAME)
+	private String arrivedOpinionGroup;
 
 	public static final String arrivedTime_FIELDNAME = "arrivedTime";
 	@FieldDescribe("完成时间.")
@@ -549,6 +599,42 @@ public class WorkLog extends SliceJpaObject {
 
 	public void setSplitWork(String splitWork) {
 		this.splitWork = splitWork;
+	}
+
+	public String getFromGroup() {
+		return fromGroup;
+	}
+
+	public void setFromGroup(String fromGroup) {
+		this.fromGroup = fromGroup;
+	}
+
+	public String getArrivedGroup() {
+		return arrivedGroup;
+	}
+
+	public void setArrivedGroup(String arrivedGroup) {
+		this.arrivedGroup = arrivedGroup;
+	}
+
+	public String getFromOpinionGroup() {
+		return fromOpinionGroup;
+	}
+
+	public void setFromOpinionGroup(String fromOpinionGroup) {
+		this.fromOpinionGroup = fromOpinionGroup;
+	}
+
+	public String getArrivedOpinionGroup() {
+		return arrivedOpinionGroup;
+	}
+
+	public void setArrivedOpinionGroup(String arrivedOpinionGroup) {
+		this.arrivedOpinionGroup = arrivedOpinionGroup;
+	}
+
+	public static String getArrivedopiniongroupFieldname() {
+		return arrivedOpinionGroup_FIELDNAME;
 	}
 
 }

@@ -17,12 +17,12 @@ public class SystemOutErrorSideCopyBuilder {
 
 	private static volatile boolean started;
 
-	public static void start() throws Exception {
+	public static void start(String base) throws Exception {
 		stdout = System.out;
 		stderr = System.err;
-		File logDir = new File(Config.base(), "logs");
-		FileUtils.forceMkdir(logDir);
-		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(logDir + "/yyyy_mm_dd.out.log",
+		File logs_dir = new File(base, "logs");
+		FileUtils.forceMkdir(logs_dir);
+		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(logs_dir + "/yyyy_mm_dd.out.log",
 				false, 180);
 		rolloverFilePrintStream = new PrintStream(rolloverFileOutputStream);
 		SideCopyPrintStream sideCopyOut = new SideCopyPrintStream(stdout, rolloverFilePrintStream);

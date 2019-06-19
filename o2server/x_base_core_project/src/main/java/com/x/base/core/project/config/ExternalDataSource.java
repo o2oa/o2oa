@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.LogLevel;
+import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 public class ExternalDataSource extends ConfigObject {
@@ -17,14 +19,6 @@ public class ExternalDataSource extends ConfigObject {
 		this.password = "";
 		this.includes = new ArrayList<>();
 		this.excludes = new ArrayList<>();
-		this.toolLevel = LogLevel.ERROR;
-		this.runtimeLevel = LogLevel.ERROR;
-		this.dataCacheLevel = LogLevel.ERROR;
-		this.metaDataLevel = LogLevel.ERROR;
-		this.enhanceLevel = LogLevel.ERROR;
-		this.queryLevel = LogLevel.ERROR;
-		this.sqlLevel = LogLevel.ERROR;
-		this.jdbcLevel = LogLevel.ERROR;
 	}
 
 	public static ExternalDataSource defaultInstance() {
@@ -39,26 +33,43 @@ public class ExternalDataSource extends ConfigObject {
 	private String username;
 	@FieldDescribe("数据库jdbc连接密码")
 	private String password;
+	@FieldDescribe("数据库驱动类名")
+	private String driverClassName;
+	@FieldDescribe("方言")
+	private String dictionary;
+	@FieldDescribe("最大连接数")
+	private Integer maxTotal;
+
 	@FieldDescribe("设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*")
 	private List<String> includes;
 	@FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*")
 	private List<String> excludes;
-	@FieldDescribe("tool日志级别")
-	private LogLevel toolLevel = LogLevel.ERROR;
-	@FieldDescribe("runtime日志级别")
-	private LogLevel runtimeLevel = LogLevel.ERROR;
-	@FieldDescribe("dataCache日志级别")
-	private LogLevel dataCacheLevel = LogLevel.ERROR;
-	@FieldDescribe("metaData日志级别")
-	private LogLevel metaDataLevel = LogLevel.ERROR;
-	@FieldDescribe("enhance日志级别")
-	private LogLevel enhanceLevel = LogLevel.ERROR;
-	@FieldDescribe("query日志级别")
-	private LogLevel queryLevel = LogLevel.ERROR;
-	@FieldDescribe("sql日志级别")
-	private LogLevel sqlLevel = LogLevel.ERROR;
-	@FieldDescribe("jdbc日志级别")
-	private LogLevel jdbcLevel = LogLevel.ERROR;
+	@FieldDescribe("默认日志级别")
+	private LogLevel logLevel = LogLevel.WARN;
+
+	public static final Integer DEFAULT_MAXTOTAL = 50;
+
+	public LogLevel getLogLevel() {
+		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
+	}
+
+	public String getDriverClassName() throws Exception {
+		return StringUtils.isEmpty(this.driverClassName) ? SlicePropertiesBuilder.driverClassNameOfUrl(this.url)
+				: this.driverClassName;
+	}
+
+	public String getDictionary() throws Exception {
+		return StringUtils.isEmpty(this.dictionary) ? SlicePropertiesBuilder.dictionaryOfUrl(this.url)
+				: this.dictionary;
+	}
+
+	public Integer getMaxTotal() {
+		if ((this.maxTotal == null) || (this.maxTotal < 1)) {
+			return DEFAULT_MAXTOTAL;
+		} else {
+			return this.maxTotal;
+		}
+	}
 
 	public Boolean getEnable() {
 		return BooleanUtils.isTrue(this.enable);
@@ -108,68 +119,21 @@ public class ExternalDataSource extends ConfigObject {
 		this.enable = enable;
 	}
 
-	public LogLevel getToolLevel() {
-		return toolLevel;
+	public void setDriverClassName(String driverClassName) {
+		this.driverClassName = driverClassName;
 	}
 
-	public void setToolLevel(LogLevel toolLevel) {
-		this.toolLevel = toolLevel;
+	public void setDictionary(String dictionary) {
+		this.dictionary = dictionary;
 	}
 
-	public LogLevel getRuntimeLevel() {
-		return runtimeLevel;
+	public void setMaxTotal(Integer maxTotal) {
+		this.maxTotal = maxTotal;
 	}
 
-	public void setRuntimeLevel(LogLevel runtimeLevel) {
-		this.runtimeLevel = runtimeLevel;
+	public void setLogLevel(LogLevel logLevel) {
+		this.logLevel = logLevel;
 	}
 
-	public LogLevel getDataCacheLevel() {
-		return dataCacheLevel;
-	}
-
-	public void setDataCacheLevel(LogLevel dataCacheLevel) {
-		this.dataCacheLevel = dataCacheLevel;
-	}
-
-	public LogLevel getMetaDataLevel() {
-		return metaDataLevel;
-	}
-
-	public void setMetaDataLevel(LogLevel metaDataLevel) {
-		this.metaDataLevel = metaDataLevel;
-	}
-
-	public LogLevel getEnhanceLevel() {
-		return enhanceLevel;
-	}
-
-	public void setEnhanceLevel(LogLevel enhanceLevel) {
-		this.enhanceLevel = enhanceLevel;
-	}
-
-	public LogLevel getQueryLevel() {
-		return queryLevel;
-	}
-
-	public void setQueryLevel(LogLevel queryLevel) {
-		this.queryLevel = queryLevel;
-	}
-
-	public LogLevel getSqlLevel() {
-		return sqlLevel;
-	}
-
-	public void setSqlLevel(LogLevel sqlLevel) {
-		this.sqlLevel = sqlLevel;
-	}
-
-	public LogLevel getJdbcLevel() {
-		return jdbcLevel;
-	}
-
-	public void setJdbcLevel(LogLevel jdbcLevel) {
-		this.jdbcLevel = jdbcLevel;
-	}
-
+ 
 }

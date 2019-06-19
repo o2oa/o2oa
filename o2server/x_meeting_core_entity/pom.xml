@@ -30,6 +30,10 @@
 						<id>createEnhancePersistenceXml</id>
 						<phase>generate-resources</phase>
 					</execution>
+					<execution>
+						<id>checkCore</id>
+						<phase>prepare-package</phase>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

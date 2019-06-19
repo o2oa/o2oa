@@ -14,29 +14,17 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
-import com.x.base.core.project.AbstractContext;
-import com.x.base.core.project.config.DataMappings;
 
 public class EntityManagerContainerFactory extends SliceEntityManagerContainerFactory {
 
 	private volatile static EntityManagerContainerFactory instance;
 
-//	public static void init(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
-//		synchronized (EntityManagerContainerFactory.class) {
-//			if (instance != null) {
-//				EntityManagerContainerFactory.close();
-//			}
-//			instance = new EntityManagerContainerFactory(webApplicationDirectory, dataMappings);
-//		}
-//	}
-
-	public static void init(String webApplicationDirectory, DataMappings dataMappings, List<String> entities)
-			throws Exception {
+	public static void init(String webApplicationDirectory, List<String> entities) throws Exception {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, dataMappings, entities);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities);
 		}
 	}
 
@@ -65,14 +53,9 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		return instance;
 	}
 
-	private EntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings,
-			List<String> entities) throws Exception {
-		super(webApplicationDirectory, dataMappings, entities);
+	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities) throws Exception {
+		super(webApplicationDirectory, entities);
 	}
-
-//	private EntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
-//		super(webApplicationDirectory, dataMappings);
-//	}
 
 	private EntityManagerContainerFactory(String source) throws Exception {
 		super(source);
@@ -91,14 +74,9 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 				instance.checkRemoveFieldMap.clear();
 			}
 			/* 注销驱动程序 */
-			// Set<Driver> drivers = new HashSet<>();
-			// for (String url : instance.jdbcUrls) {
-			// drivers.add(DriverManager.getDriver(url));
-			// }
 			Enumeration<Driver> drivers = DriverManager.getDrivers();
 			while (drivers.hasMoreElements()) {
 				Driver driver = drivers.nextElement();
-				// System.out.println("deregisterDriver:" + driver);
 				DriverManager.deregisterDriver(driver);
 			}
 			/* 由于可能重新载入 */

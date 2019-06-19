@@ -6,6 +6,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
@@ -98,6 +99,7 @@ class ActionDelete extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(process.getId());
 			result.setData(wo);
+			MessageFactory.process_delete(process);
 			return result;
 		}
 	}

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -26,7 +28,7 @@ public class ActionListViewRecordByFilterNext extends BaseAction {
 		Boolean check = true;		
 
 		if( check ){
-			if( docId == null || docId.isEmpty() ){
+			if( StringUtils.isEmpty(docId) ){
 				check = false;
 				Exception exception = new ExceptionDocumentIdEmpty();
 				result.error( exception );

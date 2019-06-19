@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.Objects;
 import com.x.base.core.project.Application;
-import com.x.base.core.project.AssembleA;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.WebServer;
@@ -31,7 +33,7 @@ import io.github.classgraph.ScanResult;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static CopyOnWriteArrayList<Class<? extends AssembleA>> assembles;
+	private static CopyOnWriteArrayList<Class<?>> assembles;
 
 	private static String HOST_LOCALHOST = "localhost";
 
@@ -125,7 +127,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private Map<String, WoAssemble> getRandomAssembles(HttpServletRequest request) throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
-		for (Class<? extends AssembleA> o : listAssemble()) {
+		for (Class<?> o : listAssemble()) {
 			WoAssemble wrap = new WoAssemble();
 			Application application = ThisApplication.context().applications().randomWithWeight(o.getName());
 			if (null != application) {
@@ -145,7 +147,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private Map<String, WoAssemble> getRandomAssemblesProxy(HttpServletRequest request) throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
-		for (Class<? extends AssembleA> o : listAssemble()) {
+		for (Class<?> o : listAssemble()) {
 			WoAssemble wrap = new WoAssemble();
 			Application application = ThisApplication.context().applications().randomWithWeight(o.getName());
 			if (null != application) {
@@ -164,18 +166,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Class<? extends AssembleA>> listAssemble() throws Exception {
+	private List<Class<?>> listAssemble() throws Exception {
 		if (null == assembles) {
 			synchronized (BaseAction.class) {
 				if (null == assembles) {
-					try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-						assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
+					try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+						assembles = new CopyOnWriteArrayList<Class<?>>();
 						List<ClassInfo> list = new ArrayList<>();
-						list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
+						list.addAll(scanResult.getClassesWithAnnotation(Module.class.getName()));
 						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
 								.collect(Collectors.toList());
 						for (ClassInfo info : list) {
-							assembles.add((Class<AssembleA>) Class.forName(info.getName()));
+							Class<?> cls = Class.forName(info.getName());
+							Module module = cls.getAnnotation(Module.class);
+							if (Objects.equal(module.type(), ModuleType.ASSEMBLE)) {
+								assembles.add(cls);
+							}
 						}
 					}
 				}

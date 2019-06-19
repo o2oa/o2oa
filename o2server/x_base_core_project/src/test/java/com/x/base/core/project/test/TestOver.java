@@ -4,12 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.junit.Test;
-
-import com.x.base.core.project.AssembleA;
-import com.x.base.core.project.x_processplatform_core_entity;
-import com.x.base.core.project.tools.StringTools;
 
 public class TestOver {
 

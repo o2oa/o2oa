@@ -15,9 +15,7 @@ var gulp = require('gulp'),
 var apps = [
     {"folder": "o2_lib",                                    "tasks": ["move", "clean"]},
     {"folder": "o2_core",                                   "tasks": ["move", "min", "clean", "watch"]},
-    {"folder": "x_desktop",                                 "tasks": ["move", "min", "clean", "watch"]},
-    {"folder": "x_component_Common",                        "tasks": ["move", "min", "clean", "watch"]},
-    {"folder": "x_component_Template",                      "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_ANN",                           "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_AppCenter",                     "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_AppMarket",                     "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Attendance",                    "tasks": ["move", "min", "clean", "watch"]},
@@ -36,6 +34,7 @@ var apps = [
     {"folder": "x_component_cms_ViewDesigner",              "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_cms_Xform",                     "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Collect",                       "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_Common",                        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Console",                       "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_ControlPanel",                  "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_CRM",                           "tasks": ["move", "min", "clean", "watch"]},
@@ -88,6 +87,8 @@ var apps = [
     {"folder": "x_component_query_QueryManager",            "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_query_StatDesigner",            "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_query_ViewDesigner",            "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_query_TableDesigner",           "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_query_StatementDesigner",       "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Report",                        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_ReportDocument",                "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_ReportMinder",                  "tasks": ["move", "min", "clean", "watch"]},
@@ -99,9 +100,12 @@ var apps = [
     {"folder": "x_component_service_InvokeDesigner",        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_service_ServiceManager",        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Setting",                       "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_SmartOfficeRoom",               "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_Snake",                         "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Strategy",                      "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_Template",                      "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Weixin",                        "tasks": ["move", "min", "clean", "watch"]},
-	{"folder": "x_component_ANN",                	        "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_desktop",                                 "tasks": ["move", "min", "clean", "watch"]}
 ];
 
 var sourcePrefix = '../o2web/';

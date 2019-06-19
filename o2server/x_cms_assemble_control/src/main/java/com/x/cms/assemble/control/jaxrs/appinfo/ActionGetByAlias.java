@@ -4,11 +4,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 
 import net.sf.ehcache.Element;
@@ -24,7 +27,7 @@ public class ActionGetByAlias extends BaseAction {
 		AppInfo appInfo = null;
 		Boolean check = true;
 		
-		if( alias == null || alias.isEmpty() ){
+		if( StringUtils.isEmpty(alias) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );
@@ -40,7 +43,7 @@ public class ActionGetByAlias extends BaseAction {
 			if( check ){
 				try {
 					ids = appInfoServiceAdv.getWithAlias( alias );
-					if( ids == null || ids.isEmpty() ){
+					if( ListTools.isEmpty(ids) ){
 						check = false;
 						Exception exception = new ExceptionAppInfoNotExists( alias );
 						result.error( exception );

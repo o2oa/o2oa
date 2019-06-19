@@ -201,6 +201,18 @@ public class Document extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + viewCount_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long viewCount = 0L;
+	
+	public static final String commendCount_FIELDNAME = "commendCount";
+	@FieldDescribe("文档被赞次数")
+	@Column(name = ColumnNamePrefix + commendCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long commendCount = 0L;
+	
+	public static final String commentCount_FIELDNAME = "commentCount";
+	@FieldDescribe("文档评论次数")
+	@Column(name = ColumnNamePrefix + commentCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long commentCount = 0L;
 
 	public static final String publishTime_FIELDNAME = "publishTime";
 	@FieldDescribe("文档发布时间")
@@ -209,12 +221,27 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + publishTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date publishTime;
+	
+	public static final String modifyTime_FIELDNAME = "modifyTime";
+	@FieldDescribe("文档修改时间")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = ColumnNamePrefix + modifyTime_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + modifyTime_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date modifyTime;
 
+	public static final String isTop_FIELDNAME = "isTop";
+	@FieldDescribe("是否置顶")
+	@Column(name = ColumnNamePrefix + isTop_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + isTop_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean isTop = false;
+	
 	public static final String hasIndexPic_FIELDNAME = "hasIndexPic";
 	@FieldDescribe("是否含有首页图片")
 	@Column(name = ColumnNamePrefix + hasIndexPic_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + hasIndexPic_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private Boolean hasIndexPic = false;
 
 	public static final String reviewed_FIELDNAME = "reviewed";
@@ -357,6 +384,14 @@ public class Document extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + pictureList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> pictureList;
+	
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
 	public String getAppId() {
 		return appId;
@@ -471,6 +506,9 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void addViewCount(Integer count) {
+		if( this.viewCount == null ) {
+			this.viewCount = 0L;
+		}
 		this.viewCount = this.viewCount + count;
 	}
 
@@ -731,4 +769,62 @@ public class Document extends SliceJpaObject {
 		this.reviewed = reviewed;
 	}
 
+	public Long getCommendCount() {
+		return commendCount;
+	}
+
+	public void setCommendCount(Long commendCount) {
+		this.commendCount = commendCount;
+	}
+
+	public Long getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(Long commentCount) {
+		this.commentCount = commentCount;
+	}
+	
+	public void addCommentCount(Integer count) {
+		if( this.commendCount == null ) {
+			this.commentCount = 0L;
+		}
+		this.commentCount = this.commentCount + count;
+	}
+	
+	public void addCommendCount(Integer count) {
+		if( this.commendCount == null ) {
+			this.commendCount = 0L;
+		}
+		this.commendCount = this.commendCount + count;
+	}
+	
+	public void subCommentCount(Integer count) {
+		if( this.commentCount == null ) {
+			this.commentCount = 0L;
+		}
+		this.commentCount = this.commentCount - count;
+		if( this.commentCount < 0 ) {
+			this.commentCount = 0L;
+		}
+	}
+	
+	public void subCommendCount(Integer count) {
+		if( this.commendCount == null ) {
+			this.commendCount = 0L;
+		}
+		this.commendCount = this.commendCount - count;
+		if( this.commendCount < 0 ) {
+			this.commendCount = 0L;
+		}
+	}
+
+	public Boolean getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(Boolean isTop) {
+		this.isTop = isTop;
+	}
+	
 }

@@ -22,6 +22,8 @@ public class Group extends GsonPropertyObject {
 	private List<String> personList = new ArrayList<>();
 	@FieldDescribe("群组成员")
 	private List<String> groupList = new ArrayList<>();
+	@FieldDescribe("组织成员")
+	private List<String> unitList = new ArrayList<>();
 
 	public String getName() {
 		return name;
@@ -77,6 +79,14 @@ public class Group extends GsonPropertyObject {
 
 	public void setUnique(String unique) {
 		this.unique = unique;
+	}
+
+	public List<String> getUnitList() {
+		return unitList;
+	}
+
+	public void setUnitList(List<String> unitList) {
+		this.unitList = unitList;
 	}
 
 }

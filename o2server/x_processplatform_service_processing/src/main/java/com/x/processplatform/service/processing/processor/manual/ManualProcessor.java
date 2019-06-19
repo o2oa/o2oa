@@ -228,11 +228,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Route> results = new ArrayList<>();
-		/** 仅有单条路由 */
+		/* 仅有单条路由 */
 		if (aeiObjects.getRoutes().size() == 1) {
 			results.add(aeiObjects.getRoutes().get(0));
 		} else if (aeiObjects.getRoutes().size() > 1) {
-			/** 存在多条路由 */
+			/* 存在多条路由 */
 			List<TaskCompleted> taskCompletedList = aeiObjects.getTaskCompleteds().stream()
 					.filter(o -> StringUtils.equals(o.getActivityToken(), aeiObjects.getWork().getActivityToken())
 							&& aeiObjects.getWork().getManualTaskIdentityList().contains(o.getIdentity())
@@ -263,7 +263,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 				});
 		/* 进行独占路由的判断 */
 		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
-		if (null != soleRoute) {
+		if ((null != soleRoute) && os.contains(soleRoute.getName())) {
 			result = soleRoute.getName();
 		} else {
 			/* 进行默认的策略,选择占比多的 */

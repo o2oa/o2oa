@@ -11,42 +11,61 @@ import com.x.base.core.project.tools.ListTools;
 public class OrganizationDefinition {
 
 	public final static String Manager = "Manager";
+	public final static String Manager_discription = "系统管理员(系统角色)，拥有所有角色的权限，可以管理所有内容。";
 
 	public final static String AttendanceManager = "AttendanceManager";
+	public final static String AttendanceManager_discription = "考勤管理员(系统角色)，可以管理考勤管理相关的配置，使用数据管理功能。";
 
 	public final static String OrganizationManager = "OrganizationManager";
+	public final static String OrganizationManager_discription = "组织信息管理员(系统角色)，可以使用组织架构、人员、群组以及角色相关的配置和管理功能。";
 
 	public final static String PersonManager = "PersonManager";
+	public final static String PersonManager_discription = "人员信息管理员(系统角色)，可以使用组织管理中的人员管理相关功能。";
 
 	public final static String GroupManager = "GroupManager";
+	public final static String GroupManager_discription = "群组信息管理员(系统角色)，可以使用组织管理中的群组管理相关功能。";
 
 	public final static String UnitManager = "UnitManager";
+	public final static String UnitManager_discription = "组织信息管理员(系统角色)，可以使用组织管理中的组织架构管理相关功能。";
 
 	public final static String RoleManager = "RoleManager";
+	public final static String RoleManager_discription = "角色信息管理员(系统角色)，可以使用组织管理中的角色管理相关功能。";
 
 	public final static String ProcessPlatformManager = "ProcessPlatformManager";
+	public final static String ProcessPlatformManager_discription = "流程平台管理员(系统角色)，可以对流程平台进行管理，可以进行流程设计管理，可以查询、调度和删除流程实例等。";
 
 	public final static String ProcessPlatformCreator = "ProcessPlatformCreator";
+	public final static String ProcessPlatformCreator_discription = "流程设计创建者(系统角色)，可以进行流程设计，新增和设计流程应用。";
 
 	public final static String MeetingManager = "MeetingManager";
+	public final static String MeetingManager_discription = "会议管理员(系统角色)，可以对会议地址，会议室，会议等信息进行管理，对会议管理系统所有配置进行管理。";
 
 	public final static String MeetingViewer = "MeetingViewer";
+	public final static String MeetingViewer_discription = "会议观察员(系统角色)，可以对所有的会议信息进行查看。";
 
 	public final static String PortalManager = "PortalManager";
+	public final static String PortalManager_discription = "门户管理员(系统角色)，可以进行门户应用设计，对门户应用进行管理操作。";
 
 	public final static String BBSManager = "BSSManager";
+	public final static String BBSManager_discription = "社区管理员(系统角色)，可以对社区进行论坛分区，版块的创建，权限的设定，贴子的管理等操作。";
 
 	public final static String CMSManager = "CMSManager";
+	public final static String CMSManager_discription = "内容管理系统管理员(系统角色)，可以设计内容管理栏目，分类，对表单，列表进行设计，对文档进行管理等操作。";
 
 	public final static String OKRManager = "OKRManager";
+	public final static String OKRManager_discription = "执行力管理员(系统角色)，可以进行执行力管理系统配置，对工作内容进行管理操作。";
 
 	public final static String CRMManager = "CRMManager";
+	public final static String CRMManager_discription = "CRM管理员(系统角色)，可以进行CRM系统相关配置，对客户信息，商机等信息进行管理操作。";
 
 	public final static String QueryManager = "QueryManager";
+	public final static String QueryManager_discription = "数据中心管理员(系统角色)，可以在数据中心进行视图管理，统计管理等操作。";
 
 	public final static String MessageManager = "MessageManager";
+	public final static String MessageManager_discription = "消息管理员(系统角色)，可以对系统中产生的消息进行管理。";
 
 	public final static String SearchPrivilege = "SearchPrivilege";
+	public final static String SearchPrivilege_discription = "搜索管理员(系统角色)，可以跨权限对系统内容进行搜索。";
 
 	public final static String RoleDefinitionSuffix = "SystemRole";
 
@@ -73,7 +92,18 @@ public class OrganizationDefinition {
 			return StringUtils.substringBefore(distinguishedName, "@");
 		}
 		return distinguishedName;
+	}
 
+	public static List<String> name(List<String> list) {
+		List<String> os = new ArrayList<>();
+		if (ListTools.isNotEmpty(list)) {
+			for (String str : list) {
+				if (StringUtils.isNotEmpty(str)) {
+					os.add(name(str));
+				}
+			}
+		}
+		return os;
 	}
 
 	public static boolean isDistinguishedName(String str) {

@@ -402,6 +402,12 @@ public class Task extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
 
+//	public static final String opinionGroup_FIELDNAME = "opinionGroup";
+//	@FieldDescribe("意见分组")
+//	@CheckPersist(allowEmpty = true)
+//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
+//	private String opinionGroup;
+
 	public static final String opinion_FIELDNAME = "opinion";
 	@FieldDescribe("处理意见.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)

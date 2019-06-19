@@ -8,6 +8,13 @@ public class NotInTerm{
 	
 	private List<Object> value = null;
 
+	public NotInTerm() {}
+	
+	public NotInTerm( String name, List<Object> value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

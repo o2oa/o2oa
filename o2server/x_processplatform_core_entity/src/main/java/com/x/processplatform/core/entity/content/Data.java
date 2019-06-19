@@ -155,6 +155,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		private String serial;
 		private String activityType;
 		private String activityName;
+		private String manualTaskIdentityText;
 		/** 来自workCompleted的结束时间 */
 		private Date completedTime;
 		/** 来自workCompleted的结束时间月份 */
@@ -334,6 +335,14 @@ public class Data extends ListOrderedMap<String, Object> {
 
 		public void setCompleted(Boolean completed) {
 			this.completed = completed;
+		}
+
+		public String getManualTaskIdentityText() {
+			return manualTaskIdentityText;
+		}
+
+		public void setManualTaskIdentityText(String manualTaskIdentityText) {
+			this.manualTaskIdentityText = manualTaskIdentityText;
 		}
 
 	}

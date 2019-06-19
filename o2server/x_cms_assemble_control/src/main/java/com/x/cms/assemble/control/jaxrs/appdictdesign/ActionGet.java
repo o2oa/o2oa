@@ -24,7 +24,7 @@ class ActionGet extends BaseAction {
 			Business business = new Business(emc);
 			AppDict dict = emc.find(id, AppDict.class);
 			if (null == dict) {
-				throw new AppDictNotExistedException(id);
+				throw new ExceptionAppDictNotExisted(id);
 			}
 			AppInfo appInfo = emc.find(dict.getAppId(), AppInfo.class);
 			if (null == appInfo) {

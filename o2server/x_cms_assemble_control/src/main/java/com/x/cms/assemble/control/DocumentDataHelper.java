@@ -33,13 +33,13 @@ public class DocumentDataHelper {
 	private List<Item> items;
 	private Gson gson;
 
-	public DocumentDataHelper(EntityManagerContainer emc, Document document) throws Exception {
+	public DocumentDataHelper( EntityManagerContainer emc, Document document ) throws Exception {
 		if ((null == emc) || (null == document)) {
 			throw new Exception("create instance error.");
 		}
 		this.docId = document.getId();
 		this.distributeFactor = document.getDistributeFactor();
-		if (StringUtils.isEmpty( this.docId )) {
+		if ( StringUtils.isEmpty( this.docId )) {
 			throw new Exception("can not create DataHelper docId is empty.");
 		}
 		this.emc = emc;

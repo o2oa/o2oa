@@ -57,6 +57,9 @@ if [ -d ${current_dir}/local/update ]; then
 		if [ -f ${current_dir}/local/update/o2server/index.html ]; then
 			cp -f ${current_dir}/local/update/o2server/index.html ${current_dir}/
 		fi
+		if [ -f ${current_dir}/local/update/o2server/src.zip ]; then
+			cp -f ${current_dir}/local/update/o2server/src.zip ${current_dir}/
+		fi
 		if [ -f ${current_dir}/start_windows.bat ]; then
 			cp -f ${current_dir}/local/update/o2server/start_windows.bat ${current_dir}/
 		fi
@@ -65,6 +68,9 @@ if [ -d ${current_dir}/local/update ]; then
 		fi
 		if [ -f ${current_dir}/console_windows.bat ]; then
 			cp -f ${current_dir}/local/update/o2server/console_windows.bat ${current_dir}/
+		fi
+		if [ -f ${current_dir}/service_windows.bat ]; then
+			cp -f ${current_dir}/local/update/o2server/service_windows.bat ${current_dir}/
 		fi
 		if [ -f ${current_dir}/start_linux.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/start_linux.sh ${current_dir}/
@@ -92,6 +98,15 @@ if [ -d ${current_dir}/local/update ]; then
 		fi
 		if [ -f ${current_dir}/console_aix.sh ]; then
 			cp -f ${current_dir}/local/update/o2server/console_aix.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/start_neokylin_loongson.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_neokylin_loongson.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/stop_aix.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_neokylin_loongson.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/console_aix.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_neokylin_loongson.sh ${current_dir}/
 		fi
 		cp ${current_dir}/local/update/o2server/version.o2 ${current_dir}/
 		sudo rm -Rf ${current_dir}/local/update

@@ -21,11 +21,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.OpenJPAPersistence;
 
 import com.google.gson.Gson;
+import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataMapping;
-import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -47,44 +46,43 @@ public class ActionDumpStorage {
 
 	private Gson pureGsonDateFormated;
 
-	private void init() throws Exception {
+	public boolean execute(String path, String password) throws Exception {
 		this.start = new Date();
-		this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(this.start));
-		this.pureGsonDateFormated = XGsonBuilder.instance();
-		this.catalog = new DumpRestoreStorageCatalog();
-		FileUtils.forceMkdir(this.dir);
-		FileUtils.cleanDirectory(this.dir);
-	}
-
-	public boolean execute(String password) throws Exception {
-		this.init();
 		if (!StringUtils.equals(Config.token().getPassword(), password)) {
 			logger.print("password not match.");
 			return false;
 		}
-		List<Class<?>> classes = PersistenceXmlHelper.listClassWithIncludesExcludes(
-				PersistenceXmlHelper.listStorageClassName(), Config.dumpRestoreStorage().getIncludes(),
-				Config.dumpRestoreStorage().getExcludes());
-		DataMappings dataMappings = Config.dataMappings();
-		StorageMappings storageMappings = Config.storageMappings();
-		logger.print("dump storage find {} data to dump, start at {}.", classes.size(), DateTools.format(start));
-		for (int i = 0; i < classes.size(); i++) {
-			Class<StorageObject> cls = (Class<StorageObject>) classes.get(i);
-			List<DataMapping> sources = dataMappings.get(cls.getName());
-			if (ListTools.isEmpty(sources)) {
-				throw new Exception("can not get datamapping of class:" + cls.getName() + ".");
+		if (StringUtils.isEmpty(path)) {
+			this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(this.start));
+		} else {
+			this.dir = new File(path);
+			if (dir.getAbsolutePath().startsWith(Config.base())) {
+				logger.print("path can not in base directory.");
+				return false;
 			}
+		}
+		FileUtils.forceMkdir(this.dir);
+		FileUtils.cleanDirectory(this.dir);
+		this.pureGsonDateFormated = XGsonBuilder.instance();
+		this.catalog = new DumpRestoreStorageCatalog();
+
+		List<String> storageContainerEntityNames = new ArrayList<>();
+		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_STORAGECONTAINERENTITYNAMES));
+		List<String> classNames = ListTools.includesExcludesWildcard(storageContainerEntityNames,
+				Config.dumpRestoreStorage().getIncludes(), Config.dumpRestoreStorage().getExcludes());
+		logger.print("dump storage find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
+		StorageMappings storageMappings = Config.storageMappings();
+		File persistence = new File(Config.dir_local_temp_classes(), DateTools.compact(this.start) + "_dump.xml");
+		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
+		for (int i = 0; i < classNames.size(); i++) {
+			Class<StorageObject> cls = (Class<StorageObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					this.createPersistenceXml(cls, sources).getName());
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
 			EntityManager em = emf.createEntityManager();
 			try {
 				logger.print("dump storage({}/{}): {}, estimate count: {}, estimate size: {}M.", (i + 1),
-						classes.size(), cls.getName(), this.estimateCount(em, cls),
+						classNames.size(), cls.getName(), this.estimateCount(em, cls),
 						(this.estimateSize(em, cls) / 1024 / 1024));
-				// System.out.println("dump storage(" + (i + 1) + "/" + classes.size() + "): " +
-				// cls.getName()
-				// + ", estimate count: " + this.estimateCount(em, cls) + ", estimate size: "
-				// + (this.estimateSize(em, cls) / 1024 / 1024) + "M.");
 				this.dump(cls, em, storageMappings);
 			} finally {
 				em.close();
@@ -118,16 +116,6 @@ public class ActionDumpStorage {
 
 	private Long invalidStorage() {
 		return this.catalog.values().stream().mapToLong(DumpRestoreStorageCatalogItem::getInvalidStorage).sum();
-	}
-
-	/** 创建临时使用的persistence.xml 并复制到class目录下 */
-	private <T> File createPersistenceXml(Class<T> cls, List<DataMapping> sources) throws Exception {
-		File xml = new File(dir, cls.getName() + "_dump.xml");
-		PersistenceXmlHelper.createPersistenceXml(cls, sources, xml);
-		File tempFile = File.createTempFile(DateTools.compact(this.start), ".xml",
-				new File(Config.base(), "local/temp/classes"));
-		FileUtils.copyFile(xml, tempFile);
-		return tempFile;
 	}
 
 	private <T> long estimateCount(EntityManager em, Class<T> cls) {
@@ -219,7 +207,7 @@ public class ActionDumpStorage {
 		item.setSize(size);
 		item.setInvalidStorage(invalidStorage);
 		this.catalog.put(cls.getName(), item);
-		System.out.println(
+		logger.print(
 				"dumped storage: " + cls.getName() + ", count: " + count + ", normal: " + normal + ", invalidStorage: "
 						+ invalidStorage + ", empty: " + empty + ", size: " + (size / 1024 / 1024) + "M.");
 	}

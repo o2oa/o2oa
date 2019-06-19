@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app id="x_organization_assemble_authentication"
-	metadata-complete="false" version="3.0">
-	<display-name>x_organization_assemble_authentication</display-name>
-	<context-param>
-		<param-name>project</param-name>
-		<param-value>com.x.base.core.project.x_organization_assemble_authentication
-		</param-value>
-	</context-param>
-</web-app>
+<?xml version="1.0" encoding="UTF-8"?><web-app id="x_organization_assemble_authentication" metadata-complete="false" version="3.0"><display-name>x_organization_assemble_authentication</display-name><context-param><param-name>project</param-name><param-value>com.x.base.core.project.x_organization_assemble_authentication</param-value></context-param></web-app>
