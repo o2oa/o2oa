@@ -47,10 +47,10 @@ import com.x.server.console.action.ActionRestoreData;
 import com.x.server.console.action.ActionRestoreStorage;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionShowCpu;
+import com.x.server.console.action.ActionShowDataSource;
 import com.x.server.console.action.ActionShowMemory;
 import com.x.server.console.action.ActionShowOs;
 import com.x.server.console.action.ActionShowThread;
-import com.x.server.console.action.ActionUpdate;
 import com.x.server.console.action.ActionUpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
@@ -66,14 +66,17 @@ public class Main {
 		scanWar(base);
 		loadJars(base);
 		/* getVersion需要FileUtils在后面运行 */
-		cleanTempDir();
-		createTempClassesDirectory();
-		SystemOutErrorSideCopyBuilder.start();
+		cleanTempDir(base);
+		createTempClassesDirectory(base);
+		LogTools.setSlf4jSimple();
+		SystemOutErrorSideCopyBuilder.start(base);
+		/* 以上方法不使用Config对象,注入数据源jndi */
+		ResourceFactory.bind();
+		CommandFactory.printStartHelp();
+		/* 以下可以使用Config */
 		if (null == Config.currentNode()) {
 			throw new Exception("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
 		}
-		LogTools.setSlf4jSimple();
-		CommandFactory.printStartHelp();
 		try (PipedInputStream pipedInput = new PipedInputStream();
 				PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
 			new Thread() {
@@ -184,6 +187,12 @@ public class Main {
 						continue;
 					}
 
+					matcher = CommandFactory.show_dataSource_pattern.matcher(cmd);
+					if (matcher.find()) {
+						showDataSource(matcher.group(1), matcher.group(2));
+						continue;
+					}
+
 					matcher = CommandFactory.start_pattern.matcher(cmd);
 					if (matcher.find()) {
 						switch (matcher.group(1)) {
@@ -232,14 +241,42 @@ public class Main {
 						}
 						continue;
 					}
+					matcher = CommandFactory.dump_path_pattern.matcher(cmd);
+					if (matcher.find()) {
+						switch (matcher.group(1)) {
+						case "data":
+							dumpData(matcher.group(2), matcher.group(3));
+							break;
+						case "storage":
+							dumpStorage(matcher.group(2), matcher.group(3));
+							break;
+						default:
+							break;
+						}
+						continue;
+					}
 					matcher = CommandFactory.dump_pattern.matcher(cmd);
 					if (matcher.find()) {
 						switch (matcher.group(1)) {
 						case "data":
-							dumpData(matcher.group(2));
+							dumpData("", matcher.group(2));
 							break;
 						case "storage":
-							dumpStorage(matcher.group(2));
+							dumpStorage("", matcher.group(2));
+							break;
+						default:
+							break;
+						}
+						continue;
+					}
+					matcher = CommandFactory.restore_path_pattern.matcher(cmd);
+					if (matcher.find()) {
+						switch (matcher.group(1)) {
+						case "data":
+							resotreDataPath(matcher.group(2), matcher.group(3));
+							break;
+						case "storage":
+							resotreStoragePath(matcher.group(2), matcher.group(3));
 							break;
 						default:
 							break;
@@ -260,7 +297,6 @@ public class Main {
 						}
 						continue;
 					}
-
 					matcher = CommandFactory.help_pattern.matcher(cmd);
 					if (matcher.find()) {
 						CommandFactory.printHelp();
@@ -272,16 +308,6 @@ public class Main {
 						version();
 						continue;
 					}
-
-//					matcher = CommandFactory.update_pattern.matcher(cmd);
-//					if (matcher.find()) {
-//						if (update(matcher.group(1), matcher.group(2), matcher.group(3))) {
-//							stopAll();
-//							System.exit(0);
-//						} else {
-//							continue;
-//						}
-//					}
 
 					matcher = CommandFactory.updateFile_pattern.matcher(cmd);
 					if (matcher.find()) {
@@ -331,12 +357,6 @@ public class Main {
 						continue;
 					}
 
-					// matcher = CommandFactory.convert_dataItem_pattern.matcher(cmd);
-					// if (matcher.find()) {
-					// convertDataItem(matcher.group(1));
-					// continue;
-					// }
-
 					matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
 					if (matcher.find()) {
 						createEncryptKey(matcher.group(1));
@@ -353,7 +373,6 @@ public class Main {
 			}
 			/* 关闭定时器 */
 			scheduler.shutdown();
-			// scheduler.shutdown();
 		}
 		SystemOutErrorSideCopyBuilder.stop();
 	}
@@ -409,6 +428,15 @@ public class Main {
 		return true;
 	}
 
+	private static boolean showDataSource(String interval, String repeat) {
+		try {
+			return new ActionShowDataSource().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 	private static boolean createEncryptKey(String password) {
 		try {
 			return new ActionCreateEncryptKey().execute(password);
@@ -417,15 +445,6 @@ public class Main {
 		}
 		return true;
 	}
-
-//	private static boolean update(String password, String backup, String latest) {
-//		try {
-//			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup), BooleanUtils.toBoolean(latest));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return true;
-//	}
 
 	private static boolean updateFile(String path, String backup, String password) {
 		try {
@@ -646,18 +665,18 @@ public class Main {
 		}
 	}
 
-	private static boolean dumpData(String password) {
+	private static boolean dumpData(String path, String password) {
 		try {
-			return (new ActionDumpData()).execute(password);
+			return (new ActionDumpData()).execute(path, password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
 	}
 
-	private static boolean dumpStorage(String password) {
+	private static boolean dumpStorage(String path, String password) {
 		try {
-			return (new ActionDumpStorage()).execute(password);
+			return (new ActionDumpStorage()).execute(path, password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -679,6 +698,14 @@ public class Main {
 		}
 	}
 
+	private static void resotreDataPath(String path, String password) {
+		try {
+			(new ActionRestoreData()).execute(path, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private static void resotreStorage(String dateString, String password) {
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -695,10 +722,18 @@ public class Main {
 		}
 	}
 
-	private static void createTempClassesDirectory() throws Exception {
-		File tempDir = new File(Config.base(), "local/temp/classes");
-		FileUtils.forceMkdir(tempDir);
-		FileUtils.cleanDirectory(tempDir);
+	private static void resotreStoragePath(String path, String password) {
+		try {
+			new ActionRestoreStorage().execute(path, password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void createTempClassesDirectory(String base) throws Exception {
+		File local_temp_classes_dir = new File(base, "local/temp/classes");
+		FileUtils.forceMkdir(local_temp_classes_dir);
+		FileUtils.cleanDirectory(local_temp_classes_dir);
 	}
 
 	/**
@@ -792,7 +827,8 @@ public class Main {
 			}
 		}
 		/* load temp class */
-		method.invoke(urlClassLoader, new Object[] { Config.dir_local_temp_classes().toURI().toURL() });
+		File local_temp_classes_dir = new File(base, "local/temp/classes");
+		method.invoke(urlClassLoader, new Object[] { local_temp_classes_dir.toURI().toURL() });
 	}
 
 	private static String getBasePath() throws Exception {
@@ -811,10 +847,10 @@ public class Main {
 		throw new Exception("can not define o2server base directory.");
 	}
 
-	private static void cleanTempDir() throws Exception {
-		File file = new File(Config.base(), "local/temp");
-		FileUtils.forceMkdir(file);
-		FileUtils.cleanDirectory(file);
+	private static void cleanTempDir(String base) throws Exception {
+		File local_temp_dir = new File(base, "local/temp");
+		FileUtils.forceMkdir(local_temp_dir);
+		FileUtils.cleanDirectory(local_temp_dir);
 	}
 
 	private static List<String> readManifest(File file) throws Exception {

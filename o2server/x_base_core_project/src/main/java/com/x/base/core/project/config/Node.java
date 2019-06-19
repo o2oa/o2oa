@@ -21,10 +21,10 @@ public class Node extends ConfigObject {
 		o.data = DataServer.defaultInstance();
 		o.storage = StorageServer.defaultInstance();
 		o.logLevel = "warn";
-		o.dumpData = new ScheduleDump();
-		o.dumpStorage = new ScheduleDump();
-		o.restoreData = new ScheduleRestore();
-		o.restoreStorage = new ScheduleRestore();
+		o.dumpData = new ScheduleDumpData();
+		o.dumpStorage = new ScheduleDumpStorage();
+		o.restoreData = new ScheduleRestoreData();
+		o.restoreStorage = new ScheduleRestoreStorage();
 		o.nodeAgentEnable = false;
 		o.nodeAgentEncrypt = true;
 		o.nodeAgentPort = default_nodeAgentPort;
@@ -47,13 +47,13 @@ public class Node extends ConfigObject {
 	@FieldDescribe("日志级别,默认当前节点的slf4j日志级别,通过系统变量\"org.slf4j.simpleLogger.defaultLogLevel\"设置到当前jvm中.")
 	private String logLevel;
 	@FieldDescribe("定时数据导出配置")
-	private ScheduleDump dumpData;
+	private ScheduleDumpData dumpData;
 	@FieldDescribe("定时存储文件导出配置")
-	private ScheduleDump dumpStorage;
+	private ScheduleDumpStorage dumpStorage;
 	@FieldDescribe("定时数据导入配置")
-	private ScheduleRestore restoreData;
+	private ScheduleRestoreData restoreData;
 	@FieldDescribe("定时存储文件导入配置")
-	private ScheduleRestore restoreStorage;
+	private ScheduleRestoreStorage restoreStorage;
 	@FieldDescribe("日志文件保留天数.")
 	private Integer logSize;
 	@FieldDescribe("是否启用节点代理")
@@ -126,20 +126,20 @@ public class Node extends ConfigObject {
 		return BooleanUtils.isTrue(this.isPrimaryCenter);
 	}
 
-	public ScheduleDump dumpData() {
-		return (dumpData == null) ? new ScheduleDump() : this.dumpData;
+	public ScheduleDumpData dumpData() {
+		return (dumpData == null) ? new ScheduleDumpData() : this.dumpData;
 	}
 
-	public ScheduleDump dumpStorage() {
-		return (dumpStorage == null) ? new ScheduleDump() : this.dumpStorage;
+	public ScheduleDumpStorage dumpStorage() {
+		return (dumpStorage == null) ? new ScheduleDumpStorage() : this.dumpStorage;
 	}
 
-	public ScheduleRestore restoreData() {
-		return (restoreData == null) ? new ScheduleRestore() : this.restoreData;
+	public ScheduleRestoreData restoreData() {
+		return (restoreData == null) ? new ScheduleRestoreData() : this.restoreData;
 	}
 
-	public ScheduleRestore restoreStorage() {
-		return (restoreStorage == null) ? new ScheduleRestore() : this.restoreStorage;
+	public ScheduleRestoreStorage restoreStorage() {
+		return (restoreStorage == null) ? new ScheduleRestoreStorage() : this.restoreStorage;
 	}
 
 	public void setIsPrimaryCenter(Boolean isPrimaryCenter) {
@@ -190,15 +190,18 @@ public class Node extends ConfigObject {
 		this.logLevel = logLevel;
 	}
 
-	public static class ScheduleDump extends ConfigObject {
+	public static class ScheduleDumpData extends ConfigObject {
 
-		public static ScheduleDump defaultInstance() {
-			return new ScheduleDump();
+		public static ScheduleDumpData defaultInstance() {
+			return new ScheduleDumpData();
 		}
 
 		public boolean available() {
 			return DateTools.cronAvailable(this.cron);
 		}
+
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";
@@ -206,38 +209,129 @@ public class Node extends ConfigObject {
 		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
 		private Integer size = 14;
 
+		@FieldDescribe("备份路径")
+		private String path = "";
+
+		public Boolean enable() {
+			return (BooleanUtils.isTrue(this.enable)) ? true : false;
+		}
+
 		public String cron() {
-			return (null == cron) ? "" : this.cron;
+			return (null == cron) ? "5 0 2 * * ?" : this.cron;
 		}
 
 		public Integer size() {
 			return (null == size) ? 14 : this.size;
 		}
 
+		public String path() {
+			return StringUtils.trim(path);
+		}
+
 	}
 
-	public static class ScheduleRestore extends ConfigObject {
+	public static class ScheduleDumpStorage extends ConfigObject {
 
-		public static ScheduleRestore defaultInstance() {
-			return new ScheduleRestore();
+		public static ScheduleDumpStorage defaultInstance() {
+			return new ScheduleDumpStorage();
 		}
 
 		public boolean available() {
 			return DateTools.cronAvailable(this.cron);
 		}
 
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		private Boolean enable = false;
+
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";
 
-		@FieldDescribe("导入数据时间戳,需要在local/dump下有此时间戳的文件.")
-		private String date = "";
+		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
+		private Integer size = 14;
+
+		@FieldDescribe("备份路径")
+		private String path = "";
+
+		public Boolean enable() {
+			return (BooleanUtils.isTrue(this.enable)) ? true : false;
+		}
+
+		public String cron() {
+			return (null == cron) ? "5 0 3 * * ?" : this.cron;
+		}
+
+		public Integer size() {
+			return (null == size) ? 14 : this.size;
+		}
+
+		public String path() {
+			return StringUtils.trim(path);
+		}
+
+	}
+
+	public static class ScheduleRestoreData extends ConfigObject {
+
+		public static ScheduleRestoreData defaultInstance() {
+			return new ScheduleRestoreData();
+		}
+
+		public boolean available() {
+			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
+		}
+
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		private Boolean enable;
+
+		@FieldDescribe("定时任务cron表达式")
+		private String cron = "";
+
+		@FieldDescribe("恢复路径")
+		private String path = "";
+
+		public Boolean enable() {
+			return (BooleanUtils.isTrue(this.enable)) ? true : false;
+		}
 
 		public String cron() {
 			return (null == cron) ? "" : this.cron;
 		}
 
-		public String date() {
-			return (null == date) ? "" : this.date;
+		public String path() {
+			return StringUtils.trim(path);
+		}
+
+	}
+
+	public static class ScheduleRestoreStorage extends ConfigObject {
+
+		public static ScheduleRestoreStorage defaultInstance() {
+			return new ScheduleRestoreStorage();
+		}
+
+		public boolean available() {
+			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
+		}
+
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		private Boolean enable;
+
+		@FieldDescribe("定时任务cron表达式")
+		private String cron = "";
+
+		@FieldDescribe("恢复路径")
+		private String path = "";
+
+		public Boolean enable() {
+			return (BooleanUtils.isTrue(this.enable)) ? true : false;
+		}
+
+		public String cron() {
+			return (null == cron) ? "" : this.cron;
+		}
+
+		public String path() {
+			return StringUtils.trim(path);
 		}
 
 	}

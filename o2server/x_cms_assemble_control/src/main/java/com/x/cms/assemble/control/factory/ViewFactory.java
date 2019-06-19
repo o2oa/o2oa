@@ -11,6 +11,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
@@ -88,7 +90,7 @@ public class ViewFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定分类的所有视图配置信息ID列表")
 	public List<String> listByCategoryId( String categoryId ) throws Exception {		
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty(categoryId) ){
 			throw new Exception("内容管理listByCategoryId方法不接受categoryId为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( ViewCategory.class );
@@ -108,7 +110,7 @@ public class ViewFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定应用ID的所有视图配置信息ID列表")
 	public List<String> listByAppId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			throw new Exception("内容管理listByAppId方法不接受id为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( View.class );
@@ -128,7 +130,7 @@ public class ViewFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定表单ID的所有视图配置信息ID列表")
 	public List<String> listByFormId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			throw new Exception("内容管理listByFormId方法不接受id为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( View.class );

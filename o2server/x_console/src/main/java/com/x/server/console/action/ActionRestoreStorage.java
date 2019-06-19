@@ -24,10 +24,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataMapping;
-import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -50,42 +49,63 @@ public class ActionRestoreStorage {
 
 	private Gson pureGsonDateFormated;
 
-	private void init(Date date) throws Exception {
-		this.start = new Date();
-		this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(date));
-		this.catalog = BaseTools.readObject("local/dump/dumpStorage_" + DateTools.compact(date) + "/catalog.json",
-				DumpRestoreStorageCatalog.class);
-		pureGsonDateFormated = XGsonBuilder.instance();
-	}
-
 	public boolean execute(Date date, String password) throws Exception {
-		this.init(date);
+		this.start = new Date();
 		if (!StringUtils.equals(Config.token().getPassword(), password)) {
 			logger.print("password not mactch.");
 			return false;
 		}
-		List<Class<?>> classes = PersistenceXmlHelper.listClassWithIncludesExcludes(
-				new ArrayList<String>(this.catalog.keySet()), Config.dumpRestoreStorage().getIncludes(),
+		this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(date));
+		this.catalog = BaseTools.readObject("local/dump/dumpStorage_" + DateTools.compact(date) + "/catalog.json",
+				DumpRestoreStorageCatalog.class);
+		pureGsonDateFormated = XGsonBuilder.instance();
+		return this.execute();
+	}
+
+	public boolean execute(String path, String password) throws Exception {
+		this.start = new Date();
+		if (!StringUtils.equals(Config.token().getPassword(), password)) {
+			logger.print("password not mactch.");
+			return false;
+		}
+		this.dir = new File(path);
+		if (!(this.dir.exists() && this.dir.isDirectory())) {
+			logger.print("dir not exist: {}.", path);
+			return false;
+		} else if (StringUtils.startsWith(dir.getAbsolutePath(), Config.base())) {
+			logger.print("path can not in base directory.");
+			return false;
+		}
+		this.catalog = XGsonBuilder.instance()
+				.fromJson(FileUtils.readFileToString(new File(dir.getAbsolutePath() + File.separator + "catalog.json"),
+						DefaultCharset.charset_utf_8), DumpRestoreStorageCatalog.class);
+		pureGsonDateFormated = XGsonBuilder.instance();
+		return this.execute();
+	}
+
+	public boolean execute() throws Exception {
+		List<String> storageContainerEntityNames = new ArrayList<>();
+		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_STORAGECONTAINERENTITYNAMES));
+		List<String> classNames = new ArrayList<>();
+		classNames.addAll(this.catalog.keySet());
+		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreStorage().getIncludes(),
 				Config.dumpRestoreStorage().getExcludes());
-		logger.print("restore storage find {} to restore.", classes.size());
-		DataMappings mappings = Config.dataMappings();
+		logger.print("restore storage find {} to restore.", classNames.size());
+		File persistence = new File(Config.dir_local_temp_classes(), DateTools.compact(this.start) + "_dump.xml");
+		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
 		StorageMappings storageMappings = Config.storageMappings();
 		int count = 0;
-		for (int i = 0; i < classes.size(); i++) {
-			Class<StorageObject> cls = (Class<StorageObject>) classes.get(i);
-			List<DataMapping> sources = mappings.get(cls.getName());
-			if (ListTools.isEmpty(sources)) {
-				throw new Exception("can not get datamapping of class:" + cls.getName() + ".");
-			}
+		for (int i = 0; i < classNames.size(); i++) {
+			Class<StorageObject> cls = (Class<StorageObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					this.createPersistenceXml(cls, sources).getName());
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
 			EntityManager em = emf.createEntityManager();
 			em.setFlushMode(FlushModeType.COMMIT);
 			try {
 				DumpRestoreStorageCatalogItem item = this.catalog.get(cls.getName());
 				logger.print(
 						"restore storage({}/{}): {}, count: {}, normal: {} will be restore, invalidStorage: {} and empty: {} will be ignore, size: {}M.",
-						(i + 1), classes.size(), cls.getName(), item.getCount(), item.getNormal(),
+						(i + 1), classNames.size(), cls.getName(), item.getCount(), item.getNormal(),
 						item.getInvalidStorage(), item.getEmpty(), (item.getSize() / 1024 / 1024));
 				count += this.store(cls, em, storageMappings);
 			} finally {
@@ -94,21 +114,8 @@ public class ActionRestoreStorage {
 			}
 			logger.print("restore storage completed, total count: {}, elapsed: {} minutes.", count,
 					(new Date().getTime() - start.getTime()) / 1000 / 60);
-			// System.out.println("restore storage completed, total count: " + count + ",
-			// elapsed: "
-			// + (new Date().getTime() - start.getTime()) / 1000 / 60 + " minutes.");
 		}
 		return false;
-	}
-
-	/** 创建临时使用的persistence.xml 并复制到class目录下 */
-	private <T> File createPersistenceXml(Class<T> cls, List<DataMapping> sources) throws Exception {
-		File xml = new File(dir, cls.getName() + "_dump.xml");
-		PersistenceXmlHelper.createPersistenceXml(cls, sources, xml);
-		File tempFile = File.createTempFile(DateTools.compact(this.start), ".xml",
-				new File(Config.base(), "local/temp/classes"));
-		FileUtils.copyFile(xml, tempFile);
-		return tempFile;
 	}
 
 	private <T extends StorageObject> long store(Class<T> cls, EntityManager em, StorageMappings storageMappings)

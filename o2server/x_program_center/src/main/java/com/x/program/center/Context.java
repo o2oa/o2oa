@@ -34,7 +34,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.Deployable;
+import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
@@ -120,11 +120,11 @@ public class Context extends AbstractContext {
 		}
 	}
 
-	/* Storage资源 */
-	private volatile StorageMappings storageMappings;
+//	/* Storage资源 */
+//	private volatile StorageMappings storageMappings;
 
-	public StorageMappings storageMappings() {
-		return this.storageMappings;
+	public StorageMappings storageMappings() throws Exception {
+		return Config.storageMappings();
 	}
 
 	/* 是否已经初始化完成 */
@@ -175,14 +175,13 @@ public class Context extends AbstractContext {
 		Context context = new Context();
 		context.contextPath = servletContext.getContextPath();
 		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
-		context.clazzInstance = (Deployable) context.clazz.newInstance();
+		context.module = context.clazz.getAnnotation(Module.class);
 		context.name = getName(context.clazz);
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
-		context.initStorages();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			context.cleanupSchedule(emc);
 			context.cleanupScheduleLocal(emc);
@@ -236,16 +235,27 @@ public class Context extends AbstractContext {
 		queue.start();
 	}
 
+//	private void initDatas() throws Exception {
+//		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+//				clazzInstance.dependency().containerEntities.size());
+//		EntityManagerContainerFactory.init(path, Config.dataMappings(),
+//				this.clazzInstance.dependency().containerEntities);
+//	}
+
+//	private void initDatas() throws Exception {
+//		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+//				clazzInstance.dependency().containerEntities.size());
+//		EntityManagerContainerFactory.init(path, this.clazzInstance.dependency().containerEntities);
+//	}
+
 	private void initDatas() throws Exception {
-		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
-				clazzInstance.dependency().containerEntities.size());
-		EntityManagerContainerFactory.init(path, Config.dataMappings(),
-				this.clazzInstance.dependency().containerEntities);
+		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), this.module.containerEntities().length);
+		EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
 	}
 
-	private void initStorages() throws Exception {
-		this.storageMappings = Config.storageMappings();
-	}
+//	private void initStorages() throws Exception {
+//		this.storageMappings = Config.storageMappings();
+//	}
 
 //	private void initStorages() throws Exception {
 //		@SuppressWarnings("unchecked")
@@ -308,12 +318,69 @@ public class Context extends AbstractContext {
 			if (list.isEmpty()) {
 				Role o = new Role();
 				o.setName(str);
-				o.setUnique(str + OrganizationDefinition.RoleDefinitionSuffix);
+				o.setUnique(str + OrganizationDefinition.RoleDefinitionSuffix);				
+				o.setDescription( getDescriptionWithName( str ) );				
 				emc.beginTransaction(Role.class);
 				emc.persist(o, CheckPersistType.all);
 				emc.commit();
 			}
 		}
+	}
+
+	/**
+	 * , OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition., OrganizationDefinition., .,
+				OrganizationDefinition., OrganizationDefinition.,
+				OrganizationDefinition.
+	 * @param str
+	 * @return
+	 */
+	private String getDescriptionWithName(String str) {
+		if( OrganizationDefinition.Manager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.Manager_discription;
+		}else if( OrganizationDefinition.AttendanceManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.AttendanceManager_discription;
+		}else if( OrganizationDefinition.OrganizationManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.OrganizationManager_discription;
+		}else if( OrganizationDefinition.PersonManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.PersonManager_discription;
+		}else if( OrganizationDefinition.GroupManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.GroupManager_discription;
+		}else if( OrganizationDefinition.UnitManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.UnitManager_discription;
+		}else if( OrganizationDefinition.RoleManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.RoleManager_discription;
+		}else if( OrganizationDefinition.ProcessPlatformManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.ProcessPlatformManager_discription;
+		}else if( OrganizationDefinition.ProcessPlatformCreator.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.ProcessPlatformCreator_discription;
+		}else if( OrganizationDefinition.MeetingManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.MeetingManager_discription;
+		}else if( OrganizationDefinition.MeetingViewer.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.MeetingViewer_discription;
+		}else if( OrganizationDefinition.PortalManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.PortalManager_discription;
+		}else if( OrganizationDefinition.BBSManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.BBSManager_discription;
+		}else if( OrganizationDefinition.CMSManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.CMSManager_discription;
+		}else if( OrganizationDefinition.OKRManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.OKRManager_discription;
+		}else if( OrganizationDefinition.CRMManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.CRMManager_discription;
+		}else if( OrganizationDefinition.QueryManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.QueryManager_discription;
+		}else if( OrganizationDefinition.MessageManager.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.MessageManager_discription;
+		}else if( OrganizationDefinition.SearchPrivilege.equalsIgnoreCase( str )) {
+			return OrganizationDefinition.SearchPrivilege_discription;
+		}
+		return "";
 	}
 
 	public void destrory(ServletContextEvent servletContextEvent) {

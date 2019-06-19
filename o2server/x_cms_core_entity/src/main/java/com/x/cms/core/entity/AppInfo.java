@@ -57,6 +57,7 @@ public class AppInfo extends SliceJpaObject {
 	}
 
 	@FieldDescribe("数据库主键,自动生成.")
+	@Flag
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();

@@ -18,6 +18,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.tools.StringTools;
 
 public class JpaObjectTools {
+	
 	public static boolean isList(Path<?> path) throws Exception {
 		return List.class.isAssignableFrom(path.getJavaType());
 	}

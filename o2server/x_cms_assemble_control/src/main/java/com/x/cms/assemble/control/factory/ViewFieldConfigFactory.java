@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
@@ -75,7 +77,7 @@ public class ViewFieldConfigFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定视图的所有展示列配置信息ID列表")
 	public List<String> listByViewId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			throw new Exception("内容管理listByViewId方法不接受id为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( ViewFieldConfig.class );

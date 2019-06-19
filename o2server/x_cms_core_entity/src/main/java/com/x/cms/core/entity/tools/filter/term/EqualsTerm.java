@@ -6,6 +6,13 @@ public class EqualsTerm {
 	
 	private Object value = null;
 	
+	public EqualsTerm() {}
+	
+	public EqualsTerm( String name, Object value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

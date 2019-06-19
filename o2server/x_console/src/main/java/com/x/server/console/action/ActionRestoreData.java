@@ -22,10 +22,9 @@ import org.apache.openjpa.persistence.OpenJPAPersistence;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataMapping;
-import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -46,42 +45,62 @@ public class ActionRestoreData {
 
 	private Gson pureGsonDateFormated;
 
-	private void init(Date date) throws Exception {
-		this.start = new Date();
-		this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(date));
-		this.catalog = BaseTools.readObject("local/dump/dumpData_" + DateTools.compact(date) + "/catalog.json",
-				DumpRestoreDataCatalog.class);
-		pureGsonDateFormated = XGsonBuilder.instance();
-	}
-
 	public boolean execute(Date date, String password) throws Exception {
-		this.init(date);
+		this.start = new Date();
 		if (!StringUtils.equals(Config.token().getPassword(), password)) {
 			logger.print("password not mactch.");
 			return false;
 		}
-		List<Class<?>> classes = PersistenceXmlHelper.listClassWithIncludesExcludes(
-				new ArrayList<String>(this.catalog.keySet()), Config.dumpRestoreData().getIncludes(),
+		this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(date));
+		this.catalog = BaseTools.readObject("local/dump/dumpData_" + DateTools.compact(date) + "/catalog.json",
+				DumpRestoreDataCatalog.class);
+		pureGsonDateFormated = XGsonBuilder.instance();
+		return this.execute();
+	}
+
+	public boolean execute(String path, String password) throws Exception {
+		this.start = new Date();
+		if (!StringUtils.equals(Config.token().getPassword(), password)) {
+			logger.print("password not mactch.");
+			return false;
+		}
+		this.dir = new File(path);
+		if (!(this.dir.exists() && this.dir.isDirectory())) {
+			logger.print("dir not exist: {}.", path);
+			return false;
+		} else if (StringUtils.startsWith(dir.getAbsolutePath(), Config.base())) {
+			logger.print("path can not in base directory.");
+			return false;
+		}
+		this.catalog = XGsonBuilder.instance()
+				.fromJson(FileUtils.readFileToString(new File(dir.getAbsolutePath() + File.separator + "catalog.json"),
+						DefaultCharset.charset_utf_8), DumpRestoreDataCatalog.class);
+		pureGsonDateFormated = XGsonBuilder.instance();
+		return this.execute();
+	}
+
+	public boolean execute() throws Exception {
+		List<String> containerEntityNames = new ArrayList<>();
+		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+		List<String> classNames = new ArrayList<>();
+		classNames.addAll(this.catalog.keySet());
+		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
 				Config.dumpRestoreData().getExcludes());
-		logger.print("find: {} data to restore, dump time: {}.", classes.size(), DateTools.format(date));
-		DataMappings mappings = Config.dataMappings();
+		classNames = ListTools.includesExcludesWildcard(containerEntityNames, classNames, null);
+
+		logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.getAbsolutePath());
+		File persistence = new File(Config.dir_local_temp_classes(), DateTools.compact(this.start) + "_dump.xml");
+		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
 		long count = 0;
-		for (int i = 0; i < classes.size(); i++) {
-			Class<JpaObject> cls = (Class<JpaObject>) classes.get(i);
-			List<DataMapping> sources = mappings.get(cls.getName());
-			if (ListTools.isEmpty(sources)) {
-				throw new Exception("can not get datamapping of class:" + cls.getName() + ".");
-			}
+		for (int i = 0; i < classNames.size(); i++) {
+			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					this.createPersistenceXml(cls, sources).getName());
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
 			EntityManager em = emf.createEntityManager();
 			em.setFlushMode(FlushModeType.COMMIT);
 			try {
-				logger.print("restore data({}/{}): {}, count: {}.", (i + 1), classes.size(), cls.getName(),
+				logger.print("restore data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
 						catalog.get(cls.getName()));
-				// System.out.println("restore data(" + (i + 1) + "/" + classes.size() + "): " +
-				// cls.getName()
-				// + ", count: " + catalog.get(cls.getName()) + ".");
 				count = count + this.store(cls, em);
 			} finally {
 				em.close();
@@ -90,20 +109,7 @@ public class ActionRestoreData {
 		}
 		logger.print("restore data completed, total count: {}, elapsed: {} minutes.", count,
 				(new Date().getTime() - start.getTime()) / 1000 / 60);
-		// System.out.println("restore data completed, total count: " + count + ",
-		// elapsed: "
-		// + (new Date().getTime() - start.getTime()) / 1000 / 60 + " minutes.");
 		return true;
-	}
-
-	/** 创建临时使用的persistence.xml 并复制到class目录下 */
-	private <T> File createPersistenceXml(Class<T> cls, List<DataMapping> sources) throws Exception {
-		File xml = new File(dir, cls.getName() + "_restore.xml");
-		PersistenceXmlHelper.createPersistenceXml(cls, sources, xml);
-		File tempFile = File.createTempFile(DateTools.compact(this.start), ".xml",
-				new File(Config.base(), "local/temp/classes"));
-		FileUtils.copyFile(xml, tempFile);
-		return tempFile;
 	}
 
 	private <T> long store(Class<T> cls, EntityManager em) throws Exception {
@@ -139,23 +145,13 @@ public class ActionRestoreData {
 			em.getTransaction().commit();
 			em.clear();
 		}
-		// JsonArray raws = this.convert(new File("d://2000.json"));
-		// for (JsonElement o : raws) {
-		// em.getTransaction().begin();
-		// T t = pureGsonDateFormated.fromJson(o, cls);
-		// System.err.println(t);
-		// em.persist(t);
-		//
-		// em.getTransaction().commit();
-		// count++;
-		// }
 		System.out.println("restore data: " + cls.getName() + " completed, count: " + count + ".");
 		return count;
 
 	}
 
 	private JsonArray convert(File file) throws Exception {
-		/** 必须先转换成 jsonElement 不能直接转成泛型T,如果直接转会有类型不匹配比如Integer变成了Double */
+		/* 必须先转换成 jsonElement 不能直接转成泛型T,如果直接转会有类型不匹配比如Integer变成了Double */
 		String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 		JsonElement jsonElement = pureGsonDateFormated.fromJson(json, JsonElement.class);
 		return jsonElement.getAsJsonArray();

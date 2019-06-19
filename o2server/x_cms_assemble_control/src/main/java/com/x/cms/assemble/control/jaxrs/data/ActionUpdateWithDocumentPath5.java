@@ -8,7 +8,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.jaxrs.data.exception.ExceptionDocumentNotExist;
 import com.x.cms.core.entity.Document;
 
 class ActionUpdateWithDocumentPath5 extends BaseAction {
@@ -20,7 +19,7 @@ class ActionUpdateWithDocumentPath5 extends BaseAction {
 			Business business = new Business(emc);
 			Document document = emc.find(id, Document.class);
 			if (null == document) {
-				throw new ExceptionDocumentNotExist(id);
+				throw new ExceptionDocumentNotExists(id);
 			}
 			/** 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
 			this.updateTitleSerial(business, document, jsonElement);

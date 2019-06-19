@@ -38,7 +38,7 @@ public class ActionGet extends BaseAction {
 					throw new Exception("document{id:" + documentId + "} not existed.");
 				}
 				attachmentIds = fileInfoServiceAdv.listIdsWithDocId(documentId);				
-				if (attachmentIds == null || !attachmentIds.contains(id)) {
+				if ( attachmentIds == null || !attachmentIds.contains(id)) {
 					throw new Exception("document{id" + documentId + "} not contian attachment{id:" + id + "}.");
 				}
 				FileInfo fileInfo = emc.find(id, FileInfo.class);

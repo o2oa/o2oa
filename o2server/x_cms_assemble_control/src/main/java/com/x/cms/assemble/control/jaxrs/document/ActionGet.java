@@ -47,7 +47,8 @@ public class ActionGet extends BaseAction {
 		Boolean isCreator = false;
 		Boolean check = true;
 		String personName = effectivePerson.getDistinguishedName();
-		if (id == null || id.isEmpty()) {
+		
+		if ( StringUtils.isEmpty(id)) {
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error(exception);

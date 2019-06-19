@@ -38,6 +38,10 @@
 						<id>describe</id>
 						<phase>prepare-package</phase>
 					</execution>
+					<execution>
+						<id>checkAssemble</id>
+						<phase>prepare-package</phase>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

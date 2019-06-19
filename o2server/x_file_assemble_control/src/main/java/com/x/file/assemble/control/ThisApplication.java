@@ -20,7 +20,6 @@ public class ThisApplication {
 			LoggerFactory.setLevel(Config.logLevel().x_file_assemble_control());
 			fileRemoveQueue = new FileRemoveQueue();
 			context().startQueue(fileRemoveQueue);
-			// Collaboration.start(context());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -28,7 +27,6 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			// Collaboration.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

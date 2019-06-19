@@ -18,14 +18,14 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
-import com.x.cms.core.entity.tools.LogUtil;
 import com.x.query.core.entity.Item;
 
 public class CategoryInfoService {
 
 	public CategoryInfo get( EntityManagerContainer emc, String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id ) ){
 			return null;
 		}
 		return emc.find(id, CategoryInfo.class );
@@ -47,7 +47,7 @@ public class CategoryInfoService {
 	}
 	
 	public List<String> listByAppId( String appId ) throws Exception {
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty(appId ) ){
 			return null;
 		}
 		Business business = new Business( EntityManagerContainerFactory.instance().create() );
@@ -122,41 +122,37 @@ public class CategoryInfoService {
 		return categoryInfo;
 	}
 	
-	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo temp_categoryInfo, String extContent ) throws Exception {
+	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo object, String extContent ) throws Exception {
 		CategoryInfo categoryInfo = null;
 		CategoryExt categoryExt = null;
-		Document document = null;
 		AppInfo appInfo = null;
-		String oldCategoryName = null;
-		List<String> document_ids = null;
-		Business business = new Business(emc);
-		Long docCount = 0L;
-		Integer totalWhileCount = 0;
-		Integer currenteWhileCount = 0;
-		Integer queryMaxCount = 1000;
 		
-		if( temp_categoryInfo.getId() == null ){
-			temp_categoryInfo.setId( CategoryInfo.createId() );
+		if( object.getId() == null ){
+			object.setId( CategoryInfo.createId() );
 		}
-		categoryInfo = emc.find( temp_categoryInfo.getId(), CategoryInfo.class );
-		categoryExt = emc.find( temp_categoryInfo.getId(), CategoryExt.class );
-		appInfo = emc.find( temp_categoryInfo.getAppId(), AppInfo.class );
+		categoryInfo = emc.find( object.getId(), CategoryInfo.class );
+		categoryExt = emc.find( object.getId(), CategoryExt.class );
+		appInfo = emc.find( object.getAppId(), AppInfo.class );
 		
-		if( appInfo == null ){
-			throw new Exception("应用栏目信息不存在！");
+		if( appInfo == null ){ throw new Exception("应用栏目信息不存在！"); }
+		
+		//补全默认列表名称
+		if ( StringUtils.isNotEmpty( object.getDefaultViewId() ) ) {
+			View queryView = emc.find( object.getDefaultViewId(), View.class );
+			if (queryView != null) {
+				object.setDefaultViewName( queryView.getName() );
+			} else {
+				throw new Exception("category default view not exits. view id:" + object.getDefaultViewId() );
+			}
 		}
-		
-		emc.beginTransaction( CategoryInfo.class );
-		emc.beginTransaction( CategoryExt.class );
-		emc.beginTransaction( AppInfo.class );
-		
-		LogUtil.INFO( " temp_categoryInfo.getDocumentType()" , temp_categoryInfo.getDocumentType() );
 		
 		if( categoryInfo == null ){
 			categoryInfo = new CategoryInfo();
-			temp_categoryInfo.copyTo( categoryInfo );
+			object.copyTo( categoryInfo );
 			categoryInfo.setAppName( appInfo.getAppName() );
-			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			if( StringUtils.isEmpty( categoryInfo.getCategoryAlias() )) {
+				categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			}
 			if( StringUtils.isEmpty( categoryInfo.getDocumentType() ) ) {
 				categoryInfo.setDocumentType( appInfo.getDocumentType() );
 			}
@@ -166,12 +162,15 @@ public class CategoryInfoService {
 			if( categoryInfo.getCreateTime() == null ) {
 				categoryInfo.setCreateTime(new Date());
 			}
+			emc.beginTransaction( CategoryInfo.class );
 			emc.persist( categoryInfo, CheckPersistType.all);
+			emc.commit();
 		}else{
-			oldCategoryName = categoryInfo.getCategoryName();
-			temp_categoryInfo.copyTo( categoryInfo, JpaObject.FieldsUnmodify  );
+			object.copyTo( categoryInfo, JpaObject.FieldsUnmodify  );
 			categoryInfo.setAppName( appInfo.getAppName() );
-			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			if( StringUtils.isEmpty( categoryInfo.getCategoryAlias() )) {
+				categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			}		
 			if( categoryInfo.getCreateTime() == null ) {
 				categoryInfo.setCreateTime(new Date());
 			}
@@ -181,42 +180,10 @@ public class CategoryInfoService {
 			if( !"信息".equals(categoryInfo.getDocumentType()) && !"数据".equals( categoryInfo.getDocumentType() )) {
 				categoryInfo.setDocumentType( "信息" );
 			}
-			emc.check( categoryInfo, CheckPersistType.all );
 			
-			//查询是否修改了名称，如果修改了名称，那么所有的文档相应的名称也都需要修改过来
-			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
-				emc.beginTransaction( Document.class );
-				//对该目录下所有的文档的栏目名称和分类别名进行调整
-				docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
-				if( docCount > 0 ) {
-					totalWhileCount = (int) (docCount/queryMaxCount) + 1;
-					if( totalWhileCount > 0 ) {
-						while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
-							//查询1000个文档进行操作
-							document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), queryMaxCount );
-							if( document_ids != null && !document_ids.isEmpty() ){
-								for( String docId : document_ids ){
-									try {
-										document = emc.find( docId, Document.class );
-										document.setAppName( categoryInfo.getAppName() );
-										document.setCategoryAlias( categoryInfo.getCategoryAlias() );						
-										if( document.getHasIndexPic() == null ){
-											document.setHasIndexPic( false );
-										}
-										emc.check( document, CheckPersistType.all );
-									}catch( Exception e ) {
-										e.printStackTrace();
-									}
-								}
-							}
-							//当前循环次数+1
-							currenteWhileCount ++;
-							//重新查询剩余的文档数量
-							docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
-						}
-					}
-				}
-			}
+			emc.beginTransaction( CategoryInfo.class );
+			emc.check( categoryInfo, CheckPersistType.all );
+			emc.commit();
 		}
 		
 		if( categoryExt == null ){
@@ -226,14 +193,18 @@ public class CategoryInfoService {
 			if( categoryExt.getCreateTime() == null ) {
 				categoryExt.setCreateTime(new Date());
 			}
+			emc.beginTransaction( CategoryExt.class );
 			emc.persist( categoryExt, CheckPersistType.all);
+			emc.commit();
 		}else{
 			categoryExt.setContent(extContent);
 			if( categoryExt.getCreateTime() == null ) {
 				categoryExt.setCreateTime(new Date());
 			}
+			emc.beginTransaction( CategoryExt.class );
 			emc.check( categoryExt, CheckPersistType.all );
-		}
+			emc.commit();
+		}		
 		
 		if ( appInfo.getCategoryList() == null ){
 			appInfo.setCategoryList( new ArrayList<String>());
@@ -241,10 +212,145 @@ public class CategoryInfoService {
 		if( !appInfo.getCategoryList().contains( categoryInfo.getId() ) ){
 			appInfo.getCategoryList().add( categoryInfo.getId() );
 		}
+		emc.beginTransaction( AppInfo.class );
 		emc.check( appInfo, CheckPersistType.all );
 		emc.commit();
 		return categoryInfo;
 	}
+	
+//	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo temp_categoryInfo, String extContent ) throws Exception {
+//		CategoryInfo categoryInfo = null;
+//		CategoryExt categoryExt = null;
+//		AppInfo appInfo = null;
+//		String oldCategoryName = null;
+//		List<String> document_ids = null;
+//		Business business = new Business(emc);
+//		Long docCount = 0L;
+//		Integer totalWhileCount = 0;
+//		Integer currenteWhileCount = 0;
+//		Integer queryMaxCount = 1000;
+//		
+//		if( temp_categoryInfo.getId() == null ){
+//			temp_categoryInfo.setId( CategoryInfo.createId() );
+//		}
+//		categoryInfo = emc.find( temp_categoryInfo.getId(), CategoryInfo.class );
+//		categoryExt = emc.find( temp_categoryInfo.getId(), CategoryExt.class );
+//		appInfo = emc.find( temp_categoryInfo.getAppId(), AppInfo.class );
+//		
+//		if( appInfo == null ){
+//			throw new Exception("应用栏目信息不存在！");
+//		}
+//		
+//		if( categoryInfo == null ){
+//			categoryInfo = new CategoryInfo();
+//			temp_categoryInfo.copyTo( categoryInfo );
+//			categoryInfo.setAppName( appInfo.getAppName() );
+//			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+//			if( StringUtils.isEmpty( categoryInfo.getDocumentType() ) ) {
+//				categoryInfo.setDocumentType( appInfo.getDocumentType() );
+//			}
+//			if( !"信息".equals(categoryInfo.getDocumentType()) && !"数据".equals( categoryInfo.getDocumentType() )) {
+//				categoryInfo.setDocumentType( "信息" );
+//			}
+//			if( categoryInfo.getCreateTime() == null ) {
+//				categoryInfo.setCreateTime(new Date());
+//			}
+//			emc.beginTransaction( CategoryInfo.class );
+//			emc.persist( categoryInfo, CheckPersistType.all);
+//			emc.commit();
+//		}else{
+//			oldCategoryName = categoryInfo.getCategoryName();
+//			temp_categoryInfo.copyTo( categoryInfo, JpaObject.FieldsUnmodify  );
+//			categoryInfo.setAppName( appInfo.getAppName() );
+//			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+//			
+//			if( categoryInfo.getCreateTime() == null ) {
+//				categoryInfo.setCreateTime(new Date());
+//			}
+//			if( StringUtils.isEmpty( categoryInfo.getDocumentType() ) ) {
+//				categoryInfo.setDocumentType( appInfo.getDocumentType() );
+//			}
+//			if( !"信息".equals(categoryInfo.getDocumentType()) && !"数据".equals( categoryInfo.getDocumentType() )) {
+//				categoryInfo.setDocumentType( "信息" );
+//			}			
+//			
+//			//查询是否修改了名称，如果修改了名称，那么所有的文档相应的名称也都需要修改过来
+//			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
+//				//对该目录下所有的文档的栏目名称和分类别名进行调整
+//				docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
+//				if( docCount > 0 ) {
+//					totalWhileCount = (int) (docCount/queryMaxCount) + 1;
+//					if( totalWhileCount > 0 ) {
+//						while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
+//							//查询1000个文档进行操作
+//							document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), queryMaxCount );							
+//							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );							
+//							//当前循环次数+1
+//							currenteWhileCount ++;
+//							//重新查询剩余的文档数量
+//							docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
+//						}
+//					}
+//				}
+//			}
+//			
+//			emc.beginTransaction( CategoryInfo.class );
+//			emc.check( categoryInfo, CheckPersistType.all );
+//			emc.commit();
+//		}
+//		
+//		if( categoryExt == null ){
+//			categoryExt = new CategoryExt();
+//			categoryExt.setId(categoryInfo.getId());
+//			categoryExt.setContent(extContent);
+//			if( categoryExt.getCreateTime() == null ) {
+//				categoryExt.setCreateTime(new Date());
+//			}
+//			emc.beginTransaction( CategoryExt.class );
+//			emc.persist( categoryExt, CheckPersistType.all);
+//			emc.commit();
+//		}else{
+//			categoryExt.setContent(extContent);
+//			if( categoryExt.getCreateTime() == null ) {
+//				categoryExt.setCreateTime(new Date());
+//			}
+//			emc.beginTransaction( CategoryExt.class );
+//			emc.check( categoryExt, CheckPersistType.all );
+//			emc.commit();
+//		}		
+//		
+//		if ( appInfo.getCategoryList() == null ){
+//			appInfo.setCategoryList( new ArrayList<String>());
+//		}
+//		if( !appInfo.getCategoryList().contains( categoryInfo.getId() ) ){
+//			appInfo.getCategoryList().add( categoryInfo.getId() );
+//		}
+//		emc.beginTransaction( AppInfo.class );
+//		emc.check( appInfo, CheckPersistType.all );
+//		emc.commit();
+//		return categoryInfo;
+//	}
+	
+//	private void changeDocumentInfoWithCategory( EntityManagerContainer emc, List<String> document_ids, CategoryInfo categoryInfo ) throws Exception {
+//		if( ListTools.isNotEmpty( document_ids ) ){
+//			emc.beginTransaction( Document.class );
+//			Document document = null;
+//			for( String docId : document_ids ){
+//				try {
+//					document = emc.find( docId, Document.class );
+//					document.setAppName( categoryInfo.getAppName() );
+//					document.setCategoryAlias( categoryInfo.getCategoryAlias() );
+//					if( document.getHasIndexPic() == null ){
+//						document.setHasIndexPic( false );
+//					}
+//					emc.check( document, CheckPersistType.all );
+//				}catch( Exception e ) {
+//					e.printStackTrace();
+//				}
+//			}
+//			emc.commit();
+//		}
+//	}
 	
 	public CategoryExt saveExtContent( EntityManagerContainer emc, String categoryId, String extContent ) throws Exception {
 		CategoryExt categoryExt = null;
@@ -387,7 +493,7 @@ public class CategoryInfoService {
 	}
 
 	public String getExtContentWithId(EntityManagerContainer emc, String id) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id ) ){
 			return "{}";
 		}
 		Business business = new Business( emc );

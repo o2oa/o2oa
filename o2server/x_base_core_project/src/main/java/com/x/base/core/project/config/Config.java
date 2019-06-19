@@ -2,14 +2,10 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -17,22 +13,16 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
-import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.Host;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 public class Config {
 
 	private static Config INSTANCE;
 
-	private Config() {
+	public Config() {
 	}
 
 	public static final String PATH_VERSION = "version.o2";
@@ -99,6 +89,16 @@ public class Config {
 	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
+
+	public static final String RESOUCE_CONTAINERENTITIES = "containerEntities";
+
+	public static final String RESOUCE_CONTAINERENTITYNAMES = "containerEntityNames";
+
+	public static final String RESOUCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
+
+	public static final String RESOUCE_JDBC_PREFIX = "jdbc/";
+
+	public static final String RESOUCE_CONFIG = "config";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
@@ -317,6 +317,16 @@ public class Config {
 		return new File(base(), DIR_SERVERS_APPLICATIONSERVER_WORK);
 	}
 
+	public static File dir_servers_applicationServer_work(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_SERVERS_APPLICATIONSERVER_WORK);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
 	public static File dir_servers_centerServer() throws Exception {
 		return new File(base(), DIR_SERVERS_CENTERSERVER);
 	}
@@ -327,6 +337,16 @@ public class Config {
 
 	public static File dir_servers_centerServer_work() throws Exception {
 		return new File(base(), DIR_SERVERS_CENTERSERVER_WORK);
+	}
+
+	public static File dir_servers_centerServer_work(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_SERVERS_CENTERSERVER_WORK);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static File dir_servers_webServer() throws Exception {
@@ -685,19 +705,6 @@ public class Config {
 		return type;
 	}
 
-	private DataMappings dataMappings;
-
-	public static DataMappings dataMappings() throws Exception {
-		if (null == instance().dataMappings) {
-			synchronized (Config.class) {
-				if (null == instance().dataMappings) {
-					instance().dataMappings = dataMappingsInit();
-				}
-			}
-		}
-		return instance().dataMappings;
-	}
-
 	private StorageMappings storageMappings;
 
 	public static StorageMappings storageMappings() throws Exception {
@@ -709,155 +716,6 @@ public class Config {
 			}
 		}
 		return instance().storageMappings;
-	}
-
-	private static DataMappings dataMappingsInit() throws Exception {
-		DataMappings dataMappings = new DataMappings();
-		List<Class<?>> classes = dataMappingsScanEntities();
-		for (Class<?> clz : classes) {
-			dataMappings.put(clz.getName(), new CopyOnWriteArrayList<DataMapping>());
-		}
-		if (externalDataSources().enable()) {
-			return dataMappingsInitExternal(dataMappings, classes);
-		} else {
-			return dataMappingsInitInternal(dataMappings, classes);
-		}
-	}
-
-	private static DataMappings dataMappingsInitExternal(DataMappings dataMappings, List<Class<?>> classes)
-			throws Exception {
-		ExternalDataSources externalDataSources = Config.externalDataSources();
-		if (externalDataSources.size() == 0) {
-			throw new Exception("externalDataSources is empty.");
-		}
-		if (externalDataSources.size() == 1) {
-			// 如果只有一个数据源那么不用考虑includes 和 excludes
-			ExternalDataSource source = externalDataSources.get(0);
-			for (Class<?> cls : classes) {
-				DataMapping o = new DataMapping();
-				o.setUrl(source.getUrl());
-				o.setUsername(source.getUsername());
-				o.setPassword(source.getPassword());
-				dataMappings.get(cls.getName()).add(o);
-				if (null != source.getToolLevel()) {
-					o.setToolLevel(source.getToolLevel());
-				}
-				if (null != source.getRuntimeLevel()) {
-					o.setRuntimeLevel(source.getRuntimeLevel());
-				}
-				if (null != source.getDataCacheLevel()) {
-					o.setDataCacheLevel(source.getDataCacheLevel());
-				}
-				if (null != source.getMetaDataLevel()) {
-					o.setMetaDataLevel(source.getMetaDataLevel());
-				}
-				if (null != source.getEnhanceLevel()) {
-					o.setEnhanceLevel(source.getEnhanceLevel());
-				}
-				if (null != source.getQueryLevel()) {
-					o.setQueryLevel(source.getQueryLevel());
-				}
-				if (null != source.getSqlLevel()) {
-					o.setSqlLevel(source.getSqlLevel());
-				}
-				if (null != source.getJdbcLevel()) {
-					o.setJdbcLevel(source.getJdbcLevel());
-				}
-			}
-		} else {
-			// 如果有多个数据源那么要考虑includes 和 excludes
-			for (ExternalDataSource source : externalDataSources) {
-				List<String> names = new ArrayList<>();
-				for (Class<?> cls : classes) {
-					names.add(cls.getName());
-				}
-				if (ListTools.isNotEmpty(source.getIncludes())) {
-					names = ListUtils.intersection(names, source.getIncludes());
-				}
-				if (ListTools.isNotEmpty(source.getExcludes())) {
-					names = ListUtils.subtract(names, source.getExcludes());
-				}
-				for (String str : names) {
-					DataMapping o = new DataMapping();
-					o.setUrl(source.getUrl());
-					o.setUsername(source.getUsername());
-					o.setPassword(source.getPassword());
-					dataMappings.get(str).add(o);
-					if (null != source.getToolLevel()) {
-						o.setToolLevel(source.getToolLevel());
-					}
-					if (null != source.getRuntimeLevel()) {
-						o.setRuntimeLevel(source.getRuntimeLevel());
-					}
-					if (null != source.getDataCacheLevel()) {
-						o.setDataCacheLevel(source.getDataCacheLevel());
-					}
-					if (null != source.getMetaDataLevel()) {
-						o.setMetaDataLevel(source.getMetaDataLevel());
-					}
-					if (null != source.getEnhanceLevel()) {
-						o.setEnhanceLevel(source.getEnhanceLevel());
-					}
-					if (null != source.getQueryLevel()) {
-						o.setQueryLevel(source.getQueryLevel());
-					}
-					if (null != source.getSqlLevel()) {
-						o.setSqlLevel(source.getSqlLevel());
-					}
-					if (null != source.getJdbcLevel()) {
-						o.setJdbcLevel(source.getJdbcLevel());
-					}
-				}
-			}
-		}
-		return dataMappings;
-	}
-
-	private static DataMappings dataMappingsInitInternal(DataMappings dataMappings, List<Class<?>> classes)
-			throws Exception {
-		DataServers dataServers = Config.nodes().dataServers();
-		if (dataServers.size() == 0) {
-			throw new Exception("dataServers is empty.");
-		}
-		if (dataServers.size() == 1) {
-			for (Class<?> cls : classes) {
-				DataMapping o = new DataMapping();
-				String url = "jdbc:h2:tcp://" + dataServers.firstKey() + ":"
-						+ dataServers.firstEntry().getValue().getTcpPort() + "/X;JMX="
-						+ (dataServers.firstEntry().getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-						+ (dataServers.firstEntry().getValue().getCacheSize() * 1024);
-				o.setUrl(url);
-				o.setUsername("sa");
-				o.setPassword(Config.token().getPassword());
-				dataMappings.get(cls.getName()).add(o);
-			}
-		} else {
-			for (Entry<String, DataServer> entry : dataServers.entrySet()) {
-				String node = entry.getKey();
-				DataServer server = entry.getValue();
-				List<String> names = new ArrayList<>();
-				for (Class<?> cls : classes) {
-					names.add(cls.getName());
-				}
-				if (ListTools.isNotEmpty(server.getIncludes())) {
-					names = ListUtils.intersection(names, server.getIncludes());
-				}
-				if (ListTools.isNotEmpty(server.getExcludes())) {
-					names = ListUtils.subtract(names, server.getExcludes());
-				}
-				for (String str : names) {
-					DataMapping o = new DataMapping();
-					String url = "jdbc:h2:tcp://" + node + ":" + server.getTcpPort() + "/X;JMX="
-							+ (server.getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-							+ (server.getCacheSize() * 1024);
-					o.setUrl(url);
-					o.setUsername("sa");
-					o.setPassword(Config.token().getPassword());
-					dataMappings.get(str).add(o);
-				}
-			}
-		}
-		return dataMappings;
 	}
 
 	private File sslKeyStore;
@@ -875,17 +733,6 @@ public class Config {
 			}
 		}
 		return instance().sslKeyStore;
-	}
-
-	private static List<Class<?>> dataMappingsScanEntities() throws Exception {
-		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-			List<Class<?>> list = new ArrayList<>();
-			for (ClassInfo info : scanResult.getClassesWithAnnotation(ContainerEntity.class.getName())) {
-				Class<?> clz = Class.forName(info.getName());
-				list.add(clz);
-			}
-			return list;
-		}
 	}
 
 	public static Node currentNode() throws Exception {
@@ -921,10 +768,6 @@ public class Config {
 					Messages custom = BaseTools.readObject(PATH_CONFIG_MESSAGES, Messages.class);
 					if (null != custom) {
 						custom.entrySet().stream().forEach(o -> {
-//							List<String> consumers = obj.getConsumers(o.getKey());
-//							consumers = ListUtils.union(consumers,
-//									ListTools.trim(o.getValue().getConsumers(), true, true));
-//							obj.put(o.getKey(), new Message(consumers));
 							obj.put(o.getKey(), new Message(o.getValue().getConsumers()));
 						});
 					}
@@ -1105,6 +948,27 @@ public class Config {
 			}
 		}
 		return instance().bindLogo;
+	}
+
+	private InitialContext initialContext;
+
+	private static InitialContext initialContext() throws Exception {
+		if (null == instance().initialContext) {
+			synchronized (Config.class) {
+				if (null == instance().initialContext) {
+					instance().initialContext = new InitialContext();
+				}
+			}
+		}
+		return instance().initialContext;
+	}
+
+	public static Object resource(String name) throws Exception {
+		return initialContext().lookup(name);
+	}
+
+	public static Object resource_jdbc(String name) throws Exception {
+		return initialContext().lookup(RESOUCE_JDBC_PREFIX + name);
 	}
 
 }

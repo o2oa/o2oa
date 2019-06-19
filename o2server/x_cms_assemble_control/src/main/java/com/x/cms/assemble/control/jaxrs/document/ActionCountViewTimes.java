@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,7 +20,7 @@ public class ActionCountViewTimes extends BaseAction {
 		Boolean check = true;
 		Wo wo = new Wo();
 		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error( exception );

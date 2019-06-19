@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app id="x_attendance_assemble_control"
-	metadata-complete="false" version="3.0">
-	<display-name>x_attendance_assemble_control</display-name>
-	<context-param>
-		<param-name>project</param-name>
-		<param-value>com.x.base.core.project.x_attendance_assemble_control
-		</param-value>
-	</context-param>
-</web-app>
+<?xml version="1.0" encoding="UTF-8"?><web-app id="x_attendance_assemble_control" metadata-complete="false" version="3.0"><display-name>x_attendance_assemble_control</display-name><context-param><param-name>project</param-name><param-value>com.x.base.core.project.x_attendance_assemble_control</param-value></context-param></web-app>

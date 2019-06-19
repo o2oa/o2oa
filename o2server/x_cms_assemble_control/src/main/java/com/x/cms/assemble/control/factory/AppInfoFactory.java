@@ -29,10 +29,13 @@ public class AppInfoFactory extends AbstractFactory {
 	public AppInfoFactory(Business business) throws Exception {
 		super(business);
 	}
-
-	// @MethodDescribe("获取指定Id的Appinfo应用信息对象")
+	
 	public AppInfo get(String id) throws Exception {
 		return this.entityManagerContainer().find(id, AppInfo.class, ExceptionWhen.none);
+	}
+	
+	public AppInfo flag(String flag) throws Exception {
+		return this.entityManagerContainer().flag(flag, AppInfo.class );
 	}
 
 	public List<String> listAllIds(String documentType) throws Exception {
@@ -47,9 +50,7 @@ public class AppInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq).getResultList();
 	}
-
-	@SuppressWarnings("unused")
-	// @MethodDescribe("列示全部的Appinfo应用信息列表")
+	
 	public List<AppInfo> listAll(String documentType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -62,17 +63,6 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	// @MethodDescribe("列示指定Id的Appinfo应用信息列表")
-//	public List<AppInfo> list(List<String> ids) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
-//		Root<AppInfo> root = cq.from(AppInfo.class);
-//		Predicate p = root.get(AppInfo_.id).in(ids);
-//		return em.createQuery(cq.where(p)).getResultList();
-//	}
-
-	// @MethodDescribe("对应用信息进行模糊查询，并且返回信息列表.")
 	public List<String> listLike(String keyStr) throws Exception {
 		String str = keyStr.replaceAll("_", "\\\\_");
 		str = str.replaceAll("%", "\\\\%");
@@ -481,5 +471,4 @@ public class AppInfoFactory extends AbstractFactory {
 		}
 		return o;
 	}
-	
 }

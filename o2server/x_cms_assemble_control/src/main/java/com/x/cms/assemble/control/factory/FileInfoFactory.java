@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
@@ -68,7 +70,7 @@ public class FileInfoFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定文档的所有附件以及文件信息ID列表")
 	public List<String> listAllByDocument( String doucmentId ) throws Exception {		
-		if( doucmentId == null || doucmentId.isEmpty() ){
+		if( StringUtils.isEmpty(doucmentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
 		}		
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
@@ -88,7 +90,7 @@ public class FileInfoFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定文档的所有附件信息ID列表")
 	public List<String> listAttachmentByDocument( String doucmentId ) throws Exception {		
-		if( doucmentId == null || doucmentId.isEmpty() ){
+		if( StringUtils.isEmpty(doucmentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
 		}		
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
@@ -109,7 +111,7 @@ public class FileInfoFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定文档的所有附件信息ID列表")
 	public List<String> listPictureByDocument( String documentId ) throws Exception {		
-		if( documentId == null || documentId.isEmpty() ){
+		if( StringUtils.isEmpty(documentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
 		}		
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
@@ -129,7 +131,7 @@ public class FileInfoFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定文档的所有云文件图片信息ID列表")
 	public List<String> listCloudPictureByDocument(String documentId) throws Exception {
-		if( documentId == null || documentId.isEmpty() ){
+		if( StringUtils.isEmpty(documentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
 		}		
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );

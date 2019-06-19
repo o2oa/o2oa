@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -76,7 +78,7 @@ public class ViewService {
 	}
 	
 	public View get( EntityManagerContainer emc, String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
 		}
 		return emc.find(id, View.class );

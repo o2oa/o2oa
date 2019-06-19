@@ -26,11 +26,18 @@ public abstract class AbstractContext {
 		return this.clazz;
 	}
 
-	/* 应用类对象 */
-	protected Deployable clazzInstance;
+//	/* 应用类对象 */
+//	protected Deployable clazzInstance;
 
-	public Deployable clazzInstance() {
-		return this.clazzInstance;
+	/* 模块指示类 */
+	protected Module module;
+	
+	public Module module() {
+		return this.module;
 	}
+
+//	public Deployable clazzInstance() {
+//		return this.clazzInstance;
+//	}
 
 }

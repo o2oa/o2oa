@@ -6,6 +6,13 @@ public class NotMemberTerm{
 	
 	private String value = null;
 
+	public NotMemberTerm() {}
+	
+	public NotMemberTerm( String name, String value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

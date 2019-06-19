@@ -121,6 +121,7 @@ public class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	void deleteData(Business business, Document document, String... paths) throws Exception {
 		List<Item> exists = business.itemFactory().listWithDocmentWithPath(document.getId(), paths);
 		if (exists.isEmpty()) {
@@ -130,8 +131,8 @@ public class BaseAction extends StandardJaxrsAction {
 		for (Item o : exists) {
 			business.entityManagerContainer().remove(o);
 		}
-		if (paths.length > 0) {
-			if (NumberUtils.isNumber(paths[paths.length - 1])) {
+		if ( paths.length > 0 ) {
+			if ( NumberUtils.isNumber(paths[paths.length - 1])) {
 				int position = paths.length - 1;
 				for (Item o : business.itemFactory().listWithDocmentWithPathWithAfterLocation(document.getId(),
 						NumberUtils.toInt(paths[position]), paths)) {

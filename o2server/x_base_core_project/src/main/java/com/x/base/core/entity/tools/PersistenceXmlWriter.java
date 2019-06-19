@@ -80,8 +80,8 @@ public class PersistenceXmlWriter {
 			for (ClassInfo info : classInfos) {
 				if (StringUtils.equals(info.getSimpleName(), project)) {
 					Class<?> cls = Class.forName(info.getName());
-					Deployable deployable = (Deployable) cls.newInstance();
-					for (String str: deployable.dependency().containerEntities) {
+					Module moudle = cls.getAnnotation(Module.class);
+					for (String str : moudle.containerEntities()) {
 						if (StringUtils.isNotEmpty(str)) {
 							list.add(Class.forName(str));
 						}

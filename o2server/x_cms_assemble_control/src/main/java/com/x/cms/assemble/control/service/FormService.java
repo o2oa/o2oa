@@ -13,16 +13,8 @@ import com.x.cms.core.entity.element.Form;
 
 public class FormService {
 
-//	public List<Form> list(EntityManagerContainer emc, List<String> ids) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		Business business = new Business( emc );
-//		return business.getFormFactory().list( ids );
-//	}
-
 	public List<String> listIdsWithAppId(EntityManagerContainer emc, String appId) throws Exception {
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty( appId ) ){
 			return null;
 		}
 		Business business = new Business( emc );

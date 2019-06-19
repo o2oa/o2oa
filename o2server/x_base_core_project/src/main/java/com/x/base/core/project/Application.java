@@ -1,6 +1,8 @@
 package com.x.base.core.project;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +17,7 @@ public class Application extends GsonPropertyObject {
 	private Integer port;
 	private String token;
 	private Boolean sslEnable;
-	private Dependency dependency;
+	private List<String> containerEntities = new ArrayList<>();
 
 	private String proxyHost;
 	private Integer proxyPort;
@@ -118,12 +120,14 @@ public class Application extends GsonPropertyObject {
 		this.contextPath = contextPath;
 	}
 
-	public Dependency getDependency() {
-		return dependency;
+ 
+
+	public List<String> getContainerEntities() {
+		return containerEntities;
 	}
 
-	public void setDependency(Dependency dependency) {
-		this.dependency = dependency;
+	public void setContainerEntities(List<String> containerEntities) {
+		this.containerEntities = containerEntities;
 	}
 
 }

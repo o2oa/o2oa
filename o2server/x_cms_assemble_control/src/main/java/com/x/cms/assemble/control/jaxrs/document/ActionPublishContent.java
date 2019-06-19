@@ -59,7 +59,7 @@ public class ActionPublishContent extends BaseAction {
 		}
 		
 		if (check) {
-			if (wi.getTitle() == null || wi.getTitle().isEmpty()) {
+			if ( StringUtils.isEmpty(wi.getTitle())) {
 				check = false;
 				Exception exception = new ExceptionDocumentTitleEmpty();
 				result.error(exception);
@@ -67,7 +67,7 @@ public class ActionPublishContent extends BaseAction {
 		}
 
 		if (check) {
-			if (wi.getCategoryId() == null || wi.getCategoryId().isEmpty()) {
+			if ( StringUtils.isEmpty(wi.getCategoryId())) {
 				check = false;
 				Exception exception = new ExceptionDocumentCategoryIdEmpty();
 				result.error(exception);
@@ -110,7 +110,7 @@ public class ActionPublishContent extends BaseAction {
 
 		// 查询分类设置的编辑表单
 		if (check) {
-			if (categoryInfo.getFormId() == null || categoryInfo.getFormId().isEmpty()) {
+			if ( StringUtils.isEmpty(categoryInfo.getFormId())) {
 				check = false;
 				Exception exception = new ExceptionCategoryFormIdEmpty();
 				result.error(exception);

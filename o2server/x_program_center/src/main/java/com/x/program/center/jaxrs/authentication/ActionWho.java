@@ -14,13 +14,9 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.ThisApplication;
 
 class ActionWho extends BaseAction {
-
-	private static Logger logger = LoggerFactory.getLogger(ActionWho.class);
 
 	ActionResult<JsonElement> execute(HttpServletRequest request, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<JsonElement> result = new ActionResult<>();

@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -20,11 +18,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
+import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 
 
@@ -38,16 +37,16 @@ public class ActionSave extends BaseAction {
 		String unitName = null;
 		String topUnitName = null;
 		Wi wi = null;
+		CategoryInfo old_categoryInfo = null;
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
 
 		try {
-			wi = this.convertToWrapIn(jsonElement, Wi.class);
+			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			identityName = wi.getIdentity();
 		} catch (Exception e) {
 			check = false;
-			Exception exception = new ExceptionCategoryInfoProcess(e,
-					"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
+			Exception exception = new ExceptionCategoryInfoProcess(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
@@ -70,73 +69,77 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if( check ) {
-			if (StringUtils.isEmpty( identityName )) {
+			if ( StringUtils.isEmpty( identityName ) ) {
 				identityName = wi.getCreatorIdentity();
 			}
 		}
 		
-		if (check && !"xadmin".equals(identityName)) {
+		if ( check && !"xadmin".equals( identityName ) ) {
 			try {
 				unitName = userManagerService.getUnitNameByIdentity(identityName);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess(e,
-						"系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
-		if (check && !"xadmin".equals(identityName)) {
+		if (check && !"xadmin".equals( identityName )) {
 			try {
 				topUnitName = userManagerService.getTopUnitNameByIdentity(identityName);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess(e,
-						"系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
 		if (check) {
-			if (wi.getDefaultViewId() != null && !wi.getDefaultViewId().isEmpty()) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					View queryView = emc.find(wi.getDefaultViewId(), View.class);
-					if (queryView != null) {
-						wi.setDefaultViewName(queryView.getName());
-					} else {
-						check = false;
-						Exception exception = new ExceptionQueryViewNotExists(wi.getDefaultViewId());
-						result.error(exception);
-					}
-				}
+			if( StringUtils.isEmpty( wi.getId() )) {
+				wi.setId( CategoryInfo.createId() );
+			}
+			try {
+				//先查询原来的分类信息，如果有的话，后续需要对比一下是否修改了分类名称，如果修改了分类名称 ，那么需要修改所有文档中记录的分类名称
+				old_categoryInfo = categoryInfoServiceAdv.get( wi.getId() );
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在根据ID查询分类信息时发生异常。ID:" + wi.getId() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
 		if (check) {
-			wi.setCreatorIdentity(identityName);
-			wi.setCreatorPerson(effectivePerson.getDistinguishedName());
+			wi.setCreatorIdentity( identityName );
+			wi.setCreatorPerson( effectivePerson.getDistinguishedName() );
 			wi.setCreatorUnitName(unitName);
 			wi.setCreatorTopUnitName(topUnitName);
 			
 			try {
+				categoryInfo = categoryInfoServiceAdv.save( wi, wi.getExtContent(), effectivePerson );
 
-				categoryInfo = Wi.copier.copy(wi);
-				categoryInfo.setId(wi.getId());
-				categoryInfo = categoryInfoServiceAdv.save(categoryInfo, wi.getExtContent(), effectivePerson);
-
+				Wo wo = new Wo();
+				wo.setId(categoryInfo.getId());
+				result.setData(wo);
+				
+				if( old_categoryInfo != null ) {
+					if( !old_categoryInfo.getCategoryName().equalsIgnoreCase( wi.getCategoryName() )) {
+						//修改了分类名称，增加删除栏目批量操作（对分类和文档）的信息
+						new CmsBatchOperationPersistService().addOperation( 
+								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
+								CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  categoryInfo.getId(), old_categoryInfo.getCategoryName(), "更新分类名称：ID=" + categoryInfo.getId() );
+					}
+					new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "", "", "CATEGORY", "更新");
+				}else {
+					new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "", "", "CATEGORY", "新增");
+				}
+				
 				ApplicationCache.notify(AppInfo.class);
 				ApplicationCache.notify(CategoryInfo.class);
 				ApplicationCache.notify(ViewCategory.class);
 				ApplicationCache.notify(Document.class);
-
-				new LogService().log(null, effectivePerson.getDistinguishedName(),
-						categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "",
-						"", "CATEGORY", "新增");
-				Wo wo = new Wo();
-				wo.setId(categoryInfo.getId());
-				result.setData(wo);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionCategoryInfoProcess(e, "分类信息在保存时发生异常.");

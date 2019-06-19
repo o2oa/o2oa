@@ -6,6 +6,13 @@ public class LikeTerm{
 	
 	private String value = null;
 
+	public LikeTerm() {}
+	
+	public LikeTerm( String name, String value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

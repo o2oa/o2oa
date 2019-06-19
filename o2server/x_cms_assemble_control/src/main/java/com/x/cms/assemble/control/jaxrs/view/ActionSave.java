@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
@@ -16,9 +18,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
-import com.x.cms.assemble.control.jaxrs.view.exception.ExceptionViewInfoAppIdEmpty;
-import com.x.cms.assemble.control.jaxrs.view.exception.ExceptionViewInfoFormIdEmpty;
-import com.x.cms.assemble.control.jaxrs.view.exception.ExceptionViewInfoProcess;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
@@ -45,14 +44,14 @@ public class ActionSave extends BaseAction {
 		}
 
 		if (check) {
-			if (wi.getFormId() == null || wi.getFormId().isEmpty()) {
+			if ( StringUtils.isEmpty(wi.getFormId())) {
 				check = false;
 				Exception exception = new ExceptionViewInfoFormIdEmpty();
 				result.error(exception);
 			}
 		}
 		if (check) {
-			if (wi.getAppId() == null || wi.getAppId().isEmpty()) {
+			if ( StringUtils.isEmpty(wi.getAppId())) {
 				check = false;
 				Exception exception = new ExceptionViewInfoAppIdEmpty();
 				result.error(exception);

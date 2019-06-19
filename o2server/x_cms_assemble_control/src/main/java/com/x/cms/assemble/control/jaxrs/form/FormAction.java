@@ -30,7 +30,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.jaxrs.form.exception.ExceptionServiceLogic;
 
 @Path("form")
 @JaxrsDescribe("表单信息管理")

@@ -36,7 +36,7 @@ public class CategoryInfoServiceAdv {
 	}
 
     public List<CategoryInfo> listByAppId( String appId ) throws Exception {
-        if (appId == null || appId.isEmpty()) {
+        if ( StringUtils.isEmpty(appId )) {
             throw new Exception("appId is null!");
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -63,7 +63,7 @@ public class CategoryInfoServiceAdv {
 	}	
 
 	public List<CategoryInfo> list(List<String> ids) throws Exception {
-		if (ids == null || ids.isEmpty()) {
+		if ( ListTools.isEmpty( ids )) {
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -75,7 +75,7 @@ public class CategoryInfoServiceAdv {
 	}
 
 	public CategoryInfo get( String id ) throws Exception {
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty( id )) {
 			throw new Exception("id is null!");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -144,17 +144,11 @@ public class CategoryInfoServiceAdv {
 			throw new Exception("wrapIn is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			categoryInfo = categoryInfoService.save( emc, categoryInfo, extContent );
 			// 检查一下该应用栏目是否存在管理者，如果不存在，则将当前登录者作为应用栏目的管理者
-			if( ListTools.isEmpty( categoryInfo.getManageablePersonList()) 
-					&& ListTools.isEmpty( categoryInfo.getManageableUnitList()) 
-					&&ListTools.isEmpty( categoryInfo.getManageableGroupList())) {
-				//如果不存在，则将当前登录者作为应用栏目的管理者
-				emc.beginTransaction( CategoryInfo.class );
+			if( ListTools.isEmpty( categoryInfo.getManageablePersonList())  && ListTools.isEmpty( categoryInfo.getManageableUnitList())  &&ListTools.isEmpty( categoryInfo.getManageableGroupList())) {
 				categoryInfo.addManageablePerson( currentPerson.getDistinguishedName() );
-				emc.check( categoryInfo, CheckPersistType.all );
-				emc.commit();
 			}
+			categoryInfo = categoryInfoService.save( emc, categoryInfo, extContent );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -173,7 +167,7 @@ public class CategoryInfoServiceAdv {
 	}
 
 	public void delete(String id, EffectivePerson currentPerson) throws Exception {
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty( id )) {
 			throw new Exception("id is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -184,7 +178,7 @@ public class CategoryInfoServiceAdv {
 	}
 
 	public List<String> listByAlias(String cataggoryAlias) throws Exception {
-		if (cataggoryAlias == null || cataggoryAlias.isEmpty()) {
+		if ( StringUtils.isEmpty( cataggoryAlias )) {
 			throw new Exception("cataggoryAlias is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -207,7 +201,7 @@ public class CategoryInfoServiceAdv {
 	}
 	
 	public String getExtContentWithId(String id) throws Exception {
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty( id )) {
 			return "{}";
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.jaxrs.search.AppFilter;
 import com.x.cms.assemble.control.jaxrs.search.CategoryFilter;
 import com.x.cms.assemble.control.jaxrs.search.TopUnitNameFilter;
@@ -20,7 +21,7 @@ public class SearchServiceAdv {
 	private SearchService searchService = new SearchService();
 	
 	public List<AppFilter> listAppInfoSearchFilter( List<String> app_ids, String docStatus, String categoryId ) throws Exception {
-		if( app_ids == null || app_ids.isEmpty() ){
+		if( ListTools.isEmpty( app_ids ) ){
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -31,7 +32,7 @@ public class SearchServiceAdv {
 	}
 
 	public List<CategoryFilter> listCategorySearchFilter( List<String> app_ids, String docStatus, String categoryId ) throws Exception {
-		if( app_ids == null || app_ids.isEmpty() ){
+		if( ListTools.isEmpty( app_ids ) ){
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -42,7 +43,7 @@ public class SearchServiceAdv {
 	}
 
 	public List<TopUnitNameFilter> listTopUnitSearchFilter(List<String> app_ids, String docStatus, String categoryId) throws Exception {
-		if( app_ids == null || app_ids.isEmpty() ){
+		if( ListTools.isEmpty( app_ids ) ){
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -53,7 +54,7 @@ public class SearchServiceAdv {
 	}
 
 	public List<UnitNameFilter> listUnitNameSearchFilter(List<String> app_ids, String docStatus, String categoryId) throws Exception {
-		if( app_ids == null || app_ids.isEmpty() ){
+		if( ListTools.isEmpty( app_ids ) ){
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

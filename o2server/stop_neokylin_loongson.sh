@@ -1,0 +1,1 @@
+$(cd "$(dirname "$0")"; pwd)/jvm/neokylin_loongson/bin/java -cp $(cd "$(dirname "$0")"; pwd)/console.jar com.x.server.console.swapcommand.Exit

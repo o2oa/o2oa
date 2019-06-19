@@ -6,6 +6,13 @@ public class MemberTerm {
 	
 	private String value = null;
 
+	public MemberTerm() {}
+	
+	public MemberTerm( String name, String value ) {
+		this.name = name;
+		this.value = value;
+	}
+	
 	public String getName() {
 		return name;
 	}

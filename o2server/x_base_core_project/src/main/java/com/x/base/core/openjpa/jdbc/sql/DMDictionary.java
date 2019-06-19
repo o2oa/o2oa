@@ -4,14 +4,11 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Set;
 
 import org.apache.openjpa.jdbc.sql.DBDictionary;
 import org.apache.openjpa.jdbc.sql.SQLBuffer;
-import org.apache.openjpa.lib.log.Log;
 import org.apache.openjpa.lib.util.Localizer;
 
 public class DMDictionary extends DBDictionary {

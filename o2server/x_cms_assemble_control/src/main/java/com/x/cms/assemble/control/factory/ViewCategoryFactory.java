@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
@@ -75,7 +77,7 @@ public class ViewCategoryFactory extends AbstractFactory {
 	 */
 //	@MethodDescribe("列示指定分类的所有视图分类关联配置信息ID列表")
 	public List<String> listByCategoryId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			throw new Exception("内容管理listViewByCategoryId方法不接受id为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( ViewCategory.class );
@@ -95,7 +97,7 @@ public class ViewCategoryFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定视图的所有视图分类关联信息")
 	public List<String> listByViewId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty(id) ){
 			throw new Exception("内容管理listCategoryByViewId方法不接受id为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( ViewCategory.class );
@@ -108,10 +110,10 @@ public class ViewCategoryFactory extends AbstractFactory {
 	}
 
 	public ViewCategory getByViewAndCategory(String viewId, String categoryId) throws Exception {
-		if( viewId == null || viewId.isEmpty() ){
+		if( StringUtils.isEmpty(viewId) ){
 			throw new Exception("viewId is null!");
 		}
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty(categoryId) ){
 			throw new Exception("categoryId is null!");
 		}
 		List<ViewCategory> list = null;

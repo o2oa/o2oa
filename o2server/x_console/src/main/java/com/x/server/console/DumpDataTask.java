@@ -25,9 +25,9 @@ public class DumpDataTask implements Job {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			logger.print("schedule dump data task running.");
+			logger.print("schedule dump data task start.");
 			ActionDumpData action = new ActionDumpData();
-			action.execute(Config.token().getPassword());
+			action.execute(Config.currentNode().dumpData().path(), Config.token().getPassword());
 			if (Config.currentNode().dumpData().size() > 0) {
 				File dir = new File(Config.base(), "local/dump");
 				List<File> list = new ArrayList<>();

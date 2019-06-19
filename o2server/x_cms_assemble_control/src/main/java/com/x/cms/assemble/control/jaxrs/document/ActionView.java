@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -16,6 +18,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
@@ -37,8 +40,9 @@ public class ActionView extends BaseAction {
 		Boolean check = true;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
+		Long viewCount = 0L;
 
-		if (id == null || id.isEmpty()) {
+		if ( StringUtils.isEmpty(id)) {
 			check = false;
 			Exception exception = new ExceptionDocumentIdEmpty();
 			result.error(exception);
@@ -72,11 +76,20 @@ public class ActionView extends BaseAction {
 			//只要不是管理员访问，则记录该文档的访问记录
 			if ( !"xadmin".equalsIgnoreCase( personName) ) {
 				try {
-					documentViewRecordServiceAdv.addViewRecord( id, personName );
+					viewCount = documentViewRecordServiceAdv.addViewRecord( id, personName );
+					result.getData().document.setViewCount( viewCount );
 				} catch (Exception e) {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
+			
+			//异步更新item里的访问量，便于视图统计
+			try {
+				ThisApplication.queueDocumentViewCountUpdate.send( result.getData().getDocument() );
+			} catch ( Exception e1 ) {
+				e1.printStackTrace();
+			}
+			
 		}
 		return result;			
 	}
@@ -118,7 +131,7 @@ public class ActionView extends BaseAction {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "文档信息访问操作时发生异常。Id:" + id + ", Name:" + personName);
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				logger.error(e, effectivePerson, request, null );
 			}
 		}
 		
@@ -310,7 +323,7 @@ public class ActionView extends BaseAction {
 				}
 			}
 		}
-	
+		
 		wo.setIsManager( isManager );
 		wo.setIsAppAdmin( isAppAdmin );
 		wo.setIsCategoryAdmin( isCategoryAdmin );

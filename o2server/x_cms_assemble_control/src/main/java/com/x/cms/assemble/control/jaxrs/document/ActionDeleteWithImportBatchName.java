@@ -19,7 +19,6 @@ public class ActionDeleteWithImportBatchName extends BaseAction {
 	
 	protected static final int SQL_STATEMENT_IN_BATCH = 1000;
 	
-	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute( HttpServletRequest request, String importBatchName, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<String> docIds = null;

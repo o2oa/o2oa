@@ -17,10 +17,10 @@ public class RestoreDataTask implements Job {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			logger.print("schedule restore data task running.");
+			logger.print("schedule restore data task start, restore from:{}.",
+					Config.currentNode().restoreData().path());
 			ActionRestoreData action = new ActionRestoreData();
-			action.execute(DateTools.parseDateTime(Config.currentNode().restoreData().date()),
-					Config.token().getPassword());
+			action.execute(Config.currentNode().restoreData().path(), Config.token().getPassword());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}

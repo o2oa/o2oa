@@ -43,14 +43,18 @@
 		</delete>
 		<echo message="metamodel complete." />
 	</target>
-	<!--
-	<target name="createPersistenceXml">
-		<mkdir dir="${basedir}/src/main/resources/META-INF" />
-		<java classname="com.x.base.core.entity.tools.PersistenceXmlWriter" fork="true">
+
+	<target name="checkAssemble">
+		<echo>checkAssemble project:${project}</echo>
+		<java classname="com.x.base.core.project.build.CheckAssemble" fork="true">
 			<sysproperty key="file.encoding" value="utf-8" />
+			<arg value="{
+					path:'${basedir}',
+					project:'${project}'
+				}" />
 			<classpath>
-				<pathelement path="${basedir}/target/classes" />
-				<pathelement path="${basedir}/src/main/java" />
+				<pathelement location="${basedir}/target/classes" />
+				<pathelement location="${basedir}/src/main/resources" />
 				<fileset dir="${o2server.dir}/commons/ext">
 					<include name="*.jar" />
 				</fileset>
@@ -59,13 +63,55 @@
 				</fileset>
 			</classpath>
 			<arg value="{
-				project:'${project}',
-				path:'${basedir}/src/main/resources/META-INF'
-			}" />
+					path:'${basedir}',
+					project:'${project}'
+				}" />
 		</java>
-		<echo>${project} create persistence xml: ${basedir}/src/main/resources/META-INF/x_persistence.xml</echo>
 	</target>
--->
+
+	<target name="checkSerivce">
+		<echo>checkAssemble project:${project}</echo>
+		<java classname="com.x.base.core.project.build.CheckSerivce" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<arg value="{
+					path:'${basedir}',
+					project:'${project}'
+				}" />
+			<classpath>
+				<pathelement location="${basedir}/target/classes" />
+				<pathelement location="${basedir}/src/main/resources" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="checkCore">
+		<echo>checkAssemble project:${project}</echo>
+		<java classname="com.x.base.core.project.build.CheckCore" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<arg value="{
+					path:'${basedir}',
+					project:'${project}'
+				}" />
+			<classpath>
+				<pathelement location="${basedir}/target/classes" />
+				<pathelement location="${basedir}/src/main/resources" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+
+		</java>
+	</target>
+
 	<target name="describe">
 		<echo>describe project:${project}</echo>
 		<mkdir dir="${basedir}/src/main/webapp/describe" />
@@ -111,6 +157,27 @@
 			</classpath>
 			<arg value="{
 					path:'${basedir}'
+				}" />
+		</java>
+	</target>
+
+	<target name="createWebXml">
+		<java classname="com.x.base.core.project.build.CreateWebXml" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath>
+				<pathelement path="${basedir}/target/classes" />
+				<pathelement path="${basedir}/src/main/java" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="x_base_core_project.jar" />
+					<exclude name="${project}.jar" />
+				</fileset>
+			</classpath>
+			<arg value="{
+					path:'${basedir}',
+					project:'${project}'
 				}" />
 		</java>
 	</target>

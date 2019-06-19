@@ -25,9 +25,9 @@ public class DumpStorageTask implements Job {
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			logger.print("schedule dump storage task running.");
+			logger.print("schedule dump storage task start.");
 			ActionDumpStorage action = new ActionDumpStorage();
-			action.execute(Config.token().getPassword());
+			action.execute(Config.currentNode().dumpStorage().path(), Config.token().getPassword());
 			if (Config.currentNode().dumpStorage().size() > 0) {
 				File dir = new File(Config.base(), "local/dump");
 				List<File> list = new ArrayList<>();

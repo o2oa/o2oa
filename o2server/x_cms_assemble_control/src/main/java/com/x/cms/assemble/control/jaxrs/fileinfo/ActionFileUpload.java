@@ -17,9 +17,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionDocumentNotExists;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ExceptionEmptyExtension;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.URLParameterGetException;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 

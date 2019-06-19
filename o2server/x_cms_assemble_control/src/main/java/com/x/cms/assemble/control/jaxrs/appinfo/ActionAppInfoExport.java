@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -48,7 +50,7 @@ public class ActionAppInfoExport extends BaseAction {
 		AppInfo appInfo = null;
 		Boolean check = true;
 		
-		if( appInfoId == null || appInfoId.isEmpty() ){
+		if( StringUtils.isEmpty(appInfoId) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );

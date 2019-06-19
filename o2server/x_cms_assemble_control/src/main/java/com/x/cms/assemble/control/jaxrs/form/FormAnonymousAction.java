@@ -20,7 +20,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.assemble.control.jaxrs.form.exception.ExceptionServiceLogic;
 
 @Path("anonymous/form")
 @JaxrsDescribe("可匿名访问的表单信息管理服务")

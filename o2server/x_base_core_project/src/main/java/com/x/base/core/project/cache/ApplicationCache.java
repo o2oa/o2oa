@@ -3,23 +3,16 @@ package com.x.base.core.project.cache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.AssembleA;
-import com.x.base.core.project.Deployable;
-import com.x.base.core.project.ServiceA;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.tools.ListTools;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -30,7 +23,8 @@ public class ApplicationCache extends AbstractApplicationCache {
 
 	private NotifyThread notifyThread;
 	private ReceiveThread receiveThread;
-	private static ConcurrentHashMap<String, List<Class<?>>> incidenceMap = new ConcurrentHashMap<>();
+	// private static ConcurrentHashMap<String, List<Class<?>>> incidenceMap = new
+	// ConcurrentHashMap<>();
 
 	private volatile static ApplicationCache INSTANCE;
 	private CacheManager manager;
@@ -119,23 +113,33 @@ public class ApplicationCache extends AbstractApplicationCache {
 		return cache;
 	}
 
+//	private ApplicationCache() {
+//		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+//			List<ClassInfo> list = new ArrayList<>();
+//			list.addAll(scanResult.getSubclasses(Deployable.class.getName()));
+//			for (ClassInfo info : list) {
+//				Class<?> clz = Class.forName(info.getName());
+//				for (String str : clz.getAnnotation(Module.class).containerEntities()) {
+//					List<Class<?>> os = incidenceMap.get(str);
+//					if (null == os) {
+//						os = new ArrayList<Class<?>>();
+//						incidenceMap.put(str, os);
+//					}
+//					os.add(clz);
+//				}
+//			}
+//			manager = createCacheManager();
+//			this.notifyThread = new NotifyThread();
+//			notifyThread.start();
+//			this.receiveThread = new ReceiveThread();
+//			receiveThread.start();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+
 	private ApplicationCache() {
-		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-			List<ClassInfo> list = new ArrayList<>();
-			list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
-			list.addAll(scanResult.getSubclasses(ServiceA.class.getName()));
-			for (ClassInfo info : list) {
-				Class<?> clz = Class.forName(info.getName());
-				Deployable deployable = (Deployable) clz.newInstance();
-				for (String str : deployable.dependency().containerEntities) {
-					List<Class<?>> os = incidenceMap.get(str);
-					if (null == os) {
-						os = new ArrayList<Class<?>>();
-						incidenceMap.put(str, os);
-					}
-					os.add(clz);
-				}
-			}
+		try {
 			manager = createCacheManager();
 			this.notifyThread = new NotifyThread();
 			notifyThread.start();
@@ -247,7 +251,6 @@ public class ApplicationCache extends AbstractApplicationCache {
 			list.add(Objects.toString(o, ""));
 		}
 		return StringUtils.join(list, SPLIT);
-		// return XGsonBuilder.pureGsonDateFormated().toJson(objects);
 	}
 
 	public static class ClearCacheRequest extends WrapClearCacheRequest {

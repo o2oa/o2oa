@@ -45,13 +45,8 @@ class ActionGetLogin extends BaseAction {
 			}
 			String url = Config.qiyeweixin().getApiAddress() + "/cgi-bin/user/getuserinfo?access_token="
 					+ Config.qiyeweixin().corpAccessToken() + "&code=" + code;
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(url);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			logger.debug("qyweixin url:{}.", url);
 			String str = HttpConnection.getAsString(url, null);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(str);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			logger.debug("qyweixin return:{}", str);
 			JsonElement jsonElement = gson.fromJson(str, JsonElement.class);
 

@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
@@ -76,7 +78,7 @@ public class FormFactory extends AbstractFactory {
 	 */
 	//@MethodDescribe("列示指定分类的所有表单模板信息ID列表")
 	public List<String> listByAppId( String appId ) throws Exception {		
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty(appId) ){
 			throw new Exception("内容管理listByAppId方法不接受appId为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( Form.class );
@@ -89,7 +91,7 @@ public class FormFactory extends AbstractFactory {
 	}
 	
 	public List<Form> listFormByAppId( String appId ) throws Exception {		
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty(appId) ){
 			throw new Exception("内容管理listByAppId方法不接受appId为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( Form.class );

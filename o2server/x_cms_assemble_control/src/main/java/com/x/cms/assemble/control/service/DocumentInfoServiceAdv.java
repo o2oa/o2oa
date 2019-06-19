@@ -36,7 +36,7 @@ public class DocumentInfoServiceAdv {
 	private PermissionOperateService permissionService = new PermissionOperateService();
 	
 	public List<Document> listByCategoryId( String categoryId ) throws Exception {
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		List<String> ids = null;
@@ -50,7 +50,7 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public List<String> listIdsByCategoryId( String categoryId ) throws Exception {
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -61,7 +61,7 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public List<String> listIdsByCategoryId( String categoryId, Integer maxCount ) throws Exception {
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -72,7 +72,7 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public List<String> listIdsByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty( appId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -83,7 +83,7 @@ public class DocumentInfoServiceAdv {
 	}
 
 	public Document get( String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -94,7 +94,7 @@ public class DocumentInfoServiceAdv {
 	}
 
 	public Document view( String id, EffectivePerson currentPerson ) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
 		}
 		Document document = null;
@@ -120,7 +120,7 @@ public class DocumentInfoServiceAdv {
 			business = new Business( emc );
 			dataItems = business.itemFactory().listWithDocmentWithPath( document.getId() );
 			
-			if ( dataItems == null || dataItems.isEmpty() ) {
+			if ( ListTools.isEmpty( dataItems ) ) {
 				return new Data();
 			} else {
 				converter = new DataItemConverter<>( Item.class );
@@ -139,7 +139,7 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public Long countByCategoryId(String categoryId ) throws Exception {
-		if( categoryId == null || categoryId.isEmpty() ){
+		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -150,7 +150,7 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public Long countByAppId(String appId ) throws Exception {
-		if( appId == null || appId.isEmpty() ){
+		if( StringUtils.isEmpty( appId ) ){
 			throw new Exception("appId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -178,18 +178,19 @@ public class DocumentInfoServiceAdv {
 		}
 		
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			document.setModifyTime( new Date());			
 			document =  documentInfoService.save( emc, document );
 			//如果有数据信息，则保存数据信息
 			
 			DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 			if( jsonElement != null ) {
-				documentDataHelper.update(jsonElement);
+				documentDataHelper.update( jsonElement );
 			}
 			emc.commit();
 
 			Data data = documentDataHelper.get();
 			data.setDocument( document );
-			documentDataHelper.update(data);
+			documentDataHelper.update( data );
 			
 			emc.commit();
 			return document;
@@ -215,8 +216,24 @@ public class DocumentInfoServiceAdv {
 			throw e;
 		}
 	}
+	
+	public List<String> listIdsWithCondition( List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
+			List<String> createDateList,  List<String> publishDateList,  List<String> statusList, String documentType, 
+			List<String>  creatorUnitNameList,
+			List<String> importBatchNames, List<String> personNames, 
+			List<String> unitNames, List<String> groupNames, Boolean manager, Date lastedPublishTime, Integer maxCount ) throws Exception {
+		if( ListTools.isEmpty( viewAbleCategoryIds ) && !manager ){
+			return null;
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentInfoService.listIdsWithCondition( emc, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
+					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager, lastedPublishTime, maxCount );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 
-	public Long countWithCondition( List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
+	public Long countWithCondition( List<String> queryDocumentIds, List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
 			List<String> createDateList,  List<String> publishDateList,  List<String> statusList, String documentType, 
 			List<String>  creatorUnitNameList,
 			List<String> importBatchNames, List<String> personNames, 
@@ -225,28 +242,28 @@ public class DocumentInfoServiceAdv {
 			return 0L;
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return documentInfoService.countWithCondition( emc, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
+			return documentInfoService.countWithCondition( emc, queryDocumentIds, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
 					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager, lastedPublishTime );
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
 	
-	public List<Document> listNextWithCondition(String id, Integer count, List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
+	public List<Document> listNextWithCondition(String id, Integer count, List<String> queryDocumentIds, List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
 			List<String> createDateList,  List<String> publishDateList,  List<String> statusList, String documentType, 
 			List<String>  creatorUnitNameList, List<String> importBatchNames, List<String> personNames, 
 			List<String> unitNames, List<String> groupNames,  String orderField, String order, Boolean manager, Date lastedPublishTime ) throws Exception {
 		if( ListTools.isEmpty( viewAbleCategoryIds ) && !manager ){
 			return null;
 		}
-		if( orderField == null || orderField.isEmpty() ){
+		if( StringUtils.isEmpty( orderField ) ){
 			orderField = "publishTime";
 		}
-		if( order == null || order.isEmpty() ){
+		if( StringUtils.isEmpty( order ) ){
 			order = "DESC";
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return documentInfoService.listNextWithCondition( emc, id, count, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
+			return documentInfoService.listNextWithCondition( emc, id, count, queryDocumentIds, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
 					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames,  groupNames, orderField, order, manager, lastedPublishTime );
 		} catch ( Exception e ) {
 			throw e;
@@ -254,12 +271,9 @@ public class DocumentInfoServiceAdv {
 	}
 
 	public List<Document> listMyDraft( String name, List<String> categoryIdList, String documentType ) throws Exception {
-		if( name == null || name.isEmpty()){
+		if( StringUtils.isEmpty( name )){
 			throw new Exception("name is null!");
 		}
-//		if( categoryIdList == null || categoryIdList.isEmpty() ){
-//			throw new Exception("categoryIdList is null!");
-//		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listMyDraft( emc, name, categoryIdList, documentType );
 		} catch ( Exception e ) {
@@ -268,7 +282,7 @@ public class DocumentInfoServiceAdv {
 	}
 
 	public Item getDataWithDocIdWithPath(Document document, String path0 ) throws Exception {
-		if( path0 == null || path0.isEmpty()){
+		if( StringUtils.isEmpty( path0 )){
 			throw new Exception("path0 is null!");
 		}
 		if( document == null ){
@@ -296,7 +310,6 @@ public class DocumentInfoServiceAdv {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public List<String> lisViewableDocIdsWithFilter( String title, List<String> appIdList, List<String> categoryIdList,
 			List<String> publisherList, List<String> createDateList, List<String> publishDateList,
 			List<String> statusList, String personName, List<String> unitNames, List<String> groupNames,
@@ -352,13 +365,13 @@ public class DocumentInfoServiceAdv {
 	}
 	
 	public Long getViewCount( String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
-			return business.documentViewRecordFactory().countWithDocmentId( id );
+			return business.documentViewRecordFactory().sumWithDocmentId( id );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -451,6 +464,7 @@ public class DocumentInfoServiceAdv {
 			document.setCategoryAlias( categoryInfo.getCategoryAlias() );
 			document.setForm( categoryInfo.getReadFormId() );
 			document.setFormName( categoryInfo.getReadFormName() );
+			document.setModifyTime( new Date());
 			emc.check( document, CheckPersistType.all );
 			
 			//更新数据里的document对象信息
@@ -479,7 +493,13 @@ public class DocumentInfoServiceAdv {
 		DocumentDataHelper documentDataHelper = null;
 		for( String docId : docIds ) {
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+				
+				emc.beginTransaction( Document.class );
+				emc.beginTransaction( Item.class );
+				
 				document_entity = emc.find( docId, Document.class );
+				document_entity.setModifyTime( new Date());
+				
 				documentDataHelper = new DocumentDataHelper( emc, document_entity );
 				data = documentDataHelper.get();
 				for( WiDataChange dataChange : dataChanges ) {
@@ -536,6 +556,56 @@ public class DocumentInfoServiceAdv {
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listInReviewIds( emc, maxCount );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public void topDocument(String id) throws Exception {
+		if( StringUtils.isEmpty( id ) ){
+			throw new Exception("id is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Document document = emc.find( id, Document.class );
+			if( document != null ) {
+				emc.beginTransaction( Document.class );
+				document.setIsTop( true );
+				emc.commit();
+			}
+			
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public void unTopDocument(String id) throws Exception {
+		if( StringUtils.isEmpty( id ) ){
+			throw new Exception("id is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Document document = emc.find( id, Document.class );
+			if( document != null ) {
+				emc.beginTransaction( Document.class );
+				document.setIsTop( false );
+				emc.commit();
+			}
+			
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 删除指定ID的文档
+	 * @param docId
+	 * @throws Exception
+	 */
+	public void delete(  String docId ) throws Exception {
+		if( StringUtils.isEmpty(  docId ) ){
+			throw new Exception("docId is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			documentInfoService.delete(emc, docId);
 		} catch ( Exception e ) {
 			throw e;
 		}

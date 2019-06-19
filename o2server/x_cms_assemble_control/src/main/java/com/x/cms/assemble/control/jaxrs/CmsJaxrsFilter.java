@@ -37,6 +37,7 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/input/*", 
 		"/jaxrs/output/*", 
 		"/jaxrs/permission/*", 
+		"/jaxrs/comment/*", 
 		"/servlet/*" 
 		}, asyncSupported = true )
 public class CmsJaxrsFilter extends ManagerUserJaxrsFilter {

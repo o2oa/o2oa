@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -32,7 +34,7 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 		AppInfo appInfo = null;
 		Boolean check = true;
 		
-		if ( id == null || id.isEmpty() ) {
+		if ( StringUtils.isEmpty(id) ) {
 			check = false;
 			Exception exception = new ExceptionIdEmpty();
 			result.error(exception);

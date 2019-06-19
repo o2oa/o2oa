@@ -59,6 +59,10 @@
 						<id>copy-war</id>
 						<phase>verify</phase>
 					</execution>
+					<execution>
+						<id>checkAssemble</id>
+						<phase>prepare-package</phase>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

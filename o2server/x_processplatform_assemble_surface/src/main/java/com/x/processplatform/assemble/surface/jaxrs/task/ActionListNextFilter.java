@@ -61,16 +61,22 @@ class ActionListNextFilter extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("应用")
 		private List<String> applicationList;
 
+		@FieldDescribe("流程")
 		private List<String> processList;
 
-		private List<String> creatorUnitList;
-
-		private List<String> startTimeMonthList;
-
+		@FieldDescribe("活动名称")
 		private List<String> activityNameList;
 
+		@FieldDescribe("创建组织")
+		private List<String> creatorUnitList;
+
+		@FieldDescribe("开始时期")
+		private List<String> startTimeMonthList;
+
+		@FieldDescribe("匹配关键字")
 		private String key;
 
 		public List<String> getApplicationList() {

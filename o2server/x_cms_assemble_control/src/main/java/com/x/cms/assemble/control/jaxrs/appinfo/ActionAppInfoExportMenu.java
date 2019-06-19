@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -42,7 +44,7 @@ public class ActionAppInfoExportMenu extends BaseAction {
 		AppInfo appInfo = null;
 		Boolean check = true;
 		
-		if( appInfoId == null || appInfoId.isEmpty() ){
+		if( StringUtils.isEmpty(appInfoId) ){
 			check = false;
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );

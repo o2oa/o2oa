@@ -13,6 +13,8 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocCommendPersistService;
+import com.x.cms.assemble.control.service.DocCommendQueryService;
 import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocumentViewRecordServiceAdv;
 import com.x.cms.assemble.control.service.FileInfoServiceAdv;
@@ -35,6 +37,10 @@ public class BaseAction extends StandardJaxrsAction {
 	protected QueryViewService queryViewService = new QueryViewService();
 	protected DocumentViewRecordServiceAdv documentViewRecordServiceAdv = new DocumentViewRecordServiceAdv();
 	protected DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
+	
+	protected DocCommendPersistService docCommendPersistService = new DocCommendPersistService();
+	protected DocCommendQueryService docCommendQueryService = new DocCommendQueryService();
+	
 	protected FormServiceAdv formServiceAdv = new FormServiceAdv();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();

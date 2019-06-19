@@ -17,7 +17,7 @@
 			<artifactId>x_base_core_project</artifactId>
 		</dependency>
 	</dependencies>
-<build>
+	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -29,6 +29,10 @@
 					<execution>
 						<id>createEnhancePersistenceXml</id>
 						<phase>generate-resources</phase>
+					</execution>
+					<execution>
+						<id>checkCore</id>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

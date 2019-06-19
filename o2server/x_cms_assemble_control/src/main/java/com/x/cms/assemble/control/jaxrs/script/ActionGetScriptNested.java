@@ -25,7 +25,8 @@ class ActionGetScriptNested extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 	
-	ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String uniqueName, String appId, JsonElement jsonElement ) throws Exception {
+	@SuppressWarnings("deprecation")
+	ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String uniqueName, String flag, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
 		Wi wrapIn = null;
@@ -42,9 +43,9 @@ class ActionGetScriptNested extends BaseAction {
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				AppInfo appInfo = business.getAppInfoFactory().get(appId);
+				AppInfo appInfo = business.getAppInfoFactory().flag(flag);
 				if (null == appInfo) {
-					throw new Exception("appInfo{id:" + appId + "} not existed.");
+					throw new Exception("appInfo{'flag':" + flag + "} not existed.");
 				}
 				List<Script> list = new ArrayList<>();
 				for (Script o : business.getScriptFactory().listScriptNestedWithAppInfoWithUniqueName(appInfo.getId(),

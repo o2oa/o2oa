@@ -34,7 +34,7 @@ public class ReportQueue extends AbstractQueue<Report> {
 	@Override
 	protected void execute(Report report) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			// Class<?> clz = Class.forName(report.getClassName());
+			Class<?> clz = Class.forName(report.getClassName());
 			Business business = new Business(emc);
 			Application application = ThisApplication.context().applications().get(report.getClassName(),
 					report.getToken());
@@ -44,7 +44,6 @@ public class ReportQueue extends AbstractQueue<Report> {
 				ApplicationServer applicationServer = Config.nodes().applicationServers().get(report.getNode());
 				application = new Application();
 				application.setName(report.getName());
-				application.setDependency(report.getDependency());
 				application.setNode(report.getNode());
 				application.setPort(applicationServer.getPort());
 				application.setContextPath(report.getContextPath());

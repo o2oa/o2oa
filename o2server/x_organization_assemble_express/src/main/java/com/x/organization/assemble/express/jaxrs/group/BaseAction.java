@@ -11,6 +11,7 @@ import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Unit;
 
 import net.sf.ehcache.Ehcache;
 
@@ -51,6 +52,12 @@ class BaseAction extends StandardJaxrsAction {
 			for (String str : group.getGroupList()) {
 				Group o = business.group().pick(str);
 				t.getGroupList().add(o.getDistinguishedName());
+			}
+		}
+		if (ListTools.isNotEmpty(group.getUnitList())) {
+			for (String str : group.getUnitList()) {
+				Unit o = business.unit().pick(str);
+				t.getUnitList().add(o.getDistinguishedName());
 			}
 		}
 		return t;

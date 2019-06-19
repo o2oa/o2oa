@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
@@ -33,7 +35,7 @@ public class ActionGetFirstPicture extends BaseAction {
 			result.setCount( 1L );
 		} else {
 			if( check ){
-				if(  id == null ||  id.isEmpty() ){
+				if(  StringUtils.isEmpty(id) ){
 					check = false;
 					Exception exception = new ExceptionDocumentIdEmpty();
 					result.error( exception );

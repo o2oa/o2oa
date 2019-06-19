@@ -150,6 +150,10 @@ public class Logger {
 		}
 	}
 
+	public int level() {
+		return level;
+	}
+
 	public void error(Exception e) {
 		String id = StringTools.uniqueToken();
 		StringBuilder sb = this.create(ERROR, id);
@@ -159,7 +163,7 @@ public class Logger {
 		sb.append("]");
 		String stackTraceString = ExceptionUtils.getStackTrace(e);
 		if (!(e instanceof PromptException)) {
-			sb.append(SystemUtils.LINE_SEPARATOR);
+			sb.append(System.lineSeparator());
 			sb.append(stackTraceString);
 		}
 		System.err.println(sb.toString());
@@ -202,7 +206,7 @@ public class Logger {
 				request.getRemoteHost(), request.getRemoteAddr(), headString, bodyString };
 		sb.append(format(HTTPMESSAGEFORMAT, arr));
 		if (!(e instanceof PromptException)) {
-			sb.append(SystemUtils.LINE_SEPARATOR);
+			sb.append(System.lineSeparator());
 			sb.append(stackTraceString);
 		}
 		System.err.println(sb.toString());

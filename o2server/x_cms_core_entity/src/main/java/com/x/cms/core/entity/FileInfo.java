@@ -103,16 +103,16 @@ public class FileInfo extends StorageObject {
 
 	@Override
 	public String path() throws Exception {
-		if (null == this.appId) {
+		if ( StringUtils.isEmpty(  this.appId )) {
 			throw new Exception("appId can not be null.");
 		}
-		if (null == this.categoryId) {
+		if ( StringUtils.isEmpty( this.categoryId )) {
 			throw new Exception("categoryId can not be null.");
 		}
-		if (null == this.documentId) {
+		if (StringUtils.isEmpty( documentId)) {
 			throw new Exception("documentId can not be null.");
 		}
-		if (StringUtils.isEmpty(id)) {
+		if (StringUtils.isEmpty( id )) {
 			throw new Exception("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
@@ -219,7 +219,7 @@ public class FileInfo extends StorageObject {
 	private String extension;
 
 	public static final String seqNumber_FIELDNAME = "seqNumber";
-	@FieldDescribe("扩展名")
+	@FieldDescribe("排序号")
 	@Column( name = ColumnNamePrefix + seqNumber_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private Integer seqNumber = 1000;

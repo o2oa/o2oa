@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -41,7 +43,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		
-		if (appId == null || appId.isEmpty()) {
+		if ( StringUtils.isEmpty(appId)) {
 			check = false;
 			Exception exception = new ExceptionAppIdEmpty();
 			result.error(exception);

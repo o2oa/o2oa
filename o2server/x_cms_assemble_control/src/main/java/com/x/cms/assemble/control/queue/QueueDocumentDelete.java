@@ -6,7 +6,6 @@ import com.x.cms.assemble.control.ThisApplication;
 
 /**
  * Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
- * @author O2LEE
  *
  */
 public class QueueDocumentDelete extends AbstractQueue<String> {

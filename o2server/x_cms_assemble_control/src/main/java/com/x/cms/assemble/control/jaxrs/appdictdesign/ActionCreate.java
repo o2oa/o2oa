@@ -28,7 +28,7 @@ class ActionCreate extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			AppInfo appInfo = emc.find(wi.getAppId(), AppInfo.class);
 			if (null == appInfo) {
-				throw new AppDictNotExistedException(wi.getAppId());
+				throw new ExceptionAppDictNotExisted(wi.getAppId());
 			}
 			emc.beginTransaction(AppDict.class);
 			emc.beginTransaction(AppDictItem.class);

@@ -13,6 +13,7 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Application;
 
 public class MessageFactory {
 
@@ -169,4 +170,5 @@ public class MessageFactory {
 		title += ", (" + o.getProcessName() + ")";
 		return title;
 	}
+
 }

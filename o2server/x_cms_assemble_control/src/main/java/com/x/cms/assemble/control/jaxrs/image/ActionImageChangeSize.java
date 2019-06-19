@@ -16,8 +16,8 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoContentReadException;
-import com.x.cms.assemble.control.jaxrs.fileinfo.exception.ResponseHeaderSetException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.ExceptionFileInfoContentRead;
+import com.x.cms.assemble.control.jaxrs.fileinfo.ExceptionResponseHeaderSet;
 import com.x.cms.common.image.compression.ImageResizeAndCompression;
 import com.x.cms.core.entity.FileInfo;
 
@@ -57,7 +57,7 @@ public class ActionImageChangeSize extends BaseAction {
 				mapping = ThisApplication.context().storageMappings().get( FileInfo.class, fileInfo.getStorage() );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ResponseHeaderSetException(e);
+				Exception exception = new ExceptionResponseHeaderSet(e);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -69,7 +69,7 @@ public class ActionImageChangeSize extends BaseAction {
 				fileInfo.readContent( mapping, baos );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new FileInfoContentReadException(e);
+				Exception exception = new ExceptionFileInfoContentRead(e);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}

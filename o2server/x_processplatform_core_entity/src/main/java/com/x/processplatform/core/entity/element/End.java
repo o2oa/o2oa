@@ -67,6 +67,16 @@ public class End extends Activity {
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
 
+	@FieldDescribe("分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
+	private String group;
+
+	@FieldDescribe("意见分组")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
+	private String opinionGroup;
+
 	@FieldDescribe("节点名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true)
@@ -615,6 +625,22 @@ public class End extends Activity {
 
 	public void setAllowRollback(Boolean allowRollback) {
 		this.allowRollback = allowRollback;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getOpinionGroup() {
+		return opinionGroup;
+	}
+
+	public void setOpinionGroup(String opinionGroup) {
+		this.opinionGroup = opinionGroup;
 	}
 
 }

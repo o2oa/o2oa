@@ -20,7 +20,7 @@ public class DataServerTools {
 		Server tcpServer = null;
 		Server webServer = null;
 		String password = Config.token().getPassword();
-		String[] tcps = new String[8];
+		String[] tcps = new String[9];
 		tcps[0] = "-tcp";
 		tcps[1] = "-tcpAllowOthers";
 		tcps[2] = "-tcpPort";
@@ -29,6 +29,7 @@ public class DataServerTools {
 		tcps[5] = dataBaseDir.getAbsolutePath();
 		tcps[6] = "-tcpPassword";
 		tcps[7] = password;
+		tcps[8] = "-ifNotExists";
 		tcpServer = Server.createTcpServer(tcps).start();
 		Integer webPort = dataServer.getWebPort();
 		if ((null != webPort) && (webPort > 0)) {

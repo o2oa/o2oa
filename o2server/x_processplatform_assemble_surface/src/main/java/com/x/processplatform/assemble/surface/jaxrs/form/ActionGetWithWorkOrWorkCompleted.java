@@ -76,8 +76,17 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		WoWorkCompletedForm wo = new WoWorkCompletedForm();
 		if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
 			wo.setData(workCompleted.getFormData());
-		} else {
+		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
 			wo.setData(workCompleted.getFormMobileData());
+		} else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
+			Form form = business.form().pick(workCompleted.getForm());
+			if (null != form) {
+				if (StringUtils.isNotEmpty(form.getData())) {
+					wo.setData(form.getData());
+				} else if (StringUtils.isNotEmpty(form.getMobileData())) {
+					wo.setData(workCompleted.getFormMobileData());
+				}
+			}
 		}
 		return wo;
 	}

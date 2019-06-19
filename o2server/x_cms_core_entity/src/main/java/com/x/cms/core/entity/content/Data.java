@@ -107,9 +107,31 @@ public class Data extends ListOrderedMap<String, Object> {
 		private String creatorTopUnitName;
 		private String docStatus;
 		private String importBatchName;
-
+		private Long viewCount = 0L;
+		private Long commentCount = 0L;
+		private Long commendCount = 0L;
 		private Date publishTime;
-
+		private Date modifyTime;
+		private Boolean isTop;
+		
+		public Boolean getIsTop() {
+			return isTop;
+		}
+		public void setIsTop(Boolean isTop) {
+			this.isTop = isTop;
+		}
+		public Date getModifyTime() {
+			return modifyTime;
+		}
+		public void setModifyTime(Date modifyTime) {
+			this.modifyTime = modifyTime;
+		}
+		public Long getViewCount() {
+			return viewCount;
+		}
+		public void setViewCount(Long viewCount) {
+			this.viewCount = viewCount;
+		}
 		public String getTitle() {
 			return title;
 		}
@@ -199,6 +221,24 @@ public class Data extends ListOrderedMap<String, Object> {
 		}
 		public void setImportBatchName(String importBatchName) {
 			this.importBatchName = importBatchName;
+		}
+		public static WrapCopier<Document, DataDocument> getDocumentCopier() {
+			return documentCopier;
+		}
+		public static void setDocumentCopier(WrapCopier<Document, DataDocument> documentCopier) {
+			DataDocument.documentCopier = documentCopier;
+		}
+		public Long getCommentCount() {
+			return commentCount;
+		}
+		public void setCommentCount(Long commentCount) {
+			this.commentCount = commentCount;
+		}
+		public Long getCommendCount() {
+			return commendCount;
+		}
+		public void setCommendCount(Long commendCount) {
+			this.commendCount = commendCount;
 		}
 	}
 

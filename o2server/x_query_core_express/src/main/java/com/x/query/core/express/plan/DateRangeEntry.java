@@ -10,7 +10,6 @@ import com.x.base.core.project.tools.DateTools;
 
 public class DateRangeEntry extends GsonPropertyObject {
 
-	
 	public static final String DATERANGETYPE_YEAR = "year";
 	public static final String DATERANGETYPE_SEASON = "season";
 	public static final String DATERANGETYPE_MONTH = "month";
@@ -79,7 +78,8 @@ public class DateRangeEntry extends GsonPropertyObject {
 			if (StringUtils.isEmpty(year)) {
 				year = DateTools.format(now, DateTools.format_yyyy);
 			}
-			if (null == week) {
+			/*0表示当前周*/
+			if ((null == week) || (week ==0)) {
 				week = DateTools.week(now);
 			}
 			this.start = DateTools.floorWeekOfYear(year, week, adjust);

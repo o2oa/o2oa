@@ -87,7 +87,7 @@ public class Instant extends SliceJpaObject {
 	@FieldDescribe("通知对象.")
 	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private String person;
 
 	public static final String consumed_FIELDNAME = "consumed";

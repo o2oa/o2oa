@@ -1,6 +1,7 @@
 package com.x.server.console.action;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.OpenJPAPersistence;
 
 import com.google.gson.Gson;
+import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataMapping;
-import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -40,41 +40,43 @@ public class ActionDumpData {
 
 	private Gson pureGsonDateFormated;
 
-	private void init() throws Exception {
+	public boolean execute(String path, String password) throws Exception {
 		this.start = new Date();
-		this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(this.start));
-		this.catalog = new DumpRestoreDataCatalog();
-		pureGsonDateFormated = XGsonBuilder.instance();
-		FileUtils.forceMkdir(this.dir);
-		FileUtils.cleanDirectory(this.dir);
-	}
-
-	public boolean execute(String password) throws Exception {
-		this.init();
 		if (!StringUtils.equals(Config.token().getPassword(), password)) {
 			logger.print("password not match.");
 			return false;
 		}
-		List<Class<?>> classes = PersistenceXmlHelper.listClassWithIncludesExcludes(
-				PersistenceXmlHelper.listDataClassName(), Config.dumpRestoreData().getIncludes(),
-				Config.dumpRestoreData().getExcludes());
-		logger.print("dump data find {} data to dump, start at {}.", classes.size(), DateTools.format(start));
-		DataMappings mappings = Config.dataMappings();
-		for (int i = 0; i < classes.size(); i++) {
-			Class<JpaObject> cls = (Class<JpaObject>) classes.get(i);
-			List<DataMapping> sources = mappings.get(cls.getName());
-			if (ListTools.isEmpty(sources)) {
-				throw new Exception("can not get datamapping of class:" + cls.getName() + ".");
+		if (StringUtils.isEmpty(path)) {
+			this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(this.start));
+		} else {
+			this.dir = new File(path);
+			if (dir.getAbsolutePath().startsWith(Config.base())) {
+				logger.print("path can not in base directory.");
+				return false;
 			}
+		}
+		FileUtils.forceMkdir(this.dir);
+		FileUtils.cleanDirectory(this.dir);
+		this.catalog = new DumpRestoreDataCatalog();
+		pureGsonDateFormated = XGsonBuilder.instance();
+
+		/* 初始化完成 */
+
+		List<String> containerEntityNames = new ArrayList<>();
+		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+		List<String> classNames = ListTools.includesExcludesWildcard(containerEntityNames,
+				Config.dumpRestoreData().getIncludes(), Config.dumpRestoreData().getExcludes());
+		logger.print("dump data find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
+		File persistence = new File(Config.dir_local_temp_classes(), DateTools.compact(this.start) + "_dump.xml");
+		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
+		for (int i = 0; i < classNames.size(); i++) {
+			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					this.createPersistenceXml(cls, sources).getName());
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
 			EntityManager em = emf.createEntityManager();
 			try {
-				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classes.size(), cls.getName(),
+				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
 						this.estimateCount(em, cls));
-				// System.out.println("dump data(" + (i + 1) + "/" + classes.size() + "): " +
-				// cls.getName() + ", count: "
-				// + this.estimateCount(em, cls) + ".");
 				this.dump(cls, em);
 			} finally {
 				em.close();
@@ -86,10 +88,6 @@ public class ActionDumpData {
 				DefaultCharset.charset);
 		logger.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.getAbsolutePath(),
 				this.count(), (new Date().getTime() - start.getTime()) / 1000 / 60);
-		// System.out.println("dump data completed, directory: " + dir.getAbsolutePath()
-		// + ", count: " + this.count()
-		// + ", elapsed: " + (new Date().getTime() - start.getTime()) / 1000 / 60 + "
-		// minutes.");
 		return true;
 	}
 
@@ -103,16 +101,6 @@ public class ActionDumpData {
 
 	private Integer count() {
 		return this.catalog.values().stream().mapToInt(Integer::intValue).sum();
-	}
-
-	/** 创建临时使用的persistence.xml 并复制到class目录下 */
-	private <T> File createPersistenceXml(Class<T> cls, List<DataMapping> sources) throws Exception {
-		File xml = new File(dir, cls.getName() + "_dump.xml");
-		PersistenceXmlHelper.createPersistenceXml(cls, sources, xml);
-		File tempFile = File.createTempFile(DateTools.compact(this.start), ".xml",
-				new File(Config.base(), "local/temp/classes"));
-		FileUtils.copyFile(xml, tempFile);
-		return tempFile;
 	}
 
 	private <T> void dump(Class<T> cls, EntityManager em) throws Exception {

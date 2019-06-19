@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -65,6 +67,26 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e,"系统查询文档访问信息时发生未知异常。" );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse( result );
+	}
+	
+	@JaxrsMethodDescribe(value = "从指定的文档ID列表中判断未读过的文档ID列表.", action = ActionListUnReadDocIds.class)
+	@PUT
+	@Path( "unread" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listUnReadIds( @Context HttpServletRequest request, 
+			JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult< ActionListUnReadDocIds.Wo> result = null;
+		try {
+			result = new ActionListUnReadDocIds().execute( request, effectivePerson, jsonElement );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionServiceLogic( e,"系统从指定的文档ID列表中判断未读过的文档ID列表时发生未知异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}

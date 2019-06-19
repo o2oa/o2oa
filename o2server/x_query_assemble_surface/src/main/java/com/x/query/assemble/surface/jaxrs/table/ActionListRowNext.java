@@ -52,7 +52,7 @@ class ActionListRowNext extends BaseAction {
 					sequence = o.getSequence();
 				}
 			}
-			List<String> fields = JpaObject.singularAttributeField(cls, true, true);
+			List<String> fields = JpaObject.singularAttributeField(cls, true, false);
 			fields.add(JpaObject.sequence_FIELDNAME);
 			List<String> selects = new ArrayList<>();
 			for (String str : fields) {

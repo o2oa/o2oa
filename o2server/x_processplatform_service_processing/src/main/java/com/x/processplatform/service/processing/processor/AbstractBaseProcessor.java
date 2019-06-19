@@ -114,6 +114,8 @@ public abstract class AbstractBaseProcessor {
 			workLog.setArrivedActivityToken(token);
 			workLog.setArrivedActivityType(aeiObjects.getActivity().getActivityType());
 			workLog.setArrivedTime(date);
+			workLog.setArrivedGroup(aeiObjects.getActivity().getGroup());
+			workLog.setArrivedOpinionGroup(aeiObjects.getActivity().getOpinionGroup());
 			workLog.setRoute(aeiObjects.getWork().getDestinationRoute());
 			workLog.setRouteName(aeiObjects.getWork().getDestinationRouteName());
 			workLog.setCompleted(false);
@@ -134,6 +136,8 @@ public abstract class AbstractBaseProcessor {
 				workLog.setArrivedActivityName(aeiObjects.getActivity().getName());
 				workLog.setArrivedActivityToken(token);
 				workLog.setArrivedActivityType(aeiObjects.getActivity().getActivityType());
+				workLog.setArrivedGroup(aeiObjects.getActivity().getGroup());
+				workLog.setArrivedOpinionGroup(aeiObjects.getActivity().getOpinionGroup());
 				workLog.setArrivedTime(date);
 				workLog.setRoute(aeiObjects.getWork().getDestinationRoute());
 				workLog.setRouteName(aeiObjects.getWork().getDestinationRouteName());
@@ -198,25 +202,26 @@ public abstract class AbstractBaseProcessor {
 	}
 
 	protected void createFromWorkLog(AeiObjects aeiObjects, String token, Date date) throws Exception {
-		WorkLog workLog = new WorkLog();
-		workLog.setJob(aeiObjects.getWork().getJob());
-		workLog.setWork(aeiObjects.getWork().getId());
-		workLog.setProcess(aeiObjects.getWork().getProcess());
-		workLog.setProcessName(aeiObjects.getWork().getProcessName());
-		workLog.setApplication(aeiObjects.getWork().getApplication());
-		workLog.setApplicationName(aeiObjects.getWork().getApplicationName());
-		workLog.setFromActivity(aeiObjects.getActivity().getId());
-		workLog.setFromActivityName(aeiObjects.getActivity().getName());
-		workLog.setFromActivityAlias(aeiObjects.getActivity().getAlias());
-		workLog.setFromActivityToken(token);
-		workLog.setFromActivityType(aeiObjects.getActivity().getActivityType());
-		workLog.setSplitting(aeiObjects.getWork().getSplitting());
-		workLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-		workLog.setSplitValue(aeiObjects.getWork().getSplitValue());
-		workLog.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-		workLog.setFromTime(date);
-		workLog.setCompleted(false);
-		workLog.setConnected(false);
+		WorkLog workLog = WorkLog.createFromWork(aeiObjects.getWork(), aeiObjects.getActivity(), token, date);
+//		workLog.setJob(aeiObjects.getWork().getJob());
+//		workLog.setWork(aeiObjects.getWork().getId());
+//		workLog.setProcess(aeiObjects.getWork().getProcess());
+//		workLog.setProcessName(aeiObjects.getWork().getProcessName());
+//		workLog.setApplication(aeiObjects.getWork().getApplication());
+//		workLog.setApplicationName(aeiObjects.getWork().getApplicationName());
+//		workLog.setFromActivity(aeiObjects.getActivity().getId());
+//		workLog.setFromActivityName(aeiObjects.getActivity().getName());
+//		workLog.setFromActivityAlias(aeiObjects.getActivity().getAlias());
+//		workLog.setFromActivityToken(token);
+//		workLog.setFromActivityType(aeiObjects.getActivity().getActivityType());
+//		workLog.setFromGroup(aeiObjects.getActivity().getGroup());
+//		workLog.setSplitting(aeiObjects.getWork().getSplitting());
+//		workLog.setSplitToken(aeiObjects.getWork().getSplitToken());
+//		workLog.setSplitValue(aeiObjects.getWork().getSplitValue());
+//		workLog.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
+//		workLog.setFromTime(date);
+//		workLog.setCompleted(false);
+//		workLog.setConnected(false);
 		aeiObjects.getCreateWorkLogs().add(workLog);
 	}
 

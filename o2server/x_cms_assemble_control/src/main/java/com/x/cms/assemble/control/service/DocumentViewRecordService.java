@@ -8,13 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.DocumentViewRecord;
 
 public class DocumentViewRecordService {
 
 	public List<DocumentViewRecord> list( EntityManagerContainer emc, List<String> ids ) throws Exception {
-		if( ids == null || ids.isEmpty() ){
+		if( ListTools.isEmpty( ids ) ){
 			return null;
 		}
 		Business business = new Business( emc );
@@ -22,7 +23,7 @@ public class DocumentViewRecordService {
 	}
 	
 	public List<String> listByDocument( EntityManagerContainer emc, String docId ) throws Exception {
-		if( docId == null || docId.isEmpty() ){
+		if( StringUtils.isEmpty( docId ) ){
 			return null;
 		}
 		Business business = new Business( emc );
@@ -30,7 +31,7 @@ public class DocumentViewRecordService {
 	}
 	
 	public List<String> listByPerson( EntityManagerContainer emc, String personId ) throws Exception {
-		if( personId == null || personId.isEmpty() ){
+		if( StringUtils.isEmpty( personId ) ){
 			return null;
 		}
 		Business business = new Business( emc );

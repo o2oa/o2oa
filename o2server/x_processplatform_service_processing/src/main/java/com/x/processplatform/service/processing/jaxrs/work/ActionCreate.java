@@ -42,9 +42,6 @@ class ActionCreate extends BaseAction {
 			if ((null != jsonElement) && jsonElement.isJsonObject()) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
 				workDataHelper.update(jsonElement);
-//				if (XGsonBuilder.extract(jsonElement, Work.dataChanged_FIELDNAME, Boolean.class, false)) {
-//					work.setDataChanged(true);
-//				}
 			}
 			emc.persist(work, CheckPersistType.all);
 			emc.commit();

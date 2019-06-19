@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.x.base.core.entity.StorageType;
+
 /**
  * 标记所有可启动模块
  * 
@@ -28,5 +30,17 @@ public @interface Module {
 	public ModuleCategory category();
 
 	public String name();
+
+	public String packageName();
+
+	public String[] containerEntities() default {};
+
+	public String[] storeJars() default {};
+
+	public String[] customJars() default {};
+
+	public String[] dynamicJars() default {};
+
+	public StorageType[] storageTypes() default {};
 
 }
