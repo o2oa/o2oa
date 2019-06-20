@@ -23,7 +23,7 @@ public extension UIImageView {
     }
     
     public func hnk_setImage( _ image: @autoclosure @escaping () -> UIImage, key: String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
-        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image())
         self.hnk_setImage(fromFetcher: fetcher, placeholder: placeholder, format: format, success: succeed)
     }
     

@@ -62,6 +62,7 @@ class OOMeetingMeetingRoomManageController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "会议室"
+        self.tabBarItem?.selectedImage = O2ThemeManager.image(for: "Icon.icon_huiyishi_pro")
         self.view.backgroundColor = UIColor(hex: "#f5f5f5")
         headerView.sizeToFit()
         headerView.autoresizingMask = .flexibleWidth

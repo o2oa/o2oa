@@ -64,6 +64,13 @@ public class OOTimerButton: UIButton {
     setupUI()
     }
     
+
+    public func theme_setButtonTextColor(buttonTextColor:UIColor) {
+        self.buttonTextColor = buttonTextColor
+        self.buttonAttributeString = NSAttributedString(string: buttonTtitle, attributes: [NSAttributedString.Key.foregroundColor:buttonTextColor,NSAttributedString.Key.font:UIFont(name: "PingFangSC-Regular", size: 13.0)!])
+        self.setAttributedTitle(buttonAttributeString, for: .normal)
+    }
+    
     private func setupUI(){
         //设置标签
         timeredLabel = UILabel(frame:CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))

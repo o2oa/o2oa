@@ -58,7 +58,7 @@ class OOMeetingInforItemCell: UITableViewCell,Configurable {
             self.timeInternal.textColor = UIColor(hex: "#999999")
         }else{
             self.statusImageView.image = #imageLiteral(resourceName: "pic_yuyue")
-            self.timeInternal.textColor = UIColor(hex: "#FB4747")
+            self.timeInternal.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
         }
         
         titleLabel.text = model.subject

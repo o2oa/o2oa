@@ -27,7 +27,7 @@ class GroupAvatorViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         navigationController?.navigationBar.shadowImage = nil
-        navigationController?.navigationBar.barTintColor = UIColor(netHex: 0xfb4747)
+        navigationController?.navigationBar.barTintColor = O2ThemeManager.color(for: "Base.base_color")!
     }
 
     fileprivate lazy var imagePicker: UIImagePickerController = {

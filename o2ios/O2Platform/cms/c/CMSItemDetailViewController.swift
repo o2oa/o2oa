@@ -92,6 +92,7 @@ class CMSItemDetailViewController: BaseWebViewUIViewController {
     
     override func theWebView(){
         super.theWebView()
+        self.view = webView
         //注入回复的回复函数
         webView.navigationDelegate = self
         

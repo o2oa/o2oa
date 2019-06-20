@@ -46,7 +46,7 @@ class OOMeetingRoomMainCell: UITableViewCell,Configurable {
                 roomNameLabel.textColor = UIColor(hex: "#66CC80")
             }else{
                 meetingStatusImageView.image = UIImage(named: "pic_yuyue")
-                 roomNameLabel.textColor = UIColor(hex: "#FB4747")
+                 roomNameLabel.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
             }
         }
         

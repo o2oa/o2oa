@@ -235,12 +235,12 @@ class ContactHomeViewController: UITableViewController {
         }
     }
     
-    func loadMyData(_ sender:AnyObject?){
+    @objc func loadMyData(_ sender:AnyObject?){
         let urls = [0:myDepartmentURL,1:myCompanyURL]
         var count = 0
         //增加常用联系人
         self.contacts[2]?.removeAll()
-        let collectTitle = HeadTitle(name:"常用联系人", icon:"icon_ linkman")
+        let collectTitle = HeadTitle(name:"常用联系人", icon: O2ThemeManager.string(for: "Icon.icon_linkman")!)
         let collectVMT = CellViewModel(name: collectTitle.name, sourceObject: collectTitle)
         self.contacts[2]?.append(collectVMT)
         let collectPersons = OOContactsInfoDB.shareInstance.queryData((O2AuthSDK.shared.myInfo()?.id)!)
@@ -259,7 +259,7 @@ class ContactHomeViewController: UITableViewController {
                     self.contacts[order]?.removeAll()
                     switch order {
                     case 1:
-                        let tile = HeadTitle(name: "组织架构", icon: "icon_bumen")
+                        let tile = HeadTitle(name: "组织架构", icon: O2ThemeManager.string(for: "Icon.icon_bumen")!)
                         let vmt = CellViewModel(name: tile.name, sourceObject: tile)
                         self.contacts[order]?.append(vmt)
                         if let units = Mapper<OrgUnit>().mapArray(JSONString:objects.description) {
@@ -269,7 +269,7 @@ class ContactHomeViewController: UITableViewController {
                             }
                         }
                     case 0:
-                        let tile = HeadTitle(name: "我的部门", icon: "icon_company")
+                        let tile = HeadTitle(name: "我的部门", icon: O2ThemeManager.string(for: "Icon.icon_company")!)
                         let vmt = CellViewModel(name: tile.name, sourceObject: tile)
                         self.contacts[order]?.append(vmt)
                         if let person = Mapper<PersonV2>().map(JSONString:objects.description) {

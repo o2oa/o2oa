@@ -167,6 +167,48 @@ class BottomSheetMenu(private val activity: Activity) {
     }
 
     /**
+     * 设置多个子项
+     */
+    fun setItems(texts: List<String>, textColor: Int = 0, itemClickListener: (Int) -> Unit): BottomSheetMenu {
+        if (!texts.isEmpty()) {
+            texts.forEachIndexed { index, text ->
+                val textView = TextView(activity)
+                textView.apply {
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                        setPadding(0, itemMargin, 0, itemMargin)
+                    }
+                    gravity = Gravity.CENTER
+                    setBackgroundResource(R.drawable.shape_bottom_list_menu)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                    if (textColor == 0) {
+                        setTextColor(Color.parseColor("#FF3B30"))
+                    } else {
+                        try {
+                            setTextColor(textColor)
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    }
+                    setText(text)
+                    setOnClickListener {
+                        itemClickListener.invoke(index)
+                        dismiss()
+                    }
+                }
+                val lineView = View(activity).apply {
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1)
+                    setBackgroundColor(Color.parseColor("#dcdbdf"))
+                }
+                menuList.addView(lineView)
+                menuList.addView(textView)
+            }
+        }
+
+        return this
+    }
+
+    /**
      * 设置按钮
      */
     fun setCancelButton(text: String, textColor: Int = 0,  cancelClickListener: () -> Unit): BottomSheetMenu {

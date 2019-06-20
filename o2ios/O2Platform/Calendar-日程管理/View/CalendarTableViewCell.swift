@@ -40,7 +40,7 @@ class CalendarTableViewCell: UITableViewCell {
         if let color = info?.color {
             calendarColorView.backgroundColor = UIColor.init(hex: color)
         }else {
-            calendarColorView.backgroundColor = O2Color.primaryColor
+            calendarColorView.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         }
         calendarNameView.text = info?.name
     }

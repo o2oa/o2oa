@@ -3,6 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.DownloadManager.Request.NETWORK_MOBILE
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -21,6 +22,10 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.util.*
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+
+
 
 
 /**
@@ -58,6 +63,83 @@ object AndroidUtils {
     fun getDeviceOsVersion(): String =
             "Android "+Build.VERSION.RELEASE +", SDK "+Build.VERSION.SDK_INT
 
+
+    /**
+     * 网络连接类型
+     *  @return 0：没有网络 1：wifi 2：2G 3：3G 4：4G 5：流量
+     */
+    fun getAPNType(context: Context): String {
+        var netType = "没有网络"
+        val connMgr = context
+                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo ?: return netType
+        val nType = networkInfo.type
+        if (nType == ConnectivityManager.TYPE_WIFI) {
+            netType = "wifi"// wifi
+        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
+            val nSubType = networkInfo.subtype
+            /*
+            GPRS : 2G(2.5) General Packet Radia Service 114kbps
+            EDGE : 2G(2.75G) Enhanced Data Rate for GSM Evolution 384kbps
+            UMTS : 3G WCDMA 联通3G Universal Mobile Telecommunication System 完整的3G移动通信技术标准
+            CDMA : 2G 电信 Code Division Multiple Access 码分多址
+            EVDO_0 : 3G (EVDO 全程 CDMA2000 1xEV-DO) Evolution - Data Only (Data Optimized) 153.6kps - 2.4mbps 属于3G
+            EVDO_A : 3G 1.8mbps - 3.1mbps 属于3G过渡，3.5G
+            1xRTT : 2G CDMA2000 1xRTT (RTT - 无线电传输技术) 144kbps 2G的过渡,
+            HSDPA : 3.5G 高速下行分组接入 3.5G WCDMA High Speed Downlink Packet Access 14.4mbps
+            HSUPA : 3.5G High Speed Uplink Packet Access 高速上行链路分组接入 1.4 - 5.8 mbps
+            HSPA : 3G (分HSDPA,HSUPA) High Speed Packet Access
+            IDEN : 2G Integrated Dispatch Enhanced Networks 集成数字增强型网络 （属于2G，来自维基百科）
+            EVDO_B : 3G EV-DO Rev.B 14.7Mbps 下行 3.5G
+            LTE : 4G Long Term Evolution FDD-LTE 和 TDD-LTE , 3G过渡，升级版 LTE Advanced 才是4G
+            EHRPD : 3G CDMA2000向LTE 4G的中间产物 Evolved High Rate Packet Data HRPD的升级
+            HSPAP : 3G HSPAP 比 HSDPA 快些
+            */
+            return when(nSubType) {
+                // 2G网络
+                TelephonyManager.NETWORK_TYPE_GPRS, TelephonyManager.NETWORK_TYPE_CDMA, TelephonyManager.NETWORK_TYPE_EDGE,
+                TelephonyManager.NETWORK_TYPE_1xRTT, TelephonyManager.NETWORK_TYPE_IDEN ->
+                    "2G"
+                // 3G网络
+                TelephonyManager.NETWORK_TYPE_EVDO_A, TelephonyManager.NETWORK_TYPE_UMTS, TelephonyManager.NETWORK_TYPE_EVDO_0,
+                TelephonyManager.NETWORK_TYPE_HSDPA, TelephonyManager.NETWORK_TYPE_HSUPA, TelephonyManager.NETWORK_TYPE_HSPA,
+                TelephonyManager.NETWORK_TYPE_EVDO_B, TelephonyManager.NETWORK_TYPE_EHRPD, TelephonyManager.NETWORK_TYPE_HSPAP ->
+                    "3G"
+                TelephonyManager.NETWORK_TYPE_LTE ->
+                    "4G"
+                else ->
+                    "手机流量"
+            }
+
+        }
+        return netType
+    }
+
+    /**
+     * 运营商
+     */
+    fun getCarrier(context: Context): String {
+        var carrierName = ""
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        if (checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            val imsi = telephonyManager.subscriberId
+            XLog.debug("运营商代码" + imsi!!)
+            return if (imsi != null) {
+                if (imsi.startsWith("46000") || imsi.startsWith("46002") || imsi.startsWith("46007")) {
+                    carrierName = "中国移动"
+                } else if (imsi.startsWith("46001") || imsi.startsWith("46006")) {
+                    carrierName = "中国联通"
+                } else if (imsi.startsWith("46003")) {
+                    carrierName = "中国电信"
+                }
+                carrierName
+            } else {
+                "none"
+            }
+        }else {
+            return "none"
+        }
+    }
 
     /**
      * 获取手机IMEI(需要“android.permission.READ_PHONE_STATE”权限)

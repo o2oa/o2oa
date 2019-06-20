@@ -28,7 +28,7 @@ class O2CountdownButton: UIButton {
     //标签字颜色
     var labelTextColor = UIColor.white
     //按钮正常背景色
-    var normalColor = RGB(251, g: 71, b: 71) {
+    var normalColor = base_color {
         didSet{
             if self.isEnabled {
             self.backgroundColor = normalColor

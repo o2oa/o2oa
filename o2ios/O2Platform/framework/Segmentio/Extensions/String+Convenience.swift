@@ -20,7 +20,7 @@ extension String {
         )
         string.replaceSubrange(startIndex...startIndex, with: String(self[startIndex]))
         
-        return String(string.characters.prefix(1)).capitalized + String(string.lowercased().characters.dropFirst())
+        return String(string.prefix(1)).capitalized + String(string.lowercased().dropFirst())
     }
     
 }

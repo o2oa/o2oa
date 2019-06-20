@@ -12,9 +12,7 @@ import AlamofireImage
 import AlamofireObjectMapper
 import SwiftyJSON
 import ObjectMapper
-
 import EZSwiftExtensions
-import swiftScan
 import CocoaLumberjack
 import MBProgressHUD
 import WebKit
@@ -148,7 +146,7 @@ class MainTaskSecondViewController: UIViewController {
     
     //初始化分类显示
     private func initSegumentControl() -> SegmentedControl{
-        let kLivelyBlueColor = UIColor(red: 251 / 255, green: 71 / 255, blue: 71/255, alpha: 1)
+        
         //返回一个分类头部
         let titleStrings = ["信息中心", "办公中心"]
         let titles: [NSAttributedString] = {
@@ -161,7 +159,7 @@ class MainTaskSecondViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: kLivelyBlueColor]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: base_color]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -174,7 +172,7 @@ class MainTaskSecondViewController: UIViewController {
         segmentedControl.backgroundColor = UIColor.white
         segmentedControl.autoresizingMask = [.flexibleRightMargin, .flexibleWidth]
         segmentedControl.selectionIndicatorStyle = .bottom
-        segmentedControl.selectionIndicatorColor = kLivelyBlueColor
+        segmentedControl.selectionIndicatorColor = base_color
         segmentedControl.selectionIndicatorHeight = 0.5
         segmentedControl.segmentWidth = (UIScreen.main.bounds.width - 100) / 2
         //segmentedControl.frame.origin.y = 64
@@ -185,11 +183,7 @@ class MainTaskSecondViewController: UIViewController {
     
     //开始扫描
     @objc private func startScanAction(_ sender:AnyObject?)  {
-        if let scanVC = ScanHelper.initScanViewController() {
-            self.pushVC(scanVC)
-        }else {
-            gotoApplicationSettings(alertMessage: "是否跳转到手机设置页面开启相机权限？")
-        }
+        ScanHelper.openScan(vc: self)
     }
     
     //开始显示新建页面

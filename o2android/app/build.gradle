@@ -110,7 +110,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "Boolean", "InnerServer", "false"
+            buildConfigField "Boolean", "InnerServer", "true"
             buildConfigField "Boolean", "LOG_ENABLE", "true"
             buildConfigField "Boolean", "LOG_FILE", "true"
             manifestPlaceholders = [JPUSH_PKGNAME      : defaultConfig.applicationId,
@@ -183,7 +183,6 @@ android {
 }
 
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -211,7 +210,7 @@ dependencies {
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
     implementation files('libs/universal-image-loader-1.9.5.jar')
-    implementation files('libs/tbs_sdk_thirdapp_v3.2.0.1104_43200.jar')
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1072_43646_sharewithdownloadwithfile_withoutGame_obfs_20190429_175122.jar')
     implementation(name: 'material-calendarview-fancy-1.1', ext: 'aar')
     implementation(name: 'o2_auth_sdk-release', ext: 'aar')
 
@@ -308,6 +307,10 @@ dependencies {
 
     //test
     testImplementation 'junit:junit:4.12'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //
+    implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
 }
 

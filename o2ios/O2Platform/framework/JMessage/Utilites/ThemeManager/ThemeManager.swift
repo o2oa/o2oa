@@ -109,7 +109,7 @@ final class ThemeManager: NSObject {
 
     public func loadImage(_ imageName: String, _ style: ThemeStyle) -> UIImage? {
 
-        if imageName.isEmpty || imageName.characters.count == 0 {
+        if imageName.isEmpty || imageName.count == 0 {
             return nil
         }
 

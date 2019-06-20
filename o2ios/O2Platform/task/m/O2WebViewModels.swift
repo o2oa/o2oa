@@ -20,7 +20,17 @@ class O2WebViewUploadImage: HandyJSON {
     required init() {}
 }
 
-class O2NotificationMessage<T>: HandyJSON {
+
+class O2WebViewBaseMessage<T : HandyJSON>: HandyJSON {
+    var callback: String!
+    var type: String!
+    var data:T?
+    
+    required init() {}
+}
+
+
+class O2NotificationMessage<T : HandyJSON>: HandyJSON {
     var callback: String!
     /**
      alert
@@ -38,8 +48,58 @@ class O2NotificationMessage<T>: HandyJSON {
     required init() {}
 }
 
-class O2NotificationAlertMessage {
+class O2NotificationAlertMessage: HandyJSON {
     var message: String!
     var title: String!
     var buttonName: String!
+    
+    required init() {}
+}
+class O2NotificationConfirm: HandyJSON {
+    var message: String!
+    var title: String!
+    var buttonLabels: [String]!
+    
+    required init() {}
+}
+class O2NotificationActionSheet: HandyJSON {
+    var title: String!
+    var cancelButton: String!
+    var otherButtons: [String]!
+    
+    required init() {}
+}
+class O2NotificationToast: HandyJSON {
+    var duration: Int!
+    var message: String!
+    
+    required init() {}
+}
+class O2NotificationLoading: HandyJSON {
+    var text: String!
+    
+    required init() {}
+}
+
+class O2UtilPicker: HandyJSON {
+    var value: String!
+    var startDate: String!
+    var endDate: String!
+    
+    required init() {}
+}
+
+class O2UtilNavigation: HandyJSON {
+    var title: String!
+    required init() {}
+}
+
+struct O2UtilPhoneInfo: HandyJSON {
+    var screenWidth: String?
+    var screenHeight: String?
+    var brand:String?
+    var model: String?
+    var version: String?
+    var netInfo: String?
+    var operatorType: String?
 }

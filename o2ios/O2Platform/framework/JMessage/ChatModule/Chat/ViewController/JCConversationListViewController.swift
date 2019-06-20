@@ -17,7 +17,7 @@ class JCConversationListViewController: UIViewController {
     
     private lazy var addButton = UIButton(frame: CGRect(x: 0, y: 0, width: 36, height: 36))
     
-    private lazy var searchController: JCSearchController = JCSearchController(searchResultsController: JCNavigationController(rootViewController: JCSearchResultViewController()))
+//    private lazy var searchController: JCSearchController = JCSearchController(searchResultsController: JCNavigationController(rootViewController: JCSearchResultViewController()))
     
     private lazy var searchView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 36))
     
@@ -112,13 +112,13 @@ class JCConversationListViewController: UIViewController {
         
         _setupNavigation()
         JMessage.add(self, with: nil)
-        let nav = searchController.searchResultsController as! JCNavigationController
-        let vc = nav.topViewController as! JCSearchResultViewController
-        searchController.delegate = self
-        searchController.searchResultsUpdater = vc
-        searchView.addSubview(searchController.searchBar)
-        searchView.backgroundColor = UIColor(netHex: 0xF0F0F0)
-        tableview.tableHeaderView = searchView
+//        let nav = searchController.searchResultsController as! JCNavigationController
+//        let vc = nav.topViewController as! JCSearchResultViewController
+//        searchController.delegate = self
+//        searchController.searchResultsUpdater = vc
+//        searchView.addSubview(searchController.searchBar)
+//        searchView.backgroundColor = UIColor(netHex: 0xF0F0F0)
+//        tableview.tableHeaderView = searchView
         view.addSubview(tableview)
         view.addSubview(emptyView)
         
@@ -434,7 +434,7 @@ extension JCConversationListViewController {
     func _connectingSate() {
         let window = UIApplication.shared.delegate?.window
         if let window = window {
-            guard let rootViewController = window?.rootViewController as? OOTabBarController else {
+            guard let rootViewController = window?.rootViewController as? O2MainController else {
                 return
             }
             guard let nav = rootViewController.selectedViewController as? JCNavigationController else {

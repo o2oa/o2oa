@@ -18,7 +18,7 @@ class JCGroupNameViewController: UIViewController {
         _init()
         groupName = group.displayName()
         groupNameTextField.text = groupName
-        var count = 20 - groupName.characters.count
+        var count = 20 - groupName.count
         count = count < 0 ? 0 : count
         tipLabel.text = "\(count)"
         groupNameTextField.becomeFirstResponder()
@@ -61,7 +61,7 @@ class JCGroupNameViewController: UIViewController {
         navigationItem.rightBarButtonItem =  navRightButton
     }
 
-    func textFieldDidChanged(_ textField: UITextField) {
+    @objc func textFieldDidChanged(_ textField: UITextField) {
         if textField.markedTextRange == nil {
             let text = textField.text!
             if text.count > 20 {
@@ -76,7 +76,7 @@ class JCGroupNameViewController: UIViewController {
     }
     
     //MARK: - click func
-    func _saveNickname() {
+    @objc func _saveNickname() {
         groupNameTextField.resignFirstResponder()
         let groupName = groupNameTextField.text
         MBProgressHUD_JChat.showMessage(message: "修改中...", toView: view)

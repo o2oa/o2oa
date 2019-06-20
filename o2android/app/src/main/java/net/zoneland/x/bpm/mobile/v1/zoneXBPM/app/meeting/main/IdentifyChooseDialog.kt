@@ -19,7 +19,7 @@ import org.jetbrains.anko.dip
 class IdentifyChooseDialog(context: Context?, list: List<ProcessWOIdentityJson>, listener: DialogCallback) : Dialog(context), View.OnClickListener {
 
     private var callback: DialogCallback = listener
-    private lateinit var identifyId: String
+    private var identifyId: String = ""
     private val identityList = list
 
     override fun onCreate(savedInstanceState: Bundle?) {

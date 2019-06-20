@@ -36,7 +36,8 @@ class SMobileChangeViewController: UIViewController {
         self.modifyButton.layer.borderWidth = 1.0
         self.modifyButton.layer.cornerRadius = 20
         self.modifyButton.layer.masksToBounds = true
-        self.modifyButton.layer.borderColor = RGB(251, g: 71, b: 71).cgColor
+        self.modifyButton.layer.borderColor = base_color.cgColor
+        self.modifyButton.theme_setTitleColor(ThemeColorPicker(keyPath: "Base.base_color"), forState: .normal)
         
     }
 
@@ -48,12 +49,16 @@ class SMobileChangeViewController: UIViewController {
     @IBAction func modifyMobileAction(_ sender: UIButton) {
         
         self.showDefaultConfirm(title: "确认提示", message: "确定要解绑当前手机号码，解绑后需要重新绑定服务器后才能继续使用？") { (action) in
-            O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
-                DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
-                OOAppsInfoDB.shareInstance.removeAll()
-                DispatchQueue.main.async {
-                    self.forwardDestVC("login", "bindVC")
-                }
+            let deviceId = O2AuthSDK.shared.bindDevice()?.name ?? ""
+            O2AuthSDK.shared.unBindFromCollect(deviceId: deviceId, callback: { (result, error) in
+                DDLogDebug("unbind callback result:\(result) , error:\(error ?? "")")
+                O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
+                    DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
+                    OOAppsInfoDB.shareInstance.removeAll()
+                    DispatchQueue.main.async {
+                        self.forwardDestVC("login", "bindVC")
+                    }
+                })
             })
         }
         

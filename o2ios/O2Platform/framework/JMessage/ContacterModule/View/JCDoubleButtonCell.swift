@@ -65,7 +65,7 @@ class JCDoubleButtonCell: UITableViewCell {
         _init()
     }
     
-    private var color = UIColor(netHex: 0xfb4747)
+    private var color: UIColor = O2ThemeManager.color(for: "Base.base_color")!
     private lazy var leftButton: UIButton = UIButton()
     private lazy var rightButton: UIButton = UIButton()
     
@@ -99,11 +99,11 @@ class JCDoubleButtonCell: UITableViewCell {
     }
     
     //MARK: - click func
-    func _clickLeftButton(_ sender: UIButton) {
+    @objc func _clickLeftButton(_ sender: UIButton) {
         delegate?.doubleButtonCell?(clickLeftButton: sender)
     }
     
-    func _clickRightButton(_ sender: UIButton) {
+     @objc func _clickRightButton(_ sender: UIButton) {
         delegate?.doubleButtonCell?(clickRightButton: sender)
     }
 

@@ -3,17 +3,20 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import kotlinx.android.synthetic.main.fragment_task_work_submit.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.screenHeight
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.screenWidth
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.LoadingDialog
@@ -64,7 +67,7 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
     override fun onStart() {
         super.onStart()
         val window = dialog.window
-        window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+        window!!.setLayout(activity.screenWidth(), activity.screenHeight())
         window.setGravity(Gravity.TOP)
         window.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
@@ -119,10 +122,24 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
             if (radio == null) {
                 XToast.toastShort(activity, "请选择决策！")
             }else {
-                taskData.routeName = radio.text.toString()
-                taskData.opinion = edit_task_work_submit_approve_opinion.text.toString()
-                loadingDialog.show()
-                presenter.submit(sign, taskData, workId, formData)
+                val routeName = radio.text.toString()
+                val opinion =  edit_task_work_submit_approve_opinion.text.toString()
+                if (activity is TaskWebViewActivity) {
+                    (activity as TaskWebViewActivity).validateFormForSubmitDialog(routeName, opinion) {
+                        result ->
+                        if (result) {
+                            taskData.routeName = routeName
+                            taskData.opinion = opinion
+                            loadingDialog.show()
+                            presenter.submit(sign, taskData, workId, formData)
+                        }else {
+                            XToast.toastShort(activity, "表单校验不通过！")
+                            closeSelf()
+                        }
+                    }
+                }else {
+                    XLog.error("activity 异常。。。。。无法校验表单！！！")
+                }
             }
         }
         image_task_work_submit_sign_btn.setOnClickListener {

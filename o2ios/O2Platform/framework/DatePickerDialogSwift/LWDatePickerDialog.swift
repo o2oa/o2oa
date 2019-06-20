@@ -19,19 +19,31 @@ struct LWDialogStyle {
     //title
     static let titleColor = UIColor(hex: "#FFFFFF")
     static let titleTextFont = UIFont(name: "PingFangSC-Regular", size: 18)
-    static let titleViewBackColor = UIColor(hex: "#FB4747")
+    static var titleViewBackColor: UIColor {
+        get {
+            return O2ThemeManager.color(for: "Base.base_color")!
+        }
+    }
     
     //DatePicker unSelected TextColor Font
     static let dpUnSelTextColor = UIColor(hex: "#999999")
     static let dpUnSelTextFont = UIFont(name: "PingFangSC-Regular", size: 18)
     
-    static let dpSelTextColor = UIColor(hex: "#FB4747")
+    static var dpSelTextColor: UIColor {
+        get {
+            return O2ThemeManager.color(for: "Base.base_color")!
+        }
+    }
     static let dpSelTextFont = UIFont(name: "PingFangSC-Regular", size: 23)
     
     //button
     static let okButtonTextColor = UIColor(hex: "#FFFFFF")
     static let okButtonFont = UIFont(name: "PingFangSC-Regular", size: 16)
-    static let okButtonBackColor = UIColor(hex: "#FB4747")
+    static var okButtonBackColor: UIColor {
+        get {
+            return O2ThemeManager.color(for: "Base.base_color")!
+        }
+    }
     
     static let cancelButtonTextColor = UIColor(hex: "#FFFFFF")
     static let cancelButtonFont = UIFont(name: "PingFangSC-Regular", size: 16)

@@ -63,7 +63,7 @@ public class JCAreaPickerView: UIView {
         pickerView.dataSource = self
         addSubview(pickerView)
         
-        cities = provinces[0][citiesKey] as! [[String : AnyObject]]!
+        cities = (provinces[0][citiesKey] as! [[String : AnyObject]]?)!
         if let province = provinces[0][stateKey] as? String {
             locate.province = province
         }
@@ -72,7 +72,7 @@ public class JCAreaPickerView: UIView {
             locate.city = city
         }
         
-        areas = cities[0][areasKey] as! [String]!
+        areas = (cities[0][areasKey] as! [String]?)!
         if areas.count > 0 {
             locate.area = areas[0]
         } else {
@@ -98,7 +98,7 @@ public class JCAreaPickerView: UIView {
         for index in 0..<provinces.count {
             let pro = provinces[index]
             if pro[stateKey] as! String == proName {
-                cities = provinces[index][citiesKey] as! [[String : AnyObject]]!
+                cities = (provinces[index][citiesKey] as! [[String : AnyObject]]?)!
                 if let province = provinces[index][stateKey] as? String {
                     locate.province = province
                 }
@@ -114,7 +114,7 @@ public class JCAreaPickerView: UIView {
                     locate.city = city
                 }
                 
-                areas = cities[index][areasKey] as! [String]!
+                areas = (cities[index][areasKey] as! [String]?)!
                 pickerView.selectRow(index, inComponent: JCAreaPickerType.city.rawValue, animated: false)
                 break
             }
@@ -232,7 +232,7 @@ extension JCAreaPickerView: UIPickerViewDelegate, UIPickerViewDataSource {
         let pickerType = JCAreaPickerType(rawValue: component)!
         switch pickerType {
         case .province:
-            cities = provinces[row][citiesKey] as! [[String : AnyObject]]!
+            cities = (provinces[row][citiesKey] as! [[String : AnyObject]]?)!
             pickerView.reloadComponent(JCAreaPickerType.city.rawValue)
             pickerView.selectRow(0, inComponent: JCAreaPickerType.city.rawValue, animated: true)
             reloadAreaComponent(pickerView: pickerView, row: 0)
@@ -258,7 +258,7 @@ extension JCAreaPickerView: UIPickerViewDelegate, UIPickerViewDataSource {
             return
         }
         
-        areas = cities[row][areasKey] as! [String]!
+        areas = (cities[row][areasKey] as! [String]?)!
         pickerView.reloadComponent(JCAreaPickerType.area.rawValue)
         pickerView.selectRow(0, inComponent: JCAreaPickerType.area.rawValue, animated: true)
         if let city = cities[row][cityKey] as? String {

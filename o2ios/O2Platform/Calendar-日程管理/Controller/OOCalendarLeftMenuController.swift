@@ -80,7 +80,7 @@ class OOCalendarLeftMenuController: UITableViewController {
         let header = UILabel.init()
         header.frame = CGRect(x: CGFloat(10), y: 1, w: 100, h: 20)
         header.font = setting_item_textFont
-        header.textColor = O2Color.textPrimaryColor
+        header.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
         var title = ""
         switch section {
         case 0:

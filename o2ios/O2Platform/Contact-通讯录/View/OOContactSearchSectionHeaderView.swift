@@ -31,6 +31,6 @@ class OOContactSearchSectionHeaderView: UIView {
         self.sectionTitle.text = title
     }
     
-    private let searchHeaderTypes:[OOContacSearchSectionHeaderType:(String,String)] = [.unit:("icon_bumen","组织"),.person:("icon_linkman","联系人"),.group:("icon_group","群组")]
+    private let searchHeaderTypes:[OOContacSearchSectionHeaderType:(String,String)] = [.unit:(O2ThemeManager.string(for: "Icon.icon_bumen")!,"组织"),.person:(O2ThemeManager.string(for: "Icon.icon_linkman")!,"联系人"),.group:(O2ThemeManager.string(for: "Icon.icon_group")!,"群组")]
     
 }

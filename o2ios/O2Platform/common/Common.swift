@@ -11,13 +11,112 @@ import SwiftValidator
 import SwiftyUserDefaults
 import CocoaLumberjack
 import O2OA_Auth_SDK
+import CoreTelephony
 
-// 当前系统版本
-let kCersion = (UIDevice.current.systemVersion as NSString).floatValue
+
+
 // 屏幕宽度
 let kScreenH = UIScreen.main.bounds.height
 // 屏幕高度
 let kScreenW = UIScreen.main.bounds.width
+
+
+
+public class DeviceUtil {
+    static let shared: DeviceUtil = {
+        return DeviceUtil()
+    }()
+    private init() {}
+    
+    
+    
+    //当前设备名称
+    func getDeviceName() -> String {
+        return UIDevice.current.name
+    }
+    //设备uuid
+    func getDeviceUUId() -> String {
+        return UIDevice.current.identifierForVendor?.uuidString ?? ""
+    }
+    //设备Model
+    func getDeviceModel() -> String {
+        return UIDevice.current.model
+    }
+    // 当前系统版本
+    func getSystemVersion() -> String {
+        return  UIDevice.current.systemVersion
+    }
+    //运营商信息
+    func getCarrier() -> String {
+        let net = CTTelephonyNetworkInfo()
+        return net.subscriberCellularProvider?.carrierName ?? ""
+    }
+    //获取当前网络情况
+    func getNetInfo(callback: @escaping (String)->Void ) {
+        let reachability = Reachability.init(hostName: "www.o2oa.net")
+        let status = reachability?.currentReachabilityStatus()
+        if status != nil {
+            switch status! {
+            case ReachableViaWiFi:
+                callback("wifi")
+            case ReachableViaWWAN:
+                callback(self.getNetType())
+            default:
+                callback("none")
+            }
+        }else {
+            callback("none")
+        }
+    }
+    
+    func getDeviceInfoForJsApi(callback: @escaping (O2UtilPhoneInfo)->Void ) {
+        var info = O2UtilPhoneInfo()
+        info.screenWidth = "\(kScreenW)"
+        info.screenHeight = "\(kScreenH)"
+        info.brand = self.getDeviceName()
+        info.model = self.getDeviceModel()
+        info.version = self.getSystemVersion()
+        info.operatorType = self.getCarrier()
+        getNetInfo { (type) in
+            info.netInfo = type
+            callback(info)
+        }
+    }
+    
+    
+   private func getNetType() -> String {
+        var netconnType = ""
+        let info = CTTelephonyNetworkInfo()
+        let status = info.currentRadioAccessTechnology
+        if (status == "CTRadioAccessTechnologyGPRS") {
+            netconnType = "GPRS"
+        }else if (status == "CTRadioAccessTechnologyEdge" ) {
+            netconnType = "2.75G EDGE";
+        }else if (status == "CTRadioAccessTechnologyWCDMA"){
+            netconnType = "3G"
+        }else if (status == "CTRadioAccessTechnologyHSDPA"){
+            netconnType = "3.5G HSDPA"
+        }else if (status == "CTRadioAccessTechnologyHSUPA"){
+            netconnType = "3.5G HSUPA"
+        }else if (status == "CTRadioAccessTechnologyCDMA1x"){
+            netconnType = "2G"
+        }else if (status == "CTRadioAccessTechnologyCDMAEVDORev0"){
+            netconnType = "3G"
+        }else if (status == "CTRadioAccessTechnologyCDMAEVDORevA"){
+            netconnType = "3G"
+        }else if (status == "CTRadioAccessTechnologyCDMAEVDORevB"){
+            netconnType = "3G"
+        }else if (status == "CTRadioAccessTechnologyeHRPD"){
+            netconnType = "HRPD"
+        }else if (status == "CTRadioAccessTechnologyLTE"){
+            netconnType = "4G"
+        }
+        return netconnType
+    }
+    
+    
+
+}
 
 
 // MARK:- 自定义手机号码检校规则
@@ -49,7 +148,8 @@ protocol AppConfigEnable {
     var firstLoad: Bool {get set}
     //服务器 移动端配置hash值 判断是否更新了
     var customStyleHash: String {get set}
-    
+    // 主题名称
+    var themeName: String {get set}
     //demo服务器提示公告
     var demoAlertTag: Bool {get set}
 }
@@ -67,6 +167,7 @@ extension DefaultsKeys {
     static let bioAuthUser = DefaultsKey<String>("bioAuthUser")
     static let firstLoad = DefaultsKey<Bool>("firstLoad")
     static let customStyleHash = DefaultsKey<String>("customStyleHash")
+    static let themeName = DefaultsKey<String>("themeName")
     static let demoAlertTag = DefaultsKey<Bool>("demoAlertTag")
 }
 
@@ -79,6 +180,15 @@ public class AppConfigSettings: AppConfigEnable {
         }
         set {
             Defaults[.customStyleHash] = newValue
+        }
+    }
+    
+    var themeName: String {
+        get {
+            return Defaults[.themeName]
+        }
+        set {
+            Defaults[.themeName] = newValue
         }
     }
   
@@ -230,7 +340,7 @@ class OOCustomImageManager {
             if let image = imageCache.object(forKey: key.rawValue) {
                 return image
             }else {
-                return UIImage(named: "icon_zhuye_pre")
+                return O2ThemeManager.image(for: "Icon.icon_zhuye_pre")
             }
         }
     }

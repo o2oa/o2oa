@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Whisper
 import Promises
 import O2OA_Auth_SDK
 
@@ -24,7 +23,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
     private let footerFrame = CGRect(x: 0, y: 0, width: kScreenW, height: 100)
     
     lazy var headerView:UIImageView = {
-        return UIImageView(image:#imageLiteral(resourceName: "pic_xzzz_bj"))
+        return UIImageView(image: O2ThemeManager.image(for: "Icon.pic_xzzz_bj"))
     }()
     
     lazy var footerView:UIView = {
@@ -32,9 +31,8 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
         let containerView = UIView(frame: self.footerFrame)
         let buttonFrame = CGRect(x: 25, y: (self.footerFrame.height - 44) / 2, width: self.footerFrame.width - 25 * 2, height: 44)
         let nextButton = OOBaseUIButton(frame: buttonFrame)
-        nextButton.backgroundColor = UIColor.hexInt(0xFB4747)
+        nextButton.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         nextButton.configUI()
-        //nextButton.setBackgroundColor(UIColor.hexInt(0xFB4747), forState: .normal)
         //下一步
         let attrits = NSAttributedString(string: "下一步", attributes: [NSAttributedString.Key.foregroundColor:UIColor.white,NSAttributedString.Key.font:UIFont(name:"PingFangSC-Regular",size:17)!])
         nextButton.setAttributedTitle(attrits, for: .normal)
@@ -58,6 +56,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
         let headerView1 = Bundle.main.loadNibNamed("OORegisterTableView", owner: self, options: nil)?.first as! OORegisterTableView
         headerView1.configTitle(title: "选择服务节点", actionTitle: nil)
         headerView1.frame = CGRect(x: 0, y: 0, width: kScreenW, height: 66)
+        headerView1.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         if #available(iOS 11, *) {
             self.tableView.contentInsetAdjustmentBehavior = .never
             self.view.addSubview(headerView1)
@@ -137,7 +136,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
             }
         }else{
             //请选择指定的目标服务
-            self.showWhisperMessage(title: "请选择服务节点", message: "")
+            self.showError(title: "请选择服务节点")
         }
     }
     

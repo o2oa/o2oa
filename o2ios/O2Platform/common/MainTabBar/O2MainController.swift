@@ -15,11 +15,12 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
     static var tabBarVC:O2MainController!
     
     static func genernateVC() -> O2MainController {
-        guard let vc = tabBarVC else {
-            tabBarVC = O2MainController()
-            return tabBarVC
-        }
-        return vc
+//        guard let vc = tabBarVC else {
+//            tabBarVC = O2MainController()
+//            return tabBarVC
+//        }
+//        return vc
+        return O2MainController()
     }
     
     private var currentIndex:Int = 0
@@ -75,16 +76,17 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         let conversationVC = JCConversationListViewController()
         conversationVC.title  = "消息"
         let messages = ZLNavigationController(rootViewController: conversationVC)
-        messages.tabBarItem = UITabBarItem(title: "消息", image:UIImage(named: "message_normal"), selectedImage: UIImage(named: "message_selected"))
+        
+        messages.tabBarItem = UITabBarItem(title: "消息", image:UIImage(named: "icon_news_nor"), selectedImage: O2ThemeManager.image(for: "Icon.icon_news_pre"))
         
         //通讯录
         let addressVC = OOTabBarHelper.getVC(storyboardName: "contacts", vcName: nil)
         let address = ZLNavigationController(rootViewController: addressVC)
-        address.tabBarItem = UITabBarItem(title: "通讯录", image:UIImage(named: "address_normal"), selectedImage: UIImage(named: "address_selected"))
+        address.tabBarItem = UITabBarItem(title: "通讯录", image:UIImage(named: "icon_address_g"), selectedImage: O2ThemeManager.image(for: "Icon.icon_address_list_pro"))
         
         // main
         let mainVC = mainController()
-        mainVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "icon_zhuye_nor"), selectedImage: UIImage(named: "icon_zhuye_pre"))
+        mainVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "icon_zhuye_nor"), selectedImage: O2ThemeManager.image(for: "Icon.icon_zhuye_pre"))
         mainVC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         let blurImage = OOCustomImageManager.default.loadImage(.index_bottom_menu_logo_blur)
         let newBlurImage = blurImage?.withRenderingMode(.alwaysOriginal)
@@ -96,12 +98,12 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         //应用
         let appsVC = OOTabBarHelper.getVC(storyboardName: "apps", vcName: nil)
         let apps = ZLNavigationController(rootViewController: appsVC)
-        apps.tabBarItem = UITabBarItem(title: "应用", image:UIImage(named: "apps_normal"), selectedImage: UIImage(named: "apps_selected"))
+        apps.tabBarItem = UITabBarItem(title: "应用", image:UIImage(named: "icon_yingyong"), selectedImage: O2ThemeManager.image(for: "Icon.icon_yingyong_pro"))
         
         //设置
         let settingsVC = OOTabBarHelper.getVC(storyboardName: "setting", vcName: nil)
         let settings =   ZLNavigationController(rootViewController: settingsVC)
-        settings.tabBarItem = UITabBarItem(title: "设置", image:UIImage(named: "setting_normal"), selectedImage: UIImage(named: "setting_selected"))
+        settings.tabBarItem = UITabBarItem(title: "设置", image:UIImage(named: "setting_normal"), selectedImage: O2ThemeManager.image(for: "Icon.setting_selected"))
         
         self.viewControllers = [messages, address, mainVC, apps, settings]
         

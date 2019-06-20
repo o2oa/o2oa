@@ -129,5 +129,41 @@ extension UIView {
             self.center = CGPoint(x: self.center.x, y: newValue)
         }
     }
+    
+    
+    
+    // MARK: - UIView 圆角
+    /// 切圆角
+    ///
+    /// - Parameter cornerRadius: 圆角半径
+    func roundedCorners(cornerRadius: CGFloat) {
+        roundedCorners(cornerRadius: cornerRadius, borderWidth: 0, borderColor: nil)
+    }
+    
+    /// 圆角边框设置
+    ///
+    /// - Parameters:
+    ///   - cornerRadius: 圆角半径
+    ///   - borderWidth: 边款宽度
+    ///   - borderColor: 边款颜色
+    func roundedCorners(cornerRadius: CGFloat?, borderWidth: CGFloat?, borderColor: UIColor?) {
+        self.layer.cornerRadius = cornerRadius!
+        self.layer.borderWidth = borderWidth!
+        self.layer.borderColor = borderColor?.cgColor
+        self.layer.masksToBounds = true
+    }
+    
+    /// 设置指定角的圆角
+    ///
+    /// - Parameters:
+    ///   - cornerRadius: 圆角半径
+    ///   - rectCorner: 指定切圆角的角
+    func roundedCorners(cornerRadius: CGFloat?, rectCorner: UIRectCorner?) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: rectCorner!, cornerRadii: CGSize(width: cornerRadius!, height: cornerRadius!))
+        let layer = CAShapeLayer()
+        layer.frame = self.bounds
+        layer.path = path.cgPath
+        self.layer.mask = layer
+    }
 
 }

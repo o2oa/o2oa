@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:background="?android:attr/selectableItemBackground">
+    <TextView
+        android:id="@+id/tv_item_device_title"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="android 设备" />
+    <TextView
+        android:id="@+id/tv_item_device_unbind_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="解除绑定"
+        android:textSize="16sp"
+        android:textColor="@color/icon_blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@mipmap/icon_arrow_22dp"/>
+</android.support.constraint.ConstraintLayout>

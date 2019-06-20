@@ -5,35 +5,47 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
+import android.util.TypedValue.COMPLEX_UNIT_SP
+import android.view.Gravity
 import android.view.View
-import android.webkit.*
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.webkit.JavascriptInterface
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.*
+import com.google.gson.reflect.TypeToken
+import com.tencent.smtt.sdk.QbSdk
 import kotlinx.android.synthetic.main.activity_work_web_view.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.muliba.fancyfilepickerlibrary.PicturePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.tbs.FileReaderActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.WorkNewActionItem
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.WorkControl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkOpinionData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.WebChromeClientWithProgressAndValueCallback
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
+import org.jetbrains.anko.dip
 import java.io.File
 
 
@@ -57,34 +69,33 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         }
     }
 
-    val WORK_WEB_VIEW_UPLOAD_REQUEST_CODE = 1001
-    val WORK_WEB_VIEW_REPLACE_REQUEST_CODE = 1002
-    val TAKE_FROM_PICTURES_CODE = 1003
-    val TAKE_FROM_CAMERA_CODE = 1004
+    private  val WORK_WEB_VIEW_UPLOAD_REQUEST_CODE = 1001
+    private  val WORK_WEB_VIEW_REPLACE_REQUEST_CODE = 1002
+    private  val TAKE_FROM_PICTURES_CODE = 1003
+    private  val TAKE_FROM_CAMERA_CODE = 1004
 
-    var title = ""
-    var workId = ""
-    var workCompletedId = ""
-    var isWorkCompleted = false
-    var url = ""
+    private var title = ""
+    private  var workId = ""
+    private  var workCompletedId = ""
+    private  var isWorkCompleted = false
+    private  var url = ""
 
-    var control: WorkControl? = null
-    var read: ReadData? = null
-    var site = ""
-    var attachmentId = ""
-    var formData: String? = ""//表单json数据
-    var formOpinion: String? = ""// 在表单内的意见信息
-    val routeNameList = ArrayList<String>()
+    private var control: WorkControl? = null
+    private var read: ReadData? = null
+    private var site = ""
+    private var attachmentId = ""
+    private var formData: String? = ""//表单json数据
+    private var formOpinion: String? = ""// 在表单内的意见信息
+    private val routeNameList = ArrayList<String>()
 
-    val downloadDocument: DownloadDocument by lazy { DownloadDocument(this) }
-    val cameraImageUri: Uri by lazy { FileUtil.getUriFromFile(this, File(FileExtensionHelper.getCameraCacheFilePath())) }
+    private val downloadDocument: DownloadDocument by lazy { DownloadDocument(this) }
+    private val cameraImageUri: Uri by lazy { FileUtil.getUriFromFile(this, File(FileExtensionHelper.getCameraCacheFilePath())) }
+    private val webChromeClient: WebChromeClientWithProgressAndValueCallback by lazy { WebChromeClientWithProgressAndValueCallback.with(this) }
     var imageUploadData: O2UploadImageData? = null
+    private val jsNotification: JSInterfaceO2mNotification by lazy { JSInterfaceO2mNotification.with(this) }
+    private val jsUtil: JSInterfaceO2mUtil by lazy { JSInterfaceO2mUtil.with(this) }
 
-    //web端网页文件选择支持
-    //5.0以下使用
-    private var uploadMessage: ValueCallback<Uri>? = null
-    // 5.0及以上使用
-    private var uploadMessageAboveL: ValueCallback<Array<Uri>>? = null
+
 
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
@@ -107,28 +118,11 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         setupToolBar(title, true)
 
         web_view.addJavascriptInterface(this, "o2android")
-        web_view.webChromeClient = object : WebChromeClient() {
-
-//            override fun onProgressChanged(view: WebView, newProgress: Int) {
-//                if (newProgress == 100) {
-//                    web_view.progressBar.visibility = View.GONE
-//                } else {
-//                    if (web_view.progressBar.visibility == View.GONE)
-//                        progressBar.visibility = View.VISIBLE
-//                    progressBar.progress = newProgress
-//                }
-//                super.onProgressChanged(view, newProgress)
-//            }
-
-            // For Android >= 5.0
-            override fun onShowFileChooser(webView: WebView, filePathCallback: ValueCallback<Array<Uri>>, fileChooserParams: WebChromeClient.FileChooserParams): Boolean {
-                XLog.debug("选择文件 5。0。。。。。。。。。。。。。。。。。")
-                uploadMessageAboveL = filePathCallback
-                showPictureChooseMenu()
-                return true
-            }
-
-        }
+        jsNotification.setupWebView(web_view)
+        jsUtil.setupWebView(web_view)
+        web_view.addJavascriptInterface(jsNotification, JSInterfaceO2mNotification.JSInterfaceName)
+        web_view.addJavascriptInterface(jsUtil, JSInterfaceO2mUtil.JSInterfaceName)
+        web_view.webChromeClient = webChromeClient
         web_view.webViewClient = object : WebViewClient() {
             override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
                 XLog.error("ssl error, $error")
@@ -155,6 +149,10 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
+            // 网页内 js 选择照片的能力
+            if (webChromeClient.onActivityResult(requestCode, resultCode, data)) {
+                return
+            }
             when (requestCode) {
                 WORK_WEB_VIEW_UPLOAD_REQUEST_CODE -> {
                     val result = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
@@ -180,39 +178,16 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                     //选择照片
                     data?.let {
                         val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
-                        if (!TextUtils.isEmpty(result)){
+                        if (!TextUtils.isEmpty(result)) {
                             XLog.debug("照片 path:$result")
-                            when {
-                                uploadMessage!=null -> {
-                                    val uri = FileUtil.getUriFromFile(this, File(result))
-                                    uploadMessage?.onReceiveValue(uri)
-                                }
-                                uploadMessageAboveL!=null -> {
-                                    val uri = FileUtil.getUriFromFile(this, File(result))
-                                    val list = ArrayList<Uri>()
-                                    list.add(uri)
-                                    uploadMessageAboveL?.onReceiveValue(list.toTypedArray())
-                                }
-                                else -> uploadImage2FileStorageStart(result)
-                            }
+                            uploadImage2FileStorageStart(result)
                         }
                     }
                 }
                 TAKE_FROM_CAMERA_CODE -> {
                     //拍照
                     XLog.debug("拍照//// ")
-                    when {
-                        uploadMessage!=null -> {
-                            uploadMessage?.onReceiveValue(cameraImageUri)
-                        }
-                        uploadMessageAboveL!=null -> {
-                            val list = ArrayList<Uri>()
-                            list.add(cameraImageUri)
-                            uploadMessageAboveL?.onReceiveValue(list.toTypedArray())
-                        }
-                        else -> uploadImage2FileStorageStart(FileExtensionHelper.getCameraCacheFilePath())
-                    }
-
+                    uploadImage2FileStorageStart(FileExtensionHelper.getCameraCacheFilePath())
                 }
             }
         }
@@ -220,31 +195,31 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     //MARK: - click operation button event
 
-    fun formDeleteBtnClick(view: View) {
+    fun formDeleteBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.delete_work_confirm_message), listener =  {
             showLoadingDialog()
             mPresenter.delete(workId)
         })
     }
-    fun formSaveBtnClick(view: View) {
+    fun formSaveBtnClick(view: View?) {
         XLog.debug("click save button")
         web_view.clearFocus()
         evaluateJavascriptGetFormData()
     }
-    fun formGoNextBtnClick(view: View) {
+    fun formGoNextBtnClick(view: View?) {
         XLog.debug("click submit button")
         web_view.clearFocus()
         formData()
         getFormOpinion()
         submitData()
     }
-    fun formSetReadBtnClick(view: View) {
+    fun formSetReadBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.read_complete_confirm_message), listener =  {
             showLoadingDialog()
             mPresenter.setReadComplete(read)
         })
     }
-    fun formRetractBtnClick(view: View) {
+    fun formRetractBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.retract_confirm_message), listener = {
             showLoadingDialog()
             mPresenter.retractWork(workId)
@@ -270,7 +245,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      */
     @JavascriptInterface
     fun appFormLoaded(result: String) {// 获取control 动态生成操作按钮
-        XLog.debug("表单加载完成回调：$result")
+        XLog.debug("表单加载完成回调：$result")// 20190520 result改成了操作按钮列表 如果是result是true就是老系统，用原来的方式。。。。。。。。得兼容老方式诶
         runOnUiThread {
             if (TextUtils.isEmpty(title)) {
                 web_view.evaluateJavascript("layout.appForm.businessData.work.title") { value ->
@@ -282,15 +257,33 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                     }
                 }
             }
-            // 获取control 生成操作按钮
-            web_view.evaluateJavascript("layout.appForm.businessData.control") { value ->
-                XLog.debug("control: $value")
-                try {
-                    control = O2SDKManager.instance().gson.fromJson(value, WorkControl::class.java)
-                } catch (e: Exception) {
+
+            if (result == "true") { // 老版本的操作
+                // 获取control 生成操作按钮
+                web_view.evaluateJavascript("layout.appForm.businessData.control") { value ->
+                    XLog.debug("control: $value")
+                    try {
+                        control = O2SDKManager.instance().gson.fromJson(value, WorkControl::class.java)
+                    } catch (e: Exception) {
+                    }
+                    initOptionBar()
                 }
-                initOptionBar()
+            }else {// 2019-05-21 增加新版操作按钮
+                // 解析result 操作按钮列表
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        val type = object : TypeToken<List<WorkNewActionItem>>() {}.type
+                        val list: List<WorkNewActionItem> = O2SDKManager.instance().gson.fromJson(result, type)
+                        initOptionBarNew(list)
+                    }catch (e: Exception){
+                        XLog.error("解析操作按钮结果列表出错", e)
+                    }
+                }else {
+                    XLog.error("操作按钮结果为空")
+                }
+
             }
+
             web_view.evaluateJavascript("layout.appForm.businessData.read") { value ->
                 XLog.debug("read: $value")
                 try {
@@ -462,7 +455,15 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     override fun downloadAttachmentSuccess(file: File) {
         hideLoadingDialog()
-        if (file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
+//        if (file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
+        if (file.exists()){
+            if (FileExtensionHelper.isImageFromFileExtension(file.extension)) {
+                go<LocalImageViewActivity>(LocalImageViewActivity.startBundle(file.absolutePath))
+            }else {
+                go<FileReaderActivity>(FileReaderActivity.startBundle(file.absolutePath))
+//                QbSdk.openFileReader(this, file.absolutePath, HashMap<String, String>()) { p0 -> XLog.info("打开文件返回。。。。。$p0") }
+            }
+        }
     }
 
     override fun invalidateArgs() {
@@ -526,10 +527,144 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
             }
             if (count > 0 ) {
                 bottom_operate_button_layout.visible()
+                fl_bottom_operation_bar.visible()
             }
         }else {
             XLog.error("control为空。。。。。。")
         }
+    }
+
+
+    /**
+     * 20190521
+     * 生成操作按钮 新版
+     */
+    private fun initOptionBarNew(list: List<WorkNewActionItem>) {
+        if(!list.isEmpty()) {
+            val len = list.count()
+            when(len) {
+                1 -> {
+                    val menuItem = list[0]
+                    tv_work_form_bottom_first_action.text = menuItem.text
+                    tv_work_form_bottom_first_action.visible()
+                    tv_work_form_bottom_first_action.setOnClickListener {
+                        bottomButtonAction(menuItem)
+                    }
+                }
+                2 -> {
+                    val menuItem = list[0]
+                    tv_work_form_bottom_first_action.text = menuItem.text
+                    tv_work_form_bottom_first_action.visible()
+                    tv_work_form_bottom_first_action.setOnClickListener {
+                        bottomButtonAction(menuItem)
+                    }
+                    val menuItem2 = list[1]
+                    tv_work_form_bottom_second_action.text = menuItem2.text
+                    tv_work_form_bottom_second_action.visible()
+                    tv_work_form_bottom_second_action.setOnClickListener {
+                        bottomButtonAction(menuItem2)
+                    }
+                }
+                else -> {
+                    val menuItem = list[0]
+                    tv_work_form_bottom_first_action.text = menuItem.text
+                    tv_work_form_bottom_first_action.visible()
+                    tv_work_form_bottom_first_action.setOnClickListener {
+                        bottomButtonAction(menuItem)
+                    }
+                    val menuItem2 = list[1]
+                    tv_work_form_bottom_second_action.text = menuItem2.text
+                    tv_work_form_bottom_second_action.visible()
+                    tv_work_form_bottom_second_action.setOnClickListener {
+                        bottomButtonAction(menuItem2)
+                    }
+                    img_work_form_bottom_more_action.visible()
+                    img_work_form_bottom_more_action.setOnClickListener {
+                        if (rl_bottom_operation_bar_mask.visibility == View.VISIBLE) {
+                            rl_bottom_operation_bar_mask.gone()
+                        }else {
+                            rl_bottom_operation_bar_mask.visible()
+                        }
+                    }
+                    rl_bottom_operation_bar_mask.setOnClickListener {
+                        XLog.debug("点击了背景。。。。。")
+                        rl_bottom_operation_bar_mask.gone()
+                    }
+                    //装载更多按钮
+                    ll_bottom_operation_bar_new_more.removeAllViews()
+                    for ((index, item) in list.withIndex()) {
+                       if (index > 1) {
+                           val button = newBottomMoreButton(item)
+                           ll_bottom_operation_bar_new_more.addView(button)
+                           button.setOnClickListener {
+                               bottomButtonAction(item)
+                           }
+                       }
+                    }
+                }
+
+            }
+            fl_bottom_operation_bar.visible()
+            ll_bottom_operation_bar_new.visible()
+        }
+    }
+
+    /**
+     * 底部操作按钮执行操作
+     */
+    private fun bottomButtonAction(menuItem: WorkNewActionItem) {
+        XLog.debug("点击了按钮${menuItem.text}")
+        XLog.debug("动作：${menuItem.action} , control:${menuItem.control}")
+
+        if (!TextUtils.isEmpty(menuItem.actionScript)) {
+            val jsExc = "layout.app.appForm._runCustomAction(${menuItem.actionScript})"
+            XLog.debug(jsExc)
+            web_view.evaluateJavascript(jsExc) { value ->
+                XLog.debug("onReceiveValue value=$value")
+            }
+        }else {
+            when(menuItem.control) {
+                "allowDelete" -> {
+                    formDeleteBtnClick(null)
+                }
+                "allowSave" -> {
+                    formSaveBtnClick(null)
+                }
+                "allowProcessing" -> {
+                    formGoNextBtnClick(null)
+                }
+                "allowReadProcessing" ->{
+                    formSetReadBtnClick(null)
+                }
+                "allowRetract" -> {
+                    formRetractBtnClick(null)
+                }
+                else -> {
+                    val jsExc ="layout.app.appForm[\"${menuItem.action}\"]()"
+                    XLog.debug(jsExc)
+                    web_view.evaluateJavascript(jsExc) { value ->
+                        XLog.debug("onReceiveValue value=$value")
+                    }
+                }
+            }
+        }
+        rl_bottom_operation_bar_mask.gone()
+    }
+
+    /**
+     * 更多按钮生成
+     */
+    private fun newBottomMoreButton(menuItem: WorkNewActionItem): TextView {
+        val button = TextView(this)
+        val layoutparam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dip(42))
+        layoutparam.bottomMargin = dip(5)
+        button.layoutParams = layoutparam
+        button.gravity = Gravity.CENTER
+        button.text = menuItem.text
+        button.setTextColor(ContextCompat.getColor(this, R.color.z_color_primary))
+        button.setBackgroundColor(Color.WHITE)
+        button.setTextSize(COMPLEX_UNIT_SP, 16f)
+        return button
     }
 
     private fun submitData() {
@@ -540,13 +675,6 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                     XLog.debug("submitData, onReceiveValue value=$task")
                     try {
                         XLog.debug("submitData，TaskData:$task")
-//                        val data = O2App.instance.gson.fromJson(task, TaskData::class.java)
-//                        XLog.debug("submitData，createTime:" + data.createTime)
-//                        routeNameList.clear()
-//                        data.routeNameList?.let {
-//                            routeNameList.addAll(it)
-//                        }
-//                        openChooseRouterDialog(data)
                         if (TextUtils.isEmpty(task)) {
                             XToast.toastShort(this@TaskWebViewActivity, "任务数据获取不到！")
                         }else {
@@ -559,6 +687,20 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 }
             } else {
                 XToast.toastShort(this@TaskWebViewActivity, "请检查表单填写是否正确！")
+            }
+        }
+    }
+
+    /**
+     * 校验表单
+     * 选择路由和填写意见后，提交工作前
+     */
+    fun validateFormForSubmitDialog(route: String, opinion: String, callback:(Boolean)->Unit) {
+        web_view.evaluateJavascript("layout.appForm.formValidation(\"$route\", \"$opinion\")") { value ->
+            if (value == "true") {
+                callback(true)
+            }else {
+                callback(false)
             }
         }
     }
@@ -676,11 +818,6 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 }
                 .setCancelButton("取消", resources.getColor(R.color.z_color_text_hint)) {
                     XLog.debug("取消。。。。。")
-                    if (uploadMessage!=null){
-                        uploadMessage?.onReceiveValue(null)
-                    }else if (uploadMessageAboveL!=null) {
-                        uploadMessageAboveL?.onReceiveValue(null)
-                    }
                 }
                 .show()
     }

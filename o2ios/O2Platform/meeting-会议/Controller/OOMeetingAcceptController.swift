@@ -30,6 +30,7 @@ class OOMeetingAcceptController: UIViewController,EmptyDataSetSource,EmptyDataSe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBarItem?.selectedImage = O2ThemeManager.image(for: "Icon.icon_zjhy_pro")
         tableView.register(UINib.init(nibName: "OOMeetingAcceptCell", bundle: nil), forCellReuseIdentifier: meetingIdentifier)
         headerView.autoresizingMask = .flexibleWidth
         tableView.tableHeaderView = headerView

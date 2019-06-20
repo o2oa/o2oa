@@ -18,6 +18,7 @@ import CocoaLumberjack
 import O2OA_Auth_SDK
 
 class ContactPersonInfoV2ViewController: UITableViewController {
+    @IBOutlet weak var beijingImg: UIImageView!
     @IBOutlet weak var personImg: UIImageView!
     @IBOutlet weak var personName: UILabel!
     @IBOutlet weak var personQQ: UILabel!
@@ -69,6 +70,7 @@ class ContactPersonInfoV2ViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.beijingImg.theme_image = ThemeImagePicker(keyPath: "Icon.pic_beijing1")
         self.personImg.layer.cornerRadius = self.personImg.frame.size.width / 2
         self.personImg.clipsToBounds = true
         loadPersonInfo(nil)
@@ -146,7 +148,7 @@ class ContactPersonInfoV2ViewController: UITableViewController {
             cell.eventBut.addTarget(self, action: #selector(self.call), for: UIControl.Event.touchUpInside)
         case "电子邮件":
             cell.valueLab.text = self.contact?.mail
-            cell.eventBut.setImage(UIImage(named: "icon_email"), for: .normal)
+            cell.eventBut.theme_setImage(ThemeImagePicker(keyPath:"Icon.icon_email"), forState: .normal)
             cell.eventBut.addTarget(self, action: #selector(self.sendMail), for: UIControl.Event.touchUpInside)
         case "部门":
             var unitName = ""

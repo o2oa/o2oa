@@ -232,7 +232,7 @@ class ICAppealFormViewController: FormViewController {
         ButtonRow.defaultCellUpdate = {
             cell,row in
             cell.textLabel?.font = setting_item_textFont
-            cell.textLabel?.textColor = RGB(251, g: 71, b: 71)
+            cell.textLabel?.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
             
         }
         
@@ -246,7 +246,7 @@ class ICAppealFormViewController: FormViewController {
             cell,row in
             cell.textLabel?.font = setting_content_textFont
             cell.textLabel?.textColor =  setting_content_textColor
-            cell.segmentedControl.backgroundColor = RGB(251, g: 71, b: 71)
+            cell.segmentedControl.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
             cell.segmentedControl.tintColor = UIColor.white
         }
     }

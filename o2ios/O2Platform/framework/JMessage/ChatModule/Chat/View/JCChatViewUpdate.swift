@@ -231,7 +231,7 @@ internal class JCChatViewUpdate: NSObject {
         // convert messages and replace specify message
         let newItems = items as [JCMessageType]
         let convertedItems = _convert(messages: newItems, first: _element(at: begin), last: _element(at: end - 1))
-        let selectedRange = Range<Int>(max(begin, 0) ..< min(end, count))
+        let selectedRange = max(begin, 0) ..< min(end, count)
         let selectedItems = oldData.subarray(with: selectedRange)
         
         // compute index paths

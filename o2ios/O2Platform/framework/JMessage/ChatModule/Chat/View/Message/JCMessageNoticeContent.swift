@@ -35,5 +35,5 @@ open class JCMessageNoticeContent: NSObject, JCMessageContentType {
         return size
     }
 
-    open static let unsupport: JCMessageNoticeContent = JCMessageNoticeContent(text: "The message does not support")
+    public static let unsupport: JCMessageNoticeContent = JCMessageNoticeContent(text: "The message does not support")
 }

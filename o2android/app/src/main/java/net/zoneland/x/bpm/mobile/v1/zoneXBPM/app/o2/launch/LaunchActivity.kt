@@ -177,8 +177,12 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
                         downloadFragment = DownloadAPKFragment()
                     }
                     downloadFragment?.isCancelable = false
-                    downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
-                    downloadServiceStart()
+                    if (downloadFragment?.isAdded == true) {
+                    }else {
+                        downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
+                        downloadServiceStart()
+                    }
+
                 }
             }else {
                 launch()
@@ -192,8 +196,12 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
                 downloadFragment = DownloadAPKFragment()
             }
             downloadFragment?.isCancelable = false
-            downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
-            downloadServiceStart()
+            if (downloadFragment?.isAdded == true) {
+            }else {
+                downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
+                downloadServiceStart()
+            }
+
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.O)

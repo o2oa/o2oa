@@ -54,8 +54,8 @@ class OOCalendarMainMonthViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-        self.calendarBtn.setTitleColor(O2Color.primaryColor, for: .normal)
-        self.todayBtn.setTitleColor(O2Color.primaryColor, for: .normal)
+        self.calendarBtn.theme_setTitleColor(ThemeColorPicker(keyPath: "Base.base_color"), forState: .normal)
+        self.todayBtn.theme_setTitleColor(ThemeColorPicker(keyPath: "Base.base_color"), forState: .normal)
         
         
         //初始化
@@ -231,7 +231,7 @@ extension OOCalendarMainMonthViewController: UITableViewDelegate, UITableViewDat
         calendar.firstWeekday = 1
         calendar.appearance.headerTitleColor = UIColor.darkGray//头部字体样色
         calendar.appearance.headerDateFormat = "yyyy年MM月" //头部样式
-        calendar.appearance.weekdayTextColor = O2Color.textPrimaryColor // 星期字体颜色
+        calendar.appearance.weekdayTextColor = O2ThemeManager.color(for: "Base.base_color")! // 星期字体颜色
         calendar.locale = Locale.init(identifier: "zh_CN")
         calendar.headerHeight = CGFloat(0)
         calendarViewDic[section] = calendar

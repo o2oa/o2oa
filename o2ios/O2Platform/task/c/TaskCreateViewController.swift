@@ -61,7 +61,7 @@ class TaskCreateViewController: FormViewController {
         ButtonRow.defaultCellUpdate = {
             cell,row in
             cell.textLabel?.font = setting_item_textFont
-            cell.textLabel?.textColor = RGB(251, g: 71, b: 71)
+            cell.textLabel?.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
             
         }
         title = process?.name

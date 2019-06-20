@@ -41,7 +41,7 @@ class CalendarEventTableViewCell: UITableViewCell {
         if let color = model.color {
             eventColorView.backgroundColor = UIColor.init(hex: color)
         }else {
-            eventColorView.backgroundColor = O2Color.primaryColor
+            eventColorView.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         }
         if model.isAllDayEvent == true {
             eventTimeStack.isHidden = true

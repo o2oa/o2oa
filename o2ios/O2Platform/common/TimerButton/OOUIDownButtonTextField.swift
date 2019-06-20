@@ -21,7 +21,7 @@ class OOUIDownButtonTextField: OOUITextField {
     @IBInspectable open var countDown = 60
     
     //按钮文字颜色
-    @IBInspectable open var buttonTitleColor:UIColor = UIColor.hexInt(0xFB4747)
+    @IBInspectable open var buttonTitleColor:UIColor = O2ThemeManager.color(for: "Base.base_color")!
     
     //标签文本颜色
     @IBInspectable open var labelTextColor:UIColor = UIColor.hexInt(0x999999)
@@ -53,6 +53,12 @@ class OOUIDownButtonTextField: OOUITextField {
         downButton?.addSubview(vLineView)
         downButton?.addTarget(self, action: #selector(downCountClick(_:)), for: .touchUpInside)
         rightView = downButton
+    }
+    
+    open func themeUpdate(buttonTitleColor: UIColor) {
+        self.buttonTitleColor = buttonTitleColor
+        let dbtn = self.rightView as? OOTimerButton
+        dbtn?.theme_setButtonTextColor(buttonTextColor: buttonTitleColor)
     }
     
     @objc func downCountClick(_ sender:OOTimerButton){

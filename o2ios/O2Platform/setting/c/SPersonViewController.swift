@@ -74,7 +74,7 @@ class SPersonViewController: FormViewController {
         ButtonRow.defaultCellUpdate = {
             cell,row in
             cell.textLabel?.font = setting_item_textFont
-            cell.textLabel?.textColor = RGB(251, g: 71, b: 71)
+            cell.textLabel?.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
 
         }
         ActionSheetRow<String>.defaultCellUpdate = {
@@ -213,7 +213,7 @@ class SPersonViewController: FormViewController {
                     self.present(alertController, animated: true, completion: nil)
                 }).cellSetup({ (cell:ButtonCellOf<String>, buttonRow) in
                     cell.textLabel?.font = UIFont(name: "PingFangSC-Regular", size: 14.0)
-                    cell.textLabel?.textColor = RGB(251, g: 71, b: 71)
+                    cell.textLabel?.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
                 })
         self.dismissProgressHUD()
     }

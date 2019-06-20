@@ -466,18 +466,10 @@ class TodoTaskViewController: UITableViewController {
             let destVC = segue.destination as! TodoTaskDetailViewController
             destVC.todoTask = sender as? TodoTask
             destVC.backFlag = 2 //返回标志
-//        }else if segue.identifier == "showReadDetailSegue" {
-//            let destVC = segue.destination as! ReadTaskDetailViewController
-//            destVC.todoTask = sender as? TodoTask
         }else if segue.identifier == "showTodoedDetailSegue" {
             let destVC = segue.destination as! TodoedTaskViewController
             destVC.todoTask = sender as? TodoTask
-            
-//        }else if segue.identifier == "showReadedDetailSegue" {
-//            let destVC = segue.destination as! ReadedTaskDetailViewController
-//            destVC.todoTask = sender as? TodoTask
         }else if segue.identifier == "toSignature" {
-            
             DDLogDebug("签名去了。。。。。。。。。")
         }
     }

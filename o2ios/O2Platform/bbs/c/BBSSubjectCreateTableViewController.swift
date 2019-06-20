@@ -120,7 +120,7 @@ class BBSSubjectCreateTableViewController: UITableViewController {
             let attributes = [NSAttributedString.Key.font:UIFont(name: "PingFangSC-Regular", size: 14.0)!,NSAttributedString.Key.foregroundColor:UIColor.white]
             let attrString = NSAttributedString(string: "点击编辑正文内容", attributes: attributes)
             button.setAttributedTitle(attrString, for: .normal)
-            button.backgroundColor = RGB(251, g: 71, b: 71)
+            button.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
             button.frame = CGRect(x: 10, y: 5, w: 150, h: 30)
             button.addTarget(self, action: #selector(showEditControlAction(_:)), for: .touchUpInside)
             headerView.addSubview(button)
@@ -215,7 +215,7 @@ extension BBSSubjectCreateTableViewController:UIPickerViewDataSource,UIPickerVie
         let titleLabel = UILabel(x: 0, y: 0, w: 120, h: 30)
         let title = self.subjectcategory[row]
         titleLabel.text = title
-        titleLabel.textColor = RGB(251, g: 71, b: 71)
+        titleLabel.theme_textColor =  ThemeColorPicker(keyPath: "Base.base_color")
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont(name: "PingFangSC-Regular", size: 14.0)!
         titleLabel.backgroundColor = UIColor.clear
@@ -228,13 +228,6 @@ extension BBSSubjectCreateTableViewController:UIPickerViewDataSource,UIPickerVie
         DDLogDebug(title)
         self.pushlishEntity.type = title
     }
-    
-//
-//    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-//        let title = self.subjectcategory[row]
-//        let attrTitle = NSAttributedString(string: title, attributes: [NSFontAttributeName:UIFont(name: "PingFangSC-Regular", size: 14.0)!,NSForegroundColorAttributeName:RGB(251, g: 71, b: 71)])
-//        return attrTitle
-//    }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         return 120.0

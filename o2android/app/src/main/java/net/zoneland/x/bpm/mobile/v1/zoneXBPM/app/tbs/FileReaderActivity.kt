@@ -21,8 +21,17 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 class FileReaderActivity : BaseO2BindActivity() {
 
 
-    val viewModel: FileReaderViewModel by lazy { ViewModelProviders.of(this).get(FileReaderViewModel::class.java) }
+    private val viewModel: FileReaderViewModel by lazy { ViewModelProviders.of(this).get(FileReaderViewModel::class.java) }
     private var mTbsReaderView: TbsReaderView?=null
+
+    companion object {
+        const val file_reader_file_path_key = "file_reader_file_path_key"
+        fun startBundle(filePath: String): Bundle {
+            val bundle = Bundle()
+            bundle.putString(file_reader_file_path_key, filePath)
+            return bundle
+        }
+    }
 
     override fun bindView(savedInstanceState: Bundle?) {
         val bind = DataBindingUtil.setContentView<ActivityFileReaderBinding>(this, R.layout.activity_file_reader)
@@ -32,44 +41,48 @@ class FileReaderActivity : BaseO2BindActivity() {
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
         setupToolBar("文件预览", true)
-        mTbsReaderView = TbsReaderView(this, { arg, arg1, arg2 ->
+        mTbsReaderView = TbsReaderView(this) { arg, arg1, arg2 ->
             XLog.info("arg:$arg, 1:$arg1, 2:$arg2")
-        })
+        }
         fl_file_reader_container.addView(mTbsReaderView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.clear()
-        menuInflater?.inflate(R.menu.menu_file_reader, menu)
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
-            R.id.menu_file_choose -> {
-                FilePicker().withActivity(this)
-                        .chooseType(FilePicker.CHOOSE_TYPE_SINGLE)
-                        .requestCode(1024)
-                        .start()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
-                1024->{
-                    val file = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
-                    if (!TextUtils.isEmpty(file)) {
-                        openFileWithTBS(file!!)
-                    }
-                }
-            }
+        val filePath = intent.extras.getString(file_reader_file_path_key) ?: ""
+        if (!TextUtils.isEmpty(filePath)) {
+            openFileWithTBS(filePath)
         }
     }
+
+//    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+//        menu?.clear()
+//        menuInflater?.inflate(R.menu.menu_file_reader, menu)
+//        return super.onPrepareOptionsMenu(menu)
+//    }
+
+//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+//        when(item?.itemId) {
+//            R.id.menu_file_choose -> {
+//                FilePicker().withActivity(this)
+//                        .chooseType(FilePicker.CHOOSE_TYPE_SINGLE)
+//                        .requestCode(1024)
+//                        .start()
+//                return true
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == Activity.RESULT_OK) {
+//            when(requestCode) {
+//                1024->{
+//                    val file = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
+//                    if (!TextUtils.isEmpty(file)) {
+//                        openFileWithTBS(file!!)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     override fun onDestroy() {
         mTbsReaderView?.onStop()

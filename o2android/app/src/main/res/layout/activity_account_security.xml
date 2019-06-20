@@ -106,7 +106,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="重新绑定手机号码"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:textSize="15sp"
                         android:textColor="@color/z_color_text_hint"
@@ -115,16 +114,16 @@
                         android:id="@+id/image_account_security_arrow"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@mipmap/icon_arrow_22dp"/>
                     <TextView
                         android:id="@+id/account_change_mobile_label_id"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/image_account_security_arrow"
+                        android:layout_toStartOf="@id/image_account_security_arrow"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/spacing_tiny"
+                        android:layout_marginEnd="@dimen/spacing_tiny"
                         android:textSize="15sp"
                         android:textColor="@color/z_color_text_primary_dark"
                         />
@@ -172,6 +171,44 @@
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@android:color/white">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rl_account_security_bind_device_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="常用设备管理"
+                        android:layout_alignParentStart="true"
+                        android:textSize="15sp"
+                        android:textColor="@color/z_color_text_hint"
+                        android:layout_centerVertical="true" />
+                    <ImageView
+                        android:id="@+id/image_account_security_bind_device_arrow"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/icon_arrow_22dp"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

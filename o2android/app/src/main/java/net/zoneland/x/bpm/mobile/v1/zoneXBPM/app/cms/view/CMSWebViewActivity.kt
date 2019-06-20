@@ -1,14 +1,19 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view
 
 
+import android.content.Intent
+import android.net.http.SslError
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
+import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_cms_web_view_document.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.JSInterfaceO2mNotification
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.JSInterfaceO2mUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.AttachmentItemVO
@@ -16,6 +21,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.AttachPopupWindow
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.WebChromeClientWithProgressAndValueCallback
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.DataInputStream
@@ -31,8 +37,8 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
     override fun layoutResId(): Int  = R.layout.activity_cms_web_view_document
 
     companion object {
-        val CMS_VIEW_DOCUMENT_ID_KEY = "CMS_VIEW_DOCUMENT_ID_KEY"
-        val CMS_VIEW_DOCUMENT_TITLE_KEY = "CMS_VIEW_DOCUMENT_TITLE_KEY"
+        const val CMS_VIEW_DOCUMENT_ID_KEY = "CMS_VIEW_DOCUMENT_ID_KEY"
+        const val CMS_VIEW_DOCUMENT_TITLE_KEY = "CMS_VIEW_DOCUMENT_TITLE_KEY"
 
         fun startBundleData(docId: String, docTitle:String): Bundle {
             val bundle = Bundle()
@@ -41,11 +47,15 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
             return bundle
         }
     }
-    var docId = ""
-    var docTitle = ""
-    var url = ""
-    val attachList = ArrayList<AttachmentItemVO>()
-    val popupWindow: AttachPopupWindow by lazy { AttachPopupWindow(this, attachList) }
+    private var docId = ""
+    private var docTitle = ""
+    private var url = ""
+    private val attachList = ArrayList<AttachmentItemVO>()
+    private val popupWindow: AttachPopupWindow by lazy { AttachPopupWindow(this, attachList) }
+    private val webChromeClient: WebChromeClientWithProgressAndValueCallback by lazy { WebChromeClientWithProgressAndValueCallback.with(this) }
+    private val jsNotification: JSInterfaceO2mNotification by lazy { JSInterfaceO2mNotification.with(this) }
+    private val jsUtil: JSInterfaceO2mUtil by lazy { JSInterfaceO2mUtil.with(this) }
+
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
         docId = intent.extras?.getString(CMS_VIEW_DOCUMENT_ID_KEY) ?: ""
@@ -58,7 +68,7 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
         }
         url = APIAddressHelper.instance().getCMSWebViewUrl(docId)
         url += "&time="+System.currentTimeMillis()
-        XLog.debug("url="+url)
+        XLog.debug("url=$url")
 
         setupToolBar(docTitle, true)
 
@@ -70,9 +80,18 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
         }
 
         //init webview
-        web_view_cms_document_content.setWebViewClient(object : WebViewClient() {
+        jsNotification.setupWebView(web_view_cms_document_content)
+        jsUtil.setupWebView(web_view_cms_document_content)
+        web_view_cms_document_content.addJavascriptInterface(jsNotification, JSInterfaceO2mNotification.JSInterfaceName)
+        web_view_cms_document_content.addJavascriptInterface(jsUtil, JSInterfaceO2mUtil.JSInterfaceName)
+        web_view_cms_document_content.webChromeClient = webChromeClient
+        web_view_cms_document_content.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                XLog.error("ssl error, $error")
+                handler?.proceed()
+            }
             override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-                XLog.debug("shouldOverrideUrlLoading:" + url)
+                XLog.debug("shouldOverrideUrlLoading:$url")
                 if (ZoneUtil.checkUrlIsInner(url)) {
                     view?.loadUrl(url)
                 } else {
@@ -80,7 +99,7 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
                 }
                 return true
             }
-        })
+        }
         web_view_cms_document_content.webViewSetCookie(this, url)
         web_view_cms_document_content.loadUrl(url)
 
@@ -169,6 +188,11 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
                 }
             })
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        webChromeClient.onActivityResult(requestCode, resultCode, data)
     }
 
     private val taskMap = HashMap<String, Future<Unit>>()

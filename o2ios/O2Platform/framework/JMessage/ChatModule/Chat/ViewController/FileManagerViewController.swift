@@ -52,8 +52,8 @@ class FileManagerViewController: UIViewController {
         tabedSlideView.delegate = self
         tabedSlideView.baseViewController = self
         tabedSlideView.tabItemNormalColor = .black
-        tabedSlideView.tabItemSelectedColor =  UIColor(netHex: 0xFB4747)
-        tabedSlideView.tabbarTrackColor = UIColor(netHex: 0xFB4747)
+        tabedSlideView.tabItemSelectedColor =  O2ThemeManager.color(for: "Base.base_color")!
+        tabedSlideView.tabbarTrackColor = O2ThemeManager.color(for: "Base.base_color")!
         tabedSlideView.tabbarBackgroundImage = UIImage.createImage(color: .white, size: CGSize(width: self.view.width, height: 39))
         tabedSlideView.tabbarBottomSpacing = 3.0
         return tabedSlideView
@@ -186,7 +186,7 @@ class FileManagerViewController: UIViewController {
         self.navigationItem.rightBarButtonItem =  navRightButton
     }
     
-    func _clickNavRightButton() {
+    @objc func _clickNavRightButton() {
         if isEditMode {
             navRightButton.title = "选择"
             tabedSlideView.frame = CGRect(x: tabedSlideView.x, y: tabedSlideView.y, width: tabedSlideView.width, height: tabedSlideView.height + 45)

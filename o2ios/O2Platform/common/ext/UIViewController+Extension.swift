@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import JHTAlertController
 import ProgressHUDSwift
-import Whisper
 
 
 extension UIViewController {
@@ -82,6 +80,14 @@ extension UIViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
+    func showDefaultConfirm(title: String, message: String, okAction: UIAlertAction, cancelAction: UIAlertAction) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    
     /// 系统弹出框提示
     ///
     /// - Parameters:
@@ -112,24 +118,15 @@ extension UIViewController {
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
     }
-    
-    func showAlert(title:String,message:String,okHandler:((JHTAlertAction) -> Void)!,cancelHandler:((JHTAlertAction) -> Void)!){
-        let alertController = JHTAlertController(title: "", message: message, preferredStyle: .alert)
-        //alertController.view.backgroundColor = UIColor(hexString: "#FCFCFC", alpha: 0.9)!
-        //alertController.alertMessageViewBackgroundColor = UIColor(hexString: "#FCFCFC", alpha: 0.9)!
-        alertController.titleImage = #imageLiteral(resourceName: "logo80-bai")
-        alertController.messageTextColor = UIColor(hex: "#030303")
-        alertController.titleViewBackgroundColor = UIColor.hexInt(0xFB4747)
-        alertController.alertBackgroundColor =  UIColor(hexString: "#FCFCFC", alpha: 0.9)!
-        alertController.setAllButtonBackgroundColors(to: UIColor(hexString: "#FCFCFC", alpha: 0.9)!)
-        alertController.setButtonTextColorFor(.default, to: UIColor(hex: "#FB4747"))
-        alertController.setButtonTextColorFor(.cancel, to: UIColor(hex: "#FB4747"))
-        alertController.hasRoundedCorners = true
-        let okAction = JHTAlertAction(title: "确定", style: .default, handler: okHandler)
-        let cancelAction = JHTAlertAction(title: "取消", style: .cancel, handler: cancelHandler)
-        alertController.addActions([cancelAction,okAction])
-        present(alertController, animated: true, completion: nil)
+    //actionSheet 传入的actions需要包含取消Action
+    func showActionSheetIncludeCancelBtn(title: String?, message: String?, actions: [UIAlertAction]) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        actions.forEach { (action) in
+            alertController.addAction(action)
+        }
+        self.present(alertController, animated: true, completion: nil)
     }
+    
     
     
     func datePickerTapped(_ title:String,_ dateType:UIDatePicker.Mode,_ format:String,callBackResult:((_ result:Date) -> Void)?) {
@@ -212,24 +209,6 @@ extension UIViewController {
     }
 }
 
-// MARK:- Whisper
-extension UIViewController {
-    func showWhisperMessage(title:String,message:String) {
-        if let nav = self.navigationController {
-            let msg = Message(title: title, backgroundColor: .red)
-            // Show and hide a message after delay
-            Whisper.show(whisper: msg, to: nav, action: .show)
-            // Present a permanent message
-            Whisper.show(whisper: msg, to: nav, action: .present)
-            // Hide a message
-            Whisper.hide(whisperFrom: nav, after: 3)
-        }else{
-            let murmur = Murmur(title:title)
-            // Present a permanent status bar message
-            Whisper.show(whistle: murmur, action: .show(3))
-        }
-    }
-}
 
 //MARK: - 跳转到设置页面
 extension UIViewController {

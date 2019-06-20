@@ -1177,7 +1177,7 @@ extension JCChatViewController: SAIInputBarDelegate, SAIInputBarDisplayable {
             let tempDic = reminds[index]
             let startIndex = tempDic.startIndex
             if currentIndex <= startIndex {
-                if string.characters.count == 0 {
+                if string.count == 0 {
                     for subIndex in index..<reminds.count {
                         let subTemp = reminds[subIndex]
                         subTemp.startIndex -= 1

@@ -34,7 +34,7 @@ class ContactItemCell: UITableViewCell {
     private func configCompany(){
         self.nameLabel.text = cellViewModel?.name
         self.iconTagLabel.isHidden = true
-        self.iconImageView.image = UIImage(named: "contact_org_icon")
+        self.iconImageView.image = O2ThemeManager.image(for: "Icon.icon_company")
         self.iconImageView.layer.masksToBounds = true
         self.iconImageView.layer.cornerRadius =  self.iconImageView.width / 2.0
     }
@@ -42,7 +42,7 @@ class ContactItemCell: UITableViewCell {
     private func configDepart(){
         nameLabel.text = cellViewModel?.name
         iconTagLabel.isHidden  = false
-        iconImageView.image = UIImage(named: "pic_oval")
+        iconImageView.image = O2ThemeManager.image(for: "Icon.pic_oval")
         iconImageView.frame = CGRect(x: 18, y: 5, width: 40, height: 40)
         iconImageView.layer.masksToBounds = true
         iconImageView.layer.cornerRadius = 40 / 2.0
@@ -57,7 +57,7 @@ class ContactItemCell: UITableViewCell {
     private func configGroup(){
         self.nameLabel.text = cellViewModel?.name
         self.iconTagLabel.isHidden = true
-        self.iconImageView.image = UIImage(named: "contact_org_icon")
+        self.iconImageView.image = O2ThemeManager.image(for: "Icon.icon_group")
         self.iconImageView.layer.masksToBounds = true
         self.iconImageView.layer.cornerRadius =  self.iconImageView.width / 2.0
     }

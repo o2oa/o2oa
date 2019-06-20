@@ -3,6 +3,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 import android.app.Activity
 import android.os.Looper
 import android.text.TextUtils
+import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.ValueCallback
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.tbs.FileReaderActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.download.DownloadProgressHandler
@@ -38,7 +40,7 @@ class DownloadDocument(val context: Activity) {
                 XLog.debug("是否在主线程中运行" + (Looper.getMainLooper() == Looper.myLooper()).toString())
                 val myP = 100 * progress / total
                 XLog.debug(String.format("%d%% done\n", myP))
-                XLog.debug("done --->" + done.toString())
+                XLog.debug("done --->$done")
 
             }
         }).skinDownload(id)
@@ -97,7 +99,8 @@ class DownloadDocument(val context: Activity) {
 
     //......没有集成
     private fun openFileWithTBS(path: String?, fileName: String) = if (!TextUtils.isEmpty(path)) {
-        AndroidUtils.openFileWithDefaultApp(context, File(path))
+        context.go<FileReaderActivity>(FileReaderActivity.startBundle(path!!))
+//        AndroidUtils.openFileWithDefaultApp(context, File(path))
     }else {
         XLog.error("文档本地地址没有。。。。。。。。。。。")
     }

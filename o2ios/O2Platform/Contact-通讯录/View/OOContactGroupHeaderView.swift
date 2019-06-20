@@ -38,8 +38,8 @@ class OOContactGroupHeaderView: UIView {
         self.groupTitleLabel.text = title
     }
     
-     private let searchHeaderTypes:[OOContactGroupHeaderType:(String,String)] = [.department:("icon_bumen","部门"),.company:("icon_company","公司"),.group:("icon_group","群组"),.linkman:("icon_linkman","常用联系人")]
+     private let searchHeaderTypes:[OOContactGroupHeaderType:(String,String)] = [.department:(O2ThemeManager.string(for: "Icon.icon_bumen")!,"部门"),.company:(O2ThemeManager.string(for: "Icon.icon_company")!,"公司"),.group:(O2ThemeManager.string(for: "Icon.icon_group")!,"群组"),.linkman:(O2ThemeManager.string(for: "Icon.icon_linkman")!,"常用联系人")]
     
-    private let headerTypes:[OOContactGroupHeaderType:(String,String)] = [.department:("icon_bumen","我的部门"),.company:("icon_company","我的公司"),.group:("icon_group","我的群组"),.linkman:("icon_linkman","常用联系人")]
+    private let headerTypes:[OOContactGroupHeaderType:(String,String)] = [.department:(O2ThemeManager.string(for: "Icon.icon_bumen")!,"我的部门"),.company:(O2ThemeManager.string(for: "Icon.icon_company")!,"我的公司"),.group:(O2ThemeManager.string(for: "Icon.icon_group")!,"我的群组"),.linkman:(O2ThemeManager.string(for: "Icon.icon_linkman")!,"常用联系人")]
 
 }

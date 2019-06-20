@@ -125,7 +125,7 @@ class CMSCategoryListViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: base_color]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color")]
             var selectedTitles = [NSAttributedString]()
             for titleString in self.itemsTitles {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)

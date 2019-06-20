@@ -74,18 +74,20 @@ public class OONewAttanceController: CYLTabBarController {
     }()
     
     private static let items: [[String : String]] = {
+        let dakavalue = O2ThemeManager.string(for: "Icon.icon_daka_pro")!
         let tabBarItemOne = [CYLTabBarItemTitle:"打卡",
                              CYLTabBarItemImage:"icon_daka_nor",
-                             CYLTabBarItemSelectedImage:"icon_daka_pro"]
+                             CYLTabBarItemSelectedImage: dakavalue]
         
+        let tongjivalue = O2ThemeManager.string(for: "Icon.icon_tongji_pro")!
         let tabBarItemTwo = [CYLTabBarItemTitle:"统计",
                              CYLTabBarItemImage:"icon_tongji_nor",
-                             CYLTabBarItemSelectedImage:"icon_tongji_pro"]
+                             CYLTabBarItemSelectedImage: tongjivalue]
         
-        
+        let setupvalue = O2ThemeManager.string(for: "Icon.icon_setup_pre")!
         let tabBarItemThree = [CYLTabBarItemTitle:"设置",
                              CYLTabBarItemImage:"icon_setup_nor",
-                             CYLTabBarItemSelectedImage:"icon_setup_pre"]
+                             CYLTabBarItemSelectedImage: setupvalue]
         
 
         return [tabBarItemOne,tabBarItemTwo,tabBarItemThree]
@@ -105,18 +107,20 @@ public class OONewAttanceController: CYLTabBarController {
     }()
     
     private static let items1: [[String : String]] = {
+        let dakavalue = O2ThemeManager.string(for: "Icon.icon_daka_pro")!
         let tabBarItemOne = [CYLTabBarItemTitle:"打卡",
                              CYLTabBarItemImage:"icon_daka_nor",
-                             CYLTabBarItemSelectedImage:"icon_daka_pro"]
+                             CYLTabBarItemSelectedImage: dakavalue]
         
+        let tongjivalue = O2ThemeManager.string(for: "Icon.icon_tongji_pro")!
         let tabBarItemTwo = [CYLTabBarItemTitle:"统计",
                              CYLTabBarItemImage:"icon_tongji_nor",
-                             CYLTabBarItemSelectedImage:"icon_tongji_pro"]
+                             CYLTabBarItemSelectedImage: tongjivalue]
         
-        
+        let setupvalue = O2ThemeManager.string(for: "Icon.icon_setup_pre")!
         let tabBarItemThree = [CYLTabBarItemTitle:"设置",
                                CYLTabBarItemImage:"icon_setup_nor",
-                               CYLTabBarItemSelectedImage:"icon_setup_pre"]
+                               CYLTabBarItemSelectedImage: setupvalue]
         
         
         return [tabBarItemOne,tabBarItemTwo]

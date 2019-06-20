@@ -10,10 +10,10 @@ import Foundation
 
 struct O2Color {
     // style
-    static let primaryColor = UIColor(hex: "#FB4747")
+//    static let primaryColor = UIColor(hex: "#FB4747")
     
     // text
-    static let textHintColor = UIColor(hex: "#CCCCCC")
-    static let textPrimaryColor = UIColor(hex: "#666666")
+//    static let textHintColor = UIColor(hex: "#CCCCCC")
+//    static let textPrimaryColor = UIColor(hex: "#666666")
     
 }

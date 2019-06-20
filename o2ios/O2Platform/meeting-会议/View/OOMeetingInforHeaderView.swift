@@ -153,24 +153,24 @@ extension OOMeetingInforHeaderView: JTCalendarDelegate {
             // Today
             if calendar.dateHelper.date(Date(), isTheSameDayThan: dView.date) { // 今天
                 dView.circleView?.isHidden = false
-                dView.circleView?.backgroundColor = base_color.alpha(0.5)
+                dView.circleView?.backgroundColor = O2ThemeManager.color(for: "Base.base_color")?.alpha(0.5)
                 dView.dotView?.backgroundColor = UIColor.white
                 dView.textLabel?.textColor = UIColor.white
             }
             else if _dateSelected != nil && calendar.dateHelper.date(_dateSelected, isTheSameDayThan: dView.date) { // 选中的
                 dView.circleView?.isHidden = false
-                dView.circleView?.backgroundColor = base_color
+                dView.circleView?.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
                 dView.dotView?.backgroundColor = UIColor.white
                 dView.textLabel?.textColor = UIColor.white
             }
             else if calendar.dateHelper.date(dView.date, isTheSameMonthThan: self.calendarContentView.date) { // 同一个月的
                 dView.circleView?.isHidden = true
-                dView.dotView?.backgroundColor = base_color
+                dView.dotView?.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
                 dView.textLabel?.textColor = UIColor(hex: "#666666")
             }
             else {
                 dView.circleView?.isHidden = true
-                dView.dotView?.backgroundColor = base_color
+                dView.dotView?.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
                 dView.textLabel?.textColor = UIColor(hex: "#CCCCCC")
             }
             
