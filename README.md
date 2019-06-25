@@ -58,13 +58,13 @@ O2OA开发相关教程天梯：https://my.oschina.net/o2oa/blog/3016363
 
 # 最新版本服务器安装包下载[o2server_V4.1921]\:
 
-windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190618172734_windows.zip
+windows 64Bit : http://download.o2oa.net/download/o2server_20190618172734_windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/versions/o2server_20190618172734_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/o2server_20190618172734_linux.zip
 
-MacOS : http://download.o2oa.net/download/versions/o2server_20190618172734_macos.zip
+MacOS : http://download.o2oa.net/download/o2server_20190618172734_macos.zip
 
-AIX : http://download.o2oa.net/download/versions/o2server_20190618172734_aix.zip
+AIX : http://download.o2oa.net/download/o2server_20190618172734_aix.zip
 
 中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20190618172734_neokylin_loongson.zip
 
