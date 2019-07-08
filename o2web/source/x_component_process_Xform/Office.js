@@ -295,6 +295,13 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                 this.officeOCX.ActiveDocument.showRevisions = false;
             }
             this.officeOCX.ActiveDocument.Application.UserName = layout.desktop.session.user.name;
+
+            if( this.officeOCX.ActiveDocument && this.officeOCX.ActiveDocument.Application ){
+                if(15==this.officeOCX.getOfficeVer()){//如果是OFFICE 2013则设置Options.UseLocalUserInfo属性为true,TANGER_OCX_OBJ为文档控件对象
+                    this.officeOCX.ActiveDocument.Application.Options.UseLocalUserInfo=true;
+                    this.officeOCX.WebUserName= layout.desktop.session.user.name;
+                }
+            }
         }
         //this.officeOCX.FullScreenMode = true;
     },
@@ -507,7 +514,8 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                 var _self = this;
                 var dlg = new MWF.xDesktop.Dialog({
                     "title": MWF.xApplication.process.Xform.LP.menu_showHistory,
-                    "style": "work",
+                    //"style": "work",
+                    "style" : this.form.json.dialogStyle || "user",
                     "top": p.y-100,
                     "left": p.x,
                     "fromTop": p.y-100,
@@ -1009,7 +1017,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             _self.openOfficeFile();
         }, function(){
             this.close();
-        });
+        }, null, null, this.form.json.confirmStyle);
     },
 
     doRecoverFile: function(node, e, dlg){
@@ -1030,13 +1038,12 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                     });
                 }, function(){
                     this.close();
-                });
+                }, null, null, this.form.json.confirmStyle);
                 break;
             }
         }
     },
     checkAutoSaveNumber: function(callback){
-        debugger;
         if (!this.autoSavedAttachments) this.autoSavedAttachments = [];
         if (this.autoSavedAttachments.length >= this.json.autoSaveNumber.toInt()){
             //delete first att

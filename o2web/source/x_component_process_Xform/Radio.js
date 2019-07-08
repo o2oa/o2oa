@@ -53,6 +53,8 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 		});
 		this.setOptions();
 	},
+    _loadDomEvents: function(){
+    },
     _loadEvents: function(){
         Object.each(this.json.events, function(e, key){
             if (e.code){
@@ -98,11 +100,21 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
                     "showText": text,
                     "styles": this.json.buttonStyles
                 }).inject(this.node);
-                radio.appendText(text, "after");
+                //radio.appendText(text, "after");
+
+                var textNode = new Element( "span", {
+                    "text" : text,
+                    "styles" : { "cursor" : "default" }
+                }).inject(this.node);
+                textNode.addEvent("click", function( ev ){
+                    this.radio.checked = true;
+                    this.radio.fireEvent("change");
+                    this.radio.fireEvent("click");
+                }.bind( {radio : radio} ) );
+
                 radio.addEvent("click", function(){
                     this.validationMode();
                     if (this.validation()) this._setBusinessData(this.getInputData("change"));
-                    //this._setBusinessData(this.getInputData());
                 }.bind(this));
 
                 Object.each(this.json.events, function(e, key){

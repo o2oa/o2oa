@@ -5,6 +5,7 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 	Extends: MWF.CMSPersonfield,
 	iconStyle: "readerfieldIcon",
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v || !v.length){
             if (this.json.description){
@@ -562,7 +563,8 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 
 
 				//this.setData( values );
-				this.validation()
+				this.validation();
+                this.fireEvent("select");
 			}.bind(this),
 			"onCancel": function(){
 				this.validation();

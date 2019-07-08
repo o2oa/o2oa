@@ -301,7 +301,6 @@ MWF.xApplication.ForumSearch.Explorer = new Class({
 		this.view = new MWF.xApplication.ForumSearch.View( this.viewContainer, this.app, this, {
 			templateUrl : this.parent.path+"listItem.json",
 			pagingEnable : true,
-			holdMouseDownStyles : true,
 			pagingPar : {
 				currentPage : this.options.viewPageNum,
 				countPerPage : 30,

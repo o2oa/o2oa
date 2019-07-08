@@ -113,28 +113,39 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             this.editor.addEvent("save", function () {
                 this.save();
             }.bind(this));
-            this.editor.addEvent("reference", function (editor, e, e1) {
-                if (!this.scriptReferenceMenu) {
-                    MWF.require("MWF.widget.ScriptHelp", function () {
-                        this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
-                            "onPostLoad": function () {
-                                this.showReferenceMenu();
-                            }.bind(this)
-                        });
-                        this.scriptReferenceMenu.getEditor = function () {
-                            return this.editor.editor;
-                        }.bind(this)
-                    }.bind(this));
-                } else {
-                    this.showReferenceMenu();
-                }
-            }.bind(this));
+            //this.editor.addEvent("reference", function (editor, e, e1) {
+            //    if (!this.scriptReferenceMenu) {
+            //        MWF.require("MWF.widget.ScriptHelp", function () {
+            //            this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
+            //                "onPostLoad": function () {
+            //                    this.showReferenceMenu();
+            //                }.bind(this)
+            //            });
+            //            this.scriptReferenceMenu.getEditor = function () {
+            //                return this.editor.editor;
+            //            }.bind(this)
+            //        }.bind(this));
+            //    } else {
+            //        this.showReferenceMenu();
+            //    }
+            //}.bind(this));
 
             if (this.designer.styleSelectNode) {
                 var options = this.designer.styleSelectNode.options;
                 for (var i = 0; i < options.length; i++) {
                     var option = options[i];
                     if (option.value == this.editor.theme) {
+                        option.set("selected", true);
+                        break;
+                    }
+                }
+            }
+
+            if(this.designer.fontsizeSelectNode){
+                var options = this.designer.fontsizeSelectNode.options;
+                for (var i=0; i<options.length; i++){
+                    var option = options[i];
+                    if (option.value==this.editor.fontSize){
                         option.set("selected", true);
                         break;
                     }

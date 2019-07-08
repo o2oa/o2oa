@@ -4,6 +4,30 @@
   "type": "Attachment",
   "description": "",
   "events": {
+    "queryLoad": {
+      "code": "",
+      "html": ""
+    },
+    "postLoad": {
+      "code": "",
+      "html": ""
+    },
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "upload": {
+      "code": "",
+      "html": ""
+    },
+    "delete": {
+      "code": "",
+      "html": ""
+    },
+    "afterDelete": {
+      "code": "",
+      "html": ""
+    },
     "click": {
       "code": "",
       "html": ""

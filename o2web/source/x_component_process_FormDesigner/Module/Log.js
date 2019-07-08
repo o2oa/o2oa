@@ -45,6 +45,22 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
 		this.parseModules();
         this.json.moduleName = this.moduleName;
 	},
+	clearTemplateStyles: function(styles){
+		if (styles){
+			if (styles.properties) this.removeStyles(styles.properties, "tableProperties");
+			if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
+			if (styles.titleStyles) this.removeStyles(styles.titleStyles, "titleTdStyles");
+			if (styles.contentStyles) this.removeStyles(styles.contentStyles, "contentTdStyles");
+
+		}
+	},
+
+	setTemplateStyles: function(styles){
+		if (styles.properties) this.copyStyles(styles.properties, "tableProperties");
+		if (styles.tableStyles) this.copyStyles(styles.tableStyles, "tableStyles");
+		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
+		if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");
+	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
 			"MWFType": "log",

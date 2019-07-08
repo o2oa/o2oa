@@ -22,3 +22,28 @@ body {
 select.script::-ms-expand { display: none; }
 ::-ms-clear, ::-ms-reveal{display: none;}
 
+@media print {
+
+	@page:right{
+		@bottom-left {
+			margin: 10pt 0 30pt 0;
+			border-top: .25pt solid #666;
+			content: "Our Cats";
+			font-size: 9pt;
+			color: #333;
+		}
+		@bottom-right {
+			margin: 10pt 0 30pt 0;
+			border-top: .25pt solid #666;
+			content: counter(page);
+			font-size: 9pt;
+		}
+		@top-right {
+			content: string(doctitle);
+			margin: 30pt 0 10pt 0;
+			font-size: 9pt;
+			color: #333;
+		}
+	}
+
+}

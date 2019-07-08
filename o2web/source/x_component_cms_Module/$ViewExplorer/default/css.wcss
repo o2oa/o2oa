@@ -9,7 +9,12 @@
   "searchContainer": {
     "overflow": "hidden",
     "float" : "left",
-    "width" : "640px"
+    "width" : "315px"
+  },
+  "searchContainer_max": {
+    "overflow": "hidden",
+    "float" : "left",
+    "width" : "100%"
   },
   "normalThNode" : {
     "background-color" : "#f0f0f0",

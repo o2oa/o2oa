@@ -8,45 +8,53 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         "style": "default",
         "count": 0,
         "title": "选择列表",
-        "selectableItems" : [],
         "values": [],
+        "selectableItems" : [],
+        "names": [],
+        "category" : false,
         "expand": false
     },
-    initialize: function(container, options){
+    initialize: function(container, options  ){
         this.setOptions(options);
-
         this.path = "/x_component_Selector/$Selector/";
         this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss(true);
-
         this.container = $(container);
-
         this.selectedItems = [];
         this.items = [];
+        debugger;
     },
     loadSelectItems: function(addToNext){
-        this.options.selectableItems.each( function( it ){
-            var name = typeOf( it ) == "string" ? it : it.name;
-            var id = typeOf( it ) == "string" ? it : it.id;
-            var item = this._newItem({ name : name, id : id }, this, this.itemAreaNode );
-            this.items.push(item);
-        }.bind(this))
+        if(!this.options.category){
+            this.options.selectableItems.each( function( it ){
+                var name = typeOf( it ) === "string" ? it : it.name;
+                var id = typeOf( it ) === "string" ? it : it.id;
+                var item = this._newItem({ name : name, id : id }, this, this.itemAreaNode );
+                this.items.push(item);
+            }.bind(this))
+        }else{
+            this.options.selectableItems.each(function (item, index) {
+                if(item.subItemList && item.subItemList.length>0){
+                    var category = this._newItemCategory(item, this, this.itemAreaNode);
+                    item.subItemList.each(function (subItem, index) {
+                        var item = this._newItem(subItem, this, category.children);
+                        this.items.push(item);
+                    }.bind(this));
+                }
+            }.bind(this));
+        }
     },
-
     _scrollEvent: function(y){
         return true;
     },
     _getChildrenItemIds: function(data){
-        return data.viewList || [];
+        return data.subItemList || [];
     },
-
+    _newItemCategory: function(data, selector, item, level){
+        return new MWF.xApplication.Template.Selector.Custom.ItemCategory(data, selector, item, level)
+    },
     _listItemByKey: function(callback, failure, key){
         return false;
-    },
-    _getItem: function(callback, failure, id, async){
-        this.action.getProcess(function(json){
-            if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
     },
     _newItemSelected: function(data, selector, item){
         return new MWF.xApplication.Template.Selector.Custom.ItemSelected(data, selector, item)
@@ -59,12 +67,15 @@ MWF.xApplication.Template.Selector.Custom = new Class({
     }
 });
 MWF.xApplication.Template.Selector.Custom.Item = new Class({
-    Extends: MWF.xApplication.Selector.Person.Item,
+    Extends: o2.xApplication.Selector.Person.Item,
     _getShowName: function(){
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Organization/Selector/$Selector/default/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+    },
+    _getTtiteText: function(){
+        return this.data.name;
     },
     loadSubItem: function(){
         return false;
@@ -91,14 +102,13 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
         }
     }
 });
-
 MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
-    Extends: MWF.xApplication.Selector.Person.ItemSelected,
+    Extends: o2.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Organization/Selector/$Selector/default/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -115,4 +125,21 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
         }
     }
 });
-
+MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
+    Extends: o2.xApplication.Selector.Person.ItemCategory,
+    _getShowName: function(){
+        return this.data.name;
+    },
+    createNode: function(){
+        this.node = new Element("div", {
+            "styles": this.selector.css.selectorItemCategory_department
+        }).inject(this.container);
+    },
+    _setIcon: function(){
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+    },
+    _hasChild: function(){
+        return (this.data.subItemList && this.data.subItemList.length);
+    },
+    check: function(){}
+});

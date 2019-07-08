@@ -932,8 +932,10 @@ MWF.xScript.Environment = function(ev){
         },
 
         "process": function(option){
+            var op = _form.getOpinion();
+            var mds = op.medias;
             if (option){
-                _form.submitWork(option.routeName, option.opinion, null, option.callback);
+                _form.submitWork(option.routeName, option.opinion, mds, option.callback);
             }else{
                 _form.processWork();
             }
@@ -1009,7 +1011,7 @@ MWF.xScript.Environment = function(ev){
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             layout.desktop.openApplication(this.event, "process.Work", op);
         },
-        "openJob": function(id, choice){
+        "openJob": function(id, choice, options){
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                 var len = json.data.workList.length + json.data.workCompletedList.length;
                 if (len){
@@ -1023,10 +1025,10 @@ MWF.xScript.Environment = function(ev){
                     }else{
                         if (json.data.workList.length){
                             var work =  json.data.workList[0];
-                            this.openWork(work.id, null, work.title);
+                            this.openWork(work.id, null, work.title, options);
                         }else{
                             var work =  json.data.workCompletedList[0];
-                            this.openWork(null, work.id, work.title);
+                            this.openWork(null, work.id, work.title, options);
                         }
                     }
                 }

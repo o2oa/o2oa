@@ -1,7 +1,7 @@
 MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
 	Extends: MWF.APPDiv,
     options: {
-        "moduleEvents": ["load", "loadData"]
+        "moduleEvents": ["queryLoad","postLoad","load", "loadData"]
     },
 
 	_loadUserInterface: function(){

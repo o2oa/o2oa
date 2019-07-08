@@ -45,6 +45,20 @@
                 </td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
+                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" style="width: 50px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
+                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" style="width: 50px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
+            </tr>
+        </table>
         <table style="display: text{($.isPrompt!==false)?'block':'none'}" id="text{$.pid}promptArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td colspan="2" class="editTableValue"><b>提示框位置:</b>

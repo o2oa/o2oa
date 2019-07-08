@@ -460,10 +460,12 @@ MWF.xApplication.Common.Main = new Class({
                 "maskNode": mask || this.content,
 				"buttonList": [
 				    {
+						"type" : "ok",
 				    	"text": MWF.LP.process.button.ok,
 				    	"action": ok
 				    },
 				    {
+						"type" : "cancel",
 				    	"text": MWF.LP.process.button.cancel,
 				    	"action": cancel
 				    }

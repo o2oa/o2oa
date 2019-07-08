@@ -439,25 +439,25 @@ MWF.xApplication.cms.Column.Column = new Class({
             }.bind(this));
         }
 
-        if ((creator == layout.desktop.session.user.distinguishedName) || MWF.AC.isCMSManager()) {
-            this.exportAdctionNode = new Element("div.exportNode", {
-                "styles": this.app.css.columnItemExportActionNode,
-                "title": this.lp.export
-            }).inject(itemNode);
-
-            itemNode.addEvents({
-                "mouseover": function () {
-                    this.exportAdctionNode.setStyle("display","");
-                }.bind(this),
-                "mouseout": function () {
-                    this.exportAdctionNode.setStyle("display","none");
-                }.bind(this)
-            });
-            this.exportAdctionNode.addEvent("click", function (e) {
-                this.export(e);
-                e.stopPropagation();
-            }.bind(this));
-        }
+        //if ((creator == layout.desktop.session.user.distinguishedName) || MWF.AC.isCMSManager()) {
+        //    this.exportAdctionNode = new Element("div.exportNode", {
+        //        "styles": this.app.css.columnItemExportActionNode,
+        //        "title": this.lp.export
+        //    }).inject(itemNode);
+        //
+        //    itemNode.addEvents({
+        //        "mouseover": function () {
+        //            this.exportAdctionNode.setStyle("display","");
+        //        }.bind(this),
+        //        "mouseout": function () {
+        //            this.exportAdctionNode.setStyle("display","none");
+        //        }.bind(this)
+        //    });
+        //    this.exportAdctionNode.addEvent("click", function (e) {
+        //        this.export(e);
+        //        e.stopPropagation();
+        //    }.bind(this));
+        //}
     },
     _getLnkPar: function(){
         var lnkIcon = this.app.defaultColumnIcon;

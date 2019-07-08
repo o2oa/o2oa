@@ -127,5 +127,33 @@ MWF.xApplication.process.Xform.LP = {
     "ANNInput": "智能输入建议值：",
 
     "recover": "恢复正文",
-    "notRecover": "取消正文恢复"
+    "notRecover": "取消正文恢复",
+
+    "doublePage": "多页",
+    "singlePage": "单页",
+    "editdoc": "编辑正文",
+    "editdocCompleted": "编辑完成",
+
+    "documentEditor": {
+        "copies": "",
+        "secret":"",
+        "priority": "",
+        "redHeader": "文件红头",
+        "fileno":"[文号]",
+        "signerTitle": "签发人：",
+        "signer": "[签发人]",
+        "subject": "[标题]",
+        "mainSend": "[主送单位：]",
+        "filetext": "[请在此处编辑正文内容]",
+        "attachmentTitle":"附件：",
+        "attachment":"[附件]",
+        "issuanceUnit":"[发文机关]",
+        "issuanceDate":"[成文日期]",
+        "annotation":"",
+        "copytoTitle":"抄送：",
+        "copyto":"[抄送]",
+        "editionUnit":"[印发机关]",
+        "editionDate":"[印发日期]"
+    }
+
 };

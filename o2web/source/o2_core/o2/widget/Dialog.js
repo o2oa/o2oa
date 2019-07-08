@@ -225,10 +225,14 @@ o2.widget.Dialog = o2.DL = new Class({
 		}
 		if (this.options.buttonList){
 			this.options.buttonList.each(function(bt){
+				var styles = this.css.button;
+				if( bt.type === "ok" && this.css.okButton )styles = this.css.okButton;
+				if( bt.type === "cancel" && this.css.cancelButton )styles = this.css.cancelButton;
+				if( bt.styles )styles = bt.styles;
 				var button = new Element("input", {
 					"type": "button",
 					"value": bt.text,
-					"styles": bt.styles || this.css.button,
+					"styles": styles,
 					"events": {
 						"click": function(e){bt.action.call(this, this, e)}.bind(this)
 					}

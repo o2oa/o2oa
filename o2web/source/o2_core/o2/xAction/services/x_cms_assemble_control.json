@@ -73,6 +73,7 @@
   "getScript": {"uri": "/jaxrs/script/{id}"},
   "addScript": {"uri": "/jaxrs/script", "method": "POST"},
   "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "deleteScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
   "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
   "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
 
@@ -142,6 +143,7 @@
   "archiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
   "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
   "publishDocumentComplex" : {  "uri":"/jaxrs/document/publish/content","method":"PUT" },  //直接一次性发布
+  "moveDocumentToCategory" : { "uri" : "/jaxrs/document/category/change" , "method":"PUT" },
 
   //"getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
 

@@ -29,6 +29,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
             "beforePublish",
             "postPublish",
             "afterPublish",
+            "beforeDelete",
+            "afterDelete",
             "beforeModulesLoad",
             "resize",
             "afterModulesLoad"]
@@ -501,7 +503,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                     "opacity": 0.6
                 }
             });
+
+            _self.fireEvent("beforeDelete");
+            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+
             _self.documentAction.removeDocument(_self.businessData.document.id, function(json){
+                _self.fireEvent("afterDelete");
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                 _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete+": “"+_self.businessData.document.title+"”", "success");
                 _self.options.autoSave = false;
                 _self.options.saveOnClose = false;

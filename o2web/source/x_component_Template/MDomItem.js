@@ -612,10 +612,12 @@ MDomItem.Util = {
         if( options.calendarOptions ){
             calendarOptions = Object.merge( calendarOptions, options.calendarOptions )
         }
+        var calendar;
         MWF.require("MWF.widget.Calendar", function(){
-            var calendar = new MWF.widget.Calendar( target, calendarOptions);
+            calendar = new MWF.widget.Calendar( target, calendarOptions);
             calendar.show();
-        }.bind(this));
+        }.bind(this), false);
+        return calendar;
     },
     selectPerson: function( container, options, callback  ){
         MWF.xDesktop.requireApp("Selector", "package", null, false);
@@ -901,13 +903,17 @@ MDomItem.Text = new Class({
             }else if( tType == "time" || tType.toLowerCase() == "datetime" || tType == "date" ){
                 item.addEvent( "click" , function(){
                     this.module.fireEvent("querySelect", this.module );
-                    MDomItem.Util.selectCalendar( item, this.app.content, {
-                        calendarOptions : this.options.calendarOptions,
-                        type : tType
-                    }, function( dateString, date ){
-                        this.items[0].fireEvent("change");
-                        if( this.options.validImmediately )this.module.verify( true );
-                    }.bind(this) )
+                    if( this.calendarSelector ){
+                        this.calendarSelector.show();
+                    }else{
+                        this.calendarSelector = MDomItem.Util.selectCalendar( item, this.app.content, {
+                            calendarOptions : this.options.calendarOptions,
+                            type : tType
+                        }, function( dateString, date ){
+                            this.items[0].fireEvent("change");
+                            if( this.options.validImmediately )this.module.verify( true );
+                        }.bind(this) )
+                    }
                 }.bind(this) );
             }else{
                 if( this.options.validImmediately ){

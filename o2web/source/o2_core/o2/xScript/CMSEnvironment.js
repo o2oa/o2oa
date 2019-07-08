@@ -19,7 +19,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     this.setData = function(data){
         this.data = getJSONData(data);
         this.data.save = function(callback){
-            form.documentAction.saveData(function(json){if (callback) callback();}.bind(this), null, document.id, jData);
+            _form.documentAction.saveData(function(json){if (callback) callback();}.bind(this), null, ev.document.id, data);
         }
     };
     this.setData(_data);
@@ -210,6 +210,14 @@ MWF.xScript.CMSEnvironment = function(ev){
             var v = null;
             orgActions.listPersonWithIdentity(data, function(json){v = json.data;}, null, false);
             return v;
+        },
+        //获取身份的所有人员--返回人员的对象数组或人员对象
+        getPersonWithIdentity: function(name){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(name)};
+            var v = null;
+            orgActions.listPersonWithIdentity(data, function(json){v = json.data;}, null, false);
+            return (v && v.length===1) ? v[0] : v;
         },
         //查询组织成员的人员--返回人员的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
@@ -919,6 +927,24 @@ MWF.xScript.CMSEnvironment = function(ev){
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             layout.desktop.openApplication(this.event, "process.Work", op);
         },
+        "openJob": function(id, choice, options){
+            o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
+                var len = json.data.workList.length + json.data.workCompletedList.length;
+                if (len){
+                    if (len>1 && choice){
+
+                    }else{
+                        if (json.data.workList.length){
+                            var work =  json.data.workList[0];
+                            this.openWork(work.id, null, work.title, options);
+                        }else{
+                            var work =  json.data.workCompletedList[0];
+                            this.openWork(null, work.id, work.title, options);
+                        }
+                    }
+                }
+            }.bind(this));
+        },
         "openDocument": function(id, title, options){
             var op = options || {};
             op.documentId = id;
@@ -1426,7 +1452,7 @@ MWF.xScript.createCMSDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this.add = function(path, value, success, failure){
             var p = encodePath( path );
@@ -1435,7 +1461,7 @@ MWF.xScript.createCMSDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this["delete"] = function(path, success, failure){
             var p = encodePath( path );
@@ -1444,7 +1470,7 @@ MWF.xScript.createCMSDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this.destory = this["delete"];
     }

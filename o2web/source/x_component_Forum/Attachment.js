@@ -238,7 +238,7 @@ MWF.xApplication.Forum.Attachment = new Class({
         //    this.app.openLoginForm( function(){ this.app.reload() }.bind(this) )
         //}else{
             attachments.each(function (att) {
-                this.actions.getAttachmentStream(att.data.id, this.options.documentId);
+                this.actions.getAttachmentData(att.data.id, this.options.documentId);
             }.bind(this));
         //}
     },

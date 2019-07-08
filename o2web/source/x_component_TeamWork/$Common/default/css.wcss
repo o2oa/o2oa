@@ -1,0 +1,328 @@
+{
+    tooltip:{
+        group:{
+            topBar:{
+                "height":"30px",
+                "border-bottom":"1px solid #E6E6E6"
+            },
+            topBarText:{
+
+                "line-height":"30px",
+                "float":"left",
+                "font-size":"16px",
+                "color":"#333333"
+            },
+            topBarClose:{
+                "float":"right",
+                "cursor":"pointer",
+                "margin-right":"5px",
+                "margin-top":"8px",
+                "width":"16px",
+                "height":"16px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
+            },
+            groupInContainer:{
+                "margin-top":"10px",
+                "width":"100%",
+                "height":"36px",
+                "border-radius": "100px",
+                "border":"1px solid #DEDEDE"
+            },
+            groupIn:{
+                "border":"0px",
+                "height":"32px",
+                "width":"80%",
+                "margin-left":"20px",
+                "font-size":"14px",
+                "color":"#666666",
+                "outline":"none"
+            },
+            groupAdd:{
+                "text-align":"center",
+                "font-size":"16px",
+                "color":"#666666",
+                "width":"100%",
+                "height":"40px",
+                "line-height":"40px",
+                "background-color":"#F0F0F0",
+                "border-radius":"100px",
+                "margin":"20px auto"
+            }
+        },
+        groupSelect:{
+            topBar:{
+                "height":"30px",
+                "border-bottom":"1px solid #E6E6E6"
+            },
+            topBarBack:{
+                "float":"left",
+                "cursor":"pointer",
+                "margin-right":"5px",
+                "margin-top":"6px",
+                "width":"16px",
+                "height":"16px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_down2.png) no-repeat center "
+            },
+            topBarText:{
+
+                "line-height":"30px",
+                "float":"left",
+                "font-size":"16px",
+                "color":"#333333"
+            },
+            topBarClose:{
+                "float":"right",
+                "cursor":"pointer",
+                "margin-right":"5px",
+                "margin-top":"6px",
+                "width":"16px",
+                "height":"16px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
+            },
+            groupInContainer:{
+                "margin-top":"10px",
+                "width":"100%",
+                "height":"36px",
+                "border-radius": "10px",
+                "border":"1px solid #DEDEDE"
+            },
+            groupIn:{
+                "border":"0px",
+                "height":"32px",
+                "width":"80%",
+                "margin-left":"20px",
+                "font-size":"14px",
+                "color":"#666666",
+                "outline":"none"
+            },
+            dynamicLayout:{
+                "height":"30px",
+                "margin-top":"10px",
+                "margin-bottom":"5px",
+                "border-bottom":"1px solid #DEDEDE"
+            },
+            dynamicGroupIcon:{
+                "float":"left",
+                "cursor":"pointer",
+                "margin-top":"8px",
+                "margin-left":"20px",
+                "margin-right":"10px",
+                "width":"16px",
+                "height":"16px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
+            },
+            dynamicGroupText:{
+                "float":"left",
+                "line-height":"30px",
+                "color":"#666666"
+            },
+            commonGroup:{
+                "height":"20px",
+                "line-height":"20px",
+                "font-size":"14px",
+                "color":"#999999",
+                "margin-top":"20px"
+            },
+            "commonGroupContainer":{
+                "height":"120px",
+                "margin-top":"0px",
+                "overflow":"hidden"
+            },
+            "groupItemContainer":{
+                "height":"30px"
+            },
+            "groupItemIcon":{
+                "float":"left",
+                "cursor":"pointer",
+                "margin-top":"8px",
+                "margin-left":"20px",
+                "margin-right":"10px",
+                "width":"16px",
+                "height":"16px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
+
+            },
+            "groupItemText":{
+                "float":"left",
+                "line-height":"30px",
+                "color":"#666666"
+            },
+            "newGroupContainer":{
+                "cursor":"pointer",
+                "height":"30px"
+            },
+            "newGroupIcon":{
+                "float":"left",
+                "width":"16px",
+                "height":"16px",
+                "margin-top":"8px",
+                "margin-left":"20px",
+                "margin-right":"10px",
+                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_zengjia_blue2_click.png) no-repeat center "
+            },
+            "newGroupText":{
+                "color":"#4A90E2",
+                "line-height":"30px",
+                "font-size":"14px"
+            },
+            groupAdd:{
+                "text-align":"center",
+                "font-size":"16px",
+                "color":"#FFFFFF",
+                "width":"100%",
+                "height":"40px",
+                "line-height":"40px",
+                "background-color":"#4A90E2",
+                "border-radius":"10px",
+                "margin":"20px auto"
+            }
+        }
+    },
+    popup:{
+        "formMaskNode": {
+            "width": "100%",
+            "height": "100%",
+            "opacity": 0.2,
+            "position": "absolute",
+            "background-color": "#999999",
+            "top": "0px",
+            "left": "0px"
+          },
+          "formAreaNode": {
+            "position": "absolute",
+            "opacity": 0,
+            "top": "0px"
+          },
+          "formNode": {
+            "background-color": "#FFF",
+            "box-shadow": "0px 0px 10px #999",
+            "border-radius":"5px",
+            "margin": "auto",
+            "border": "1px solid #fff",
+            "overflow": "hidden"
+          },
+          "formTopNode": {
+            "color" : "#fff",
+            "height": "40px",
+            "background-color": "#3d77c1",
+            "border-top": "1px solid #ddd",
+            "border-bottom": "1px solid #b6b6b6",
+            "line-height": "40px",
+            "font-size": "14px",
+            "padding-left" : "5px",
+            "text-align": "left"
+          },
+          "formTopIconNode" : {
+            "width": "32px",
+            "height": "32px",
+            "float": "left",
+            "background": "url(/x_component_Execution/$WorkDeploy/default/icon/document.png) no-repeat center 4px"
+          },
+          "formTopTextNode" : {
+            "font-size": "16px",
+            "float": "left",
+            "width":"500px",
+            "overflow": "hidden",
+            "text-overflow": "ellipsis",
+            "white-space": "nowrap"
+          },
+          "formTopCloseActionNode": {
+            "width": "32px",
+            "height": "32px",
+            "float": "right",
+            "padding-left" : "30px",
+            "padding-right" : "10px",
+            "background": "url(/x_component_Execution/$WorkDeploy/default/icon/close.png) no-repeat center 4px",
+            "cursor": "pointer"
+          },
+          "formTopContentNode" : {
+            "float" : "right",
+            "padding-right" : "10px",
+            "text-align" : "right"
+          },
+          "formTopContentTitle" : {
+          },
+          "formTopContentValue" : {
+            "padding-right" : "20px",
+            "font-size": "12px"
+          },
+          "formNewNode": {
+            "width": "47px",
+            "height": "47px",
+            "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+          },
+          "formIconNode": {
+            "width": "47px",
+            "height": "47px"
+          },
+          "formEditNode": {
+            "width": "47px",
+            "height": "47px"
+          },
+
+          "formContentNode": {
+            "border": "0px solid #666",
+            "width": "100%",
+            "margin": "auto",
+            "font-size": "14px",
+            "color": "#666",
+            "font-family": "微软雅黑",
+            "overflow" : "hidden"
+          },
+          "formTableContainer" : {
+            "margin": "0px 10px",
+            "overflow" : "hidden",
+            "positon" : "static"
+          },
+          "formBottomNode" : {
+            "height" : "40px",
+            "line-height" : "40px",
+            "background-color" : "#3d77c1",
+            "overflow" : "hidden",
+            "padding-top" : "10px"
+          },
+          "formOkActionNode": {
+            "height": "30px",
+            "width": "75px",
+            "cursor": "pointer",
+            "float": "right",
+            "line-height": "30px",
+            "text-align": "center",
+            "font-size": "16px",
+            "font-family": "微软雅黑",
+            "border": "1px solid #3d77c1",
+            "background-color" : "#5d97e1",
+            "color": "#FFF",
+            "margin-right": "20px",
+            "box-shadow": "0px 0px 3px #5d97e1"
+          },
+          "formCancelActionNode": {
+            "height": "30px",
+            "width": "75px",
+            "cursor": "pointer",
+            "float": "right",
+            "line-height": "30px",
+            "text-align": "center",
+            "font-size": "16px",
+            "font-family": "微软雅黑",
+            "border": "1px solid #3d77c1",
+            "background-color" : "#5d97e1",
+            "color": "#FFF",
+            "margin-right": "20px",
+            "box-shadow": "0px 0px 3px #5d97e1"
+          },
+          "formActionNode": {
+            "height": "30px",
+            "width": "75px",
+            "cursor": "pointer",
+            "float": "left",
+            "line-height": "30px",
+            "text-align": "center",
+            "font-size": "16px",
+            "font-family": "微软雅黑",
+            "color": "#FFF",
+            "margin-left": "10px",
+            "margin-right": "20px"
+          }
+    }
+}

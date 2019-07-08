@@ -18,6 +18,26 @@
       "html": ""
     },
 	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "load": {
+		"code": "",
+		"html": ""
+	  },
+	  "complete": {
+		"code": "",
+		"html": ""
+	  },
+	  "clear": {
+		"code": "",
+		"html": ""
+	  },
 		"click": {
 			"code": "",
 			"html": ""

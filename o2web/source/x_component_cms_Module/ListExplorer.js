@@ -142,6 +142,7 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
         }else{
             this.view = new MWF.xApplication.cms.Module.ListExplorer.List(this.elementContentNode, this.app,this, this.viewData );
         }
+        if(this.selectEnable)this.view.selectEnable = this.selectEnable;
         this.view.load();
         this.setContentSize();
     },
@@ -417,7 +418,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         }
     },
     createSelectTh : function(){
-        this.selectTh = new Element("th").inject(this.headNode, "top");
+        this.selectTh = new Element("th",{styles:{width:"20px"}}).inject(this.headNode, "top");
         this.checkboxElement = new Element("input", {
             "type": "checkbox"
         }).inject(this.selectTh);
@@ -622,11 +623,13 @@ MWF.xApplication.cms.Module.ListExplorer.List = new Class({
     createListHead : function(){
         var _self = this;
 
+
+        var headNode = this.headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
+
         if( this.selectEnable ){
             this.createSelectTh();
         }
 
-        var headNode = this.headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
         this.data.content.columns.each(function(column){
             var width = (column.widthType == "px" ? (column.width+"px") : (column.widthPer+"%"));
             var th = new Element("th",{
@@ -1112,13 +1115,15 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
     },
     createSelectTd : function(){
         if( this.selectTd )return;
-        this.selectTd = new Element("th").inject(this.node, "top");
-        this.selectTd.addEvent("click", function(ev){
-           ev.stopPropagation();
-        });
+        this.selectTd = new Element("td").inject(this.node, "top");
         this.checkboxElement = new Element("input", {
-            "type": "checkbox"
+            "type": "checkbox",
+            "events" : { click : function(ev){ ev.stopPropagation(); } }
         }).inject(this.selectTd);
+        this.selectTd.addEvent("click", function(ev){
+            this.checkboxElement.set("checked", !this.checkboxElement.get("checked") );
+            ev.stopPropagation();
+        }.bind(this));
     },
     setEvents: function(){
 

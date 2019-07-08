@@ -24,6 +24,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     },
 
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v || !v.length){
             if (this.json.description){
@@ -253,7 +254,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             return this.getScriptSelectUnit();
         }
         if (this.json.range==="draftUnit"){
-            debugger;
             var dn = (this.form.businessData.work || this.form.businessData.workCompleted).creatorIdentityDn;
             if (!dn){
                 if (layout.session.user.identityList.length){
@@ -268,7 +268,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             }
         }
         if (this.json.range==="currentUnit"){
-            debugger;
             if (this.form.app.currentTask){
                 return this.getNextSelectUnit(this.form.app.currentTask.identityDn);
             }else{
@@ -356,10 +355,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         }else{
             this.setData(values);
         }
-
         //this._setBusinessData(values);
         this.validationMode();
-        this.validation()
+        this.validation();
+        this.fireEvent("select");
     },
     selectOnCancel: function(){
         this.validation();

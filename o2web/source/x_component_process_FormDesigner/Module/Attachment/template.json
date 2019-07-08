@@ -4,6 +4,22 @@
   "type": "Attachment",
   "description": "",
   "events": {
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "upload": {
+      "code": "",
+      "html": ""
+    },
+    "delete": {
+      "code": "",
+      "html": ""
+    },
+    "afterDelete": {
+      "code": "",
+      "html": ""
+    },
     "click": {
       "code": "",
       "html": ""
@@ -29,14 +45,6 @@
       "html": ""
     },
     "mouseup": {
-      "code": "",
-      "html": ""
-    },
-    "upload": {
-      "code": "",
-      "html": ""
-    },
-    "delete": {
       "code": "",
       "html": ""
     }

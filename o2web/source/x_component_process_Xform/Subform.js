@@ -80,6 +80,13 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                         this.form.modules.push(module);
                     }
                 }.bind(this));
+
+                if( this.form.subformLoadedCount ){
+                    this.form.subformLoadedCount++;
+                }else{
+                    this.form.subformLoadedCount = 1
+                }
+                this.form.checkSubformLoaded();
             //}.bind(this));
         }
     },
@@ -93,6 +100,13 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                         this.getSubformData(json.data);
                         if (callback) callback();
                     }.bind(this));
+                }else{
+                    if( this.form.subformLoadedCount ){
+                        this.form.subformLoadedCount++;
+                    }else{
+                        this.form.subformLoadedCount = 1
+                    }
+                    this.form.checkSubformLoaded();
                 }
             }
         }else{

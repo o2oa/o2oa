@@ -24,6 +24,14 @@
                     <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">最大行数:</td>
+                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">每页行数:</td>
+                <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
+            </tr>
             <!--<tr>-->
                 <!--<td class="editTableTitle">最大行数:</td>-->
                 <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->

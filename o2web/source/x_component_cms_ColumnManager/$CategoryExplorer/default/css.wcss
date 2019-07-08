@@ -260,7 +260,29 @@
 	"box-shadow": "0px 0px 0px #999"
   },
 
-
+  "formInput": {
+	"content": {
+	  "height": "24px",
+	  "line-height": "24px",
+	  "margin": "3px 0px",
+	  "cursor": "default",
+	  "font-size": "14px"
+	},
+	"input": {
+	  "width": "90%",
+	  "height": "22px",
+	  "border": "1px solid #CCC",
+	  "box-shadow": "0px 0px 0px",
+	  "font-size": "14px"
+	},
+	"input_focus": {
+	  "width": "90%",
+	  "height": "22px",
+	  "border": "1px solid #da7429",
+	  "box-shadow": "0px 0px 8px #fab37e",
+	  "font-size": "14px"
+	}
+  },
   "templateIconNode": {
 	"height": "110px"
   },
