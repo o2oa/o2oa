@@ -25,7 +25,8 @@ MWF.xDesktop.WebSocket = new Class({
         // }, 10000);
 
         ///*暂时不启用WebSocket了------------
-        this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
+        //this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
+        this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
 
         try{
             this.webSocket = new WebSocket(this.ws);

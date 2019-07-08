@@ -847,12 +847,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         styleSelNodes.each(function(node){
             if (this.module.form.stylesList){
                 if (!this.data.formStyleType) this.data.formStyleType = "default";
+                var mode = this.form.options.mode === "mobile" ? "mobile" : "pc";
                 Object.each(this.module.form.stylesList, function(s, key){
-                    new Element("option", {
-                        "text": s.name,
-                        "value": key,
-                        "selected": ((!this.data.formStyleType && key=="default") || (this.data.formStyleType==key))
-                    }).inject(node)
+                    if( s.mode.contains( mode ) ){
+                        new Element("option", {
+                            "text": s.name,
+                            "value": key,
+                            "selected": ((!this.data.formStyleType && key=="default") || (this.data.formStyleType==key))
+                        }).inject(node)
+                    }
                 }.bind(this));
             }else{
                 node.getParent("tr").setStyle("display", "none");
@@ -863,14 +866,22 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var nodes = this.propertyContent.getElements(".MWFDivTemplate");
         if (nodes.length){
             var keys = [];
-            if (this.module.form.stylesList) {
-                if (this.module.form.stylesList[this.module.form.json.formStyleType]){
-                    var styles = this.module.form.stylesList[this.module.form.json.formStyleType][this.module.moduleName];
-                    if (styles) {
-                        Object.each(styles, function (v, k) {
-                            keys.push(k);
-                        }.bind(this));
-                    }
+            //if (this.module.form.stylesList) {
+            //    if (this.module.form.stylesList[this.module.form.json.formStyleType]){
+            //        var styles = this.module.form.stylesList[this.module.form.json.formStyleType][this.module.moduleName];
+            //        if (styles) {
+            //            Object.each(styles, function (v, k) {
+            //                keys.push(k);
+            //            }.bind(this));
+            //        }
+            //    }
+            //}
+            if (this.module.form.templateStyles && this.module.form.templateStyles[this.module.moduleName]) {
+                var styles = this.module.form.templateStyles[this.module.moduleName];
+                if (styles) {
+                    Object.each(styles, function (v, k) {
+                        keys.push(k);
+                    }.bind(this));
                 }
             }
 
@@ -1200,7 +1211,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         "collapse": true,
                         "onChange": function(){
                             var oldData = _self.data[name];
-debugger;
                             maps.each(function(o){
                                 _self.data[name][o.key] = o.map.toJson();
                             }.bind(this));
@@ -1216,7 +1226,6 @@ debugger;
         }.bind(this));
     },
     loadActionArea: function(){
-        debugger;
         var actionAreas = this.propertyContent.getElements(".MWFActionArea");
         actionAreas.each(function(node){
             var name = node.get("name");
@@ -1255,6 +1264,7 @@ debugger;
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "isSystemTool" : true,
                     "noCreate": true,
                     "noDelete": false,
                     "noCode": true,
@@ -1265,10 +1275,7 @@ debugger;
                         this.changeData(name);
                     }.bind(this)
                 });
-                debugger;
                 actionEditor.load(actionContent);
-                debugger;
-
 
                 // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
                 //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
@@ -1304,7 +1311,12 @@ debugger;
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);
                         this.changeData(name);
-					}.bind(this)
+					}.bind(this),
+                    "onDelete": function(key){
+					    debugger;
+
+                        this.module.deletePropertiesOrStyles(name, key);
+                    }.bind(this)
 				});
 				maplist.load(mapObj);
                 this.maplists[name] = maplist;

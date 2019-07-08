@@ -83,6 +83,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
+        this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
     createExportNode: function(){
         if (this.options.export){
@@ -316,9 +318,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     this.loadComparisonSelect(this.lp.numberFilter);
                     this.loadViewSearchCustomValueNumberInput();
                     break;
-                case "datetimeValue":
+                case "dateTimeValue":
+                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadViewSearchCustomValueDateTimeInput();
+                    break;
+                case "dateValue":
                     this.loadComparisonSelect(this.lp.dateFilter);
                     this.loadViewSearchCustomValueDateInput();
+                    break;
+                case "timeValue":
+                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadViewSearchCustomValueTimeInput();
                     break;
                 case "booleanValue":
                     this.loadComparisonSelect(this.lp.booleanFilter);
@@ -337,7 +347,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             "type": "number"
         }).inject(this.viewSearchCustomValueContentNode);
     },
-    loadViewSearchCustomValueDateInput: function(){
+    loadViewSearchCustomValueDateTimeInput: function(){
         this.viewSearchCustomValueContentNode.empty();
         this.viewSearchCustomValueNode = new Element("input", {
             "styles": this.css.viewFilterSearchCustomValueNode,
@@ -350,6 +360,38 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 "isTime": true,
                 "target": this.container,
                 "format": "db"
+            });
+        }.bind(this));
+    },
+    loadViewSearchCustomValueDateInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "text",
+            "readonly": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        MWF.require("MWF.widget.Calendar", function(){
+            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
+                "style": "xform",
+                "isTime": false,
+                "target": this.container,
+                "format": "%Y-%m-%d"
+            });
+        }.bind(this));
+    },
+    loadViewSearchCustomValueTimeInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "text",
+            "readonly": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        MWF.require("MWF.widget.Calendar", function(){
+            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
+                "style": "xform",
+                "timeOnly": true,
+                "target": this.container,
+                "format": "%H:%M:%S"
             });
         }.bind(this));
     },
@@ -469,6 +511,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var exportSize = this.exportAreaNode.getComputedSize();
             h = h-exportSize.totalHeight;
         }
+        var pageSize = this.viewPageNode.getComputedSize();
+        h = h-pageSize.totalHeight;
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
     createLoadding: function(){
@@ -527,50 +571,139 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.lookup(data);
         }
     },
+    _loadPageCountNode: function(){
+        this.viewPageContentNode.empty();
+
+        var size = this.viewPageAreaNode.getSize();
+        var w1 = this.viewPageFirstNode.getSize().x*2;
+        var w2 = this.viewPageContentNode.getStyle("margin-left").toInt();
+        var w = size.x-w1-w2;
+
+        var bw = this.css.viewPageButtonNode.width.toInt()+this.css.viewPageButtonNode["margin-right"].toInt();
+        var count = (w/bw).toInt()-2;
+        if (count>10) count = 10;
+        this.showPageCount = Math.min(count, this.pages);
+
+        var tmp = this.showPageCount/2;
+        var n = tmp.toInt();
+        var left = this.currentPage-n;
+        if (left<=0) left = 1;
+        var right = this.showPageCount + left-1;
+        if (right>this.pages) right = this.pages;
+        left = right-this.showPageCount+1;
+        if (left<=1) left = 1;
+
+        this.viewPagePrevNode = new Element("div", {"styles": this.css.viewPagePrevButtonNode}).inject(this.viewPageContentNode);
+        this.loadPageButtonEvent(this.viewPagePrevNode, "viewPagePrevButtonNode_over", "viewPagePrevButtonNode_up", "viewPagePrevButtonNode_down", function(){
+            if (this.currentPage>1) this.currentPage--;
+            this.loadCurrentPageData();
+        }.bind(this));
+
+        for (i=left; i<=right; i++){
+            var node = new Element("div", {"styles": this.css.viewPageButtonNode, "text": i}).inject(this.viewPageContentNode);
+            if (i==this.currentPage){
+                node.setStyles(this.css.viewPageButtonNode_current);
+            }else{
+                this.loadPageButtonEvent(node, "viewPageButtonNode_over", "viewPageButtonNode_up", "viewPageButtonNode_down", function(e){
+                    this.currentPage = e.target.get("text").toInt();
+                    this.loadCurrentPageData();
+                }.bind(this));
+            }
+        }
+        this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
+        this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
+            if (this.currentPage<this.pages-1) this.currentPage++;
+            this.loadCurrentPageData();
+        }.bind(this));
+    },
+    loadPageButtonEvent: function(node, over, out, down, click){
+        node.addEvents({
+            "mouseover": function(){node.setStyles(this.css[over])}.bind(this),
+            "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
+            "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
+            "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
+            "click": click,
+        });
+    },
+    _loadPageNode: function(){
+        this.viewPageAreaNode.empty();
+        this.viewPageFirstNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.firstPage}).inject(this.viewPageAreaNode);
+        this.viewPageContentNode = new Element("div", {"styles": this.css.viewPageContentNode}).inject(this.viewPageAreaNode);
+        this.viewPageLastNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.lastPage}).inject(this.viewPageAreaNode);
+        this._loadPageCountNode();
+
+        this.loadPageButtonEvent(this.viewPageFirstNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+            this.currentPage = 1;
+            this.loadCurrentPageData();
+        }.bind(this));
+        this.loadPageButtonEvent(this.viewPageLastNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+            this.currentPage = this.pages;
+            this.loadCurrentPageData();
+        }.bind(this));
+    },
+    _initPage: function(){
+        this.count = this.bundleItems.length;
+        var i = this.count/this.json.pageSize;
+        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
+        this.currentPage = 1;
+    },
     lookup: function(data){
         this.getLookupAction(function(){
             if (this.json.application){
-                this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, (data || null), function(json){
-                    this.viewData = json.data;
-                    if (this.viewJson.group.column){
-                        this.gridJson = json.data.groupGrid;
-                        this.loadGroupData();
-                    }else{
-                        this.gridJson = json.data.grid;
-                        this.loadData();
-                    }
-                    if (this.loadingAreaNode){
-                        this.loadingAreaNode.destroy();
-                        this.loadingAreaNode = null;
-                    }
-                    this.fireEvent("loadView");
+
+                var d = data || {};
+                d.count = this.json.count;
+                this.lookupAction.bundleView(this.json.id, d, function(json){
+                    this.bundleItems = json.data.valueList;
+
+                    this._initPage();
+                    this.loadCurrentPageData();
+
                 }.bind(this));
-                // this.lookupAction.invoke({"name": "lookup","async": true, "data": (data || null), "parameter": {"view": this.json.name, "application": this.json.application},"success": function(json){
-                //     this.viewData = json.data;
-                //     if (this.viewJson.group.column){
-                //         this.gridJson = json.data.groupGrid;
-                //         this.loadGroupData();
-                //     }else{
-                //         this.gridJson = json.data.grid;
-                //         this.loadData();
-                //     }
-                //     if (this.loadingAreaNode){
-                //         this.loadingAreaNode.destroy();
-                //         this.loadingAreaNode = null;
-                //     }
-                // }.bind(this)});
             }
         }.bind(this));
     },
+    loadCurrentPageData: function(){
+        var p = this.currentPage;
+        var d = {};
+        var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
+        d.bundleList = valueList;
+
+        debugger;
+        while (this.viewTable.rows.length>1){
+            this.viewTable.deleteRow(-1);
+        }
+        //this.createLoadding();
+
+        this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+            this.viewData = json.data;
+            if (this.viewJson.group.column){
+                this.gridJson = json.data.groupGrid;
+                this.loadGroupData();
+            }else{
+                this.gridJson = json.data.grid;
+                this.loadData();
+            }
+            if (this.loadingAreaNode){
+                this.loadingAreaNode.destroy();
+                this.loadingAreaNode = null;
+            }
+            this.fireEvent("loadView");
+        }.bind(this));
+
+        this._loadPageNode();
+    },
+
+
     loadData: function(){
         if (this.gridJson.length){
-            if( !this.options.paging ){
+            // if( !this.options.paging ){
                 this.gridJson.each(function(line, i){
                     this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
                 }.bind(this));
-            }else{
-                this.loadPaging();
-            }
+            // }else{
+            //     this.loadPaging();
+            // }
         }
     },
     loadPaging : function(){

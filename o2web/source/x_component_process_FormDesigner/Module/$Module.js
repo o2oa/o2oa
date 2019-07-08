@@ -160,14 +160,17 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	setStyleTemplate: function(){
-		if (this.form.stylesList){
-			if (this.form.json.formStyleType){
-				if (this.form.stylesList[this.form.json.formStyleType]){
-					if (this.form.stylesList[this.form.json.formStyleType][this.moduleName]){
-						this.setTemplateStyles(this.form.stylesList[this.form.json.formStyleType][this.moduleName]);
-					}
-				}
-			}
+		//if (this.form.stylesList){
+		//	if (this.form.json.formStyleType){
+		//		if (this.form.stylesList[this.form.json.formStyleType]){
+		//			if (this.form.stylesList[this.form.json.formStyleType][this.moduleName]){
+		//				this.setTemplateStyles(this.form.stylesList[this.form.json.formStyleType][this.moduleName]);
+		//			}
+		//		}
+		//	}
+		//}
+		if( this.form.templateStyles && this.form.templateStyles[this.moduleName] ){
+			this.setTemplateStyles(this.form.templateStyles[this.moduleName]);
 		}
 	},
 	setAllStyles: function(){
@@ -578,7 +581,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.injectActionEffect.start(this.form.css.injectActionArea_to);
 	},
 	_hideInjectAction : function(){
-		debugger;
 		this.draggingModule = null;
 		if( this.injectActionArea ){
 			this.injectActionArea.setStyle("display","none");
@@ -896,7 +898,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this._setControlModeNode();
 		}
 	},
-
+	deletePropertiesOrStyles: function(name, key){
+		if (name=="properties"){
+			try{
+				this.node.removeProperty(key);
+			}catch(e){}
+		}
+	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			try{

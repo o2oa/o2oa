@@ -3,13 +3,15 @@ COMMON.AjaxModule.load("JSONTemplate", null, false);
 MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class({
     Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["load", "loadData"]
+        "moduleEvents": ["queryLoad","postLoad","load", "loadData"]
     },
     load: function(){
+        this._loadModuleEvents();
         this._queryLoaded();
         this._loadUserInterface();
         //this._loadStyles();
-        this._loadEvents();
+        //this._loadEvents();
+        this._loadDomEvents();
 
         this._afterLoaded();
     },

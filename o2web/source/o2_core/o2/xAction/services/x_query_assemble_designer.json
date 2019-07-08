@@ -36,6 +36,7 @@
   "deleteView": {"uri": "/jaxrs/view/{id}","method": "DELETE"},
   "updateView": {"uri": "/jaxrs/view/{id}","method": "PUT"},
   "loadView": {"uri": "/jaxrs/view/{id}/simulate", "method": "PUT"},
+  "bundleView": {"uri": "/jaxrs/view/{id}/bundle", "method": "PUT"},
 
   "getStat": {"uri": "/jaxrs/stat/{id}"},
   "addStat": {"uri": "/jaxrs/stat","method": "POST"},

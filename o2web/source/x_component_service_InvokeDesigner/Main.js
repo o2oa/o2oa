@@ -340,15 +340,44 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 				this.toolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
 				this.toolbar.load();
                 var _self = this;
-                this.styleSelectNode = toolbarNode.getElement("select");
+                this.styleSelectNode = toolbarNode.getElement("select[MWFnodetype='theme']");
                 this.styleSelectNode.addEvent("change", function(){
                     _self.changeEditorStyle(this);
+                });
+
+                this.fontsizeSelectNode = toolbarNode.getElement("select[MWFnodetype='fontSize']");
+                this.fontsizeSelectNode.addEvent("change", function(){
+                    _self.changeFontSize(this);
                 });
 
 				if (callback) callback();
 			}.bind(this));
 		}.bind(this));
 	},
+    changeFontSize: function(node){
+        var idx = node.selectedIndex;
+        var value = node.options[idx].value;
+        //var editorData = null;
+        this.invokeTab.pages.each(function(page){
+            //if (!editorData) editorData = page.invoke.editor.editorData;
+            var editor = page.invoke.editor.editor;
+            if (editor) editor.setFontSize(value);
+        }.bind(this));
+        //if (!editorData) editorData = MWF.editorData;
+        //editorData.javainvokeEditor.theme = value;
+        if (!MWF.editorData){
+            MWF.editorData = {
+                "javascriptEditor": {
+                    "theme": "tomorrow",
+                    "fontSize" : "12px"
+                }
+            };
+        }
+        MWF.editorData.javascriptEditor["fontSize"] = value;
+
+        MWF.UD.putData("editor", MWF.editorData);
+
+    },
     changeEditorStyle: function(node){
         var idx = node.selectedIndex;
         var value = node.options[idx].value;
@@ -363,7 +392,8 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         if (!MWF.editorData){
             MWF.editorData = {
                 "javascriptEditor": {
-                    "theme": "tomorrow"
+                    "theme": "tomorrow",
+                    "fontSize" : "12px"
                 }
             };
         }
@@ -665,16 +695,16 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                         }.bind(this), true);
                     }.bind(this));
                 }
-            };
-            if (!this.invokeHelpMenu){
-                MWF.require("MWF.widget.ScriptHelp", function(){
-                    this.invokeHelpMenu = new MWF.widget.ScriptHelp($("MWFScriptAutoCode"), this.invoke.editor);
-                    this.invokeHelpMenu.getEditor = function(){
-                        if (this.invokeTab.showPage) return this.invokeTab.showPage.invoke.editor.editor;
-                        return null;
-                    }.bind(this)
-                }.bind(this));
             }
+            //if (!this.invokeHelpMenu){
+            //    MWF.require("MWF.widget.ScriptHelp", function(){
+            //        this.invokeHelpMenu = new MWF.widget.ScriptHelp($("MWFScriptAutoCode"), this.invoke.editor);
+            //        this.invokeHelpMenu.getEditor = function(){
+            //            if (this.invokeTab.showPage) return this.invokeTab.showPage.invoke.editor.editor;
+            //            return null;
+            //        }.bind(this)
+            //    }.bind(this));
+            //}
 		}.bind(this));
 	},
 

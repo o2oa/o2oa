@@ -46,7 +46,6 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         "pagingEnable" : false,
         "documentSortable" : false, //item可以拖动排序，和 onSortCompleted 结合使用
         "documentKeyWord" : null,
-        "holdMouseDownStyles" : false, //维持鼠标点击后的样式，在mouseover的时候不改变样式
         "pagingPar" : {
             position : [ "top" , "bottom" ], //分页条，上下
             countPerPage : 0,
@@ -430,27 +429,28 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         }
 
         if (styles)node.setStyles(styles);
+        var holdMouseDownStyles = setting.holdMouseDownStyles || false;
         if (overStyles && styles) {
             node.addEvent("mouseover", function (ev) {
-                if( !_self.lockNodeStyle  && (!_self.options.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
-            }.bind({"styles": overStyles, "node":node }));
+                if( !_self.lockNodeStyle  && (!this.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
+            }.bind({"styles": overStyles, "node":node, "holdMouseDownStyles" : holdMouseDownStyles }));
             node.addEvent("mouseout", function (ev) {
-                if( !_self.lockNodeStyle && (!_self.options.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
-            }.bind({"styles": styles, "node":node}));
+                if( !_self.lockNodeStyle && (!this.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
+            }.bind({"styles": styles, "node":node, "holdMouseDownStyles" : holdMouseDownStyles}));
         }
         if (downStyles && ( overStyles || styles)) {
             node.addEvent("mousedown", function (ev) {
                 if( !_self.lockNodeStyle )this.node.setStyles(this.styles);
-                if( _self.mousedownNode ){
+                if( _self.mousedownNode && this.holdMouseDownStyles ){
                     _self.mousedownNode.setStyles( this.normalStyle )
                 }
-                if( _self.options.holdMouseDownStyles ){
+                if( this.holdMouseDownStyles ){
                     _self.mousedownNode = this.node;
                 }
-            }.bind({"styles": downStyles, normalStyle : (styles || overStyles), "node":node}));
+            }.bind({"styles": downStyles, normalStyle : (styles || overStyles), "node":node, "holdMouseDownStyles" : holdMouseDownStyles}));
             node.addEvent("mouseup", function (ev) {
-                if( !_self.lockNodeStyle && (!_self.options.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
-            }.bind({"styles": overStyles || styles, "node":node}))
+                if( !_self.lockNodeStyle && (!this.holdMouseDownStyles || _self.mousedownNode != this.node ) )this.node.setStyles(this.styles);
+            }.bind({"styles": overStyles || styles, "node":node, "holdMouseDownStyles" : holdMouseDownStyles}))
         }
     },
     selectAllCheckbox: function () {

@@ -5,11 +5,13 @@
         <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
         <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
         <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
-        <!--<script src="res/framework/htmleditor/ckeditor451/ckeditor.js"></script>-->
-        <script src="../o2_core/o2.min.js?v=2.0.8"></script>
-        <script src="../o2_core/compatible.min.js?v=2.0.8"></script>
-        <script src="js/workmobile.js?v=2.0.8"></script>
+
+        <script src="../o2_core/o2.min.js?v=2.1.3"></script>
+        <script src="../o2_core/compatible.min.js?v=2.1.3"></script>
         <script src="../o2_lib/Decimal.js"></script>
+        <script src="js/base.js?v=2.1.3"></script>
+        <script src="js/work.js?v=2.1.3"></script>
+        <script>layout.mobile = true;</script>
 
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
         <meta content="yes" name="apple-mobile-web-app-capable" />
@@ -21,6 +23,7 @@
     </head>
     <body style="overflow: hidden; margin:0px;">
         <div style="-webkit-overflow-scrolling: touch; overflow: auto; height: 100%;">
+            <div id="loaddingArea" style="overflow: hidden;width:0px; height:2px; background-color:#4e82bd; position: absolute; top: 0; z-index: 100"></div>
             <div id="layout" style="overflow: hidden; -webkit-transform: translateZ(0); "></div>
         </div>
     </body>

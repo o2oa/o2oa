@@ -146,7 +146,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
-debugger;
                         //var pid = "";
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;

@@ -310,6 +310,13 @@
       o2m.util.calendar.chooseOneDay
       o2m.util.calendar.chooseDateTime
       o2m.util.calendar.chooseInterval
+    device
+      o2m.util.device.getPhoneInfo
+      o2m.util.device.scan
+    navigation
+      o2m.util.navigation.setTitle
+      o2m.util.navigation.close
+      o2m.util.navigation.goBack
 
 
 
@@ -328,7 +335,7 @@ var _util_post = function(body, onFail) {
     }
   }
   var message = JSON.stringify(body);
-  if ((window.o2mUtil.postMessage&&window.o2mUtil.postMessage) || (window.webkit.messageHandlers.o2mUtil)) {
+  if ((window.o2mUtil&&window.o2mUtil.postMessage) || (window.webkit.messageHandlers.o2mUtil)) {
     window.o2mUtil&&window.o2mUtil.postMessage ? window.o2mUtil.postMessage(message) : window.webkit.messageHandlers.o2mUtil.postMessage(message);
   }else {
     if (onFail && typeof onFail === "function") {
@@ -477,6 +484,115 @@ var _o2m_u_calendar_chooseInterval = function(c) {
   _util_post(body, onFail);
 }
 this.o2m.util.calendar.chooseInterval = _o2m_u_calendar_chooseInterval;
+
+
+//o2m.util.device.getPhoneInfo
+this.o2m.util.device.getPhoneInfoSuccess = function(result) {
+  console.log("util calendar chooseInterval back, result:"+result);
+};
+var _o2m_u_device_getPhoneInfo = function(c) {
+  var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+  var onFail  = c&&c.onFail ? c.onFail : null;
+  if(onSuccess && typeof onSuccess === "function"){
+    o2m.util.device.getPhoneInfoSuccess  = onSuccess;
+  }
+  var body = {
+    type: "device.getPhoneInfo",
+    callback: "o2m.util.device.getPhoneInfoSuccess",
+    data: {
+      
+    }
+  };
+  _util_post(body, onFail);
+}
+this.o2m.util.device.getPhoneInfo = _o2m_u_device_getPhoneInfo;
+
+
+//o2m.util.device.scan
+this.o2m.util.device.scanSuccess = function(result) {
+  console.log("util calendar chooseInterval back, result:"+result);
+};
+var _o2m_u_device_scan = function(c) {
+  var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+  var onFail  = c&&c.onFail ? c.onFail : null;
+  if(onSuccess && typeof onSuccess === "function"){
+    o2m.util.device.scanSuccess  = onSuccess;
+  }
+  var body = {
+    type: "device.scan",
+    callback: "o2m.util.device.scanSuccess",
+    data: {
+      
+    }
+  };
+  _util_post(body, onFail);
+}
+this.o2m.util.device.scan = _o2m_u_device_scan;
+
+
+//o2m.util.navigation.setTitle
+this.o2m.util.navigation.setTitleSuccess = function(result) {
+  console.log("util calendar chooseInterval back, result:"+result);
+};
+var _o2m_u_navigation_setTitle = function(c) {
+  var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+  var onFail  = c&&c.onFail ? c.onFail : null;
+  var title = c&&c.title ? c.title : "";
+  if(onSuccess && typeof onSuccess === "function"){
+    o2m.util.navigation.setTitleSuccess  = onSuccess;
+  }
+  var body = {
+    type: "navigation.setTitle",
+    callback: "o2m.util.navigation.setTitleSuccess",
+    data: {
+      title: title
+    }
+  };
+  _util_post(body, onFail);
+}
+this.o2m.util.navigation.setTitle = _o2m_u_navigation_setTitle;
+
+
+//o2m.util.navigation.close
+this.o2m.util.navigation.closeSuccess = function(result) {
+  console.log("util calendar chooseInterval back, result:"+result);
+};
+var _o2m_u_navigation_close = function(c) {
+  var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+  var onFail  = c&&c.onFail ? c.onFail : null;
+  if(onSuccess && typeof onSuccess === "function"){
+    o2m.util.navigation.closeSuccess  = onSuccess;
+  }
+  var body = {
+    type: "navigation.close",
+    callback: "o2m.util.navigation.closeSuccess",
+    data: {
+    }
+  };
+  _util_post(body, onFail);
+}
+this.o2m.util.navigation.close = _o2m_u_navigation_close;
+
+
+//o2m.util.navigation.goBack
+this.o2m.util.navigation.goBackSuccess = function(result) {
+  console.log("util calendar chooseInterval back, result:"+result);
+};
+var _o2m_u_navigation_goBack = function(c) {
+  var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+  var onFail  = c&&c.onFail ? c.onFail : null;
+  if(onSuccess && typeof onSuccess === "function"){
+    o2m.util.navigation.goBackSuccess  = onSuccess;
+  }
+  var body = {
+    type: "navigation.goBack",
+    callback: "o2m.util.navigation.goBackSuccess",
+    data: {
+    }
+  };
+  _util_post(body, onFail);
+}
+this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
 
 
 })();

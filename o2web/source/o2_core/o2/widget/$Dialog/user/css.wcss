@@ -11,7 +11,7 @@
 	    "overflow": "hidden",
 		"background-color": "#f3f3f3",
 		"box-shadow": "0px 0px 20px #999999",
-		"z-index": "20000",
+		"z-index": "1000",
 		
 		"padding": "3px",
 
@@ -24,7 +24,7 @@
 		"border-color": "#3C76B7",
 		"border-width": "1",
 		"box-shadow": "0px 0px 20px #999999",
-		"z-index": "20000",
+		"z-index": "1000",
 		"overflow": "hidden",
 		"font-size": "14px",
 		"height": "60",
@@ -43,7 +43,7 @@
 		"position": "absolute",
 		"top": "0px",
 		"left": "0px",
-		"z-index": "19999",
+		"z-index": "999",
 		"border-style": "none",
 		"border-width": "0",
 		"background-color": "#CCC"

@@ -5,21 +5,33 @@
 	"description": "",
 	"dataType": "data",
 	"data": [
-				{
-					"title": "empty",
-					"text": "empty",
-					"id": "1",
-					"icon": "none",
-					"action": "",
-					"expand": true,
-					"sub": []
-				}
-			],
+		{
+			"title": "empty",
+			"text": "empty",
+			"id": "1",
+			"icon": "none",
+			"action": "",
+			"expand": true,
+			"sub": []
+		}
+	],
 	"dataScript": {
 		"code": "",
 		"html": ""
 	},
 	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"load": {
+		  "code": "",
+		  "html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""

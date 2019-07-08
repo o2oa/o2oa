@@ -5,7 +5,53 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     "options": {
         "officeFiles": ["doc","docx","dotx","dot","xls","xlsx","xlsm","xlt","xltx","pptx","ppt","pot","potx","potm","pdf"],
     },
+    checkAttachmentDeleteAction : function(){
+        if (this.options.readonly){
+            this.setAttachmentsAction("delete", false );
+            return false;
+        }
+        if (this.options.isDeleteOption=="y"){
+            if (this.attachments.length){
+                var user = layout.session.user.distinguishedName;
+
+                for (var i=0; i<this.attachments.length; i++){
+                    var flag = true;
+                    var att = this.attachments[i];
+                    if (this.options.isDeleteOption==="o"){
+
+                        if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+                        if (att.data.person!==layout.desktop.session.user.distinguishedName)flag = false;
+
+                    }else if (this.options.isDeleteOption==="a"){
+
+                        if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+                        if (att.data.activity!==this.module.form.businessData.activity.id)flag = false;
+
+                    }else if (this.options.isDeleteOption==="ao"){
+
+                        if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+                        if ((att.data.activity!==this.module.form.businessData.activity.id) || (att.data.person!==layout.desktop.session.user.distinguishedName))flag = false;
+
+                    }else{
+                        if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+                    }
+
+                    if (flag){
+                        this.setAttachmentAction(att, "delete", true );
+                    }else{
+                        this.setAttachmentAction(att, "delete", false );
+                    }
+                }
+            }
+
+        }else{
+            this.setAttachmentsAction("delete", false );
+        }
+    },
     checkDeleteAction: function(){
+
+        this.checkAttachmentDeleteAction();
+
         if (this.options.readonly){
             this.setActionDisabled(this.deleteAction);
             this.setActionDisabled(this.min_deleteAction);
@@ -103,7 +149,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkReplaceAction: function(){
-        debugger;
         if (this.options.readonly){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
@@ -208,7 +253,28 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //    }
     },
 
+    checkAttachmentConfigAction : function(){
+        if (this.options.readonly){
+            this.setAttachmentsAction("config", false );
+            return false;
+        }
+        if (this.attachments.length){
+            var user = layout.session.user.distinguishedName;
+            for (var i=0; i<this.attachments.length; i++){
+                var flag = true;
+                if ((!this.attachments[i].data.control.allowControl || !this.attachments[i].data.control.allowEdit) && this.attachments[i].data.person!==user){
+                    flag = false;
+                }
+                if (flag){
+                    this.setAttachmentAction(this.attachments[i], "config", true );
+                }else{
+                    this.setAttachmentAction(this.attachments[i], "config", false );
+                }
+            }
+        }
+    },
     checkConfigAction: function(){
+        this.checkAttachmentConfigAction();
         if (this.options.readonly){
             this.setActionDisabled(this.configAction);
             this.setActionDisabled(this.checkTextAction);
@@ -294,11 +360,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (this.min_closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
         }
 
-        this.createSeparate(this.minActionAreaNode);
 
-        this.sizeAction = this.createAction(this.minActionAreaNode, "max", MWF.LP.widget.min, function(){
-            this.changeControllerSize();
-        }.bind(this));
+
+        if (this.options.isSizeChange) {
+            this.createSeparate(this.minActionAreaNode);
+
+            this.sizeAction = this.createAction(this.minActionAreaNode, "max", MWF.LP.widget.min, function () {
+                this.changeControllerSize();
+            }.bind(this));
+        }
     },
     closeAttachmentOffice: function(){
         var office = this.module.form.all[this.module.json.officeControlName];
@@ -336,10 +406,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         var dlg = o2.DL.open({
             "title": lp.attachmentPermission,
+            "style" : this.module.form.json.dialogStyle || "user",
             "isResize": false,
             "content": node,
             "buttonList": [
                 {
+                    "type" : "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": function(){
                         this.setAttachmentConfig(readInput, editInput, controllerInput);
@@ -347,6 +419,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     }.bind(this)
                 },
                 {
+                    "type" : "cancel",
                     "text": MWF.LP.process.button.cancel,
                     "action": function(){dlg.close();}
                 }
@@ -454,10 +527,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
             var dlg = o2.DL.open({
                 "title": lp.attachmentOCRTitle,
+                "style" : this.module.form.json.dialogStyle || "user",
                 "isResize": false,
                 "content": node,
                 "buttonList": [
                     {
+                        "type" : "ok",
                         "text": MWF.LP.process.button.ok,
                         "action": function(){
                             this.setAttachmentOCR(inputNode, att);
@@ -465,6 +540,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                         }.bind(this)
                     },
                     {
+                        "type" : "cancel",
                         "text": MWF.LP.process.button.cancel,
                         "action": function(){dlg.close();}
                     }
@@ -514,6 +590,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
     loadAttachmentController: function(){
         //MWF.require("MWF.widget.AttachmentController", function() {
             var options = {
+                "style" : this.json.style || "default",
                 "title": "附件区域",
                 "listStyle": this.json.listStyle || "icon",
                 "size": this.json.size || "max",
@@ -600,7 +677,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                         break;
                 }
             });
-            debugger;
             accept = accepts.join(", ");
         }
         var size = 0;
@@ -726,7 +802,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
             this.close();
         }, function(){
             this.close();
-        }, null);
+        }, null, null, this.form.json.confirmStyle );
     },
     deleteAttachment: function(attachment){
         this.fireEvent("delete", [attachment.data]);
@@ -761,7 +837,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 this.close();
             }, function(){
                 this.close();
-            }, null);
+            }, null, null, this.form.json.confirmStyle);
         }
     },
 
@@ -853,7 +929,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
         // this.fileReplaceNode.click();
     },
     downloadAttachment: function(e, node, attachments){
-        if (this.form.businessData.work){
+        if (this.form.businessData.work && !this.form.businessData.work.completedTime){
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
@@ -900,7 +976,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
         //this.downloadAttachment(e, node, attachment);
     },
     getAttachmentUrl: function(attachment, callback){
-        if (this.form.businessData.work){
+        if (this.form.businessData.work && !this.form.businessData.work.completedTime){
             this.form.workAction.getAttachmentUrl(attachment.data.id, this.form.businessData.work.id, callback);
         }else{
             this.form.workAction.getAttachmentWorkcompletedUrl(attachment.data.id, this.form.businessData.workCompleted.id, callback);

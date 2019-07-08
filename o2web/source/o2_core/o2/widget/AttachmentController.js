@@ -80,6 +80,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             var att = atts.shift();
             this.attachments.push(new o2.widget.AttachmentController.Attachment(att.data, this));
         }
+        this.checkActions();
         //this.attachments = atts;
 	},
     loadMin: function(){
@@ -103,11 +104,12 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.minContent.empty();
         }
         var atts = this.attachments;
-        this.attachments = []
+        this.attachments = [];
         while (atts.length){
             var att = atts.shift();
             this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(att.data, this));
         }
+        this.checkActions();
         //this.attachments = atts;
     },
     loadMobile: function(){
@@ -131,11 +133,13 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.downloadAttachment(e, node);
         }.bind(this));
 
-        this.createSeparate(this.minActionAreaNode);
+        if (this.options.isSizeChange){
+            this.createSeparate(this.minActionAreaNode);
 
-        this.sizeAction = this.createAction(this.minActionAreaNode, "max", o2.LP.widget.min, function(){
-            this.changeControllerSize();
-        }.bind(this));
+            this.sizeAction = this.createAction(this.minActionAreaNode, "max", o2.LP.widget.min, function(){
+                this.changeControllerSize();
+            }.bind(this));
+        }
     },
 
     setEvent: function(){
@@ -259,18 +263,20 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     createViewGroupActions: function(){
-        this.viewActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
-        this.viewActionBoxNode.setStyles({"float": "right", "margin-right": "7px"});
-        this.viewActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.viewActionBoxNode);
-        this.sizeAction = this.createAction(this.viewActionsGroupNode, "min", o2.LP.widget.min, function(){
-            this.changeControllerSize();
-        }.bind(this));
+        if (this.options.isSizeChange){
+            this.viewActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+            this.viewActionBoxNode.setStyles({"float": "right", "margin-right": "7px"});
+            this.viewActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.viewActionBoxNode);
+            this.sizeAction = this.createAction(this.viewActionsGroupNode, "min", o2.LP.widget.min, function(){
+                this.changeControllerSize();
+            }.bind(this));
+        }
     },
 
 
 
     createSeparate: function(groupNode){
-        var separateNode = new Element("div", {"styles": this.css.separateNode}).inject(groupNode);
+        var separateNode = new Element("div.separateNode", {"styles": this.css.separateNode}).inject(groupNode);
         return separateNode;
     },
     createAction: function(groupNode, img, title, click){
@@ -335,11 +341,13 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if (this.options.readonly){
             this.setActionDisabled(this.deleteAction);
             this.setActionDisabled(this.min_deleteAction);
+            this.setAttachmentsAction("delete", false );
             return false;
         }
         if (!this.options.isDelete){
             this.setActionDisabled(this.deleteAction);
             this.setActionDisabled(this.min_deleteAction);
+            this.setAttachmentsAction("delete", false );
         }else{
             if (this.selectedAttachments.length){
                 this.setActionEnabled(this.deleteAction);
@@ -348,6 +356,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 this.setActionDisabled(this.deleteAction);
                 this.setActionDisabled(this.min_deleteAction);
             }
+            this.setAttachmentsAction("delete", true );
         }
     },
     // checkOfficeAction: function(){
@@ -358,11 +367,13 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if (this.options.readonly){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
+            this.setAttachmentsAction("replace", false );
             return false;
         }
         if (!this.options.isReplace){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
+            this.setAttachmentsAction("replace", false );
         }else{
             if (this.selectedAttachments.length && this.selectedAttachments.length==1){
                 this.setActionEnabled(this.replaceAction);
@@ -371,12 +382,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 this.setActionDisabled(this.replaceAction);
                 this.setActionDisabled(this.min_replaceAction);
             }
+            this.setAttachmentsAction("replace", true );
         }
     },
     checkDownloadAction: function(){
         if (!this.options.isDownload){
             this.setActionDisabled(this.downloadAction);
             this.setActionDisabled(this.downloadAllAction);
+            this.setAttachmentsAction("download", false );
         }else{
             if (this.selectedAttachments.length){
                 this.setActionEnabled(this.downloadAction);
@@ -384,13 +397,16 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 this.setActionDisabled(this.downloadAction);
             }
             this.setActionEnabled(this.downloadAllAction);
+            this.setAttachmentsAction("download", true );
         }
     },
     checkSizeAction: function(){
-        if (this.options.isSizeChange){
-            this.setActionEnabled(this.sizeAction);
-        }else{
-            this.setActionDisabled(this.sizeAction);
+        if( this.sizeAction ){
+            if (this.options.isSizeChange){
+                this.setActionEnabled(this.sizeAction);
+            }else{
+                this.setActionDisabled(this.sizeAction);
+            }
         }
     },
     checkListStyleAction: function(){
@@ -466,9 +482,50 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     setReadonly: function() {
         this.actions.each(function(action){
             this.setActionDisabled(action);
+            this.setAttachmentsAction("all", false );
         }.bind(this));
     },
-
+    setAttachmentsAction : function(type, enable){
+        this.attachments.each( function( att ){
+            this.setAttachmentAction( att, type, enable )
+        }.bind(this))
+    },
+    setAttachmentAction : function(att, type, enable){
+        var action;
+        if( type === "all" ){
+            ( att.actions || [] ).each( function(action){
+                att[ enable ? "setActionEnabled" : "setActionDisabled" ](action);
+            })
+        }else{
+            switch( type ){
+                case "download" :
+                    action = att.downloadAction;
+                    break;
+                case "config" :
+                    action = att.configAction;
+                    break;
+                case "delete" :
+                    action = att.deleteAction;
+                    break;
+                case "replace" :
+                    action = att.replaceAction;
+                    break;
+            }
+            if( !action )return;
+            if( type === "config" ){
+                var flag = enable;
+                if( flag ){
+                    var user = layout.session.user.distinguishedName;
+                    if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+                        flag = false;
+                    }
+                }
+                att[ flag ? "setActionEnabled" : "setActionDisabled" ](action);
+            }else{
+                att[ enable ? "setActionEnabled" : "setActionDisabled" ](action);
+            }
+        }
+    },
 
     doAction: function(e, node, action){
         if (action){
@@ -808,6 +865,7 @@ debugger;
         }else{
             this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this));
         }
+        this.checkActions();
     },
     removeAttachment: function(attachment){
         this.attachments.erase(attachment);
@@ -845,6 +903,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.content = this.controller.content;
         this.isSelected = false;
         this.seq = this.controller.attachments.length+1;
+        this.actions = [];
         this.load();
 	},
     _getLnkPar: function(url){
@@ -1198,6 +1257,64 @@ o2.widget.AttachmentController.Attachment = new Class({
     },
     openAttachment: function(e){
         if (this.controller.module) this.controller.module.openAttachment(e, null, [this]);
+    },
+    setActionEnabled: function(action){
+        if (action){
+            action.setStyle("display","");
+            action.store("disabled", false);
+            //if (action.retrieve("disabled")){
+            //    var iconNode = action.getFirst();
+            //    var icon = iconNode.getStyle("background-image");
+            //    var ext = icon.substr(icon.lastIndexOf(".")+1, icon.length);
+            //    icon = icon.substr(0, icon.lastIndexOf("_gray"))+"."+ext;
+            //    iconNode.setStyle("background-image", icon);
+            //    action.store("disabled", false);
+            //}
+        }
+    },
+    setActionDisabled: function(action){
+        if (action){
+            action.setStyle("display","none");
+            action.store("disabled", true);
+            //if (!action.retrieve("disabled")){
+            //    var iconNode = action.getFirst();
+            //    var icon = iconNode.getStyle("background-image");
+            //    var ext = icon.substr(icon.lastIndexOf(".")+1, icon.length);
+            //    icon = icon.substr(0, icon.lastIndexOf("."))+"_gray."+ext;
+            //    iconNode.setStyle("background-image", icon);
+            //    action.store("disabled", true);
+            //}
+        }
+    },
+    createAction: function(node, img, img_over, title, click){
+        debugger;
+        var actionNode = new Element("div", {"styles": this.controller.css.minActionNode, "title": title}).inject(node);
+        var actionIconNode = new Element("div", {"styles": this.controller.css.minActionIconNode}).inject(actionNode);
+        actionIconNode.setStyle("background-image", "url("+o2.session.path+"/widget/$AttachmentController/"+this.controller.options.style+"/icon/"+img+".png)");
+
+        var _self = this;
+        actionNode.addEvents({
+            "mouseover": function( e ){
+                if (!this.actionNode.retrieve("disabled")){
+                    //if (!this.retrieve("selected")) this.setStyle("background", "url("+o2.session.path+"/widget/$AttachmentController/"+_self.options.style+"/overbg.png)");
+                    this.actionIconNode.setStyle("background-image", "url("+o2.session.path+"/widget/$AttachmentController/"+_self.controller.options.style+"/icon/"+this.img+".png)");
+                }
+            }.bind( { actionNode : actionNode, actionIconNode: actionIconNode, img : img_over } ),
+            "mouseout": function(){
+                if (!this.actionNode.retrieve("disabled")){
+                    // if (!this.retrieve("selected")) this.setStyle("background", "transparent");
+                    this.actionIconNode.setStyle("background-image", "url("+o2.session.path+"/widget/$AttachmentController/"+_self.controller.options.style+"/icon/"+this.img+".png)");
+                }
+            }.bind( { actionNode : actionNode, actionIconNode: actionIconNode,  img : img } ),
+            "click": function(e){
+                if (!this.retrieve("disabled")){
+                    click.apply(_self.controller, [e, this]);
+                }
+            }
+        });
+        if( !this.actions )this.actions = [];
+        this.actions.push(actionNode);
+        return actionNode;
     }
 });
 
@@ -1244,6 +1361,29 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
     },
     loadList: function(){
         this.node.setStyles(this.css.minAttachmentNode_list);
+
+        this.sepNode = new Element("div", {"styles":this.css.minAttachmentSepNode_list}).inject(this.node);
+
+        this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function(e, node){
+            this.controller.downloadAttachment(e, node);
+        }.bind(this));
+        //this.actions.push( this.downloadAction );
+
+
+        this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function(e, node){
+            this.controller.deleteAttachment(e, node);
+        }.bind(this));
+        //this.actions.push( this.deleteAction );
+
+        if( this.controller.configAttachment ){
+            this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", MWF.LP.widget.configAttachment, function(e, node){
+                this.controller.configAttachment(e, node);
+            }.bind(this));
+            //this.actions.push( this.configAction );
+        }
+
         if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
 
         this.iconNode = new Element("div", {"styles": this.css.minAttachmentIconNode_list}).inject(this.node);
@@ -1253,9 +1393,43 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         this.textNode.set("text", this.data.name);
+
+        var size = "";
+        var k = this.data.length/1204;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
+
     },
     loadSequence: function(){
         this.node.setStyles(this.css.minAttachmentNode_sequence);
+
+        this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function(e, node){
+            this.controller.downloadAttachment(e, node);
+        }.bind(this));
+        //this.actions.push( this.downloadAction );
+
+        this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function(e, node){
+            this.controller.deleteAttachment(e, node);
+        }.bind(this));
+        //this.actions.push( this.deleteAction );
+
+        if( this.controller.configAttachment ){
+            this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", MWF.LP.widget.configAttachment, function(e, node){
+                this.controller.configAttachment(e, node);
+            }.bind(this));
+            //this.actions.push( this.configAction );
+        }
+
         if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
 
         this.sequenceNode = new Element("div", {"styles": this.css.attachmentSeqNode_sequence, "text": (this.seq || 1)}).inject(this.node);
@@ -1266,6 +1440,18 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         this.textNode.set("text", this.data.name);
+        var size = "";
+        var k = this.data.length/1204;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
     },
     setEvent: function(){
         this.node.addEvents({

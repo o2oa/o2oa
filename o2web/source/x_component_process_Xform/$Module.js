@@ -34,11 +34,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
     },
     load: function(){
 
+        this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
             this._queryLoaded();
             this._loadUserInterface();
             this._loadStyles();
-            this._loadEvents();
+            this._loadDomEvents();
+            //this._loadEvents();
 
             this._afterLoaded();
             this.fireEvent("postLoad");
@@ -80,10 +82,32 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         // }
         //if (this.json.styles) this.node.setStyles(this.json.styles);
     },
+    _loadModuleEvents : function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
     _loadEvents: function(){
         Object.each(this.json.events, function(e, key){
             if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!=-1){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event){
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));

@@ -44,7 +44,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     //this.mask.loadNode(this.content);
                     this.loadPortal(this.options.parameters, callback);
                 }
-        if (callback) callback();
+        //if (callback) callback();
             //}.bind(this));
 
         //}.bind(this));

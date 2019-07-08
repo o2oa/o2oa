@@ -203,7 +203,7 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
 	Extends: MWF.APPAttachment,
     options: {
-        "moduleEvents": ["upload", "delete", "afterDelete", "load"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load","queryLoad","postLoad"]
     },
 
     initialize: function(node, json, form, options){

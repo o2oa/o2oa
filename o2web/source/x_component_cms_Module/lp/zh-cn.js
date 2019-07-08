@@ -45,7 +45,7 @@ MWF.xApplication.cms.Module.LP = {
 
 	"copy": "复制",
 	"copyto": "复制到...",
-	"copyInfor": "选择文档，按Ctrl+C可复制文档，按下Ctrl+V可将复制的文档粘贴到栏目",
+	"copyInfor": "选择文档，按Ctrl+C可复制文档，按下Ctrl+V可将复制的文档粘贴到栏目（本操作跨服务器）",
 	"copyed": "所选文档已复制",
 	"copyConfirmTitle": "复制文档确认",
 	"copyConfirmInfor": "目标区域已包含相同的元素：",

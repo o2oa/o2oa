@@ -41,7 +41,17 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
             this.node.set("text", texts.join(", "));
         }
     },
-
+	_loadDomEvents: function(){
+		Object.each(this.json.events, function(e, key){
+			if (e.code){
+				if (this.options.moduleEvents.indexOf(key)===-1){
+					this.node.addEvent(key, function(event){
+						return this.form.Macro.fire(e.code, this, event);
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+	},
     _loadEvents: function(){
         Object.each(this.json.events, function(e, key){
             if (e.code){

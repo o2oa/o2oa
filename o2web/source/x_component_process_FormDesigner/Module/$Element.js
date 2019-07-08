@@ -44,7 +44,6 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
 	},
 
 	_setControlModeNode: function(){
-		debugger;
 		if (this.controlMode){
 			if (this.copyNode) this.copyNode.hide();
 		}else{

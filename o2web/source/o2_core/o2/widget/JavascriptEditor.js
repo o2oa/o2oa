@@ -27,7 +27,8 @@ o2.widget.JavascriptEditor = new Class({
                 }else{
                     o2.editorData = {
                         "javascriptEditor": {
-                            "theme": "tomorrow"
+                            "theme": "tomorrow",
+                            "fontSize" : "12px"
                         }
                     };
                 }
@@ -41,10 +42,15 @@ o2.widget.JavascriptEditor = new Class({
         this.getEditorTheme(function(json){
             if (o2.editorData.javascriptEditor){
                 this.theme = o2.editorData.javascriptEditor.theme;
+                this.fontSize = o2.editorData.javascriptEditor.fontSize;
             }else{
-                o2.editorData.javascriptEditor = {"theme": "tomorrow"};
+                o2.editorData.javascriptEditor = {
+                    "theme": "tomorrow",
+                    "fontSize" : "12px"
+                };
             }
             if (!this.theme) this.theme = "tomorrow";
+            if( !this.fontSize )this.fontSize = "12px";
             if (this.options.type.toLowerCase()=="ace"){
                 this.loadAce(callback);
             }
@@ -200,6 +206,10 @@ o2.widget.JavascriptEditor = new Class({
             this.node.addEvent("keydown", function(e){
                 e.stopPropagation();
             });
+
+            if( this.fontSize ){
+                this.editor.setFontSize( this.fontSize );
+            }
 
             this.fireEvent("postLoad");
             if (callback) callback();

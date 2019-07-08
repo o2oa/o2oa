@@ -133,7 +133,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         var node = new Element("div", {"styles": {
             "overflow": "hidden",
             "position": "relative",
-            "margin-right": "20px"
+            "margin-right": "20px",
+            "padding-right": "4px"
         }}).inject(this.node, "after");
         input.inject(node);
 

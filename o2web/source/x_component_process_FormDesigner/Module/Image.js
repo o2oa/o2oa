@@ -53,7 +53,6 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
                 this.node.set("src", this.path +this.options.style+"/icon/image1.png");
 			}
 		}
-		debugger;
 		if (name=="srcfile"){
             var value = this.json.srcfile;
             if (value==="none"){

@@ -73,50 +73,7 @@ MWF.xApplication.process.FormDesigner.Module.Htmleditor = MWF.FCHtmleditor = new
         }
 	},
 	
-	//kindeditor
-//	loadkindeditor: function(){
-//		COMMON.AjaxModule.load("kindeditor", function(){
-//			var editorNode = new Element("textarea#kindeditorTextarea").inject(this.node);
-//
-//	//		KindEditor.ready(function(K) {
-//				this.editor = KindEditor.create("#kindeditorTextarea", {
-//					"basePath": COMMON.contentPath+"/res/framework/htmleditor/kindeditor/",
-//					"readonlyMode" : true,
-//					"width": "100%",
-//					"height": "200px"
-//				});
-//	//		});
-//
-//			this.editorType = "kindeditor";
-//		}.bind(this));
-//	},
-//	distroykindeditor: function(){
-//		KindEditor.remove("#kindeditorTextarea");
-//		$("kindeditorTextarea").destroy();
-//		this.editor = null;
-//		this.editorType = "";
-//	},
-	
-	//nicEdit
-//	loadnicEdit: function(){
-//		COMMON.AjaxModule.load("nicEdit", function(){
-//			var editorNode = new Element("textarea", {
-//				"styles": {
-//					"width":"100%",
-//					"height": "200px"
-//				}
-//			}).inject(this.node);
-//			this.editor = new nicEditor({fullPanel : true}).panelInstance(editorNode);
-//			this.editorType = "nicEdit";
-//		}.bind(this));
-//	},
-//	distroynicEdit: function(){
-//		var editorNode = this.editor.nicInstances[0].e;
-//		this.editor.nicInstances[0].remove();
-//		editorNode.destroy();
-//		this.editor = null;
-//		this.editorType = "";
-//	},
+
 	_initModule: function(){
 		this.node.empty();
 
@@ -172,6 +129,27 @@ MWF.xApplication.process.FormDesigner.Module.Htmleditor = MWF.FCHtmleditor = new
 				this.editor.setReadOnly(true);
 			}, this);
 		}.bind(this));
+	},
+	destroy: function(){
+		this.distroyCkeditor();
+		this.form.moduleList.erase(this);
+		this.form.moduleNodeList.erase(this.node);
+		this.form.moduleElementNodeList.erase(this.node);
+
+		if (this.form.scriptDesigner){
+			this.form.scriptDesigner.removeModule(this.json);
+		}
+
+		if (this.property) this.property.destroy();
+		this.node.destroy();
+		this.actionArea.destroy();
+
+		delete this.form.json.moduleList[this.json.id];
+		this.json = null;
+		delete this.json;
+
+		this.treeNode.destroy();
+		o2.release(this);
 	},
 	distroyCkeditor: function(){
 		if (this.editor) this.editor.destroy();

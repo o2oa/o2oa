@@ -53,7 +53,7 @@
     }
     this.o2 = {
         "version": {
-            "v": '2.0.9',
+            "v": '2.1.0',
             "build": "2018.11.22",
             "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
         },
@@ -64,6 +64,7 @@
         "language": _lp,
         "splitStr": /\s*(?:,|;)\s*/
     };
+    this.wrdp = this.o2;
     
     var _attempt = function(){
         for (var i = 0, l = arguments.length; i < l; i++){
@@ -412,11 +413,28 @@
                     if (op.dom){
                         var rex = new RegExp("(.+)(?=\\{)", "g");
                         var match;
+                        var prefix = "." + uuid + " ";
+
                         while ((match = rex.exec(cssText)) !== null) {
-                            var prefix = "." + uuid + " ";
-                            var rule = prefix + match[0];
-                            cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                            rex.lastIndex = rex.lastIndex + prefix.length;
+                            // var rule = prefix + match[0];
+                            // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                            // rex.lastIndex = rex.lastIndex + prefix.length;
+
+                            var rulesStr = match[0];
+                            if (rulesStr.indexOf(",")!=-1){
+                                var rules = rulesStr.split(/\s*,\s*/g);
+                                rules = rules.map(function(r){
+                                    return prefix + r;
+                                });
+                                var rule = rules.join(", ");
+                                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                                rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+                            }else{
+                                var rule = prefix + match[0];
+                                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                                rex.lastIndex = rex.lastIndex + prefix.length;
+                            }
                         }
                     }
                     var style = op.doc.createElement("style");
@@ -600,85 +618,6 @@
         _loadAll(modules, op, cb);
     };
 
-    //json template
-    // _parseText = function(html, json){
-    //     var _ht = html;
-    //     var regexp = /(text\{).+?\}/g;
-    //     var r = _ht.match(regexp);
-    //     if(r) if (r.length){
-    //         for (var i=0; i<r.length; i++){
-    //             var text = r[i].substr(0,r[i].lastIndexOf("}"));
-    //             text = text.substr(text.indexOf("{")+1,text.length);
-    //             var value = _jsonText(json ,text);
-    //             _ht = _ht.replace(/(text\{).+?\}/,value);
-    //         }
-    //     }
-    //     return _ht;
-    // };
-    // _parseEach = function(html, json){
-    //     var _ht = html;
-    //     var regexp = /(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/g;
-    //     var r = _ht.match(regexp);
-    //     if(r){
-    //         if (r.length){
-    //             for (var i=0; i<r.length; i++){
-    //                 var eachItemsStr = r[i].substr(0,r[i].indexOf(")"));
-    //                 eachItemsStr = eachItemsStr.substr(eachItemsStr.indexOf("(")+1,eachItemsStr.length);
-    //                 var pars = eachItemsStr.split(/,[\s]*/g);
-    //                 eachItemsPar = pars[0];
-    //                 eachItemsCount = pars[1].toInt();
-    //
-    //                 var eachItems = _jsonText(json ,eachItemsPar);
-    //                 if (eachItems) if (eachItemsCount==0) eachItemsCount = eachItems.length;
-    //
-    //                 var eachContentStr = r[i].substr(0,r[i].lastIndexOf("{endEach}"));
-    //                 eachContentStr = eachContentStr.substr(eachContentStr.indexOf("}")+1,eachContentStr.length);
-    //
-    //                 var eachContent = [];
-    //                 if (eachItems){
-    //                     for (var n=0; n<Math.min(eachItems.length, eachItemsCount); n++){
-    //                         var item = eachItems[n];
-    //                         if (item){
-    //                             var tmpEachContentStr = eachContentStr;
-    //                             var textReg = /(eachText\{).+?\}/g;
-    //                             texts = tmpEachContentStr.match(textReg);
-    //                             if (texts){
-    //                                 if (texts.length){
-    //                                     for (var j=0; j<texts.length; j++){
-    //                                         var text = texts[j].substr(0,texts[j].lastIndexOf("}"));
-    //                                         text = text.substr(text.indexOf("{")+1,text.length);
-    //
-    //                                         var value = _jsonText(item ,text);
-    //                                         tmpEachContentStr = tmpEachContentStr.replace(/(eachText\{).+?\}/,value);
-    //                                     }
-    //                                 }
-    //                             }
-    //                             eachContent.push(tmpEachContentStr);
-    //                         }
-    //                     }
-    //                 }
-    //                 _ht = _ht.replace(/(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/,eachContent.join(""));
-    //             }
-    //         }
-    //     }
-    //     return _ht;
-    // };
-    // _jsonText = function(json, text){
-    //     var $ = json;
-    //     var f = eval("(x = function($){\n return "+text+";\n})");
-    //     returnValue = f.apply(json, [$]);
-    //     if (returnValue===undefined) returnValue="";
-    //     returnValue = returnValue.toString();
-    //     return returnValue || "";
-    // };
-    // var _bindJson = function(str, json){
-    //     return _parseEach(_parseText(str, json), json);
-    // };
-    // o2.bindJson = _bindJson;
-    // String.prototype.bindJson = function(json){
-    //     return _parseEach(_parseText(this, json), json);
-    // };
-
     var _getIfBlockEnd = function(v){
         var rex = /(\{\{if\s+)|(\{\{\s*end if\s*\}\})/gmi;
         var rexEnd = /\{\{\s*end if\s*\}\}/gmi;
@@ -798,8 +737,6 @@
     String.prototype.bindJson = function(json){
         return _parseHtml(this, json);
     };
-
-
 
     //dom ready
     var _dom = {

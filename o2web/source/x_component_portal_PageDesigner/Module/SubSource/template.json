@@ -8,6 +8,22 @@
 		"html": ""
 	},
 	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"load" : {
+		  "code": "",
+		  "html": ""
+		},
+		"loadData" : {
+		  "code": "",
+		  "html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""

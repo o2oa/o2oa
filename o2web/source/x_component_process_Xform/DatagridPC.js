@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 	Extends: MWF.APP$Module,
 	isEdit: false,
     options: {
-        "moduleEvents": ["completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
+        "moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
     },
 
     initialize: function(node, json, form, options){
@@ -39,6 +39,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this._loadDatagridDataModules();
             this._getDatagridEditorTr();
 			this._loadReadDatagrid();
+			if(this.editorTr)this.editorTr.setStyle("display", "none");
 		}
 	},
 	_loadStyles: function(){
@@ -469,7 +470,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				var color = currentTr.retrieve("bgcolor");
 				currentTr.tween("background", color);
 				this.close();
-			}, null);
+			}, null, null, this.form.json.confirmStyle);
 		};
         this.validationMode();
 	},
@@ -600,7 +601,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		
 		var lastTrs = this.table.getElements("tr");
 		var lastTr = lastTrs[lastTrs.length-1];
-		var tds = lastTr.getElements("td");
+		//var tds = lastTr.getElements("td");
 
         if (this.gridData.data){
             this.gridData.data.each(function(data, idx){
@@ -609,7 +610,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
                 titleHeaders.each(function(th, index){
                     var cell = tr.insertCell(index);
-                    cell.set("MWFId", tds[index].get("id"));
+                    // cell.set("MWFId", tds[index].get("id"));
                     var cellData = data[th.get("id")];
                     if (cellData){
 
@@ -652,7 +653,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         }
 
 
-        lastTr.destroy();
+        //lastTr.destroy();
 
         this._loadTotal();
      //   this._loadSequenceRead();
