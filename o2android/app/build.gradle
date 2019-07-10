@@ -94,7 +94,7 @@ android {
         multiDexEnabled true
         ndk {
             //选择要添加的对应cpu类型的.so库。
-            abiFilters 'armeabi', 'armeabi-v7a' //, 'arm64-v8a' //, 'x86', 'x86_64'
+            abiFilters 'armeabi', 'armeabi-v7a'
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
         multiDexKeepProguard file('multidex_keep_file.pro')
@@ -137,7 +137,7 @@ android {
                                     BAIDU_SPEECH_APPKEY: project.baiduSpeechAppKey,
                                     BAIDU_MAP_APPKEY   : project.baiduMapAppKey,
                                     BUGLY_APPID        : project.buglyAppId]
-            zipAlignEnabled true     //Zipalign优化
+            zipAlignEnabled true
             minifyEnabled true     //混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
@@ -201,8 +201,6 @@ repositories {
 }
 
 dependencies {
-
-    //    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/bdasr_V3_20180320_9066860.jar')
     implementation files('libs/com.baidu.tts_2.3.1.20170808_e39ea89.jar')
@@ -309,7 +307,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    //
+    //activity result
     implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
 }

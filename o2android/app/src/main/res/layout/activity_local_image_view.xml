@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/z_color_text_primary_dark"
+    android:paddingBottom="@dimen/spacing_small"
     tools:context=".app.o2.webview.LocalImageViewActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="@dimen/toolbar_padding_top"
         android:padding="@dimen/spacing_small">
         <ImageView
             android:id="@+id/image_local_view_back_btn"
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_toEndOf="@id/image_local_view_back_btn"
+            android:layout_marginStart="@dimen/spacing_small"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_normal"
             android:ellipsize="marquee"

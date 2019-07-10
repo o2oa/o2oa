@@ -16,13 +16,13 @@ class CMSPublishInfoData : NSObject, NSCoding, Mappable{
 	var documentId : String?
 	var `extension` : String?
 	var fileHost : String?
-	var fileName : String?
+	var fileName : String? //后台存储的文件名称
 	var filePath : String?
 	var fileType : String?
 	var id : String?
 	var lastUpdateTime : String?
 	var length : Int?
-	var name : String?
+	var name : String? //原文件名称
 	var sequence : String?
 	var site : String?
 	var storage : String?

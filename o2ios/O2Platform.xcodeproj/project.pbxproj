@@ -154,6 +154,7 @@
 		B1BC8CDA216B3D5F00AF571F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B1BC8CD9216B3D5E00AF571F /* libc++.tbd */; };
 		B1C19025211437E200935829 /* OOCalendarLeftMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */; };
 		B1C1905D2114410D00935829 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */; };
+		B1C303E622D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */; };
 		B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DA305E2282754500669418 /* QCalendarPicker.swift */; };
 		B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCD2281729400842F48 /* QDatePicker.swift */; };
 		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
@@ -161,6 +162,8 @@
 		B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAFD432105C23B008A0CDF /* Operators.swift */; };
 		B1FD027021FAE00E000E9817 /* O2MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FD026F21FAE00E000E9817 /* O2MainController.swift */; };
 		B1FDBE8D22952F0C00BB434E /* O2WorkMoreActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */; };
+		B1FEDA9B22D305C90002ECF4 /* CMSSingleApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */; };
+		B1FEDACE22D314F90002ECF4 /* CMSCreateDocViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */; };
 		B1FFF886223A23B200C170FD /* O2FlutterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */; };
 		B1FFF892223A4DA700C170FD /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */; };
 		E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40502C220722208009A8D30 /* ImagePickerController.swift */; };
@@ -1468,6 +1471,7 @@
 		B1BC8CD9216B3D5E00AF571F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarLeftMenuController.swift; sourceTree = "<group>"; };
 		B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
+		B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSAttachmentInfoResponse.swift; sourceTree = "<group>"; };
 		B1DA305E2282754500669418 /* QCalendarPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCalendarPicker.swift; sourceTree = "<group>"; };
 		B1EE2CCD2281729400842F48 /* QDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QDatePicker.swift; sourceTree = "<group>"; };
 		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
@@ -1475,6 +1479,8 @@
 		B1FAFD432105C23B008A0CDF /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		B1FD026F21FAE00E000E9817 /* O2MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2MainController.swift; sourceTree = "<group>"; };
 		B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WorkMoreActionSheet.swift; sourceTree = "<group>"; };
+		B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSSingleApplication.swift; sourceTree = "<group>"; };
+		B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSCreateDocViewController.swift; sourceTree = "<group>"; };
 		B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2FlutterViewController.swift; sourceTree = "<group>"; };
 		B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		B1FFF891223A4DA700C170FD /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -3435,6 +3441,7 @@
 				E4B781721DF912E6007B58A9 /* CMSCategoryListViewController.swift */,
 				E4B7819F1DFA9B23007B58A9 /* CMSItemDetailViewController.swift */,
 				E4CB278A1E797B58004A7ACB /* CMSQLViewController.swift */,
+				B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -3452,6 +3459,8 @@
 				E4B781691DF8F2B2007B58A9 /* CMSData.swift */,
 				E4B7816A1DF8F2B2007B58A9 /* CMSWrapOutCategoryList.swift */,
 				B13707DC212D3F19002113F1 /* CMSCategoryData.swift */,
+				B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */,
+				B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */,
 			);
 			path = m;
 			sourceTree = "<group>";
@@ -5871,6 +5880,7 @@
 				B130A74F2281559900282AD1 /* DeviceListViewController.swift in Sources */,
 				E4B888631D9D48F1002E1A46 /* ZLNavigationController.swift in Sources */,
 				E4B889021D9D48F1002E1A46 /* TodoedStatusCell.swift in Sources */,
+				B1C303E622D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift in Sources */,
 				E4740AC31DCC4C3B00686780 /* BBSSubjectListViewController.swift in Sources */,
 				E4B888AD1D9D48F1002E1A46 /* UIView+MJExtension.m in Sources */,
 				E4C24BFB20844F4400E426B0 /* JCSearchController.swift in Sources */,
@@ -6166,6 +6176,7 @@
 				E4C24BBC20844F3C00E426B0 /* JCEmoticonInputView.swift in Sources */,
 				E40E24D920B7DA3C009F8BE7 /* OOMeetingInforHeaderView.swift in Sources */,
 				E4B8886E1D9D48F1002E1A46 /* ContactGroupPersonController.swift in Sources */,
+				B1FEDA9B22D305C90002ECF4 /* CMSSingleApplication.swift in Sources */,
 				E4B888F31D9D48F1002E1A46 /* TodoTaskDetailViewController.swift in Sources */,
 				E4C24B6020844F3C00E426B0 /* JCAreaPickerView.swift in Sources */,
 				E43C24361DB8AE72005082A4 /* ZLBaseTableView.swift in Sources */,
@@ -6426,6 +6437,7 @@
 				E4B697092075FA560062F6E8 /* BaseModel.swift in Sources */,
 				E4B888621D9D48F1002E1A46 /* ZLCollectionView.swift in Sources */,
 				E40E24B220B7DA3C009F8BE7 /* OOMeetingCreateViewController.swift in Sources */,
+				B1FEDACE22D314F90002ECF4 /* CMSCreateDocViewController.swift in Sources */,
 				E4C24BAA20844F3C00E426B0 /* JCFileDownloadViewController.swift in Sources */,
 				E4C24B7220844F3C00E426B0 /* JCCEmoticonLarge.swift in Sources */,
 				E4C24BA420844F3C00E426B0 /* JCSingleSettingViewController.swift in Sources */,

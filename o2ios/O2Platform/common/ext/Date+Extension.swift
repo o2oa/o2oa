@@ -264,5 +264,37 @@ extension Date {
         let dateString = dateformatter.string(from: self)
         return dateString
     }
+    
+    
+    func friendlyTime() -> String {
+        var returnTimeString = ""
+        let now = Date()
+        if now.haveSameYearMonthDayAndHour(self) {
+            let gap = now.minute - self.minute
+            returnTimeString = "\(gap)分钟前"
+        }else if now.haveSameYearMonthAndDay(self) {
+            let gap = now.hour - self.hour
+            returnTimeString = "\(gap)小时前"
+        }else if now.haveSameYearAndMonth(self) {
+            let gap = now.day - self.day
+            if gap == 1 {
+                returnTimeString = "昨天"
+            }else if gap == 2 {
+                returnTimeString = "前天"
+            }else {
+                returnTimeString = "\(gap)天前"
+            }
+        }else if now.haveSameYear(self) {
+            let gap = now.month - self.month
+            if gap < 4 {
+                returnTimeString = "\(gap)个月前"
+            }else {
+                returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
+            }
+        }else {
+            returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
+        }
+        return returnTimeString
+    }
 }
 

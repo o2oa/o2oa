@@ -41,7 +41,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_round"
         android:theme="@style/XBPMTheme.NoActionBar">
-        <activity android:name=".app.o2.webview.LocalImageViewActivity"></activity>
+        <activity android:name=".app.cms.application.CMSPublishDocumentActivity" />
+        <activity android:name=".app.o2.webview.LocalImageViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.fullscreen" />
         <activity android:name=".app.o2.security.DeviceManagerActivity" />
         <activity
             android:name=".app.o2.launch.LaunchActivity"
@@ -142,18 +145,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".app.o2.webview.TaskWebViewActivity"
-            android:label="@string/title_activity_work_web_view"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".app.o2.webview.TaskCompletedWebViewActivity"
-            android:label="@string/title_activity_work_web_view"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".app.o2.webview.ReadWebViewActivity"
-            android:label="@string/title_activity_work_web_view"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".app.o2.webview.ReadCompletedWebViewActivity"
             android:label="@string/title_activity_work_web_view"
             android:screenOrientation="portrait" />
         <activity

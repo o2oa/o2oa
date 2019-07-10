@@ -229,10 +229,17 @@ struct icContext {
 struct CMSContext {
     static let cmsContextKey = "x_cms_assemble_control"
     static let cmsCategoryQuery  = "jaxrs/appinfo/list/user/view"
+    static let cmsCanPublishCategoryQuery  = "jaxrs/appinfo/get/user/publish/##appId##" //GET 查询app下当前用户能发布的category，返回的是app对象
     static let cmsCategoryListQuery = "jaxrs/categoryinfo/list/publish/app/##appId##"
-    static let cmsAttachmentDownloadQuery = "servlet/download/##id##/stream"
     static let cmsCategoryDetailQuery = "jaxrs/document/filter/list/##id##/next/##count##"
+    static let cmsDocumentDraftQuery = "jaxrs/document/draft/list/##id##/next/##count##" //PUT 查询草稿 {"categoryIdList":["36783507-3109-4701-a1bd-487e12340af5"],"creatorList":["楼国栋@louguodong@P"],"documentType":"全部"}
+    static let cmsDocumentPost = "jaxrs/document" //保存修改文档 POST
     static let cmsAttachmentListQuery = "jaxrs/fileinfo/list/document/##documentId##"
+    static let cmsAttachmentGET = "jaxrs/fileinfo/##attachId##/document/##documentId##" //附件对象获取
+    static let cmsAttachmentDownloadQuery = "servlet/download/##id##/stream"
+    static let cmsAttachmentDownloadNewQuery = "jaxrs/fileinfo/download/document/##attachId##" //下载附件 GET
+    static let cmsAttachmentUpload = "jaxrs/fileinfo/upload/document/##docId##" //上传附件POST
+    static let cmsAttachmentReplace = "jaxrs/fileinfo/update/document/##docId##/attachment/##attachId##" //替换附件 POST
 }
 
 
