@@ -185,7 +185,8 @@ AIX : http://download.o2oa.net/download/o2server_20190618172734_aix.zip
 
 强烈建议将项目Fork到自己的仓库里，Clone到本地后进行编译和打包，偶尔会发现下载zip文件后，commons/ext目录里的jar包不可用，全部只有1k大小。
 
-https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
+下载源码建议安装 git lfs，然后 Clone, 这样获取的源码可以编译。https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
+
 
 
 ## 安装NodeJS
