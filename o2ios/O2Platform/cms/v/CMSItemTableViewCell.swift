@@ -27,7 +27,15 @@ class CMSItemTableViewCell: UITableViewCell {
             let url = URL(string: urlstr!)
             self.itemIconImageView.hnk_setImageFromURL(url!)
             self.titleLabel.text = itemData?.title
-            self.itemTimeLabel.text = itemData?.updateTime?.split(" ")[0]
+            if let publishTime = itemData?.publishTime {
+                if let time = Date.date(publishTime, formatter: "yyyy-MM-dd HH:mm:ss") {
+                    self.itemTimeLabel.text = time.friendlyTime()
+                }else {
+                    self.itemTimeLabel.text = publishTime
+                }
+            }else {
+                self.itemTimeLabel.text = "Unknown"
+            }
         }
     }
 

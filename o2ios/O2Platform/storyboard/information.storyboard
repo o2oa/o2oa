@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="y4V-fj-0FO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="y4V-fj-0FO">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -28,19 +27,19 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="标题" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hM4-5Q-bhQ">
-                                            <rect key="frame" x="68" y="23.666666666666671" width="298" height="21"/>
+                                            <rect key="frame" x="68" y="24.333333333333329" width="298" height="21"/>
                                             <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hog-ko-RY1">
-                                            <rect key="frame" x="374" y="12" width="20" height="43"/>
+                                            <rect key="frame" x="374" y="11.999999999999996" width="20" height="45.666666666666657"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="20" id="swH-KY-Idr"/>
                                             </constraints>
                                         </imageView>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7dY-cW-DxB">
-                                            <rect key="frame" x="20" y="17" width="40" height="34"/>
+                                            <rect key="frame" x="20" y="16.999999999999996" width="40" height="35.666666666666657"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="40" id="mVO-mr-a7C"/>
                                             </constraints>
@@ -120,18 +119,15 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="标题" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ACt-c2-0jq">
-                                                    <rect key="frame" x="46" y="11" width="262" height="28"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="262" id="g7d-5D-MIU"/>
-                                                    </constraints>
+                                                    <rect key="frame" x="46" y="11" width="272" height="28"/>
                                                     <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="14"/>
                                                     <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="时间" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NKD-PT-oKe">
-                                                    <rect key="frame" x="312" y="11" width="90" height="28"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2019-07-02" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NKD-PT-oKe">
+                                                    <rect key="frame" x="326" y="11" width="76" height="28"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="90" id="exO-JC-rni"/>
+                                                        <constraint firstAttribute="width" constant="76" id="exO-JC-rni"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="PingFangSC-Light" family="PingFang SC" pointSize="12"/>
                                                     <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -147,6 +143,7 @@
                                                 <constraint firstItem="NKD-PT-oKe" firstAttribute="top" secondItem="wS1-3l-P8w" secondAttribute="topMargin" id="bEJ-hx-1IA"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="ACt-c2-0jq" secondAttribute="bottom" id="d9z-Pc-CDb"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="NKD-PT-oKe" secondAttribute="bottom" id="gyK-4K-5po"/>
+                                                <constraint firstItem="NKD-PT-oKe" firstAttribute="leading" secondItem="ACt-c2-0jq" secondAttribute="trailing" constant="8" id="stB-bz-pwo"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -169,11 +166,33 @@
                     <connections>
                         <outlet property="tableview" destination="kdT-tS-69W" id="Dtu-LN-QWj"/>
                         <segue destination="2ib-gX-E1U" kind="show" identifier="showDetailContentSegue" id="TNK-Su-KhC"/>
+                        <segue destination="5Uu-WA-8de" kind="show" identifier="createDocument" id="6BI-Sx-Xwv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nLm-Df-qgf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1869.5652173913045" y="131.25"/>
+        </scene>
+        <!--Create Doc View Controller-->
+        <scene sceneID="Sr1-t6-CdC">
+            <objects>
+                <viewController id="5Uu-WA-8de" customClass="CMSCreateDocViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="PZk-cw-Lo0"/>
+                        <viewControllerLayoutGuide type="bottom" id="GlA-GC-LNc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PzZ-FT-7wu">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <connections>
+                        <segue destination="2ib-gX-E1U" kind="show" identifier="openDocument" id="uwA-IT-a7g"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dhd-bM-5c8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2320" y="951"/>
         </scene>
         <!--详细内容-->
         <scene sceneID="zPu-Lq-Q4j">
@@ -186,15 +205,40 @@
                     <view key="view" contentMode="scaleToFill" id="Cnt-3V-z9R">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Qxe-kZ-Lvd">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="2"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="2b9-L2-vhR"/>
+                                </constraints>
+                            </progressView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fPd-cZ-6O6">
+                                <rect key="frame" x="0.0" y="64" width="414" height="672"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="JeB-gc-Sjw" firstAttribute="top" secondItem="fPd-cZ-6O6" secondAttribute="bottom" identifier="webViewContainerBottom" id="Bnf-Xg-Gud"/>
+                            <constraint firstItem="Qxe-kZ-Lvd" firstAttribute="leading" secondItem="Cnt-3V-z9R" secondAttribute="leading" id="RmL-cB-4FR"/>
+                            <constraint firstAttribute="trailing" secondItem="fPd-cZ-6O6" secondAttribute="trailing" id="acZ-gL-kTd"/>
+                            <constraint firstItem="Qxe-kZ-Lvd" firstAttribute="top" secondItem="Cnt-3V-z9R" secondAttribute="top" id="gqe-iA-GSq"/>
+                            <constraint firstItem="fPd-cZ-6O6" firstAttribute="top" secondItem="hnc-En-Vnz" secondAttribute="bottom" id="h39-J2-ztE"/>
+                            <constraint firstItem="fPd-cZ-6O6" firstAttribute="leading" secondItem="Cnt-3V-z9R" secondAttribute="leading" id="okd-fn-0G1"/>
+                            <constraint firstAttribute="trailing" secondItem="Qxe-kZ-Lvd" secondAttribute="trailing" id="rgk-w4-X4b"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="progressView" destination="Qxe-kZ-Lvd" id="cKb-Sf-iTw"/>
+                        <outlet property="webViewContainer" destination="fPd-cZ-6O6" id="xxD-Eg-vYr"/>
                         <segue destination="ngT-Ox-BPG" kind="presentation" identifier="showInQL" id="v1v-R3-KwY"/>
+                        <segue destination="zQ2-MF-2R5" kind="unwind" identifier="back2DocumentListSegue" unwindAction="viewBack2DocumentList:" id="3ml-5f-efD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CWs-X0-yan" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="zQ2-MF-2R5" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2807" y="133"/>
+            <point key="canvasLocation" x="2805.7971014492755" y="132.88043478260872"/>
         </scene>
         <!--Preview View Controller-->
         <scene sceneID="Fqm-g4-6W2">
@@ -258,4 +302,7 @@
             <point key="canvasLocation" x="3537.68115942029" y="131.25"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="TNK-Su-KhC"/>
+    </inferredMetricsTieBreakers>
 </document>

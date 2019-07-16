@@ -52,7 +52,6 @@ class ContactSearchViewController: UITableViewController {
         searchController.dimsBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         // Setup the Scope Bar
-        //self.view.backgroundColor = RGB(251, g: 71, b: 71)
         tableView.tableHeaderView  = searchController.searchBar
         tableView.tableHeaderView?.sizeToFit()
         //searchController.active = true

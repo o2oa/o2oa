@@ -22,7 +22,7 @@ open class JCEmoticon: NSObject {
         return self === JCEmoticon.backspace
     }
     
-    open static let backspace: JCEmoticon = {
+    public static let backspace: JCEmoticon = {
         let em = JCEmoticon()
         em.contents = "⌫"
         return em

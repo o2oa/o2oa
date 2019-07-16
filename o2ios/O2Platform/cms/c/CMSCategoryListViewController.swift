@@ -13,6 +13,7 @@ import AlamofireObjectMapper
 import SwiftyJSON
 import ObjectMapper
 import CocoaLumberjack
+import O2OA_Auth_SDK
 
 
 class CMSCategoryListViewController: UIViewController {
@@ -59,7 +60,9 @@ class CMSCategoryListViewController: UIViewController {
             tabIndex = (segmentedControl?.selectedIndex)!
         }
     }
-    
+    // 当前用户能够发布category列表
+    var canPublishCategories: [CMSWrapOutCategoryList] = []
+    var selectedCategory: CMSWrapOutCategoryList?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +88,7 @@ class CMSCategoryListViewController: UIViewController {
         })
         currentCategoryId = self.itemsKeys.first!
         self.loadFirstData()
-
+        self.loadCanPublishCategories()
 
         // Do any additional setup after loading the view.
     }
@@ -104,7 +107,16 @@ class CMSCategoryListViewController: UIViewController {
         if segue.identifier == "showDetailContentSegue" {
             let destVC = segue.destination as! CMSItemDetailViewController
             destVC.itemData = sender as! CMSCategoryItemData?
+            destVC.fromCreateDocVC = true
+        }else if segue.identifier == "createDocument" {
+            let createVC = segue.destination as! CMSCreateDocViewController
+            createVC.category = self.selectedCategory
         }
+    }
+    
+    @IBAction func viewBack2DocumentList(_ sender: UIStoryboardSegue) {
+        DDLogDebug("backto List")
+        self.tableview.mj_header.beginRefreshing()
     }
     
     private func sizeForAttributedString(_ attributedString: NSAttributedString) -> CGSize {
@@ -125,7 +137,7 @@ class CMSCategoryListViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: base_color]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color")]
             var selectedTitles = [NSAttributedString]()
             for titleString in self.itemsTitles {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -175,7 +187,7 @@ class CMSCategoryListViewController: UIViewController {
     }
     
     func loadNextPageData(){
-        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsCategoryQuery, parameter: self.pageModel.toDictionary() as [String : AnyObject]?)
+        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsCategoryDetailQuery, parameter: self.pageModel.toDictionary() as [String : AnyObject]?)
         var params:[String:Array<String>] = [:]
         params["categoryIdList"] = [currentCategoryId]
         Alamofire.request(url!, method: .put, parameters: params, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
@@ -194,6 +206,71 @@ class CMSCategoryListViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    //获取当前用户能新建文档的分类
+    private func loadCanPublishCategories()  {
+        if let appId = self.cmsData?.wrapOutCategoryList?[0].appId {
+            let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsCanPublishCategoryQuery, parameter: ["##appId##": appId as AnyObject])
+            Alamofire.request(url!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
+                switch response.result {
+                case .success(let val):
+                    let app = Mapper<CMSSingleApplication>().map(JSONObject: val)
+                    self.canPublishCategories = app?.data?.wrapOutCategoryList ?? []
+                    self.addPublishBtn()
+                case .failure(let err):
+                    DDLogError(err.localizedDescription)
+                }
+            }
+        }
+    }
+    //如果有权限就显示新建按钮
+    private func addPublishBtn() {
+        if self.canPublishCategories.count > 0 {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "新建", style: .plain, target: self, action: #selector(tapPublishBtn))
+        }
+    }
+    // 点击新建按钮显示需要发布的分类列表
+    @objc private func tapPublishBtn() {
+        var actions: [UIAlertAction] = []
+        self.canPublishCategories.forEach { (category) in
+            let item = UIAlertAction(title: "\(category.categoryName ?? "")", style: .default, handler: { (action) in
+                self.selectedCategory = category
+                self.checkDraftThenJump(categoryId: category.id)
+            })
+            actions.append(item)
+        }
+        self.showSheetAction(title: "分类", message: "请选择发布的分类", actions: actions)
+    }
+    //检查选择的分类下是否有未完成的草稿， 有草稿就直接跳转到编辑页面，没有就到新建页面
+    private func checkDraftThenJump(categoryId: String?) {
+        let model = CommonPageModel().toDictionary()
+        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsDocumentDraftQuery, parameter: model as [String : AnyObject]?)
+        var params:[String: Any] = [:]
+        params["categoryIdList"] = [categoryId]
+        if let distinguishedName = O2AuthSDK.shared.myInfo()?.distinguishedName {
+            params["creatorList"] = [distinguishedName]
+        }
+        params["documentType"] = "全部"
+        Alamofire.request(url!, method: .put, parameters: params, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
+            switch response.result {
+            case .success(let val):
+                DDLogDebug(JSON(val).description)
+                let res = Mapper<CMSCategory>().map(JSONObject: val)
+                if let docList = res?.data, docList.count > 0 {
+                    self.performSegue(withIdentifier: "showDetailContentSegue", sender: docList[0])
+                }else {
+                    self.gotoNewDocController()
+                }
+            case .failure(let err):
+                DDLogError(err.localizedDescription)
+                self.gotoNewDocController()
+            }
+        }
+    }
+    
+    private func gotoNewDocController() {
+        self.performSegue(withIdentifier: "createDocument", sender: nil)
     }
     
 }

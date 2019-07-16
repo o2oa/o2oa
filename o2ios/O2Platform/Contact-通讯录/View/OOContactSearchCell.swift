@@ -82,7 +82,7 @@ class OOContactSearchCell: UITableViewCell,Configurable {
     private func firstWordImage(_ word:String) -> UIImage? {
         let size = CGSize(width: 40, height: 40)
         let textColor = UIColor.white
-        let backColor = UIColor(hex: "#FB4747")
+        let backColor = O2ThemeManager.color(for: "Base.base_color")!
         let font = UIFont(name: "PingFangSC-Regular", size: 18)
         return word.getTextImage(size, textColor: textColor, backColor: backColor, textFont: font!)
     }

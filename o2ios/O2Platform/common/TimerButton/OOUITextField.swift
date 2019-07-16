@@ -81,6 +81,17 @@ open class OOUITextField: UITextField {
     
     }
     
+    open func themeUpdate(leftImage:UIImage?, leftLightImage:UIImage?, lineColor:UIColor?, lineLightColor:UIColor?) {
+        self.leftImage = leftImage
+        self.leftLightImage = leftLightImage
+        self.lineColor = lineColor
+        self.lineLightColor = lineLightColor
+        let lv = self.leftView?.subviews.first as! UIImageView
+        lv.image = leftImage
+        lv.highlightedImage = leftLightImage
+        lineView.backgroundColor = lv.isHighlighted ? lineLightColor : lineColor
+    }
+    
     
     
     fileprivate func changeShowStatus(_ status:Bool = false) -> Void {

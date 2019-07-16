@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -263,54 +263,6 @@
             </objects>
             <point key="canvasLocation" x="-678" y="2618"/>
         </scene>
-        <!--待阅详细界面-->
-        <scene sceneID="F8M-du-p1K">
-            <objects>
-                <viewController title="待阅详细界面" hidesBottomBarWhenPushed="YES" id="And-dK-Q6N" customClass="ReadTaskDetailViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="AAb-eT-OjU">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6wH-UX-61F">
-                                <rect key="frame" x="0.0" y="20" width="414" height="2"/>
-                                <color key="progressTintColor" red="0.98431372549999996" green="0.2784313725" blue="0.047058823530000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="trackTintColor" red="0.73333333329999995" green="0.80784313730000001" blue="0.82745098039999998" alpha="1" colorSpace="calibratedRGB"/>
-                            </progressView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.90000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qsj-dS-ORn">
-                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="adb-Oz-E8V"/>
-                                    <barButtonItem title="已阅" style="plain" id="sZ8-BB-kW0" customClass="TaskBarButtonItem" customModule="O2Platform" customModuleProvider="target">
-                                        <connections>
-                                            <action selector="changeDocAction:" destination="And-dK-Q6N" id="mCS-Pk-0GL"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="v8f-sC-ksN"/>
-                                </items>
-                            </toolbar>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="6wH-UX-61F" firstAttribute="leading" secondItem="N3X-E6-3XK" secondAttribute="leading" id="0Ti-aT-F9C"/>
-                            <constraint firstItem="N3X-E6-3XK" firstAttribute="trailing" secondItem="6wH-UX-61F" secondAttribute="trailing" id="2kv-wC-5dd"/>
-                            <constraint firstItem="qsj-dS-ORn" firstAttribute="leading" secondItem="6wH-UX-61F" secondAttribute="leading" id="GaW-e2-xPd"/>
-                            <constraint firstItem="6wH-UX-61F" firstAttribute="top" secondItem="N3X-E6-3XK" secondAttribute="top" id="Ijy-UO-yJL"/>
-                            <constraint firstItem="qsj-dS-ORn" firstAttribute="bottom" secondItem="N3X-E6-3XK" secondAttribute="bottom" id="bjI-Ih-TlX"/>
-                            <constraint firstItem="qsj-dS-ORn" firstAttribute="trailing" secondItem="6wH-UX-61F" secondAttribute="trailing" id="jdl-4c-veJ"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="N3X-E6-3XK"/>
-                    </view>
-                    <connections>
-                        <outlet property="progress" destination="6wH-UX-61F" id="di4-PY-hzK"/>
-                        <outlet property="toolbarView" destination="qsj-dS-ORn" id="eyO-Sy-goM"/>
-                        <segue destination="a5a-it-nQP" kind="unwind" identifier="backToReadTask" unwindAction="unWindForTodoTask:" id="aQy-BE-0f3"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4JY-UQ-Cs1" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="a5a-it-nQP" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="-1458" y="1381"/>
-        </scene>
         <!--已办处理页面-->
         <scene sceneID="crN-cb-oBA">
             <objects>
@@ -457,69 +409,12 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <segue destination="5aK-Po-Nmj" kind="show" identifier="showTodoedDetailSegue" id="pzA-vd-svK"/>
                         <segue destination="PCj-XB-9aF" kind="show" identifier="showTodoedWork" id="9TQ-Eb-h06"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Nu-6l-TKM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="732" y="1859.8200899550227"/>
-        </scene>
-        <!--已办详细页面-->
-        <scene sceneID="f74-MH-Bea">
-            <objects>
-                <viewController title="已办详细页面" id="5aK-Po-Nmj" customClass="TodoedTaskDetailViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="U1n-MI-0Ia">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="r5M-Ph-89w">
-                                <rect key="frame" x="0.0" y="20" width="414" height="2"/>
-                            </progressView>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="r5M-Ph-89w" firstAttribute="leading" secondItem="NqP-yh-gFm" secondAttribute="leading" id="2dk-Fu-2VF"/>
-                            <constraint firstItem="r5M-Ph-89w" firstAttribute="top" secondItem="NqP-yh-gFm" secondAttribute="top" id="VJ0-tz-UOa"/>
-                            <constraint firstItem="NqP-yh-gFm" firstAttribute="trailing" secondItem="r5M-Ph-89w" secondAttribute="trailing" id="XAw-Bb-q90"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="NqP-yh-gFm"/>
-                    </view>
-                    <connections>
-                        <outlet property="progress" destination="r5M-Ph-89w" id="Cmw-MR-UME"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dfN-O5-SFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="732" y="2639.7301349325339"/>
-        </scene>
-        <!--已阅详细界面-->
-        <scene sceneID="boc-dE-gUm">
-            <objects>
-                <viewController title="已阅详细界面" id="8Pu-OT-the" customClass="ReadedTaskDetailViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="RlL-t2-uqx">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F3c-J9-TP6">
-                                <rect key="frame" x="0.0" y="20" width="414" height="2"/>
-                            </progressView>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="lAv-Ak-osN" firstAttribute="trailing" secondItem="F3c-J9-TP6" secondAttribute="trailing" id="TsY-rC-W3h"/>
-                            <constraint firstItem="F3c-J9-TP6" firstAttribute="top" secondItem="lAv-Ak-osN" secondAttribute="top" id="mTj-6c-eIg"/>
-                            <constraint firstItem="F3c-J9-TP6" firstAttribute="leading" secondItem="lAv-Ak-osN" secondAttribute="leading" id="uFl-TO-uvP"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="lAv-Ak-osN"/>
-                    </view>
-                    <connections>
-                        <outlet property="progress" destination="F3c-J9-TP6" id="mN0-w4-sXk"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Z53-ps-yLV" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1445.5999999999999" y="1867.9160419790107"/>
         </scene>
         <!--工作任务列表界面-->
         <scene sceneID="8MY-nj-psY">
@@ -601,8 +496,6 @@
                     </tableView>
                     <connections>
                         <segue destination="PCj-XB-9aF" kind="show" identifier="showTodoDetailSegue" id="QJV-sf-Oi5"/>
-                        <segue destination="And-dK-Q6N" kind="show" identifier="showReadDetailSegue" id="NYe-EA-X4m"/>
-                        <segue destination="8Pu-OT-the" kind="show" identifier="showReadedDetailSegue" id="PKW-tC-XZ8"/>
                         <segue destination="2Nb-Mq-A9F" kind="show" identifier="showTodoedDetailSegue" id="o3A-3d-JSC"/>
                     </connections>
                 </tableViewController>
@@ -777,7 +670,7 @@
     </scenes>
     <resources>
         <image name="icon_daiban" width="38" height="38"/>
-        <image name="todoedStatusIcon" width="96" height="96"/>
+        <image name="todoedStatusIcon" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="QJV-sf-Oi5"/>

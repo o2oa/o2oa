@@ -14,6 +14,14 @@
         <item name="android:windowBackground">@mipmap/launch_background</item>
     </style>
 
+    <style name="XBPMTheme.fullscreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/z_color_mask</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
     <!-- 清除堆栈之后启动Activity, windowDisablePreview 禁用预览  -->
     <style name="XBPMClearActivityTheme" parent="XBPMTheme">
         <item name="windowActionBar">false</item>

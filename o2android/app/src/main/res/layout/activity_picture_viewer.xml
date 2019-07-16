@@ -15,7 +15,7 @@
             android:id="@+id/image_picture_view_back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/ic_back_mtrl_white_alpha"/>
         <TextView
@@ -23,12 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/image_picture_view_back_btn"
+            android:layout_toEndOf="@id/image_picture_view_back_btn"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_normal"
             android:ellipsize="marquee"
-            android:maxLines="1"
-            tools:text="标题"/>
+            tools:text="标题"
+            android:singleLine="true" />
     </RelativeLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_picture_view"

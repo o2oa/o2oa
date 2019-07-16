@@ -101,11 +101,11 @@ extension JCSingleSettingViewController: UITableViewDelegate, UITableViewDataSou
                 return
             }
             if !user.isFriend {
-                cell.buttonColor = UIColor(netHex: 0xFB4747)
+                cell.buttonColor = O2ThemeManager.color(for: "Base.base_color")!
                 cell.buttonTitle = "添加好友"
                 cell.delegate = self
             } else {
-                cell.buttonColor = UIColor(netHex: 0xFB4747)
+                cell.buttonColor = O2ThemeManager.color(for: "Base.base_color")!
                 cell.buttonTitle = "删除好友"
                 cell.delegate = self
             }

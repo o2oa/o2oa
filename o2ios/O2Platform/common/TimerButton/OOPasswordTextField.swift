@@ -71,7 +71,7 @@ class OOPasswordTextField: UITextField {
         self.customRightView = UIButton(type: .custom)
         self.customRightView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         self.customRightView?.setImage(#imageLiteral(resourceName: "icon_password_read_normal"), for: .normal)
-        self.customRightView?.setImage(#imageLiteral(resourceName: "icon_password_read_selected"), for: .selected)
+        self.customRightView?.theme_setImage(ThemeImagePicker(keyPath: "Icon.icon_password_read_selected"), forState: .selected)
         self.customRightView?.addTarget(self, action: #selector(pwdTextSwitch(_:)), for: .touchUpInside)
         self.rightView = customRightView!
         lineView = UIView(frame:CGRect(x: 0, y: frame.height - 0.5, width: frame.width, height: 0.5))

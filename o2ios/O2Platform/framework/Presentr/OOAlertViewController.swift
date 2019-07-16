@@ -57,11 +57,11 @@ public enum OOAlertActionStyle {
     func color() -> (UIColor,UIColor) {
         switch self {
         case .default:
-            return (UIColor.white,UIColor(hex: "#fb4747"))
+            return (UIColor.white, O2ThemeManager.color(for: "Base.base_color")!)
         case .cancel:
-            return (UIColor.white,UIColor(hex: "#333333"))
+            return (UIColor.white, UIColor(hex: "#333333"))
         case .destructive:
-            return (UIColor(hex: "#fb4747"),UIColor.white)
+            return (O2ThemeManager.color(for: "Base.base_color")!, UIColor.white)
         case let .custom(textColor,backColor):
             return (textColor,backColor)
         }

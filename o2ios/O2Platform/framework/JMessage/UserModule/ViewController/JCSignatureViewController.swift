@@ -17,7 +17,7 @@ class JCSignatureViewController: UIViewController {
         super.viewDidLoad()
         _init()
         signatureTextView.text = signature
-        var count = 30 - signature.characters.count
+        var count = 30 - signature.count
         count = count < 0 ? 0 : count
         tipLabel.text = "\(count)"
     }

@@ -18,8 +18,6 @@ class OOPlusButtonSubclass: CYLPlusButton,CYLPlusButtonSubclassing {
         let button = OOPlusButtonSubclass()
         let normalImage = OOCustomImageManager.default.loadImage(.index_bottom_menu_logo_blur)
         let selectedImage = OOCustomImageManager.default.loadImage(.index_bottom_menu_logo_focus)
-//        button.setImage(UIImage(named: "icon_zhuye_nor"), for: .normal)
-//        button.setImage(UIImage(named: "icon_zhuye_pre"), for: .selected)
         button.frame.size.width = 80
         button.frame.size.height = 80
         button.setImage(normalImage, for: .normal)
@@ -33,7 +31,7 @@ class OOPlusButtonSubclass: CYLPlusButton,CYLPlusButtonSubclassing {
         button.setTitleColor(UIColor(hex:"#666666"), for: .normal)
         
         button.setTitle("首页", for: .selected)
-        button.setTitleColor(base_color, for: .selected)
+        button.theme_setTitleColor(ThemeColorPicker(keyPath: "Base.base_color"), forState: .selected)
         
         //button.adjustsImageWhenHighlighted = false
         button.sizeToFit()

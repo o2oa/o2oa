@@ -14,7 +14,6 @@ import SwiftyJSON
 import ObjectMapper
 
 import Eureka
-import Whisper
 import CocoaLumberjack
 import Promises
 
@@ -57,7 +56,7 @@ class TodoTaskProcessViewController:FormViewController {
             section.header = HeaderFooterView(title: "选择决策")
         }
         
-        self.option = continents?[0] ?? "无决策"
+        self.option = continents?[0]
         for option in continents! {
             form.last! <<< ImageCheckRow<String>(option){ lrow in
                 lrow.title = option
@@ -98,17 +97,40 @@ class TodoTaskProcessViewController:FormViewController {
             self.performSegue(withIdentifier: "backTodoMe", sender: self.backFlag)
         }
     }
+    private func validateFailPopBack() {
+        DDLogError("返回表单页面")
+        self.navigationController?.popViewController(animated: true)
+    }
 
     
     @IBAction func submitFlowButton(_ sender: UIBarButtonItem) {
         DDLogDebug("submit Button Tap")
         guard let _ = self.option else {
-            guard let navigationController = navigationController else { return }
-            let message = Message(title: "请选择决策", backgroundColor: UIColor.brown)
-            Whisper.show(whisper: message, to: navigationController)
+            self.showError(title: "请选择决策")
             return
         }
+        if let vies = (parent as? ZLNavigationController)?.viewControllers {
+            for vc in vies {
+                if vc is TodoTaskDetailViewController {
+                    DDLogDebug("开始验证表单。。")
+                    (vc as! TodoTaskDetailViewController).checkFormBeforeProcessSubmit(routeName: self.option ?? "", opinion: self.ideaText ?? "", callback: { (result) in
+                        DDLogDebug("验证返回了：\(result)")
+                        if result {
+                            self.letSubmitBegin()
+                        }else {
+                            self.showError(title: "表单验证不通过，无法提交！")
+                            self.validateFailPopBack()
+                        }
+                    })
+                    break
+                }
+            }
+        }else {
+            self.showError(title: "异常，无法提交！")
+        }
 
+    }
+    private func letSubmitBegin() {
         self.showMessage(title: "提交中...")
         //保存、提交
         self.saveTaskData().then { (result) -> Promise<String> in
@@ -198,6 +220,7 @@ class TodoTaskProcessViewController:FormViewController {
     }
     
     func submitWork() -> Promise<Bool> {
+       
         return Promise { fulfill, reject in
             self.taskProcess?.decisionRoute = self.option
             self.taskProcess?.decisionIdea = self.ideaText ?? ""

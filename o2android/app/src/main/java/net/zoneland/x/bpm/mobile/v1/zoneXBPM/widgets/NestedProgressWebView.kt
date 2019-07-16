@@ -14,7 +14,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
@@ -34,7 +33,7 @@ class NestedProgressWebView : WebView, NestedScrollingChild {
     private val mScrollConsumed = IntArray(2)
     private var mNestedOffsetY: Int = 0
     private val mChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
-    protected lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     private val mActionList = ArrayList<String>()
     private var mActionMode: ActionMode? = null
     private var mLinkJsInterfaceName:String = "fancyActionJsInterface"
@@ -64,6 +63,7 @@ class NestedProgressWebView : WebView, NestedScrollingChild {
         scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
         initSettings()
         webChromeClient = ProgressWebChromeClient()
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -86,15 +86,11 @@ class NestedProgressWebView : WebView, NestedScrollingChild {
 
     fun addActionList(list: List<String>) {
         mActionList.addAll(list)
+        addJavascriptInterface(ActionSelectInterface(), mLinkJsInterfaceName)
     }
     fun clearAllAction() {
         mActionList.clear()
     }
-    fun linkActionJsInterface(linkJsInterfaceName:String = "fancyActionJsInterface") {
-        mLinkJsInterfaceName = linkJsInterfaceName
-        addJavascriptInterface(ActionSelectInterface(), mLinkJsInterfaceName)
-    }
-
 
     /**
      * 设置当前登录用户的cookie信息

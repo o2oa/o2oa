@@ -15,7 +15,7 @@ class TaskBarButtonItem: UIBarButtonItem {
         
         self.setTitleTextAttributes( [NSAttributedString.Key.font: UIFont(name: "PingFangSC-Regular", size: 17.0)!,NSAttributedString.Key.foregroundColor: base_color], for: .normal)
         self.setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "PingFangSC-Regular", size: 17.0)!,NSAttributedString.Key.foregroundColor: base_color], for: .selected)
-        self.setTitleTextAttributes( [NSAttributedString.Key.font: UIFont(name: "PingFangSC-Regular", size: 17.0)!,NSAttributedString.Key.foregroundColor: RGB(251, g: 71, b: 71)], for: .disabled)
+        self.setTitleTextAttributes( [NSAttributedString.Key.font: UIFont(name: "PingFangSC-Regular", size: 17.0)!,NSAttributedString.Key.foregroundColor: base_color], for: .disabled)
         
         
     }

@@ -28,14 +28,14 @@ class OOAttandanceSettingDataView: UIView {
         let button = UIButton.init(frame: CGRect(x: 50, y: 7, width: 160, height: 30))
         button.setTitle("保存地点", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.setBackgroundColor(UIColor.hexInt(0xfb4747), forState: .normal)
+        button.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(submitClicked(_:)), for: .touchUpInside)
 //        bar.addSubview(button)
         let button1 = UIButton.init(frame: CGRect(x: SCREEN_WIDTH -  60, y: 7, width: 50, height: 30))
         button1.setTitle("关闭", for: .normal)
-        button1.setTitleColor(UIColor.hexInt(0xfb4747), for: .normal)
+        button1.theme_setTitleColor(ThemeColorPicker(keyPath: "Base.base_color"), forState: .normal)
         button1.addTarget(self, action: #selector(closwBtnClick(_:)), for: .touchUpInside)
 //        bar.addSubview(button1)
         bar.items = [UIBarButtonItem(customView: button),

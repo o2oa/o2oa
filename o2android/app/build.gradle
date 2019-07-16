@@ -94,7 +94,7 @@ android {
         multiDexEnabled true
         ndk {
             //选择要添加的对应cpu类型的.so库。
-            abiFilters 'armeabi', 'armeabi-v7a' //, 'arm64-v8a' //, 'x86', 'x86_64'
+            abiFilters 'armeabi', 'armeabi-v7a'
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
         multiDexKeepProguard file('multidex_keep_file.pro')
@@ -110,7 +110,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "Boolean", "InnerServer", "false"
+            buildConfigField "Boolean", "InnerServer", "true"
             buildConfigField "Boolean", "LOG_ENABLE", "true"
             buildConfigField "Boolean", "LOG_FILE", "true"
             manifestPlaceholders = [JPUSH_PKGNAME      : defaultConfig.applicationId,
@@ -137,7 +137,7 @@ android {
                                     BAIDU_SPEECH_APPKEY: project.baiduSpeechAppKey,
                                     BAIDU_MAP_APPKEY   : project.baiduMapAppKey,
                                     BUGLY_APPID        : project.buglyAppId]
-            zipAlignEnabled true     //Zipalign优化
+            zipAlignEnabled true
             minifyEnabled true     //混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
@@ -183,7 +183,6 @@ android {
 }
 
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -202,8 +201,6 @@ repositories {
 }
 
 dependencies {
-
-    //    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/bdasr_V3_20180320_9066860.jar')
     implementation files('libs/com.baidu.tts_2.3.1.20170808_e39ea89.jar')
@@ -211,7 +208,7 @@ dependencies {
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
     implementation files('libs/universal-image-loader-1.9.5.jar')
-    implementation files('libs/tbs_sdk_thirdapp_v3.2.0.1104_43200.jar')
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1072_43646_sharewithdownloadwithfile_withoutGame_obfs_20190429_175122.jar')
     implementation(name: 'material-calendarview-fancy-1.1', ext: 'aar')
     implementation(name: 'o2_auth_sdk-release', ext: 'aar')
 
@@ -308,6 +305,10 @@ dependencies {
 
     //test
     testImplementation 'junit:junit:4.12'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //activity result
+    implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
 }
 

@@ -622,8 +622,13 @@
 
     <!-- cms -->
     <string name="cms">内容管理</string>
+    <string name="cms_create">新建</string>
     <string name="title_cms_view">查看文章</string>
     <string name="title_cms_application">栏目</string>
+    <string name="cms_start_create_title">文档标题：</string>
+    <string name="cms_start_create_title_hint">请输入文档标题</string>
+    <string name="cms_start_create_identity">身份：</string>
+    <string name="cms_work_form_publish">发    布</string>
 
 
     <!-- open im key -->

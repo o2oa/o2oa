@@ -26,6 +26,7 @@ class CMSCategoryItemData : NSObject, NSCoding, Mappable{
 	var sequence : String?
 	var title : String?
 	var updateTime : String?
+    var publishTime : String?
 
 
 	class func newInstance(map: Map) -> Mappable?{
@@ -54,6 +55,7 @@ class CMSCategoryItemData : NSObject, NSCoding, Mappable{
 		sequence <- map["sequence"]
 		title <- map["title"]
 		updateTime <- map["updateTime"]
+        publishTime <- map["publishTime"]
 		
 	}
 
@@ -81,6 +83,7 @@ class CMSCategoryItemData : NSObject, NSCoding, Mappable{
          sequence = aDecoder.decodeObject(forKey: "sequence") as? String
          title = aDecoder.decodeObject(forKey: "title") as? String
          updateTime = aDecoder.decodeObject(forKey: "updateTime") as? String
+         publishTime = aDecoder.decodeObject(forKey: "publishTime") as? String
 
 	}
 
@@ -144,6 +147,9 @@ class CMSCategoryItemData : NSObject, NSCoding, Mappable{
 		if updateTime != nil{
 			aCoder.encode(updateTime, forKey: "updateTime")
 		}
+        if publishTime != nil{
+            aCoder.encode(publishTime, forKey: "publishTime")
+        }
 
 	}
 

@@ -72,6 +72,7 @@ class MailViewController: BaseWebViewUIViewController {
     
     override func theWebView(){
         super.theWebView()
+        self.view = webView
         self.webView.allowsBackForwardNavigationGestures = true
         loadDetailSubject()
     }

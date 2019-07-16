@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.7.3)
+  - Alamofire (4.8.2)
   - AlamofireImage (3.4.1):
     - Alamofire (~> 4.7)
   - AlamofireNetworkActivityIndicator (2.3.0):
@@ -29,7 +29,7 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - FSCalendar (2.8.0)
-  - HandyJSON (4.2.0)
+  - HandyJSON (5.0.0)
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Alamofire (1.7.0):
@@ -38,17 +38,16 @@ PODS:
   - ImageSlideshow/Core (1.7.0)
   - IQKeyboardManagerSwift (6.2.0)
   - JGProgressHUD (2.0.3)
-  - JHTAlertController (0.2.4)
   - JTCalendar (2.2.3)
   - JZCalendarWeekView (0.5.4)
   - MBProgressHUD (1.0.0)
   - MIBlurPopup (0.1.3)
-  - Moya (11.0.2):
-    - Moya/Core (= 11.0.2)
-  - Moya/Core (11.0.2):
+  - Moya (13.0.1):
+    - Moya/Core (= 13.0.1)
+  - Moya/Core (13.0.1):
     - Alamofire (~> 4.1)
-    - Result (~> 3.0)
-  - Moya/RxSwift (11.0.2):
+    - Result (~> 4.1)
+  - Moya/RxSwift (13.0.1):
     - Moya/Core
     - RxSwift (~> 4.0)
   - ObjectMapper (3.3.0)
@@ -67,11 +66,11 @@ PODS:
   - PromisesObjC (1.2.3)
   - PromisesSwift (1.2.3):
     - PromisesObjC (= 1.2.3)
-  - ReactiveCocoa (7.2.0):
-    - ReactiveSwift (~> 3.1)
-  - ReactiveSwift (3.1.0):
-    - Result (~> 3.2)
-  - Result (3.2.4)
+  - ReactiveCocoa (9.0.0):
+    - ReactiveSwift (~> 5.0)
+  - ReactiveSwift (5.0.1):
+    - Result (~> 4.1)
+  - Result (4.1.0)
   - RxAtomic (4.4.0)
   - RxCocoa (4.3.1):
     - RxSwift (~> 4.0)
@@ -81,17 +80,15 @@ PODS:
     - SDWebImage/Core (= 4.4.2)
   - SDWebImage/Core (4.4.2)
   - SnapKit (4.0.1)
-  - swiftScan (1.1.5)
   - SwiftValidator (4.0.0)
   - SwiftyJSON (3.1.4)
   - SwiftyTimer (2.1.0)
   - SwiftyUserDefaults (3.0.1)
-  - Whisper (6.0.2)
   - YHPhotoKit (0.2.1)
   - YHPopupView (0.3.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.7)
+  - Alamofire (~> 4.8)
   - AlamofireImage (~> 3.3)
   - AlamofireNetworkActivityIndicator (~> 2.0)
   - AlamofireObjectMapper (~> 5.1)
@@ -107,32 +104,29 @@ DEPENDENCIES:
   - EZSwiftExtensions (from `/Users/fancy/ios/dependence/EZSwiftExtensions`)
   - FMDB (~> 2.6.2)
   - FSCalendar
-  - HandyJSON (~> 4.2.0)
+  - HandyJSON (~> 5.0.0)
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
   - JGProgressHUD
-  - JHTAlertController (from `/Users/fancy/ios/dependence/JHTAlertController`)
   - JTCalendar (~> 2.0)
   - JZCalendarWeekView (~> 0.4)
   - MBProgressHUD (~> 1.0.0)
   - MIBlurPopup
-  - Moya (~> 11.0.2)
-  - Moya/RxSwift (~> 11.0.2)
+  - Moya (~> 13.0)
+  - Moya/RxSwift (~> 13.0)
   - ProgressHUDSwift (~> 0.2)
   - PromiseKit (~> 4.4)
   - PromisesSwift (~> 1.0)
-  - ReactiveCocoa (~> 7.0)
-  - ReactiveSwift (~> 3.0)
+  - ReactiveCocoa (~> 9.0)
+  - ReactiveSwift (~> 5.0)
   - RxCocoa (~> 4.0)
   - SDWebImage (~> 4.0)
   - SnapKit (~> 4.0.0)
-  - swiftScan (~> 1.1.2)
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
   - SwiftyJSON (~> 3.1)
   - SwiftyTimer
   - SwiftyUserDefaults (~> 3.0)
-  - Whisper
   - YHPhotoKit
   - YHPopupView
 
@@ -177,19 +171,15 @@ SPEC REPOS:
     - RxSwift
     - SDWebImage
     - SnapKit
-    - swiftScan
     - SwiftyJSON
     - SwiftyTimer
     - SwiftyUserDefaults
-    - Whisper
     - YHPhotoKit
     - YHPopupView
 
 EXTERNAL SOURCES:
   EZSwiftExtensions:
     :path: "/Users/fancy/ios/dependence/EZSwiftExtensions"
-  JHTAlertController:
-    :path: "/Users/fancy/ios/dependence/JHTAlertController"
   SwiftValidator:
     :branch: master
     :git: https://github.com/jpotts18/SwiftValidator.git
@@ -200,7 +190,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
@@ -218,38 +208,35 @@ SPEC CHECKSUMS:
   EZSwiftExtensions: d83b4719cd665c7a1556c95a02fcf29e877ced34
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
-  HandyJSON: 9dfc026c7d7adc1f0f8ba8b181495f0e0763b0f4
+  HandyJSON: 992f2d661716d6a91de82d0056927bc7813b5770
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
-  JHTAlertController: ef2822083029b44c3adeba626b9904d805591c95
   JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
   JZCalendarWeekView: 6a2e05ce2ae77d98c719d4236385edcef3da28e0
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MIBlurPopup: e0834e469074cabf65a0ca6e6d900c84d48f8a4f
-  Moya: a725035953bc1c0eb1be505ab903984501d82440
+  Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   ProgressHUDSwift: 7cf2ea84a0fc10fbcc12e545ea84b0899b34d239
   PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
   PromisesObjC: a3a4263d8a9260214267e0b3788d0f83466ad449
   PromisesSwift: f7f45c21986419e85f7c5b645ed8c6a2c10c04b4
-  ReactiveCocoa: 476dae7ca790f40d30d186a1bd7ebae4290395d5
-  ReactiveSwift: 5b26d2e988fe0eed2daf48c4054d1de74db50184
-  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
+  ReactiveCocoa: 29709cf0cc7502ddd04a51220e10ee0336d8bec8
+  ReactiveSwift: cac20a5bbe560c5806bd29c0fccf90d03b996ac1
+  Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
   RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
-  swiftScan: bc6dbf74e6a579c45a861691afc44628d8d9f6ab
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   SwiftyTimer: 02dd6cf10cbc71cbf67cec494f6e5eb782102543
   SwiftyUserDefaults: 3d273b1739b68ada3145dc754a70ec775bc5c8be
-  Whisper: 169760fc4bab0abf24d5529f9276f95c25cf1025
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: 1c396af2341cb1fdf1c4aba52733d7e54561f92e
+PODFILE CHECKSUM: fee8f269d0505613b56902a7c1d5226a515c6bbc
 
 COCOAPODS: 1.5.0

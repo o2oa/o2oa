@@ -43,6 +43,7 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
         super.viewDidLoad()
         createButton()
         self.theWebView()
+        self.view = webView
     }
     
     func createButton(){

@@ -24,7 +24,10 @@ class CMSCategoryPresenter : BasePresenterImpl<CMSCategoryContract.View>(), CMSC
         val wrapIn = HashMap<String, ArrayList<String>>()
         val category = ArrayList<String>()
         category.add(id)
-        wrapIn.put("categoryIdList", category)
+        wrapIn["categoryIdList"] = category
+        val status = ArrayList<String>()
+        status.add("published")
+        wrapIn["statusList"] = status
         val json = O2SDKManager.instance().gson.toJson(wrapIn)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getCMSAssembleControlService(mView?.getContext())?.let { service ->

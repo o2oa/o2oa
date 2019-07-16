@@ -11,8 +11,6 @@
 #import <PgyUpdate/PgyUpdateManager.h>
 #import "SZKCleanCache.h"
 #import "ZSSRichTextEditor.h"
-#import "LXDScanCodeController.h"
-#import "LXDScanView.h"
 #import "JPUSHService.h"
 #import <JMessage/JMessage.h>
 #import "KILabel.h"

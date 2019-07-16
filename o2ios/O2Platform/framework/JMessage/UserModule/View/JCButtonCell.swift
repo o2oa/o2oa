@@ -50,7 +50,7 @@ class JCButtonCell: UITableViewCell {
         _init()
     }
 
-    private var color = UIColor(netHex: 0xFB4747)
+    private var color = O2ThemeManager.color(for: "Base.base_color")!
     private lazy var button: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(_click(_:)), for: .touchUpInside)
@@ -76,7 +76,7 @@ class JCButtonCell: UITableViewCell {
     }
     
     //MARK: - click func
-    func _click(_ sender: UIButton) {
+    @objc func _click(_ sender: UIButton) {
         delegate?.buttonCell?(clickButton: sender)
     }
 }

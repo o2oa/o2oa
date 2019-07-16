@@ -36,6 +36,9 @@ class IndexPresenter : BasePresenterImpl<IndexContract.View>(), IndexContract.Pr
 
     override fun loadNewsList(lastId: String) {
         val wrapIn = HashMap<String, List<String>>()
+        val status = ArrayList<String>()
+        status.add("published")
+        wrapIn["statusList"] = status
         val json = O2SDKManager.instance().gson.toJson(wrapIn)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getCMSAssembleControlService(mView?.getContext())?.let { service ->

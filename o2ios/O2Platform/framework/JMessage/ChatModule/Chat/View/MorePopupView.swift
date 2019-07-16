@@ -71,10 +71,11 @@ class MorePopupView: YHPopupView {
     
     private func _init() {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 145, height: 100))
-        imageView.image = UIImage.loadImage("com_icon _selectList")
+        imageView.image = UIImage.loadImage("com_icon_selectList")
         addSubview(imageView)
         backgroundViewColor = .clear
         clickBlankSpaceDismiss = true
+        self.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         
         let height = Double((self.height - 5) / 2)
         let width = Double(self.width)

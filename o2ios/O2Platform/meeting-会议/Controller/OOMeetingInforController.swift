@@ -45,6 +45,7 @@ class OOMeetingInforController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBarItem?.selectedImage = O2ThemeManager.image(for: "Icon.icon_huiyi_pro")
         tableView.register(UINib.init(nibName: "OOMeetingInforItemCell", bundle: nil), forCellReuseIdentifier: meetingIdentifier)
         headerView.delegate = self
         //headerView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 172)

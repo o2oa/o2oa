@@ -95,7 +95,11 @@ extension NewMainCollectionView:EmptyDataSetSource,EmptyDataSetDelegate {
     }
     
     func buttonTitle(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
-        let attributes = [NSAttributedString.Key.font:UIFont(name: "PingFangSC-Regular", size: 15)!,NSAttributedString.Key.foregroundColor:UIColor.white,NSAttributedString.Key.backgroundColor:UIColor.init(hexString: "0xFB4747")!]
+        let attributes = [
+            NSAttributedString.Key.font: UIFont(name: "PingFangSC-Regular", size: 15)!,
+            NSAttributedString.Key.foregroundColor: UIColor.white,
+            NSAttributedString.Key.backgroundColor: O2ThemeManager.color(for: "Base.base_color")!
+        ]
         return NSAttributedString(string: "点击进入", attributes: attributes)
     }
 

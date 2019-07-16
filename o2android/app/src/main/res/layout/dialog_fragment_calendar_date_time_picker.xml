@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:id="@+id/constraint_calendar_date_time_picker">
+
+
+    <LinearLayout
+        android:id="@+id/ll_calendar_picker_header"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            tools:text="2019-05-23"
+            android:textColor="@color/icon_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            tools:text="10:20"
+            android:textColor="@color/z_color_text_primary"
+            android:id="@+id/tv_time_value"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            tools:text="2019-05-23"
+            android:textColor="@color/z_color_text_primary"
+            android:id="@+id/tv_end_date"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+    <View
+        android:id="@+id/date_time_pick_split1"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        app:layout_constraintTop_toBottomOf="@+id/ll_calendar_picker_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/tv_calendar_picker_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/date_time_pick_split1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/calendarView_date_picker"
+        tools:text="5月"
+        android:textSize="54sp"
+        android:textColor="@color/z_color_gray_light"
+        />
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/calendarView_date_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/date_time_pick_split1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/transparent"
+        app:mcv_selectionColor="@color/icon_blue"
+        app:mcv_calendarMode="month"
+        app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidget.Date"
+        app:mcv_firstDayOfWeek="sunday"
+        app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidget.Header"
+        app:mcv_weekDayLabels="@array/custom_weekdays"
+        app:mcv_horizontal_gap="8dp"
+        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidget.WeekDay"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+
+
+    <TimePicker
+        android:id="@+id/time_picker_calendar_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnersShown="true"
+        android:calendarViewShown="false"
+        android:timePickerMode="spinner"
+        app:layout_constraintTop_toBottomOf="@+id/date_time_pick_split1"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/date_time_pick_split2"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+
+    <View
+        android:id="@+id/date_time_pick_split2"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView_date_picker"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:id="@+id/ll_calendar_picker_bottom_bar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/date_time_pick_split2"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="返回"
+            android:textColor="@android:color/black" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:id="@+id/splitLineV"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="确认"
+            android:textColor="@android:color/black"
+            android:id="@+id/ensure"/>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -8,6 +8,8 @@
 
 import Foundation
 import ObjectMapper
+import HandyJSON
+
 struct PageSize{
     
     var id:String="0"
@@ -275,6 +277,19 @@ struct TodoedStatusModel {
     var identity:String?
     var status:String?
     var statusTime:String?
+}
+
+/**
+ * 新版工作界面的底部操作按钮对象
+ */
+struct WorkNewActionItem: HandyJSON{
+    var id: String = ""
+    var text: String = ""
+    var action: String = "" //工作默认操作函数名称
+    var control: String = "" // 工作默认操作类型
+    var actionScript: String = "" //其他操作执行代码
+    var title: String = ""
+    var read: Bool = true
 }
 
 

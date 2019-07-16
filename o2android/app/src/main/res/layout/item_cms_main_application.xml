@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingBottom="@dimen/spacing_small"
-    android:paddingTop="@dimen/spacing_small">
+    android:padding="@dimen/spacing_small">
 
     <ImageView
         android:id="@+id/image_cms_main_application_icon"
@@ -19,6 +18,7 @@
         android:id="@+id/tv_cms_main_application_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/spacing_small"
         android:layout_below="@id/image_cms_main_application_icon"

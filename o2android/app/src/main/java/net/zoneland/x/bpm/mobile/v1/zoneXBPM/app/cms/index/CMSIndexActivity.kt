@@ -53,7 +53,7 @@ class CMSIndexActivity : BaseMVPActivity<CMSIndexContract.View, CMSIndexContract
         recycler_cms_main_content.adapter = adapter
         adapter.setOnItemClickListener { _, position ->
             val info = applicationList[position]
-            if (info.wrapOutCategoryList!=null && !info.wrapOutCategoryList.isEmpty()) {
+            if (info.wrapOutCategoryList.isNotEmpty()) {
                 gotoCmsApplication(info)
             }
         }

@@ -1,7 +1,7 @@
 {
   "id" : "o2CenterServer",
   "name" : "dev",
-  "centerHost" : "dev.o2server.io",
+  "centerHost" : "dev.o2oa.net",
   "centerContext" : "/x_program_center",
   "centerPort" : 20030,
   "httpProtocol" : "http"

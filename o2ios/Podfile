@@ -1,15 +1,15 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '10.0'
 
-# swift42里面的库已经支持swift4.2了 其他暂时先用4.1版本
-swift42 = ['BSImagePicker','Charts','Eureka', 'GradientCircularProgress', 'HandyJSON', 'SwiftyTimer']
+# swift50里面的库已经支持swift5了 其他暂时先用4.1版本
+swift50 = ['BSImagePicker','Charts','Eureka', 'GradientCircularProgress', 'HandyJSON', 'SwiftyTimer', 'ReactiveSwift', 'ReactiveCocoa']
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         swift_version = '4.1'
-        if swift42.include?(target.name)
-            print "set pod #{target.name} swift version to 4.2\n"
-            swift_version = '4.2'
+        if swift50.include?(target.name)
+            print "set pod #{target.name} swift version to 5.0\n"
+            swift_version = '5.0'
         end
         target.build_configurations.each do |config|
             config.build_settings['SWIFT_VERSION'] = swift_version
@@ -22,7 +22,7 @@ end
 target 'O2Platform' do
     use_frameworks!
 
-    pod 'Alamofire', '~> 4.7'
+    pod 'Alamofire', '~> 4.8'
     pod 'AlamofireImage', '~> 3.3'
     pod 'AlamofireNetworkActivityIndicator', '~> 2.0'
     pod 'AlamofireObjectMapper', '~> 5.1'
@@ -38,21 +38,19 @@ target 'O2Platform' do
     pod 'Charts'
     pod 'ImageSlideshow', '~> 1.5'
     pod 'ImageSlideshow/Alamofire'
-    pod 'swiftScan', '~> 1.1.2'
+#    pod 'swiftScan', '~> 1.1.2'
     pod 'JGProgressHUD'
-    pod 'Whisper'
     pod 'CocoaLumberjack/Swift'
     pod 'MBProgressHUD', '~> 1.0.0'
     pod 'SnapKit', '~> 4.0.0'
     pod 'PromisesSwift', '~> 1.0'
-    pod 'Moya', '~> 11.0.2'
-    pod 'Moya/RxSwift', '~> 11.0.2'
+    pod 'Moya', '~> 13.0'
+    pod 'Moya/RxSwift', '~> 13.0'
     pod 'ProgressHUDSwift', '~> 0.2'
     pod 'SwiftValidator', :git => 'https://github.com/jpotts18/SwiftValidator.git', :branch => 'master'
-    pod 'HandyJSON', '~> 4.2.0'
-    pod 'ReactiveSwift', '~> 3.0'
-    pod 'ReactiveCocoa', '~> 7.0'
-    pod 'JHTAlertController', :path => '/Users/fancy/ios/dependence/JHTAlertController'
+    pod 'HandyJSON', '~> 5.0.0'
+    pod 'ReactiveSwift', '~> 5.0'
+    pod 'ReactiveCocoa', '~> 9.0'
     pod 'CYLTabBarController', '~> 1.17.4'
     pod 'YHPopupView'
     pod 'YHPhotoKit'
@@ -73,6 +71,7 @@ target 'O2Platform' do
     pod 'Bugly'
     # 键盘管理
     pod 'IQKeyboardManagerSwift'
+    
     
 end
 

@@ -17,7 +17,7 @@ class JCGroupDescViewController: UIViewController {
         super.viewDidLoad()
         _init()
         descTextView.text = group.desc
-        var count = 80 - (group.desc?.characters.count ?? 0)
+        var count = 80 - (group.desc?.count ?? 0)
         count = count < 0 ? 0 : count
         tipLabel.text = "\(count)"
         descTextView.becomeFirstResponder()
@@ -79,7 +79,7 @@ extension JCGroupDescViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         textView.limitNonMarkedTextSize(80)
 
-        let count = 80 - (nonMarkedText(textView)?.characters.count ?? 0)
+        let count = 80 - (nonMarkedText(textView)?.count ?? 0)
         tipLabel.text = "\(count)"
     }
 }

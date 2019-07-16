@@ -58,13 +58,13 @@ O2OA开发相关教程天梯：https://my.oschina.net/o2oa/blog/3016363
 
 # 最新版本服务器安装包下载[o2server_V4.1921]\:
 
-windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190618172734_windows.zip
+windows 64Bit : http://download.o2oa.net/download/o2server_20190618172734_windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/versions/o2server_20190618172734_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/o2server_20190618172734_linux.zip
 
-MacOS : http://download.o2oa.net/download/versions/o2server_20190618172734_macos.zip
+MacOS : http://download.o2oa.net/download/o2server_20190618172734_macos.zip
 
-AIX : http://download.o2oa.net/download/versions/o2server_20190618172734_aix.zip
+AIX : http://download.o2oa.net/download/o2server_20190618172734_aix.zip
 
 中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20190618172734_neokylin_loongson.zip
 
@@ -185,7 +185,8 @@ AIX : http://download.o2oa.net/download/versions/o2server_20190618172734_aix.zip
 
 强烈建议将项目Fork到自己的仓库里，Clone到本地后进行编译和打包，偶尔会发现下载zip文件后，commons/ext目录里的jar包不可用，全部只有1k大小。
 
-https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
+下载源码建议安装 git lfs，然后 Clone, 这样获取的源码可以编译。https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
+
 
 
 ## 安装NodeJS
@@ -272,55 +273,6 @@ o2oa/o2server/target目录下会有打包好的zip包，将此zip包Copy到其�
 
 7.输入用户名xadmin密码o2登陆系统。
 
-
-# 关于授权协议\:
-
-o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权协议。
-
-1、o2oa是开源软件，您可以修改源码及免费使用；这时需遵守AGPL协议。  
-
-2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。
-
-   具体请查看：[http://www.o2oa.net/product.html](http://www.o2oa.net/product.html)。  
-
-3、使用者下载本软件即表示愿遵守此项协议。  
-
-
-## 什么是商业授权？
-
-商业授权是软件开发者授权用户将软件用于商业用途的凭证（商业使用权利）。
-
-## 开源软件为什么还要购买商业授权？
-
-开源不等于免费，公开源码是为了方便用户二次开发，便于学习和交流。
-
-未获商业授权之前，不得将本软件用于商业用途（包括但不限于政府办公系统、企业门户平台、经营性项目、以营利为目或实现盈利的项目）。
-
-任何情况下都不得对O2OA办公平台的商业授权进行出租、出售、抵押或发放子许可证。
-
-## 哪些用户需要购买商业版权？
-
-1）直接将O2OA进行定制化售卖。
-
-2）将O2OA或者一部分功能集成到定制项目或者产品内，完成项目的部分功能或者提升产品能力。
-
-3）将O2OA或者一部分功能转赠并且以其他形式获得利益（比如为了获得其他项目而免费赠送OA产品）。
-
-## 一份商业授权可以用于多个项目吗？
-
-可以。O2OA商业授权是按年来授权的，在授权期限内，您可以无限制地使用O2OA进行任何合法的商业活动。
-
-## 购买商业授权除了能使用O2OA进行商业活动还有什么好处？
-
-购买了商业授权后，您和您的企业将会成为O2OA注册合作伙伴。除了使用O2OA进行商业活动之外，合作伙伴还有可能获得O2OA推送的商业项目机会。
-
-## 商业授权和软件版本有关联吗？
-
-商业授权与软件版本无关，商业授权在有效期内可以无限制地进行版本升级，所有的O2OA版本均无版本、用户数、数据量等限制。
-
-## 商业授权过期后对已经完成的项目会不会有影响？
-
-商业授权是按年收费的，当所购买的商业授权过期后，您将无法再使用O2OA进行任何商业活动，但是您已经出售的O2OA软件或者已经使用O2OA完成后商业项目不会受到影响，仍可以继续使用和正常升级。当您需要再次使用O2OA进行商业活动的时候，只需要再次购买O2OA商业授权即可。
 
 
 

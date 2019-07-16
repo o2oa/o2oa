@@ -11,6 +11,18 @@ import UIKit
 
 extension String {
     
+    /// 字符串时间转 Date
+    ///
+    /// - Parameter formatter: 字符串时间的格式 yyyy-MM-dd/YYYY-MM-dd/HH:mm:ss/yyyy-MM-dd HH:mm:ss
+    /// - Returns: Date
+    func toDate(formatter: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
+        dateFormatter.dateFormat = formatter
+        let date = dateFormatter.date(from: self)
+        return date!
+    }
+    
     func subString(from: Int, to: Int? = nil) -> String {
         if from >= self.length {
             return self

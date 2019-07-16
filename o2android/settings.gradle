@@ -1,1 +1,1 @@
-include ':app', ':o2_auth_sdk'
+include ':app'

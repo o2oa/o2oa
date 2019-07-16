@@ -20,7 +20,7 @@ class ZLTabBarController:UITabBarController {
         tabBar.barTintColor = toolbar_background_color
         let item = UITabBarItem.appearance()
         item.setTitleTextAttributes([NSAttributedString.Key.foregroundColor:toolbar_text_color,NSAttributedString.Key.font:toolbar_text_font], for:UIControl.State())
-        item.setTitleTextAttributes([NSAttributedString.Key.foregroundColor:base_color,NSAttributedString.Key.font:toolbar_text_font], for: .selected)
+        item.setTitleTextAttributes([NSAttributedString.Key.foregroundColor:O2ThemeManager.color(for: "Base.base_color")!,NSAttributedString.Key.font:toolbar_text_font], for: .selected)
     }
     
     override var preferredStatusBarStyle : UIStatusBarStyle {

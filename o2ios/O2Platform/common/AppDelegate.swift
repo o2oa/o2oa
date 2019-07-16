@@ -8,7 +8,6 @@
 
 import UIKit
 import CocoaLumberjack
-
 import AlamofireNetworkActivityIndicator
 import EZSwiftExtensions
 import UserNotifications
@@ -37,21 +36,33 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     var flutterEngine : FlutterEngine?
     
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        //启动日志管理器
         
+        
+        let themeName = AppConfigSettings.shared.themeName
+        if themeName != "" {
+            //主题
+            print("主题色：\(themeName)")
+            O2ThemeManager.setTheme(plistName: themeName, path: .mainBundle)
+        }else {
+            O2ThemeManager.setTheme(plistName: "red", path: .mainBundle)
+        }
+        //搜索框
+        UISearchBar.appearance().theme_barTintColor = ThemeColorPicker(keyPath: "Base.base_color")
+        UISearchBar.appearance().tintColor = UIColor.white
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).theme_tintColor = ThemeColorPicker(keyPath: "Base.base_color")
+        
+        
+        
+        //启动日志管理器
         O2Logger.startLogManager()
         //日志文件
-        O2Logger.getLogFiles()
-        
+        _ = O2Logger.getLogFiles()
         O2Logger.debug("设置运行版本==========,\(PROJECTMODE)")
         //网络检查
         o2ReachabilityManager.startListening()
         //Alamofire
         NetworkActivityIndicatorManager.shared.isEnabled = true
-        //搜索框
-        UISearchBar.appearance().barTintColor = RGB(251, g: 71, b: 71)
-        UISearchBar.appearance().tintColor = UIColor.white
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = RGB(251, g: 71, b: 71)
+        
         
         
         //设置一个是否第一授权的标志
@@ -117,7 +128,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         }
         
        
-        OOPlusButtonSubclass.register()
+//        OOPlusButtonSubclass.register()
         OOTabBarHelper.initTabBarStyle()
         
         //

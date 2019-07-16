@@ -30,11 +30,25 @@ class SInfoAndSecurityViewController: FormViewController {
             cell.accessoryType = .disclosureIndicator
         }
         
+        
+        if O2IsConnect2Collect {
+            let unit =  O2AuthSDK.shared.bindUnit()
+            form +++ Section()
+                <<< LabelRow(){
+                    $0.title = "绑定服务器"
+                    $0.value = unit?.name
+                    }.cellUpdate({ (cell, row) in
+                        cell.accessoryType = .none
+                    })
+        }
+        
        form +++ Section()
             <<< LabelRow(){
                 $0.title = "登录帐号"
                 $0.value = account?.name
-            }
+                }.cellUpdate({ (cell, row) in
+                    cell.accessoryType = .none
+                })
             <<< LabelRow(){
                 $0.title = "登录密码"
                 $0.value = "修改密码"
@@ -64,6 +78,15 @@ class SInfoAndSecurityViewController: FormViewController {
             }.onCellSelection({ (cell,row) in
                 self.performSegue(withIdentifier: "showMobileChangeSegue", sender: nil)
             })
+            
+            form +++ Section()
+            <<< LabelRow() {
+                 $0.title = "设备"
+                 $0.value = "常用设备管理"
+                
+                }.onCellSelection({ (cell, row) in
+                    self.performSegue(withIdentifier: "showDeviceListSegue", sender: nil)
+                })
         }
     }
     

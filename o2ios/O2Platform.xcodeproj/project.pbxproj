@@ -39,6 +39,7 @@
 		09E02E9A1F1745E700579887 /* ZLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E02E991F1745E700579887 /* ZLTextView.swift */; };
 		37D63E73FDC49F690C780FD1 /* Pods_O2Platform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10069E72107080DCAD68970B /* Pods_O2Platform.framework */; };
 		A043051B1F99CFD500740423 /* MailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043051A1F99CFD500740423 /* MailViewController.swift */; };
+		B1015DDB2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */; };
 		B104303721464C690011B08E /* ai.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B104303621464C690011B08E /* ai.storyboard */; };
 		B104303A214657840011B08E /* OOVoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1043039214657840011B08E /* OOVoiceView.swift */; };
 		B104303C21469E3D0011B08E /* OOCircleRippleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B104303B21469E3D0011B08E /* OOCircleRippleView.swift */; };
@@ -47,6 +48,42 @@
 		B107453C21A52FA00015F1B2 /* O2PersonInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B107453B21A52FA00015F1B2 /* O2PersonInfo.swift */; };
 		B107453F21A533E70015F1B2 /* O2PersonalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B107453E21A533E70015F1B2 /* O2PersonalViewModel.swift */; };
 		B1089693210AD8E400F02267 /* CalendarEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1089692210AD8E400F02267 /* CalendarEventTableViewCell.swift */; };
+		B108F3FC229E34D400778050 /* LBXScanNetAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F5229E34D200778050 /* LBXScanNetAnimation.swift */; };
+		B108F3FD229E34D400778050 /* LBXScanViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F6229E34D200778050 /* LBXScanViewStyle.swift */; };
+		B108F3FE229E34D400778050 /* LBXScanLineAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F7229E34D200778050 /* LBXScanLineAnimation.swift */; };
+		B108F3FF229E34D400778050 /* LBXScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F8229E34D200778050 /* LBXScanView.swift */; };
+		B108F400229E34D400778050 /* LBXPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F9229E34D300778050 /* LBXPermissions.swift */; };
+		B108F401229E34D400778050 /* LBXScanWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FA229E34D300778050 /* LBXScanWrapper.swift */; };
+		B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FB229E34D300778050 /* LBXScanViewController.swift */; };
+		B12FD1872283CE1D00E636BA /* red.plist in Resources */ = {isa = PBXBuildFile; fileRef = B12FD1862283CE1D00E636BA /* red.plist */; };
+		B12FD1D32283D5B700E636BA /* ThemeCGFloatPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18A2283D5B700E636BA /* ThemeCGFloatPicker.swift */; };
+		B12FD1D42283D5B700E636BA /* ThemeStatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18B2283D5B700E636BA /* ThemeStatePicker.swift */; };
+		B12FD1D52283D5B700E636BA /* UIRefreshControl+TitleAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18C2283D5B700E636BA /* UIRefreshControl+TitleAttributes.swift */; };
+		B12FD1D62283D5B700E636BA /* ThemeBarStylePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18D2283D5B700E636BA /* ThemeBarStylePicker.swift */; };
+		B12FD1D72283D5B700E636BA /* ThemeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18E2283D5B700E636BA /* ThemeColorPicker.swift */; };
+		B12FD1D82283D5B700E636BA /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD18F2283D5B700E636BA /* UIColorExtension.swift */; };
+		B12FD1D92283D5B700E636BA /* O2ThemeManager+OC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1902283D5B700E636BA /* O2ThemeManager+OC.swift */; };
+		B12FD1DA2283D5B700E636BA /* ThemeFontPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1912283D5B700E636BA /* ThemeFontPicker.swift */; };
+		B12FD1DB2283D5B700E636BA /* ThemeDictionaryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1922283D5B700E636BA /* ThemeDictionaryPicker.swift */; };
+		B12FD1DC2283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1932283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift */; };
+		B12FD1DD2283D5B700E636BA /* UITextField+PlaceholderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1942283D5B700E636BA /* UITextField+PlaceholderAttributes.swift */; };
+		B12FD1DE2283D5B700E636BA /* O2ThemeManager+Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1952283D5B700E636BA /* O2ThemeManager+Index.swift */; };
+		B12FD1DF2283D5B700E636BA /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1962283D5B700E636BA /* ThemePicker.swift */; };
+		B12FD1E02283D5B700E636BA /* ThemeCGColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1972283D5B700E636BA /* ThemeCGColorPicker.swift */; };
+		B12FD1E22283D5B700E636BA /* NSObject+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1992283D5B700E636BA /* NSObject+Theme.swift */; };
+		B12FD1E32283D5B700E636BA /* UIKit+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19A2283D5B700E636BA /* UIKit+Theme.swift */; };
+		B12FD1E42283D5B700E636BA /* ThemeKeyboardAppearancePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19B2283D5B700E636BA /* ThemeKeyboardAppearancePicker.swift */; };
+		B12FD1E52283D5B700E636BA /* O2ThemeManager+Plist.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19C2283D5B700E636BA /* O2ThemeManager+Plist.swift */; };
+		B12FD1E62283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19D2283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift */; };
+		B12FD1E72283D5B700E636BA /* ThemeImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19E2283D5B700E636BA /* ThemeImagePicker.swift */; };
+		B12FD1E82283D5B700E636BA /* ThemeStatusBarStylePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD19F2283D5B700E636BA /* ThemeStatusBarStylePicker.swift */; };
+		B12FD1E92283D5B700E636BA /* NSAttributedString+Merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1A02283D5B700E636BA /* NSAttributedString+Merge.swift */; };
+		B12FD1EB2283D62B00E636BA /* O2ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1EA2283D62B00E636BA /* O2ThemeManager.swift */; };
+		B12FD1ED2283FA2E00E636BA /* blue.plist in Resources */ = {isa = PBXBuildFile; fileRef = B12FD1EC2283FA2E00E636BA /* blue.plist */; };
+		B12FD1EF228425BE00E636BA /* OOMeetingTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12FD1EE228425BE00E636BA /* OOMeetingTabBarController.swift */; };
+		B130A74F2281559900282AD1 /* DeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B130A74E2281559900282AD1 /* DeviceListViewController.swift */; };
+		B130A7832281565F00282AD1 /* DeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B130A7822281565F00282AD1 /* DeviceTableViewCell.swift */; };
+		B130A7852281597000282AD1 /* DeviceManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B130A7842281597000282AD1 /* DeviceManagerViewModel.swift */; };
 		B130E644223B774400B68354 /* Flutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B130E60D223B774400B68354 /* Flutter.framework */; };
 		B130E648223B774D00B68354 /* image_picker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B130E645223B774D00B68354 /* image_picker.framework */; };
 		B130E649223B774D00B68354 /* path_provider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B130E646223B774D00B68354 /* path_provider.framework */; };
@@ -85,11 +122,10 @@
 		B165CD6B2242093500373B66 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B165CD552242093500373B66 /* Info.plist */; };
 		B165CD6C2242093500373B66 /* Presentr+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD562242093500373B66 /* Presentr+Equatable.swift */; };
 		B165CD6D2242093500373B66 /* ModalSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD572242093500373B66 /* ModalSize.swift */; };
-		B165CD7322420B7400373B66 /* LXDScanCodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = B165CD7122420B7400373B66 /* LXDScanCodeController.m */; };
-		B165CD7422420B7400373B66 /* LXDScanView.m in Sources */ = {isa = PBXBuildFile; fileRef = B165CD7222420B7400373B66 /* LXDScanView.m */; };
 		B169E3D421095EC9007156B3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B169E3D321095EC9007156B3 /* Date+Extension.swift */; };
 		B17126C121084A2F00369F15 /* calendar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B17126C021084A2F00369F15 /* calendar.storyboard */; };
 		B17126F7210864CA00369F15 /* O2Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17126F6210864CA00369F15 /* O2Color.swift */; };
+		B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17BF42F22B23758009E36E0 /* SkinViewController.swift */; };
 		B1908E1422685E8F00D75632 /* O2WebViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1908E1322685E8F00D75632 /* O2WebViewModels.swift */; };
 		B1908E4C22687B1A00D75632 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1908E4E22687B1A00D75632 /* Localizable.strings */; };
 		B190923521071777009A7906 /* OOCalendarModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B190923421071777009A7906 /* OOCalendarModels.swift */; };
@@ -118,9 +154,16 @@
 		B1BC8CDA216B3D5F00AF571F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B1BC8CD9216B3D5E00AF571F /* libc++.tbd */; };
 		B1C19025211437E200935829 /* OOCalendarLeftMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */; };
 		B1C1905D2114410D00935829 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */; };
+		B1C303E622D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */; };
+		B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DA305E2282754500669418 /* QCalendarPicker.swift */; };
+		B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCD2281729400842F48 /* QDatePicker.swift */; };
+		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
 		B1FAE9E12115F95800981A25 /* OOCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */; };
 		B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAFD432105C23B008A0CDF /* Operators.swift */; };
 		B1FD027021FAE00E000E9817 /* O2MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FD026F21FAE00E000E9817 /* O2MainController.swift */; };
+		B1FDBE8D22952F0C00BB434E /* O2WorkMoreActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */; };
+		B1FEDA9B22D305C90002ECF4 /* CMSSingleApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */; };
+		B1FEDACE22D314F90002ECF4 /* CMSCreateDocViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */; };
 		B1FFF886223A23B200C170FD /* O2FlutterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */; };
 		B1FFF892223A4DA700C170FD /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */; };
 		E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40502C220722208009A8D30 /* ImagePickerController.swift */; };
@@ -253,7 +296,6 @@
 		E4375B1A207CABE90065A880 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4375B19207CABE90065A880 /* AudioToolbox.framework */; };
 		E4375B1C207CABF00065A880 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4375B1B207CABF00065A880 /* MobileCoreServices.framework */; };
 		E4375B1E207CAC020065A880 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4375B1D207CAC020065A880 /* ImageIO.framework */; };
-		E4375B37207F2D420065A880 /* OOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4375B36207F2D420065A880 /* OOTabBarController.swift */; };
 		E43C24361DB8AE72005082A4 /* ZLBaseTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C24351DB8AE72005082A4 /* ZLBaseTableView.swift */; };
 		E4418C5F1DDC1AC80066348D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4418C5E1DDC1AC80066348D /* CoreGraphics.framework */; };
 		E4418C611DDC1ACF0066348D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4418C601DDC1ACF0066348D /* QuartzCore.framework */; };
@@ -279,7 +321,6 @@
 		E45755A71E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_nor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E45755991E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_nor@2x.png */; };
 		E45755A81E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E457559A1E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_pressed@2x.png */; };
 		E45755A91E0BA72E00EC44F4 /* qrcode_Scan_weixin_Line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E457559B1E0BA72E00EC44F4 /* qrcode_Scan_weixin_Line@2x.png */; };
-		E45CD4261DFE5055008F99AD /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45CD4251DFE5055008F99AD /* ScanViewController.swift */; };
 		E45DA8E91DACC11600E0735D /* BaseWebViewUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA8E81DACC11600E0735D /* BaseWebViewUIViewController.swift */; };
 		E45DA8F11DACD7CA00E0735D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA8EB1DACD7CA00E0735D /* Constants.swift */; };
 		E45DA8F21DACD7CA00E0735D /* SCScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA8EC1DACD7CA00E0735D /* SCScrollView.swift */; };
@@ -292,7 +333,6 @@
 		E45DA9081DAF509C00E0735D /* SFeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA9071DAF509C00E0735D /* SFeedbackViewController.swift */; };
 		E45DA90A1DAF6D3800E0735D /* SCustomerServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA9091DAF6D3800E0735D /* SCustomerServiceViewController.swift */; };
 		E45DA90C1DAF76C800E0735D /* SCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA90B1DAF76C800E0735D /* SCommonViewController.swift */; };
-		E45DA90E1DAF7C8A00E0735D /* O2CleanCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45DA90D1DAF7C8A00E0735D /* O2CleanCache.swift */; };
 		E45DA9121DAF7EBE00E0735D /* SZKCleanCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E45DA9111DAF7EBE00E0735D /* SZKCleanCache.m */; };
 		E46E6BF71DD2C8B500AB7561 /* BBSReplySubjectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46E6BF61DD2C8B500AB7561 /* BBSReplySubjectViewController.swift */; };
 		E46E6C681DD41F5D00AB7561 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = E46E6BF91DD41F5D00AB7561 /* editor.html */; };
@@ -493,7 +533,6 @@
 		E4B8885D1D9D48F1002E1A46 /* O2App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B8874A1D9D48F1002E1A46 /* O2App.swift */; };
 		E4B8885E1D9D48F1002E1A46 /* O2CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B8874C1D9D48F1002E1A46 /* O2CollectionView.swift */; };
 		E4B8885F1D9D48F1002E1A46 /* O2CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B8874D1D9D48F1002E1A46 /* O2CollectionViewCell.swift */; };
-		E4B888601D9D48F1002E1A46 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4B8874F1D9D48F1002E1A46 /* LaunchScreen.storyboard */; };
 		E4B888611D9D48F1002E1A46 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B887521D9D48F1002E1A46 /* Stack.swift */; };
 		E4B888621D9D48F1002E1A46 /* ZLCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B887531D9D48F1002E1A46 /* ZLCollectionView.swift */; };
 		E4B888631D9D48F1002E1A46 /* ZLNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B887541D9D48F1002E1A46 /* ZLNavigationController.swift */; };
@@ -582,11 +621,8 @@
 		E4B888E81D9D48F1002E1A46 /* okr.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4B8883B1D9D48F1002E1A46 /* okr.storyboard */; };
 		E4B888E91D9D48F1002E1A46 /* setting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4B8883C1D9D48F1002E1A46 /* setting.storyboard */; };
 		E4B888EA1D9D48F1002E1A46 /* task.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4B8883D1D9D48F1002E1A46 /* task.storyboard */; };
-		E4B888ED1D9D48F1002E1A46 /* ReadedTaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888421D9D48F1002E1A46 /* ReadedTaskDetailViewController.swift */; };
-		E4B888EE1D9D48F1002E1A46 /* ReadTaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888431D9D48F1002E1A46 /* ReadTaskDetailViewController.swift */; };
 		E4B888EF1D9D48F1002E1A46 /* TaskCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888441D9D48F1002E1A46 /* TaskCreateViewController.swift */; };
 		E4B888F01D9D48F1002E1A46 /* TaskFlowCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888451D9D48F1002E1A46 /* TaskFlowCategoryViewController.swift */; };
-		E4B888F11D9D48F1002E1A46 /* TodoedTaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888461D9D48F1002E1A46 /* TodoedTaskDetailViewController.swift */; };
 		E4B888F21D9D48F1002E1A46 /* TodoedTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888471D9D48F1002E1A46 /* TodoedTaskViewController.swift */; };
 		E4B888F31D9D48F1002E1A46 /* TodoTaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888481D9D48F1002E1A46 /* TodoTaskDetailViewController.swift */; };
 		E4B888F41D9D48F1002E1A46 /* TodoTaskProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B888491D9D48F1002E1A46 /* TodoTaskProcessViewController.swift */; };
@@ -618,7 +654,6 @@
 		E4BF45DB1E750E3A008B52F0 /* NewMainCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45DA1E750E3A008B52F0 /* NewMainCollectionView.swift */; };
 		E4BF45DD1E751399008B52F0 /* NewMainAppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45DC1E751399008B52F0 /* NewMainAppTableViewCell.swift */; };
 		E4BF45DF1E7514A9008B52F0 /* NewMainItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45DE1E7514A9008B52F0 /* NewMainItemTableViewCell.swift */; };
-		E4BF45E11E76C4C6008B52F0 /* BaseTaskWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45E01E76C4C6008B52F0 /* BaseTaskWebViewController.swift */; };
 		E4BF45EB1E781C15008B52F0 /* CMSPublishInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45E91E781C15008B52F0 /* CMSPublishInfo.swift */; };
 		E4BF45EC1E781C15008B52F0 /* CMSPublishInfoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF45EA1E781C15008B52F0 /* CMSPublishInfoData.swift */; };
 		E4C1C08920661A6B003A4511 /* OOUploadImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C1C08820661A6B003A4511 /* OOUploadImageHelper.swift */; };
@@ -1044,13 +1079,6 @@
 			remoteGlobalIDString = 0F923F2F946B962E9311CCE53AFF77F9;
 			remoteInfo = JGProgressHUD;
 		};
-		B10AC5B821058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = B63F1C1F484F735343FD130ACA8B1D04;
-			remoteInfo = JHTAlertController;
-		};
 		B10AC5BC21058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1163,13 +1191,6 @@
 			remoteGlobalIDString = 728330A02A7C9B9ECA9CFF1887EA12DA;
 			remoteInfo = SnapKit;
 		};
-		B10AC5E021058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8E3A6D4ACECAFD42973ADBC50C56B927;
-			remoteInfo = swiftScan;
-		};
 		B10AC5E221058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1197,13 +1218,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A0FB6D4113C16CAF94406B9507CF9AC4;
 			remoteInfo = SwiftyUserDefaults;
-		};
-		B10AC5EC21058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 574AC0C0DA81B8D7720177A59B5A44FD;
-			remoteInfo = Whisper;
 		};
 		B10AC5EE21058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1347,6 +1361,7 @@
 		8F11FB2A0DE98715F9FE34DB /* Pods-神州顺利办.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-神州顺利办.debug.xcconfig"; path = "Pods/Target Support Files/Pods-神州顺利办/Pods-神州顺利办.debug.xcconfig"; sourceTree = "<group>"; };
 		A043051A1F99CFD500740423 /* MailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailViewController.swift; sourceTree = "<group>"; };
 		AA0FF2A712D1C3F69C0261BB /* Pods-杭州城管委.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-杭州城管委.debug.xcconfig"; path = "Pods/Target Support Files/Pods-杭州城管委/Pods-杭州城管委.debug.xcconfig"; sourceTree = "<group>"; };
+		B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2BaseJsMessageHandler.swift; sourceTree = "<group>"; };
 		B104303621464C690011B08E /* ai.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ai.storyboard; sourceTree = "<group>"; };
 		B1043039214657840011B08E /* OOVoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOVoiceView.swift; sourceTree = "<group>"; };
 		B104303B21469E3D0011B08E /* OOCircleRippleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCircleRippleView.swift; sourceTree = "<group>"; };
@@ -1355,6 +1370,42 @@
 		B107453B21A52FA00015F1B2 /* O2PersonInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2PersonInfo.swift; sourceTree = "<group>"; };
 		B107453E21A533E70015F1B2 /* O2PersonalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2PersonalViewModel.swift; sourceTree = "<group>"; };
 		B1089692210AD8E400F02267 /* CalendarEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEventTableViewCell.swift; sourceTree = "<group>"; };
+		B108F3F5229E34D200778050 /* LBXScanNetAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanNetAnimation.swift; sourceTree = "<group>"; };
+		B108F3F6229E34D200778050 /* LBXScanViewStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewStyle.swift; sourceTree = "<group>"; };
+		B108F3F7229E34D200778050 /* LBXScanLineAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanLineAnimation.swift; sourceTree = "<group>"; };
+		B108F3F8229E34D200778050 /* LBXScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanView.swift; sourceTree = "<group>"; };
+		B108F3F9229E34D300778050 /* LBXPermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXPermissions.swift; sourceTree = "<group>"; };
+		B108F3FA229E34D300778050 /* LBXScanWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanWrapper.swift; sourceTree = "<group>"; };
+		B108F3FB229E34D300778050 /* LBXScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewController.swift; sourceTree = "<group>"; };
+		B12FD1862283CE1D00E636BA /* red.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = red.plist; sourceTree = "<group>"; };
+		B12FD18A2283D5B700E636BA /* ThemeCGFloatPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeCGFloatPicker.swift; sourceTree = "<group>"; };
+		B12FD18B2283D5B700E636BA /* ThemeStatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeStatePicker.swift; sourceTree = "<group>"; };
+		B12FD18C2283D5B700E636BA /* UIRefreshControl+TitleAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+TitleAttributes.swift"; sourceTree = "<group>"; };
+		B12FD18D2283D5B700E636BA /* ThemeBarStylePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeBarStylePicker.swift; sourceTree = "<group>"; };
+		B12FD18E2283D5B700E636BA /* ThemeColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeColorPicker.swift; sourceTree = "<group>"; };
+		B12FD18F2283D5B700E636BA /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		B12FD1902283D5B700E636BA /* O2ThemeManager+OC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "O2ThemeManager+OC.swift"; sourceTree = "<group>"; };
+		B12FD1912283D5B700E636BA /* ThemeFontPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeFontPicker.swift; sourceTree = "<group>"; };
+		B12FD1922283D5B700E636BA /* ThemeDictionaryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDictionaryPicker.swift; sourceTree = "<group>"; };
+		B12FD1932283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeScrollViewIndicatorStylePicker.swift; sourceTree = "<group>"; };
+		B12FD1942283D5B700E636BA /* UITextField+PlaceholderAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextField+PlaceholderAttributes.swift"; sourceTree = "<group>"; };
+		B12FD1952283D5B700E636BA /* O2ThemeManager+Index.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "O2ThemeManager+Index.swift"; sourceTree = "<group>"; };
+		B12FD1962283D5B700E636BA /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
+		B12FD1972283D5B700E636BA /* ThemeCGColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeCGColorPicker.swift; sourceTree = "<group>"; };
+		B12FD1992283D5B700E636BA /* NSObject+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Theme.swift"; sourceTree = "<group>"; };
+		B12FD19A2283D5B700E636BA /* UIKit+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+Theme.swift"; sourceTree = "<group>"; };
+		B12FD19B2283D5B700E636BA /* ThemeKeyboardAppearancePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeKeyboardAppearancePicker.swift; sourceTree = "<group>"; };
+		B12FD19C2283D5B700E636BA /* O2ThemeManager+Plist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "O2ThemeManager+Plist.swift"; sourceTree = "<group>"; };
+		B12FD19D2283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeActivityIndicatorViewStylePicker.swift; sourceTree = "<group>"; };
+		B12FD19E2283D5B700E636BA /* ThemeImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeImagePicker.swift; sourceTree = "<group>"; };
+		B12FD19F2283D5B700E636BA /* ThemeStatusBarStylePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeStatusBarStylePicker.swift; sourceTree = "<group>"; };
+		B12FD1A02283D5B700E636BA /* NSAttributedString+Merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Merge.swift"; sourceTree = "<group>"; };
+		B12FD1EA2283D62B00E636BA /* O2ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2ThemeManager.swift; sourceTree = "<group>"; };
+		B12FD1EC2283FA2E00E636BA /* blue.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = blue.plist; sourceTree = "<group>"; };
+		B12FD1EE228425BE00E636BA /* OOMeetingTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMeetingTabBarController.swift; sourceTree = "<group>"; };
+		B130A74E2281559900282AD1 /* DeviceListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListViewController.swift; sourceTree = "<group>"; };
+		B130A7822281565F00282AD1 /* DeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTableViewCell.swift; sourceTree = "<group>"; };
+		B130A7842281597000282AD1 /* DeviceManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManagerViewModel.swift; sourceTree = "<group>"; };
 		B130E60D223B774400B68354 /* Flutter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Flutter.framework; path = engine/Flutter.framework; sourceTree = "<group>"; };
 		B130E645223B774D00B68354 /* image_picker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = image_picker.framework; path = plugins/image_picker.framework; sourceTree = "<group>"; };
 		B130E646223B774D00B68354 /* path_provider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = path_provider.framework; path = plugins/path_provider.framework; sourceTree = "<group>"; };
@@ -1390,15 +1441,11 @@
 		B165CD552242093500373B66 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B165CD562242093500373B66 /* Presentr+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Presentr+Equatable.swift"; sourceTree = "<group>"; };
 		B165CD572242093500373B66 /* ModalSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalSize.swift; sourceTree = "<group>"; };
-		B165CD6F22420B7400373B66 /* LXDScanCodeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXDScanCodeController.h; sourceTree = "<group>"; };
-		B165CD7022420B7400373B66 /* LXDScanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXDScanView.h; sourceTree = "<group>"; };
-		B165CD7122420B7400373B66 /* LXDScanCodeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXDScanCodeController.m; sourceTree = "<group>"; };
-		B165CD7222420B7400373B66 /* LXDScanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXDScanView.m; sourceTree = "<group>"; };
 		B169E3D321095EC9007156B3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		B17126C021084A2F00369F15 /* calendar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = calendar.storyboard; sourceTree = "<group>"; };
 		B17126F6210864CA00369F15 /* O2Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2Color.swift; sourceTree = "<group>"; };
+		B17BF42F22B23758009E36E0 /* SkinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinViewController.swift; sourceTree = "<group>"; };
 		B1908E1322685E8F00D75632 /* O2WebViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebViewModels.swift; sourceTree = "<group>"; };
-		B1908E4922687AB400D75632 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B1908E4D22687B1A00D75632 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B190923421071777009A7906 /* OOCalendarModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarModels.swift; sourceTree = "<group>"; };
 		B19092372107219B009A7906 /* OOCalendarAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarAPI.swift; sourceTree = "<group>"; };
@@ -1424,9 +1471,16 @@
 		B1BC8CD9216B3D5E00AF571F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarLeftMenuController.swift; sourceTree = "<group>"; };
 		B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
+		B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSAttachmentInfoResponse.swift; sourceTree = "<group>"; };
+		B1DA305E2282754500669418 /* QCalendarPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCalendarPicker.swift; sourceTree = "<group>"; };
+		B1EE2CCD2281729400842F48 /* QDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QDatePicker.swift; sourceTree = "<group>"; };
+		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
 		B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarViewController.swift; sourceTree = "<group>"; };
 		B1FAFD432105C23B008A0CDF /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		B1FD026F21FAE00E000E9817 /* O2MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2MainController.swift; sourceTree = "<group>"; };
+		B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WorkMoreActionSheet.swift; sourceTree = "<group>"; };
+		B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSSingleApplication.swift; sourceTree = "<group>"; };
+		B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSCreateDocViewController.swift; sourceTree = "<group>"; };
 		B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2FlutterViewController.swift; sourceTree = "<group>"; };
 		B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		B1FFF891223A4DA700C170FD /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -1563,7 +1617,6 @@
 		E4375B19207CABE90065A880 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E4375B1B207CABF00065A880 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E4375B1D207CAC020065A880 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		E4375B36207F2D420065A880 /* OOTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOTabBarController.swift; sourceTree = "<group>"; };
 		E43C24351DB8AE72005082A4 /* ZLBaseTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLBaseTableView.swift; sourceTree = "<group>"; };
 		E4418C5E1DDC1AC80066348D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E4418C601DDC1ACF0066348D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -1589,7 +1642,6 @@
 		E45755991E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_nor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrcode_scan_titlebar_back_nor@2x.png"; sourceTree = "<group>"; };
 		E457559A1E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrcode_scan_titlebar_back_pressed@2x.png"; sourceTree = "<group>"; };
 		E457559B1E0BA72E00EC44F4 /* qrcode_Scan_weixin_Line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrcode_Scan_weixin_Line@2x.png"; sourceTree = "<group>"; };
-		E45CD4251DFE5055008F99AD /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		E45DA8E81DACC11600E0735D /* BaseWebViewUIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseWebViewUIViewController.swift; sourceTree = "<group>"; };
 		E45DA8EB1DACD7CA00E0735D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E45DA8EC1DACD7CA00E0735D /* SCScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCScrollView.swift; sourceTree = "<group>"; };
@@ -1602,7 +1654,6 @@
 		E45DA9071DAF509C00E0735D /* SFeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFeedbackViewController.swift; sourceTree = "<group>"; };
 		E45DA9091DAF6D3800E0735D /* SCustomerServiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCustomerServiceViewController.swift; sourceTree = "<group>"; };
 		E45DA90B1DAF76C800E0735D /* SCommonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCommonViewController.swift; sourceTree = "<group>"; };
-		E45DA90D1DAF7C8A00E0735D /* O2CleanCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2CleanCache.swift; sourceTree = "<group>"; };
 		E45DA9101DAF7EBE00E0735D /* SZKCleanCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SZKCleanCache.h; sourceTree = "<group>"; };
 		E45DA9111DAF7EBE00E0735D /* SZKCleanCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SZKCleanCache.m; sourceTree = "<group>"; };
 		E46E6BF61DD2C8B500AB7561 /* BBSReplySubjectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSReplySubjectViewController.swift; sourceTree = "<group>"; };
@@ -1827,7 +1878,6 @@
 		E4B8874A1D9D48F1002E1A46 /* O2App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2App.swift; sourceTree = "<group>"; };
 		E4B8874C1D9D48F1002E1A46 /* O2CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2CollectionView.swift; sourceTree = "<group>"; };
 		E4B8874D1D9D48F1002E1A46 /* O2CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2CollectionViewCell.swift; sourceTree = "<group>"; };
-		E4B887501D9D48F1002E1A46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E4B887521D9D48F1002E1A46 /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		E4B887531D9D48F1002E1A46 /* ZLCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLCollectionView.swift; sourceTree = "<group>"; };
 		E4B887541D9D48F1002E1A46 /* ZLNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLNavigationController.swift; sourceTree = "<group>"; };
@@ -1937,11 +1987,8 @@
 		E4B8883B1D9D48F1002E1A46 /* okr.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = okr.storyboard; sourceTree = "<group>"; };
 		E4B8883C1D9D48F1002E1A46 /* setting.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = setting.storyboard; sourceTree = "<group>"; };
 		E4B8883D1D9D48F1002E1A46 /* task.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = task.storyboard; sourceTree = "<group>"; };
-		E4B888421D9D48F1002E1A46 /* ReadedTaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadedTaskDetailViewController.swift; sourceTree = "<group>"; };
-		E4B888431D9D48F1002E1A46 /* ReadTaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadTaskDetailViewController.swift; sourceTree = "<group>"; };
 		E4B888441D9D48F1002E1A46 /* TaskCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCreateViewController.swift; sourceTree = "<group>"; };
 		E4B888451D9D48F1002E1A46 /* TaskFlowCategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskFlowCategoryViewController.swift; sourceTree = "<group>"; };
-		E4B888461D9D48F1002E1A46 /* TodoedTaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoedTaskDetailViewController.swift; sourceTree = "<group>"; };
 		E4B888471D9D48F1002E1A46 /* TodoedTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoedTaskViewController.swift; sourceTree = "<group>"; };
 		E4B888481D9D48F1002E1A46 /* TodoTaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoTaskDetailViewController.swift; sourceTree = "<group>"; };
 		E4B888491D9D48F1002E1A46 /* TodoTaskProcessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoTaskProcessViewController.swift; sourceTree = "<group>"; };
@@ -1974,7 +2021,6 @@
 		E4BF45DA1E750E3A008B52F0 /* NewMainCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMainCollectionView.swift; sourceTree = "<group>"; };
 		E4BF45DC1E751399008B52F0 /* NewMainAppTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMainAppTableViewCell.swift; sourceTree = "<group>"; };
 		E4BF45DE1E7514A9008B52F0 /* NewMainItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMainItemTableViewCell.swift; sourceTree = "<group>"; };
-		E4BF45E01E76C4C6008B52F0 /* BaseTaskWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTaskWebViewController.swift; sourceTree = "<group>"; };
 		E4BF45E91E781C15008B52F0 /* CMSPublishInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMSPublishInfo.swift; sourceTree = "<group>"; };
 		E4BF45EA1E781C15008B52F0 /* CMSPublishInfoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMSPublishInfoData.swift; sourceTree = "<group>"; };
 		E4C1C08820661A6B003A4511 /* OOUploadImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOUploadImageHelper.swift; sourceTree = "<group>"; };
@@ -2414,8 +2460,23 @@
 			isa = PBXGroup;
 			children = (
 				B107453E21A533E70015F1B2 /* O2PersonalViewModel.swift */,
+				B130A7842281597000282AD1 /* DeviceManagerViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B108F3C3229E34B700778050 /* scan */ = {
+			isa = PBXGroup;
+			children = (
+				B108F3F9229E34D300778050 /* LBXPermissions.swift */,
+				B108F3F7229E34D200778050 /* LBXScanLineAnimation.swift */,
+				B108F3F5229E34D200778050 /* LBXScanNetAnimation.swift */,
+				B108F3F8229E34D200778050 /* LBXScanView.swift */,
+				B108F3FB229E34D300778050 /* LBXScanViewController.swift */,
+				B108F3F6229E34D200778050 /* LBXScanViewStyle.swift */,
+				B108F3FA229E34D300778050 /* LBXScanWrapper.swift */,
+			);
+			path = scan;
 			sourceTree = "<group>";
 		};
 		B10AC55121058DAE00179587 /* Products */ = {
@@ -2444,7 +2505,6 @@
 				B14A2293224CBC2E00745E0A /* IQKeyboardManagerSwift.framework */,
 				B10AC5B721058DAE00179587 /* JGProgressHUD.framework */,
 				B1BC8CD8216B1F0B00AF571F /* JGProgressHUD.bundle */,
-				B10AC5B921058DAE00179587 /* JHTAlertController.framework */,
 				B1573CB9213E51A9007333C6 /* JTCalendar.framework */,
 				B108968F210AC61B00F02267 /* JZCalendarWeekView.framework */,
 				B10AC5BD21058DAE00179587 /* MBProgressHUD.framework */,
@@ -2465,16 +2525,53 @@
 				B10AC5D721058DAE00179587 /* RxSwift.framework */,
 				B10AC5D921058DAE00179587 /* SDWebImage.framework */,
 				B10AC5DF21058DAE00179587 /* SnapKit.framework */,
-				B10AC5E121058DAE00179587 /* swiftScan.framework */,
 				B10AC5E321058DAE00179587 /* SwiftValidator.framework */,
 				B10AC5E521058DAE00179587 /* SwiftyJSON.framework */,
 				B10AC5E721058DAE00179587 /* SwiftyTimer.framework */,
 				B10AC5E921058DAE00179587 /* SwiftyUserDefaults.framework */,
-				B10AC5ED21058DAE00179587 /* Whisper.framework */,
 				B10AC5EF21058DAE00179587 /* YHPhotoKit.framework */,
 				B10AC5F121058DAE00179587 /* YHPopupView.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B12FD1502283CDF400E636BA /* theme */ = {
+			isa = PBXGroup;
+			children = (
+				B12FD1862283CE1D00E636BA /* red.plist */,
+				B12FD1EC2283FA2E00E636BA /* blue.plist */,
+			);
+			path = theme;
+			sourceTree = "<group>";
+		};
+		B12FD1892283D5B700E636BA /* SwiftTheme */ = {
+			isa = PBXGroup;
+			children = (
+				B12FD1EA2283D62B00E636BA /* O2ThemeManager.swift */,
+				B12FD1952283D5B700E636BA /* O2ThemeManager+Index.swift */,
+				B12FD1902283D5B700E636BA /* O2ThemeManager+OC.swift */,
+				B12FD19C2283D5B700E636BA /* O2ThemeManager+Plist.swift */,
+				B12FD18A2283D5B700E636BA /* ThemeCGFloatPicker.swift */,
+				B12FD18B2283D5B700E636BA /* ThemeStatePicker.swift */,
+				B12FD18C2283D5B700E636BA /* UIRefreshControl+TitleAttributes.swift */,
+				B12FD18D2283D5B700E636BA /* ThemeBarStylePicker.swift */,
+				B12FD18E2283D5B700E636BA /* ThemeColorPicker.swift */,
+				B12FD18F2283D5B700E636BA /* UIColorExtension.swift */,
+				B12FD1912283D5B700E636BA /* ThemeFontPicker.swift */,
+				B12FD1922283D5B700E636BA /* ThemeDictionaryPicker.swift */,
+				B12FD1932283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift */,
+				B12FD1942283D5B700E636BA /* UITextField+PlaceholderAttributes.swift */,
+				B12FD1962283D5B700E636BA /* ThemePicker.swift */,
+				B12FD1972283D5B700E636BA /* ThemeCGColorPicker.swift */,
+				B12FD1992283D5B700E636BA /* NSObject+Theme.swift */,
+				B12FD19A2283D5B700E636BA /* UIKit+Theme.swift */,
+				B12FD19B2283D5B700E636BA /* ThemeKeyboardAppearancePicker.swift */,
+				B12FD19D2283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift */,
+				B12FD19E2283D5B700E636BA /* ThemeImagePicker.swift */,
+				B12FD19F2283D5B700E636BA /* ThemeStatusBarStylePicker.swift */,
+				B12FD1A02283D5B700E636BA /* NSAttributedString+Merge.swift */,
+			);
+			path = SwiftTheme;
 			sourceTree = "<group>";
 		};
 		B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */ = {
@@ -2513,17 +2610,6 @@
 				B165CD572242093500373B66 /* ModalSize.swift */,
 			);
 			path = Presentr;
-			sourceTree = "<group>";
-		};
-		B165CD6E22420B7400373B66 /* LXDScanCodeController */ = {
-			isa = PBXGroup;
-			children = (
-				B165CD6F22420B7400373B66 /* LXDScanCodeController.h */,
-				B165CD7022420B7400373B66 /* LXDScanView.h */,
-				B165CD7122420B7400373B66 /* LXDScanCodeController.m */,
-				B165CD7222420B7400373B66 /* LXDScanView.m */,
-			);
-			path = LXDScanCodeController;
 			sourceTree = "<group>";
 		};
 		B19091FD2107145F009A7906 /* Calendar-日程管理 */ = {
@@ -2618,6 +2704,8 @@
 			isa = PBXGroup;
 			children = (
 				B19FF89D226DBD3600FA0B76 /* O2JsApiNotification.swift */,
+				B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */,
+				B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */,
 			);
 			path = o2JsApi;
 			sourceTree = "<group>";
@@ -2628,6 +2716,16 @@
 				B1B6A8F8217710C800C10F3C /* FaceRecognizeAPI.swift */,
 			);
 			path = FaceRecognizeAPI;
+			sourceTree = "<group>";
+		};
+		B1EE2C9A2281723A00842F48 /* CustomUI */ = {
+			isa = PBXGroup;
+			children = (
+				B1EE2CCD2281729400842F48 /* QDatePicker.swift */,
+				B1DA305E2282754500669418 /* QCalendarPicker.swift */,
+				B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */,
+			);
+			path = CustomUI;
 			sourceTree = "<group>";
 		};
 		B1FAFD422105C205008A0CDF /* RxSwift */ = {
@@ -2693,7 +2791,6 @@
 		E40958BB207F2F7F000FECC3 /* MainTabBar */ = {
 			isa = PBXGroup;
 			children = (
-				E4375B36207F2D420065A880 /* OOTabBarController.swift */,
 				E40958BC207F46F5000FECC3 /* OOPlusButtonSubclass.swift */,
 				E40958C1207F4842000FECC3 /* OOTabBarHelper.swift */,
 				B1FD026F21FAE00E000E9817 /* O2MainController.swift */,
@@ -2747,6 +2844,7 @@
 				E40E247920B7DA3C009F8BE7 /* OOMeetingInforController.swift */,
 				E40E247A20B7DA3C009F8BE7 /* OOMeetingCreateViewController.swift */,
 				E40E247B20B7DA3C009F8BE7 /* OOMeetingMeetingRoomManageController.swift */,
+				B12FD1EE228425BE00E636BA /* OOMeetingTabBarController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2954,8 +3052,6 @@
 			isa = PBXGroup;
 			children = (
 				E45CD4221DFE503C008F99AD /* c */,
-				E45CD4231DFE503C008F99AD /* m */,
-				E45CD4241DFE503C008F99AD /* v */,
 			);
 			path = scan;
 			sourceTree = "<group>";
@@ -2964,24 +3060,9 @@
 			isa = PBXGroup;
 			children = (
 				B1B21459216073B400D9CA7E /* ScanHelper.swift */,
-				E45CD4251DFE5055008F99AD /* ScanViewController.swift */,
 				E457558C1E0BA26000EC44F4 /* NewScanViewController.swift */,
 			);
 			path = c;
-			sourceTree = "<group>";
-		};
-		E45CD4231DFE503C008F99AD /* m */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = m;
-			sourceTree = "<group>";
-		};
-		E45CD4241DFE503C008F99AD /* v */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = v;
 			sourceTree = "<group>";
 		};
 		E45DA8EA1DACD7CA00E0735D /* SegmentedControl */ = {
@@ -3360,6 +3441,7 @@
 				E4B781721DF912E6007B58A9 /* CMSCategoryListViewController.swift */,
 				E4B7819F1DFA9B23007B58A9 /* CMSItemDetailViewController.swift */,
 				E4CB278A1E797B58004A7ACB /* CMSQLViewController.swift */,
+				B1FEDACD22D314F90002ECF4 /* CMSCreateDocViewController.swift */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -3377,6 +3459,8 @@
 				E4B781691DF8F2B2007B58A9 /* CMSData.swift */,
 				E4B7816A1DF8F2B2007B58A9 /* CMSWrapOutCategoryList.swift */,
 				B13707DC212D3F19002113F1 /* CMSCategoryData.swift */,
+				B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */,
+				B1C303E522D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift */,
 			);
 			path = m;
 			sourceTree = "<group>";
@@ -3418,6 +3502,7 @@
 		E4B887151D9D477A002E1A46 /* O2Platform */ = {
 			isa = PBXGroup;
 			children = (
+				B12FD1502283CDF400E636BA /* theme */,
 				B1FFF891223A4DA700C170FD /* GeneratedPluginRegistrant.h */,
 				B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */,
 				B19091FD2107145F009A7906 /* Calendar-日程管理 */,
@@ -3430,7 +3515,7 @@
 				E41441D61DCAC5C600E3DDA3 /* bbs */,
 				E484C00E1DA8ED7C003413DF /* O2Platform.entitlements */,
 				E4B887461D9D48F1002E1A46 /* apps */,
-				E4B8874E1D9D48F1002E1A46 /* Base.lproj */,
+				B1EE2C9A2281723A00842F48 /* CustomUI */,
 				E4B887511D9D48F1002E1A46 /* common */,
 				E4B887561D9D48F1002E1A46 /* config */,
 				E4B8875E1D9D48F1002E1A46 /* contacts */,
@@ -3510,14 +3595,6 @@
 			path = v;
 			sourceTree = "<group>";
 		};
-		E4B8874E1D9D48F1002E1A46 /* Base.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				E4B8874F1D9D48F1002E1A46 /* LaunchScreen.storyboard */,
-			);
-			path = Base.lproj;
-			sourceTree = "<group>";
-		};
 		E4B887511D9D48F1002E1A46 /* common */ = {
 			isa = PBXGroup;
 			children = (
@@ -3539,7 +3616,6 @@
 				E4B887521D9D48F1002E1A46 /* Stack.swift */,
 				E4B887541D9D48F1002E1A46 /* ZLNavigationController.swift */,
 				E4B887551D9D48F1002E1A46 /* ZLTabBarController.swift */,
-				E45DA90D1DAF7C8A00E0735D /* O2CleanCache.swift */,
 				E43C24351DB8AE72005082A4 /* ZLBaseTableView.swift */,
 				E42E41C31E6D505D00C5B5C7 /* ZLAppCollectionModel.swift */,
 				E42700A71E7A762200DCCC71 /* ZoneHUD.swift */,
@@ -3555,6 +3631,7 @@
 				E4B698232079AA0D0062F6E8 /* OOTableViewController.swift */,
 				E4C24A4D2083802C00E426B0 /* OOBaseViewController.swift */,
 				B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */,
+				E45DA8E81DACC11600E0735D /* BaseWebViewUIViewController.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -3671,7 +3748,8 @@
 		E4B887821D9D48F1002E1A46 /* framework */ = {
 			isa = PBXGroup;
 			children = (
-				B165CD6E22420B7400373B66 /* LXDScanCodeController */,
+				B108F3C3229E34B700778050 /* scan */,
+				B12FD1892283D5B700E636BA /* SwiftTheme */,
 				B165CD402242093500373B66 /* Presentr */,
 				B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */,
 				B19BCE442228272500BD454C /* O2OA_Flutter_SDK */,
@@ -3970,6 +4048,8 @@
 				E4184B241DB4F28800FCC907 /* SMobileChangeViewController.swift */,
 				E4184B261DB4F9CC00FCC907 /* SMobileModifyViewController.swift */,
 				E4AA17141EE158E70030D9AB /* LogListViewController.swift */,
+				B130A74E2281559900282AD1 /* DeviceListViewController.swift */,
+				B17BF42F22B23758009E36E0 /* SkinViewController.swift */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -3988,6 +4068,7 @@
 				E4AA17161EE189FE0030D9AB /* LogFileTableViewCell.swift */,
 				E4B888301D9D48F1002E1A46 /* SettingHeaderView.swift */,
 				E4B888311D9D48F1002E1A46 /* SettingHomeCell.swift */,
+				B130A7822281565F00282AD1 /* DeviceTableViewCell.swift */,
 			);
 			path = v;
 			sourceTree = "<group>";
@@ -4025,18 +4106,13 @@
 			isa = PBXGroup;
 			children = (
 				E40C41E31E7F7C0D00568805 /* category */,
-				E4B888421D9D48F1002E1A46 /* ReadedTaskDetailViewController.swift */,
-				E4B888431D9D48F1002E1A46 /* ReadTaskDetailViewController.swift */,
 				E4B888441D9D48F1002E1A46 /* TaskCreateViewController.swift */,
 				E4B888451D9D48F1002E1A46 /* TaskFlowCategoryViewController.swift */,
-				E4B888461D9D48F1002E1A46 /* TodoedTaskDetailViewController.swift */,
 				E4B888471D9D48F1002E1A46 /* TodoedTaskViewController.swift */,
 				E4B888481D9D48F1002E1A46 /* TodoTaskDetailViewController.swift */,
 				E4B888491D9D48F1002E1A46 /* TodoTaskProcessViewController.swift */,
 				E4B8884A1D9D48F1002E1A46 /* TodoTaskViewController.swift */,
-				E45DA8E81DACC11600E0735D /* BaseWebViewUIViewController.swift */,
 				E4E212481E74F96400B1544D /* MainTaskSecondViewController.swift */,
-				E4BF45E01E76C4C6008B52F0 /* BaseTaskWebViewController.swift */,
 				E4A748D41EC15EF100163F58 /* TaskAttachmentPreviewController.swift */,
 			);
 			path = c;
@@ -4887,6 +4963,7 @@
 				50A3AB6E115C21464BEE9779 /* [CP] Embed Pods Frameworks */,
 				E4C24A322081AFD500E426B0 /* Embed App Extensions */,
 				B1AE4E2821A3DCC200183FCD /* Embed Frameworks */,
+				B144D7B222B76E71000AAD8F /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -4978,8 +5055,10 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = E4B8870A1D9D477A002E1A46;
 			productRefGroup = E4B887141D9D477A002E1A46 /* Products */;
@@ -5147,13 +5226,6 @@
 			remoteRef = B10AC5B621058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B10AC5B921058DAE00179587 /* JHTAlertController.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = JHTAlertController.framework;
-			remoteRef = B10AC5B821058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B10AC5BD21058DAE00179587 /* MBProgressHUD.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5266,13 +5338,6 @@
 			remoteRef = B10AC5DE21058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B10AC5E121058DAE00179587 /* swiftScan.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = swiftScan.framework;
-			remoteRef = B10AC5E021058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B10AC5E321058DAE00179587 /* SwiftValidator.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5299,13 +5364,6 @@
 			fileType = wrapper.framework;
 			path = SwiftyUserDefaults.framework;
 			remoteRef = B10AC5E821058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B10AC5ED21058DAE00179587 /* Whisper.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Whisper.framework;
-			remoteRef = B10AC5EC21058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B10AC5EF21058DAE00179587 /* YHPhotoKit.framework */ = {
@@ -5449,7 +5507,6 @@
 				E46E6C831DD41F5D00AB7561 /* ZSSimage.png in Resources */,
 				E46E6CA31DD41F5D00AB7561 /* ZSSsubscript.png in Resources */,
 				E428AF5220AA7A2400D964B9 /* OOAttanceHeaderView.xib in Resources */,
-				E4B888601D9D48F1002E1A46 /* LaunchScreen.storyboard in Resources */,
 				E46E6C741DD41F5D00AB7561 /* ZSSforcejustify@2x.png in Resources */,
 				E46E6C7D1DD41F5D00AB7561 /* ZSSh5.png in Resources */,
 				E40E24D120B7DA3C009F8BE7 /* OOFormTextItemView.xib in Resources */,
@@ -5460,6 +5517,7 @@
 				E4B2321020B2A9F60082F30A /* OOAttandanceWorkPlaceController.xib in Resources */,
 				E441994C206C8A1A0050AE0C /* OORegisterTableView.xib in Resources */,
 				E46E6C9D1DD41F5D00AB7561 /* ZSSredo.png in Resources */,
+				B12FD1ED2283FA2E00E636BA /* blue.plist in Resources */,
 				E45755A01E0BA72E00EC44F4 /* qrcode_scan_btn_myqrcode_nor@2x.png in Resources */,
 				E45755A81E0BA72E00EC44F4 /* qrcode_scan_titlebar_back_pressed@2x.png in Resources */,
 				E46E6C991DD41F5D00AB7561 /* ZSSpicker.png in Resources */,
@@ -5554,6 +5612,7 @@
 				E46E6C871DD41F5D00AB7561 /* ZSSindent.png in Resources */,
 				E46E6CC31DD41F5D00AB7561 /* ZSSRichTextEditor.js in Resources */,
 				E4C24BC220844F3C00E426B0 /* icon_baidu_marker.png in Resources */,
+				B12FD1872283CE1D00E636BA /* red.plist in Resources */,
 				E4B888E21D9D48F1002E1A46 /* cloudStorage.storyboard in Resources */,
 				E46E6C8E1DD41F5D00AB7561 /* ZSSkeyboard@2x.png in Resources */,
 				E4C24C49208D7EDE00E426B0 /* OOContactSearchSectionHeaderView.xib in Resources */,
@@ -5619,7 +5678,6 @@
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/ImageSlideshow/ImageSlideshow.framework",
 				"${BUILT_PRODUCTS_DIR}/JGProgressHUD/JGProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/JHTAlertController/JHTAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/JTCalendar/JTCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/JZCalendarWeekView/JZCalendarWeekView.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
@@ -5642,10 +5700,8 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTimer/SwiftyTimer.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyUserDefaults/SwiftyUserDefaults.framework",
-				"${BUILT_PRODUCTS_DIR}/Whisper/Whisper.framework",
 				"${BUILT_PRODUCTS_DIR}/YHPhotoKit/YHPhotoKit.framework",
 				"${BUILT_PRODUCTS_DIR}/YHPopupView/YHPopupView.framework",
-				"${BUILT_PRODUCTS_DIR}/swiftScan/swiftScan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -5670,7 +5726,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageSlideshow.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JGProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JHTAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JZCalendarWeekView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
@@ -5693,10 +5748,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTimer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyUserDefaults.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Whisper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YHPhotoKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YHPopupView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/swiftScan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -5720,6 +5773,24 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		B144D7B222B76E71000AAD8F /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n#\n# Copyright 2016 Bugly, Tencent. All rights reserved.\n#\n# V1.4.0\n#\n# 2016.08.03\n#\n#\n#\n######################################################\n# 1. 脚本集成到Xcode工程的Target\n######################################################\n#\n# --- Copy the SCRIPT to the Run Script of Build Phases in the Xcode project ---\n#\n# #\nBUGLY_APP_ID=\"0bc87f457b\"\n# #\nBUGLY_APP_KEY=\"2dd1b204-c700-44f8-b4ae-1dae9e228fb6\"\n# #\nBUNDLE_IDENTIFIER=\"tech.xplatform.m.O2Platform\"\n# #\nUPLOAD_DSYM_ONLY=1\n\nUPLOAD_DEBUG_SYMBOLS=1\n#\n# # 脚本默认配置的版本格式为CFBundleShortVersionString(CFBundleVersion),  如果你修改默认的版本格式, 请设置此变量, 如果不想修改, 请忽略此设置\n# CUSTOMIZED_APP_VERSION=\"\"\n#\n# # Debug模式编译是否上传，1＝上传 0＝不上传，默认不上传\n# UPLOAD_DEBUG_SYMBOLS=0\n#\n# # 模拟器编译是否上传，1=上传 0=不上传，默认不上传\n# UPLOAD_SIMULATOR_SYMBOLS=0\n#\n# #只有Archive操作时上传, 1=支持Archive上传 0=所有Release模式编译都上传\n# UPLOAD_ARCHIVE_ONLY=0\n#\n# #\n# source dSYMUpload.sh\n#\n# --- END OF SCRIPT ---\n#\n#\n#\n#\n#######################################################\n# 2. 脚本根据输入参数处理\n#######################################################\n#\n# #命令行下输入应用基本信息, .dSYM文件的父目录路径, 输出文件目录即可\n#\n# sh dSYMUpload.sh <bugly_app_id> <bugly_app_key> <app_bundle_identifier> <app_version> <dSYM_src_dir> <bSYMBOL_dest_dir>\n#\n# #\n#\n# #注意:\n# # 1. dSYMUpload.sh会调用buglySymboliOS.jar进行.dSYM解析，所以依赖Java运行时环境\n# # 2. dSYMUpload.sh和buglySymboliOS.jar的文件路径需一致\n#\n#\n\n#\n# --- CONTENT OF SCRIPT ---\n#\n\n# Bugly服务域名\nBUGLY_DSYM_UPLOAD_DOMAIN=\"api.bugly.qq.com\"\n\n# 注意jar工具的路径跟dSYMUpload.sh脚本路径一致, 请务必保证jar路径的正确性\nBUGLY_SYMBOL_JAR_PATH=\"dsymtool/buglySymboliOS.jar\"\n# 查找添加到系统目录的jar工具\nif [ ! -f \"${BUGLY_SYMBOL_JAR_PATH}\" ]; then\nBUGLY_SYMBOL_JAR_PATH=\"$HOME/bin/buglySymboliOS.jar\"\nfi\n\n# 打印错误信息\nfunction exitWithMessage(){\necho \"--------------------------------\"\necho \"${1}\"\necho \"--------------------------------\"\nexit ${2}\n}\n\n# 上传bSYMBOL文件\nfunction dSYMUpload() {\nP_APP_ID=\"$1\"\nP_APP_KEY=\"$2\"\nP_APP_BUNDLE_ID=\"$3\"\nP_APP_VERSION=\"$4\"\nP_BSYMBOL_ZIP_FILE=\"$5\"\n\n#\nP_BSYMBOL_ZIP_FILE_NAME=${P_BSYMBOL_ZIP_FILE##*/}\nP_BSYMBOL_ZIP_FILE_NAME=${P_BSYMBOL_ZIP_FILE_NAME//&/_}\nP_BSYMBOL_ZIP_FILE_NAME=\"${P_BSYMBOL_ZIP_FILE_NAME// /_}\"\n\nDSYM_UPLOAD_URL=\"https://${BUGLY_DSYM_UPLOAD_DOMAIN}/openapi/file/upload/symbol?app_id=${P_APP_ID}&app_key=${P_APP_KEY}\"\necho \"dSYM upload url: ${DSYM_UPLOAD_URL}\"\n\necho \"-----------------------------\"\nSTATUS=$(/usr/bin/curl -k \"${DSYM_UPLOAD_URL}\" --form \"api_version=1\" --form \"app_id=${P_APP_ID}\" --form \"app_key=${P_APP_KEY}\" --form \"symbolType=2\"  --form \"bundleId=${BUNDLE_IDENTIFIER}\" --form \"productVersion=${BUGLY_APP_VERSION}\" --form \"fileName=${P_BSYMBOL_ZIP_FILE_NAME}\" --form \"file=@${P_BSYMBOL_ZIP_FILE}\" --verbose)\necho \"-----------------------------\"\n\nUPLOAD_RESULT=\"FAILTURE\"\necho \"Bugly server response: ${STATUS}\"\nif [ ! \"${STATUS}\" ]; then\necho \"Error: Failed to upload the zip archive file.\"\nelif [[ \"${STATUS}\" == *\"{\\\"reponseCode\\\":\\\"0\\\"}\"* ]]; then\necho \"Success to upload the dSYM for the app [${BUNDLE_IDENTIFIER} ${BUGLY_APP_VERSION}]\"\nUPLOAD_RESULT=\"SUCCESS\"\nelse\necho \"Error: Failed to upload the zip archive file to Bugly.\"\nfi\n\n#Remove temp dSYM archive\n#echo \"Remove temporary zip archive: ${DSYM_ZIP_FPATH}\"\n#/bin/rm -f \"${DSYM_ZIP_FPATH}\"\n\nif [ \"$?\" -ne 0 ]; then\nexitWithMessage \"Error: Failed to remove temporary zip archive.\" 0\nfi\n\necho \"--------------------------------\"\necho \"${UPLOAD_RESULT} - dSYM upload complete.\"\n\nif [[ \"${UPLOAD_RESULT}\" == \"FAILTURE\" ]]; then\necho \"--------------------------------\"\necho \"Failed to upload the dSYM\"\necho \"Please check the script and try it again.\"\nfi\n}\n\n# .dSYM解析为bSYMBOL文件\nfunction dSYMParse() {\nDSYM_FILE=\"$1\"\nDSYM_SYMBOL_FILE=\"$2\"\n\necho \"--------------------------------\"\necho \"Extract symbol info from .dSYM file. to ${DSYM_SYMBOL_FILE}\"\n(/usr/bin/java -Xms512m -Xmx1024m -Dfile.encoding=UTF8 -jar \"${BUGLY_SYMBOL_JAR_PATH}\" -i \"${DSYM_FILE}\" -o \"${DSYM_SYMBOL_FILE}\" ) || exitWithMessage \"Error: Failed to extract symbols.\" 1\necho \"--------------------------------\"\n\n}\n\n# 执行\nfunction run() {\n\nCONFIG_BUGLY_APP_ID=\"$1\"\nCONFIG_BUGLY_APP_KEY=\"$2\"\n\nCONFIG_BUGLY_APP_BUNDLE_IDENTIFIER=\"$3\"\nCONFIG_BUGLY_APP_VERSION=\"$4\"\nCONFIG_DSYM_SOURCE_DIR=\"$5\"\nCONFIG_DSYM_DEST_DIR=\"$6\"\nCONFIG_UPLOAD_DSYM_ONLY=\"$7\"\n\n# 检查必须参数是否设置\nif [ ! \"${CONFIG_BUGLY_APP_ID}\" ]; then\nexitWithMessage \"Error: Bugly App ID not defined. Please set 'BUGLY_APP_ID' \" 0\nfi\n\nif [[ \"${CONFIG_BUGLY_APP_ID}\" == *\"App ID\"* ]]; then\nexitWithMessage \"Error: Bugly App ID not defined.\" 0\nfi\n\nif [ ! \"${CONFIG_BUGLY_APP_KEY}\" ]; then\nexitWithMessage \"Error: Bugly App Key not defined.\" 0\nfi\n\nif [ ! \"${CONFIG_BUGLY_APP_BUNDLE_IDENTIFIER}\" ]; then\nexitWithMessage \"Error: Bundle Identifier not defined.\" 0\nfi\n\nif [ ! \"${CONFIG_BUGLY_APP_VERSION}\" ]; then\nexitWithMessage \"Error: App Version not defined.\" 0\nfi\n\nif [ ! -e \"${CONFIG_DSYM_SOURCE_DIR}\" ]; then\nexitWithMessage \"Error: Invalid dir ${CONFIG_DSYM_SOURCE_DIR}\" 0\nfi\n\nif [ ! \"${CONFIG_DSYM_DEST_DIR}\" ]; then\nexitWithMessage \"Error: Invalid dir ${CONFIG_DSYM_DEST_DIR}\" 0\nfi\n\nif [ ! -e \"${CONFIG_DSYM_DEST_DIR}\" ]; then\nmkdir ${CONFIG_DSYM_DEST_DIR}\nfi\n\nDSYM_FOLDER=\"${CONFIG_DSYM_SOURCE_DIR}\"\nIFS=$'\\n'\n\necho \"Scaning dSYM FOLDER: ${DSYM_FOLDER} ...\"\nRET=\"F\"\n\n#\nfor dsymFile in $(find \"$DSYM_FOLDER\" -name '*.dSYM'); do\nRET=\"T\"\necho \"Found dSYM file: $dsymFile\"\n\nDSYM_FILE_NAME=${dsymFile##*/}\nDSYM_SYMBOL_ZIP_FILE_NAME=\"${DSYM_FILE_NAME}.zip\"\nDSYM_SYMBOL_ZIP_FILE_NAME=\"${DSYM_SYMBOL_ZIP_FILE_NAME// /_}\"\nDSYM_SYMBOL_ZIP_FILE=${CONFIG_DSYM_DEST_DIR}/${DSYM_SYMBOL_ZIP_FILE_NAME}\n\nif [ $CONFIG_UPLOAD_DSYM_ONLY -eq 1 ]; then\nif [ -e $DSYM_SYMBOL_ZIP_FILE ]; then\nrm -f $DSYM_SYMBOL_ZIP_FILE\nfi\n# 如果只上传dSYM，直接压缩dSYM目录\nzip -r -j $DSYM_SYMBOL_ZIP_FILE $dsymFile -x *.plist\nelse\n# 使用符号表工具来生成Symbol文件\ndSYMParse $dsymFile $DSYM_SYMBOL_ZIP_FILE\nfi\n\n# 上传\ndSYMUpload $CONFIG_BUGLY_APP_ID $CONFIG_BUGLY_APP_KEY $CONFIG_BUGLY_APP_BUNDLE_IDENTIFIER $CONFIG_BUGLY_APP_VERSION $DSYM_SYMBOL_ZIP_FILE\ndone\n\nif [ $RET = \"F\" ]; then\nexitWithMessage \"No .dSYM found in ${DSYM_FOLDER}\" 0\nfi\n}\n\n# 在Xcode工程中执行\nfunction runInXcode(){\necho \"Uploading dSYM to Bugly in Xcode ...\"\n\necho \"Info.Plist : ${INFOPLIST_FILE}\"\n\nBUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' \"${INFOPLIST_FILE}\")\nBUNDLE_SHORT_VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' \"${INFOPLIST_FILE}\")\n\n# 组装Bugly默认识别的版本信息(格式为CFBundleShortVersionString(CFBundleVersion), 例如: 1.0(1))\nif [ ! \"${CUSTOMIZED_APP_VERSION}\" ]; then\nBUGLY_APP_VERSION=\"${BUNDLE_SHORT_VERSION}(${BUNDLE_VERSION})\"\nelse\nBUGLY_APP_VERSION=\"${CUSTOMIZED_APP_VERSION}\"\nfi\n\necho \"--------------------------------\"\necho \"Prepare application information.\"\necho \"--------------------------------\"\n\necho \"Product Name: ${PRODUCT_NAME}\"\necho \"Bundle Identifier: ${BUNDLE_IDENTIFIER}\"\necho \"Version: ${BUNDLE_SHORT_VERSION}\"\necho \"Build: ${BUNDLE_VERSION}\"\n\necho \"Bugly App ID: ${BUGLY_APP_ID}\"\necho \"Bugly App key: ${BUGLY_APP_KEY}\"\necho \"Bugly App Version: ${BUGLY_APP_VERSION}\"\n\necho \"--------------------------------\"\necho \"Check the arguments ...\"\n\n##检查模拟器编译是否允许上传符号\nif [ \"$EFFECTIVE_PLATFORM_NAME\" == \"-iphonesimulator\" ]; then\nif [ $UPLOAD_SIMULATOR_SYMBOLS -eq 0 ]; then\nexitWithMessage \"Warning: Build for simulator and skipping to upload. \\nYou can modify 'UPLOAD_SIMULATOR_SYMBOLS' to 1 in the script.\" 0\nfi\nfi\n\n##检查是否是Release模式编译\nif [ \"${CONFIGURATION=}\" == \"Debug\" ]; then\nif [ $UPLOAD_DEBUG_SYMBOLS -eq 0 ]; then\nexitWithMessage \"Warning: Build for debug mode and skipping to upload. \\nYou can modify 'UPLOAD_DEBUG_SYMBOLS' to 1 in the script.\" 0\nfi\nfi\n\n##检查是否Archive操作\nif [ $UPLOAD_ARCHIVE_ONLY -eq 1 ]; then\nif [[ \"$TARGET_BUILD_DIR\" == *\"/Archive\"* ]]; then\necho \"Archive the package\"\nelse\nexitWithMessage \"Warning: Build for NOT Archive mode and skipping to upload. \\nYou can modify 'UPLOAD_ARCHIVE_ONLY' to 0 in the script.\" 0\nfi\nfi\n\n#\nrun ${BUGLY_APP_ID} ${BUGLY_APP_KEY} ${BUNDLE_IDENTIFIER} ${BUGLY_APP_VERSION} ${DWARF_DSYM_FOLDER_PATH} ${BUILD_DIR}/BuglySymbolTemp ${UPLOAD_DSYM_ONLY}\n}\n\n# 根据Xcode的环境变量判断是否处于Xcode环境\nINFO_PLIST_FILE=\"${INFOPLIST_FILE}\"\n\nBuildInXcode=\"F\"\nif [ -f \"${INFO_PLIST_FILE}\" ]; then\nBuildInXcode=\"T\"\nfi\n\nif [ $BuildInXcode = \"T\" ]; then\nrunInXcode\nelse\necho \"\\nUsage: dSYMUpload.sh <bugly_app_id> <bugly_app_key> <app_bundle_identifier> <app_version> <dSYM_src_dir> <bSYMBOL_dest_dir> [upload_dsym_only]\\n\"\n# 你可以在此处直接设置BuglyAppID和BuglyAppKey，排除不常变参数的输入\nBUGLY_APP_ID=\"$1\"\nBUGLY_APP_KEY=\"$2\"\nBUNDLE_IDENTIFIER=\"$3\"\nBUGLY_APP_VERSION=\"$4\"\nDWARF_DSYM_FOLDER_PATH=\"$5\"\nSYMBOL_OUTPUT_PATH=\"$6\"\nUPLOAD_DSYM_ONLY=$7\nrun ${BUGLY_APP_ID} ${BUGLY_APP_KEY} ${BUNDLE_IDENTIFIER} ${BUGLY_APP_VERSION} ${DWARF_DSYM_FOLDER_PATH} ${SYMBOL_OUTPUT_PATH} ${UPLOAD_DSYM_ONLY}\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -5747,11 +5818,13 @@
 				E4B888751D9D48F1002E1A46 /* Department.swift in Sources */,
 				E4C24B6D20844F3C00E426B0 /* JCAlertView.swift in Sources */,
 				B190923521071777009A7906 /* OOCalendarModels.swift in Sources */,
+				B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */,
 				E40E24D520B7DA3C009F8BE7 /* OMeetingPersonActionCell.swift in Sources */,
 				B107453F21A533E70015F1B2 /* O2PersonalViewModel.swift in Sources */,
 				E4B888A11D9D48F1002E1A46 /* MJRefreshAutoNormalFooter.m in Sources */,
 				E4B698242079AA0D0062F6E8 /* OOTableViewController.swift in Sources */,
 				E4093A211DBF431500AB4253 /* ICDetailViewController.swift in Sources */,
+				B12FD1E42283D5B700E636BA /* ThemeKeyboardAppearancePicker.swift in Sources */,
 				E4B888BC1D9D48F1002E1A46 /* ICMainViewController.swift in Sources */,
 				E4B8885B1D9D48F1002E1A46 /* AppDelegate.swift in Sources */,
 				E4B6973C207602A40062F6E8 /* OOError.swift in Sources */,
@@ -5761,12 +5834,12 @@
 				E4C24B3820844F3C00E426B0 /* UITextInput+JChat.swift in Sources */,
 				E4C24B3E20844F3C00E426B0 /* ExJMessage.swift in Sources */,
 				B19092382107219B009A7906 /* OOCalendarAPI.swift in Sources */,
+				B12FD1E32283D5B700E636BA /* UIKit+Theme.swift in Sources */,
 				E4BF45EB1E781C15008B52F0 /* CMSPublishInfo.swift in Sources */,
 				09E02E981F16319600579887 /* UIView+Haneke.swift in Sources */,
 				E4C24BDC20844F3C00E426B0 /* MyQRCodeViewController.swift in Sources */,
 				E4C24BD420844F3C00E426B0 /* JCRegisterInfoViewController.swift in Sources */,
 				E4C24B8A20844F3C00E426B0 /* JCMessageNoticeContent.swift in Sources */,
-				E4375B37207F2D420065A880 /* OOTabBarController.swift in Sources */,
 				E4C24B9720844F3C00E426B0 /* JCMessageCardView.swift in Sources */,
 				B13707DD212D3F19002113F1 /* CMSCategoryData.swift in Sources */,
 				E4B888C31D9D48F1002E1A46 /* CollectCodeData.swift in Sources */,
@@ -5799,15 +5872,15 @@
 				E4C24B7720844F3C00E426B0 /* FileCell.swift in Sources */,
 				E4CB27711E78D5B1004A7ACB /* UIFont+ExampleFonts.swift in Sources */,
 				B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */,
-				B165CD7422420B7400373B66 /* LXDScanView.m in Sources */,
 				E4C24B9520844F3C00E426B0 /* JCConversationCell.swift in Sources */,
 				E45DA8F71DADC04E00E0735D /* TaskUIToolbar.swift in Sources */,
 				E4C24BAD20844F3C00E426B0 /* JCGroupSettingViewController.swift in Sources */,
 				09E02E921F16319600579887 /* NSHTTPURLResponse+Haneke.swift in Sources */,
 				E4C24BA720844F3C00E426B0 /* FileManagerViewController.swift in Sources */,
+				B130A74F2281559900282AD1 /* DeviceListViewController.swift in Sources */,
 				E4B888631D9D48F1002E1A46 /* ZLNavigationController.swift in Sources */,
-				E4B888EE1D9D48F1002E1A46 /* ReadTaskDetailViewController.swift in Sources */,
 				E4B889021D9D48F1002E1A46 /* TodoedStatusCell.swift in Sources */,
+				B1C303E622D58C1A00C17E5A /* CMSAttachmentInfoResponse.swift in Sources */,
 				E4740AC31DCC4C3B00686780 /* BBSSubjectListViewController.swift in Sources */,
 				E4B888AD1D9D48F1002E1A46 /* UIView+MJExtension.m in Sources */,
 				E4C24BFB20844F4400E426B0 /* JCSearchController.swift in Sources */,
@@ -5828,14 +5901,17 @@
 				E4C24C0A20844F4400E426B0 /* JCGroupNameViewController.swift in Sources */,
 				B190923A21072AF3009A7906 /* OOCalendarViewModel.swift in Sources */,
 				E4BF45DF1E7514A9008B52F0 /* NewMainItemTableViewCell.swift in Sources */,
+				B12FD1DB2283D5B700E636BA /* ThemeDictionaryPicker.swift in Sources */,
 				E4C24B4420844F3C00E426B0 /* ThemeManager.swift in Sources */,
 				E4B888C01D9D48F1002E1A46 /* LoginViewController.swift in Sources */,
 				E4B888C71D9D48F1002E1A46 /* UnitDataTableViewCell.swift in Sources */,
 				09E02E931F16319600579887 /* NSURLResponse+Haneke.swift in Sources */,
+				B108F3FF229E34D400778050 /* LBXScanView.swift in Sources */,
 				E40E24AC20B7DA3C009F8BE7 /* OOMeetingMainViewModel.swift in Sources */,
 				E4B697F2207650DF0062F6E8 /* OOBBSModels.swift in Sources */,
 				E4C24BD020844F3C00E426B0 /* JCPhotoBar.swift in Sources */,
 				E4C24B3420844F3C00E426B0 /* MBProgressHUD+JChat.swift in Sources */,
+				B12FD1E52283D5B700E636BA /* O2ThemeManager+Plist.swift in Sources */,
 				E4C24BCD20844F3C00E426B0 /* JCMineInfoCell.swift in Sources */,
 				E41441DF1DCB233A00E3DDA3 /* BSSMainViewController.swift in Sources */,
 				E4C24B9C20844F3C00E426B0 /* JCChatViewLayoutAttributesInfo.swift in Sources */,
@@ -5843,6 +5919,7 @@
 				E45DA9081DAF509C00E0735D /* SFeedbackViewController.swift in Sources */,
 				E40E24B120B7DA3C009F8BE7 /* OOMeetingInforController.swift in Sources */,
 				E4B888711D9D48F1002E1A46 /* ContactSearchViewController.swift in Sources */,
+				B130A7852281597000282AD1 /* DeviceManagerViewModel.swift in Sources */,
 				E40E24BF20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.swift in Sources */,
 				E4A748D51EC15EF100163F58 /* TaskAttachmentPreviewController.swift in Sources */,
 				E4B888A51D9D48F1002E1A46 /* MJRefreshBackStateFooter.m in Sources */,
@@ -5862,6 +5939,7 @@
 				E4B888F01D9D48F1002E1A46 /* TaskFlowCategoryViewController.swift in Sources */,
 				E4CB27721E78D5B1004A7ACB /* UINavigationBar+Flat.swift in Sources */,
 				E45DA90C1DAF76C800E0735D /* SCommonViewController.swift in Sources */,
+				B108F401229E34D400778050 /* LBXScanWrapper.swift in Sources */,
 				0966A82B1F05E18A00560104 /* HUDTools.swift in Sources */,
 				E40C41F21E83715C00568805 /* ZLUISearchBar.swift in Sources */,
 				E4B888791D9D48F1002E1A46 /* Person.swift in Sources */,
@@ -5900,6 +5978,7 @@
 				E4CB27701E78D5B1004A7ACB /* UIColor+RGB.swift in Sources */,
 				E42E41CC1E6E8B3800C5B5C7 /* MainPublishContentCell.swift in Sources */,
 				E4C24BC520844F3C00E426B0 /* AddMapTableViewCell.m in Sources */,
+				B1FDBE8D22952F0C00BB434E /* O2WorkMoreActionSheet.swift in Sources */,
 				E4B889031D9D48F1002E1A46 /* TodoTaskTableViewCell.swift in Sources */,
 				E4A54C6920A435600024EDAC /* OOAppEditController.swift in Sources */,
 				E4C24C40208D7EDE00E426B0 /* OOLinkManViewModel.swift in Sources */,
@@ -5912,6 +5991,7 @@
 				E4CB27861E793AE6004A7ACB /* ZonePickerModel.swift in Sources */,
 				E4C24BA620844F3C00E426B0 /* JCForwardViewController.swift in Sources */,
 				E4FF44962061FBFD007C3FC4 /* OOInformViewController.swift in Sources */,
+				B12FD1E62283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift in Sources */,
 				E40E246B20B68AEB009F8BE7 /* OOAttandanceTotalHeaderView.swift in Sources */,
 				09E02E0A1F14B1C600579887 /* ContactPersonInfoV2ViewController.swift in Sources */,
 				E4AA17171EE189FE0030D9AB /* LogFileTableViewCell.swift in Sources */,
@@ -5931,13 +6011,16 @@
 				B165CD6A2242093500373B66 /* CoverVerticalFromTopAnimation.swift in Sources */,
 				E4C24B4520844F3C00E426B0 /* Extensions.swift in Sources */,
 				E4B781731DF912E6007B58A9 /* CMSCategoryListViewController.swift in Sources */,
+				B12FD1E02283D5B700E636BA /* ThemeCGColorPicker.swift in Sources */,
 				E4B6981A2079A8BB0062F6E8 /* OOBindNodeViewController.swift in Sources */,
 				E4F4544F20902263002FBC32 /* OOConfigInfoModels.swift in Sources */,
 				E4B2321A20B3E9440082F30A /* OOAttanceCheckinPromptView.swift in Sources */,
 				E4B69810207652960062F6E8 /* OOTaskModels.swift in Sources */,
 				E4B888761D9D48F1002E1A46 /* DepartmentDuty.swift in Sources */,
+				B12FD1D42283D5B700E636BA /* ThemeStatePicker.swift in Sources */,
 				E4B888FF1D9D48F1002E1A46 /* MainTodoTaskCell.swift in Sources */,
 				B1B6A8F9217710C800C10F3C /* FaceRecognizeAPI.swift in Sources */,
+				B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */,
 				E4B6975020762EA00062F6E8 /* OOPasswordTextField.swift in Sources */,
 				E491664C1E03C09C006133C5 /* O2Account.swift in Sources */,
 				E46E6CBA1DD41F5D00AB7561 /* CYRToken.m in Sources */,
@@ -5972,6 +6055,7 @@
 				E4B8893E1D9D6308002E1A46 /* ArchieveUtil.swift in Sources */,
 				E4B69730207602A40062F6E8 /* Response+HandyJSON.swift in Sources */,
 				E4C24B5D20844F3C00E426B0 /* JCRecordingView.swift in Sources */,
+				B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */,
 				E4B6975C20762EA00062F6E8 /* OOUIDownButtonTextField.swift in Sources */,
 				E4C24C0720844F4400E426B0 /* JCSearchFriendViewController.swift in Sources */,
 				E46E6CBB1DD41F5D00AB7561 /* HRBrightnessCursor.m in Sources */,
@@ -5981,6 +6065,7 @@
 				E47EF77D1DDDC78300B5B8C2 /* BBSSubjectContentViewController.swift in Sources */,
 				E4B69766207630240062F6E8 /* UITextField+Extension.swift in Sources */,
 				09E02E951F16319600579887 /* UIButton+Haneke.swift in Sources */,
+				B1015DDB2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift in Sources */,
 				E4B889411D9D6308002E1A46 /* DateUtil.swift in Sources */,
 				E4B888AC1D9D48F1002E1A46 /* UIScrollView+MJRefresh.m in Sources */,
 				E4C24BD220844F3C00E426B0 /* JCLoginViewController.swift in Sources */,
@@ -6031,6 +6116,7 @@
 				E45DA8F11DACD7CA00E0735D /* Constants.swift in Sources */,
 				E4C24B4120844F3C00E426B0 /* JMSGMessage+.swift in Sources */,
 				E4B6976A207630240062F6E8 /* UIColor+Extension.swift in Sources */,
+				B12FD1DA2283D5B700E636BA /* ThemeFontPicker.swift in Sources */,
 				E40E24E520BBA6C9009F8BE7 /* OOMeetingViewModelError.swift in Sources */,
 				E4C24BA920844F3C00E426B0 /* ImageFileViewController.swift in Sources */,
 				E4B8887B1D9D48F1002E1A46 /* FileBSImagePickerViewController.swift in Sources */,
@@ -6056,6 +6142,7 @@
 				E4C24BC820844F3C00E426B0 /* UserDefaultValidationService.swift in Sources */,
 				E4B889401D9D6308002E1A46 /* CacheUtil.swift in Sources */,
 				E4C24B7020844F3C00E426B0 /* JCVideoManager.swift in Sources */,
+				B12FD1D92283D5B700E636BA /* O2ThemeManager+OC.swift in Sources */,
 				E4FF449A206354B7007C3FC4 /* OONoticationSettingController.swift in Sources */,
 				E4C24B6A20844F3C00E426B0 /* JCFPSLabel.swift in Sources */,
 				E428AF4520A95FE800D964B9 /* OOAttanceTotalController.swift in Sources */,
@@ -6088,9 +6175,8 @@
 				E4B2321320B2AA1D0082F30A /* OOAttandanceWorkPlaceCell.swift in Sources */,
 				E4C24BBC20844F3C00E426B0 /* JCEmoticonInputView.swift in Sources */,
 				E40E24D920B7DA3C009F8BE7 /* OOMeetingInforHeaderView.swift in Sources */,
-				E4BF45E11E76C4C6008B52F0 /* BaseTaskWebViewController.swift in Sources */,
-				B165CD7322420B7400373B66 /* LXDScanCodeController.m in Sources */,
 				E4B8886E1D9D48F1002E1A46 /* ContactGroupPersonController.swift in Sources */,
+				B1FEDA9B22D305C90002ECF4 /* CMSSingleApplication.swift in Sources */,
 				E4B888F31D9D48F1002E1A46 /* TodoTaskDetailViewController.swift in Sources */,
 				E4C24B6020844F3C00E426B0 /* JCAreaPickerView.swift in Sources */,
 				E43C24361DB8AE72005082A4 /* ZLBaseTableView.swift in Sources */,
@@ -6163,7 +6249,10 @@
 				E46E6CBE1DD41F5D00AB7561 /* HRColorPickerView.m in Sources */,
 				E4B6975420762EA00062F6E8 /* OOPlaceTextField.swift in Sources */,
 				E40E24B820B7DA3C009F8BE7 /* OOMeetingConfirmHeaderView.swift in Sources */,
+				B12FD1D32283D5B700E636BA /* ThemeCGFloatPicker.swift in Sources */,
 				E4B8893F1D9D6308002E1A46 /* BaseCoreData.swift in Sources */,
+				B12FD1DE2283D5B700E636BA /* O2ThemeManager+Index.swift in Sources */,
+				B12FD1EB2283D62B00E636BA /* O2ThemeManager.swift in Sources */,
 				09E02E891F16319600579887 /* Fetch.swift in Sources */,
 				09E02E851F16319600579887 /* CryptoSwiftMD5.swift in Sources */,
 				E4C24BAF20844F3C00E426B0 /* JCRemindListViewController.swift in Sources */,
@@ -6175,8 +6264,10 @@
 				E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */,
 				E4C24B7320844F3C00E426B0 /* JCCEmoticonGroup.swift in Sources */,
 				E4C24BB720844F3C00E426B0 /* JCEmoticonPreviewer.swift in Sources */,
+				B12FD1DC2283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift in Sources */,
+				B12FD1DD2283D5B700E636BA /* UITextField+PlaceholderAttributes.swift in Sources */,
 				E4C24B3920844F3C00E426B0 /* Array+JChat.swift in Sources */,
-				E45DA90E1DAF7C8A00E0735D /* O2CleanCache.swift in Sources */,
+				B12FD1E72283D5B700E636BA /* ThemeImagePicker.swift in Sources */,
 				E4C24B3B20844F3C00E426B0 /* UISearchBar+JChat.swift in Sources */,
 				E428AF5020AA7A1500D964B9 /* OOAttanceHeaderView.swift in Sources */,
 				E4A748D21EC1598600163F58 /* O2TaskAttachmentInfo.swift in Sources */,
@@ -6205,16 +6296,20 @@
 				E42E41C61E6E570E00C5B5C7 /* MainPublishTableViewCell.swift in Sources */,
 				09E02E911F16319600579887 /* NSFileManager+Haneke.swift in Sources */,
 				E4C24B5A20844F3C00E426B0 /* SAIInputItemView.swift in Sources */,
+				B108F3FD229E34D400778050 /* LBXScanViewStyle.swift in Sources */,
 				E4C24B4B20844F3C00E426B0 /* JCImageBrowserViewController.swift in Sources */,
 				E4B8887C1D9D48F1002E1A46 /* FileFolderSelectViewController.swift in Sources */,
+				B108F3FC229E34D400778050 /* LBXScanNetAnimation.swift in Sources */,
 				E4B888C21D9D48F1002E1A46 /* Account.swift in Sources */,
 				E4C24BF920844F4400E426B0 /* JCVerificationInfo.swift in Sources */,
 				E4A54C6720A3EE230024EDAC /* OOContactsInfoDB.swift in Sources */,
+				B12FD1E22283D5B700E636BA /* NSObject+Theme.swift in Sources */,
 				E4C24B5920844F3C00E426B0 /* SAIInputBarDisplayable.swift in Sources */,
 				E4B7819D1DFA9181007B58A9 /* CMSCategoryItemData.swift in Sources */,
 				B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */,
 				E4C24BC720844F3C00E426B0 /* JCMainTabBarController.swift in Sources */,
 				B165CD6C2242093500373B66 /* Presentr+Equatable.swift in Sources */,
+				B12FD1D62283D5B700E636BA /* ThemeBarStylePicker.swift in Sources */,
 				E4B697152075FA560062F6E8 /* OOBaseUIButton.swift in Sources */,
 				E4B6974620761B310062F6E8 /* OOBindRegisterController.swift in Sources */,
 				E4B8885C1D9D48F1002E1A46 /* O2AppViewController.swift in Sources */,
@@ -6225,6 +6320,7 @@
 				E4B7815C1DF5032C007B58A9 /* ImageSlidesShowTableViewCell.swift in Sources */,
 				E4C24B3F20844F3C00E426B0 /* JMSGOptionalContent+.swift in Sources */,
 				E4AA12631DB0B1A600AEE5B0 /* SPersonViewController.swift in Sources */,
+				B12FD1D72283D5B700E636BA /* ThemeColorPicker.swift in Sources */,
 				E4B888A41D9D48F1002E1A46 /* MJRefreshBackNormalFooter.m in Sources */,
 				E4C1C08920661A6B003A4511 /* OOUploadImageHelper.swift in Sources */,
 				E4B2320F20B2A9F60082F30A /* OOAttandanceWorkPlaceController.swift in Sources */,
@@ -6236,6 +6332,7 @@
 				E4C24B8620844F3C00E426B0 /* JCMessageVideoContentView.swift in Sources */,
 				E4C24BCF20844F3C00E426B0 /* JCDatePickerViwe.swift in Sources */,
 				E4C24BBA20844F3C00E426B0 /* JCEmoticonPage.swift in Sources */,
+				B108F3FE229E34D400778050 /* LBXScanLineAnimation.swift in Sources */,
 				E40958C2207F4842000FECC3 /* OOTabBarHelper.swift in Sources */,
 				E428AF5B20ABDCB400D964B9 /* OOAttandanceModels.swift in Sources */,
 				E486D99F1DB07BCE005BF545 /* SMessageNotiViewController.swift in Sources */,
@@ -6243,26 +6340,30 @@
 				E4184B1E1DB4A33500FCC907 /* SInfoAndSecurityViewController.swift in Sources */,
 				E45DA9061DAF4A2A00E0735D /* SAboutViewController.swift in Sources */,
 				E40E24AF20B7DA3C009F8BE7 /* OOMeetingRoomDetailViewController.swift in Sources */,
+				B12FD1D82283D5B700E636BA /* UIColorExtension.swift in Sources */,
 				E4D23113209C42E700837868 /* OOSelectPersonTableViewCell.swift in Sources */,
 				E4C24B8E20844F3C00E426B0 /* JACMessageImageContentView.swift in Sources */,
 				E45DA8F41DACD7CA00E0735D /* Style.swift in Sources */,
 				E4A748D31EC1598600163F58 /* O2TaskAttachmentInfoData.swift in Sources */,
 				E4C24BDD20844F3C00E426B0 /* UserProtocols.swift in Sources */,
+				B12FD1EF228425BE00E636BA /* OOMeetingTabBarController.swift in Sources */,
+				B130A7832281565F00282AD1 /* DeviceTableViewCell.swift in Sources */,
 				E4CB278B1E797B58004A7ACB /* CMSQLViewController.swift in Sources */,
 				B1C1905D2114410D00935829 /* CalendarTableViewCell.swift in Sources */,
 				E4C24BAB20844F3C00E426B0 /* JCGroupMembersViewController.swift in Sources */,
 				E4B888861D9D48F1002E1A46 /* MyFileItemCell.swift in Sources */,
 				E4C24B6820844F3C00E426B0 /* DLCustomSlideView.m in Sources */,
+				B108F400229E34D400778050 /* LBXPermissions.swift in Sources */,
 				E4B888691D9D48F1002E1A46 /* O2Collect.swift in Sources */,
 				E4C24C0820844F4400E426B0 /* JCContactsViewController.swift in Sources */,
 				E40C41EA1E7F7C0D00568805 /* ZoneMainCategoryViewController.swift in Sources */,
 				E4C24B4620844F3C00E426B0 /* Protocols.swift in Sources */,
 				E40E24C520B7DA3C009F8BE7 /* OOMeetingInforItemCell.swift in Sources */,
-				E4B888F11D9D48F1002E1A46 /* TodoedTaskDetailViewController.swift in Sources */,
 				E4C24B4F20844F3C00E426B0 /* SAIInputAccessoryView.swift in Sources */,
 				B165CD612242093500373B66 /* PresentrAnimation.swift in Sources */,
 				E4B8887A1D9D48F1002E1A46 /* ContactItemCell.swift in Sources */,
 				E4F45449208F00A7002FBC32 /* OOPersonListViewModel.swift in Sources */,
+				B12FD1E92283D5B700E636BA /* NSAttributedString+Merge.swift in Sources */,
 				E4C24B3720844F3C00E426B0 /* UIImage+JChat.swift in Sources */,
 				E4740ABF1DCC267100686780 /* BBSHeaderCollectionReusableView.swift in Sources */,
 				E40E24CE20B7DA3C009F8BE7 /* OOFormBaseView.swift in Sources */,
@@ -6278,25 +6379,26 @@
 				E4418C6D1DDD5D6A0066348D /* BBSSubjectCreateTableViewController.swift in Sources */,
 				E4C24B9320844F3C00E426B0 /* JCMessageTextContentView.swift in Sources */,
 				E4B888F41D9D48F1002E1A46 /* TodoTaskProcessViewController.swift in Sources */,
+				B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */,
 				E40E24BA20B7DA3C009F8BE7 /* OOMeetingRoomTableHeaderView.swift in Sources */,
 				E4740AC11DCC45A300686780 /* SubjectTableViewCell.swift in Sources */,
 				E4B888881D9D48F1002E1A46 /* AZPopMenu.swift in Sources */,
 				E4C24B8520844F3C00E426B0 /* JCMessageTextContent.swift in Sources */,
 				E4C24B4C20844F3C00E426B0 /* SAIInputTextField.swift in Sources */,
 				E45DA8F91DADC06400E0735D /* TaskBarButtonItem.swift in Sources */,
-				E4B888ED1D9D48F1002E1A46 /* ReadedTaskDetailViewController.swift in Sources */,
 				E4B888A21D9D48F1002E1A46 /* MJRefreshAutoStateFooter.m in Sources */,
 				E47963F51DC03DA100238989 /* ICModels.swift in Sources */,
 				E4C24B9920844F3C00E426B0 /* JCChatViewData.swift in Sources */,
+				B12FD1DF2283D5B700E636BA /* ThemePicker.swift in Sources */,
 				E4C24B8F20844F3C00E426B0 /* JCMessageTimeLineContent.swift in Sources */,
 				B165CD622242093500373B66 /* BackgroundView.swift in Sources */,
 				B1912BE72146154700AB36E6 /* OOAIViewModel.swift in Sources */,
 				E4C24C4E208D7EDE00E426B0 /* OOContactSearchCell.swift in Sources */,
 				A043051B1F99CFD500740423 /* MailViewController.swift in Sources */,
+				B12FD1E82283D5B700E636BA /* ThemeStatusBarStylePicker.swift in Sources */,
 				E4B6977B207648E50062F6E8 /* OOLoginModels.swift in Sources */,
 				E46E6CC11DD41F5D00AB7561 /* ZSSBarButtonItem.m in Sources */,
 				E46E6BF71DD2C8B500AB7561 /* BBSReplySubjectViewController.swift in Sources */,
-				E45CD4261DFE5055008F99AD /* ScanViewController.swift in Sources */,
 				E40E24AA20B7DA3C009F8BE7 /* OOMeetingAcceptViewModel.swift in Sources */,
 				09E02E961F16319600579887 /* UIImage+Haneke.swift in Sources */,
 				E4C24B7820844F3C00E426B0 /* JCSelectMemberCell.swift in Sources */,
@@ -6304,6 +6406,7 @@
 				E4C24B4E20844F3C00E426B0 /* SAIToolboxItem.swift in Sources */,
 				E4C24B8D20844F3C00E426B0 /* JCMessageLocationContentView.swift in Sources */,
 				E4CDB8851E7CFB9C008E788D /* ZLNormalNavViewController.swift in Sources */,
+				B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */,
 				E46E6CBC1DD41F5D00AB7561 /* HRCgUtil.m in Sources */,
 				E496E89E207314B100C68EEE /* NavView.swift in Sources */,
 				E4C24BD720844F3C00E426B0 /* JCMyInfoViewController.swift in Sources */,
@@ -6334,6 +6437,7 @@
 				E4B697092075FA560062F6E8 /* BaseModel.swift in Sources */,
 				E4B888621D9D48F1002E1A46 /* ZLCollectionView.swift in Sources */,
 				E40E24B220B7DA3C009F8BE7 /* OOMeetingCreateViewController.swift in Sources */,
+				B1FEDACE22D314F90002ECF4 /* CMSCreateDocViewController.swift in Sources */,
 				E4C24BAA20844F3C00E426B0 /* JCFileDownloadViewController.swift in Sources */,
 				E4C24B7220844F3C00E426B0 /* JCCEmoticonLarge.swift in Sources */,
 				E4C24BA420844F3C00E426B0 /* JCSingleSettingViewController.swift in Sources */,
@@ -6353,6 +6457,7 @@
 				E4B888FE1D9D48F1002E1A46 /* MainAppActionCell.swift in Sources */,
 				B165CD652242093500373B66 /* PresentationType.swift in Sources */,
 				E40E24C220B7DA3C009F8BE7 /* OOMeetingRoomMainSectionHeaderView.swift in Sources */,
+				B12FD1D52283D5B700E636BA /* UIRefreshControl+TitleAttributes.swift in Sources */,
 				E4B888DE1D9D48F1002E1A46 /* SettingHeaderView.swift in Sources */,
 				E4B888781D9D48F1002E1A46 /* Identity.swift in Sources */,
 				E40E24B520B7DA3C009F8BE7 /* OOFormModels.swift in Sources */,
@@ -6403,15 +6508,6 @@
 				B1908E4D22687B1A00D75632 /* zh-Hans */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		E4B8874F1D9D48F1002E1A46 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E4B887501D9D48F1002E1A46 /* Base */,
-				B1908E4922687AB400D75632 /* zh-Hans */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -6611,8 +6707,6 @@
 					"-framework",
 					"\"JGProgressHUD\"",
 					"-framework",
-					"\"JHTAlertController\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"Moya\"",
@@ -6640,10 +6734,6 @@
 					"\"SwiftyTimer\"",
 					"-framework",
 					"\"SwiftyUserDefaults\"",
-					"-framework",
-					"\"Whisper\"",
-					"-framework",
-					"\"swiftScan\"",
 					"-w",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.xplatform.m.O2Platform;
@@ -6655,7 +6745,7 @@
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6742,8 +6832,6 @@
 					"-framework",
 					"\"JGProgressHUD\"",
 					"-framework",
-					"\"JHTAlertController\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"Moya\"",
@@ -6771,10 +6859,6 @@
 					"\"SwiftyTimer\"",
 					"-framework",
 					"\"SwiftyUserDefaults\"",
-					"-framework",
-					"\"Whisper\"",
-					"-framework",
-					"\"swiftScan\"",
 					"-w",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.xplatform.m.O2Platform;
@@ -6785,7 +6869,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "O2Platform/O2Platform-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

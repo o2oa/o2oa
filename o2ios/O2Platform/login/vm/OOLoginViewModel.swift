@@ -202,7 +202,7 @@ extension OOLoginViewModel {
     
     func loginControlIsValid(_ userNameField:UITextField,_ passwordTextField:UITextField, _ isInner: Bool = false) -> Void {
         let phoneValidSingal = userNameField.reactive.continuousTextValues.map { (text) -> Bool in
-            guard let t = text,t.count > 0 else {
+            guard text.count > 0 else {
                 return false
             }
             return true
@@ -218,11 +218,11 @@ extension OOLoginViewModel {
         
         let passwordValidSingal = passwordTextField.reactive.continuousTextValues.map { (text) -> Bool in
             if isInner {
-                guard let t = text, t.count > 0 else {
+                guard text.count > 0 else {
                     return false
                 }
             }else {
-                guard let t = text, t.count >= 4 else {
+                guard text.count >= 4 else {
                     return false
                 }
             }

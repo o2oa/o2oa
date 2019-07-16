@@ -99,9 +99,9 @@ open class SAIInputItem: NSObject {
     open override var hash: Int {
         return identifier.hash
     }
-    open override var hashValue: Int {
-        return identifier.hashValue
-    }
+//    open override var hashValue: Int {
+//        return identifier.hashValue
+//    }
     
     // MARK: ivar
     

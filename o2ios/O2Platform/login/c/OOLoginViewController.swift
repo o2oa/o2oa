@@ -9,7 +9,6 @@
 import UIKit
 import ReactiveCocoa
 import ReactiveSwift
-import Whisper
 import CocoaLumberjack
 import AVFoundation
 import O2OA_Auth_SDK
@@ -87,6 +86,12 @@ class OOLoginViewController: OOBaseViewController {
         let effectView = UIVisualEffectView(effect: blur)
         effectView.frame = backImageView.frame
         backImageView.addSubview(effectView)
+        // 皮肤
+        let baseColor = O2ThemeManager.color(for: "Base.base_color")!
+        self.passwordTextField.themeUpdate(buttonTitleColor: baseColor)
+        self.passwordTextField.themeUpdate(leftImage: O2ThemeManager.image(for: "Icon.icon_verification_code_nor"), leftLightImage: O2ThemeManager.image(for: "Icon.icon_verification_code_sel"), lineColor: baseColor.alpha(0.4), lineLightColor: baseColor)
+        self.passwordField.themeUpdate(leftImage: O2ThemeManager.image(for: "Icon.icon_verification_code_nor"), leftLightImage: O2ThemeManager.image(for: "Icon.icon_verification_code_sel"), lineColor: baseColor.alpha(0.4), lineLightColor: baseColor)
+        self.userNameTextField.themeUpdate(leftImage: O2ThemeManager.image(for: "Icon.icon_user_nor"), leftLightImage: O2ThemeManager.image(for: "Icon.icon_user_sel"), lineColor: baseColor.alpha(0.4), lineLightColor: baseColor)
         
         self.passwordTextField.keyboardType = .numberPad
         self.userNameTextField.returnKeyType = .next
@@ -141,7 +146,7 @@ class OOLoginViewController: OOBaseViewController {
     }
     
     @IBAction func btnReBindNodeAction(_ sender: UIButton) {
-        showAlert(title: "重新绑定", message: "重新绑定到新的服务节点，原节点信息将被清空，确认吗？", okHandler: { (ok) in
+        self.showSystemAlert(title: "重新绑定", message: "重新绑定到新的服务节点，原节点信息将被清空，确认吗？") { (action) in
             O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
                 DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
                 OOAppsInfoDB.shareInstance.removeAll()
@@ -149,9 +154,6 @@ class OOLoginViewController: OOBaseViewController {
                     self.forwardDestVC("login", nil)
                 }
             })
-            
-        }) { (cancel) in
-            
         }
         
     }

@@ -166,7 +166,7 @@ extension JCFeedbackViewController: UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.characters.count <= 0 {
+        if textView.text.count <= 0 {
             textView.text = placeholder
             textView.textColor = placeholderColor
             tipLabel.text = "300"

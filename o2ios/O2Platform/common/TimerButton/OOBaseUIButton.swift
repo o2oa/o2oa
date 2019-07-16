@@ -58,7 +58,7 @@ class OOBaseUIButton: UIButton {
     
     private func commonInit(){
         //默认背景，字体
-        self.backgroundColor = base_color
+        self.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         self.titleLabel?.font = UIFont(name: "PingFangSC-Regular", size: 15)!
         self.setTitleColor(UIColor.white, for: .normal)
     }

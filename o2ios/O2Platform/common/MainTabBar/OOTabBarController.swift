@@ -78,14 +78,14 @@ class OOTabBarController: CYLTabBarController,UITabBarControllerDelegate {
         return myVC
     }
     
-    static func genernateVC() -> OOTabBarController  {
-        guard let myVC = tabBarVC else {
-            tabBarVC = OOTabBarController(viewControllers: OOTabBarHelper.viewControllers(), tabBarItemsAttributes: OOTabBarHelper.tabBarItemsAttributesForController())
-            return tabBarVC
-        }
-        
-        return myVC
-    }
+//    static func genernateVC() -> OOTabBarController  {
+//        guard let myVC = tabBarVC else {
+//            tabBarVC = OOTabBarController(viewControllers: OOTabBarHelper.viewControllers(), tabBarItemsAttributes: OOTabBarHelper.tabBarItemsAttributesForController())
+//            return tabBarVC
+//        }
+//        
+//        return myVC
+//    }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         self.cyl_tabBarController.updateSelectionStatusIfNeeded(for: tabBarController, shouldSelect: viewController)

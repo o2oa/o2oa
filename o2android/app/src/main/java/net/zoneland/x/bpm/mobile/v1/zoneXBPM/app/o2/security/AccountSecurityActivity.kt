@@ -41,6 +41,11 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
 
         initBiometryAuthView()
 
+
+        rl_account_security_bind_device_btn.setOnClickListener {
+            go<DeviceManagerActivity>()
+        }
+
     }
 
     override fun logoutSuccess() {

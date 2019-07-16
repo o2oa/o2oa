@@ -17,6 +17,7 @@ class ContactPersonInfoCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.eventBut.theme_setImage(ThemeImagePicker(keyPath:"Icon.Shapes"), forState: .normal)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

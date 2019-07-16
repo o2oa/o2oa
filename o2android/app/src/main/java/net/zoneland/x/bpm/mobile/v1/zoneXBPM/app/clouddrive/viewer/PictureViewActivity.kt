@@ -35,7 +35,7 @@ class PictureViewActivity : BaseMVPActivity<PictureViewContract.View, PictureVie
             val fragment = CloudDrivePictureViewerFragment()
             fragment.arguments = bundle
             fragmentList.add(fragment)
-            if (it.equals(transferCurrentId)){
+            if (it == transferCurrentId){
                 currentIndex = index
                 currentTitle = titleList[index]
             }

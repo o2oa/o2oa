@@ -31,11 +31,11 @@ class OOUISearchController: UISearchController,UISearchBarDelegate {
         
         let textField = searchBar.value(forKey: "_searchField") as! UITextField
         textField.attributedPlaceholder = NSMutableAttributedString(string: "请输入组织、人员或群组名称或字母", attributes: attributesKey)
-        textField.textColor = UIColor(hex: "#FB4747")
+        textField.theme_textColor = ThemeColorPicker(keyPath: "Base.base_color")
         textField.font = UIFont(name: "PingFangSC-Regular", size: 14)
 
         //
-        searchBar.setImage(#imageLiteral(resourceName: "icon_sousuo1"), for: .search, state: .normal)
+        searchBar.setImage(O2ThemeManager.image(for: "Icon.search"), for: .search, state: .normal)
         searchBar.delegate = self
         
     }

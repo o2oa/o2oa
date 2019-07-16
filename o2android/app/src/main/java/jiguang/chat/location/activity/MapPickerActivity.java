@@ -245,6 +245,9 @@ public class MapPickerActivity extends AppCompatActivity implements AdapterView.
     public void turnBack() {
         MyLocationData location = mBaiduMap.getLocationData();
 
+        if (location == null) {
+            return;
+        }
         // 实现动画跳转
         MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(new LatLng(location.latitude, location.longitude));
         mBaiduMap.animateMapStatus(u);

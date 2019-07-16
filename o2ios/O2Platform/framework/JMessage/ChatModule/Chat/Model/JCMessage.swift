@@ -17,7 +17,7 @@ open class JCMessage: NSObject, JCMessageType {
         super.init()
     }
     
-    open let identifier: UUID = .init()
+    public let identifier: UUID = .init()
     open var msgId = ""
     open var name: String = "UserName"
     open var date: Date = .init()
@@ -25,7 +25,7 @@ open class JCMessage: NSObject, JCMessageType {
     open var senderAvator: UIImage?
     open var receiver: JMSGUser?
     open var content: JCMessageContentType
-    open let options: JCMessageOptions
+    public let options: JCMessageOptions
     open var updateSizeIfNeeded: Bool = false
     open var unreadCount: Int = 0
     open var targetType: MessageTargetType = .single

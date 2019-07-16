@@ -59,6 +59,7 @@ class CloudDrivePictureViewerFragment : BaseMVPViewPagerFragment<CloudDrivePictu
                         val call = RetrofitClient.instance().fileAssembleControlApi()
                                 .downloadFile(fileId)
                         val response = call.execute()
+                        response.errorBody()?.string()
                         val input  = DataInputStream(response.body()?.byteStream())
                         val output = DataOutputStream(FileOutputStream(file))
                         val buffer = ByteArray(4096)
@@ -72,6 +73,10 @@ class CloudDrivePictureViewerFragment : BaseMVPViewPagerFragment<CloudDrivePictu
                         output.close()
                         input.close()
                     }catch (e: Exception){
+                        try {
+                            file.delete()
+                        } catch (e: Exception) {
+                        }
                         XLog.error("download file fail", e)
 
                     }

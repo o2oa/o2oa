@@ -81,7 +81,7 @@ class OOAttanceCheckInController: UITableViewController {
         myButton.setTitle("打卡", for: .normal)
         myButton.setTitle("打卡", for: .disabled)
         myButton.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 18.0)!
-        myButton.setBackgroundColor(UIColor.hexInt(0xfb4747), forState: .normal)
+        myButton.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
         myButton.setBackgroundColor(UIColor.gray, forState: .disabled)
         myButton.isEnabled = false
         myButton.layer.cornerRadius = 35

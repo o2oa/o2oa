@@ -18,7 +18,7 @@ class JCNoteNameViewController: UIViewController {
         _init()
         noteName = user.noteName ?? ""
         noteNameTextField.text = noteName
-        let count = 20 - noteName.characters.count
+        let count = 20 - noteName.count
         tipLabel.text = "\(count)"
         noteNameTextField.becomeFirstResponder()
     }
@@ -80,7 +80,7 @@ class JCNoteNameViewController: UIViewController {
                 let subText = text.substring(with: range)
                 textField.text = subText
             }
-            let count = 20 - (textField.text?.characters.count)!
+            let count = 20 - (textField.text?.count)!
             tipLabel.text = "\(count)"
         }
     }
