@@ -24,19 +24,19 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 	
 	private static  Logger logger = LoggerFactory.getLogger( DocumentCipherAction.class );
 	
-	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPublishContentByWorkFlow.class)
+	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPersistPublishByWorkFlow.class)
 	@PUT
 	@Path("publish/content")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response publishContent(@Context HttpServletRequest request, JsonElement jsonElement ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionPublishContentByWorkFlow.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistPublishByWorkFlow.Wo> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionPublishContentByWorkFlow().execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistPublishByWorkFlow().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

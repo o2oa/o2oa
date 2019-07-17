@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetailMobile;
@@ -65,17 +67,17 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<AttendanceDetailMobile> root = cq.from(AttendanceDetailMobile.class);
 		Predicate p = cb.isNotNull( root.get( AttendanceDetailMobile_.id ) );
-		if( empNo != null && !empNo.isEmpty() ){
+		if( StringUtils.isNotEmpty( empNo ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empNo ), empNo ) );
 		}
-		if( empName != null && !empName.isEmpty() ){
+		if( StringUtils.isNotEmpty( empName ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empName ), empName ) );
 		}
-		if( signDescription != null && !signDescription.isEmpty() ){
+		if( StringUtils.isNotEmpty( signDescription ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.signDescription ), signDescription ) );
 		}
-		if( startDate != null && !startDate.isEmpty() ){
-			if( endDate != null && !endDate.isEmpty() && !endDate.equals( startDate ) ){//查询日期区间
+		if( StringUtils.isNotEmpty( startDate ) ){
+			if( StringUtils.isNotEmpty( endDate ) && !endDate.equals( startDate ) ){//查询日期区间
 				p = cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate );
 			}else{
 				//查询startDate当天
@@ -96,17 +98,17 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		CriteriaQuery<AttendanceDetailMobile> cq = cb.createQuery(AttendanceDetailMobile.class);
 		Root<AttendanceDetailMobile> root = cq.from(AttendanceDetailMobile.class);
 		Predicate p = cb.isNotNull( root.get( AttendanceDetailMobile_.id ) );
-		if( empNo != null && !empNo.isEmpty() ){
+		if( StringUtils.isNotEmpty( empNo ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empNo ), empNo ) );
 		}
-		if( empName != null && !empName.isEmpty() ){
+		if( StringUtils.isNotEmpty( empName ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empName ), empName ) );
 		}
-		if( signDescription != null && !signDescription.isEmpty() ){
+		if( StringUtils.isNotEmpty( signDescription ) ){
 			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.signDescription ), signDescription ) );
 		}
-		if( startDate != null && !startDate.isEmpty() ){
-			if( endDate != null && !endDate.isEmpty() && !endDate.equals( startDate ) ){//查询日期区间
+		if( StringUtils.isNotEmpty( startDate ) ){
+			if( StringUtils.isNotEmpty( endDate ) && !endDate.equals( startDate ) ){//查询日期区间
 				p = cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate );
 			}else{
 				//查询startDate当天

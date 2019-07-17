@@ -40,6 +40,7 @@ public class CheckCore {
 				classes.add(Class.forName(info.getName()));
 			}
 			checkColumnName(classes);
+			checkColumnLength(classes);
 			checkLobIndex(classes);
 			checkListFieldContainerTableName(classes);
 			checkFieldDescribeOnStatic(classes);
@@ -213,6 +214,23 @@ public class CheckCore {
 							|| column.length() > 200) {
 						System.err.println(String.format("checkEnum error: class: %s, field: %s.", cls.getName(),
 								field.getName()));
+					}
+				}
+			}
+		}
+	}
+
+	/* 检查是否有对String lob 之外的字段设定长度 */
+	@Test
+	public static void checkColumnLength(List<Class<?>> classes) throws Exception {
+		for (Class<?> cls : classes) {
+			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
+			for (Field field : fields) {
+				if ((!String.class.isAssignableFrom(field.getType())) && (!field.getType().isEnum())) {
+					Column column = field.getAnnotation(Column.class);
+					if (column.length() != 255) {
+						System.err.println(String.format("checkColumnLength error: class: %s, field: %s.",
+								cls.getName(), field.getName()));
 					}
 				}
 			}

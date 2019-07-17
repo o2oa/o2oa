@@ -16,7 +16,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.service.AppDictServiceAdv;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.FormServiceAdv;
 import com.x.cms.assemble.control.service.PermissionOperateService;
 import com.x.cms.assemble.control.service.PermissionQueryService;
@@ -38,7 +38,7 @@ public class BaseAction extends StandardJaxrsAction {
     protected ScriptServiceAdv scriptServiceAdv = new ScriptServiceAdv();
 	protected AppDictServiceAdv appDictServiceAdv = new AppDictServiceAdv();
     protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
-    protected DocumentInfoServiceAdv documentServiceAdv = new DocumentInfoServiceAdv();
+    protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected PermissionQueryService permissionQueryService = new PermissionQueryService();
 	protected PermissionOperateService permissionOperateService = new PermissionOperateService();

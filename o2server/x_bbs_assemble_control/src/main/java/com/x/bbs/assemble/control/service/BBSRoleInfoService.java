@@ -13,6 +13,7 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.factory.BBSPermissionInfoFactory;
 import com.x.bbs.assemble.control.factory.BBSPermissionRoleFactory;
@@ -422,7 +423,7 @@ public class BBSRoleInfoService {
         			"论坛角色", roleName, roleCode, description, _bBSForumInfo.getOrderNumber() );
         	emc.beginTransaction( BBSRoleInfo.class );
         	emc.persist( roleInfo, CheckPersistType.all );
-        	if( permissionCodeList != null && !permissionCodeList.isEmpty() ){
+        	if( ListTools.isNotEmpty( permissionCodeList ) ){
         		for( String permissionCode : permissionCodeList ){
         			//查询权限是否存在
         			permissionInfo = permissionInfoFactory.getPermissionByCode( permissionCode );
@@ -466,7 +467,7 @@ public class BBSRoleInfoService {
         			"版块角色", roleName, roleCode, description, _sectionInfo.getOrderNumber() );
         	emc.beginTransaction( BBSRoleInfo.class );
         	emc.persist( roleInfo, CheckPersistType.all );
-        	if( permissionCodeList != null && !permissionCodeList.isEmpty() ){
+        	if( ListTools.isNotEmpty( permissionCodeList ) ){
         		for( String permissionCode : permissionCodeList ){
         			//查询权限是否存在
         			permissionInfo = permissionInfoFactory.getPermissionByCode( permissionCode );
@@ -596,9 +597,9 @@ public class BBSRoleInfoService {
 			//根据角色编码获取所有的权限信息列表
 			ids = business.permissionRoleFactory().listPermissionByRoleCode( _roleInfo.getRoleCode() );				
 			//先删除不需要的绑定关系
-			if( ids != null && !ids.isEmpty() ){
+			if( ListTools.isNotEmpty( ids ) ){
 				permissionRoleList = business.permissionRoleFactory().list( ids );
-				if( permissionRoleList != null && !permissionRoleList.isEmpty() ){
+				if( ListTools.isNotEmpty( permissionRoleList ) ){
 					for( BBSPermissionRole _permissionRole : permissionRoleList ){
 						needDelete = true;
 						for( String permissionCode : permissionCodes ){
@@ -630,7 +631,7 @@ public class BBSRoleInfoService {
 			//=========================================  3、判断并且新增需要的角色权限绑定信息
 			//根据权限ID获取所有的权限信息列表
 			permissionInfoList = business.permissionInfoFactory().listByPermissionCodes( permissionCodes );
-			if( permissionInfoList != null && !permissionInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( permissionInfoList ) ){
 				for( BBSPermissionInfo permissionInfo : permissionInfoList ){
 					//查询绑定指定角色和权限的关系
 					permissionRole = business.permissionRoleFactory().getByRoleAndPermission( _roleInfo.getRoleCode(), permissionInfo.getPermissionCode() );
@@ -672,7 +673,7 @@ public class BBSRoleInfoService {
 			ids = business.permissionRoleFactory().listPermissionByRoleCode( roleInfo.getRoleCode() );
 			if( ids != null ){
 				permissionRoleList = business.permissionRoleFactory().list(ids);
-				if( permissionRoleList != null && !permissionRoleList.isEmpty() ){
+				if( ListTools.isNotEmpty( permissionRoleList ) ){
 					//全部删除
 					for( BBSPermissionRole permissionRole : permissionRoleList ){
 						emc.remove( permissionRole, CheckRemoveType.all );
@@ -682,7 +683,7 @@ public class BBSRoleInfoService {
 			ids = business.userRoleFactory().listIdsByRoleCode( roleInfo.getRoleCode() );
 			if( ids != null ){
 				uerRoleList = business.userRoleFactory().list(ids);
-				if( uerRoleList != null && !uerRoleList.isEmpty() ){
+				if( ListTools.isNotEmpty( uerRoleList ) ){
 					//全部删除
 					for( BBSUserRole userRole : uerRoleList ){
 						emc.remove( userRole, CheckRemoveType.all );
@@ -716,7 +717,7 @@ public class BBSRoleInfoService {
 					emc.remove( userRole, CheckRemoveType.all );
 				}
 			}
-			if( bindRoleCodes != null && !bindRoleCodes.isEmpty() ){
+			if( ListTools.isNotEmpty( bindRoleCodes ) ){
 				for( String bindRoleCode : bindRoleCodes ){
 					roleInfo = business.roleInfoFactory().getRoleByCode( bindRoleCode );
 					if( roleInfo != null ){
@@ -767,7 +768,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			
-			if( bindObjects != null && !bindObjects.isEmpty()){
+			if( ListTools.isNotEmpty( bindObjects )){
 				String unitName = null;
 				String topUnitName = null;
 				for( BindObject bindObject : bindObjects ){
@@ -842,12 +843,12 @@ public class BBSRoleInfoService {
 			groupNameList = userManagerService.listGroupNamesSupNestedWithPerson(userName);
 			
 			//然后把组织名称，群组名称放到同一个LIST里供查询使用
-			if( unitNameList != null && !unitNameList.isEmpty() ){
+			if( ListTools.isNotEmpty( unitNameList ) ){
 				for( String unitName : unitNameList ){
 					objectUniqueIds.add( unitName );
 				}
 			}
-			if( groupNameList != null && !groupNameList.isEmpty() ){
+			if( ListTools.isNotEmpty( groupNameList ) ){
 				for( String groupName : groupNameList ){
 					objectUniqueIds.add( groupName );
 				}
@@ -880,12 +881,12 @@ public class BBSRoleInfoService {
 			groupNameList = userManagerService.listGroupNamesSupNestedWithPerson(userName);
 
 			//然后把组织名称,群组名称放到同一个LIST里供查询使用
-			if( unitNameList != null && !unitNameList.isEmpty() ){
+			if( ListTools.isNotEmpty( unitNameList ) ){
 				for( String unitName : unitNameList ){
 					objectUniqueIds.add( unitName );
 				}
 			}
-			if( groupNameList != null && !groupNameList.isEmpty() ){
+			if( ListTools.isNotEmpty( groupNameList ) ){
 				for( String groupName : groupNameList ){
 					objectUniqueIds.add( groupName );
 				}
@@ -902,7 +903,7 @@ public class BBSRoleInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			ids = business.userRoleFactory().listIdsByRoleCode(roleCode);
-			if( ids != null && !ids.isEmpty()){
+			if( ListTools.isNotEmpty( ids )){
 				return business.userRoleFactory().list(ids);
 			}else{
 				return null;

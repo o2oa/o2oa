@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -62,14 +64,14 @@ public class AttendanceEmployeeConfigServiceAdv {
 	public AttendanceEmployeeConfig checkAttendanceEmployeeConfig( AttendanceEmployeeConfig attendanceEmployeeConfig ) throws Exception {
 		String unitName = null;
 		String topUnitName = null;
-		if ( attendanceEmployeeConfig.getUnitName() != null ){
+		if ( StringUtils.isNotEmpty( attendanceEmployeeConfig.getUnitName() )){
 			//检验一下组织是否存在，如果不存在，则重新进行查询
 			unitName = userManagerService.checkUnitNameExists( attendanceEmployeeConfig.getUnitName() );
 		}
-		if( unitName == null || unitName.isEmpty() ){
+		if( StringUtils.isEmpty( unitName ) ){
 			unitName = userManagerService.getUnitNameWithPersonName( attendanceEmployeeConfig.getEmployeeName() );
 		}
-		if( unitName != null && !unitName.isEmpty() ){
+		if( StringUtils.isNotEmpty( unitName ) ){
 			topUnitName = userManagerService.getTopUnitNameWithUnitName( unitName );
 			attendanceEmployeeConfig.setUnitName( unitName );
 			attendanceEmployeeConfig.setTopUnitName( topUnitName );

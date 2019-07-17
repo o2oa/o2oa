@@ -61,18 +61,26 @@ public class PersistenceXmlHelper {
 		}
 	}
 
-	public static Properties properties(String className) throws Exception {
-		if (Config.externalDataSources().enable()) {
-			return properties_external(className);
+	public static Properties properties(String className, boolean sliceFeatureEnable) throws Exception {
+		if (sliceFeatureEnable) {
+			if (Config.externalDataSources().enable()) {
+				return properties_external_slice(className);
+			} else {
+				return properties_internal_slice(className);
+			}
 		} else {
-			return properties_internal(className);
+			if (Config.externalDataSources().enable()) {
+				return properties_external_single(className);
+			} else {
+				return properties_internal_single(className);
+			}
 		}
+
 	}
 
-	private static Properties properties_base(String className) throws Exception {
+	private static Properties properties_base_slice(String className) throws Exception {
 		Properties properties = new Properties();
 		properties.put("openjpa.BrokerFactory", "slice");
-		/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
 		properties.put("openjpa.slice.Lenient", "false");
 		properties.put("openjpa.slice.DistributionPolicy", FactorDistributionPolicy.class.getName());
 		properties.put("openjpa.QueryCompilationCache", "false");
@@ -88,8 +96,8 @@ public class PersistenceXmlHelper {
 		return properties;
 	}
 
-	private static Properties properties_external(String className) throws Exception {
-		Properties properties = properties_base(className);
+	private static Properties properties_external_slice(String className) throws Exception {
+		Properties properties = properties_base_slice(className);
 		properties.put("openjpa.jdbc.DBDictionary", Config.externalDataSources().dictionary());
 		/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
 		if (Config.externalDataSources().hasSchema()) {
@@ -104,14 +112,54 @@ public class PersistenceXmlHelper {
 		return properties;
 	}
 
-	private static Properties properties_internal(String className) throws Exception {
-		Properties properties = properties_base(className);
+	private static Properties properties_internal_slice(String className) throws Exception {
+		Properties properties = properties_base_slice(className);
 		properties.put("openjpa.jdbc.DBDictionary", SlicePropertiesBuilder.dictionary_h2);
 		properties.put("openjpa.slice.Names",
 				StringUtils.join(Config.nodes().dataServers().findNamesOfContainerEntity(className), ","));
 		for (String name : Config.nodes().dataServers().findNamesOfContainerEntity(className)) {
 			properties.put("openjpa.slice." + name + ".ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
 			properties.put("openjpa.slice." + name + ".Log", Config.nodes().dataServers().log(name));
+		}
+		return properties;
+	}
+
+	private static Properties properties_base_single(String className) throws Exception {
+		Properties properties = new Properties();
+		properties.put("openjpa.QueryCompilationCache", "false");
+		properties.put("openjpa.IgnoreChanges", "true");
+		properties.put("openjpa.QueryCache", "false");
+		properties.put("openjpa.QueryCompilationCache", "false");
+		properties.put("openjpa.LockManager", "none");
+		properties.put("openjpa.jdbc.ResultSetType", "scroll-insensitive");
+		/* 如果启用本地初始化会导致classLoad的问题 */
+		properties.put("openjpa.DynamicEnhancementAgent", "false");
+		properties.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
+		return properties;
+	}
+
+	private static Properties properties_external_single(String className) throws Exception {
+		Properties properties = properties_base_single(className);
+		properties.put("openjpa.jdbc.DBDictionary", Config.externalDataSources().dictionary());
+		/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
+		if (Config.externalDataSources().hasSchema()) {
+			properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
+		}
+		for (String name : Config.externalDataSources().findNamesOfContainerEntity(className)) {
+			properties.put("openjpa.ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.Log", Config.externalDataSources().log(name));
+			break;
+		}
+		return properties;
+	}
+
+	private static Properties properties_internal_single(String className) throws Exception {
+		Properties properties = properties_base_single(className);
+		properties.put("openjpa.jdbc.DBDictionary", SlicePropertiesBuilder.dictionary_h2);
+		for (String name : Config.nodes().dataServers().findNamesOfContainerEntity(className)) {
+			properties.put("openjpa.ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.Log", Config.nodes().dataServers().log(name));
+			break;
 		}
 		return properties;
 	}

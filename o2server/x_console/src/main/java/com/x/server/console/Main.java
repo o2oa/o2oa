@@ -69,8 +69,7 @@ public class Main {
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
 		LogTools.setSlf4jSimple();
-		SystemOutErrorSideCopyBuilder.start(base);
-		/* 以上方法不使用Config对象,注入数据源jndi */
+		SystemOutErrorSideCopyBuilder.start();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
 		/* 以下可以使用Config */
@@ -745,7 +744,8 @@ public class Main {
 		File dir = new File(base, "store");
 		File manifest = new File(dir, MANIFEST_FILENAME);
 		if ((!manifest.exists()) || manifest.isDirectory()) {
-			throw new Exception("can not find " + MANIFEST_FILENAME + " in store.");
+			System.out.println("启动过程忽略扫描 store 目录.");
+			return;
 		}
 		List<String> manifestNames = readManifest(manifest);
 		for (File o : dir.listFiles()) {
@@ -773,45 +773,53 @@ public class Main {
 		/* loading ext */
 		File commons_ext_dir = new File(base, "commons/ext");
 		File commons_ext_manifest_file = new File(commons_ext_dir, MANIFEST_FILENAME);
-		if (!commons_ext_manifest_file.exists()) {
-			throw new Exception("can not find " + MANIFEST_FILENAME + " in commons/ext.");
-		}
-		List<String> commons_ext_manifest_names = readManifest(commons_ext_manifest_file);
-		if (commons_ext_manifest_names.isEmpty()) {
-			throw new Exception("commons/ext manifest is empty.");
+		if (commons_ext_manifest_file.exists() && commons_ext_manifest_file.isFile()) {
+			List<String> commons_ext_manifest_names = readManifest(commons_ext_manifest_file);
+			if (commons_ext_manifest_names.isEmpty()) {
+				throw new Exception("commons/ext manifest is empty.");
+			}
+			for (File file : commons_ext_dir.listFiles()) {
+				if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
+					if (!commons_ext_manifest_names.remove(file.getName())) {
+						System.out.println("载入 commons/ext 过程中删除无效的文件:" + file.getName());
+						file.delete();
+					}
+				}
+			}
+			for (String str : commons_ext_manifest_names) {
+				System.out.println("载入 commons/ext 过程中无法找到文件:" + str);
+			}
+		} else {
+			System.out.println("启动过程忽略扫描 commons/ext 目录.");
 		}
 		for (File file : commons_ext_dir.listFiles()) {
 			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
-				if (!commons_ext_manifest_names.remove(file.getName())) {
-					System.out.println("载入 commons/ext 过程中删除无效的文件:" + file.getName());
-					file.delete();
-				} else {
-					method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
-				}
+				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
 			}
-		}
-		for (String str : commons_ext_manifest_names) {
-			System.out.println("载入 commons/ext 过程中无法找到文件:" + str);
 		}
 		/* loading jars */
 		File store_jars_dir = new File(base, "store/jars");
 		File store_jars_manifest_file = new File(store_jars_dir, MANIFEST_FILENAME);
-		if (!store_jars_manifest_file.exists()) {
-			throw new Exception("can not find " + MANIFEST_FILENAME + " in store/jars.");
-		}
-		List<String> store_jars_manifest_names = readManifest(store_jars_manifest_file);
-		for (File file : store_jars_dir.listFiles()) {
-			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
-				if (!store_jars_manifest_names.remove(file.getName())) {
-					System.out.println("载入 store/jars 过程中删除无效的文件:" + file.getName());
-					file.delete();
-				} else {
-					method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
+		if (store_jars_manifest_file.exists() && store_jars_manifest_file.isFile()) {
+			List<String> store_jars_manifest_names = readManifest(store_jars_manifest_file);
+			for (File file : store_jars_dir.listFiles()) {
+				if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
+					if (!store_jars_manifest_names.remove(file.getName())) {
+						System.out.println("载入 store/jars 过程中删除无效的文件:" + file.getName());
+						file.delete();
+					}
 				}
 			}
+			for (String str : store_jars_manifest_names) {
+				System.out.println("载入 store/jars 过程中无法找到文件:" + str);
+			}
+		} else {
+			System.out.println("启动过程忽略扫描 store/jars 目录.");
 		}
-		for (String str : store_jars_manifest_names) {
-			System.out.println("载入 store/jars 过程中无法找到文件:" + str);
+		for (File file : store_jars_dir.listFiles()) {
+			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
+				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
+			}
 		}
 		/* load custom jar */
 		File custom_jars_dir = new File(base, "custom/jars");

@@ -174,12 +174,12 @@ public class OkrUserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( personName );
-			System.out.println(">>>>>>>>>>>loginIdentity:" + loginIdentity );
-			if( ListTools.isNotEmpty( identities )) {
-				for( String identity : identities ) {
-					System.out.println(">>>>>>>>>>>identity:" + identity );
-				}
-			}			
+//			System.out.println(">>>>>>>>>>>loginIdentity:" + loginIdentity );
+//			if( ListTools.isNotEmpty( identities )) {
+//				for( String identity : identities ) {
+//					System.out.println(">>>>>>>>>>>identity:" + identity );
+//				}
+//			}			
 			if( identities.contains( loginIdentity )){
 				return true;
 			}

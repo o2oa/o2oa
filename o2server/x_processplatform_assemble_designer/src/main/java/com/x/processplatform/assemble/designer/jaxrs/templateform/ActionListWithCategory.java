@@ -15,17 +15,16 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.Control;
-import com.x.processplatform.assemble.designer.wrapin.WrapInTemplateForm;
 import com.x.processplatform.core.entity.element.TemplateForm;
 
 class ActionListWithCategory extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			WrapInTemplateForm wrapIn = this.convertToWrapIn(jsonElement, WrapInTemplateForm.class);
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<String> ids = business.templateForm().listWithCategory(wrapIn.getCategory());
+			List<String> ids = business.templateForm().listWithCategory(wi.getCategory());
 			List<TemplateForm> os = emc.list(TemplateForm.class, ids);
 			List<Wo> wos = Wo.copier.copy(os);
 			wos = business.templateForm().sort(wos);
@@ -62,6 +61,12 @@ class ActionListWithCategory extends BaseAction {
 		public void setControl(Control control) {
 			this.control = control;
 		}
+
+	}
+
+	public static class Wi extends TemplateForm {
+
+		private static final long serialVersionUID = 2091352200751493447L;
 
 	}
 

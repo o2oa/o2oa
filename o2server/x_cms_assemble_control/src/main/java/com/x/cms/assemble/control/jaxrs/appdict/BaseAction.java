@@ -111,6 +111,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	void delete(Business business, AppDict appDict, String... paths) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		List<AppDictItem> exists = business.getAppDictItemFactory()

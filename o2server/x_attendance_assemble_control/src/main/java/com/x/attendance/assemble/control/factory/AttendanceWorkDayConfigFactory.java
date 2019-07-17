@@ -35,6 +35,7 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 	}
 	
 //	@MethodDescribe("列示全部的AttendanceWorkDayConfig信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceWorkDayConfig> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceWorkDayConfig.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

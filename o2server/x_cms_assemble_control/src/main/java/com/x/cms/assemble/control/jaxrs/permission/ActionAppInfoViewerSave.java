@@ -12,6 +12,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
+import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 
@@ -73,6 +75,16 @@ public class ActionAppInfoViewerSave extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId( appId );
 			result.setData( wo );
+		}
+		
+		if( check ) {
+			try {
+				new CmsBatchOperationPersistService().addOperation( 
+						CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+						CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  appId,  appId, "栏目可见范围变更：ID=" +  appId );
+			}catch( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}

@@ -168,15 +168,18 @@ public class ListTools {
 				arrayList.add(t);
 			}
 		}
-		for (T t : ts) {
-			if (ignoreNull && (null == t)) {
-				continue;
+		if (null != ts) {
+			for (T t : ts) {
+				if (ignoreNull && (null == t)) {
+					continue;
+				}
+				if (unique && arrayList.contains(t)) {
+					continue;
+				}
+				arrayList.add(t);
 			}
-			if (unique && arrayList.contains(t)) {
-				continue;
-			}
-			arrayList.add(t);
 		}
+		
 		return arrayList;
 	}
 
@@ -474,4 +477,77 @@ public class ListTools {
 		return os;
 	}
 
+	/**
+	 * 判断两个字符串集合是否内容一致
+	 * 
+	 * @param list1
+	 * @param list2
+	 * @return
+	 */
+	public static boolean isSameList(List<String> list1, List<String> list2) {
+		if (list1 == null) {
+			list1 = new ArrayList<>();
+		}
+		if (list2 == null) {
+			list2 = new ArrayList<>();
+		}
+		if (list1 == list2)
+			return true;
+		if (list1.size() != list2.size())
+			return false;
+		for (String str : list1) {
+			if (!list2.contains(str)) {
+				return false;
+			}
+		}
+		for (String str : list2) {
+			if (!list1.contains(str)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/* 判断是否是List对象 */
+	public static boolean isList(Object obj) {
+		if (null == obj) {
+			return true;
+		} else if (List.class.isAssignableFrom(obj.getClass())) {
+			return true;
+		}
+		return false;
+	}
+
+
+
+	public static String toStringJoin(Object obj, String separator) {
+		if (isList(obj)) {
+			return StringUtils.join((List<?>) obj, separator);
+		} else {
+			return obj.toString();
+		}
+	}
+
+	public static String toStringJoin(Object obj) {
+		if (isList(obj)) {
+			return StringUtils.join((List<?>) obj, ",");
+		} else {
+			return obj.toString();
+		}
+	}
+	
+	/**
+	 * 去重
+	 * @param list
+	 */
+	private static void removeDuplicate(List<String> list) {
+	    List<String> result = new ArrayList<String>(list.size());
+	    for (String str : list) {
+	        if (!result.contains(str)) {
+	            result.add(str);
+	        }
+	    }
+	    list.clear();
+	    list.addAll(result);
+	}
 }

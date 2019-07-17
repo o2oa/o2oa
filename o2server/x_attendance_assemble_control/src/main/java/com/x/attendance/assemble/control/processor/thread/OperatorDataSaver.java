@@ -18,10 +18,8 @@ public class OperatorDataSaver implements Runnable {
 	private EntityImportDataDetail cacheImportRowDetail = null;
 	
 	private AttendanceDetailServiceAdv attendanceDetailServiceAdv = new AttendanceDetailServiceAdv();
-	private Boolean debugger = false;
 	public OperatorDataSaver( EntityImportDataDetail cacheImportRowDetail, Boolean debugger ) {
 		this.cacheImportRowDetail = cacheImportRowDetail ;
-		this.debugger = debugger;
 	}
 	
 	@Override

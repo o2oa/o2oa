@@ -31,7 +31,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	
 	private static  Logger logger = LoggerFactory.getLogger( DocumentViewRecordAction.class );
 	
-	@JaxrsMethodDescribe(value = "根据文档ID获取该文档的访问用户记录信息，按时间倒序，前50条.", action = ActionListViewRecordByFilterNext.class)
+	@JaxrsMethodDescribe(value = "根据文档ID获取该文档的访问用户记录信息，按时间倒序，前50条.", action = ActionQueryListViewRecordByFilterNext.class)
 	@GET
 	@Path("document/{docId}/filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -41,9 +41,9 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListViewRecordByFilterNext.Wo>> result = null;
+		ActionResult<List<ActionQueryListViewRecordByFilterNext.Wo>> result = null;
 		try {
-			result = new ActionListViewRecordByFilterNext().execute( request, effectivePerson, docId, id, count );
+			result = new ActionQueryListViewRecordByFilterNext().execute( request, effectivePerson, docId, id, count );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e,"系统查询文档访问信息时发生未知异常。" );
@@ -53,7 +53,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
 
-	@JaxrsMethodDescribe(value = "根据人员姓名，获取该用户访问的文档记录，按时间倒序，前50条.", action = ActionListViewRecordByPerson.class)
+	@JaxrsMethodDescribe(value = "根据人员姓名，获取该用户访问的文档记录，按时间倒序，前50条.", action = ActionQueryListViewRecordByPerson.class)
 	@GET
 	@Path( "person/{name}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -61,9 +61,9 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	public Response listByPerson( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("用户姓名") @PathParam("name") String name ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListViewRecordByPerson.Wo>> result = null;
+		ActionResult<List<ActionQueryListViewRecordByPerson.Wo>> result = null;
 		try {
-			result = new ActionListViewRecordByPerson().execute( request, effectivePerson, name );
+			result = new ActionQueryListViewRecordByPerson().execute( request, effectivePerson, name );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e,"系统查询文档访问信息时发生未知异常。" );
@@ -73,7 +73,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
 	
-	@JaxrsMethodDescribe(value = "从指定的文档ID列表中判断未读过的文档ID列表.", action = ActionListUnReadDocIds.class)
+	@JaxrsMethodDescribe(value = "从指定的文档ID列表中判断未读过的文档ID列表.", action = ActionQueryListUnReadDocIds.class)
 	@PUT
 	@Path( "unread" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -81,9 +81,9 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	public Response listUnReadIds( @Context HttpServletRequest request, 
 			JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult< ActionListUnReadDocIds.Wo> result = null;
+		ActionResult< ActionQueryListUnReadDocIds.Wo> result = null;
 		try {
-			result = new ActionListUnReadDocIds().execute( request, effectivePerson, jsonElement );
+			result = new ActionQueryListUnReadDocIds().execute( request, effectivePerson, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e,"系统从指定的文档ID列表中判断未读过的文档ID列表时发生未知异常。" );

@@ -15,6 +15,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 
 public class Data extends ListOrderedMap<String, Object> {
@@ -406,4 +407,5 @@ public class Data extends ListOrderedMap<String, Object> {
 				o -> (!StringUtils.equals(WORK_PROPERTY, o)) && (!StringUtils.equals(ATTACHMENTLIST_PROPERTY, o)))
 				.count() == 0;
 	}
+	
 }

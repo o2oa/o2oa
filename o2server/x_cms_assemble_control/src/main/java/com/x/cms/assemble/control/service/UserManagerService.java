@@ -10,7 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.tools.LogUtil;
 
@@ -20,6 +22,41 @@ import com.x.cms.core.entity.tools.LogUtil;
  * @author O2LEE
  */
 public class UserManagerService {
+	
+	/**
+	 * 根据人员名称获取人员
+	 * @param personName
+	 * @return
+	 * @throws Exception
+	 */
+	public Person getPerson( String personName ) throws Exception {
+		Business business = null;
+		Person person = null;
+		List<Person> personList = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			person = business.organization().person().getObject( personName );
+			if( person == null ) {
+				if( personName.endsWith( "@P" ) && personName.split( "@P" ).length == 3 ) {
+					personList = business.organization().person().listObject( personName.split( "@" )[1] );
+					if( ListTools.isNotEmpty( personList )) {
+						return personList.get(0);
+					}
+				}
+			}
+			if( person == null ) {
+				if( personName.endsWith( "@P" ) && personName.split( "@P" ).length == 3 ) {
+					personList = business.organization().person().listObject( personName.split( "@" )[0] );
+					if( ListTools.isNotEmpty( personList )) {
+						return personList.get(0);
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return person;
+	}
 	
 	/**
 	 * 根据员工姓名获取组织名称
@@ -344,7 +381,7 @@ public class UserManagerService {
 		}
 		return identityName;
 	}
-	
+
 	private String findIdentity( List<String> identityNames, String identityName ) throws Exception {
 		if( identityName != null && !identityName.isEmpty() && !"null".equals(identityName)){
 			if( identityNames != null && !identityNames.isEmpty() ){
@@ -398,5 +435,93 @@ public class UserManagerService {
 			}
 		}
 		return queryObjectNames;
+	}
+
+	/**
+	 * 根据组织名称，查询组织内所有的人员标识，包括下级组织
+	 * @param unitName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listPersonWithUnit( String unitName ) throws Exception {
+		if ( StringUtils.isEmpty( unitName )) {
+			throw new Exception("unitName is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc); 
+			return business.organization().person().listWithUnitSubNested( unitName );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据群组名称，查询群组内所有的人员标识
+	 * @param groupName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listPersonWithGroup( String groupName ) throws Exception {
+		if ( StringUtils.isEmpty( groupName )) {
+			throw new Exception("groupName is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc); 
+			return business.organization().person().listWithGroup( groupName );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public List<String> listPersonWithRole(String role ) throws Exception {
+		if ( StringUtils.isEmpty( role )) {
+			throw new Exception("role is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc); 
+			return business.organization().person().listWithRole( role );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 查询系统内所有顶级组织的数量
+	 * @return
+	 * @throws Exception
+	 */
+	public int countTopUnit() throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc); 
+			List<String> unitNames = business.organization().unit().listWithLevel(1);
+			if( ListTools.isNotEmpty( unitNames )) {
+				return unitNames.size();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return 0;
+	}
+
+	/**
+	 * 判断指定组织是否是顶级组织
+	 * @param unitName
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isTopUnit(String unitName ) throws Exception {
+		if ( StringUtils.isEmpty( unitName )) {
+			throw new Exception("unitName is empty!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc); 
+			List<String> unitNames = business.organization().unit().listWithLevel(1);
+			if( ListTools.isNotEmpty( unitNames ) && unitNames.contains( unitName )) {
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return false;
 	}
 }

@@ -20,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 /**
  * 导入的文件没有用到文件存储器，是直接放在数据库中的BLOB列
@@ -69,7 +70,7 @@ public class ActionExportHolidayDetail extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					ids = business.getAttendanceSelfHolidayFactory().listByStartDateAndEndDate( startDate, endDate );					
-					if( ids != null && !ids.isEmpty() ){
+					if( ListTools.isNotEmpty( ids ) ){
 						holidayList = business.getAttendanceSelfHolidayFactory().list(ids);
 					}
 				} catch (Exception e) {

@@ -2,6 +2,8 @@ package com.x.bbs.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -76,10 +78,10 @@ public class BBSForumInfoService {
 		ids = business.permissionInfoFactory().listPermissionByForumId( bBSForumInfo.getId() );
 		if( ids != null ){
 			permissionList = business.permissionInfoFactory().list( ids );
-			if( permissionList != null && !permissionList.isEmpty() ){
+			if( ListTools.isNotEmpty( permissionList ) ){
 				for( BBSPermissionInfo permissionInfo : permissionList ){
 					permissionRoleList = business.permissionRoleFactory().listByPermissionCode( permissionInfo.getPermissionCode() );
-					if( permissionRoleList != null && permissionRoleList.size() > 0 ){
+					if( ListTools.isNotEmpty( permissionRoleList ) ){
 						for( BBSPermissionRole permissionRole : permissionRoleList ){
 							emc.remove( permissionRole, CheckRemoveType.all );
 						}
@@ -134,10 +136,10 @@ public class BBSForumInfoService {
 			throw new Exception("role info{'code':'"+"FORUM_SUPER_MANAGER_" + forumInfo.getId()+"'} is not exists.");
 		}
 		ids = business.userRoleFactory().listIdsByRoleCode( "FORUM_SUPER_MANAGER_" + forumInfo.getId() );
-		if( ids != null && !ids.isEmpty() ){
+		if( ListTools.isNotEmpty( ids ) ){
 			userRoleList = business.userRoleFactory().list( ids );
 		}
-		if( userRoleList != null && !userRoleList.isEmpty() ){
+		if( ListTools.isNotEmpty( userRoleList ) ){
 			for( BBSUserRole userRole : userRoleList ){
 				exists = false;
 				if( ListTools.isNotEmpty( currentManagerNames ) ){
@@ -155,7 +157,7 @@ public class BBSForumInfoService {
 		if( ListTools.isNotEmpty( currentManagerNames ) ){
 			for( String name : currentManagerNames ){
 				exists = false;
-				if( userRoleList != null && !userRoleList.isEmpty() ){
+				if( ListTools.isNotEmpty( userRoleList ) ){
 					for( BBSUserRole userRole : userRoleList ){
 						if( name.equals( userRole.getObjectName()) || name.equalsIgnoreCase( userRole.getUniqueId() )){
 							exists = true;
@@ -182,7 +184,7 @@ public class BBSForumInfoService {
 						logger.warn("user has no identity!user:" + name );
 						topUnitName = "未知公司";
 					}
-					if( unitName != null && !unitName.isEmpty() ){
+					if( StringUtils.isNotEmpty( unitName ) ){
 						userRole_new.setTopUnitName( topUnitName );
 						userRole_new.setUnitName( unitName );
 					}						
@@ -200,10 +202,10 @@ public class BBSForumInfoService {
 		List<BBSUserRole> userRoleList = null;
 		business = new Business( emc );
 		ids = business.userRoleFactory().listIdsByRoleCode(roleCode);
-		if( ids != null && !ids.isEmpty() ){
+		if( ListTools.isNotEmpty( ids ) ){
 			userRoleList = business.userRoleFactory().list(ids);
 		}
-		if( userRoleList != null && !userRoleList.isEmpty() ){
+		if( ListTools.isNotEmpty( userRoleList ) ){
 			emc.beginTransaction( BBSUserRole.class );
 			for( BBSUserRole userRole : userRoleList ){
 				emc.remove( userRole, CheckRemoveType.all );

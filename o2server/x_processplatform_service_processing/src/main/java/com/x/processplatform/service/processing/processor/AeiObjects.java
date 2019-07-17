@@ -33,6 +33,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
@@ -92,6 +93,8 @@ public class AeiObjects extends GsonPropertyObject {
 	/* 使用用懒加载,初始为null */
 	private Application application = null;
 	/* 使用用懒加载,初始为null */
+	private List<Projection> projections = null;
+	/* 使用用懒加载,初始为null */
 	private Activity activity = null;
 	/* 使用用懒加载,初始为null */
 	private WorkDataHelper workDataHelper = null;
@@ -137,6 +140,10 @@ public class AeiObjects extends GsonPropertyObject {
 	private List<WorkLog> createWorkLogs = new ArrayList<>();
 	private List<WorkLog> updateWorkLogs = new ArrayList<>();
 	private List<WorkLog> deleteWorkLogs = new ArrayList<>();
+
+	private List<JpaObject> createDynamicEntities = new ArrayList<>();
+	private List<JpaObject> updateDynamicEntities = new ArrayList<>();
+	private List<JpaObject> deleteDynamicEntities = new ArrayList<>();
 
 	public WorkLog getArriveWorkLog(Work work) throws Exception {
 		return this.getWorkLogs().stream()
@@ -188,6 +195,13 @@ public class AeiObjects extends GsonPropertyObject {
 			this.process = business.element().get(work.getProcess(), Process.class);
 		}
 		return this.process;
+	}
+
+	public List<Projection> getProjections() throws Exception {
+		if (null == this.projections) {
+			this.projections = business.element().listProjectionWithProcess(work.getProcess());
+		}
+		return this.projections;
 	}
 
 	public List<WorkLog> getWorkLogs() throws Exception {
@@ -460,7 +474,9 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitAttachment();
 		// this.getWorkDataHelper().update(this.getData());
 		this.commitData();
+		this.commitDynamicEntity();
 		this.entityManagerContainer().commit();
+		this.message();
 	}
 
 	private void commitWork() throws Exception {
@@ -553,7 +569,7 @@ public class AeiObjects extends GsonPropertyObject {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 					/* 发送创建待办消息 */
-					MessageFactory.task_create(o);
+					// MessageFactory.task_create(o);
 					/* 创建待办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
 					/* 创建授权的review */
@@ -576,7 +592,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 						/* 发送删除待办消息 */
-						MessageFactory.task_delete(obj);
+						// MessageFactory.task_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -597,7 +613,7 @@ public class AeiObjects extends GsonPropertyObject {
 							.forEach(p -> p.setLatest(false));
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 					/* 发送创建已办消息 */
-					MessageFactory.taskCompleted_create(o);
+					// MessageFactory.taskCompleted_create(o);
 					/* 创建已办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
 				} catch (Exception e) {
@@ -623,7 +639,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 						/* 发送删除已办消息 */
-						MessageFactory.taskCompleted_delete(obj);
+						// MessageFactory.taskCompleted_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -645,7 +661,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null == obj) {
 						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 						/* 发送创建待阅消息 */
-						MessageFactory.read_create(o);
+						// MessageFactory.read_create(o);
 						/* 创建待阅的参阅 */
 						this.createReview(new Review(this.getWork(), o.getPerson()));
 					} else {
@@ -663,7 +679,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 						/* 发送删除待阅消息 */
-						MessageFactory.read_delete(obj);
+						// MessageFactory.read_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -687,7 +703,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null == obj) {
 						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 						/* 发送创建已阅消息 */
-						MessageFactory.readCompleted_create(o);
+						// MessageFactory.readCompleted_create(o);
 						/* 创建已阅参阅 */
 						this.createReview(new Review(this.getWork(), o.getPerson()));
 					} else {
@@ -706,7 +722,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 						/* 发送删除已阅消息 */
-						MessageFactory.readCompleted_delete(obj);
+						// MessageFactory.readCompleted_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -729,7 +745,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null == obj) {
 						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 						/* 发送创建参阅消息 */
-						MessageFactory.review_create(o);
+						// MessageFactory.review_create(o);
 					} else {
 						/* 如果逻辑上相同的已阅已经存在,覆盖内容. */
 						o.copyTo(obj, JpaObject.FieldsUnmodify);
@@ -746,7 +762,7 @@ public class AeiObjects extends GsonPropertyObject {
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 						/* 发送删除参阅消息 */
-						MessageFactory.review_delete(obj);
+						// MessageFactory.review_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -822,6 +838,151 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getWorkDataHelper().update(data);
 	}
 
+	private void commitDynamicEntity() throws Exception {
+		if (ListTools.isNotEmpty(this.getCreateDynamicEntities())
+				|| ListTools.isNotEmpty(this.getDeleteDynamicEntities())
+				|| ListTools.isNotEmpty(this.getUpdateDynamicEntities())) {
+			this.getCreateDynamicEntities().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().beginTransaction(o.getClass());
+					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getDeleteDynamicEntities().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().beginTransaction(o.getClass());
+					this.business.entityManagerContainer().remove(o, CheckRemoveType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getUpdateDynamicEntities().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().beginTransaction(o.getClass());
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+		}
+	}
+
+	private void message() throws Exception {
+		this.messageDeleteTask();
+		this.messageDeleteTaskCompleted();
+		this.messageDeleteRead();
+		this.messageDeleteReadCompleted();
+		this.messageDeleteReview();
+		this.messageDeleteAttachment();
+		this.messageDeleteWork();
+		this.messageDeleteWorkCompleted();
+		this.messageCreateTask();
+		this.messageCreateTaskCompleted();
+		this.messageCreateRead();
+		this.messageCreateReadCompleted();
+		this.messageCreateReview();
+		this.messageCreateAttachment();
+		this.messageCreateWork();
+		this.messageCreateWorkCompleted();
+	}
+
+	private void messageDeleteWork() throws Exception {
+		for (Work o : this.getDeleteWorks()) {
+			MessageFactory.work_delete(o);
+		}
+	}
+
+	private void messageCreateWork() throws Exception {
+		for (Work o : this.getCreateWorks()) {
+			MessageFactory.work_create(o);
+		}
+	}
+
+	private void messageDeleteWorkCompleted() throws Exception {
+		for (WorkCompleted o : this.getDeleteWorkCompleteds()) {
+			MessageFactory.workCompleted_delete(o);
+		}
+	}
+
+	private void messageCreateWorkCompleted() throws Exception {
+		for (WorkCompleted o : this.getCreateWorkCompleteds()) {
+			MessageFactory.workCompleted_create(o);
+		}
+	}
+
+	private void messageDeleteTask() throws Exception {
+		for (Task o : this.getDeleteTasks()) {
+			MessageFactory.task_delete(o);
+		}
+	}
+
+	private void messageCreateTask() throws Exception {
+		for (Task o : this.getCreateTasks()) {
+			MessageFactory.task_create(o);
+		}
+	}
+
+	private void messageDeleteTaskCompleted() throws Exception {
+		for (TaskCompleted o : this.getDeleteTaskCompleteds()) {
+			MessageFactory.taskCompleted_delete(o);
+		}
+	}
+
+	private void messageCreateTaskCompleted() throws Exception {
+		for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+			MessageFactory.taskCompleted_create(o);
+		}
+	}
+
+	private void messageDeleteRead() throws Exception {
+		for (Read o : this.getDeleteReads()) {
+			MessageFactory.read_delete(o);
+		}
+	}
+
+	private void messageCreateRead() throws Exception {
+		for (Read o : this.getCreateReads()) {
+			MessageFactory.read_create(o);
+		}
+	}
+
+	private void messageDeleteReadCompleted() throws Exception {
+		for (ReadCompleted o : this.getDeleteReadCompleteds()) {
+			MessageFactory.readCompleted_delete(o);
+		}
+	}
+
+	private void messageCreateReadCompleted() throws Exception {
+		for (ReadCompleted o : this.getCreateReadCompleteds()) {
+			MessageFactory.readCompleted_create(o);
+		}
+	}
+
+	private void messageDeleteReview() throws Exception {
+		for (Review o : this.getDeleteReviews()) {
+			MessageFactory.review_delete(o);
+		}
+	}
+
+	private void messageCreateReview() throws Exception {
+		for (Review o : this.getCreateReviews()) {
+			MessageFactory.review_create(o);
+		}
+	}
+
+	private void messageDeleteAttachment() throws Exception {
+		for (Attachment o : this.getDeleteAttachments()) {
+			MessageFactory.attachment_delete(o);
+		}
+	}
+
+	private void messageCreateAttachment() throws Exception {
+		for (Attachment o : this.getCreateAttachments()) {
+			MessageFactory.attachment_create(o);
+		}
+	}
+
 	public List<Work> getUpdateWorks() {
 		return updateWorks;
 	}
@@ -884,6 +1045,18 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Attachment> getDeleteAttachments() {
 		return deleteAttachments;
+	}
+
+	public List<JpaObject> getCreateDynamicEntities() {
+		return createDynamicEntities;
+	}
+
+	public List<JpaObject> getUpdateDynamicEntities() {
+		return updateDynamicEntities;
+	}
+
+	public List<JpaObject> getDeleteDynamicEntities() {
+		return deleteDynamicEntities;
 	}
 
 }

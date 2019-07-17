@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.common.date.DateOperation;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
@@ -65,7 +66,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isTopSubject ) );
 		
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p,  cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
 		
@@ -73,13 +74,13 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		Predicate top_toforum_or = null;
 		Predicate top_tomainsection_or = null;
 		Predicate top_tosection_or = null;
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			top_toforum_or = cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId );
 			top_toforum_or = cb.and( top_toforum_or, cb.isTrue( root.get( BBSSubjectInfo_.topToForum )) );
 			top_or = top_toforum_or;
 		}
 		
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){//在指定的主版块中的所有置顶主题
+		if( StringUtils.isNotEmpty( mainSectionId ) ){//在指定的主版块中的所有置顶主题
 			top_tomainsection_or = cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId );
 			top_tomainsection_or = cb.and( top_tomainsection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToMainSection )) );
 			if( top_or != null ){
@@ -89,7 +90,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			}
 		}
 		
-		if( sectionId != null && !sectionId.isEmpty() ){//在指定的版块中的所有置顶主题
+		if( StringUtils.isNotEmpty( sectionId ) ){//在指定的版块中的所有置顶主题
 			top_tosection_or = cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId );
 			top_tosection_or = cb.and( top_tosection_or, cb.isTrue( root.get( BBSSubjectInfo_.topToSection )) );
 			if( top_or != null ){
@@ -267,22 +268,22 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isNotNull( root.get(BBSSubjectInfo_.id ) );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
-		if( viewSectionIds != null && !viewSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( viewSectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( viewSectionIds ) );
 		}
 		if( isTopSubject != null ){
@@ -306,22 +307,22 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isNotNull( root.get(BBSSubjectInfo_.id ) );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
-		if( viewSectionIds != null && !viewSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( viewSectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( viewSectionIds ) );
 		}
 		if( isTopSubject != null ){
@@ -401,7 +402,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
 		}
 		if( needPicture != null ){
@@ -411,10 +412,10 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 				p = cb.and( p, cb.isFalse( root.get( BBSSubjectInfo_.isTopSubject ) ) );
 			}
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
@@ -447,10 +448,10 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( forumId != null ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId));
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId));
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
@@ -468,7 +469,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSSubjectInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( userName != null && !userName.isEmpty() ){
+		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -482,7 +483,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isCreamSubject ) );
-		if( userName != null && !userName.isEmpty() ){
+		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -496,7 +497,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isCreamSubject ) );
-		if( userName != null && !userName.isEmpty() ){
+		if( StringUtils.isNotEmpty( userName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), userName ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -511,7 +512,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSSubjectInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			Predicate or = cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), sectionId );
 			or = cb.or( or, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId ) );
 			p = cb.and( p, or );
@@ -528,7 +529,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSSubjectInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.or( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -545,13 +546,13 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.recommendToBBSIndex ) );
-		if( forumIds != null && !forumIds.isEmpty() ){
+		if( ListTools.isNotEmpty( forumIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.forumId ).in( forumIds ) );
 		}
-		if( mainSectionIds != null && !mainSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( mainSectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.mainSectionId ).in( mainSectionIds ) );
 		}
-		if( sectionIds != null && !sectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( sectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( sectionIds ) );
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
@@ -568,13 +569,13 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.recommendToForumIndex ) );
-		if( forumIds != null && !forumIds.isEmpty() ){
+		if( ListTools.isNotEmpty( forumIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.forumId ).in( forumIds ) );
 		}
-		if( mainSectionIds != null && !mainSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( mainSectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.mainSectionId ).in( mainSectionIds ) );
 		}
-		if( sectionIds != null && !sectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( sectionIds ) ){
 			p = cb.and( p, root.get( BBSSubjectInfo_.sectionId ).in( sectionIds ) );
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
@@ -632,16 +633,16 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isCreamSubject ) );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId ) );
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -658,16 +659,16 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.isCreamSubject ) );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId ) );
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
@@ -681,16 +682,16 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.recommendToBBSIndex ) );
-		if( searchForumId != null && !searchForumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchForumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), searchForumId ) );
 		}
-		if( searchMainSectionId != null && !searchMainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchMainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), searchMainSectionId ) );
 		}
-		if( searchSectionId != null && !searchSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), searchSectionId ) );
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
 		cq.select( cb.count( root ) );
@@ -708,16 +709,16 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSSubjectInfo> cq = cb.createQuery(BBSSubjectInfo.class);
 		Root<BBSSubjectInfo> root = cq.from(BBSSubjectInfo.class);
 		Predicate p = cb.isTrue( root.get( BBSSubjectInfo_.recommendToBBSIndex ) );
-		if( searchForumId != null && !searchForumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchForumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.forumId ), searchForumId ) );
 		}
-		if( searchMainSectionId != null && !searchMainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchMainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.mainSectionId ), searchMainSectionId ) );
 		}
-		if( searchSectionId != null && !searchSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( searchSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), searchSectionId ) );
 		}
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );

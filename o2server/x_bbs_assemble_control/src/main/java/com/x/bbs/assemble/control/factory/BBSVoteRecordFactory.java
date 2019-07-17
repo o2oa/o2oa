@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
@@ -114,7 +116,7 @@ public class BBSVoteRecordFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSVoteRecord> root = cq.from( BBSVoteRecord.class);
 		Predicate p = cb.equal( root.get( BBSVoteRecord_.subjectId ), subjectId );
-		if( voteOptionId != null && !voteOptionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( voteOptionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSVoteRecord_.optionId ), voteOptionId ));
 		}
 		cq.select( cb.count( root ) );

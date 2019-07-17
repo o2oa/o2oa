@@ -4,7 +4,7 @@ import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.PermissionOperateService;
 import com.x.cms.assemble.control.service.PermissionQueryService;
 import com.x.cms.assemble.control.service.QueryViewService;
@@ -20,7 +20,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
-	protected DocumentInfoServiceAdv documentServiceAdv = new DocumentInfoServiceAdv();
+	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
 	protected PermissionQueryService permissionQueryService = new PermissionQueryService();
 	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
 }

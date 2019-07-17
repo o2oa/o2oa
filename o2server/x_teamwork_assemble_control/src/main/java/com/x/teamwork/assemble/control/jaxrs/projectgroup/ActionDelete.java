@@ -63,7 +63,7 @@ public class ActionDelete extends BaseAction {
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( projectGroup, "DELETE", effectivePerson, null );
+				dynamicPersistService.projectGroupDeleteDynamic( projectGroup, effectivePerson );
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}	

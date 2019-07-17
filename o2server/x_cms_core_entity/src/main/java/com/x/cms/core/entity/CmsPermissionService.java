@@ -283,7 +283,6 @@ public class CmsPermissionService{
 			String documentType, Integer maxCount, Boolean manager) throws Exception{
 		List<String> viewableCategoryInfoIds = new ArrayList<>();
 		List<String> allViewableAppIds = null;
-		
 		//查询我可以访问到的所有栏目ID列表
 		if( manager ) {
 			allViewableAppIds = this.listAllAppIds( emc, inAppInfoIds, null, documentType, maxCount );
@@ -294,7 +293,7 @@ public class CmsPermissionService{
 				allViewableAppIds.add( "无可见栏目" );
 			}
 		}
-		
+
 		//在所有我能访问到的栏目范围内，查询所有的全员可见分类ID列表
 		viewableCategoryInfoIds = addResultToSourceList(  this.listAllPeopleViewCategoryIds( emc, allViewableAppIds, inCategoryInfoIds, excludCategoryInfoIds, 
 				documentType, maxCount ), viewableCategoryInfoIds );
@@ -538,6 +537,7 @@ public class CmsPermissionService{
 		Predicate p_permission = null;
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( CategoryInfo_.viewablePersonList )));
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList )));
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( CategoryInfo_.publishablePersonList )));
 		}
@@ -628,7 +628,6 @@ public class CmsPermissionService{
 
 		p = CriteriaBuilderTools.predicate_and( cb, p, p_permission );
 		cq.select(root.get( AppInfo_.id ));
-
 		appInfoIds =  em.createQuery(cq.where( p )).setMaxResults(maxCount).getResultList();
 		if( appInfoIds == null ) {
 			appInfoIds = new ArrayList<>();

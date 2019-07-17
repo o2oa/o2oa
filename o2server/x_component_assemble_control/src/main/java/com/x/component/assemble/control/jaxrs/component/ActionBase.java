@@ -27,6 +27,7 @@ class ActionBase extends StandardJaxrsAction {
 //	static final String COMPONENT_REPORT = "Report";
 	static final String COMPONENT_MINDER = "Minder";
 	static final String COMPONENT_CALENDAR = "Calendar";
+	static final String COMPONENT_SEARCH = "Search";
 
 	List<String> DEFAULT_COMPONENT_LIST = ListTools.toList(COMPONENT_FILE, COMPONENT_NOTE, COMPONENT_MEETING,
 			COMPONENT_EXECUTION, COMPONENT_ATTENDANCE, COMPONENT_FORUM, COMPONENT_HOTARTICLE, COMPONENT_EXEMANAGER,

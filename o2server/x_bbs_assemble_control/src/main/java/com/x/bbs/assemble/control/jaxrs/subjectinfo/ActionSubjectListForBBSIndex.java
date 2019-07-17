@@ -85,7 +85,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		Long total = 0L;
 		Boolean check = true;
 
-		if( check && wrapIn.getSectionId() != null && !wrapIn.getSectionId().isEmpty() ){
+		if( check && StringUtils.isNotEmpty( wrapIn.getSectionId() ) ){
 			
 			if (check) {
 				try {
@@ -181,10 +181,10 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 	 */
 	private void cutPersonNames( Wo subject ) {
 		if( subject != null ) {
-			if( subject.getLatestReplyUser() != null && !subject.getLatestReplyUser().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
 				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
 			}
-			if( subject.getCreatorName() != null && !subject.getCreatorName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getCreatorName() ) ) {
 				subject.setCreatorNameShort( subject.getCreatorName().split( "@" )[0]);
 			}
 		}

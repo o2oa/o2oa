@@ -6,6 +6,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
@@ -36,13 +38,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() == 0;
 	}
 
-	
-
-	protected void execute_processPlatform(Query query) throws Exception {
-
+	protected Integer getCount(View view, Integer count) {
+		Integer viewCount = view.getCount();
+		Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
+		return NumberUtils.min(viewCount, wiCount);
 	}
 
-	protected void execute_cms(Query query) throws Exception {
-
-	}
 }

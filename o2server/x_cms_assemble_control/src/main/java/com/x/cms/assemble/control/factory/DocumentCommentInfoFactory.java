@@ -11,9 +11,9 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.DocumentCommentInfo_;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
@@ -34,7 +34,11 @@ public class DocumentCommentInfoFactory extends AbstractFactory {
 	}
 
 	public DocumentCommentInfo get( String id ) throws Exception {
-		return this.entityManagerContainer().find(id, DocumentCommentInfo.class, ExceptionWhen.none);
+		return this.entityManagerContainer().find(id, DocumentCommentInfo.class );
+	}
+	
+	public DocumentCommentContent getContent( String id ) throws Exception {
+		return this.entityManagerContainer().find(id, DocumentCommentContent.class );
 	}
 
 	public List<DocumentCommentInfo> list( List<String> ids ) throws Exception {

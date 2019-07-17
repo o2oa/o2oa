@@ -403,6 +403,10 @@ public class Person extends SliceJpaObject {
 	private Integer failureCount;
 	/* flag标志位 */
 
+	public void setLastLoginAddress(String lastLoginAddress) {
+		this.lastLoginAddress = StringTools.utf8SubString(this.lastLoginAddress, Person.length_64B);
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -573,10 +577,6 @@ public class Person extends SliceJpaObject {
 
 	public String getLastLoginAddress() {
 		return lastLoginAddress;
-	}
-
-	public void setLastLoginAddress(String lastLoginAddress) {
-		this.lastLoginAddress = lastLoginAddress;
 	}
 
 	public String getLastLoginClient() {

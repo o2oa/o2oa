@@ -17,6 +17,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.CmsBatchOperation;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Review;
 
 /**
  * 批处理操作执行
@@ -26,10 +27,13 @@ public class CmsBatchOperationProcessService {
 	public static String OPT_OBJ_DOCUMENT = "DOCUMENT";
 	public static String OPT_OBJ_CATEGORY = "CATEGORY";
 	public static String OPT_OBJ_APPINFO = "APPINFO";
+	public static String OPT_TYPE_PERMISSION = "PERMISSION";
 	public static String OPT_TYPE_UPDATENAME = "UPDATENAME";
 	public static String OPT_TYPE_DELETE = "DELETE";
+	
 	private static  Logger logger = LoggerFactory.getLogger( CmsBatchOperationProcessService.class );
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
+	private ReviewService reviewService = new ReviewService();
 	/**
 	 * 批处理操作执行
 	 * @param cmsBatchOperation
@@ -37,21 +41,29 @@ public class CmsBatchOperationProcessService {
 	 * @throws Exception 
 	 */
 	public String process( CmsBatchOperation cmsBatchOperation ) throws Exception {
-		logger.info( "cms processing batch operation: " + cmsBatchOperation.toString() );
+		logger.info( "process -> Cms processing batch operation: " + cmsBatchOperation.toString() );
 		//先把cmsBatchOperation状态修改为执行中
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			cmsBatchOperation = emc.find( cmsBatchOperation.getId(), CmsBatchOperation.class );
-			cmsBatchOperation.setIsRunning( true );
-			emc.beginTransaction( CmsBatchOperation.class );
-			emc.check( cmsBatchOperation, CheckPersistType.all );
-			logger.info( "cms change batch operation running......: " );
-			emc.commit();
+			if( cmsBatchOperation != null ) {
+				cmsBatchOperation.setIsRunning( true );
+				emc.beginTransaction( CmsBatchOperation.class );
+				emc.check( cmsBatchOperation, CheckPersistType.all );
+				emc.commit();
+				logger.info( "process -> cms change batch operation running......: " );
+			}			
 		} catch (Exception e) {
 			throw e;
 		}
 		
 		if( "DOCUMENT".equalsIgnoreCase( cmsBatchOperation.getObjType() )) {
-			//文档处理
+			if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType() )) {//文档处理
+				//将categoryName是旧分类名称的所有文档的分类和栏目相关的信息更新掉，最后删除当前的批处理信息
+				refreshDocumentReview( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
+			}else if( "DELETE".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
+				//删除文档，并且修改分类所属的栏目中的分类数量和文档数量
+				deleteDocumentReview( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
+			}
 		}else  if( "CATEGORY".equalsIgnoreCase( cmsBatchOperation.getObjType() )) {
 			//分类处理：分类名称变更，分类删除
 			if( "UPDATENAME".equalsIgnoreCase( cmsBatchOperation.getOptType() )) {
@@ -59,6 +71,9 @@ public class CmsBatchOperationProcessService {
 					//将categoryName是旧分类名称的所有文档的分类和栏目相关的信息更新掉，最后删除当前的批处理信息
 					changeCategoryNameInDocument( cmsBatchOperation.getId(), cmsBatchOperation.getBundle(), cmsBatchOperation.getOldInfo() );
 				}
+			}else if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
+				//分类修改权限
+				refreshDocumentReviewInCagetory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );				
 			}else if( "DELETE".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//删除文档，并且修改分类所属的栏目中的分类数量和文档数量
 				deleteDocumentInCategory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
@@ -70,6 +85,9 @@ public class CmsBatchOperationProcessService {
 					//将AppName是旧栏目名称的所有分类以及文档的栏目相关的信息更新掉，最后删除当前的批处理信息
 					changeAppNameInCategory( cmsBatchOperation.getId(), cmsBatchOperation.getBundle(), cmsBatchOperation.getOldInfo() );
 				}
+			}else if( "PERMISSION".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
+				//栏目修改权限
+				refreshDocumentReviewInAppInfo( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );		
 			}else if( "DELETE".equalsIgnoreCase( cmsBatchOperation.getOptType()  )) {
 				//删除分类以及文档，并且修改分类所属的栏目中的分类数量和文档数量
 				deleteDocumentInApp( cmsBatchOperation.getId(), cmsBatchOperation.getBundle() );
@@ -78,6 +96,178 @@ public class CmsBatchOperationProcessService {
 		logger.info( "cms batch operation process completed." );
 		return "error";
 	}
+
+	private void refreshDocumentReviewInAppInfo(String id, String appId) throws Exception {
+		CmsBatchOperation cmsBatchOperation = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
+			//查询分类中所有的文档，重发为文档Review更新， 增加删除栏目批量操作（对分类和文档）的信息
+			List<String> ids = null;
+			List<Document> documentList = null;
+			Integer maxQueryCount = 1000;
+			Long count = business.getDocumentFactory().countByAppId(appId);
+			Long maxTimes = count/maxQueryCount + 2;
+			logger.info( "refreshDocumentReviewInAppInfo -> There are '" + count +"' document need refresh review, need to process '" + maxTimes + "' times ......" );
+			for( int i=0; i<=maxTimes; i++ ) {
+				ids = business.getDocumentFactory().listReviewedIdsByAppId( appId, maxQueryCount );
+				logger.info( "refreshDocumentReviewInAppInfo -> This is the '" + ( i + 1 ) +"' times process......" );
+				if(ListTools.isNotEmpty( ids )) {
+					documentList = emc.list( Document.class, ids);
+				}
+				if( ListTools.isNotEmpty( documentList )) {
+					CmsBatchOperationPersistService cmsBatchOperationPersistService = new CmsBatchOperationPersistService();
+					for( Document document : documentList ) {
+						emc.beginTransaction(Document.class );
+						document.setReviewed( false );
+						emc.check( document, CheckPersistType.all );
+						emc.commit();						
+						cmsBatchOperationPersistService.addOperation( 
+								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "栏目权限变更引起文档Review变更：ID=" + document.getId() );
+					}
+					
+				}
+				ids = null;
+				documentList = null;
+			}
+			if( cmsBatchOperation != null ) {
+				emc.beginTransaction( CmsBatchOperation.class );
+				emc.remove( cmsBatchOperation, CheckRemoveType.all );
+				logger.info( "cms delete batch operation: " + cmsBatchOperation.toString()  );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	private void refreshDocumentReviewInCagetory(String id, String categoryId) throws Exception {
+		CmsBatchOperation cmsBatchOperation = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
+			//查询分类中所有的文档，重发为文档Review更新， 增加删除栏目批量操作（对分类和文档）的信息
+			List<String> ids = null;
+			List<Document> documentList = null;
+			Integer maxQueryCount = 1000;
+			Long count = business.getDocumentFactory().countByCategoryId(categoryId);
+			Long maxTimes = count/maxQueryCount + 2;
+			logger.info( "refreshDocumentReviewInCagetory -> There are : " + count + " documents need to refresh review, maxTimes=" + maxTimes  );
+			
+			for( int i=0; i<=maxTimes; i++ ) {
+				ids = business.getDocumentFactory().listReviewedIdsByCategoryId(categoryId, maxQueryCount );
+				if(ListTools.isNotEmpty( ids )) {
+					documentList = emc.list( Document.class, ids);
+				}
+				if( ListTools.isNotEmpty( documentList )) {
+					CmsBatchOperationPersistService cmsBatchOperationPersistService = new CmsBatchOperationPersistService();
+					for( Document document : documentList ) {
+						emc.beginTransaction(Document.class );
+						document.setReviewed( false );
+						emc.check( document, CheckPersistType.all );
+						emc.commit();
+						
+						logger.info( "refreshDocumentReviewInCagetory -> Send docment permission operation to queue[queueBatchOperation], document:" + document.getTitle()  );
+						cmsBatchOperationPersistService.addOperation( 
+								CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION, document.getId(), document.getId(), "分类权限变更引起文档Review变更：ID=" + document.getId() );
+					}
+					
+				}
+				ids = null;
+				documentList = null;
+			}
+			if( cmsBatchOperation != null ) {
+				emc.beginTransaction( CmsBatchOperation.class );
+				emc.remove( cmsBatchOperation, CheckRemoveType.all );
+				logger.info( "refreshDocumentReviewInCagetory -> cms delete batch operation: " + cmsBatchOperation.toString()  );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	private void deleteDocumentReview(String id, String docId) throws Exception {
+		CmsBatchOperation cmsBatchOperation = null;		
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
+			logger.info( "deleteDocumentReview -> delete all reviews for document: " + docId );
+			reviewService.deleteDocumentReview( emc, docId );
+			if( cmsBatchOperation != null ) {
+				emc.beginTransaction( CmsBatchOperation.class );
+				emc.remove( cmsBatchOperation, CheckRemoveType.all );
+				logger.info( "deleteDocumentReview -> cms delete batch operation: " + cmsBatchOperation.toString()  );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		ApplicationCache.notify( Review.class );
+		ApplicationCache.notify( Document.class );
+	}
+
+	/**
+	 * 根据数据库中的文档的信息，重新计算文档的Review信息
+	 * 全部删除，然后再重新插入Review记录
+	 * @param id
+	 * @param docId
+	 * @throws Exception 
+	 */
+	private void refreshDocumentReview( String id, String docId ) throws Exception {
+		CmsBatchOperation cmsBatchOperation = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			cmsBatchOperation = emc.find( id, CmsBatchOperation.class );
+			
+			reviewService.refreshDocumentReview( emc, docId );
+			
+			Document document = emc.find( docId, Document.class );
+			if( document != null ) {
+				emc.beginTransaction( Document.class );
+				document.setReviewed( true );
+				
+				if( StringUtils.isEmpty( document.getAppAlias()  )) {
+					document.setAppAlias( document.getAppName() );
+				}
+				
+				document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
+				document.setSequenceCategoryAlias( document.getCategoryAlias() + document.getId() );
+				if( StringUtils.isNotEmpty( document.getTitle() ) && document.getTitle().length() > 30 ) {
+					document.setSequenceTitle( document.getTitle().substring(0, 30) + document.getId() );
+				}else {
+					document.setSequenceTitle( document.getTitle() + document.getId() );
+				}
+				if( StringUtils.isNotEmpty( document.getCreatorPerson() ) && document.getCreatorPerson().length() > 50 ) {
+					document.setSequenceCreatorPerson( document.getCreatorPerson().substring(0, 50) + document.getId() );
+				}else {
+					document.setSequenceCreatorPerson( document.getCreatorPerson() + document.getId() );
+				}
+				if( StringUtils.isNotEmpty( document.getCreatorUnitName() ) && document.getCreatorUnitName().length() > 50 ) {
+					document.setSequenceCreatorUnitName( document.getCreatorUnitName().substring(0, 50) + document.getId() );
+				}else {
+					document.setSequenceCreatorUnitName( document.getCreatorUnitName() + document.getId() );
+				}
+				
+				emc.check( document, CheckPersistType.all );
+				emc.commit();
+			}
+			
+			if( cmsBatchOperation != null ) {
+				emc.beginTransaction( CmsBatchOperation.class );
+				emc.remove( cmsBatchOperation, CheckRemoveType.all );
+				logger.info( "refreshDocumentReview -> cms delete batch operation: " + cmsBatchOperation.toString()  );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		ApplicationCache.notify( Review.class );
+		ApplicationCache.notify( Document.class );
+	}
+
 
 	/**
 	 * 将栏目下所有的文档删除，最后删除当前的批处理信息
@@ -106,7 +296,7 @@ public class CmsBatchOperationProcessService {
 					if( categoryInfo != null ) {
 						emc.beginTransaction( CategoryInfo.class );
 						emc.remove( categoryInfo, CheckRemoveType.all );
-						logger.info( "cms processing batch operation: remove category: " + categoryInfo.getId() + ", alias: " + categoryInfo.getCategoryAlias() );
+						logger.info( "deleteDocumentInApp -> Cms processing batch operation: remove category: " + categoryInfo.getId() + ", alias: " + categoryInfo.getCategoryAlias() );
 						emc.commit();
 					}
 					
@@ -120,7 +310,10 @@ public class CmsBatchOperationProcessService {
 								for( String docId : document_ids ){									
 									try {
 										documentInfoService.delete( emc, docId );
-										logger.info( "cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
+										new CmsBatchOperationPersistService().addOperation( 
+												CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+												CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "栏目删除引起文档删除：ID=" + id );
+										logger.info( "deleteDocumentInApp -> cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
 									}catch( Exception e ) {
 										e.printStackTrace();
 									}
@@ -137,7 +330,7 @@ public class CmsBatchOperationProcessService {
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
-				logger.info( "cms delete batch operation: " + cmsBatchOperation.toString()  );
+				logger.info( "deleteDocumentInApp -> cms delete batch operation: " + cmsBatchOperation.toString()  );
 				emc.commit();
 			}
 		} catch (Exception e) {
@@ -185,7 +378,7 @@ public class CmsBatchOperationProcessService {
 						}						
 						emc.beginTransaction( CategoryInfo.class );
 						emc.check( categoryInfo, CheckPersistType.all );
-						logger.info( "cms processing batch operation: change category: " + categoryInfo.getId() + ", app_name: " + oldName + " -> " + categoryInfo.getAppName() );
+						logger.info( "changeAppNameInCategory -> cms processing batch operation: change category: " + categoryInfo.getId() + ", app_name: " + oldName + " -> " + categoryInfo.getAppName() );
 						emc.commit();
 					}
 					//再处理该分类下所有的文档信息
@@ -197,7 +390,7 @@ public class CmsBatchOperationProcessService {
 								//查询1000个文档进行操作
 								document_ids = business.getDocumentFactory().listByCategoryIdAndNotEqualAppName( categoryInfo.getId(), appInfo.getAppName(), queryMaxCount );							
 								changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );
-								logger.info( "cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
+								logger.info( "changeAppNameInCategory -> cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
 								//当前循环次数+1
 								currenteWhileCount ++;
 								//重新查询剩余未修改栏目名称的文档数量
@@ -210,7 +403,7 @@ public class CmsBatchOperationProcessService {
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
-				logger.info( "cms delete batch operation: " + cmsBatchOperation.toString()  );
+				logger.info( "changeAppNameInCategory -> cms delete batch operation: " + cmsBatchOperation.toString()  );
 				emc.commit();
 			}
 		}
@@ -241,7 +434,7 @@ public class CmsBatchOperationProcessService {
 			if( categoryInfo != null ) {
 				emc.beginTransaction( CategoryInfo.class );
 				emc.remove( categoryInfo, CheckRemoveType.all );
-				logger.info( "cms processing batch operation: remove category, id:"+ bundle );
+				logger.info( "deleteDocumentInCategory -> cms processing batch operation: remove category, id:"+ bundle );
 				emc.commit();
 			}
 			
@@ -255,7 +448,10 @@ public class CmsBatchOperationProcessService {
 						for( String docId : document_ids ){
 							try {
 								documentInfoService.delete( emc, docId );
-								logger.info( "cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
+								new CmsBatchOperationPersistService().addOperation( 
+										CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+										CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "分类删除引起文档删除：ID=" + id );
+								logger.info( "deleteDocumentInCategory -> cms processing batch operation: remove document("+ currenteWhileCount +"/" + totalWhileCount + "): " + docId );
 							}catch( Exception e ) {
 								e.printStackTrace();
 							}
@@ -270,7 +466,7 @@ public class CmsBatchOperationProcessService {
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
-				logger.info( "cms delete batch operation: " + cmsBatchOperation.toString()  );
+				logger.info( "deleteDocumentInCategory -> cms delete batch operation: " + cmsBatchOperation.toString()  );
 				emc.commit();
 			}
 		} catch (Exception e) {
@@ -309,7 +505,7 @@ public class CmsBatchOperationProcessService {
 							//查询1000个文档进行操作
 							document_ids = business.getDocumentFactory().listByCategoryIdAndCategoryName(bundle, categoryInfo.getCategoryName(), queryMaxCount );							
 							changeDocumentInfoWithCategory( emc, document_ids, categoryInfo );			
-							logger.info( "cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
+							logger.info( "changeCategoryNameInDocument -> cms processing batch operation: update app and category info for document, batch("+ currenteWhileCount +"/" + totalWhileCount + ") " );
 							//当前循环次数+1
 							currenteWhileCount ++;
 							//重新查询剩余的文档数量
@@ -321,7 +517,7 @@ public class CmsBatchOperationProcessService {
 			if( cmsBatchOperation != null ) {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.remove( cmsBatchOperation, CheckRemoveType.all );
-				logger.info( "cms delete batch operation: " + cmsBatchOperation.toString()  );
+				logger.info( "changeCategoryNameInDocument -> cms delete batch operation: " + cmsBatchOperation.toString()  );
 				emc.commit();
 			}
 		} catch (Exception e) {
@@ -353,7 +549,7 @@ public class CmsBatchOperationProcessService {
 						document.setHasIndexPic( false );
 					}
 					emc.check( document, CheckPersistType.all );
-					logger.info( "cms processing batch operation: change app and category info for document: " + docId );
+					logger.info( "changeDocumentInfoWithCategory -> cms processing batch operation: change app and category info for document: " + docId );
 				}catch( Exception e ) {
 					e.printStackTrace();
 				}

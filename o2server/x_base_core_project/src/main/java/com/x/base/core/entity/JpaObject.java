@@ -235,6 +235,24 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String ORDERCOLUMNCOLUMN = "xorderColumn";
 
 	public static final String DISTINGUISHEDNAME = "distinguishedName";
+	
+	public static final String TYPE_STRING = "string";
+	public static final String TYPE_INTEGER = "integer";
+	public static final String TYPE_LONG = "long";
+	public static final String TYPE_DOUBLE = "double";
+	public static final String TYPE_BOOLEAN = "boolean";
+	public static final String TYPE_DATE = "date";
+	public static final String TYPE_TIME = "time";
+	public static final String TYPE_DATETIME = "dateTime";
+
+	public static final String TYPE_STRINGLIST = "stringList";
+	public static final String TYPE_INTEGERLIST = "integerList";
+	public static final String TYPE_LONGLIST = "longList";
+	public static final String TYPE_DOUBLELIST = "doubleList";
+	public static final String TYPE_BOOLEANLIST = "booleanList";
+
+	public static final String TYPE_STRINGLOB = "stringLob";
+	public static final String TYPE_STRINGMAP = "stringMap";
 
 	public static final String[] ID_DISTRIBUTEFACTOR = new String[] { id_FIELDNAME, distributeFactor_FIELDNAME };
 

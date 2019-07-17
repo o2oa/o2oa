@@ -10,7 +10,9 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
-import com.x.cms.assemble.control.jaxrs.document.ActionImportDataExcel.WiParam;
+import com.x.cms.assemble.control.jaxrs.document.ActionPersistImportDataExcel.WiParam;
+import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
+import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.common.excel.reader.ExcelReadRuntime;
 import com.x.cms.common.excel.reader.ExcelReadRuntime.DocTemplate;
 import com.x.cms.core.entity.Document;
@@ -88,7 +90,11 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 					data.setDocument( document );
 					documentDataHelper.update( data );
 					emc.commit();
-
+					
+					new CmsBatchOperationPersistService().addOperation( 
+							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  document.getId(),  document.getId(), "导入新文档：ID=" +  document.getId() );
+					
 					dataImportStatus.addDocumentId( document.getId() );
 					dataImportStatus.increaseSuccessTotal(1);
 					System.out.println( "第" + curRow + "行数据导入成功，已经成功提交到数据库！导入成功共"+ excelReadRuntime.wo.getSuccess_count() +"条");

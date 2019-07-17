@@ -20,6 +20,8 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
@@ -29,8 +31,8 @@ class ActionBind extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBind.class);
 
-	ActionResult<Wo> execute() throws Exception {
-
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String meta = StringTools.uniqueToken();
@@ -66,6 +68,7 @@ class ActionBind extends BaseAction {
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
+		audit.log();
 		return result;
 	}
 

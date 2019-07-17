@@ -217,6 +217,27 @@ public class AppInfoAction extends StandardJaxrsAction {
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
+	
+	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionGetPublishableAppInfo.class)
+	@GET
+	@Path("get/user/publish/{appId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getPublishableAppInfo(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<BaseAction.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionGetPublishableAppInfo().execute(request, effectivePerson, appId );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"系统在根据用户权限查询可见的栏目信息时发生异常。Name:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage.class)
 	@GET

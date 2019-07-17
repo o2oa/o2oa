@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig.exception.ExceptionAttendanceEmployeeProcess;
@@ -37,7 +39,7 @@ public class ActionSave extends BaseAction {
 		if (check) {
 			try {
 				attendanceEmployeeConfig = Wi.copier.copy(wrapIn);
-				if (wrapIn.getId() != null && !wrapIn.getId().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					attendanceEmployeeConfig.setId(wrapIn.getId());
 				}
 			} catch (Exception e) {

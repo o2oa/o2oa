@@ -34,6 +34,26 @@ public class TaskListAction extends StandardJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger(TaskListAction.class);
 
+	@JaxrsMethodDescribe(value = "根据ID查询工作任务列表信息.", action = ActionGet.class)
+	@GET
+	@Path("taskgroup/{taskGroupId}/tasklist/{taskListId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("工作任务分组ID") @PathParam("taskGroupId") String taskGroupId,
+			@JaxrsParameterDescribe("工作任务列表ID") @PathParam("taskListId") String taskListId ) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute( request, effectivePerson, taskGroupId, taskListId );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
 	@JaxrsMethodDescribe(value = "根据工作任务组查询工作列表信息列表.", action = ActionListWithTaskGroup.class)
 	@GET
 	@Path("list/taskgroup/{taskgroup}")
@@ -91,19 +111,39 @@ public class TaskListAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "将一个工作任务添加到指定的列表中.", action = ActionAddTask2List.class)
-	@GET
-	@Path("add2list/{listId}/task/{taskId}")
+	@JaxrsMethodDescribe(value = "将一个工作任务添加到指定的列表中.", action = ActionAddTask2ListWithOrderNumber.class)
+	@PUT
+	@Path("add2list/{listId}/order")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addTask2List(@Suspended final AsyncResponse asyncResponse, 
+	public void addTask2ListWithOrderNumber(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("工作任务列表ID") @PathParam("listId") String listId,
-			@JaxrsParameterDescribe("工作任务ID") @PathParam("taskId") String taskId ) {
-		ActionResult<ActionAddTask2List.Wo> result = new ActionResult<>();
+			@JaxrsParameterDescribe("需要关联的工作任务ID及排序号信息") JsonElement jsonElement) {
+		ActionResult<ActionAddTask2ListWithOrderNumber.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionAddTask2List().execute(request, effectivePerson, listId, taskId);
+			result = new ActionAddTask2ListWithOrderNumber().execute(request, effectivePerson, listId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "将一个工作任务添加到指定的列表中.", action = ActionAddTask2ListWithBehindTask.class)
+	@PUT
+	@Path("add2list/{listId}/behindTask")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addTask2ListWithBehindTask(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("工作任务列表ID") @PathParam("listId") String listId,
+			@JaxrsParameterDescribe("需要关联的工作任务ID及后序工作任务ID") JsonElement jsonElement) {
+		ActionResult<ActionAddTask2ListWithBehindTask.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAddTask2ListWithBehindTask().execute(request, effectivePerson, listId, jsonElement );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -131,9 +171,9 @@ public class TaskListAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "根据标识删除工作任务列表信息.", action = ActionDelete.class)
+	@JaxrsMethodDescribe(value = "删除工作任务列表信息.", action = ActionDelete.class)
 	@DELETE
-	@Path("{id}")
+	@Path("delete/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, 

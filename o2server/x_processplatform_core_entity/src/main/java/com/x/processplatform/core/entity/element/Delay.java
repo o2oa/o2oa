@@ -23,7 +23,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -342,20 +341,19 @@ public class Delay extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String route;
 
-	public static final String delayType_FIELDNAME = "delayType";
-	@Enumerated(EnumType.ORDINAL)
-	@FieldDescribe("延时类型,minute或者until,这个字段由于疏忽导致是使用ORDNAL字段进行存储的.")
-	@Column(name = ColumnNamePrefix + delayType_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private DelayType delayType;
+//	public static final String delayType_FIELDNAME = "delayType";
+//	@Enumerated(EnumType.ORDINAL)
+//	@FieldDescribe("延时类型,minute或者until,这个字段由于疏忽导致是使用ORDNAL字段进行存储的.")
+//	@Column(name = ColumnNamePrefix + delayType_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private DelayType delayType;
 
-	// public static final String delayType_FIELDNAME = "delayType";
-	// @Enumerated(EnumType.STRING)
-	// @FieldDescribe("延时类型,minute或者until")
-	// @Column(length = DelayType.length, name = ColumnNamePrefix +
-	// delayType_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private DelayType delayType;
+	public static final String delayMode_FIELDNAME = "delayMode";
+	@Enumerated(EnumType.STRING)
+	@FieldDescribe("延时类型,minute或者until")
+	@Column(length = DelayMode.length, name = ColumnNamePrefix + delayMode_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private DelayMode delayMode;
 
 	public static final String delayTime_FIELDNAME = "delayTime";
 	@FieldDescribe("延时至时间.")
@@ -668,14 +666,6 @@ public class Delay extends Activity {
 		this.reviewDataPathList = reviewDataPathList;
 	}
 
-	public DelayType getDelayType() {
-		return delayType;
-	}
-
-	public void setDelayType(DelayType delayType) {
-		this.delayType = delayType;
-	}
-
 	public Date getDelayTime() {
 		return delayTime;
 	}
@@ -754,6 +744,14 @@ public class Delay extends Activity {
 
 	public void setOpinionGroup(String opinionGroup) {
 		this.opinionGroup = opinionGroup;
+	}
+
+	public DelayMode getDelayMode() {
+		return delayMode;
+	}
+
+	public void setDelayMode(DelayMode delayMode) {
+		this.delayMode = delayMode;
 	}
 
 }

@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.container.EntityManagerContainer;
@@ -102,7 +104,7 @@ public class AttendanceScheduleSettingService {
 				}
 			}else{
 				superUnitName = userManagerService.getParentUnitWithUnitName( unitName );
-				if( superUnitName != null && !superUnitName.isEmpty() && !"0".equals( superUnitName )) {
+				if( StringUtils.isNotEmpty( superUnitName ) && !"0".equals( superUnitName )) {
 					return getAttendanceScheduleSettingWithUnitName( superUnitName );
 				}
 			}		

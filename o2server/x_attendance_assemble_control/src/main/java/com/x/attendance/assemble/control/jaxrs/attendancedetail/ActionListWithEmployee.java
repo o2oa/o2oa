@@ -6,13 +6,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -85,7 +86,7 @@ public class ActionListWithEmployee extends BaseAction {
 			}
 		}
 		if (check) {
-			if (cycleYear != null && cycleMonth != null && !cycleYear.isEmpty() && !cycleMonth.isEmpty()) {
+			if ( StringUtils.isNotEmpty( cycleYear ) && StringUtils.isNotEmpty( cycleMonth )) {
 				try {
 					ids = attendanceDetailServiceAdv.listUserAttendanceDetailByCycleYearAndMonth(q_empName, cycleYear,
 							cycleMonth);
@@ -96,7 +97,7 @@ public class ActionListWithEmployee extends BaseAction {
 					result.error(exception);
 					logger.error(e, currentPerson, request, null);
 				}
-			} else if (q_year != null && q_month != null && !q_year.isEmpty() && !q_month.isEmpty()) {
+			} else if ( StringUtils.isNotEmpty( q_year ) && StringUtils.isNotEmpty( q_month )) {
 				try {
 					ids = attendanceDetailServiceAdv.listUserAttendanceDetailByYearAndMonth(q_empName, q_year, q_month);
 				} catch (Exception e) {

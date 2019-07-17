@@ -141,17 +141,17 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String icon;
 
-	public static final String reviewIdentityList_FIELDNAME = "reviewIdentityList";
-	@FieldDescribe("Work的参阅人员.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewIdentityList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + reviewIdentityList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> reviewIdentityList;
+//	public static final String reviewIdentityList_FIELDNAME = "reviewIdentityList";
+//	@FieldDescribe("Work的参阅人员.")
+//	@PersistentCollection(fetch = FetchType.EAGER)
+//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+//			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+//					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
+//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewIdentityList_FIELDNAME)
+//	@ElementIndex(name = TABLE + IndexNameMiddle + reviewIdentityList_FIELDNAME + ElementIndexNameSuffix)
+//	@CheckPersist(allowEmpty = true)
+//	private List<String> reviewIdentityList;
 
 	public static final String beforeBeginScript_FIELDNAME = "beforeBeginScript";
 	@IdReference(Script.class)
@@ -443,13 +443,13 @@ public class Process extends SliceJpaObject {
 		this.afterEndScriptText = afterEndScriptText;
 	}
 
-	public List<String> getReviewIdentityList() {
-		return reviewIdentityList;
-	}
-
-	public void setReviewIdentityList(List<String> reviewIdentityList) {
-		this.reviewIdentityList = reviewIdentityList;
-	}
+//	public List<String> getReviewIdentityList() {
+//		return reviewIdentityList;
+//	}
+//
+//	public void setReviewIdentityList(List<String> reviewIdentityList) {
+//		this.reviewIdentityList = reviewIdentityList;
+//	}
 
 	public String getSerialTexture() {
 		return serialTexture;

@@ -20,6 +20,7 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -45,6 +46,10 @@ public class View extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.View.table;
 
+	public static final Integer MAX_COUNT = 2000;
+
+	public static final Integer DEFAULT_PAGESIZE = 20;
+
 	public String getId() {
 		return id;
 	}
@@ -65,6 +70,30 @@ public class View extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 
+		if ((this.count == null) || (this.count < 1) || (this.count > MAX_COUNT)) {
+			this.count = MAX_COUNT;
+		}
+
+		if ((this.pageSize == null) || (this.pageSize < 1) || (this.pageSize > MAX_COUNT)) {
+			this.pageSize = DEFAULT_PAGESIZE;
+		}
+
+	}
+
+	public Integer getCount() {
+		if ((this.count == null) || (this.count < 1) || (this.count > MAX_COUNT)) {
+			return MAX_COUNT;
+		} else {
+			return this.count;
+		}
+	}
+
+	public Integer getPageSize() {
+		if ((this.pageSize == null) || (this.pageSize < 1) || (this.pageSize > MAX_COUNT)) {
+			return DEFAULT_PAGESIZE;
+		} else {
+			return this.pageSize;
+		}
 	}
 
 	/* 更新运行方法 */
@@ -188,7 +217,7 @@ public class View extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ availableIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -200,11 +229,23 @@ public class View extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ availableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
+
+	public static final String count_FIELDNAME = "count";
+	@FieldDescribe("最大返回数量.")
+	@Column(name = ColumnNamePrefix + count_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer count;
+
+	public static final String pageSize_FIELDNAME = "pageSize";
+	@FieldDescribe("分页单页数量.")
+	@Column(name = ColumnNamePrefix + pageSize_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer pageSize;
 
 	public String getName() {
 		return name;
@@ -332,6 +373,14 @@ public class View extends SliceJpaObject {
 
 	public void setAvailableUnitList(List<String> availableUnitList) {
 		this.availableUnitList = availableUnitList;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
 	}
 
 }

@@ -3,6 +3,8 @@ package com.x.attendance.assemble.control.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
@@ -45,7 +47,7 @@ public class AttendanceDetailMobileAnalyseServiceAdv {
 			if( attendanceDetailMobile != null ){
 				attendanceDetail = attendanceDetailMobileAnalyseService.composeAttendanceDetailMobile( emc, id );
 				if( attendanceDetail != null ){
-					if( attendanceDetail.getOffDutyTime() != null && !attendanceDetail.getOffDutyTime().isEmpty() ){
+					if( StringUtils.isNotEmpty( attendanceDetail.getOffDutyTime() ) ){
 						attendanceDetailAnalyseService.analyseAttendanceDetail(emc, attendanceDetail, topUnitAttendanceStatisticalCycleMap, debugger );
 					}
 				}

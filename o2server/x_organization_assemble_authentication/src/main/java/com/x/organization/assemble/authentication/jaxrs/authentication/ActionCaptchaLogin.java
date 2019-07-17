@@ -13,6 +13,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
@@ -23,9 +25,10 @@ class ActionCaptchaLogin extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCaptchaLogin.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, JsonElement jsonElement)
-			throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
+			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = null;
@@ -77,6 +80,7 @@ class ActionCaptchaLogin extends BaseAction {
 					}
 				}
 				wo = this.user(request, response, business, o, Wo.class);
+				audit.log(o.getDistinguishedName());
 			}
 			result.setData(wo);
 			return result;

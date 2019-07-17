@@ -31,8 +31,24 @@ public class EffectivePerson extends GsonPropertyObject {
 	private String distinguishedName = "";
 	private Boolean debugger = false;
 
+	private String remoteAddress = "";
+	private String uri = "";
+	private String userAgent = "";
+
 	private EffectivePerson() {
 
+	}
+
+	public void setUri(String uri) {
+		this.uri = Objects.toString(uri, "");
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = Objects.toString(userAgent, "");
+	}
+
+	public void setRemoteAddress(String remoteAddress) {
+		this.remoteAddress = Objects.toString(remoteAddress, "");
 	}
 
 	private void setDistinguishedName(String distinguishedName) {
@@ -130,7 +146,8 @@ public class EffectivePerson extends GsonPropertyObject {
 	}
 
 	public boolean isPerson(Collection<String> names) {
-		if (Objects.equals(TokenType.user, this.getTokenType())||Objects.equals(TokenType.manager, this.getTokenType())) {
+		if (Objects.equals(TokenType.user, this.getTokenType())
+				|| Objects.equals(TokenType.manager, this.getTokenType())) {
 			if (null != names) {
 				List<String> list = new ArrayList<>(names);
 				if (list.contains(this.distinguishedName)) {
@@ -184,6 +201,18 @@ public class EffectivePerson extends GsonPropertyObject {
 
 	public void setDebugger(Boolean debugger) {
 		this.debugger = debugger;
+	}
+
+	public String getRemoteAddress() {
+		return remoteAddress;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public String getUri() {
+		return uri;
 	}
 
 }

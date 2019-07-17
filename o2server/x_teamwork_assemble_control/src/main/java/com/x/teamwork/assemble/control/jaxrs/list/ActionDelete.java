@@ -16,12 +16,12 @@ public class ActionDelete extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
-	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		TaskList taskList = null;
 		Boolean check = true;
 
-		if ( StringUtils.isEmpty( flag ) ) {
+		if ( StringUtils.isEmpty( id ) ) {
 			check = false;
 			Exception exception = new TaskListFlagForQueryEmptyException();
 			result.error( exception );
@@ -29,15 +29,15 @@ public class ActionDelete extends BaseAction {
 
 		if (check) {
 			try {
-				taskList = taskListQueryService.get(flag);
+				taskList = taskListQueryService.get(id);
 				if ( taskList == null) {
 					check = false;
-					Exception exception = new TaskListNotExistsException(flag);
+					Exception exception = new TaskListNotExistsException(id);
 					result.error( exception );
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new TaskListQueryException(e, "根据指定flag查询项目信息对象时发生异常。flag:" + flag);
+				Exception exception = new TaskListQueryException(e, "根据指定flag查询项目信息对象时发生异常。id:" + id);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -45,7 +45,8 @@ public class ActionDelete extends BaseAction {
 		
 		if (check) {
 			try {
-				taskListPersistService.delete(flag, effectivePerson );				
+				//物理删除
+				taskListPersistService.delete(id, effectivePerson);
 				// 更新缓存
 				ApplicationCache.notify( TaskList.class );
 				
@@ -54,14 +55,14 @@ public class ActionDelete extends BaseAction {
 				result.setData( wo );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new TaskListQueryException(e, "根据指定flag删除项目信息对象时发生异常。flag:" + flag);
+				Exception exception = new TaskListQueryException(e, "根据指定flag删除项目信息对象时发生异常。id:" + id);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( taskList, "DELETE", effectivePerson, null );
+				dynamicPersistService.taskListDeleteDynamic( taskList, effectivePerson);
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}	

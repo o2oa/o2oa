@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
+import com.x.base.core.project.tools.ListTools;
 
 /**
  * 用户组织顶层组织信息管理服务类
@@ -42,9 +43,9 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			unitNames = business.organization().unit().listWithPerson( personName );
-			if( unitNames != null && !unitNames.isEmpty() ) {
+			if( ListTools.isNotEmpty( unitNames ) ) {
 				for( String unitName : unitNames ) {
-					if( unitName != null && !"null".equals( unitName ) && !unitName.isEmpty() ) {
+					if( StringUtils.isNotEmpty( unitName ) && !"null".equals( unitName ) ) {
 						unit = business.organization().unit().getObject( unitName );
 						if( level < unit.getLevel() ) {
 							level = unit.getLevel();
@@ -129,7 +130,7 @@ public class UserManagerService {
 			//兼容一下传过来的personName有可能是个人，有可能是身份
 			personName = business.organization().person().get( personName );
 			identity = getIdentityWithPerson( personName );
-			if( identity != null && !identity.isEmpty() ){
+			if( StringUtils.isNotEmpty( identity ) ){
 				topUnitName = business.organization().unit().getWithIdentityWithLevel( identity, 1 );
 			}
 			if( StringUtils.isEmpty( topUnitName )) {
@@ -190,7 +191,7 @@ public class UserManagerService {
 			currentUnit = business.organization().unit().getObject( unitName );
 			if( currentUnit != null ) {
 				parentUnitName = currentUnit.getSuperior();
-				if( parentUnitName != null && !parentUnitName.isEmpty() && !"0".equals( parentUnitName ) ) {
+				if( StringUtils.isNotEmpty( parentUnitName ) && !"0".equals( parentUnitName ) ) {
 					try {
 						parentUnit = business.organization().unit().getObject( currentUnit.getSuperior() );
 						if( parentUnit == null ) {
@@ -224,7 +225,7 @@ public class UserManagerService {
 			currentUnit = business.organization().unit().getObject( unitName );
 			if( currentUnit != null ) {
 				parentUnitName = currentUnit.getSuperior();
-				if( parentUnitName != null && !parentUnitName.isEmpty() && !"0".equals( parentUnitName ) ) {
+				if( StringUtils.isNotEmpty( parentUnitName ) && !"0".equals( parentUnitName ) ) {
 					try {
 						parentUnit = business.organization().unit().getObject( parentUnitName );
 					}catch( NullPointerException e ) {

@@ -26,8 +26,8 @@ class ActionCreate extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			/** 这里的角色多一个 RoleDefinition.ProcessPlatformCreator */
-			if ((effectivePerson.isNotManager()) & (!business.organization().person().hasRole(effectivePerson,
+			/* 这里的角色多一个 RoleDefinition.ProcessPlatformCreator */
+			if ((effectivePerson.isNotManager()) && (!business.organization().person().hasRole(effectivePerson,
 					OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager,
 					OrganizationDefinition.ProcessPlatformCreator))) {
 				throw new ExceptionInsufficientPermission(effectivePerson.getDistinguishedName());

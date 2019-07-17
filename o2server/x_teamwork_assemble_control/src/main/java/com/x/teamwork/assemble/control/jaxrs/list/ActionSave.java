@@ -3,6 +3,7 @@ package com.x.teamwork.assemble.control.jaxrs.list;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -20,9 +21,9 @@ public class ActionSave extends BaseAction {
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		TaskList taskList = null;
+		TaskList taskList_old = null;
 		Wi wi = null;
 		Boolean check = true;
-		String optType = "CREATE";
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
@@ -34,17 +35,13 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {	
-			taskList = taskListQueryService.get( wi.getId() );
-			if( taskList == null ) {
-				optType = "CREATE";
-			}else {
-				optType = "UPDATE";
-			}
+			taskList_old = taskListQueryService.get( wi.getId() );
 		}
 		
 		if (check) {			
-			try {					
-				taskList = taskListPersistService.save( wi, effectivePerson );
+			try {
+				
+				taskList = taskListPersistService.save( Wi.copier.copy(wi), effectivePerson );
 				
 				// 更新缓存
 				ApplicationCache.notify( TaskList.class );
@@ -60,7 +57,7 @@ public class ActionSave extends BaseAction {
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( taskList, optType, effectivePerson, jsonElement.toString() );
+				dynamicPersistService.taskListSaveDynamic(taskList_old, taskList, effectivePerson,  jsonElement.toString() );
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -68,11 +65,64 @@ public class ActionSave extends BaseAction {
 		return result;
 	}	
 
-	public static class Wi extends TaskList {
+	public static class Wi{
 		
-		private static final long serialVersionUID = -6314932919066148113L;	
+		@FieldDescribe("列表ID，新建时为空.")
+		private String id;
+		
+		@FieldDescribe("所属任务分组(必填).")
+		private String taskGroup;
+		
+		@FieldDescribe("工作任务列表名称(必填)")
+		private String name;
+		
+		@FieldDescribe("排序号")
+		private Integer order = 0;
+		
+		@FieldDescribe("列表描述")
+		private String memo;			
 		
 		public static WrapCopier<Wi, TaskList> copier = WrapCopierFactory.wi( Wi.class, TaskList.class, null, null );		
+		
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getTaskGroup() {
+			return taskGroup;
+		}
+
+		public void setTaskGroup(String taskGroup) {
+			this.taskGroup = taskGroup;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public Integer getOrder() {
+			return order;
+		}
+
+		public void setOrder(Integer order) {
+			this.order = order;
+		}
+
+		public String getMemo() {
+			return memo;
+		}
+
+		public void setMemo(String memo) {
+			this.memo = memo;
+		}		
 	}
 
 	public static class Wo extends WoId {

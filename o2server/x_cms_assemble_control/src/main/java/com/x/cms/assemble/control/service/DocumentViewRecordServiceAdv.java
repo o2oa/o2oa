@@ -45,9 +45,25 @@ public class DocumentViewRecordServiceAdv {
 		}
 	}
 	
-	public List<String> listByPerson( String personName ) throws Exception {
+	public List<String> listByPerson( String personName, Integer maxCount ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return documentViewRecordService.listByPerson( emc, personName );
+			List<String> ids =  documentViewRecordService.listByPerson( emc, personName, maxCount );
+			if( ids == null ) {
+				ids = new ArrayList<>();
+			}
+			return ids;
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<String> listDocIdsByPerson( String personName, Integer maxCount ) throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			List<String> ids =  documentViewRecordService.listDocIdsByPerson( emc, personName, maxCount );
+			if( ids == null ) {
+				ids = new ArrayList<>();
+			}
+			return ids;
 		} catch ( Exception e ) {
 			throw e;
 		}

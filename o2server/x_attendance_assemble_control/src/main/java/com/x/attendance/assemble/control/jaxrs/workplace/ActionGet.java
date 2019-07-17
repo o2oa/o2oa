@@ -1,8 +1,5 @@
 package com.x.attendance.assemble.control.jaxrs.workplace;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionWorkPlaceProcess;

@@ -30,6 +30,7 @@ public class AttendanceSettingFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("列示全部的AttendanceSetting应用信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceSetting> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceSetting.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

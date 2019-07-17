@@ -30,6 +30,14 @@ public class MessageConnector {
 	/* 有新的工作通过消息节点 */
 	public static final String TYPE_ACTIVITY_MESSAGE = "activity_message";
 
+	public static final String TYPE_WORK_CREATE = "work_create";
+
+	public static final String TYPE_WORK_DELETE = "work_delete";
+
+	public static final String TYPE_WORKCOMPLETED_CREATE = "workCompleted_create";
+
+	public static final String TYPE_WORKCOMPLETED_DELETE = "workCompleted_delete";
+
 	public static final String TYPE_TASK_CREATE = "task_create";
 
 	public static final String TYPE_TASK_DELETE = "task_delete";
@@ -55,6 +63,10 @@ public class MessageConnector {
 	public static final String TYPE_REVIEW_CREATE = "review_create";
 
 	public static final String TYPE_REVIEW_DELETE = "review_delete";
+	
+	public static final String TYPE_ATTACHMENT_CREATE = "attachment_create";
+
+	public static final String TYPE_ATTACHMENT_DELETE = "attachment_delete";
 
 	public static final String TYPE_MEETING_INVITE = "meeting_invite";
 

@@ -72,39 +72,39 @@ public class TaskDetail extends SliceJpaObject {
 	private String project;
 	
 	public static final String detail_FIELDNAME = "detail";
-	@FieldDescribe("工作内容")
+	@FieldDescribe("工作内容(128K)")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + detail_FIELDNAME)
-	private String detail;
+	private String detail = "";
 	
 	public static final String description_FIELDNAME = "description";
-	@FieldDescribe("说明信息")
+	@FieldDescribe("说明信息(10M)")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + description_FIELDNAME)
-	private String description;
+	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + description_FIELDNAME)
+	private String description = "";
 	
 	public static final String memoLob1_FIELDNAME = "memoLob1";
-	@FieldDescribe("备用LOB信息1")
+	@FieldDescribe("备用LOB信息1(128K)")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob1_FIELDNAME)
-	private String memoLob1;
+	private String memoLob1 = "";
 	
 	public static final String memoLob2_FIELDNAME = "memoLob2";
-	@FieldDescribe("备用LOB信息2")
+	@FieldDescribe("备用LOB信息2(128K)")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob2_FIELDNAME)
-	private String memoLob2;
+	private String memoLob2 = "";
 	
 	public static final String memoLob3_FIELDNAME = "memoLob3";
-	@FieldDescribe("备用LOB信息3")
+	@FieldDescribe("备用LOB信息3(128K)")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob3_FIELDNAME)
-	private String memoLob3;
+	private String memoLob3 = "";
 
 	public String getProject() {
 		return project;

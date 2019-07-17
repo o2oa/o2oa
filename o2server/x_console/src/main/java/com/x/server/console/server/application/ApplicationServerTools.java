@@ -5,8 +5,10 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +18,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +31,11 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.x.base.core.project.x_general_assemble_control;
+import com.x.base.core.project.x_organization_assemble_authentication;
+import com.x.base.core.project.x_organization_assemble_control;
+import com.x.base.core.project.x_organization_assemble_express;
+import com.x.base.core.project.x_organization_assemble_personal;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
@@ -51,6 +59,11 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 5;
 	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 100;
+
+	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
+			x_general_assemble_control.class.getName(), x_organization_assemble_express.class.getName(),
+			x_organization_assemble_authentication.class.getName(), x_organization_assemble_control.class.getName(),
+			x_organization_assemble_personal.class.getName());
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
@@ -79,8 +92,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
 				webApp.setExtraClasspath(calculateExtraClassPath(clz));
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-				// webApp.setDefaultsDescriptor(new File(Config.dir_commons(),
-				// "webdefault_a.xml").getAbsolutePath());
+				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				handlers.addHandler(webApp);
 			} else if (dir.exists()) {
 				FileUtils.forceDelete(dir);
@@ -90,8 +102,8 @@ public class ApplicationServerTools extends JettySeverTools {
 		logger.print("start to deploy custom module, size:{}.", customNames.size());
 
 		for (String name : customNames) {
-			File war = new File(Config.dir_custom(), name + ".war");
-			File dir = new File(Config.dir_servers_applicationServer_work(), name);
+			File war = new File(Config.dir_custom(), name);
+			File dir = new File(Config.dir_servers_applicationServer_work(), FilenameUtils.getBaseName(name));
 			if (war.exists()) {
 				modified(war, dir);
 				String className = contextParamProject(dir);
@@ -100,12 +112,13 @@ public class ApplicationServerTools extends JettySeverTools {
 				Class<?> cls = classLoader.loadClass(className);
 				QuickStartWebApp webApp = new QuickStartWebApp();
 				webApp.setAutoPreconfigure(false);
-				webApp.setPreconfigure(false);
 				webApp.setDisplayName(name);
 				webApp.setContextPath("/" + name);
 				webApp.setResourceBase(dir.getAbsolutePath());
 				webApp.setDescriptor(dir + "/WEB-INF/web.xml");
 				webApp.setExtraClasspath(calculateExtraClassPath(cls));
+				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				handlers.addHandler(webApp);
 			} else if (dir.exists()) {
 				FileUtils.forceDelete(dir);
@@ -169,6 +182,19 @@ public class ApplicationServerTools extends JettySeverTools {
 					os.add(info);
 				}
 			}
+			os = os.stream().sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
+				int indx = OFFICIAL_MODULE_SORTED_TEMPLATE.indexOf(x);
+				int indy = OFFICIAL_MODULE_SORTED_TEMPLATE.indexOf(y);
+				if (indx == indy) {
+					return 0;
+				} else if (indx == -1) {
+					return 1;
+				} else if (indy == -1) {
+					return -1;
+				} else {
+					return indx - indy;
+				}
+			})).collect(Collectors.toList());
 			return os;
 		}
 	}

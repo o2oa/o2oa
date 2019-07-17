@@ -36,19 +36,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 @Table(name = PersistenceProperties.Item.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Item.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN })
-		// @UniqueConstraint(name = PersistenceProperties.Item.table +
-		// JpaObject.IndexNameMiddle
-		// + DataItem.bundle_FIELDNAME, columnNames = { JpaObject.IDCOLUMN,
-		// DataItem.BUNDLECOLUMN,
-		// DataItem.ITEMCATEGORYCOLUMN, DataItem.PATH0COLUMN, DataItem.PATH1COLUMN,
-		// DataItem.PATH2COLUMN,
-		// DataItem.PATH3COLUMN, DataItem.PATH4COLUMN, DataItem.PATH5COLUMN,
-		// DataItem.PATH6COLUMN,
-		// DataItem.PATH7COLUMN, DataItem.ITEMTYPECOLUMN,
-		// DataItem.ITEMPRIMITIVETYPECOLUMN,
-		// DataItem.ITEMSTRINGVALUETYPECOLUMN })
-})
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Item extends DataItem {
 

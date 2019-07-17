@@ -86,13 +86,13 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 				String n = "s" + ("" + (1000 + idx)).substring(1);
 				if (StringUtils.equals(n, name)) {
 					String value = o.getLogLevel().toString();
-					return "Tool=" + value + ", Enhance=" + value + ", METADATA=" + value
-							+ ", RUNTIME=" + value + ", Query=" + value + ", DataCache=" + value + ", JDBC=" + value
+					return "DefaultLevel=WARN, Tool=" + value + ", Enhance=" + value + ", METADATA=" + value
+							+ ", Runtime=" + value + ", Query=" + value + ", DataCache=" + value + ", JDBC=" + value
 							+ ", SQL=" + value;
 				}
 			}
 		}
-		return "Tool=WARN, Enhance=WARN, METADATA=WARN, RUNTIME=WARN, Query=WARN, DataCache=WARN, JDBC=ERROR, SQL=WARN";
+		return "DefaultLevel=WARN, Tool=WARN, Enhance=WARN, METADATA=WARN, Runtime=WARN, Query=WARN, DataCache=WARN, JDBC=ERROR, SQL=WARN";
 	}
 
 	public String dictionary() throws Exception {

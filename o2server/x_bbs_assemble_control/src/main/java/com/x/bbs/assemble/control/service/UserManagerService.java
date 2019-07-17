@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 
 /**
@@ -206,7 +207,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			roleList = business.organization().role().listWithPerson( name );
-			if ( roleList != null && !roleList.isEmpty() ) {
+			if ( ListTools.isNotEmpty( roleList ) ) {
 				for ( String role : roleList ) {
 					if ( role.split("@")[0].equalsIgnoreCase( roleName ) ) {
 						return true;

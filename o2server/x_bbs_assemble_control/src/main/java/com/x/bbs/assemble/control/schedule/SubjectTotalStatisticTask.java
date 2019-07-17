@@ -6,9 +6,9 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.x.base.core.project.Context;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSForumSubjectStatisticService;
 import com.x.bbs.entity.BBSForumInfo;
@@ -31,7 +31,7 @@ public class SubjectTotalStatisticTask implements Job {
 
 		try {
 			forumInfoList = forumInfoServiceAdv.listAll();
-			if (forumInfoList != null && !forumInfoList.isEmpty()) {
+			if ( ListTools.isNotEmpty( forumInfoList )) {
 				forumSubjectStatisticService.statisticSubjectTotalAndReplayTotalForForum(forumInfoList);
 			}
 			logger.info("Timertask[SubjectReplyTotalStatisticTask] completed and excute success.");

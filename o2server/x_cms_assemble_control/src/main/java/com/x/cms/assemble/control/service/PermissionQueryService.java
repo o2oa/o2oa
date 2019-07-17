@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.CmsPermissionService;
 
 public class PermissionQueryService {
@@ -135,5 +138,61 @@ public class PermissionQueryService {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	/**
+	 * 对比两个栏目的可见范围是否有变更
+	 * @param old_appInfo
+	 * @param appInfo
+	 * @return
+	 */
+	public boolean hasDiffrentViewPermissionInAppInfo( AppInfo old_appInfo, AppInfo appInfo ) {
+		if( !old_appInfo.getAllPeopleView().equals( appInfo.getAllPeopleView() ) ) {
+			return true;
+		}
+		if( !old_appInfo.getAnonymousAble().equals(appInfo.getAnonymousAble() ) ) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_appInfo.getViewablePersonList(), appInfo.getViewablePersonList() )) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_appInfo.getViewableUnitList(), appInfo.getViewableUnitList() )) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_appInfo.getViewableGroupList(), appInfo.getViewableGroupList() )) {
+			return true;
+		}
+		if( !old_appInfo.getDocumentType().equals( appInfo.getDocumentType() )) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 对比两个分类的可见范围是否有变更
+	 * @param old_categoryInfo
+	 * @param categoryInfo
+	 * @return
+	 */
+	public boolean hasDiffrentViewPermissionInCategory( CategoryInfo old_categoryInfo, CategoryInfo	 categoryInfo ) {
+		if( !old_categoryInfo.getAllPeopleView().equals( categoryInfo.getAllPeopleView() ) ) {
+			return true;
+		}
+		if( !old_categoryInfo.getAnonymousAble().equals(categoryInfo.getAnonymousAble() ) ) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_categoryInfo.getViewablePersonList(), categoryInfo.getViewablePersonList() )) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_categoryInfo.getViewableUnitList(), categoryInfo.getViewableUnitList() )) {
+			return true;
+		}
+		if( !ListTools.isSameList( old_categoryInfo.getViewableGroupList(), categoryInfo.getViewableGroupList() )) {
+			return true;
+		}
+		if( !old_categoryInfo.getDocumentType().equals( categoryInfo.getDocumentType() )) {
+			return true;
+		}
+		return false;
 	}
 }

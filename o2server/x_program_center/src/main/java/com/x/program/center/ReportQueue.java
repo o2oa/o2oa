@@ -34,7 +34,6 @@ public class ReportQueue extends AbstractQueue<Report> {
 	@Override
 	protected void execute(Report report) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Class<?> clz = Class.forName(report.getClassName());
 			Business business = new Business(emc);
 			Application application = ThisApplication.context().applications().get(report.getClassName(),
 					report.getToken());

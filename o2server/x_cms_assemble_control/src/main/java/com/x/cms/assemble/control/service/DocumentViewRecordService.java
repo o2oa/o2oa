@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -30,12 +31,33 @@ public class DocumentViewRecordService {
 		return business.documentViewRecordFactory().listByDocument(docId);
 	}
 	
-	public List<String> listByPerson( EntityManagerContainer emc, String personId ) throws Exception {
+	public List<String> listByPerson( EntityManagerContainer emc, String personId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( personId ) ){
 			return null;
 		}
+		if( maxCount == null || maxCount == 0 ) {
+			maxCount = 50;
+		}
 		Business business = new Business( emc );
-		return business.documentViewRecordFactory().listByPerson( personId );
+		return business.documentViewRecordFactory().listByPerson( personId, maxCount );
+	}
+	
+	public List<String> listDocIdsByPerson( EntityManagerContainer emc, String personId, Integer maxCount ) throws Exception {
+		if( StringUtils.isEmpty( personId ) ){
+			return null;
+		}
+		if( maxCount == null || maxCount == 0 ) {
+			maxCount = 50;
+		}
+		Business business = new Business( emc );
+		List<String> docIds = new ArrayList<>();
+		List<DocumentViewRecord> records =  business.documentViewRecordFactory().listRecordsByPerson( personId, maxCount );
+		if( ListTools.isNotEmpty(  records)) {
+			for( DocumentViewRecord record : records ) {
+				docIds.add( record.getDocumentId() );
+			}
+		}
+		return docIds;
 	}
 
 	public void deleteByDocument( EntityManagerContainer emc, String docId ) throws Exception {

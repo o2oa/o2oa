@@ -44,7 +44,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionMode.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionMode().execute();
+			result = new ActionMode().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -62,7 +62,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionCheckCredential.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCheckCredential().execute(credential);
+			result = new ActionCheckCredential().execute(effectivePerson, credential);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -79,7 +79,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionLogin().execute(request, response, jsonElement);
+			result = new ActionLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -96,7 +96,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionLogout.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionLogout().execute(request, response);
+			result = new ActionLogout().execute(request, response, effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -130,7 +130,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionCaptchaLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCaptchaLogin().execute(request, response, jsonElement);
+			result = new ActionCaptchaLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -149,7 +149,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionCaptcha.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCaptcha().execute(width, height);
+			result = new ActionCaptcha().execute(effectivePerson, width, height);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -167,7 +167,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionCodeLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCodeLogin().execute(request, response, wrapIn);
+			result = new ActionCodeLogin().execute(request, response, effectivePerson, wrapIn);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -185,7 +185,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionCode.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCode().execute(credential);
+			result = new ActionCode().execute(effectivePerson, credential);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -202,7 +202,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionBind.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBind().execute();
+			result = new ActionBind().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -220,7 +220,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<ActionBindLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBindLogin().execute(request, response, meta);
+			result = new ActionBindLogin().execute(request, response, effectivePerson, meta);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

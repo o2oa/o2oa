@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -61,10 +63,10 @@ public class ActionGet extends BaseAction {
 				result.error( exception );
 			}
 		}
-		if( wrap.getCreatorName() != null && !wrap.getCreatorName().isEmpty() ) {
+		if( StringUtils.isNotEmpty( wrap.getCreatorName() ) ) {
 			wrap.setCreatorNameShort( wrap.getCreatorName().split( "@" )[0]);
 		}
-		if( wrap.getAuditorName() != null && !wrap.getAuditorName().isEmpty() ) {
+		if( StringUtils.isNotEmpty( wrap.getAuditorName() ) ) {
 			wrap.setAuditorNameShort( wrap.getAuditorName().split( "@" )[0]);
 		}
 		result.setData( wrap );

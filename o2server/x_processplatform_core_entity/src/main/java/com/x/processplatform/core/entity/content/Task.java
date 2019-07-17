@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -27,6 +28,7 @@ import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.google.gson.annotations.SerializedName;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -94,6 +96,14 @@ public class Task extends SliceJpaObject {
 		} else {
 			this.opinion = opinion;
 			this.opinionLob = null;
+		}
+	}
+
+	public void setTitle(String title) {
+		if (StringTools.utf8Length(title) > length_255B) {
+			this.title = StringTools.utf8SubString(this.title, 252) + "...";
+		} else {
+			this.title = Objects.toString(title, "");
 		}
 	}
 
@@ -402,12 +412,6 @@ public class Task extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
 
-//	public static final String opinionGroup_FIELDNAME = "opinionGroup";
-//	@FieldDescribe("意见分组")
-//	@CheckPersist(allowEmpty = true)
-//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
-//	private String opinionGroup;
-
 	public static final String opinion_FIELDNAME = "opinion";
 	@FieldDescribe("处理意见.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
@@ -469,12 +473,9 @@ public class Task extends SliceJpaObject {
 		this.work = work;
 	}
 
+	@SerializedName("title")
 	public String getTitle() {
 		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getIdentity() {
@@ -612,14 +613,6 @@ public class Task extends SliceJpaObject {
 	public void setActivityType(ActivityType activityType) {
 		this.activityType = activityType;
 	}
-
-	// public ManualMode getManualMode() {
-	// return manualMode;
-	// }
-	//
-	// public void setManualMode(ManualMode manualMode) {
-	// this.manualMode = manualMode;
-	// }
 
 	public String getStartTimeMonth() {
 		return startTimeMonth;

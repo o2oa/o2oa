@@ -8,6 +8,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSForumSubjectStatisticService;
 import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSSubjectInfoService;
@@ -32,7 +33,7 @@ public class SubjectReplyTotalStatisticTask implements Job {
 		List<BBSSectionInfo> sectionList = null;
 		try {
 			sectionList = sectionInfoServiceAdv.listAll();
-			if (sectionList != null && !sectionList.isEmpty()) {
+			if ( ListTools.isNotEmpty( sectionList )) {
 				sectionList.parallelStream().forEach(s -> {
 					try {
 						statisticExecute(s);
@@ -50,7 +51,7 @@ public class SubjectReplyTotalStatisticTask implements Job {
 
 	private void statisticExecute(BBSSectionInfo section) throws Exception {
 		List<BBSSubjectInfo> subjectList = subjectInfoService.listSubjectIdsBySection(section.getId());
-		if (subjectList != null && !subjectList.isEmpty()) {
+		if ( ListTools.isNotEmpty( subjectList )) {
 			forumSubjectStatisticService.statisticReplyTotalForSubjects(subjectList);
 		}
 	}

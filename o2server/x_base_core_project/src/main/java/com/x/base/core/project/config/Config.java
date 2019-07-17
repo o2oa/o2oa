@@ -52,6 +52,7 @@ public class Config {
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
+	public static final String PATH_CONFIG_SLICE = "config/slice.json";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 
@@ -97,6 +98,8 @@ public class Config {
 	public static final String RESOUCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
 
 	public static final String RESOUCE_JDBC_PREFIX = "jdbc/";
+
+	public static final String RESOUCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
 
 	public static final String RESOUCE_CONFIG = "config";
 
@@ -299,6 +302,16 @@ public class Config {
 
 	public static File dir_logs() throws Exception {
 		return new File(base(), DIR_LOGS);
+	}
+
+	public static File dir_logs(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOGS);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static File dir_servers() throws Exception {
@@ -961,6 +974,23 @@ public class Config {
 			}
 		}
 		return instance().initialContext;
+	}
+
+	public Slice slice;
+
+	public static Slice slice() throws Exception {
+		if (null == instance().slice) {
+			synchronized (Config.class) {
+				if (null == instance().slice) {
+					Slice obj = BaseTools.readObject(PATH_CONFIG_SLICE, Slice.class);
+					if (null == obj) {
+						obj = Slice.defaultInstance();
+					}
+					instance().slice = obj;
+				}
+			}
+		}
+		return instance().slice;
 	}
 
 	public static Object resource(String name) throws Exception {

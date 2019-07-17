@@ -5,6 +5,7 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
@@ -28,10 +29,10 @@ public class BBSForumSubjectStatisticService {
 				emc.beginTransaction( BBSSectionInfo.class );
 				
 				mainSectionList = business.sectionInfoFactory().listMainSectionByForumId( f.getId() );
-				if( mainSectionList != null && !mainSectionList.isEmpty() ){
+				if( ListTools.isNotEmpty( mainSectionList ) ){
 					for( BBSSectionInfo mainSectionInfo : mainSectionList ){
 						sectionList = business.sectionInfoFactory().listSubSectionByMainSectionId( mainSectionInfo.getId() );
-						if( sectionList != null && !sectionList.isEmpty() ){
+						if( ListTools.isNotEmpty( sectionList ) ){
 							for( BBSSectionInfo sectionInfo : mainSectionList ){
 								//统计版块下面的贴子数量
 								count = business.subjectInfoFactory().countByMainAndSubSectionId( sectionInfo.getId(), null );

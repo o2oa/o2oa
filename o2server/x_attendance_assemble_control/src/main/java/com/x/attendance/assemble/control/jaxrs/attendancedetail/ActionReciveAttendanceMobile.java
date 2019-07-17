@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -90,7 +92,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			}
 		}
 		if( check ){
-			if( wrapIn.getRecordDateString() != null && !wrapIn.getRecordDateString().isEmpty() ){
+			if( StringUtils.isNotEmpty( wrapIn.getRecordDateString() ) ){
 				try{
 					datetime = dateOperation.getDateFromString( wrapIn.getRecordDateString() );
 					attendanceDetailMobile.setRecordDateString( dateOperation.getDateStringFromDate( datetime, "yyyy-MM-dd") ); //打卡时间
@@ -106,7 +108,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			}
 		}
 		if( check ){
-			if( wrapIn.getId() != null && !wrapIn.getId().isEmpty()){
+			if( StringUtils.isNotEmpty( wrapIn.getId() )){
 				attendanceDetailMobile.setId( wrapIn.getId() );
 			}
 			attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );

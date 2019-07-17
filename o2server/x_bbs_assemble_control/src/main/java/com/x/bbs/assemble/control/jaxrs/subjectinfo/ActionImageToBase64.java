@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imgscalr.Scalr;
 
@@ -31,6 +32,7 @@ public class ActionImageToBase64 extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionImageToBase64.class );
 	
+	@SuppressWarnings("deprecation")
 	protected ActionResult<WrapOutString> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, String size ) throws Exception {
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		WrapOutString wrap = null;
@@ -47,7 +49,7 @@ public class ActionImageToBase64 extends BaseAction {
 			}
 		}
 		if (check) {
-			if (size != null && !size.isEmpty()) {
+			if ( StringUtils.isNotEmpty( size )) {
 				if (NumberUtils.isNumber(size)) {
 					sizeNum = Integer.parseInt(size);
 				} else {

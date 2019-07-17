@@ -1,16 +1,21 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,6 +25,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.CmsPlan;
+import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.ProcessPlatformPlan;
 import com.x.query.core.express.plan.Row;
@@ -33,21 +39,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Plan accessPlan(Business business, View view, Runtime runtime) throws Exception {
 		Plan plan = null;
 		if (BooleanUtils.isTrue(view.getCacheAccess())) {
-			String cacheKey = ApplicationCache.concreteCacheKey(view.getId(), StringTools.sha(gson.toJson(runtime)));
+			String cacheKey = ApplicationCache.concreteCacheKey("accessPlan", view.getId(),
+					StringTools.sha(gson.toJson(runtime)));
 			Element element = business.cache().get(cacheKey);
 			if ((null != element) && (null != element.getObjectValue())) {
 				plan = (Plan) element.getObjectValue();
 			} else {
-				plan = this.getPlan(view, runtime);
+				plan = this.accessPlan(view, runtime);
 				business.cache().put(new Element(cacheKey, plan));
 			}
 		} else {
-			plan = this.getPlan(view, runtime);
+			plan = this.accessPlan(view, runtime);
 		}
 		return plan;
 	}
 
-	private Plan getPlan(View view, Runtime runtime) throws Exception {
+	private Plan accessPlan(View view, Runtime runtime) throws Exception {
 		Plan plan = null;
 		switch (StringUtils.trimToEmpty(view.getType())) {
 		case View.TYPE_CMS:
@@ -67,6 +74,41 @@ abstract class BaseAction extends StandardJaxrsAction {
 		plan.afterGridScriptText = null;
 		plan.afterGroupGridScriptText = null;
 		return plan;
+	}
+
+	private List<String> fetchBundle(View view, Runtime runtime) throws Exception {
+		List<String> os = null;
+		switch (StringUtils.trimToEmpty(view.getType())) {
+		case View.TYPE_CMS:
+			CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+			cmsPlan.runtime = runtime;
+			os = cmsPlan.fetchBundles();
+			break;
+		default:
+			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+			processPlatformPlan.runtime = runtime;
+			os = processPlatformPlan.fetchBundles();
+			break;
+		}
+		return os;
+	}
+
+	protected List<String> fetchBundle(Business business, View view, Runtime runtime) throws Exception {
+		List<String> os = null;
+		if (BooleanUtils.isTrue(view.getCacheAccess())) {
+			String cacheKey = ApplicationCache.concreteCacheKey("fetchBundle", view.getId(),
+					StringTools.sha(gson.toJson(runtime)));
+			Element element = business.cache().get(cacheKey);
+			if ((null != element) && (null != element.getObjectValue())) {
+				os = (List<String>) element.getObjectValue();
+			} else {
+				os = this.fetchBundle(view, runtime);
+				business.cache().put(new Element(cacheKey, os));
+			}
+		} else {
+			os = this.fetchBundle(view, runtime);
+		}
+		return os;
 	}
 
 	public static class ExcelResultObject extends GsonPropertyObject {
@@ -129,11 +171,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 						c.setCellValue(Objects.toString(row.get(o.column)));
 						i++;
 					}
-//					for (Entry<String, Object> entry : row.data.entrySet()) {
-//						c = r.createCell(i);
-//						c.setCellValue(Objects.toString(entry.getValue(), ""));
-//						i++;
-//					}
 				}
 			}
 			String name = view.getName() + ".xlsx";
@@ -148,14 +185,25 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected <T extends Runtime> void append(EffectivePerson effectivePerson, Business business, T t)
-			throws Exception {
-		t.person = effectivePerson.getDistinguishedName();
-		t.identityList = business.organization().identity().listWithPerson(effectivePerson);
-		t.unitList = business.organization().unit().listWithPerson(effectivePerson);
-		t.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
-		t.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
-		t.roleList = business.organization().role().listWithPerson(effectivePerson);
+	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
+			List<FilterEntry> filterList, Map<String, String> parameter, Integer count) throws Exception {
+		Runtime runtime = new Runtime();
+		runtime.person = effectivePerson.getDistinguishedName();
+		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
+		runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
+		runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
+		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
+		runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
+		runtime.parameter = parameter;
+		runtime.filterList = filterList;
+		runtime.count = this.getCount(view, count);
+		return runtime;
+	}
+
+	protected Integer getCount(View view, Integer count) {
+		Integer viewCount = view.getCount();
+		Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
+		return NumberUtils.min(viewCount, wiCount);
 	}
 
 }

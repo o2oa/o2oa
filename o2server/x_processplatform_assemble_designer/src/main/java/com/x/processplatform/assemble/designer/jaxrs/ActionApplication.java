@@ -17,6 +17,7 @@ import com.x.processplatform.assemble.designer.jaxrs.output.OutputAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.ProcessAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoParallelAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoSimpleAction;
+import com.x.processplatform.assemble.designer.jaxrs.projection.ProjectionAction;
 import com.x.processplatform.assemble.designer.jaxrs.querystat.QueryStatAction;
 import com.x.processplatform.assemble.designer.jaxrs.queryview.QueryViewAction;
 import com.x.processplatform.assemble.designer.jaxrs.script.ScriptAction;
@@ -41,6 +42,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DemoParallelAction.class);
 		classes.add(InputAction.class);
 		classes.add(OutputAction.class);
+		classes.add(ProjectionAction.class);
 		classes.add(ElementToolAction.class);
 		return classes;
 	}

@@ -4,6 +4,8 @@ import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.exception.ExceptionAttendanceImportFileProcess;
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.exception.ExceptionFileIdEmpty;
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.exception.ExceptionImportFileNotExists;
@@ -52,7 +54,7 @@ public class ActionDelete extends BaseAction {
 				result.setData( new Wo( id ) );
 				
 				//删除临时文件，如果存在的话
-				if( attendanceImportFileInfo.getTempFilePath() != null && !attendanceImportFileInfo.getTempFilePath().isEmpty() ) {
+				if( StringUtils.isNotEmpty( attendanceImportFileInfo.getTempFilePath() ) ) {
 					File file = new File( attendanceImportFileInfo.getTempFilePath() );
 					if( file.exists() ) {
 						file.delete();

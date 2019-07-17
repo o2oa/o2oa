@@ -1,6 +1,5 @@
 package com.x.organization.core.entity;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -114,7 +113,7 @@ public class Unit extends SliceJpaObject {
 	public static final String typeList_FIELDNAME = "typeList";
 	@FieldDescribe("组织类型.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + typeList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + typeList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + typeList_FIELDNAME)
@@ -180,7 +179,7 @@ public class Unit extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("组织的管理人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + controllerList_FIELDNAME)
@@ -191,7 +190,7 @@ public class Unit extends SliceJpaObject {
 	public static final String inheritedControllerList_FIELDNAME = "inheritedControllerList";
 	@FieldDescribe("继承自上级组织的管理人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ inheritedControllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ inheritedControllerList_FIELDNAME + JoinIndexNameSuffix))
@@ -242,7 +241,7 @@ public class Unit extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String qiyeweixinHash;
 
-	/** flag标志位 */
+	/* flag标志位 */
 
 	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME,
 	// unique_FIELDNAME,

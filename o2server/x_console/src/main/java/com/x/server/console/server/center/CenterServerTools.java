@@ -45,6 +45,7 @@ public class CenterServerTools extends JettySeverTools {
 			webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
 			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 			handlers.addHandler(webApp);
 		} else {
 			throw new Exception("centerServer war not exist.");
@@ -71,6 +72,7 @@ public class CenterServerTools extends JettySeverTools {
 		server.setStopAtShutdown(true);
 
 		server.start();
+		Thread.sleep(1000);
 		System.out.println("****************************************");
 		System.out.println("* center server start completed.");
 		System.out.println("* port: " + centerServer.getPort() + ".");

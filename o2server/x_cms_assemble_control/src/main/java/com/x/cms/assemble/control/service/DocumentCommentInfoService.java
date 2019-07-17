@@ -10,6 +10,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
 
@@ -22,10 +23,15 @@ class DocumentCommentInfoService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public DocumentCommentInfo get(EntityManagerContainer emc, String flag) throws Exception {
+	public DocumentCommentInfo get(EntityManagerContainer emc, String id) throws Exception {
 		Business business = new Business( emc );
-		return business.documentCommentInfoFactory().get( flag );
+		return business.documentCommentInfoFactory().get( id );
 	}
+	
+	public DocumentCommentContent getContent(EntityManagerContainer emc, String id) throws Exception {
+		Business business = new Business( emc );
+		return business.documentCommentInfoFactory().getContent(id);
+	}	
 	
 	/**
 	 * 根据过滤条件查询符合要求的评论信息信息数量
@@ -77,15 +83,18 @@ class DocumentCommentInfoService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public DocumentCommentInfo save( EntityManagerContainer emc, DocumentCommentInfo object ) throws Exception {
+	public DocumentCommentInfo save( EntityManagerContainer emc, DocumentCommentInfo object, String content ) throws Exception {
 		Document document = null;
 		DocumentCommentInfo documentCommentInfo = null;
-		List<String> fieldsUnmodify = null;
+		DocumentCommentContent documentCommentContent = null;
 		if( StringUtils.isEmpty( object.getId() )  ){
 			object.setId( DocumentCommentInfo.createId() );
 		}
 		documentCommentInfo = emc.find( object.getId(), DocumentCommentInfo.class );
+		documentCommentContent = emc.find( object.getId(), DocumentCommentContent.class );
 		document = emc.find( object.getId(), Document.class );
+		
+		emc.beginTransaction( DocumentCommentContent.class );
 		emc.beginTransaction( DocumentCommentInfo.class );
 		if( documentCommentInfo == null ){ // 保存一个新的对象
 			documentCommentInfo = new DocumentCommentInfo();
@@ -101,11 +110,23 @@ class DocumentCommentInfoService {
 				emc.check( document, CheckPersistType.all );
 			}
 		}else{ //对象已经存在，更新对象信息
-			fieldsUnmodify = JpaObject.FieldsUnmodify;
-			fieldsUnmodify.add( DocumentCommentInfo.creatorName_FIELDNAME);
-			object.copyTo( documentCommentInfo, fieldsUnmodify  );
+			if(StringUtils.isNotEmpty( documentCommentInfo.getCreatorName() )) {
+				object.setCreatorName(documentCommentInfo.getCreatorName());
+			}
+			object.copyTo( documentCommentInfo, JpaObject.FieldsUnmodify  );
 			emc.check( documentCommentInfo, CheckPersistType.all );	
 		}
+		
+		if( documentCommentContent == null ){ // 保存一个新的评论内容对象
+			documentCommentContent = new DocumentCommentContent();
+			documentCommentContent.setId( documentCommentInfo.getId() );
+			documentCommentContent.setContent( content );
+			emc.persist( documentCommentContent, CheckPersistType.all);
+		}else{ //对象已经存在，更新评论内容对象信息
+			documentCommentContent.setContent( content );
+			emc.check( documentCommentContent, CheckPersistType.all );	
+		}
+		
 		emc.commit();
 		return documentCommentInfo;
 	}
@@ -118,6 +139,7 @@ class DocumentCommentInfoService {
 	 */
 	public void delete(EntityManagerContainer emc, String id ) throws Exception {		
 		DocumentCommentInfo documentCommentInfo = emc.find( id, DocumentCommentInfo.class );
+		DocumentCommentContent documentCommentConent = emc.find( id, DocumentCommentContent.class );
 		if( documentCommentInfo != null ) {
 			Document document = emc.find( documentCommentInfo.getDocumentId(), Document.class );
 			emc.beginTransaction( DocumentCommentInfo.class );
@@ -129,7 +151,12 @@ class DocumentCommentInfoService {
 					emc.check( document, CheckPersistType.all );
 				}
 			}
+			if( documentCommentConent != null ) {
+				emc.remove( documentCommentConent , CheckRemoveType.all );
+			}
 			emc.commit();
 		}
-	}	
+	}
+
+	
 }

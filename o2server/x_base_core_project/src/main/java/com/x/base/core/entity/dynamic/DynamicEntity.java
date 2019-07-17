@@ -16,23 +16,23 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
 	public static final String JAR_NAME = "x_query_dynamic_entity";
 
-	public static final String TYPE_string = "string";
-	public static final String TYPE_integer = "integer";
-	public static final String TYPE_long = "long";
-	public static final String TYPE_double = "double";
-	public static final String TYPE_boolean = "boolean";
-	public static final String TYPE_date = "date";
-	public static final String TYPE_time = "time";
-	public static final String TYPE_dateTime = "dateTime";
-
-	public static final String TYPE_stringList = "stringList";
-	public static final String TYPE_integerList = "integerList";
-	public static final String TYPE_longList = "longList";
-	public static final String TYPE_doubleList = "doubleList";
-	public static final String TYPE_booleanList = "booleanList";
-
-	public static final String TYPE_stringLob = "stringLob";
-	public static final String TYPE_stringMap = "stringMap";
+//	public static final String TYPE_string = "string";
+//	public static final String TYPE_integer = "integer";
+//	public static final String TYPE_long = "long";
+//	public static final String TYPE_double = "double";
+//	public static final String TYPE_boolean = "boolean";
+//	public static final String TYPE_date = "date";
+//	public static final String TYPE_time = "time";
+//	public static final String TYPE_dateTime = "dateTime";
+//
+//	public static final String TYPE_stringList = "stringList";
+//	public static final String TYPE_integerList = "integerList";
+//	public static final String TYPE_longList = "longList";
+//	public static final String TYPE_doubleList = "doubleList";
+//	public static final String TYPE_booleanList = "booleanList";
+//
+//	public static final String TYPE_stringLob = "stringLob";
+//	public static final String TYPE_stringMap = "stringMap";
 
 	private String name;
 
@@ -74,77 +74,77 @@ public class DynamicEntity extends GsonPropertyObject {
 	}
 
 	public List<Field> stringFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_string))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_STRING))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> integerFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_integer))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_INTEGER))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> longFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_long))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_LONG))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> doubleFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_double))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_DOUBLE))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> booleanFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_boolean))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_BOOLEAN))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> dateFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_date))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_DATE))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> timeFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_time))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_TIME))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> dateTimeFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_dateTime))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_DATETIME))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> stringListFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringList))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_STRINGLIST))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> integerListFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_integerList))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_INTEGERLIST))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> longListFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_longList))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_LONGLIST))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> doubleListFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_doubleList))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_DOUBLELIST))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> booleanListFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_booleanList))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_BOOLEANLIST))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> stringLobFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringLob))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_STRINGLOB))
 				.collect(Collectors.toList());
 	}
 
 	public List<Field> stringMapFields() {
-		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringMap))
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), JpaObject.TYPE_STRINGMAP))
 				.collect(Collectors.toList());
 	}
 

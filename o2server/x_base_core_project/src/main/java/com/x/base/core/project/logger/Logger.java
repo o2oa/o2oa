@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -284,6 +283,12 @@ public class Logger {
 			}
 		}
 		return sb.toString();
+	}
+
+	public Audit audit(EffectivePerson effectivePerson) {
+		Audit o = new Audit(effectivePerson.getDistinguishedName(), effectivePerson.getRemoteAddress(),
+				effectivePerson.getUri(), effectivePerson.getUserAgent(), this.name);
+		return o;
 	}
 
 }

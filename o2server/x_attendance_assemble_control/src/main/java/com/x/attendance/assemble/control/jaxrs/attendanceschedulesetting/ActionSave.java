@@ -87,7 +87,7 @@ public class ActionSave extends BaseAction {
 			attendanceScheduleSetting = new AttendanceScheduleSetting();
 			try {
 				attendanceScheduleSetting = Wi.copier.copy(wrapIn);
-				if (wrapIn.getId() != null && !wrapIn.getId().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					attendanceScheduleSetting.setId(wrapIn.getId());
 				}
 			} catch (Exception e) {

@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSSectionInfo;
@@ -178,7 +179,7 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionLevel ), "主版块" ));	
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionStatus ), "启用" ));
 		Predicate or = cb.equal( root.get( BBSSectionInfo_.sectionVisible ), "所有人" );
-		if( viewableSectionIds != null && !viewableSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( viewableSectionIds ) ){
 			or = cb.or(p, root.get( BBSSectionInfo_.id ).in( viewableSectionIds ) );
 		}
 		p = cb.and( p, or );
@@ -199,7 +200,7 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionLevel ), "子版块" ));
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionStatus ), "启用" ));
 		Predicate or = cb.equal( root.get( BBSSectionInfo_.sectionVisible ), "所有人" );
-		if( viewableSectionIds != null && !viewableSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( viewableSectionIds ) ){
 			or = cb.or(p, root.get( BBSSectionInfo_.id ).in( viewableSectionIds ) );
 		}
 		p = cb.and( p, or );
@@ -216,7 +217,7 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSSectionInfo_.sectionLevel ), "主版块" );
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionVisible ), "所有人" ));
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionStatus ), "启用" ));
-		if( forumIds != null && !forumIds.isEmpty() ){
+		if( ListTools.isNotEmpty( forumIds ) ){
 			p = cb.and(p, root.get( BBSSectionInfo_.forumId ).in( forumIds ));
 		}
 		cq.select( root.get( BBSSectionInfo_.id ) );
@@ -232,10 +233,10 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSSectionInfo_.sectionLevel ), "子版块" );
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionVisible ), "所有人" ));
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionStatus ), "启用" ));
-		if( forumIds != null && !forumIds.isEmpty() ){
+		if( ListTools.isNotEmpty( forumIds ) ){
 			p = cb.and(p, root.get( BBSSectionInfo_.forumId ).in( forumIds ));
 		}
-		if( mainSectionIds != null && !mainSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( mainSectionIds ) ){
 			p = cb.and(p, root.get( BBSSectionInfo_.mainSectionId ).in( mainSectionIds ) );
 		}
 		cq.select( root.get( BBSSectionInfo_.id ) );

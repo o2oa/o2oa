@@ -7,15 +7,36 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
 public class MessageFactory {
+
+	public static void work_create(Work work) throws Exception {
+		String title = "创建新工作:" + adjustTitle(work);
+		MessageConnector.send(MessageConnector.TYPE_WORK_CREATE, title, "", work);
+	}
+
+	public static void work_delete(Work work) throws Exception {
+		String title = "删除工作:" + adjustTitle(work);
+		MessageConnector.send(MessageConnector.TYPE_WORK_DELETE, title, "", work);
+	}
+
+	public static void workCompleted_create(WorkCompleted workCompleted) throws Exception {
+		String title = "创建新已完成工作:" + adjustTitle(workCompleted);
+		MessageConnector.send(MessageConnector.TYPE_WORKCOMPLETED_CREATE, title, "", workCompleted);
+	}
+
+	public static void workCompleted_delete(WorkCompleted workCompleted) throws Exception {
+		String title = "删除完成工作:" + adjustTitle(workCompleted);
+		MessageConnector.send(MessageConnector.TYPE_WORKCOMPLETED_CREATE, title, "", workCompleted);
+	}
 
 	public static void task_press(Task task, String from) throws Exception {
 		String title = OrganizationDefinition.name(from) + "提醒您处理待办:" + adjustTitle(task);
@@ -105,6 +126,16 @@ public class MessageFactory {
 		MessageConnector.send(MessageConnector.TYPE_ACTIVITY_MESSAGE, title, person, work);
 	}
 
+	public static void attachment_create(Attachment attachment) throws Exception {
+		String title = "创建新工作附件:" + adjustTitle(attachment);
+		MessageConnector.send(MessageConnector.TYPE_ATTACHMENT_CREATE, title, "", attachment);
+	}
+
+	public static void attachment_delete(Attachment attachment) throws Exception {
+		String title = "删除工作附件:" + adjustTitle(attachment);
+		MessageConnector.send(MessageConnector.TYPE_ATTACHMENT_DELETE, title, "", attachment);
+	}
+
 	private static String adjustTitle(Task o) {
 		String title = "";
 		if (StringUtils.isEmpty(o.getTitle())) {
@@ -168,6 +199,27 @@ public class MessageFactory {
 			title = o.getTitle();
 		}
 		title += ", (" + o.getProcessName() + ")";
+		return title;
+	}
+
+	private static String adjustTitle(WorkCompleted o) {
+		String title = "";
+		if (StringUtils.isEmpty(o.getTitle())) {
+			title = "无标题 " + DateTools.format(o.getStartTime());
+		} else {
+			title = o.getTitle();
+		}
+		title += ", (" + o.getProcessName() + ")";
+		return title;
+	}
+
+	private static String adjustTitle(Attachment o) {
+		String title = "";
+		if (StringUtils.isEmpty(o.getName())) {
+			title = "无标题 " + DateTools.format(o.getCreateTime());
+		} else {
+			title = o.getName();
+		}
 		return title;
 	}
 

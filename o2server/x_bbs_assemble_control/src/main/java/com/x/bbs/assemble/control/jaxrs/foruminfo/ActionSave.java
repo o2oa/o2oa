@@ -111,12 +111,12 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		if (check) {
-			if (wrapIn.getSubjectType() == null || wrapIn.getSubjectType().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getSubjectType() )) {
 				wrapIn.setSubjectType("新闻|讨论");
 			}
 		}
 		if (check) {
-			if (wrapIn.getForumManagerName() != null && !wrapIn.getForumManagerName().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getForumManagerName() )) {
 				// 判断指定的用户是否存在
 				names = wrapIn.getForumManagerName().split(",");
 				for (String name : names) {

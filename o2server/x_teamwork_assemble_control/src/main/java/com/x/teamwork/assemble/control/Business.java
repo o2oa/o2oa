@@ -2,17 +2,21 @@ package com.x.teamwork.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
+import com.x.teamwork.assemble.control.factory.AttachmentFactory;
+import com.x.teamwork.assemble.control.factory.BatchOperationFactory;
 import com.x.teamwork.assemble.control.factory.ChatFactory;
 import com.x.teamwork.assemble.control.factory.DynamicFactory;
 import com.x.teamwork.assemble.control.factory.ProjectExtFieldReleFactory;
 import com.x.teamwork.assemble.control.factory.ProjectFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupReleFactory;
+import com.x.teamwork.assemble.control.factory.ReviewFactory;
 import com.x.teamwork.assemble.control.factory.SystemConfigFactory;
 import com.x.teamwork.assemble.control.factory.TaskFactory;
 import com.x.teamwork.assemble.control.factory.TaskGroupFactory;
 import com.x.teamwork.assemble.control.factory.TaskGroupReleFactory;
 import com.x.teamwork.assemble.control.factory.TaskListFactory;
+import com.x.teamwork.assemble.control.factory.TaskTagFactory;
 import com.x.teamwork.assemble.control.factory.TaskViewFactory;
 
 public class Business {
@@ -39,12 +43,64 @@ public class Business {
 	private TaskGroupReleFactory taskGroupReleFactory;
 	private TaskViewFactory taskViewFactory;
 	private ProjectExtFieldReleFactory projectExtFieldReleFactory;
+	private ReviewFactory reviewFactory;
+	private BatchOperationFactory batchOperationFactory;
+	private TaskTagFactory taskTagFactory;	
+	private AttachmentFactory attachmentFactory;	
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
 			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
+	}
+	
+	/**
+	 * 获取附件信息数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public AttachmentFactory attachmentFactory() throws Exception {
+		if (null == this.attachmentFactory) {
+			this.attachmentFactory = new AttachmentFactory( this );
+		}
+		return attachmentFactory;
+	}
+	
+	/**
+	 * 获取工作任务标签数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public TaskTagFactory taskTagFactory() throws Exception {
+		if (null == this.taskTagFactory) {
+			this.taskTagFactory = new TaskTagFactory( this );
+		}
+		return taskTagFactory;
+	}
+	
+	/**
+	 * 获取批处理任务数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public BatchOperationFactory batchOperationFactory() throws Exception {
+		if (null == this.batchOperationFactory) {
+			this.batchOperationFactory = new BatchOperationFactory( this );
+		}
+		return batchOperationFactory;
+	}
+	
+	/**
+	 * 获取Review信息数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public ReviewFactory reviewFactory() throws Exception {
+		if (null == this.reviewFactory) {
+			this.reviewFactory = new ReviewFactory( this );
+		}
+		return reviewFactory;
 	}
 	
 	/**

@@ -28,6 +28,7 @@ public class CmsBatchOperation extends SliceJpaObject {
 
 	private static final long serialVersionUID = 7668822947307502058L;
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
+	@SuppressWarnings("unused")
 	private static final String TABLE = PersistenceProperties.CmsBatchOperation.table;
 
 	/* 以上为 JpaObject 默认字段 */

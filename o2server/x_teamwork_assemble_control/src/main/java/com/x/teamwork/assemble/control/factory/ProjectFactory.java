@@ -63,6 +63,15 @@ public class ProjectFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
+	public List<String> listAllProjectIds() throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Project.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Project> root = cq.from(Project.class);
+		cq.select( root.get( Project_.id) );
+		return em.createQuery(cq ).getResultList();
+	}	
+	
 	/**
 	 * 根据条件查询符合条件的项目信息数量
 	 * @param personName
@@ -99,7 +108,8 @@ public class ProjectFactory extends AbstractFactory {
 		
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Project_.class, cb, p_permission, root, queryFilter );
 		cq.select(cb.count(root)).where(p);
-		return em.createQuery(cq).getSingleResult();
+		Long count =  em.createQuery(cq).getSingleResult();
+		return count;
 	}
 	
 	/**
@@ -203,9 +213,52 @@ public class ProjectFactory extends AbstractFactory {
 		if( orderWithField != null ){
 			cq.orderBy( orderWithField );
 		}
+		System.out.println(">>>SQL：" + em.createQuery(cq.where(p)).setMaxResults( maxCount).toString() );
+		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
+	}
+	
+	/**
+	 * 根据条件查询所有符合条件的项目信息ID，项目信息不会很多 ，所以直接查询出来
+	 * @param maxCount
+	 * @param sequenceFieldValue
+	 * @param orderField
+	 * @param orderType
+	 * @param personName
+	 * @param identityNames
+	 * @param unitNames
+	 * @param groupNames
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listAllViewableProjectIds( Integer maxCount, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Project.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Project> root = cq.from(Project.class);
+		Predicate p_permission = null;
+		
+		if( StringUtils.isNotEmpty( personName )) {
+			//可以管理的栏目，肯定可以发布信息
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.participantPersonList )) );
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.manageablePersonList )) );
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.creatorPerson ), personName ) );
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.executor ), personName ) );
+		}
+		if( ListTools.isNotEmpty( identityNames )) {
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantIdentityList).in(identityNames));
+		}
+		if( ListTools.isNotEmpty( unitNames )) {
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantUnitList).in(unitNames));
+		}
+		if( ListTools.isNotEmpty( groupNames )) {
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantGroupList).in(groupNames));
+		}
+		
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Project_.class, cb, p_permission, root, queryFilter );
+		cq.distinct(true).select( root.get(Project_.id) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
 
-	
 	
 }

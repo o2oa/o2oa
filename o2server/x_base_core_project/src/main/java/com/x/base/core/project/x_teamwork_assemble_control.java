@@ -14,8 +14,10 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.teamwork.core.entity.TaskDetail", "com.x.teamwork.core.entity.TaskList",
 		"com.x.teamwork.core.entity.TaskListRele", "com.x.teamwork.core.entity.TaskRelevance",
 		"com.x.teamwork.core.entity.TaskView", "com.x.teamwork.core.entity.SystemConfig",
-		"com.x.teamwork.core.entity.SystemConfigLobValue" }, storeJars = { "x_organization_core_entity",
-				"x_organization_core_express", "x_teamwork_core_entity" })
+		"com.x.teamwork.core.entity.SystemConfigLobValue", "com.x.teamwork.core.entity.Review",
+		"com.x.teamwork.core.entity.BatchOperation", "com.x.teamwork.core.entity.TaskTag", 
+		"com.x.teamwork.core.entity.TaskTagRele", "com.x.teamwork.core.entity.Attachment"}, storeJars = { "x_organization_core_entity",
+		"x_organization_core_express", "x_teamwork_core_entity" })
 public class x_teamwork_assemble_control extends Deployable {
 
 //	public x_teamwork_assemble_control() {

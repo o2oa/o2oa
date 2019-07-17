@@ -216,8 +216,8 @@ public class NodeAgent extends Thread {
 				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
 						|| Objects.equals(module.type(), ModuleType.SERVICE)
 						|| Objects.equals(module.type(), ModuleType.CENTER)) {
-					if (ArrayUtils.contains(module.storeJars(),name) || ArrayUtils.contains(module.customJars(),name)
-							|| ArrayUtils.contains(module.dynamicJars(),name)) {
+					if (ArrayUtils.contains(module.storeJars(), name) || ArrayUtils.contains(module.customJars(), name)
+							|| ArrayUtils.contains(module.dynamicJars(), name)) {
 						list.add(info);
 					}
 				}

@@ -20,8 +20,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger(ActionListWhatICanPublish.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson)
-			throws Exception {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		List<Wo> wos_out = new ArrayList<>();

@@ -72,12 +72,6 @@ public class ActionRefreshTaskList extends BaseAction {
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
-			
-			try {					
-				dynamicPersistService.save( taskList, "UPDATE", effectivePerson, null );
-			} catch (Exception e) {
-				logger.error(e, effectivePerson, request, null);
-			}	
 		}		
 		return result;
 	}

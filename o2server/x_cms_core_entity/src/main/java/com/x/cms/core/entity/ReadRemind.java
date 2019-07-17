@@ -29,15 +29,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
  */
 @Entity
 @ContainerEntity
-@Table(name = PersistenceProperties.Review.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Review.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.ReadRemind.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.ReadRemind.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ReadRemind extends SliceJpaObject {
 
 	private static final long serialVersionUID = -570048661936488247L;
-	private static final String TABLE = PersistenceProperties.Review.table;
+	private static final String TABLE = PersistenceProperties.ReadRemind.table;
 
 	public String getId() {
 		return id;

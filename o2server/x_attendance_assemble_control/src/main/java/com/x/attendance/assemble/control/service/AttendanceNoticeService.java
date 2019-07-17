@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.service;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.entity.AttendanceAppealInfo;
 
 public class AttendanceNoticeService {
@@ -16,11 +18,11 @@ public class AttendanceNoticeService {
 			throws Exception {
 		if (attendanceAppealInfo != null) {
 			String targetName = attendanceAppealInfo.getEmpName();
-			String messageContent = "您好，[" + attendanceAppealInfo.getRecordDateString() + "]考勤结果的申诉已经通过审核。";
-			if (targetName != null && !targetName.isEmpty()) {
+//			String messageContent = "您好，[" + attendanceAppealInfo.getRecordDateString() + "]考勤结果的申诉已经通过审核。";
+			if (StringUtils.isNotEmpty( targetName )) {
 				String[] array = targetName.split(",");
 				for (String name : array) {
-					if (name != null && !name.trim().isEmpty()) {
+					if ( StringUtils.isNotEmpty( name )) {
 						// @Todo
 //						AttendanceAppealAcceptMessage message = new AttendanceAppealAcceptMessage( name, attendanceAppealInfo.getId(), attendanceAppealInfo.getDetailId(), messageContent );
 //						Collaboration.send(message);
@@ -44,11 +46,11 @@ public class AttendanceNoticeService {
 			throws Exception {
 		if (attendanceAppealInfo != null) {
 			String targetName = attendanceAppealInfo.getEmpName();
-			String messageContent = "您好，[" + attendanceAppealInfo.getRecordDateString() + "]考勤结果的申诉未通过审核。";
-			if (targetName != null && !targetName.isEmpty()) {
+//			String messageContent = "您好，[" + attendanceAppealInfo.getRecordDateString() + "]考勤结果的申诉未通过审核。";
+			if ( StringUtils.isNotEmpty( targetName )) {
 				String[] array = targetName.split(",");
 				for (String name : array) {
-					if (name != null && !name.trim().isEmpty()) {
+					if ( StringUtils.isNotEmpty( name )) {
 //						AttendanceAppealRejectMessage message = new AttendanceAppealRejectMessage(name,
 //								attendanceAppealInfo.getId(), attendanceAppealInfo.getDetailId(), messageContent);
 //						Collaboration.send(message);
@@ -70,12 +72,11 @@ public class AttendanceNoticeService {
 	public void notifyAttendanceAppealProcessness1Message(AttendanceAppealInfo attendanceAppealInfo) throws Exception {
 		if (attendanceAppealInfo != null) {
 			String targetName = attendanceAppealInfo.getCurrentProcessor();
-			String messageContent = "您收到了" + attendanceAppealInfo.getEmpName() + "的考勤结果申诉，申诉类型为["
-					+ attendanceAppealInfo.getAppealReason() + "]，请您审核！";
-			if (targetName != null && !targetName.isEmpty()) {
+//			String messageContent = "您收到了" + attendanceAppealInfo.getEmpName() + "的考勤结果申诉，申诉类型为[" + attendanceAppealInfo.getAppealReason() + "]，请您审核！";
+			if ( StringUtils.isNotEmpty( targetName )) {
 				String[] array = targetName.split(",");
 				for (String name : array) {
-					if (name != null && !name.trim().isEmpty()) {
+					if ( StringUtils.isNotEmpty( name )) {
 //						AttendanceAppealInviteMessage message = new AttendanceAppealInviteMessage(name,
 //								attendanceAppealInfo.getId(), attendanceAppealInfo.getDetailId(), messageContent);
 //						Collaboration.send(message);
@@ -97,12 +98,11 @@ public class AttendanceNoticeService {
 	public void notifyAttendanceAppealProcessness2Message(AttendanceAppealInfo attendanceAppealInfo) throws Exception {
 		if (attendanceAppealInfo != null) {
 			String targetName = attendanceAppealInfo.getCurrentProcessor();
-			String messageContent = "您收到了" + attendanceAppealInfo.getEmpName() + "的考勤结果申诉，申诉类型为["
-					+ attendanceAppealInfo.getAppealReason() + "]，请您复核！";
-			if (targetName != null && !targetName.isEmpty()) {
+//			String messageContent = "您收到了" + attendanceAppealInfo.getEmpName() + "的考勤结果申诉，申诉类型为[" + attendanceAppealInfo.getAppealReason() + "]，请您复核！";
+			if ( StringUtils.isNotEmpty( targetName )) {
 				String[] array = targetName.split(",");
 				for (String name : array) {
-					if (name != null && !name.trim().isEmpty()) {
+					if ( StringUtils.isNotEmpty( name )) {
 //						AttendanceAppealInviteMessage message = new AttendanceAppealInviteMessage(name,
 //								attendanceAppealInfo.getId(), attendanceAppealInfo.getDetailId(), messageContent);
 //						Collaboration.send(message);

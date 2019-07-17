@@ -28,7 +28,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.assemble.designer.wrapout.WrapOutTemplateFormSimple;
 
 @Path("templateform")
 @JaxrsDescribe("表单模版")
@@ -59,7 +58,7 @@ public class TemplateFormAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response list(@Context HttpServletRequest request) {
-		ActionResult<Map<String, List<WrapOutTemplateFormSimple>>> result = new ActionResult<>();
+		ActionResult<Map<String, List<ActionList.Wo>>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionList().execute(effectivePerson);

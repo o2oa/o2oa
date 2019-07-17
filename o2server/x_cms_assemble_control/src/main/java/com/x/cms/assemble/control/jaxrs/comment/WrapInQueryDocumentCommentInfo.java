@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
 import com.x.cms.core.entity.tools.filter.term.EqualsTerm;
+import com.x.cms.core.entity.tools.filter.term.IsFalseTerm;
+import com.x.cms.core.entity.tools.filter.term.IsTrueTerm;
 import com.x.cms.core.entity.tools.filter.term.LikeTerm;
 
 public class WrapInQueryDocumentCommentInfo {
@@ -39,8 +41,19 @@ public class WrapInQueryDocumentCommentInfo {
 	@FieldDescribe("搜索条件：审核人")
 	private String auditorName;
 	
-	private Long rank = 0L;
+	@FieldDescribe("评论的权限：私信评论 | 公开评论 | 全部评论.")
+	private String permission = "private | public | all";
 	
+	private Long rank = 0L;	
+	
+	public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
+
 	public String getOrderField() {
 		return orderField;
 	}
@@ -158,6 +171,13 @@ public class WrapInQueryDocumentCommentInfo {
 		}
 		if( StringUtils.isNotEmpty( this.getCreatorName() )) {
 			queryFilter.addEqualsTerm( new EqualsTerm( "creatorName", this.getCreatorName() ) );
+		}
+		if( StringUtils.isNotEmpty( this.getPermission() )) {
+			if( "public".equalsIgnoreCase( this.getPermission() )) {
+				queryFilter.addIsFalseTerm( new IsFalseTerm( "isPrivate" ));
+			}else if( "private".equalsIgnoreCase( this.getPermission() )) {
+				queryFilter.addIsTrueTerm( new IsTrueTerm( "isPrivate" ));
+			}
 		}
 		return queryFilter;
 	}

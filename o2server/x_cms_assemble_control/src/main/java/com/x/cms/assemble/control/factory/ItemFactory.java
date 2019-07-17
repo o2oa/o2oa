@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -120,6 +122,40 @@ public class ItemFactory extends AbstractFactory {
 		cq.select(root).where(p);
 		List<Item> list = em.createQuery(cq).getResultList();
 		return list;
+	}
+
+	public List<Item> listSortObjWithOrderFieldInData( List<String> docIds, String path0Name, String fieldType, String orderType ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Item.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+		Root<Item> root = cq.from(Item.class);
+		Predicate p = root.get(Item_.bundle).in(docIds);
+		p = cb.and(p, cb.equal(root.get(Item_.itemCategory), itemCategory));
+		p = cb.and( p, cb.equal(root.get(Item_.path0 ), path0Name ));
+		
+		Order orderWithField = null;
+		if( "string".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.stringShortValue_FIELDNAME, orderType );
+		}else if( "text".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.stringLongValue_FIELDNAME, orderType );
+		}else if( "date".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.dateValue_FIELDNAME, orderType );
+		}else if( "time".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.timeValue_FIELDNAME, orderType );
+		}else if( "datetime".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.dateTimeValue_FIELDNAME, orderType );
+		}else if( "number".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.numberValue_FIELDNAME, orderType );
+		}else if( "boolean".equals( fieldType )) {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.booleanValue_FIELDNAME, orderType );
+		}else {
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Item_.class, Item.stringShortValue_FIELDNAME, orderType );
+		}
+		if( orderWithField != null ){
+			cq.orderBy( orderWithField );
+		}
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 
 }

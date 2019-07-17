@@ -1,5 +1,6 @@
 package com.x.query.core.express.plan;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -212,42 +214,32 @@ public abstract class Plan extends GsonPropertyObject {
 		/* 先获取所有记录对应的job值作为返回的结果集 */
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/* 先进行字段调整 */
-			logger.debug("开始方案执行.");
 			this.adjust();
 			this.group = this.findGroupSelectEntry();
 			this.orderList = this.listOrderSelectEntry();
-			List<String> bundles = this.listBundle(emc);
-			logger.debug("完成bundles查找,共找到 {} 个bundle.", bundles.size());
-			if ((null != this.count) && (this.count > 0)) {
-				/* 默认限制了数量 */
-				if (this.count < bundles.size()) {
-					bundles = bundles.subList(0, this.count);
-					logger.debug("完成默认数量限制,限制后共有 {} 个bundle.", bundles.size());
-				}
+			List<String> bundles = null;
+			if ((null != this.runtime) && (ListTools.isNotEmpty(runtime.bundleList))) {
+				bundles = this.runtime.bundleList;
+			} else {
+				bundles = this.listBundle(emc);
 			}
+//			if ((null != this.count) && (this.count > 0)) {
+//				/* 默认限制了数量 */
+//				if (this.count < bundles.size()) {
+//					bundles = bundles.subList(0, this.count);
+//				}
+//			}
 			if ((null != this.runtime.count) && (this.runtime.count > 0)) {
 				/* runtime限制了数量 */
 				if (this.runtime.count < bundles.size()) {
 					bundles = bundles.subList(0, this.runtime.count);
-					logger.debug("完成运行时数量限制,限制后共有 {} 个bundle.", bundles.size());
 				}
 			}
-			logger.debug("开始构建输出表.");
 			final Table fillTable = this.concreteTable(bundles);
-			// ************************************
-			// logger.debug("构建输出表完成.");
-			// for (List<String> _part_bundles : ListTools.batch(bundles,
-			// SQL_STATEMENT_IN_BATCH)) {
-			// logger.debug("开始批次数据填充.");
-			// this.fillSelectEntries(emc, _part_bundles, this.selectList, fillTable);
-			// logger.debug("批次数据填充完成.");
-			// }
-			// ************************************
 			List<CompletableFuture<Void>> futures = new TreeList<>();
 			for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
 				for (SelectEntry selectEntry : this.selectList) {
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-						logger.debug("开始批次数据填充.");
 						try {
 							this.fillSelectEntry(emc, _part_bundles, selectEntry, fillTable);
 						} catch (Exception e) {
@@ -260,11 +252,7 @@ public abstract class Plan extends GsonPropertyObject {
 			for (CompletableFuture<Void> future : futures) {
 				future.get(300, TimeUnit.SECONDS);
 			}
-			// ************************************
-
-			logger.debug("开始数据排序.");
 			Table table = this.order(fillTable);
-			logger.debug("数据排序完成.");
 			/* 新增测试 */
 			if (!this.selectList.emptyColumnCode()) {
 				ScriptEngine engine = this.getScriptEngine();
@@ -305,21 +293,9 @@ public abstract class Plan extends GsonPropertyObject {
 					}
 				}
 			}
-			/**/
-			// ScriptEngine scriptEngine = (StringUtils.isNotEmpty(this.afterGridScriptText)
-			// || StringUtils.isNotEmpty(this.afterGroupGridScriptText)
-			// || StringUtils.isNotEmpty(this.afterCalculateGridScriptText)) == true ?
-			// this.getScriptEngine()
-			// : null;
-			// if (StringUtils.isNotEmpty(this.afterGridScriptText)) {
-			// scriptEngine.put("grid", table);
-			// scriptEngine.eval(this.afterGridScriptText);
-			// }
 			this.grid = table;
 			if (null != this.findGroupSelectEntry()) {
-				logger.debug("开始数据分组.");
 				GroupTable groupTable = group(table);
-				logger.debug("数据分组完成.");
 				if (StringUtils.isNotEmpty(this.afterGroupGridScriptText)) {
 					ScriptEngine engine = this.getScriptEngine();
 					engine.put("groupGrid", groupTable);
@@ -382,6 +358,57 @@ public abstract class Plan extends GsonPropertyObject {
 		}
 	}
 
+	public List<String> fetchBundles() throws Exception {
+		/* 先获取所有记录对应的job值作为返回的结果集 */
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			/* 先进行字段调整 */
+			this.adjust();
+			this.group = this.findGroupSelectEntry();
+			this.orderList = this.listOrderSelectEntry();
+			List<String> bundles = this.listBundle(emc);
+			if ((null != this.runtime.count) && (this.runtime.count > 0)) {
+				/* runtime限制了数量 */
+				if (this.runtime.count < bundles.size()) {
+					bundles = bundles.subList(0, this.runtime.count);
+				}
+			}
+			if (orderList.isEmpty()) {
+				return bundles;
+			}
+			TreeList<String> os = new TreeList<>();
+			final Table fillTable = this.concreteTable(bundles);
+			List<CompletableFuture<Void>> futures = new TreeList<>();
+			for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
+				for (SelectEntry selectEntry : this.orderList) {
+					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+						try {
+							this.fillSelectEntry(emc, _part_bundles, selectEntry, fillTable);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					});
+					futures.add(future);
+				}
+			}
+			for (CompletableFuture<Void> future : futures) {
+				future.get(300, TimeUnit.SECONDS);
+			}
+			Table table = this.order(fillTable);
+			if (null == group) {
+				for (Row row : table) {
+					os.add(row.bundle);
+				}
+			} else {
+				for (GroupRow groupRow : group(table)) {
+					for (Row row : groupRow.list) {
+						os.add(row.bundle);
+					}
+				}
+			}
+			return os;
+		}
+	}
+
 	private String name(String str) {
 		Matcher m = DISTINGUISHEDNAME_PATTERN.matcher(str);
 		if (m.find()) {
@@ -401,6 +428,13 @@ public abstract class Plan extends GsonPropertyObject {
 
 	private List<SelectEntry> listOrderSelectEntry() {
 		List<SelectEntry> list = new TreeList<>();
+		SelectEntry _g = this.findGroupSelectEntry();
+		if (null != _g) {
+			if (StringUtils.equals(SelectEntry.ORDER_ASC, _g.orderType)
+					|| StringUtils.equals(SelectEntry.ORDER_DESC, _g.orderType)) {
+				list.add(_g);
+			}
+		}
 		for (SelectEntry _o : this.selectList) {
 			if (StringUtils.equals(SelectEntry.ORDER_ASC, _o.orderType)
 					|| StringUtils.equals(SelectEntry.ORDER_DESC, _o.orderType)) {
@@ -430,7 +464,6 @@ public abstract class Plan extends GsonPropertyObject {
 		/* oracle 将empty string 自动转换成null,需要判断 */
 		EntityManager em = emc.get(Item.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		logger.debug("开始查找列:{}.", selectEntry);
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Item> root = cq.from(Item.class);
 		Predicate p = cb.isMember(root.get(Item_.bundle), cb.literal(bundles));
@@ -528,7 +561,6 @@ public abstract class Plan extends GsonPropertyObject {
 				break;
 			}
 		}
-		logger.debug("完成填充数据.", selectEntry);
 	}
 
 	/* 有两个地方用到了 */

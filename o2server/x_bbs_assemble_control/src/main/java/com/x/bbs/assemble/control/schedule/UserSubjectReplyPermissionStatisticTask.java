@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
 import com.x.bbs.assemble.control.service.BBSReplyInfoService;
@@ -53,7 +54,7 @@ public class UserSubjectReplyPermissionStatisticTask implements Job {
 			logger.warn("system distinct all operation user names got an exception.");
 			logger.error(e);
 		}
-		if (operationUserNames != null && !operationUserNames.isEmpty()) {
+		if ( ListTools.isNotEmpty( operationUserNames )) {
 			// 2、遍历所有的人员，分别进行统计
 			operationUserNames.forEach(u -> {
 				statisticSubjectReplyCountForUser(u);
@@ -142,7 +143,7 @@ public class UserSubjectReplyPermissionStatisticTask implements Job {
 			logger.warn("system list all role for user got an exception.");
 			logger.error(e);
 		}
-		if (roleCodes != null && !roleCodes.isEmpty()) {
+		if ( ListTools.isNotEmpty( roleCodes )) {
 			try {
 				permissionCodes = permissionInfoService.listPermissionCodesByRoleCodes(roleCodes);
 				roleAndPermission.setPermissionInfoList(permissionCodes);

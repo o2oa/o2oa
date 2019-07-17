@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.common.date.DateOperation;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
@@ -115,7 +116,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
 		cq.orderBy( cb.desc( root.get( BBSReplyInfo_.orderNumber ) ) );
 		replyInfoList = em.createQuery(cq.where(p)).setMaxResults( 1 ).getResultList();
-		if( replyInfoList != null && !replyInfoList.isEmpty() ){
+		if( ListTools.isNotEmpty( replyInfoList ) ){
 			return replyInfoList.get(0).getOrderNumber();
 		}else{
 			return 0;
@@ -125,19 +126,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	//@MethodDescribe( "根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复的数量" )
 	public Long countReplyForPage( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId ) throws Exception {
 		Boolean allFilterNull = true;
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			allFilterNull = false;
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			allFilterNull = false;
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			allFilterNull = false;
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			allFilterNull = false;
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			allFilterNull = false;
 		}
 		if( allFilterNull ){
@@ -148,19 +149,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.isNotNull( root.get( BBSReplyInfo_.id ) );
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.creatorName ), creatorName ) );
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -170,19 +171,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	//@MethodDescribe( "根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复对象列表" )
 	public List<BBSReplyInfo> listReplyForPage( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId, Integer maxCount ) throws Exception {
 		Boolean allFilterNull = true;
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			allFilterNull = false;
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			allFilterNull = false;
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			allFilterNull = false;
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			allFilterNull = false;
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			allFilterNull = false;
 		}
 		if( allFilterNull ){
@@ -196,19 +197,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSReplyInfo> cq = cb.createQuery( BBSReplyInfo.class );
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.isNotNull( root.get( BBSReplyInfo_.id ) );
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.creatorName ), creatorName ) );
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
 		cq.orderBy( cb.asc( root.get( BBSReplyInfo_.orderNumber ) ) );
@@ -218,19 +219,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	//@MethodDescribe( "（今日）根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复的数量" )
 	public Long countReplyForTodayByUserName( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId ) throws Exception {
 		Boolean allFilterNull = true;
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			allFilterNull = false;
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			allFilterNull = false;
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			allFilterNull = false;
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			allFilterNull = false;
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			allFilterNull = false;
 		}
 		if( allFilterNull ){
@@ -242,19 +243,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSReplyInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.creatorName ), creatorName ) );
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
 		cq.select( cb.count( root ) );		
@@ -264,19 +265,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	//@MethodDescribe( "（今日）根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复对象列表" )
 	public List<BBSReplyInfo> listReplyForTodayByUserName( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId, Integer maxCount ) throws Exception {
 		Boolean allFilterNull = true;
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			allFilterNull = false;
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			allFilterNull = false;
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			allFilterNull = false;
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			allFilterNull = false;
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			allFilterNull = false;
 		}
 		if( allFilterNull ){
@@ -291,19 +292,19 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSReplyInfo> cq = cb.createQuery( BBSReplyInfo.class );
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSReplyInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( creatorName != null && !creatorName.isEmpty() ){
+		if( StringUtils.isNotEmpty( creatorName ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.creatorName ), creatorName ) );
 		}
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
-		if( mainSectionId != null && !mainSectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( mainSectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.mainSectionId ), mainSectionId ) );
 		}
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 		}
-		if( subjectId != null && !subjectId.isEmpty() ){
+		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
 		cq.orderBy( cb.asc( root.get( BBSReplyInfo_.orderNumber ) ) );
@@ -317,7 +318,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from(BBSReplyInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSReplyInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( sectionId != null && !sectionId.isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionId ) ){
 			Predicate or = cb.equal( root.get( BBSReplyInfo_.mainSectionId ), sectionId );
 			or = cb.or( or, cb.equal( root.get( BBSReplyInfo_.sectionId ), sectionId ) );
 			p = cb.and( p, or );
@@ -333,7 +334,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from(BBSReplyInfo.class);
 		Predicate p = cb.greaterThanOrEqualTo( root.get( BBSReplyInfo_.createTime ), dateOperation.getTodayStartTime() );
-		if( forumId != null && !forumId.isEmpty() ){
+		if( StringUtils.isNotEmpty( forumId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.forumId ), forumId ) );
 		}
 		cq.select( cb.count( root ) );		

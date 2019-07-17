@@ -39,10 +39,7 @@ public class DynamicFactory extends AbstractFactory {
 	}
 	
 	/**
-	 * 根据条件查询符合条件的动态信息数量
-	 * @param personName
-	 * @param unitNames
-	 * @param groupNames
+	 * 根据过滤条件查询符合要求的项目信息数量
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception
@@ -53,15 +50,16 @@ public class DynamicFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Dynamic> root = cq.from(Dynamic.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Dynamic_.class, cb, null, root, queryFilter );
-		cq.select(cb.count(root)).where(p);
-		return em.createQuery(cq).getSingleResult();
+		cq.select(cb.count(root));
+		System.out.println(">>>SQL:" + em.createQuery(cq.where(p)));
+		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 	
 	/**
 	 * 根据条件查询符合条件的项目信息ID(查询前N条内存分页支持)
-	 * @param personName
-	 * @param unitNames
-	 * @param groupNames
+	 * @param maxCount
+	 * @param orderField
+	 * @param orderType
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception
@@ -77,6 +75,7 @@ public class DynamicFactory extends AbstractFactory {
 		if( orderWithField != null ){
 			cq.orderBy( orderWithField );
 		}
+		System.out.println(">>>SQL:" + em.createQuery(cq.where(p)).setMaxResults( maxCount).toString());
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
 	

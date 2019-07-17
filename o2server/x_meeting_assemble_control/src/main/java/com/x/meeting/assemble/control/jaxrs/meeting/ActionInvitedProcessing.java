@@ -27,7 +27,7 @@ class ActionInvitedProcessing extends BaseAction {
 			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
-			SortTools.asc(wos, Meeting.startTime_FIELDNAME);
+			SortTools.desc(wos, Meeting.startTime_FIELDNAME);
 			result.setData(wos);
 			return result;
 		}

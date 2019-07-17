@@ -271,7 +271,7 @@ public class BBSSubjectInfoService {
 		if( subjectVoteResult != null ){
 			emc.remove( subjectVoteResult, CheckRemoveType.all );
 		}
-		if( attachmentIds != null && !attachmentIds.isEmpty() ){
+		if( ListTools.isNotEmpty( attachmentIds ) ){
 			for( String attachId : attachmentIds ){
 				try{
 					subjectAttachment = emc.find( attachId, BBSSubjectAttachment.class );
@@ -286,7 +286,7 @@ public class BBSSubjectInfoService {
 				}
 			}
 		}
-		if( replyInfoList != null && !replyInfoList.isEmpty() ){
+		if( ListTools.isNotEmpty( replyInfoList ) ){
 			for( BBSReplyInfo reply : replyInfoList ){
 				emc.remove( reply, CheckRemoveType.all );
 				if( forumInfo != null ){
@@ -405,7 +405,7 @@ public class BBSSubjectInfoService {
 		List<String> ids = null;
 		business = new Business( emc );
 		ids = business.subjectInfoFactory().listAllTopSubject( forumId, mainSectionId, sectionId, creatorName );
-		if( ids != null && !ids.isEmpty() ){
+		if( ListTools.isNotEmpty( ids ) ){
 			return business.subjectInfoFactory().list( ids );
 		}
 		return null;
@@ -703,7 +703,7 @@ public class BBSSubjectInfoService {
 					subjectInfoList = business.subjectInfoFactory().listLastSubject( subjectInfo.getLatestReplyTime() );
 				}
 			}
-			if( subjectInfoList != null && !subjectInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList ) ){
 				return subjectInfoList.get( 0 );
 			}else{
 				return null;
@@ -730,7 +730,7 @@ public class BBSSubjectInfoService {
 					subjectInfoList = business.subjectInfoFactory().listNextSubject( subjectInfo.getLatestReplyTime() );
 				}
 			}
-			if( subjectInfoList != null && !subjectInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList ) ){
 				return subjectInfoList.get( 0 );
 			}else{
 				return null;

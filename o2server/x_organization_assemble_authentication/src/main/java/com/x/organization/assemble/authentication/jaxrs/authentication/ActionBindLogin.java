@@ -11,6 +11,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
@@ -21,8 +22,10 @@ class ActionBindLogin extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBindLogin.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, String meta) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
+			String meta) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
@@ -41,6 +44,7 @@ class ActionBindLogin extends BaseAction {
 					if (StringUtils.isNotEmpty(personId)) {
 						Person o = emc.find(personId, Person.class);
 						wo = this.user(request, response, business, o, Wo.class);
+						audit.log(o.getDistinguishedName());
 					}
 				}
 			}
@@ -54,7 +58,5 @@ class ActionBindLogin extends BaseAction {
 		private static final long serialVersionUID = -5992706204803405898L;
 
 	}
-	
-	
 
 }

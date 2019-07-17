@@ -10,6 +10,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSUserInfo;
 
@@ -54,7 +55,7 @@ public class BBSUserInfoService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			userInfoList = business.userInfoFactory().listByUserName( userName );
-			if( userInfoList != null && !userInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( userInfoList ) ){
 				return userInfoList.get( 0 );
 			}else{
 				return null;
@@ -173,7 +174,7 @@ public class BBSUserInfoService {
 			business = new Business(emc);
 			userInfoList = business.userInfoFactory().listByUserName( userName );
 			emc.beginTransaction( BBSUserInfo.class );
-			if( userInfoList != null && !userInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( userInfoList ) ){
 				for( int i=0; i< userInfoList.size(); i++  ){
 					userInfo = userInfoList.get( i );
 					if( i == 0 ){
@@ -231,7 +232,7 @@ public class BBSUserInfoService {
 			business = new Business( emc );
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			bBSUserInfoList = business.userInfoFactory().listByUserName(userName);
-			if( bBSUserInfoList != null && !bBSUserInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( bBSUserInfoList ) ){
 				emc.beginTransaction( BBSUserInfo.class );
 				for( BBSUserInfo userInfo : bBSUserInfoList ){
 					emc.remove( userInfo, CheckRemoveType.all );	
@@ -256,7 +257,7 @@ public class BBSUserInfoService {
 			business = new Business(emc);
 			userInfoList = business.userInfoFactory().listByUserName( userName );
 			emc.beginTransaction( BBSUserInfo.class );
-			if( userInfoList != null && !userInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( userInfoList ) ){
 				for( int i=0; i< userInfoList.size(); i++  ){
 					userInfo = userInfoList.get(i);
 					if( i == 0 ){
@@ -311,7 +312,7 @@ public class BBSUserInfoService {
 			userInfoList = business.userInfoFactory().listByUserName( userName );
 			emc.beginTransaction( BBSUserInfo.class );
 			
-			if( userInfoList != null && !userInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( userInfoList ) ){
 				for( int i=0; i< userInfoList.size(); i++  ){
 					userInfo = userInfoList.get(i);
 					if( i == 0 ){

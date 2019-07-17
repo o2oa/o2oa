@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -19,7 +21,7 @@ public class ActionArchiveAttendanceDetail extends BaseAction {
 		Boolean check = true;
 
 		if (check) {
-			if (id != null && !id.isEmpty()) {
+			if ( StringUtils.isNotEmpty( id )) {
 				try {
 					attendanceDetailServiceAdv.archive(id);
 				} catch (Exception e) {

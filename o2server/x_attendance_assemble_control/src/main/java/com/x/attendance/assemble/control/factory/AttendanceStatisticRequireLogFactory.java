@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
@@ -30,6 +32,7 @@ public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 	}
 	
 //	@MethodDescribe("列示全部的AttendanceStatisticRequireLog信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceStatisticRequireLog> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceStatisticRequireLog.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -58,13 +61,13 @@ public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 		CriteriaQuery<AttendanceStatisticRequireLog> cq = cb.createQuery(AttendanceStatisticRequireLog.class);
 		Root<AttendanceStatisticRequireLog> root = cq.from(AttendanceStatisticRequireLog.class);
 		Predicate p = root.get(AttendanceStatisticRequireLog_.id).isNotNull();
-		if( name != null && !name.isEmpty() ){
+		if( StringUtils.isNotEmpty( name ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticName), name));
 		}
-		if( key != null && !key.isEmpty() ){
+		if( StringUtils.isNotEmpty( key ) ){
 			p = cb.and(p,  cb.equal(root.get(AttendanceStatisticRequireLog_.statisticKey), key));
 		}
-		if( stauts != null && !stauts.isEmpty() ){
+		if( StringUtils.isNotEmpty( stauts ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.processStatus), stauts));
 		}
 		return em.createQuery( cq.where(p) ).getResultList();
@@ -76,22 +79,22 @@ public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 		CriteriaQuery<AttendanceStatisticRequireLog> cq = cb.createQuery(AttendanceStatisticRequireLog.class);
 		Root<AttendanceStatisticRequireLog> root = cq.from(AttendanceStatisticRequireLog.class);
 		Predicate p = root.get(AttendanceStatisticRequireLog_.id).isNotNull();
-		if( statisticType != null && !statisticType.isEmpty() ){
+		if( StringUtils.isNotEmpty( statisticType ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticType), statisticType));
 		}
-		if( key != null && !key.isEmpty() ){
+		if( StringUtils.isNotEmpty( key ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticKey), key));
 		}
-		if( statisticYear != null && !statisticYear.isEmpty() ){
+		if( StringUtils.isNotEmpty( statisticYear ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticYear), statisticYear));
 		}
-		if( statisticMonth != null && !statisticMonth.isEmpty() ){
+		if( StringUtils.isNotEmpty( statisticMonth ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticMonth), statisticMonth));
 		}
-		if( statisticDate != null && !statisticDate.isEmpty() ){
+		if( StringUtils.isNotEmpty( statisticDate ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticDay), statisticDate));
 		}
-		if( status != null && !status.isEmpty() ){
+		if( StringUtils.isNotEmpty( status ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.processStatus), status));
 		}
 		return em.createQuery( cq.where(p) ).getResultList();
@@ -111,10 +114,10 @@ public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 		CriteriaQuery<AttendanceStatisticRequireLog> cq = cb.createQuery(AttendanceStatisticRequireLog.class);
 		Root<AttendanceStatisticRequireLog> root = cq.from(AttendanceStatisticRequireLog.class);
 		Predicate p = root.get(AttendanceStatisticRequireLog_.id).isNotNull();
-		if( statisticType != null && !statisticType.isEmpty() ){
+		if( StringUtils.isNotEmpty( statisticType ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.statisticType), statisticType));
 		}
-		if( processStatus != null && !processStatus.isEmpty() ){
+		if( StringUtils.isNotEmpty( processStatus ) ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.processStatus), processStatus));
 		}
 		return em.createQuery( cq.where(p) ).getResultList();

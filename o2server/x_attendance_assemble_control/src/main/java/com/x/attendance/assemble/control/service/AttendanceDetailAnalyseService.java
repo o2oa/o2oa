@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
@@ -256,7 +258,7 @@ public class AttendanceDetailAnalyseService {
 			if( check ){
 				if( attendanceScheduleSetting != null ){
 					detail.setTopUnitName( attendanceScheduleSetting.getTopUnitName() );
-					if( attendanceScheduleSetting.getUnitName() != null && !attendanceScheduleSetting.getUnitName().isEmpty() && !"*".equals( attendanceScheduleSetting.getUnitName() )) {
+					if( StringUtils.isNotEmpty( attendanceScheduleSetting.getUnitName() ) && !"*".equals( attendanceScheduleSetting.getUnitName() )) {
 						detail.setUnitName( attendanceScheduleSetting.getUnitName() );
 					}else {
 						detail.setUnitName( userManagerService.getUnitNameWithPersonName( detail.getEmpName() ) );
@@ -788,7 +790,7 @@ public class AttendanceDetailAnalyseService {
 			logger.error(e);
 		}
 		
-		if( attendanceScheduleSetting.getLateStartTime() != null && !attendanceScheduleSetting.getLateStartTime().isEmpty() ){
+		if( StringUtils.isNotEmpty( attendanceScheduleSetting.getLateStartTime() ) ){
 			try {
 				lateStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime() );
 			} catch (Exception e) {
@@ -801,7 +803,7 @@ public class AttendanceDetailAnalyseService {
 			logger.debug( debugger, ">>>>>>>>>>迟到时间设置为空！系统将不判断迟到情况");
 		}
 		
-		if( attendanceScheduleSetting.getLeaveEarlyStartTime()  != null && !attendanceScheduleSetting.getLeaveEarlyStartTime().trim().isEmpty() ){
+		if( StringUtils.isNotEmpty( attendanceScheduleSetting.getLeaveEarlyStartTime() ) ){
 			try {
 				logger.debug( debugger, ">>>>>>>>>>格式化[早退起算时间]leaveEarlyStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
 				leaveEarlyStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
@@ -815,7 +817,7 @@ public class AttendanceDetailAnalyseService {
 			logger.debug( debugger, ">>>>>>>>>>早退时间设置为空！系统将不判断早退情况");
 		}
 		
-		if( attendanceScheduleSetting.getAbsenceStartTime()  != null && !attendanceScheduleSetting.getAbsenceStartTime().trim().isEmpty() ){
+		if( StringUtils.isNotEmpty( attendanceScheduleSetting.getAbsenceStartTime() ) ){
 			try {
 				logger.debug( debugger, ">>>>>>>>>>格式化[缺勤起算时间]absenceStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
 				absenceStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );

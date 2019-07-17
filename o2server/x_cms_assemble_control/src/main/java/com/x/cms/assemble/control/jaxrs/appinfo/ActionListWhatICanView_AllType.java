@@ -66,8 +66,7 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 						}
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new ExceptionAppInfoProcess(e,
-								"系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
+						Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
 						result.error(exception);
 						logger.error(e, effectivePerson, request, null);
 					}

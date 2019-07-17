@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.attendanceappealinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionAttendanceAppealProcess;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,7 +18,7 @@ public class ActionAppealArchive extends BaseAction {
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 
-		if (id != null && !id.isEmpty()) { // 归档指定的考勤申诉记录
+		if ( StringUtils.isNotEmpty( id )) { // 归档指定的考勤申诉记录
 			try {
 				attendanceAppealInfoServiceAdv.archive(id);
 				result.setData(new Wo(id));

@@ -8,6 +8,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.factory.BBSPermissionInfoFactory;
 import com.x.bbs.entity.BBSForumInfo;
@@ -69,7 +70,7 @@ public class BBSPermissionInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			ids = business.permissionRoleFactory().listPermissionByRoleCode( roleCode );
-			if( ids != null && !ids.isEmpty() ){
+			if( ListTools.isNotEmpty( ids ) ){
 				return business.permissionInfoFactory().list(ids);
 			}else{
 				return null;
@@ -95,7 +96,7 @@ public class BBSPermissionInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			ids = business.permissionInfoFactory().listPermissionByForumId( forumId );
-			if( ids != null && !ids.isEmpty() ){
+			if( ListTools.isNotEmpty( ids ) ){
 				return business.permissionInfoFactory().list(ids);
 			}else{
 				return null;
@@ -121,7 +122,7 @@ public class BBSPermissionInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			ids = business.permissionInfoFactory().listPermissionBySectionId( sectionId, false );
-			if( ids != null && !ids.isEmpty() ){
+			if( ListTools.isNotEmpty( ids ) ){
 				return business.permissionInfoFactory().list(ids);
 			}else{
 				return null;
@@ -302,7 +303,7 @@ public class BBSPermissionInfoService {
 			throw new Exception( "permissionFunction is null, return null!" );
 		}
 		List<BBSPermissionInfo> resultList = new ArrayList<BBSPermissionInfo>();
-		if( permissionList  != null && !permissionList.isEmpty() ){			
+		if( ListTools.isNotEmpty( permissionList ) ){			
 			for( BBSPermissionInfo permission : permissionList ){
 				if( permissionFunction.equals( permission.getPermissionFunction() )){
 					resultList.add( permission );
@@ -367,12 +368,12 @@ public class BBSPermissionInfoService {
 			
 			//查询用户所属的组织以及上级组织等等
 			units = userManagerService.listUnitNamesWithPerson( userName );
-			if( units != null && !units.isEmpty() ){
+			if( ListTools.isNotEmpty( units ) ){
 				for( String unit : units ){
 					user_units = listSuperUnit( unit, user_units );
 				}
 			}
-			if( user_units != null && !user_units.isEmpty() ){
+			if( ListTools.isNotEmpty( user_units ) ){
 				for( String unit : user_units ){
 					if( uniqueIds.contains( unit ) ){
 						uniqueIds.add( unit );
@@ -381,7 +382,7 @@ public class BBSPermissionInfoService {
 			}			
 			//查询用户所属的群组
 			groups = userManagerService.listGroupNamesSupNestedWithPerson( userName ); 
-			if( groups != null && !groups.isEmpty() ){
+			if( ListTools.isNotEmpty( groups ) ){
 				for( String group : groups){
 					if( !uniqueIds.contains( group ) ){
 						uniqueIds.add( group );
@@ -390,11 +391,11 @@ public class BBSPermissionInfoService {
 			}			
 			//先查询用户被分配了多少角色，查询角色列表
 			roleCodes = business.userRoleFactory().listRoleCodesByObjectUnique( uniqueIds );			
-			if( roleCodes != null && !roleCodes.isEmpty() ){
+			if( ListTools.isNotEmpty( roleCodes ) ){
 				//再查询所有角色中包括的权限ID列表
 				permissionCodes = business.permissionRoleFactory().listPermissionCodesByRoleCodes( roleCodes );
 			}
-			if( permissionCodes != null && !permissionCodes.isEmpty() ){
+			if( ListTools.isNotEmpty( permissionCodes ) ){
 				//最后权限所有的权限ID列表查询出权限对象信息，并且返回
 				return business.permissionInfoFactory().listByPermissionCodes( permissionCodes );
 			}
@@ -422,7 +423,7 @@ public class BBSPermissionInfoService {
 			List<String> units = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				units = userManagerService.listSupUnitNameWithParent( unit );
-				if( units != null && !units.isEmpty() ){
+				if( ListTools.isNotEmpty( units ) ){
 					for( String unit_super : units ){
 						unitList.add( unit_super );
 					}

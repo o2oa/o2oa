@@ -51,7 +51,7 @@ public class DocumentCommentInfoPersistService {
 	 * @return
 	 * @throws Exception
 	 */
-	public DocumentCommentInfo save( DocumentCommentInfo documentCommentInfo, EffectivePerson effectivePerson ) throws Exception {
+	public DocumentCommentInfo save( DocumentCommentInfo documentCommentInfo, String content, EffectivePerson effectivePerson ) throws Exception {
 		if ( documentCommentInfo == null) {
 			throw new Exception("documentCommentInfo is null.");
 		}
@@ -62,7 +62,7 @@ public class DocumentCommentInfoPersistService {
 			documentCommentInfo.setTitle( documentCommentInfo.getTitle().substring(0, 70) + "..." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-			documentCommentInfo = documentCommentInfoService.save( emc, documentCommentInfo );			
+			documentCommentInfo = documentCommentInfoService.save( emc, documentCommentInfo, content );			
 		} catch (Exception e) {
 			throw e;
 		}
