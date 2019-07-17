@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig.exception.ExceptionAttendanceEmployeeProcess;
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.exception.ExceptionAttendanceImportFileProcess;
@@ -48,7 +50,7 @@ public class ActionListAll extends BaseAction {
 				if (!"COMPLETED".equals(fileInfo.getCurrentProcessName())) {
 					// 如果未完成 ，则在系统文件导入处理状态对象中创建该文件的详细对象
 					try {
-						if (fileInfo.getDataContent() != null && !fileInfo.getDataContent().isEmpty()) {
+						if ( StringUtils.isNotEmpty( fileInfo.getDataContent() )) {
 							// 还原为对象
 							statusImportFileDetail = gson.fromJson(fileInfo.getDataContent(),
 									StatusImportFileDetail.class);

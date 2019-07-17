@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.jaxrs.attendanceadmin.exception.ExceptionAttendanceAdminProcess;
@@ -53,7 +55,7 @@ public class ActionSave extends BaseAction {
 			try {
 				attendanceAdmin = new AttendanceAdmin();
 				wrapIn.copyTo( attendanceAdmin, JpaObject.FieldsUnmodify );
-				if (wrapIn.getId() != null && !wrapIn.getId().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					attendanceAdmin.setId(wrapIn.getId());
 				}
 			} catch (Exception e) {

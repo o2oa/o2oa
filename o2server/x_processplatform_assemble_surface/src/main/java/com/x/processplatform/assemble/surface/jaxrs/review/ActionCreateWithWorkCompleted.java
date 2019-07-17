@@ -31,8 +31,7 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(wi.getWorkCompleted(), WorkCompleted.class);
 			}
-			WorkCompletedControl control = business.getControl(effectivePerson, workCompleted,
-					WorkCompletedControl.class);
+			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
 			if (!control.getAllowVisit()) {
 				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
@@ -75,6 +74,9 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+	}
+
+	public static class WoControl extends WorkCompletedControl {
 	}
 
 }

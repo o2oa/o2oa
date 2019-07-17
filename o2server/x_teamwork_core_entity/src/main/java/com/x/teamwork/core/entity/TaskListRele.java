@@ -67,6 +67,13 @@ public class TaskListRele extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String project;
 	
+	public static final String taskGroupId_FIELDNAME = "taskGroupId";
+	@FieldDescribe("工作任务组ID")
+	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + taskGroupId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + taskGroupId_FIELDNAME)
+	@CheckPersist( allowEmpty = false)
+	private String taskGroupId;
+	
 	public static final String taskListId_FIELDNAME = "taskListId";
 	@FieldDescribe("工作任务列表ID")
 	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + taskListId_FIELDNAME)
@@ -117,4 +124,13 @@ public class TaskListRele extends SliceJpaObject {
 	public void setTaskListId(String taskListId) {
 		this.taskListId = taskListId;
 	}
+
+	public String getTaskGroupId() {
+		return taskGroupId;
+	}
+
+	public void setTaskGroupId(String taskGroupId) {
+		this.taskGroupId = taskGroupId;
+	}
+	
 }

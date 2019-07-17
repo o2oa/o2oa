@@ -25,7 +25,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 
@@ -70,7 +69,6 @@ public class Project extends SliceJpaObject {
 	 * =========
 	 */
 	public static final String title_FIELDNAME = "title";
-	@Flag
 	@FieldDescribe("项目名称")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
@@ -90,8 +88,7 @@ public class Project extends SliceJpaObject {
 	
 	public static final String icon_FIELDNAME = "icon";
 	@FieldDescribe("图标文件ID")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + icon_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + icon_FIELDNAME)
+	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + icon_FIELDNAME)
 	@CheckPersist(allowEmpty = true )
 	private String icon = null;
 	

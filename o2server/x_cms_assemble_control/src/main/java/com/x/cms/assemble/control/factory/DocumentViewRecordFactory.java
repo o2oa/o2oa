@@ -50,7 +50,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("根据访问者姓名列示指定Id的DocumentViewRecord信息列表")
-	public List<String> listByPerson( String personName ) throws Exception {
+	public List<String> listByPerson( String personName, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
@@ -58,7 +58,17 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( DocumentViewRecord_.viewerName ), personName );
 		cq.orderBy( cb.desc( root.get( DocumentViewRecord_.createTime ) ) );
 		cq.select( root.get( DocumentViewRecord_.id ));
-		return em.createQuery( cq.where(p) ).setMaxResults(50).getResultList();
+		return em.createQuery( cq.where(p) ).setMaxResults( maxCount ).getResultList();
+	}
+	
+	public List<DocumentViewRecord> listRecordsByPerson( String personName, Integer maxCount ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DocumentViewRecord> cq = cb.createQuery( DocumentViewRecord.class );
+		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
+		Predicate p = cb.equal( root.get( DocumentViewRecord_.viewerName ), personName );
+		cq.orderBy( cb.desc( root.get( DocumentViewRecord_.createTime ) ) );
+		return em.createQuery( cq.where(p) ).setMaxResults( maxCount ).getResultList();
 	}
 	
 	//@MethodDescribe("根据访问者姓名和文档ID列示指定Id的DocumentViewRecord信息列表")

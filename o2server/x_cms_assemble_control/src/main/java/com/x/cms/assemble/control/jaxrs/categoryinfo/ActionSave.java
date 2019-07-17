@@ -125,11 +125,18 @@ public class ActionSave extends BaseAction {
 				result.setData(wo);
 				
 				if( old_categoryInfo != null ) {
-					if( !old_categoryInfo.getCategoryName().equalsIgnoreCase( wi.getCategoryName() )) {
+					if( !old_categoryInfo.getCategoryName().equalsIgnoreCase( categoryInfo.getCategoryName() ) || 
+							 !old_categoryInfo.getCategoryAlias().equalsIgnoreCase( categoryInfo.getCategoryAlias() )	) {
 						//修改了分类名称，增加删除栏目批量操作（对分类和文档）的信息
 						new CmsBatchOperationPersistService().addOperation( 
 								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
 								CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  categoryInfo.getId(), old_categoryInfo.getCategoryName(), "更新分类名称：ID=" + categoryInfo.getId() );
+					}
+					if(  permissionQueryService.hasDiffrentViewPermissionInCategory( old_categoryInfo, categoryInfo )) {
+						//修改了栏目名称或者别名，增加删除栏目批量操作（对分类和文档）的信息
+						new CmsBatchOperationPersistService().addOperation( 
+								CmsBatchOperationProcessService.OPT_OBJ_CATEGORY, 
+								CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  categoryInfo.getId(), categoryInfo.getCategoryName(), "变更分类可见权限：ID=" + categoryInfo.getId() );
 					}
 					new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), categoryInfo.getId(), "", "", "", "CATEGORY", "更新");
 				}else {

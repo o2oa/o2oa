@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.attendancesetting;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionAttendanceSettingProcess;
 import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionSettingIdEmpty;
 import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionSettingNotExists;
@@ -22,7 +24,7 @@ public class ActionDelete extends BaseAction {
 		Boolean check = true;
 		
 		if( check ){
-			if( id != null && !id.isEmpty() ){
+			if( StringUtils.isNotEmpty( id ) ){
 				check = false;
 				Exception exception = new ExceptionSettingIdEmpty();
 				result.error( exception );

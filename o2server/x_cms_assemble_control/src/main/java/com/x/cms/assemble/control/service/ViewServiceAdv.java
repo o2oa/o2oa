@@ -1,14 +1,12 @@
 package com.x.cms.assemble.control.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
-import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
@@ -46,16 +44,16 @@ public class ViewServiceAdv {
 		}
 	}
 
-	public List<Document> nextPageDocuemntView(String id, Integer count, List<String> viewAbleDocIds, Map<String, Object> condition) throws Exception {
-		if( viewAbleDocIds == null ){
-			throw new Exception("viewAbleDocIds is null!");
-		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return viewService.nextPageDocuemntView( emc, id, count, viewAbleDocIds, condition );
-		} catch ( Exception e ) {
-			throw e;
-		}
-	}
+//	public List<Document> nextPageDocuemntView(String id, Integer count, List<String> viewAbleDocIds, Map<String, Object> condition) throws Exception {
+//		if( viewAbleDocIds == null ){
+//			throw new Exception("viewAbleDocIds is null!");
+//		}
+//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//			return viewService.nextPageDocuemntView( emc, id, count, viewAbleDocIds, condition );
+//		} catch ( Exception e ) {
+//			throw e;
+//		}
+//	}
 
 	public List<String> listFieldConfigIdsByView(String viewId ) throws Exception {
 		if( viewId == null ){

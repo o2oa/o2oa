@@ -43,7 +43,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Delay delay) throws Exception {
 		List<Work> results = new ArrayList<>();
 		Date limit = null;
-		switch (delay.getDelayType()) {
+		switch (delay.getDelayMode()) {
 		case until:
 			limit = this.until(aeiObjects, delay);
 			break;
@@ -108,9 +108,9 @@ public class DelayProcessor extends AbstractDelayProcessor {
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
 			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			Object o  = scriptHelper.eval(aeiObjects.getWork().getApplication(), delay.getDelayScript(),
+			Object o = scriptHelper.eval(aeiObjects.getWork().getApplication(), delay.getDelayScript(),
 					delay.getDelayScriptText());
-			return Integer.parseInt(Objects.toString(o,""));
+			return Integer.parseInt(Objects.toString(o, ""));
 		}
 		return null;
 	}

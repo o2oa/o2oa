@@ -26,7 +26,6 @@ public class ActionSave extends BaseAction {
 		Task task = null;
 		Wi wi = null;
 		Boolean check = true;
-		String optType = "CREATE";
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
@@ -93,14 +92,14 @@ public class ActionSave extends BaseAction {
 				result.setData( wo );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ChatPersistException(e, "工作交流信息保存时发生异常。");
+				Exception exception = new ChatPersistException(e, "工作评论信息保存时发生异常。");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}			
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( chat, optType, effectivePerson, jsonElement.toString() );
+				dynamicPersistService.chatPublishDynamic( chat, effectivePerson,  jsonElement.toString() );
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}

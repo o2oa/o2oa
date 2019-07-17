@@ -179,4 +179,22 @@ public class ViewAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "模拟执行view,输出所有bundle值", action = ActionBundle.class)
+	@PUT
+	@Path("{id}/bundle")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void bundle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("视图标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionBundle.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBundle().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 }

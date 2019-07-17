@@ -15,9 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject_;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.entity.tools.filter.term.DateBetweenTerm;
 import com.x.cms.core.entity.tools.filter.term.EqualsTerm;
 import com.x.cms.core.entity.tools.filter.term.InTerm;
+import com.x.cms.core.entity.tools.filter.term.IsFalseTerm;
+import com.x.cms.core.entity.tools.filter.term.IsTrueTerm;
 import com.x.cms.core.entity.tools.filter.term.LikeTerm;
 import com.x.cms.core.entity.tools.filter.term.MemberTerm;
 import com.x.cms.core.entity.tools.filter.term.NotEqualsTerm;
@@ -170,6 +174,45 @@ public class CriteriaBuilderTools {
 			}
 		}
 		
+		if( ListTools.isNotEmpty( queryFilter.getIsTrueTerms())) {
+			for( IsTrueTerm term : queryFilter.getIsTrueTerms() ) {
+				if( StringUtils.isEmpty( term.getName() )) {
+					continue;
+				}
+				if( "and".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_and( cb, p, cb.isTrue( root.get( cls_.getDeclaredField( term.getName() ).getName() )));
+				} else if( "or".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_or( cb, p, cb.isTrue( root.get( cls_.getDeclaredField( term.getName() ).getName() )));
+				}
+			}
+		}
+		
+		if( ListTools.isNotEmpty( queryFilter.getIsFalseTerms())) {
+			for( IsFalseTerm term : queryFilter.getIsFalseTerms() ) {
+				if( StringUtils.isEmpty( term.getName() )) {
+					continue;
+				}
+				if( "and".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_and( cb, p, cb.isFalse( root.get( cls_.getDeclaredField( term.getName() ).getName() )));
+				} else if( "or".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_or( cb, p, cb.isFalse( root.get( cls_.getDeclaredField( term.getName() ).getName() )));
+				}
+			}
+		}
+		
+		if( ListTools.isNotEmpty( queryFilter.getDateBetweenTerms())) {
+			for( DateBetweenTerm term : queryFilter.getDateBetweenTerms() ) {
+				if( StringUtils.isEmpty( term.getName() ) || term.getValue() == null || ListTools.isEmpty( term.getValue() ) || term.getValue().size() < 2) {
+					continue;
+				}
+				if( "and".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_and( cb, p, cb.between( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue().get(0), term.getValue().get(1) ));
+				} else if( "or".equalsIgnoreCase( queryFilter.getJoinType() )) {
+					p = CriteriaBuilderTools.predicate_or( cb, p, cb.between( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue().get(0), term.getValue().get(1) ));
+				}
+			}
+		}
+		
 		//继续递归查询条件
 		if( queryFilter.getAnd() != null  ) {
 			queryFilter.setJoinType( "and" );
@@ -249,22 +292,39 @@ public class CriteriaBuilderTools {
 	 * @return
 	 */
 	public static <T extends JpaObject, T_ extends SliceJpaObject_>Order getOrder( CriteriaBuilder cb, Root<T> root, Class<T_> cls_, String fieldName, String orderType ) {
-		Boolean fieldExists = false;
-		Field[] fields = cls_.getDeclaredFields();
-		for( Field field : fields ) {
-			if( field.getName().equalsIgnoreCase( fieldName ) ) {
-				fieldName = field.getName(); //校正排序列的名称
-				fieldExists = true;
-			}
-		}
-		if( !fieldExists ) { //如果排序列不存在，就直接返回空，不排序，让SQL可以正常执行
-			return null;
+		if( StringUtils.isEmpty( fieldName )) {
+			fieldName = Document.sequence_FIELDNAME;
 		}
 		
-		if( "desc".equalsIgnoreCase( orderType )) {
-			return cb.desc( root.get( fieldName ).as(String.class) );
+		Boolean fieldExists = false;
+		if( Document.sequence_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			fieldExists = true;
+			fieldName = Document.sequence_FIELDNAME;
+		}else if( Document.createTime_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			fieldExists = true;
+			fieldName = Document.createTime_FIELDNAME;
+		}else if( Document.updateTime_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			fieldExists = true;
+			fieldName = Document.updateTime_FIELDNAME;
 		}else {
-			return cb.asc( root.get( fieldName ).as(String.class) );
+			Field[] fields = cls_.getDeclaredFields();
+			for( Field field : fields ) {
+				if( field.getName().equalsIgnoreCase( fieldName ) ) {
+					fieldName = field.getName(); //校正排序列的名称避免大小写的影响
+					fieldExists = true;
+				}
+			}
+		}
+		if( !fieldExists ) { //如果排序列不存在，就直接使用sequence，让SQL可以正常执行
+			fieldName = Document.sequence_FIELDNAME;
+		}
+		if( StringUtils.isEmpty( orderType )) {
+			orderType = "desc";
+		}
+		if( "desc".equalsIgnoreCase( orderType )) {
+			return cb.desc( root.get( fieldName ).as(String.class));
+		}else {
+			return cb.asc( root.get( fieldName ).as(String.class));
 		}
 	}
 }

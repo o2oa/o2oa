@@ -2,11 +2,11 @@ package com.x.teamwork.assemble.control.jaxrs.chat;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.teamview.assemble.control.service.ChatPersistService;
-import com.x.teamview.assemble.control.service.ChatQueryService;
-import com.x.teamview.assemble.control.service.DynamicPersistService;
-import com.x.teamview.assemble.control.service.SystemConfigQueryService;
-import com.x.teamview.assemble.control.service.TaskQueryService;
+import com.x.teamwork.assemble.control.service.ChatPersistService;
+import com.x.teamwork.assemble.control.service.ChatQueryService;
+import com.x.teamwork.assemble.control.service.DynamicPersistService;
+import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
+import com.x.teamwork.assemble.control.service.TaskQueryService;
 import com.x.teamwork.core.entity.Chat;
 
 import net.sf.ehcache.Ehcache;

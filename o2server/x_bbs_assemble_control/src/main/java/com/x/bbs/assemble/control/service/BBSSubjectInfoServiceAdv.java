@@ -405,7 +405,7 @@ public class BBSSubjectInfoServiceAdv {
 					subjectInfoList = business.subjectInfoFactory().listLastSubject( subjectInfo.getLatestReplyTime() );
 				}
 			}
-			if( subjectInfoList != null && !subjectInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList ) ){
 				return subjectInfoList.get( 0 );
 			}else{
 				return null;
@@ -432,7 +432,7 @@ public class BBSSubjectInfoServiceAdv {
 					subjectInfoList = business.subjectInfoFactory().listNextSubject( subjectInfo.getLatestReplyTime() );
 				}
 			}
-			if( subjectInfoList != null && !subjectInfoList.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList ) ){
 				return subjectInfoList.get( 0 );
 			}else{
 				return null;

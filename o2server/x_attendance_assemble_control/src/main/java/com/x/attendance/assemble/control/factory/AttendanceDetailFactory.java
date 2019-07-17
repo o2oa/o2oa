@@ -22,6 +22,7 @@ import com.x.attendance.assemble.control.jaxrs.attendancedetail.WrapInFilter;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetail_;
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 /**
  * 系统配置信息表基础功能服务类
  * @author liyi
@@ -116,7 +117,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		//一般始终为true, id is not null
 		Predicate p = root.get( AttendanceDetail_.id ).isNotNull();
 		p = cb.and( p, root.get( AttendanceDetail_.archiveTime ).isNull()); //要未归档的，才再次进行分析
-		if( personName != null && !personName.isEmpty() ) {
+		if( StringUtils.isNotEmpty( personName ) ) {
 			p = cb.and( p, cb.equal( root.get(AttendanceDetail_.empName ), personName)); //匹配员工姓名
 		}
 		Date startDate = null;
@@ -459,16 +460,15 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceDetail_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
-		if( user != null && !user.isEmpty() ){
+		if( StringUtils.isNotEmpty( user ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.empName), user ));
 		}
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
 		}
-		System.out.println("SQL:" + em.createQuery(cq.where(p)).toString() );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
@@ -484,13 +484,13 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceDetail_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
-		if( user != null && !user.isEmpty() ){
+		if( StringUtils.isNotEmpty( user ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.empName), user ));
 		}
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), month ));
 		}
 		
@@ -509,10 +509,10 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		if( unitNames != null && unitNames.size() > 0 ){
 			p = cb.and(p, root.get(AttendanceDetail_.unitName).in(unitNames));
 		}
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
 		}
 		
@@ -528,13 +528,13 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceDetail_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
-		if( topUnitNames != null && topUnitNames.size() > 0 ){
+		if( ListTools.isNotEmpty(  topUnitNames ) ){
 			p = cb.and(p, root.get(AttendanceDetail_.topUnitName).in( topUnitNames ));
 		}
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
@@ -550,6 +550,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<AttendanceDetail> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
@@ -640,7 +641,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			index++;
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );
@@ -753,7 +754,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			index++;
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );

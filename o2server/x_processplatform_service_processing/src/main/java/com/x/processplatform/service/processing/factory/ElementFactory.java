@@ -29,6 +29,8 @@ import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Projection;
+import com.x.processplatform.core.entity.element.Projection_;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Route_;
 import com.x.processplatform.core.entity.element.Script;
@@ -436,5 +438,29 @@ public class ElementFactory extends AbstractFactory {
 			ids.add(o.getForm());
 		});
 		return ListTools.trim(ids, true, true);
+	}
+
+	public List<Projection> listProjectionWithProcess(String id) throws Exception {
+		List<Projection> list = new ArrayList<>();
+		Ehcache cache = ApplicationCache.instance().getCache(Projection.class);
+		String cacheKey = ApplicationCache.concreteCacheKey(id, Process.class.getName());
+		Element element = cache.get(cacheKey);
+		if (null != element) {
+			list = (List<Projection>) element.getObjectValue();
+		} else {
+			EntityManager em = this.entityManagerContainer().get(Projection.class);
+			Process process = this.get(id, Process.class);
+			if (null != process) {
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<Projection> cq = cb.createQuery(Projection.class);
+				Root<Projection> root = cq.from(Projection.class);
+				Predicate p = cb.equal(root.get(Projection_.process), process.getId());
+				list = em.createQuery(cq.where(p)).getResultList();
+				if (!list.isEmpty()) {
+					cache.put(new Element(cacheKey, list));
+				}
+			}
+		}
+		return list;
 	}
 }

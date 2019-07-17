@@ -10,6 +10,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.MethodExcuteResult;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
@@ -43,7 +44,7 @@ public class UserPermissionService {
 			if (roleAndPermission != null) {
 				permissionCodeList = roleAndPermission.getPermissionInfoList();
 			}
-			if (permissionCodeList != null && !permissionCodeList.isEmpty()) {
+			if ( ListTools.isNotEmpty( permissionCodeList )) {
 				for (String _permissionCode : permissionCodeList) {
 					if (permissionCode.equalsIgnoreCase(_permissionCode)) {
 						return true;
@@ -67,7 +68,7 @@ public class UserPermissionService {
 			if (roleAndPermission != null) {
 				permissionCodes = roleAndPermission.getPermissionInfoList();
 			}
-			if (permissionCodes != null && !permissionCodes.isEmpty()) {
+			if ( ListTools.isNotEmpty( permissionCodes )) {
 				permissionList = permissionInfoService.listPermissionByCodes(permissionCodes);
 			}
 		} catch (Exception e) {
@@ -189,7 +190,7 @@ public class UserPermissionService {
 				}
 			}
 			if (check) {
-				if (roleCodes != null && !roleCodes.isEmpty()) {
+				if ( ListTools.isNotEmpty( roleCodes )) {
 					try {
 						permissionCodes = permissionInfoService.listPermissionCodesByRoleCodes(roleCodes);
 					} catch (Exception e) {
@@ -281,7 +282,7 @@ public class UserPermissionService {
 			}
 			
 			if ( methodExcuteResult.getSuccess() ) {// 获取可访问的论坛ID列表
-				if (forumViewPermissionList != null && !forumViewPermissionList.isEmpty()) {
+				if ( ListTools.isNotEmpty( forumViewPermissionList )) {
 					for (BBSPermissionInfo permission : forumViewPermissionList) {
 						ids.add(permission.getForumId());
 					}
@@ -326,7 +327,7 @@ public class UserPermissionService {
 				}
 			}
 			if (methodExcuteResult.getSuccess()) {// 获取可访问的论坛ID列表
-				if (sectionViewPermissionList != null && !sectionViewPermissionList.isEmpty()) {
+				if ( ListTools.isNotEmpty( sectionViewPermissionList )) {
 					for (BBSPermissionInfo permission : sectionViewPermissionList) {
 						ids.add(permission.getSectionId());
 					}

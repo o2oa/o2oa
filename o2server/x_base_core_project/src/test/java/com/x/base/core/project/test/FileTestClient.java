@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.junit.Test;
 
 public class FileTestClient {
@@ -22,7 +23,6 @@ public class FileTestClient {
 				"^dataDump_[1,2][0,9][0-9][0-9][0,1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9]$"))) {
 			System.out.println(dir == f);
 			System.out.println(f.getName());
-
 		}
 	}
 

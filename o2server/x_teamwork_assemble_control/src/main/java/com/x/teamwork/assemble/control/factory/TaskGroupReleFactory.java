@@ -135,6 +135,5 @@ public class TaskGroupReleFactory extends AbstractFactory {
 		Root<TaskGroupRele> root = cq.from(TaskGroupRele.class);
 		Predicate p = cb.equal( root.get(TaskGroupRele_.taskId), taskId );
 		return em.createQuery(cq.where(p)).getResultList();
-	}
-
+	}	
 }

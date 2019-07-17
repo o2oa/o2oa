@@ -6,15 +6,16 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.OpenJPAPersistence;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
@@ -27,7 +28,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
@@ -49,7 +49,7 @@ public class ActionEraseContentProcessPlatform {
 
 	private String name;
 
-	private List<String> classeNames = new ArrayList<>();
+	private List<String> classNames = new ArrayList<>();
 
 	private ItemCategory itemCategory;
 
@@ -76,7 +76,7 @@ public class ActionEraseContentProcessPlatform {
 	}
 
 	protected void addClass(Class<?> cls) throws Exception {
-		this.classeNames.add(cls.getName());
+		this.classNames.add(cls.getName());
 	}
 
 	protected void init(String name, ItemCategory itemCategory) throws Exception {
@@ -87,27 +87,29 @@ public class ActionEraseContentProcessPlatform {
 
 	protected void run() throws Exception {
 		logger.print("clean {} content data, start at {}.", name, DateTools.format(start));
+		this.classNames = ListUtils.intersection(this.classNames,
+				(List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
 		StorageMappings storageMappings = Config.storageMappings();
-		File xml = new File(Config.dir_local_temp_classes(), StringTools.uniqueToken() + "_eraseContent.xml");
-		List<String> classNames = PersistenceXmlHelper.write(xml.getAbsolutePath(), this.classeNames);
-		EntityManagerContainerFactory.init(xml.getName());
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			for (int i = 0; i < classNames.size(); i++) {
-				Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Class.forName(classNames.get(i));
-				EntityManager em = emc.get(cls);
-				try {
-					if (DataItem.class.isAssignableFrom(cls)) {
-						logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
-								this.estimateItemCount(em, cls));
-						this.eraseItem(cls, em);
-					} else {
-						logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
-								this.estimateCount(em, cls));
-						this.erase(cls, em, storageMappings);
-					}
-				} finally {
-					System.gc();
+		File persistence = new File(Config.dir_local_temp_classes(),
+				DateTools.compact(this.start) + "_eraseContent.xml");
+		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
+		for (int i = 0; i < classNames.size(); i++) {
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Class.forName(classNames.get(i));
+			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+			EntityManager em = emf.createEntityManager();
+			try {
+				if (DataItem.class.isAssignableFrom(cls)) {
+					logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
+							this.estimateItemCount(em, cls));
+					this.eraseItem(cls, em);
+				} else {
+					logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
+							this.estimateCount(em, cls));
+					this.erase(cls, em, storageMappings);
 				}
+			} finally {
+				System.gc();
 			}
 		}
 		Date end = new Date();

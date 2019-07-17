@@ -3,6 +3,8 @@ package com.x.attendance.assemble.control.jaxrs.attendancestatistic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.base.core.container.EntityManagerContainer;
@@ -22,7 +24,7 @@ public class BaseAction extends StandardJaxrsAction {
 		if (unitNameList == null) {
 			unitNameList = new ArrayList<String>();
 		}
-		if (unitName != null && !unitNameList.contains(unitName.trim())) {
+		if ( StringUtils.isNotEmpty( unitName ) && !unitNameList.contains(unitName.trim())) {
 			unitNameList.add(unitName.trim());
 
 			// 查询该组织的下级组织
@@ -48,7 +50,7 @@ public class BaseAction extends StandardJaxrsAction {
 		if (unitNameList == null) {
 			unitNameList = new ArrayList<String>();
 		}
-		if (topUnitName != null && !unitNameList.contains(topUnitName.trim())) {
+		if ( StringUtils.isNotEmpty( topUnitName ) && !unitNameList.contains(topUnitName.trim())) {
 			unitNameList.add( topUnitName.trim() );
 
 			// 查询该组织的下级组织

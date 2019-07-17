@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -70,7 +71,7 @@ public class Document extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
-
+	
 	public static final String summary_FIELDNAME = "summary";
 	@FieldDescribe("文档摘要")
 	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + summary_FIELDNAME)
@@ -103,6 +104,12 @@ public class Document extends SliceJpaObject {
 	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String appName;
+	
+	public static final String appAlias_FIELDNAME = "appAlias";
+	@FieldDescribe("栏目别名")
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appAlias_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String appAlias;
 
 	public static final String categoryId_FIELDNAME = "categoryId";
 	@FieldDescribe("分类ID")
@@ -119,7 +126,7 @@ public class Document extends SliceJpaObject {
 
 	public static final String categoryAlias_FIELDNAME = "categoryAlias";
 	@FieldDescribe("分类别名")
-	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + categoryAlias_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + categoryAlias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + categoryAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String categoryAlias;
@@ -243,14 +250,49 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + hasIndexPic_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean hasIndexPic = false;
-
+	
 	public static final String reviewed_FIELDNAME = "reviewed";
-	@FieldDescribe("是否已经更新review.")
+	@FieldDescribe("是否已经更新review信息.")
 	@Column(name = ColumnNamePrefix + reviewed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + reviewed_FIELDNAME)
 	private Boolean reviewed = false;
 
+	public static final String sequenceTitle_FIELDNAME = "sequenceTitle";
+	@FieldDescribe("用于标题排序的sequence")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceTitle_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sequenceTitle_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sequenceTitle = "";
+	
+	public static final String sequenceAppAlias_FIELDNAME = "sequenceAppAlias";
+	@FieldDescribe("用于栏目别名排序的sequence")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceAppAlias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sequenceAppAlias_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sequenceAppAlias = "";
+	
+	public static final String sequenceCategoryAlias_FIELDNAME = "sequenceCategoryAlias";
+	@FieldDescribe("用于分类别名排序的sequence")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCategoryAlias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sequenceCategoryAlias_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sequenceCategoryAlias = "";
+	
+	public static final String sequenceCreatorPerson_FIELDNAME = "sequenceCreatorPerson";
+	@FieldDescribe("用于创建者排序的sequence")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorPerson_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sequenceCreatorPerson_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sequenceCreatorPerson = "";
+	
+	public static final String sequenceCreatorUnitName_FIELDNAME = "sequenceCreatorUnitName";
+	@FieldDescribe("用于创建者组织排序的sequence")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorUnitName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + sequenceCreatorUnitName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String sequenceCreatorUnitName = "";
+	
 	public static final String readPersonList_FIELDNAME = "readPersonList";
 	@FieldDescribe("阅读人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -826,5 +868,126 @@ public class Document extends SliceJpaObject {
 	public void setIsTop(Boolean isTop) {
 		this.isTop = isTop;
 	}
+
+	public String getAppAlias() {
+		return appAlias;
+	}
+
+	public void setAppAlias(String appAlias) {
+		this.appAlias = appAlias;
+	}
 	
+	public String getSequenceTitle() {
+		return sequenceTitle;
+	}
+
+	public void setSequenceTitle(String sequenceTitle) {
+		this.sequenceTitle = sequenceTitle;
+	}
+
+	public String getSequenceAppAlias() {
+		return sequenceAppAlias;
+	}
+
+	public void setSequenceAppAlias(String sequenceAppAlias) {
+		this.sequenceAppAlias = sequenceAppAlias;
+	}
+
+	public String getSequenceCategoryAlias() {
+		return sequenceCategoryAlias;
+	}
+
+	public void setSequenceCategoryAlias(String sequenceCategoryAlias) {
+		this.sequenceCategoryAlias = sequenceCategoryAlias;
+	}
+
+	public String getSequenceCreatorPerson() {
+		return sequenceCreatorPerson;
+	}
+
+	public void setSequenceCreatorPerson(String sequenceCreatorPerson) {
+		this.sequenceCreatorPerson = sequenceCreatorPerson;
+	}
+
+	public String getSequenceCreatorUnitName() {
+		return sequenceCreatorUnitName;
+	}
+
+	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
+		this.sequenceCreatorUnitName = sequenceCreatorUnitName;
+	}
+
+	/**
+	 * 支持提供排序的列名
+	 */
+	public static final String[] documentFieldNames = {appAlias_FIELDNAME, appId_FIELDNAME, appName_FIELDNAME, categoryAlias_FIELDNAME, categoryId_FIELDNAME,
+			categoryName_FIELDNAME, commendCount_FIELDNAME, commentCount_FIELDNAME, creatorPerson_FIELDNAME, creatorTopUnitName_FIELDNAME, 
+			creatorUnitName_FIELDNAME, description_FIELDNAME, docStatus_FIELDNAME, hasIndexPic_FIELDNAME, isTop_FIELDNAME, modifyTime_FIELDNAME, 
+			publishTime_FIELDNAME, summary_FIELDNAME, title_FIELDNAME, viewCount_FIELDNAME, createTime_FIELDNAME };
+
+	public static Boolean isFieldInSequence( String orderField ) {
+		//判断排序列情况
+		if( StringUtils.isEmpty( orderField ) ) { 
+			return true;
+		}
+		if( id_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( sequence_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( title_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( appAlias_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( appName_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( categoryAlias_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( categoryName_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( creatorPerson_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		if( creatorUnitName_FIELDNAME.equalsIgnoreCase( orderField )) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static String getSequnceFieldNameWithProperty( String fieldName ) {
+		if( sequence_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequence_FIELDNAME;
+		}
+		if( id_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return id_FIELDNAME;
+		}
+		if( title_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceTitle_FIELDNAME;
+		}
+		if( appAlias_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceAppAlias_FIELDNAME;
+		}
+		if( appName_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceAppAlias_FIELDNAME;
+		}
+		if( categoryAlias_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceCategoryAlias_FIELDNAME;
+		}
+		if( categoryName_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceCategoryAlias_FIELDNAME;
+		}
+		if( creatorPerson_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceCreatorPerson_FIELDNAME;
+		}
+		if( creatorUnitName_FIELDNAME.equalsIgnoreCase( fieldName )) {
+			return sequenceCreatorUnitName_FIELDNAME;
+		}
+		return sequence_FIELDNAME;
+	}
 }

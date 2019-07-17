@@ -110,6 +110,7 @@ public class StatisticTopUnitForDayFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<StatisticTopUnitForDay> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilterStatisticTopUnitForDay wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( StatisticTopUnitForDay.class );

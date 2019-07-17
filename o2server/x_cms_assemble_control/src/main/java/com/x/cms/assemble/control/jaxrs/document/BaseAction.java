@@ -15,7 +15,8 @@ import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocCommendPersistService;
 import com.x.cms.assemble.control.service.DocCommendQueryService;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentPersistService;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.DocumentViewRecordServiceAdv;
 import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.FormServiceAdv;
@@ -36,7 +37,8 @@ public class BaseAction extends StandardJaxrsAction {
 	protected LogService logService = new LogService();
 	protected QueryViewService queryViewService = new QueryViewService();
 	protected DocumentViewRecordServiceAdv documentViewRecordServiceAdv = new DocumentViewRecordServiceAdv();
-	protected DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
+	protected DocumentPersistService documentPersistService = new DocumentPersistService();
+	protected DocumentQueryService documentQueryService = new DocumentQueryService();
 	
 	protected DocCommendPersistService docCommendPersistService = new DocCommendPersistService();
 	protected DocCommendQueryService docCommendQueryService = new DocCommendQueryService();
@@ -204,5 +206,28 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 		}		
 		return false;
+	}
+	
+	/**
+	 * 将权限组，组织为一个整体集合
+	 * @param personName
+	 * @param groupNames 
+	 * @param unitNames 
+	 * @return
+	 */
+	protected List<String> getPermissionObjs(String personName, List<String> unitNames, List<String> groupNames) {
+		List<String> permissionObjs = new ArrayList<>();		
+		permissionObjs.add( personName );
+		if( ListTools.isNotEmpty( unitNames )) {
+			for( String unitName : unitNames ) {
+				permissionObjs.add( unitName );
+			}
+		}
+		if( ListTools.isNotEmpty( groupNames )) {
+			for( String groupName : groupNames ) {
+				permissionObjs.add( groupName );
+			}
+		}
+		return permissionObjs;
 	}
 }

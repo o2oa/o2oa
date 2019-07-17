@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -70,9 +71,7 @@ public class Work extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.startTimeMonth) && (null != this.startTime)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
 		}
-		if (null == this.serial) {
-			this.serial = "";
-		}
+		this.serial = Objects.toString(this.serial, "");
 	}
 	/* 更新运行方法 */
 
@@ -93,9 +92,19 @@ public class Work extends SliceJpaObject {
 
 	public void setTitle(String title) {
 		if (StringTools.utf8Length(title) > length_255B) {
+			this.titleLob = title;
 			this.title = StringTools.utf8SubString(this.title, 252) + "...";
 		} else {
-			this.title = title;
+			this.titleLob = "";
+			this.title = Objects.toString(title, "");
+		}
+	}
+
+	public String getTitle() {
+		if (StringUtils.isNotEmpty(this.titleLob)) {
+			return this.titleLob;
+		} else {
+			return this.title;
 		}
 	}
 
@@ -125,6 +134,13 @@ public class Work extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
+
+	public static final String titleLob_FIELDNAME = "titleLob";
+	@FieldDescribe("标题,长文本")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + titleLob_FIELDNAME)
+	private String titleLob;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("工作开始时间")
@@ -412,10 +428,6 @@ public class Work extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + embedTargetWork_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String embedTargetWork;
-
-	public String getTitle() {
-		return title;
-	}
 
 	public String getProcess() {
 		return process;
@@ -743,6 +755,14 @@ public class Work extends SliceJpaObject {
 
 	public void setManualTaskIdentityText(String manualTaskIdentityText) {
 		this.manualTaskIdentityText = manualTaskIdentityText;
+	}
+
+	public String getTitleLob() {
+		return titleLob;
+	}
+
+	public void setTitleLob(String titleLob) {
+		this.titleLob = titleLob;
 	}
 
 }

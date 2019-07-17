@@ -22,9 +22,9 @@ public class ActionSave extends BaseAction {
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		ProjectGroup projectGroup = null;
+		ProjectGroup projectGroup_old = null;
 		Wi wi = null;
 		Boolean check = true;
-		String optType = "CREATE";
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
@@ -36,12 +36,7 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
-			projectGroup = projectGroupQueryService.get( wi.getId() );
-			if( projectGroup == null ) {
-				optType = "CREATE";
-			}else {
-				optType = "UPDATE";
-			}
+			projectGroup_old = projectGroupQueryService.get( wi.getId() );
 		}
 		
 		if (check) {
@@ -50,7 +45,7 @@ public class ActionSave extends BaseAction {
 				
 				// 更新缓存
 				ApplicationCache.notify( Project.class );
-				ApplicationCache.notify( ProjectGroup.class );
+				ApplicationCache.notify( ProjectGroup.class );				
 				
 				Wo wo = new Wo();
 				wo.setId( projectGroup.getId() );
@@ -64,7 +59,7 @@ public class ActionSave extends BaseAction {
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( projectGroup, optType, effectivePerson, jsonElement.toString() );
+				dynamicPersistService.projectGroupSaveDynamic(projectGroup_old, projectGroup, effectivePerson,  jsonElement.toString() );
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}

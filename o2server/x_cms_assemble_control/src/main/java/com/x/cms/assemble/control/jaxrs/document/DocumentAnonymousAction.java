@@ -31,7 +31,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	
 	private static  Logger logger = LoggerFactory.getLogger( DocumentAnonymousAction.class );
 	
-	@JaxrsMethodDescribe(value = "根据ID访问信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionView.class)
+	@JaxrsMethodDescribe(value = "根据ID访问信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionQueryViewDocument.class)
 	@GET
 	@Path("{id}/view")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -39,9 +39,9 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	public Response view(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionView.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryViewDocument.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionView().execute( request, id, effectivePerson );
+			result = new ActionQueryViewDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -50,7 +50,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionListNextWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListNextWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -60,12 +60,12 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionListNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -75,7 +75,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionGetFirstPicture.class)
+	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionQueryGetFirstPicture.class)
 	@GET
 	@Path("pictures/{id}/first")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -83,11 +83,11 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	public Response listFirstPictures( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionGetFirstPicture.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryGetFirstPicture.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionGetFirstPicture().execute( request, id, effectivePerson );
+				result = new ActionQueryGetFirstPicture().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -97,7 +97,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionListAllPictures.class)
+	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionQueryListAllPictures.class)
 	@GET
 	@Path("pictures/{id}/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -105,11 +105,11 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	public Response listAllPictures( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListAllPictures.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionQueryListAllPictures.Wo>> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListAllPictures().execute( request, id, effectivePerson );
+				result = new ActionQueryListAllPictures().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

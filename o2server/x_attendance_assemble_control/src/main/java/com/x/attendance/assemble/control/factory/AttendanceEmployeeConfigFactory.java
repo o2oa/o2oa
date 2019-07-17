@@ -30,6 +30,7 @@ public class AttendanceEmployeeConfigFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("列示全部的AttendanceEmployeeConfig信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceEmployeeConfig> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceEmployeeConfig.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

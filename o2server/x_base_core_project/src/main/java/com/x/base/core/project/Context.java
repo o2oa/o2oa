@@ -269,14 +269,6 @@ public class Context extends AbstractContext {
 		}
 	}
 
-//	private void initDatas() throws Exception {
-//		if (ListTools.isNotEmpty(clazzInstance.dependency.containerEntities)) {
-//			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
-//					clazzInstance.dependency.containerEntities.size());
-//			EntityManagerContainerFactory.init(path, AnnotationUtils.this.clazzInstance.dependency.containerEntities);
-//		}
-//	}
-
 	private void initDatas() throws Exception {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),

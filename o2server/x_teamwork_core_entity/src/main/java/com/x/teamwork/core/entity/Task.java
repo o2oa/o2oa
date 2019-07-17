@@ -96,11 +96,18 @@ public class Task extends SliceJpaObject {
 	private String parent;	
 	
 	public static final String name_FIELDNAME = "name";
-	@FieldDescribe("工作任务名称")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+	@FieldDescribe("工作任务名称（40字）")
+	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
 	private String name;
+	
+	public static final String summay_FIELDNAME = "summay";
+	@FieldDescribe("工作任务概括（80字）")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + summay_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + summay_FIELDNAME)
+	@CheckPersist( allowEmpty = true )
+	private String summay;
 	
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("工作开始时间")
@@ -116,30 +123,26 @@ public class Task extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private Date endTime;
 	
-	public static final String tags_FIELDNAME = "tags";
-	@FieldDescribe("工作标签：自定义标签")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + tags_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + tags_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + tags_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + tags_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> tags;
+	public static final String tagContent_FIELDNAME = "tagContent";
+	@FieldDescribe("展示用，工作任务的标签信息，用#号分隔")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + tagContent_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + tagContent_FIELDNAME)
+	@CheckPersist( allowEmpty = true )
+	private String tagContent = "";
 	
 	public static final String priority_FIELDNAME = "priority";
-	@FieldDescribe("工作等级：普通、紧急、特急")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + priority_FIELDNAME)
+	@FieldDescribe("工作等级：普通 | 紧急 | 特急")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + priority_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + priority_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
 	private String priority = "普通";
 	
 	public static final String workStatus_FIELDNAME = "workStatus";
-	@FieldDescribe("工作状态：草稿、未开始、执行中、已完成、已挂起、已取消")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + workStatus_FIELDNAME)
+	@FieldDescribe("工作状态：执行中- processing | 已完成- completed | 已归档- archived")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + workStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + workStatus_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
-	private String workStatus = "草稿";
+	private String workStatus = "processing";
 	
 	public static final String completed_FIELDNAME = "completed";
 	@FieldDescribe("是否已完成")
@@ -174,6 +177,18 @@ public class Task extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix + deleted_FIELDNAME)
 	@Index( name = TABLE + IndexNameMiddle + deleted_FIELDNAME )
 	private Boolean deleted = false;
+	
+	public static final String archive_FIELDNAME = "archive";
+	@FieldDescribe("是否已经归档")
+	@Column( name = ColumnNamePrefix + archive_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + archive_FIELDNAME )
+	private Boolean archive = false;
+	
+	public static final String reviewed_FIELDNAME = "reviewed";
+	@FieldDescribe("是否检查过review信息")
+	@Column( name = ColumnNamePrefix + reviewed_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + reviewed_FIELDNAME )
+	private Boolean reviewed = false;
 	
 	public static final String progress_FIELDNAME = "progress";
 	@FieldDescribe("工作进度：记录4位数，显示的时候除以100")
@@ -213,49 +228,16 @@ public class Task extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String creatorPerson;
 	
-	public static final String participantPersonList_FIELDNAME = "participantPersonList";
-	@FieldDescribe("参与人员")
+	public static final String participantList_FIELDNAME = "participantList";
+	@FieldDescribe("工作任务参与者")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + participantPersonList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + participantPersonList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + participantPersonList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + participantPersonList_FIELDNAME + ElementIndexNameSuffix)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + participantList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + participantList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + participantList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + participantList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	private List<String> participantPersonList;
-	
-	public static final String participantIdentityList_FIELDNAME = "participantIdentityList";
-	@FieldDescribe("参与人员身份")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + participantIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + participantIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + participantIdentityList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + participantIdentityList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> participantIdentityList;
-
-	public static final String participantUnitList_FIELDNAME = "participantUnitList";
-	@FieldDescribe("参与组织")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + participantUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + participantUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + participantUnitList_FIELDNAME )
-	@ElementIndex(name = TABLE + IndexNameMiddle + participantUnitList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> participantUnitList;
-	
-	public static final String participantGroupList_FIELDNAME = "participantGroupList";
-	@FieldDescribe("参与群组")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + participantGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + participantGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + participantGroupList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + participantGroupList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> participantGroupList;
+	private List<String> participantList;
 	
 	public static final String manageablePersonList_FIELDNAME = "manageablePersonList";
 	@FieldDescribe("管理者")
@@ -272,62 +254,84 @@ public class Task extends SliceJpaObject {
 	@FieldDescribe("备用字符串64属性1.")
 	@Column(length = length_64B, name = ColumnNamePrefix + memoString64_1_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoString64_1;
+	private String memoString64_1 = "";
 	
 	public static final String memoString64_2_FIELDNAME = "memoString64_2";
 	@FieldDescribe("备用字符串64属性2.")
 	@Column(length = length_64B, name = ColumnNamePrefix + memoString64_2_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoString64_2;
+	private String memoString64_2 = "";
 	
 	public static final String memoString64_3_FIELDNAME = "memoString64_3";
 	@FieldDescribe("备用字符串64属性3.")
 	@Column(length = length_255B, name = ColumnNamePrefix + memoString64_3_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoString64_3;
+	private String memoString64_3 = "";
 	
 	public static final String memoString255_1_FIELDNAME = "memoString255_1";
 	@FieldDescribe("备用字符串255属性1.")
 	@Column(length = length_255B, name = ColumnNamePrefix + memoString255_1_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoString255_1;
+	private String memoString255_1 = "";
 	
 	public static final String memoString255_2_FIELDNAME = "memoString255_2";
 	@FieldDescribe("备用字符串255属性2.")
 	@Column(length = length_255B, name = ColumnNamePrefix + memoString255_2_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoString255_2;
+	private String memoString255_2 = "";
 	
 	public static final String memoInteger1_FIELDNAME = "memoInteger1";
 	@FieldDescribe("备用整型属性1.")
 	@Column( name = ColumnNamePrefix + memoInteger1_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoInteger1;
+	private Integer memoInteger1 = 0;
 	
 	public static final String memoInteger2_FIELDNAME = "memoInteger2";
 	@FieldDescribe("备用整型属性2.")
 	@Column( name = ColumnNamePrefix + memoInteger2_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoInteger2;
+	private Integer memoInteger2 = 0;
 	
 	public static final String memoInteger3_FIELDNAME = "memoInteger3";
 	@FieldDescribe("备用整型属性3.")
 	@Column( name = ColumnNamePrefix + memoInteger3_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoInteger3;
+	private Integer memoInteger3 = 0;
 	
 	public static final String memoDouble1_FIELDNAME = "memoDouble1";
 	@FieldDescribe("备用Double属性1.")
 	@Column( name = ColumnNamePrefix + memoDouble1_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoDouble1;
+	private Double memoDouble1 = 0.0;	
 	
 	public static final String memoDouble2_FIELDNAME = "memoDouble2";
 	@FieldDescribe("备用Double属性2.")
 	@Column( name = ColumnNamePrefix + memoDouble2_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String memoDouble2;
+	private Double memoDouble2 = 0.0;	
+
+	public String composeTagContent( List<String> tags ) {
+		StringBuffer sb = new StringBuffer();
+		if(ListTools.isNotEmpty( tags )) {
+			for( String tag : tags ) {
+				if( StringUtils.isEmpty( sb.toString() ) ) {
+					sb.append( tag );
+				}else {
+					sb.append( "#" ).append( tag );
+				}
+			}
+		}
+		return sb.toString();
+	}
 	
+	public String getTagContent() {
+		return this.tagContent;
+	}
+
+	public void setTagContent(String tagContent) {
+		this.tagContent = tagContent;
+	}
+
 	public String getProject() {
 		return project;
 	}
@@ -352,14 +356,6 @@ public class Task extends SliceJpaObject {
 		this.executor = executor;
 	}
 
-	public List<String> getParticipantPersonList() {
-		return participantPersonList;
-	}
-
-	public void setParticipantPersonList(List<String> participantPersonList) {
-		this.participantPersonList = participantPersonList;
-	}	
-
 	public String getExecutorIdentity() {
 		return executorIdentity;
 	}
@@ -374,22 +370,6 @@ public class Task extends SliceJpaObject {
 
 	public void setExecutorUnit(String executorUnit) {
 		this.executorUnit = executorUnit;
-	}
-
-	public List<String> getParticipantIdentityList() {
-		return participantIdentityList;
-	}
-
-	public void setParticipantIdentityList(List<String> participantIdentityList) {
-		this.participantIdentityList = participantIdentityList;
-	}
-
-	public List<String> getParticipantUnitList() {
-		return participantUnitList;
-	}
-
-	public void setParticipantUnitList(List<String> participantUnitList) {
-		this.participantUnitList = participantUnitList;
 	}
 
 	public String getName() {
@@ -418,14 +398,6 @@ public class Task extends SliceJpaObject {
 
 	public String getPriority() {
 		return priority;
-	}
-
-	public List<String> getTags() {
-		return tags;
-	}
-
-	public void setTags(List<String> tags) {
-		this.tags = tags;
 	}
 
 	public void setPriority(String priority) {
@@ -511,38 +483,6 @@ public class Task extends SliceJpaObject {
 	public void setManageablePersonList(List<String> manageablePersonList) {
 		this.manageablePersonList = manageablePersonList;
 	}
-
-	public List<String> getParticipantGroupList() {
-		return participantGroupList;
-	}
-
-	public void setParticipantGroupList(List<String> participantGroupList) {
-		this.participantGroupList = participantGroupList;
-	}
-
-	public String getMemoInteger1() {
-		return memoInteger1;
-	}
-
-	public void setMemoInteger1(String memoInteger1) {
-		this.memoInteger1 = memoInteger1;
-	}
-
-	public String getMemoInteger2() {
-		return memoInteger2;
-	}
-
-	public void setMemoInteger2(String memoInteger2) {
-		this.memoInteger2 = memoInteger2;
-	}
-
-	public String getMemoInteger3() {
-		return memoInteger3;
-	}
-
-	public void setMemoInteger3(String memoInteger3) {
-		this.memoInteger3 = memoInteger3;
-	}
 	
 	public String getMemoString64_1() {
 		return memoString64_1;
@@ -582,23 +522,55 @@ public class Task extends SliceJpaObject {
 
 	public void setMemoString255_2(String memoString255_2) {
 		this.memoString255_2 = memoString255_2;
+	}	
+
+	public String getSummay() {
+		return summay;
 	}
 
-	public String getMemoDouble1() {
+	public void setSummay(String summay) {
+		this.summay = summay;
+	}
+
+	public Integer getMemoInteger1() {
+		return memoInteger1;
+	}
+
+	public void setMemoInteger1(Integer memoInteger1) {
+		this.memoInteger1 = memoInteger1;
+	}
+
+	public Integer getMemoInteger2() {
+		return memoInteger2;
+	}
+
+	public void setMemoInteger2(Integer memoInteger2) {
+		this.memoInteger2 = memoInteger2;
+	}
+
+	public Integer getMemoInteger3() {
+		return memoInteger3;
+	}
+
+	public void setMemoInteger3(Integer memoInteger3) {
+		this.memoInteger3 = memoInteger3;
+	}
+
+	public Double getMemoDouble1() {
 		return memoDouble1;
 	}
 
-	public void setMemoDouble1(String memoDouble1) {
+	public void setMemoDouble1(Double memoDouble1) {
 		this.memoDouble1 = memoDouble1;
 	}
 
-	public String getMemoDouble2() {
+	public Double getMemoDouble2() {
 		return memoDouble2;
 	}
 
-	public void setMemoDouble2(String memoDouble2) {
+	public void setMemoDouble2(Double memoDouble2) {
 		this.memoDouble2 = memoDouble2;
-	}	
+	}
 
 	public String getProjectName() {
 		return projectName;
@@ -606,21 +578,6 @@ public class Task extends SliceJpaObject {
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
-
-	public void addTag( String tag ) {
-		this.tags = addStringToList( tag , this.tags );
-	}
-	public void addTags( List<String> tags ) {
-		this.tags = addListToList( tags , this.tags );
-	}
-	
-	public void removeTaskTag( String tag ) {
-		this.tags = removeStringFromList( tag , this.tags );
-	}
-	
-	public void removeTaskTags( List<String> tags ) {
-		this.tags = removeListFromList( tags , this.tags );
 	}
 	
 	public void addManageablePerson( String distinguishedName ) {
@@ -638,68 +595,20 @@ public class Task extends SliceJpaObject {
 		this.manageablePersonList = removeListFromList( distinguishedNames , this.manageablePersonList );
 	}
 	
-	public void addParticipantGroup( String distinguishedName ) {
-		this.participantGroupList = addStringToList( distinguishedName , this.participantGroupList );
+	public void addParticipant( String distinguishedName ) {
+		this.participantList = addStringToList( distinguishedName , this.participantList );
 	}
-	public void addParticipantGroup( List<String> distinguishedNames ) {
-		this.participantGroupList = addListToList( distinguishedNames , this.participantGroupList );
+	public void removeParticipant( String distinguishedName ) {
+		this.participantList = removeStringFromList( distinguishedName , this.participantList );
 	}
-	
-	public void removeParticipantGroup( String distinguishedName ) {
-		this.participantGroupList = removeStringFromList( distinguishedName , this.participantGroupList );
+	public List<String> getParticipantList() {
+		return participantList;
 	}
-	
-	public void removeParticipantGroup( List<String> distinguishedNames ) {
-		this.participantGroupList = removeListFromList( distinguishedNames , this.participantGroupList );
+
+	public void setParticipantList(List<String> participantList) {
+		this.participantList = participantList;
 	}
-	
-	public void addParticipantUnit( String distinguishedName ) {
-		this.participantUnitList = addStringToList( distinguishedName , this.participantUnitList );
-	}
-	public void addParticipantUnit( List<String> distinguishedNames ) {
-		this.participantUnitList = addListToList( distinguishedNames , this.participantUnitList );
-	}
-	
-	public void removeParticipantUnit( String distinguishedName ) {
-		this.participantUnitList = removeStringFromList( distinguishedName , this.participantUnitList );
-	}
-	
-	public void removeParticipantUnit( List<String> distinguishedNames ) {
-		this.participantUnitList = removeListFromList( distinguishedNames , this.participantUnitList );
-	}
-	
-	public void addParticipantPerson( String distinguishedName ) {
-		this.participantPersonList = addStringToList( distinguishedName , this.participantPersonList );
-	}
-	
-	public void addParticipantPerson( List<String> distinguishedNames ) {
-		this.participantPersonList = addListToList( distinguishedNames , this.participantPersonList );
-	}
-	
-	public void removeParticipantPerson( String distinguishedName ) {
-		this.participantPersonList = removeStringFromList( distinguishedName , this.participantPersonList );
-	}
-	
-	public void removeParticipantPerson( List<String> distinguishedNames ) {
-		this.participantPersonList = removeListFromList( distinguishedNames , this.participantPersonList );
-	}
-	
-	public void addParticipantIdentity( String distinguishedName ) {
-		this.participantIdentityList = addStringToList( distinguishedName , this.participantIdentityList );
-	}
-	
-	public void addParticipantIdentity( List<String> distinguishedNames ) {
-		this.participantIdentityList = addListToList( distinguishedNames , this.participantIdentityList );
-	}
-	
-	public void removeParticipantIdentity( String distinguishedName ) {
-		this.participantIdentityList = removeStringFromList( distinguishedName , this.participantIdentityList );
-	}
-	
-	public void removeParticipantIdentity( List<String> distinguishedNames ) {
-		this.participantIdentityList = removeListFromList( distinguishedNames , this.participantIdentityList );
-	}
-	
+
 	private List<String> addStringToList( String source, List<String> targetList ){
 		if( targetList == null ) {
 			targetList = new ArrayList<>();
@@ -758,5 +667,21 @@ public class Task extends SliceJpaObject {
 		}
 		targetList = result;
 		return targetList;
+	}
+
+	public Boolean getArchive() {
+		return archive;
+	}
+
+	public void setArchive(Boolean archive) {
+		this.archive = archive;
+	}
+
+	public Boolean getReviewed() {
+		return reviewed;
+	}
+
+	public void setReviewed(Boolean reviewed) {
+		this.reviewed = reviewed;
 	}
 }

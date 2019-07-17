@@ -3,6 +3,8 @@ package com.x.base.core.project.tools;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -140,5 +142,45 @@ public class SortTools {
 				return ObjectUtils.compare(c2, c1, nullGreater);
 			}
 		});
+	}
+
+	/* 按模板给出的顺序进行排序,不在模板中的排在最前 */
+	public static <T> List<T> orderWithTemplateNotFoundFirst(List<T> list, List<T> template) {
+		if ((null == list) || template == list) {
+			return list;
+		}
+		return list.stream().sorted(Comparator.comparing(Function.identity(), (x, y) -> {
+			int indx = template.indexOf(x);
+			int indy = template.indexOf(y);
+			if (indx == indy) {
+				return 0;
+			} else if (indx == -1) {
+				return -1;
+			} else if (indy == -1) {
+				return 1;
+			} else {
+				return indx - indy;
+			}
+		})).collect(Collectors.toList());
+	}
+
+	/* 按模板给出的顺序进行排序,不在模板中的排在最后 */
+	public static <T> List<T> orderWithTemplateNotFoundLast(List<T> list, List<T> template) {
+		if ((null == list) || template == list) {
+			return list;
+		}
+		return list.stream().sorted(Comparator.comparing(Function.identity(), (x, y) -> {
+			int indx = template.indexOf(x);
+			int indy = template.indexOf(y);
+			if (indx == indy) {
+				return 0;
+			} else if (indx == -1) {
+				return 1;
+			} else if (indy == -1) {
+				return -1;
+			} else {
+				return indx - indy;
+			}
+		})).collect(Collectors.toList());
 	}
 }

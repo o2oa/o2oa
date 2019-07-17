@@ -178,4 +178,41 @@ public class ViewAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "列示执行后的bundle列表", action = ActionBundle.class)
+	@PUT
+	@Path("{id}/bundle")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void bundle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("视图标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionBundle.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBundle().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示按查询和视图标识执行后的bundle列表", action = ActionBundleWithQuery.class)
+	@PUT
+	@Path("flag/{flag}/query/{queryFlag}/bundle")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void bundleWithQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("视图标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("查询标识") @PathParam("queryFlag") String queryFlag, JsonElement jsonElement) {
+		ActionResult<ActionBundleWithQuery.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBundleWithQuery().execute(effectivePerson, flag, queryFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 }

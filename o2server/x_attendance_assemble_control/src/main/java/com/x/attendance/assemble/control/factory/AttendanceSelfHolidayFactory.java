@@ -99,6 +99,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<AttendanceSelfHoliday> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceSelfHoliday.class );
@@ -134,7 +135,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 			index++;
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );
@@ -192,7 +193,7 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 			index++;
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );

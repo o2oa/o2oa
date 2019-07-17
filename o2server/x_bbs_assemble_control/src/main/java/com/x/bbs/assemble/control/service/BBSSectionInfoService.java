@@ -1,6 +1,9 @@
 package com.x.bbs.assemble.control.service;
 
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -9,6 +12,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSPermissionInfo;
@@ -97,7 +101,7 @@ public class BBSSectionInfoService {
 		
 		//递归删除所有的子版块
 		subSectionIds = business.sectionInfoFactory().listSubSectionIdsByMainSectionId( id );
-		if( subSectionIds != null && !subSectionIds.isEmpty() ){
+		if( ListTools.isNotEmpty( subSectionIds ) ){
 			for( String subSectionId : subSectionIds ){
 				if( !id.equalsIgnoreCase( subSectionId )){
 					delete( emc, subSectionId );
@@ -107,11 +111,11 @@ public class BBSSectionInfoService {
 		
 		//删除所有的权限以及角色权限关联
 		permissionList = business.permissionInfoFactory().listPermissionByMainSectionId( id );
-		if( permissionList != null && !permissionList.isEmpty() ){
+		if( ListTools.isNotEmpty( permissionList ) ){
 			for( BBSPermissionInfo permissionInfo : permissionList ){
 				//删除角色权限关联
 				permissionRoleList = business.permissionRoleFactory().listByPermissionCode( permissionInfo.getPermissionCode() );
-				if( permissionRoleList != null && permissionRoleList.size() > 0 ){
+				if( ListTools.isNotEmpty( permissionRoleList ) ){
 					for( BBSPermissionRole permissionRole : permissionRoleList ){
 						emc.remove( permissionRole, CheckRemoveType.all );
 					}
@@ -123,13 +127,13 @@ public class BBSSectionInfoService {
 		//删除主版块以及子版块所有的主贴和回复, 一次删除1000条
 		subjectIds = business.subjectInfoFactory().listSubjectIdsBySection( id, 1000 );
 		do{
-			if( subjectIds != null && !subjectIds.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectIds ) ){
 				for( String subjectId : subjectIds ){
 					subjectInfoService.delete( emc, subjectId );
 				}
 			}
 			subjectIds = business.subjectInfoFactory().listSubjectIdsBySection( id, 1000 );
-		}while( subjectIds != null && !subjectIds.isEmpty() );
+		}while( ListTools.isNotEmpty( subjectIds ) );
 		
 		bBSSectionInfo = emc.find(id, BBSSectionInfo.class);
 		if ( null != bBSSectionInfo ) {
@@ -272,7 +276,7 @@ public class BBSSectionInfoService {
 		BBSUserRole userRole_new = null;
 		Business business = null;
 		Boolean exists = false;
-		if( sectionInfo.getModeratorNames() != null && !sectionInfo.getModeratorNames().isEmpty() ){
+		if( StringUtils.isNotEmpty( sectionInfo.getModeratorNames() ) ){
 			currentManagerNames = sectionInfo.getModeratorNames().split(",");
 		}
 		business = new Business( emc );
@@ -282,13 +286,13 @@ public class BBSSectionInfoService {
 			throw new Exception("role info{'code':'"+"SECTION_MANAGER_" + sectionInfo.getId()+"'} is not exists.");
 		}
 		ids = business.userRoleFactory().listIdsByRoleCode( "SECTION_MANAGER_" + sectionInfo.getId() );
-		if( ids != null && !ids.isEmpty() ){
+		if( ListTools.isNotEmpty( ids ) ){
 			userRoleList = business.userRoleFactory().list( ids );
 		}
-		if( userRoleList != null && !userRoleList.isEmpty() ){
+		if( ListTools.isNotEmpty( userRoleList ) ){
 			for( BBSUserRole userRole : userRoleList ){
 				exists = false;
-				if( currentManagerNames != null && currentManagerNames.length > 0 ){
+				if( ListTools.isNotEmpty( Arrays.asList( currentManagerNames )) ){
 					for( String name : currentManagerNames ){
 						if( name.equals( userRole.getObjectName()) || name.equalsIgnoreCase( userRole.getUniqueId() )){
 							exists = true;
@@ -303,7 +307,7 @@ public class BBSSectionInfoService {
 		if( currentManagerNames != null && currentManagerNames.length > 0 ){
 			for( String name : currentManagerNames ){
 				exists = false;
-				if( userRoleList != null && !userRoleList.isEmpty() ){
+				if( ListTools.isNotEmpty( userRoleList ) ){
 					for( BBSUserRole userRole : userRoleList ){
 						if( name.equals( userRole.getObjectName()) || name.equalsIgnoreCase( userRole.getUniqueId() )){
 							exists = true;

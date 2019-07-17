@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
@@ -58,6 +60,14 @@ public class Review extends SliceJpaObject {
 		}
 		if (StringUtils.isEmpty(this.completedTimeMonth) && (null != this.completedTime)) {
 			this.completedTimeMonth = DateTools.format(this.completedTime, DateTools.format_yyyyMM);
+		}
+	}
+
+	public void setTitle(String title) {
+		if (StringTools.utf8Length(title) > length_255B) {
+			this.title = StringTools.utf8SubString(this.title, 252) + "...";
+		} else {
+			this.title = Objects.toString(title, "");
 		}
 	}
 
@@ -264,6 +274,145 @@ public class Review extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String creatorUnit;
 
+	public static final String stringValue01_FIELDNAME = "stringValue01";
+	@FieldDescribe("业务数据String值01.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue01;
+
+	public static final String stringValue02_FIELDNAME = "stringValue02";
+	@FieldDescribe("业务数据String值02.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue02;
+
+	public static final String stringValue03_FIELDNAME = "stringValue03";
+	@FieldDescribe("业务数据String值03.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue03;
+
+	public static final String stringValue04_FIELDNAME = "stringValue04";
+	@FieldDescribe("业务数据String值04.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue04_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue04_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue04;
+
+	public static final String stringValue05_FIELDNAME = "stringValue05";
+	@FieldDescribe("业务数据String值05.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue05;
+
+	public static final String integerValue01_FIELDNAME = "integerValue01";
+	@FieldDescribe("业务数据Integer值01.")
+	@Column(name = ColumnNamePrefix + integerValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + integerValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer integerValue01;
+
+	public static final String integerValue02_FIELDNAME = "integerValue02";
+	@FieldDescribe("业务数据Integer值02.")
+	@Column(name = ColumnNamePrefix + integerValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + integerValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer integerValue02;
+
+	public static final String booleanValue01_FIELDNAME = "booleanValue01";
+	@FieldDescribe("业务数据Boolean值01.")
+	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean booleanValue01;
+
+	public static final String booleanValue02_FIELDNAME = "booleanValue02";
+	@FieldDescribe("业务数据Boolean值02.")
+	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean booleanValue02;
+
+	public static final String doubleValue01_FIELDNAME = "doubleValue01";
+	@FieldDescribe("业务数据Double值01.")
+	@Column(name = ColumnNamePrefix + doubleValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue01;
+
+	public static final String doubleValue02_FIELDNAME = "doubleValue02";
+	@FieldDescribe("业务数据Double值02.")
+	@Column(name = ColumnNamePrefix + doubleValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue02;
+
+	public static final String longValue01_FIELDNAME = "longValue01";
+	@FieldDescribe("业务数据Long值01.")
+	@Column(name = ColumnNamePrefix + longValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue01;
+
+	public static final String longValue02_FIELDNAME = "longValue02";
+	@FieldDescribe("业务数据Long值02.")
+	@Column(name = ColumnNamePrefix + longValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue02;
+
+	public static final String dateTimeValue01_FIELDNAME = "dateTimeValue01";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值01.")
+	@Column(name = ColumnNamePrefix + dateTimeValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue01;
+
+	public static final String dateTimeValue02_FIELDNAME = "dateTimeValue02";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值02.")
+	@Column(name = ColumnNamePrefix + dateTimeValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue02;
+
+	public static final String dateValue01_FIELDNAME = "dateValue01";
+	@Temporal(TemporalType.DATE)
+	@FieldDescribe("业务数据Date值01.")
+	@Column(name = ColumnNamePrefix + dateValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateValue01;
+
+	public static final String dateValue02_FIELDNAME = "dateValue02";
+	@Temporal(TemporalType.DATE)
+	@FieldDescribe("业务数据Date值02.")
+	@Column(name = ColumnNamePrefix + dateValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateValue02;
+
+	public static final String timeValue01_FIELDNAME = "timeValue01";
+	@Temporal(TemporalType.TIME)
+	@FieldDescribe("业务数据Time值01.")
+	@Column(name = ColumnNamePrefix + timeValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + timeValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date timeValue01;
+
+	public static final String timeValue02_FIELDNAME = "timeValue02";
+	@Temporal(TemporalType.TIME)
+	@FieldDescribe("业务数据Time值02.")
+	@Column(name = ColumnNamePrefix + timeValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date timeValue02;
+
 	public String getProcess() {
 		return process;
 	}
@@ -282,10 +431,6 @@ public class Review extends SliceJpaObject {
 
 	public String getTitle() {
 		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getJob() {
@@ -422,6 +567,158 @@ public class Review extends SliceJpaObject {
 
 	public void setCompletedTimeMonth(String completedTimeMonth) {
 		this.completedTimeMonth = completedTimeMonth;
+	}
+
+	public String getStringValue01() {
+		return stringValue01;
+	}
+
+	public void setStringValue01(String stringValue01) {
+		this.stringValue01 = stringValue01;
+	}
+
+	public String getStringValue02() {
+		return stringValue02;
+	}
+
+	public void setStringValue02(String stringValue02) {
+		this.stringValue02 = stringValue02;
+	}
+
+	public String getStringValue03() {
+		return stringValue03;
+	}
+
+	public void setStringValue03(String stringValue03) {
+		this.stringValue03 = stringValue03;
+	}
+
+	public String getStringValue04() {
+		return stringValue04;
+	}
+
+	public void setStringValue04(String stringValue04) {
+		this.stringValue04 = stringValue04;
+	}
+
+	public String getStringValue05() {
+		return stringValue05;
+	}
+
+	public void setStringValue05(String stringValue05) {
+		this.stringValue05 = stringValue05;
+	}
+
+	public Integer getIntegerValue01() {
+		return integerValue01;
+	}
+
+	public void setIntegerValue01(Integer integerValue01) {
+		this.integerValue01 = integerValue01;
+	}
+
+	public Integer getIntegerValue02() {
+		return integerValue02;
+	}
+
+	public void setIntegerValue02(Integer integerValue02) {
+		this.integerValue02 = integerValue02;
+	}
+
+	public Boolean getBooleanValue01() {
+		return booleanValue01;
+	}
+
+	public void setBooleanValue01(Boolean booleanValue01) {
+		this.booleanValue01 = booleanValue01;
+	}
+
+	public Boolean getBooleanValue02() {
+		return booleanValue02;
+	}
+
+	public void setBooleanValue02(Boolean booleanValue02) {
+		this.booleanValue02 = booleanValue02;
+	}
+
+	public Double getDoubleValue01() {
+		return doubleValue01;
+	}
+
+	public void setDoubleValue01(Double doubleValue01) {
+		this.doubleValue01 = doubleValue01;
+	}
+
+	public Double getDoubleValue02() {
+		return doubleValue02;
+	}
+
+	public void setDoubleValue02(Double doubleValue02) {
+		this.doubleValue02 = doubleValue02;
+	}
+
+	public Long getLongValue01() {
+		return longValue01;
+	}
+
+	public void setLongValue01(Long longValue01) {
+		this.longValue01 = longValue01;
+	}
+
+	public Long getLongValue02() {
+		return longValue02;
+	}
+
+	public void setLongValue02(Long longValue02) {
+		this.longValue02 = longValue02;
+	}
+
+	public Date getDateTimeValue01() {
+		return dateTimeValue01;
+	}
+
+	public void setDateTimeValue01(Date dateTimeValue01) {
+		this.dateTimeValue01 = dateTimeValue01;
+	}
+
+	public Date getDateTimeValue02() {
+		return dateTimeValue02;
+	}
+
+	public void setDateTimeValue02(Date dateTimeValue02) {
+		this.dateTimeValue02 = dateTimeValue02;
+	}
+
+	public Date getDateValue01() {
+		return dateValue01;
+	}
+
+	public void setDateValue01(Date dateValue01) {
+		this.dateValue01 = dateValue01;
+	}
+
+	public Date getDateValue02() {
+		return dateValue02;
+	}
+
+	public void setDateValue02(Date dateValue02) {
+		this.dateValue02 = dateValue02;
+	}
+
+	public Date getTimeValue01() {
+		return timeValue01;
+	}
+
+	public void setTimeValue01(Date timeValue01) {
+		this.timeValue01 = timeValue01;
+	}
+
+	public Date getTimeValue02() {
+		return timeValue02;
+	}
+
+	public void setTimeValue02(Date timeValue02) {
+		this.timeValue02 = timeValue02;
 	}
 
 }

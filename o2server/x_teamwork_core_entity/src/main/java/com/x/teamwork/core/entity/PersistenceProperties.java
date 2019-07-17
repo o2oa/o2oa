@@ -16,20 +16,20 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_PROJECTDETAIL";
 	}
 
-	public static class ProjectGroupRele {
-		public static final String table = "TEW_PROJECTGROUP_RELE";
-	}
-
 	public static class ProjectGroup {
 		public static final String table = "TEW_PROJECTGROUP";
-	}
-	
-	public static class ProjectExtFieldRele {
-		public static final String table = "ProjectExtFieldRele";
 	}
 
 	public static class Task {
 		public static final String table = "TEW_TASK";
+	}
+	
+	public static class Review {
+		public static final String table = "TEW_REVIEW";
+	}
+	
+	public static class TaskTag {
+		public static final String table = "TEW_TAG";
 	}
 
 	public static class TaskDetail {
@@ -44,21 +44,13 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_TASKGROUP";
 	}
 	
-	public static class TaskGroupRele {
-		public static final String table = "TEW_TASKGROUP_RELE";
-	}
-	
 	public static class TaskList {
 		public static final String table = "TEW_TASKLIST";
 	}
-
-	public static class TaskListRele {
-		public static final String table = "TEW_TASKLIST_RELE";
-	}
-
+	
 	public static class TaskRelevance {
 		public static final String table = "TEW_TASKRELEVANCE";
-	}
+	}	
 
 	public static class Dynamic {
 		public static final String table = "TEW_DYNAMIC";
@@ -82,5 +74,31 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	public static class SystemConfigLobValue {
 		public static final String table = "TEW_SYSTEMCONFIG_LOB";
+	}
+	
+	
+	
+	public static class BatchOperation {
+		public static final String table = "TEW_BATCHOPERATION";
+	}
+	
+	public static class ProjectGroupRele {
+		public static final String table = "TEW_PROJECTGROUP_RELE";
+	}
+	
+	public static class ProjectExtFieldRele {
+		public static final String table = "TEW_PROJECTEXTFIELD_RELE";
+	}
+	
+	public static class TaskGroupRele {
+		public static final String table = "TEW_TASKGROUP_RELE";
+	}
+
+	public static class TaskListRele {
+		public static final String table = "TEW_TASKLIST_RELE";
+	}
+	
+	public static class TaskTagRele {
+		public static final String table = "TEW_TASKTAG_RELE";
 	}
 }

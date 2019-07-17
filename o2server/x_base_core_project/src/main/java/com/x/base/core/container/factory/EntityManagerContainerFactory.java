@@ -54,7 +54,12 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 	}
 
 	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities) throws Exception {
-		super(webApplicationDirectory, entities);
+		super(webApplicationDirectory, entities,false);
+	}
+
+	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
+			boolean sliceFeatureEnable) throws Exception {
+		super(webApplicationDirectory, entities,sliceFeatureEnable);
 	}
 
 	private EntityManagerContainerFactory(String source) throws Exception {

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.jaxrs.AppealConfig;
@@ -79,7 +81,7 @@ public class ActionAttendanceDetailAppeal extends BaseAction {
 		}
 		//查询申诉审核人
 		if (check) {
-			if( appeal_auditor_type != null && !appeal_auditor_type.isEmpty() ) {
+			if( StringUtils.isNotEmpty( appeal_auditor_type ) ) {
 				try {
 					appealAuditPersonName = attendanceAppealInfoServiceAdv.getAppealAuditPerson( personName, attendanceAppealInfo.getUnitName(), wrapIn.getIdentity() );
 					attendanceAppealInfo.setProcessPerson1( appealAuditPersonName );
@@ -95,7 +97,7 @@ public class ActionAttendanceDetailAppeal extends BaseAction {
 		}
 		//查询申诉复核人
 		if (check) {
-			if( appeal_checker_type != null && !appeal_auditor_type.isEmpty() ) {
+			if( StringUtils.isNotEmpty( appeal_checker_type ) ) {
 				try {
 					appealCheckPersonName = attendanceAppealInfoServiceAdv.getAppealCheckPerson( personName, attendanceAppealInfo.getUnitName(), wrapIn.getIdentity() );
 					attendanceAppealInfo.setProcessPerson2( appealCheckPersonName );

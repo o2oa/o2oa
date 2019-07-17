@@ -170,9 +170,10 @@ public class ActionListMyWorkByProcessIdentityNextWithFilter extends BaseAction 
 								if( !"审核中".equals( wrap.getCurrentAppraiseStatus() )) {
 									if( appraise_max_times > 0 && wrap.getAppraiseTimes() < appraise_max_times ) {
 										appraiseAble = true;
-									}else {
-										System.out.println("考核次数已经达到最大值， appraise_max_times=" + appraise_max_times);
 									}
+//									else {
+//										System.out.println("考核次数已经达到最大值， appraise_max_times=" + appraise_max_times);
+//									}
 								}
 							}
 						}

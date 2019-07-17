@@ -1,13 +1,10 @@
 package com.x.cms.core.entity;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -98,7 +95,6 @@ public class DocumentCommentInfo extends SliceJpaObject {
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("评论标题：如果没有则与主题相同")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	private String title = "";
 
 	public static final String parentId_FIELDNAME = "parentId";
@@ -108,13 +104,12 @@ public class DocumentCommentInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String parentId = "";
 
-	public static final String content_FIELDNAME = "content";
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@FieldDescribe("内容")
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + content_FIELDNAME)
+	public static final String isPrivate_FIELDNAME = "isPrivate";
+	@FieldDescribe("是否私信评论")
+	@Column(name = ColumnNamePrefix + isPrivate_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + isPrivate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String content = "";
+	private Boolean isPrivate = false;
 
 	public static final String creatorName_FIELDNAME = "creatorName";
 	@FieldDescribe("创建人姓名")
@@ -199,14 +194,6 @@ public class DocumentCommentInfo extends SliceJpaObject {
 		this.parentId = parentId;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
 	public String getCreatorName() {
 		return creatorName;
 	}
@@ -238,4 +225,13 @@ public class DocumentCommentInfo extends SliceJpaObject {
 	public void setOrderNumber(Integer orderNumber) {
 		this.orderNumber = orderNumber;
 	}
+
+	public Boolean getIsPrivate() {
+		return isPrivate;
+	}
+
+	public void setIsPrivate(Boolean isPrivate) {
+		this.isPrivate = isPrivate;
+	}
+
 }

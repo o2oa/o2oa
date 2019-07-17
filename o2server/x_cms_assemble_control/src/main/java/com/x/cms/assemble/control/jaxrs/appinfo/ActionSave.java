@@ -153,10 +153,19 @@ public class ActionSave extends BaseAction {
 				result.setData( wo );
 				
 				if( old_appInfo != null ) {
-					//修改了栏目名称，增加删除栏目批量操作（对分类和文档）的信息
-					new CmsBatchOperationPersistService().addOperation( 
-							CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
-							CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  appInfo.getId(), old_appInfo.getAppName(), "更新栏目名称：ID=" + appInfo.getId() );
+					if( !old_appInfo.getAppName().equalsIgnoreCase( appInfo.getAppName() ) || 
+						 !old_appInfo.getAppAlias().equalsIgnoreCase( appInfo.getAppAlias() )	) {
+						//修改了栏目名称或者别名，增加删除栏目批量操作（对分类和文档）的信息
+						new CmsBatchOperationPersistService().addOperation( 
+								CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+								CmsBatchOperationProcessService.OPT_TYPE_UPDATENAME,  appInfo.getId(), old_appInfo.getAppName(), "更新栏目名称：ID=" + appInfo.getId() );
+					}
+					if(  permissionQueryService.hasDiffrentViewPermissionInAppInfo( old_appInfo, appInfo )) {
+							//修改了栏目名称或者别名，增加删除栏目批量操作（对分类和文档）的信息
+							new CmsBatchOperationPersistService().addOperation( 
+									CmsBatchOperationProcessService.OPT_OBJ_APPINFO, 
+									CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  appInfo.getId(), appInfo.getAppName(), "变更栏目可见权限：ID=" + appInfo.getId() );
+					}
 					new LogService().log(null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId(), "", "", "", "APPINFO", "更新");
 				}else {
 					new LogService().log(null, effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId(), "", "", "", "APPINFO", "新增");

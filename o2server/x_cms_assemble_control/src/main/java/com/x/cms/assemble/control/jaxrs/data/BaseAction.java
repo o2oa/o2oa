@@ -15,7 +15,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.Document;
 import com.x.query.core.entity.Item;
@@ -30,7 +30,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected Ehcache cache = ApplicationCache.instance().getCache( Item.class);
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
-	protected DocumentInfoServiceAdv documentServiceAdv = new DocumentInfoServiceAdv();
+	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
 	
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
@@ -165,7 +167,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		if (check) {
-			if (roleInfo.getRoleCode() != null && !roleInfo.getRoleCode().isEmpty()) {
+			if ( StringUtils.isNotEmpty( roleInfo.getRoleCode() )) {
 				try {
 					roleInfo_old = roleInfoService.getByRoleCode(roleInfo.getRoleCode());
 				} catch (Exception e) {

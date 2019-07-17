@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -77,7 +79,7 @@ public class ActionListWithUnit extends BaseAction {
 			}
 		}
 		if (check) {
-			if (q_unitName != null && !q_unitName.isEmpty()) {
+			if ( StringUtils.isNotEmpty( q_unitName )) {
 				try {
 					unitNames = userManagerService.listSubUnitNameWithParent(q_unitName);
 					if (!unitNames.contains(q_unitName)) {

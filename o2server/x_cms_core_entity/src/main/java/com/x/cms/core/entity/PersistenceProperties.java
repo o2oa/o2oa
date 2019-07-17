@@ -80,6 +80,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CMS_DOCUMENT_COMMENTINFO";
 	}
 	
+	public static class DocumentCommentContent {
+		public static final String table = "CMS_DOCUMENT_COMMENTCONTENT";
+	}
+	
 	public static class DocumentCommend {
 		public static final String table = "CMS_DOCUMENT_COMMEND";
 	}

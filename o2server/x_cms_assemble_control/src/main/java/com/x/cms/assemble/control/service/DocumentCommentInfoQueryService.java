@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
 
@@ -38,6 +39,22 @@ public class DocumentCommentInfoQueryService {
 		}
 	}
 
+	public String getCommentContent(String id) throws Exception {
+		if ( StringUtils.isEmpty( id )) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			DocumentCommentContent documentCommentContent = documentCommentInfoService.getContent( emc, id );
+			if( documentCommentContent !=  null ) {
+				return documentCommentContent.getContent();
+			}else {
+				return null;
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	/**
 	 * 根据ID列表查询评论信息列表
 	 * @param ids
@@ -154,4 +171,6 @@ public class DocumentCommentInfoQueryService {
 		}
 		return documentCommentInfoList;
 	}
+
+	
 }

@@ -5,6 +5,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -12,7 +14,7 @@ class ActionMode extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionMode.class);
 
-	ActionResult<Wo> execute() throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		if (BooleanUtils.isTrue(Config.person().getCodeLogin())) {

@@ -3,6 +3,8 @@ package com.x.attendance.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.AppealConfig;
@@ -162,19 +164,19 @@ public class AttendanceAppealInfoServiceAdv {
 	 * @throws Exception
 	 */
 	private String getPersonWithUnitDuty( String personName, String dutyName, String personUnitName, String identity ) throws Exception {
-		if( personName == null || personName.isEmpty() ) {
+		if( StringUtils.isNotEmpty( personName ) ) {
 			logger.info( "personName is null!" );
 			return null;
 		}
-		if( dutyName == null || dutyName.isEmpty() ) {
+		if( StringUtils.isNotEmpty( dutyName ) ) {
 			logger.info( "dutyName is null!" );
 			return null;
 		}
 		List<String> duties = null;
-		if( identity != null && !identity.isEmpty() ) {
+		if( StringUtils.isNotEmpty( identity ) ) {
 			duties = userManagerService.getUnitDutyWithIdentityWithDuty( identity, dutyName );
 		}else {
-			if( personUnitName != null && !personUnitName.isEmpty() ) {
+			if( StringUtils.isNotEmpty( personUnitName ) ) {
 				duties = userManagerService.getUnitDutyWithUnitWithDuty( personUnitName, dutyName );
 			}else {
 				duties = userManagerService.getUnitDutyWithPersonWithDuty( personName, dutyName );

@@ -1,9 +1,8 @@
 package com.x.attendance.assemble.control.jaxrs.workplace;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -77,7 +76,7 @@ public class ActionSave extends BaseAction {
 				attendanceWorkPlace = new AttendanceWorkPlace();
 				Wi.copier.copy(wrapIn, attendanceWorkPlace);
 				attendanceWorkPlace.setCreator(currentPerson.getDistinguishedName());
-				if (wrapIn.getId() != null && !wrapIn.getId().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					attendanceWorkPlace.setId(wrapIn.getId());
 				}
 			} catch (Exception e) {

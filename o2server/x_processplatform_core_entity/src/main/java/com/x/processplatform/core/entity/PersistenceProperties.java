@@ -83,10 +83,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class Choice {
 			public static final String table = "PP_E_CHOICE";
 		}
-		//
-		// public static class Condition {
-		// public static final String table = "pp_e_condition";
-		// }
 
 		public static class Delay {
 			public static final String table = "PP_E_DELAY";
@@ -178,6 +174,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		public static class QueryStatTimed {
 			public static final String table = "PP_E_QUERYSTATTIMED";
+		}
+
+		public static class Projection {
+			public static final String table = "PP_E_PROJECTION";
 		}
 	}
 

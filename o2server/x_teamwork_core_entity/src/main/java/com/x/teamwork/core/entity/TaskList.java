@@ -107,20 +107,6 @@ public class TaskList extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + owner_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String owner;
-	
-	public static final String bindWorkStatus_FIELDNAME = "bindWorkStatus";
-	@FieldDescribe("是否绑定工作状态")
-	@Column( name = ColumnNamePrefix + bindWorkStatus_FIELDNAME )
-	@Index( name = TABLE + IndexNameMiddle + bindWorkStatus_FIELDNAME )
-	@CheckPersist(allowEmpty = true)
-	private Boolean bindWorkStatus = false;
-	
-	public static final String workStatus_FIELDNAME = "workStatus";
-	@FieldDescribe("绑定的工作状态")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + workStatus_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + workStatus_FIELDNAME )
-	@CheckPersist(allowEmpty = true)
-	private String workStatus;
 
 	public static final String deleted_FIELDNAME = "deleted";
 	@FieldDescribe("是否已经删除")
@@ -183,22 +169,6 @@ public class TaskList extends SliceJpaObject {
 
 	public void setCreatorPerson(String creatorPerson) {
 		this.creatorPerson = creatorPerson;
-	}
-
-	public Boolean getBindWorkStatus() {
-		return bindWorkStatus;
-	}
-
-	public void setBindWorkStatus(Boolean bindWorkStatus) {
-		this.bindWorkStatus = bindWorkStatus;
-	}
-
-	public String getWorkStatus() {
-		return workStatus;
-	}
-
-	public void setWorkStatus(String workStatus) {
-		this.workStatus = workStatus;
 	}
 
 	public String getOwner() {

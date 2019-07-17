@@ -98,7 +98,7 @@ public class ActionRestoreStorage {
 		for (int i = 0; i < classNames.size(); i++) {
 			Class<StorageObject> cls = (Class<StorageObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManager em = emf.createEntityManager();
 			em.setFlushMode(FlushModeType.COMMIT);
 			try {

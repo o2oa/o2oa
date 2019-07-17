@@ -31,7 +31,7 @@ public class ThisApplication {
 	}
 	
 	public static void init() throws Exception {
-		cmsBatchOperationPersistService = new CmsBatchOperationPersistService();		
+		cmsBatchOperationPersistService = new CmsBatchOperationPersistService();	
 		//执行数据库中的批处理操作
 		queueBatchOperation = new QueueBatchOperation();
 		//Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
@@ -47,7 +47,7 @@ public class ThisApplication {
 		context().startQueue( queueDocumentDelete );
 		context().startQueue( queueDataRowImport );
 		context().startQueue( queueDocumentUpdate );
-		context().startQueue( queueDocumentViewCountUpdate );		
+		context().startQueue( queueDocumentViewCountUpdate );
 
 		// 每天凌晨2点执行一次
 		context.schedule( Timertask_LogRecordCheckTask.class, "0 0 2 * * ?" );

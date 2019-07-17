@@ -19,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.DomainTools;
 
 public class HttpToken {
 
@@ -35,7 +36,10 @@ public class HttpToken {
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
 		EffectivePerson effectivePerson = this.who(this.getToken(request), key);
-		/** 加入调试标记 */
+		effectivePerson.setRemoteAddress(this.remoteAddress(request));
+		effectivePerson.setUserAgent(this.userAgent(request));
+		effectivePerson.setUri(request.getRequestURI());
+		/* 加入调试标记 */
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
 		if (null != debugger && BooleanUtils.toBoolean(Objects.toString(debugger))) {
 			effectivePerson.setDebugger(true);
@@ -160,7 +164,11 @@ public class HttpToken {
 			Pattern pattern = Pattern.compile(RegularExpression_IP);
 			Matcher matcher = pattern.matcher(str);
 			if (!matcher.find()) {
-				return "." + StringUtils.substringAfter(str, ".");
+				if (StringUtils.equalsIgnoreCase(DomainTools.getMainDomain(str), str)) {
+					return str;
+				} else {
+					return "." + StringUtils.substringAfter(str, ".");
+				}
 			}
 		}
 		return str;
@@ -169,4 +177,17 @@ public class HttpToken {
 	private void setAttribute(HttpServletRequest request, EffectivePerson effectivePerson) {
 		request.setAttribute(X_Person, effectivePerson);
 	}
+
+	private String remoteAddress(HttpServletRequest request) {
+		String value = Objects.toString(request.getHeader("X-Forwarded-For"), "");
+		if (StringUtils.isEmpty(value)) {
+			value = Objects.toString(request.getRemoteAddr(), "");
+		}
+		return value;
+	}
+
+	private String userAgent(HttpServletRequest request) {
+		return Objects.toString(request.getHeader("User-Agent"), "");
+	}
+
 }

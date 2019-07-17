@@ -54,11 +54,11 @@ public class SchedulerBuilder {
 					.build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
-		JobDetail jobDetail = JobBuilder.newJob(CleanLogTask.class)
-				.withIdentity(CleanLogTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
-		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(CleanLogTask.class.getName(), scheduleGroup)
-				.withSchedule(CronScheduleBuilder.cronSchedule("18 18 18 * * ?")).build();
-		scheduler.scheduleJob(jobDetail, trigger);
+//		JobDetail jobDetail = JobBuilder.newJob(CleanLogTask.class)
+//				.withIdentity(CleanLogTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
+//		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(CleanLogTask.class.getName(), scheduleGroup)
+//				.withSchedule(CronScheduleBuilder.cronSchedule("18 18 18 * * ?")).build();
+//		scheduler.scheduleJob(jobDetail, trigger);
 		return scheduler;
 	}
 

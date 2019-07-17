@@ -1,5 +1,6 @@
 package com.x.base.core.project.config;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -94,8 +95,15 @@ public class LogLevel extends ConfigObject {
 	@FieldDescribe("是否启用调试")
 	private String x_processplatform_assemble_bam = "";
 
+	@FieldDescribe("审计日志配置")
+	private Audit audit = Audit.defaultInstance();
+
 	public static LogLevel defaultInstance() {
 		return new LogLevel();
+	}
+
+	public Audit audit() {
+		return (null == this.audit) ? Audit.defaultInstance() : this.audit;
 	}
 
 	public String x_attendance_assemble_control() {
@@ -231,5 +239,34 @@ public class LogLevel extends ConfigObject {
 			return Logger.TRACE;
 		}
 		return Logger.INFO;
+	}
+
+	public static class Audit extends ConfigObject {
+
+		public static final Integer DEFAULT_LOGSIZE = 31;
+		public static final Boolean DEFAULT_ENABLE = false;
+
+		public static Audit defaultInstance() {
+			return new Audit();
+		}
+
+		@FieldDescribe("是否启用审计日志")
+		private Boolean enable;
+
+		@FieldDescribe("审计日志保留天数")
+		private Integer logSize;
+
+		public Boolean enable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public Integer logSize() {
+			if ((null == logSize) || (logSize < 0)) {
+				return DEFAULT_LOGSIZE;
+			} else {
+				return this.logSize;
+			}
+		}
+
 	}
 }

@@ -2,7 +2,7 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.FileInfo;
@@ -17,6 +17,6 @@ public class BaseAction extends StandardJaxrsAction {
 	
 	protected FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();
 	
-	protected DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
+	protected DocumentQueryService documentInfoServiceAdv = new DocumentQueryService();
 	
 }

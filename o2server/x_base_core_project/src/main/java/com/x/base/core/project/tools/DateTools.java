@@ -105,6 +105,14 @@ public class DateTools {
 		return isDateTime(str) || isDate(str) || isTime(str);
 	}
 
+	public static Boolean isDateTimeOrDate(String str) {
+		return isDateTime(str) || isDate(str);
+	}
+
+	public static Boolean isDateTimeOrTime(String str) {
+		return isDateTime(str) || isTime(str);
+	}
+
 	public static Date parse(String str, String format) throws Exception {
 		return DateUtils.parseDate(str, format);
 	}

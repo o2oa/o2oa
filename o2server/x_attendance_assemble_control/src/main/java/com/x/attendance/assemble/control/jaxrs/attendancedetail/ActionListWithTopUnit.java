@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -78,7 +80,7 @@ public class ActionListWithTopUnit extends BaseAction {
 			}
 		}
 		if (check) {
-			if (q_topUnitName != null && !q_topUnitName.isEmpty()) {
+			if ( StringUtils.isNotEmpty( q_topUnitName )) {
 				try {
 					topUnitNames = userManagerService.listSubUnitNameWithParent(q_topUnitName);
 				} catch (Exception e) {

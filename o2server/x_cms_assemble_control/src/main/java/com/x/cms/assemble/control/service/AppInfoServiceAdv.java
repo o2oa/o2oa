@@ -294,7 +294,7 @@ public class AppInfoServiceAdv {
 	public Boolean isAppInfoManager(String appId, String distinguishedName) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( appId, AppInfo.class );
-			if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )){
+			if( appInfo != null && ListTools.isNotEmpty( appInfo.getManageablePersonList() )){
 				if( appInfo.getManageablePersonList().contains( distinguishedName )) {
 					return true;
 				}
@@ -315,20 +315,22 @@ public class AppInfoServiceAdv {
 	public Boolean isAppInfoPublisher(String appId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( appId, AppInfo.class );
-			if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )){
-				if( appInfo.getManageablePersonList().contains( personName )) {
-					return true;
-				}				
-				if( appInfo.getPublishablePersonList().contains( personName )) {
-					return true;
-				}
-				appInfo.getPublishableUnitList().retainAll( unitNames );
-				if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
-					return true;
-				}
-				appInfo.getPublishableGroupList().retainAll( groupNames );
-				if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
-					return true;
+			if( appInfo != null ) {
+				if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )){
+					if( appInfo.getManageablePersonList().contains( personName )) {
+						return true;
+					}				
+					if( appInfo.getPublishablePersonList().contains( personName )) {
+						return true;
+					}
+					appInfo.getPublishableUnitList().retainAll( unitNames );
+					if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
+						return true;
+					}
+					appInfo.getPublishableGroupList().retainAll( groupNames );
+					if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
+						return true;
+					}
 				}
 			}
 		} catch (Exception e) {

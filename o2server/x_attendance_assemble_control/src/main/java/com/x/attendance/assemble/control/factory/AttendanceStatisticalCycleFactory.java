@@ -30,6 +30,7 @@ public class AttendanceStatisticalCycleFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("列示全部的AttendanceStatisticalCycle信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceStatisticalCycle> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceStatisticalCycle.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

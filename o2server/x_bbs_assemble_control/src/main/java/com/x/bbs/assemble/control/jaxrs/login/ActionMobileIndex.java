@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSPermissionInfo;
 import com.x.bbs.entity.BBSSectionInfo;
@@ -44,7 +45,7 @@ public class ActionMobileIndex extends BaseAction {
 		}
 
 		if (check) {
-			if (wraps != null && !wraps.isEmpty()) {// 在每个论坛里查询用户可以访问到的所有版块信息
+			if ( ListTools.isNotEmpty( wraps )) {// 在每个论坛里查询用户可以访问到的所有版块信息
 				for (Wo wrapOutForumInfoForIndex : wraps) {
 					composeMainSectionForForumInIndex(wrapOutForumInfoForIndex, permissionList);
 				}
@@ -72,7 +73,7 @@ public class ActionMobileIndex extends BaseAction {
 			sectionViewPermissionList = null;
 		}
 
-		if (sectionViewPermissionList != null && !sectionViewPermissionList.isEmpty()) {
+		if ( ListTools.isNotEmpty( sectionViewPermissionList )) {
 			for (BBSPermissionInfo permission : sectionViewPermissionList) {
 				if (permission.getMainSectionId() != null && !sectionIds.contains(permission.getMainSectionId())) {
 					sectionIds.add(permission.getMainSectionId());
@@ -86,7 +87,7 @@ public class ActionMobileIndex extends BaseAction {
 			logger.warn("system query all mainSection info got an exception!");
 			logger.error(e);
 		}
-		if (sectionInfoList != null && !sectionInfoList.isEmpty()) {
+		if ( ListTools.isNotEmpty( sectionInfoList )) {
 			try {
 				wrapSectionInfoList = WoSectionInfoForIndex.copier.copy(sectionInfoList);
 				wrapOutForumInfoForIndex.setSectionInfoList(wrapSectionInfoList);
@@ -123,7 +124,7 @@ public class ActionMobileIndex extends BaseAction {
 			forumViewPermissionList = null;
 		}
 
-		if (forumViewPermissionList != null && !forumViewPermissionList.isEmpty()) {
+		if ( ListTools.isNotEmpty( forumViewPermissionList )) {
 			for (BBSPermissionInfo permission : forumViewPermissionList) {
 				forumIds.add(permission.getForumId());
 			}
@@ -140,7 +141,7 @@ public class ActionMobileIndex extends BaseAction {
 			return null;
 		}
 
-		if (forumInfoList != null && !forumInfoList.isEmpty()) {
+		if ( ListTools.isNotEmpty( forumInfoList )) {
 			try {
 				wraps = forum_wrapout_copier.copy(forumInfoList);
 			} catch (Exception e) {
@@ -162,7 +163,7 @@ public class ActionMobileIndex extends BaseAction {
 	private List<BBSPermissionInfo> getPermissionListByUser(EffectivePerson currentPerson) {
 		List<BBSPermissionInfo> permissionList = null;
 		// 如果不是匿名用户，则查询该用户所有能访问的论坛信息
-		if (currentPerson != null && !"anonymous".equalsIgnoreCase(currentPerson.getTokenType().name())) {
+		if ( currentPerson != null && !"anonymous".equalsIgnoreCase(currentPerson.getTokenType().name())) {
 			try {
 				permissionList = userPermissionService.getUserPermissionInfoList(currentPerson.getDistinguishedName());
 			} catch (Exception e) {

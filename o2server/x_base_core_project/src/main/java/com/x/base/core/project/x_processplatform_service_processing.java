@@ -25,8 +25,9 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.Service", "com.x.processplatform.core.entity.element.Agent",
 		"com.x.processplatform.core.entity.element.Delay", "com.x.processplatform.core.entity.element.File",
 		"com.x.processplatform.core.entity.element.Form", "com.x.processplatform.core.entity.element.FormField",
-		"com.x.processplatform.core.entity.element.Embed", "com.x.processplatform.core.entity.log.ProcessingError",
-		"com.x.query.core.entity.Item" }, storageTypes = { StorageType.processPlatform }, storeJars = {
+		"com.x.processplatform.core.entity.element.Embed", "com.x.processplatform.core.entity.element.Projection",
+		"com.x.processplatform.core.entity.log.ProcessingError", "com.x.query.core.entity.Item",
+		"com.x.query.dynamic.entity.*" }, storageTypes = { StorageType.processPlatform }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
 				"x_query_core_entity" })
 public class x_processplatform_service_processing extends ServiceA {

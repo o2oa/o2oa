@@ -130,7 +130,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		if (check) {
-			if (wrapIn.getTypeCategory() != null && !wrapIn.getTypeCategory().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getTypeCategory() )) {
 				typeCategory = wrapIn.getTypeCategory().split("\\|");
 				if (typeCategory != null && typeCategory.length > 0) {
 					for (String category : typeCategory) {
@@ -147,7 +147,7 @@ public class ActionSave extends BaseAction {
 		}
 		// 校验版块管理员（版主）是否存在
 		if (check) {
-			if (wrapIn.getModeratorNames() != null && !wrapIn.getModeratorNames().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getModeratorNames() )) {
 				// 判断指定的用户是否存在
 				names = wrapIn.getModeratorNames().split(",");
 				for (String name : names) {

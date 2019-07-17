@@ -132,10 +132,10 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceAppealInfo_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceAppealInfo_.empName), user );
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year  ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.monthString), month ));
 		}
 		
@@ -151,10 +151,10 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceAppealInfo_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceAppealInfo_.unitName), unitName );
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.monthString), month ));
 		}
 		
@@ -170,10 +170,10 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceAppealInfo_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.equal( root.get(AttendanceAppealInfo_.topUnitName), topUnitName );
-		if( year != null && !year.isEmpty() ){
+		if( StringUtils.isNotEmpty( year ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.yearString), year ));
 		}
-		if( month != null && !month.isEmpty() ){
+		if( StringUtils.isNotEmpty( month ) ){
 			p = cb.and(p, cb.equal( root.get(AttendanceAppealInfo_.monthString), month ));
 		}
 		
@@ -201,6 +201,7 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public List<AttendanceAppealInfo> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilterAppeal wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceAppealInfo.class );
@@ -289,7 +290,7 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			sql_stringBuffer.append(" )");
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );
@@ -399,7 +400,7 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			sql_stringBuffer.append(" )" );
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
+		if( StringUtils.isNotEmpty( wrapIn.getKey() )){
 			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );

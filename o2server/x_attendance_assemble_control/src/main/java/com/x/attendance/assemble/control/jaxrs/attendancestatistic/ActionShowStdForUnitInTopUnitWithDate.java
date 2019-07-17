@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.StatisticUnitForDay;
 import com.x.base.core.container.EntityManagerContainer;
@@ -38,7 +40,7 @@ public class ActionShowStdForUnitInTopUnitWithDate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			
-			if( name != null && !name.isEmpty()){
+			if( StringUtils.isNotEmpty( name )){
 				getTopUnitNameList( name, unitNames, effectivePerson.getDebugger() );
 			}
 			

@@ -9,6 +9,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.bean.BindObject;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
@@ -53,7 +54,7 @@ public class BaseAction extends StandardJaxrsAction {
 				userNames.add(bindObject.getObjectName());
 			}
 		}
-		if (userNames != null && !userNames.isEmpty()) {
+		if ( ListTools.isNotEmpty( userNames )) {
 			for (String name : userNames) {
 				checkUserPermission(name);
 			}
@@ -77,7 +78,7 @@ public class BaseAction extends StandardJaxrsAction {
 			logger.warn("system list all role for user got an exception.");
 			logger.error(e);
 		}
-		if (roleCodes != null && !roleCodes.isEmpty()) {
+		if ( ListTools.isNotEmpty( roleCodes )) {
 			try {
 				permissionCodes = permissionInfoService.listPermissionCodesByRoleCodes(roleCodes);
 				roleAndPermission.setPermissionInfoList(permissionCodes);

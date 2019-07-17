@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -66,15 +68,15 @@ public class ActionListMobileWithFilter extends BaseAction {
 			count = 20;
 		}
 		if (check) {
-			if (wrapIn.getEmpNo() != null && !wrapIn.getEmpNo().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getEmpNo() )) {
 				queryConditionIsNull = false;
 			}
-			if (wrapIn.getEmpName() != null && !wrapIn.getEmpName().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getEmpName() )) {
 				queryConditionIsNull = false;
 			}
-			if (wrapIn.getStartDate() != null && !wrapIn.getStartDate().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getStartDate() )) {
 				queryConditionIsNull = false;
-				if (wrapIn.getEndDate() == null || wrapIn.getEndDate().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
 					wrapIn.setEndDate(wrapIn.getStartDate());
 				}
 			}
@@ -85,7 +87,7 @@ public class ActionListMobileWithFilter extends BaseAction {
 			}
 		}
 		if (check) {
-			if (wrapIn.getEndDate() != null && !wrapIn.getEndDate().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
 				try {
 					datetime = dateOperation.getDateFromString(wrapIn.getEndDate());
 					wrapIn.setEndDate(dateOperation.getDateStringFromDate(datetime, "YYYY-MM-DD")); // 结束日期
@@ -96,11 +98,11 @@ public class ActionListMobileWithFilter extends BaseAction {
 					result.error(exception);
 					logger.error(e, currentPerson, request, null);
 				}
-				if (wrapIn.getEndDate() == null || wrapIn.getEndDate().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
 					wrapIn.setEndDate(wrapIn.getStartDate());
 				}
 			}
-			if (wrapIn.getStartDate() != null && !wrapIn.getStartDate().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getStartDate() )) {
 				try {
 					datetime = dateOperation.getDateFromString(wrapIn.getStartDate());
 					wrapIn.setStartDate(dateOperation.getDateStringFromDate(datetime, "YYYY-MM-DD")); // 开始日期

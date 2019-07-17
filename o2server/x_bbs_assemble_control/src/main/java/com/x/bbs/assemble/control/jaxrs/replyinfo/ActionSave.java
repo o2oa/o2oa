@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
@@ -140,7 +142,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		// 再查询用户是否有主版块的回复权限
-		if (subjectInfo != null && !subjectInfo.getMainSectionId().equals(subjectInfo.getSectionId())) {
+		if ( subjectInfo != null && !subjectInfo.getMainSectionId().equals(subjectInfo.getSectionId())) {
 			if (check) {
 				try {
 					sectionInfo = sectionInfoServiceAdv.get(subjectInfo.getMainSectionId());
@@ -228,8 +230,8 @@ public class ActionSave extends BaseAction {
 		}
 
 		if (check) {
-			if (wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty()) {
-				if (subjectInfo.getTitle() != null && !subjectInfo.getTitle().isEmpty()) {
+			if ( wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty()) {
+				if ( StringUtils.isNotEmpty( subjectInfo.getTitle() )) {
 					wrapIn.setTitle(subjectInfo.getTitle());
 				} else {
 					wrapIn.setTitle("无标题");
@@ -239,7 +241,7 @@ public class ActionSave extends BaseAction {
 		if (check) {
 			try {
 				replyInfo = Wi.copier.copy(wrapIn);
-				if (wrapIn.getId() != null && !wrapIn.getId().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					replyInfo.setId(wrapIn.getId());
 				}
 			} catch (Exception e) {

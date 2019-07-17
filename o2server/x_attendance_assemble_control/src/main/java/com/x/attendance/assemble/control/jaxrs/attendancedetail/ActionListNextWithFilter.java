@@ -65,7 +65,7 @@ public class ActionListNextWithFilter extends BaseAction {
 				}
 
 				// 处理一下顶层组织，查询下级顶层组织
-				if (wrapIn.getQ_topUnitName() != null && !wrapIn.getQ_topUnitName().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getQ_topUnitName() )) {
 					topUnitNames.add(wrapIn.getQ_topUnitName());
 					try {
 						topUnitNames_tmp = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_topUnitName());
@@ -84,7 +84,7 @@ public class ActionListNextWithFilter extends BaseAction {
 				}
 
 				// 处理一下组织,查询下级组织
-				if (wrapIn.getQ_unitName() != null && !wrapIn.getQ_unitName().isEmpty()) {
+				if ( StringUtils.isNotEmpty( wrapIn.getQ_unitName() )) {
 					unitNames.add(wrapIn.getQ_unitName());
 					try {
 						unitNames_tmp = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_unitName());

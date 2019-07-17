@@ -25,6 +25,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class ProjectExtFieldRele extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
+	
 	private static final String TABLE = PersistenceProperties.ProjectExtFieldRele.table;
 
 	public String getId() {
@@ -35,7 +36,7 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 		this.id = id;
 	}
 
-	@FieldDescribe("数据库主键,自动生成.")
+	@FieldDescribe("数据库主键,自动生成（必填）.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
@@ -56,20 +57,20 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	 * =========
 	 */	
 	public static final String projectId_FIELDNAME = "projectId";
-	@FieldDescribe("项目ID")
+	@FieldDescribe("项目ID（必填）")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + projectId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + projectId_FIELDNAME)
 	private String projectId;
 
 	public static final String extFieldName_FIELDNAME = "extFieldName";
-	@FieldDescribe("备用列名称")
+	@FieldDescribe("备用列名称（必填）")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + extFieldName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + extFieldName_FIELDNAME)
 	private String extFieldName;
 	
 	public static final String displayName_FIELDNAME = "displayName";
-	@FieldDescribe("显示属性名称")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + displayName_FIELDNAME)
+	@FieldDescribe("显示属性名称（必填）")
+	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + displayName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + displayName_FIELDNAME)
 	private String displayName;
 

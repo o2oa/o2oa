@@ -61,7 +61,7 @@ public class ActionDelete extends BaseAction {
 		}
 		if (check) {
 			try {					
-				dynamicPersistService.save( chat, "DELETE", effectivePerson, null );
+				dynamicPersistService.chatDeleteDynamic( chat, effectivePerson);
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}	

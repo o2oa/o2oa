@@ -978,7 +978,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 		final List<Calendar_Event> lstDates = new ArrayList<Calendar_Event>();
 		final DateList recurDates = getRecurringsInPeriod(periodStart, periodEnd);
 		if (recurDates == null) {
-			LogUtil.INFO(">>>>>>>>>>>>>sorry, recurDates is null");
+			LogUtil.INFO("sorry, recurDates is null");
 			return lstDates;
 		}
 		for (final Object obj : recurDates) {

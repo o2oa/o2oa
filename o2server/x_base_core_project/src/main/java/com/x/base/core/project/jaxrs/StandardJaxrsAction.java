@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.jaxb.MarshallerAwareXMLWriter;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -34,34 +35,20 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	 * 
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
 	 * 
-	 * @param cls
-	 *            实体类
-	 * @param wcls
-	 *            wrap类
-	 * @param id
-	 *            上一页最后一条的ID
-	 * @param count
-	 *            每页条目数:pagesize
-	 * @param sequenceField
-	 *            作分页序列的属性名
-	 * @param equals
-	 *            等于的条件集合
-	 * @param notEquals
-	 *            不等于（例外）的条件集合
-	 * @param likes
-	 *            模糊查询条件集合
-	 * @param ins
-	 *            IN查询条件集合
-	 * @param notIns
-	 *            NOT IN查询条件集合
-	 * @param members
-	 *            隶属于
-	 * @param notMembers
-	 *            非隶属于
-	 * @param andJoin
-	 *            条件的连接方式
-	 * @param order
-	 *            排序方式ASC|DESC
+	 * @param cls           实体类
+	 * @param wcls          wrap类
+	 * @param id            上一页最后一条的ID
+	 * @param count         每页条目数:pagesize
+	 * @param sequenceField 作分页序列的属性名
+	 * @param equals        等于的条件集合
+	 * @param notEquals     不等于（例外）的条件集合
+	 * @param likes         模糊查询条件集合
+	 * @param ins           IN查询条件集合
+	 * @param notIns        NOT IN查询条件集合
+	 * @param members       隶属于
+	 * @param notMembers    非隶属于
+	 * @param andJoin       条件的连接方式
+	 * @param order         排序方式ASC|DESC
 	 * @return
 	 * @throws Exception
 	 */
@@ -192,32 +179,19 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	 * 
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
 	 * 
-	 * @param copier
-	 *            对象转换类
-	 * @param id
-	 *            上一页最后一条的ID
-	 * @param count
-	 *            每页条目数:pagesize
-	 * @param sequenceField
-	 *            作分页序列的属性名
-	 * @param equals
-	 *            等于的条件集合
-	 * @param notEquals
-	 *            不等于（例外）的条件集合
-	 * @param likes
-	 *            模糊查询条件集合
-	 * @param ins
-	 *            IN查询条件集合
-	 * @param notIns
-	 *            NOT IN查询条件集合
-	 * @param members
-	 *            隶属于
-	 * @param notMembers
-	 *            非隶属于
-	 * @param andJoin
-	 *            条件的连接方式
-	 * @param order
-	 *            排序方式ASC|DESC
+	 * @param copier        对象转换类
+	 * @param id            上一页最后一条的ID
+	 * @param count         每页条目数:pagesize
+	 * @param sequenceField 作分页序列的属性名
+	 * @param equals        等于的条件集合
+	 * @param notEquals     不等于（例外）的条件集合
+	 * @param likes         模糊查询条件集合
+	 * @param ins           IN查询条件集合
+	 * @param notIns        NOT IN查询条件集合
+	 * @param members       隶属于
+	 * @param notMembers    非隶属于
+	 * @param andJoin       条件的连接方式
+	 * @param order         排序方式ASC|DESC
 	 * @return
 	 * @throws Exception
 	 */
@@ -351,34 +325,20 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	 * 
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
 	 * 
-	 * @param cls
-	 *            实体类
-	 * @param wcls
-	 *            wrap类
-	 * @param id
-	 *            上一页最后一条的ID
-	 * @param count
-	 *            每页条目数:pagesize
-	 * @param sequenceField
-	 *            作分页序列的属性名
-	 * @param equals
-	 *            等于的条件集合
-	 * @param notEquals
-	 *            不等于（例外）的条件集合
-	 * @param likes
-	 *            模糊查询条件集合
-	 * @param ins
-	 *            IN查询条件集合
-	 * @param notIns
-	 *            NOT IN查询条件集合
-	 * @param members
-	 *            隶属于
-	 * @param notMembers
-	 *            非隶属于
-	 * @param andJoin
-	 *            条件的连接方式
-	 * @param order
-	 *            排序方式ASC|DESC
+	 * @param cls           实体类
+	 * @param wcls          wrap类
+	 * @param id            上一页最后一条的ID
+	 * @param count         每页条目数:pagesize
+	 * @param sequenceField 作分页序列的属性名
+	 * @param equals        等于的条件集合
+	 * @param notEquals     不等于（例外）的条件集合
+	 * @param likes         模糊查询条件集合
+	 * @param ins           IN查询条件集合
+	 * @param notIns        NOT IN查询条件集合
+	 * @param members       隶属于
+	 * @param notMembers    非隶属于
+	 * @param andJoin       条件的连接方式
+	 * @param order         排序方式ASC|DESC
 	 * @return
 	 * @throws Exception
 	 */
@@ -510,30 +470,18 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	 * 
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
 	 * 
-	 * @param id
-	 *            上一页最后一条的ID
-	 * @param count
-	 *            每页条目数:pagesize
-	 * @param sequenceField
-	 *            作分页序列的属性名
-	 * @param equals
-	 *            等于的条件集合
-	 * @param notEquals
-	 *            不等于（例外）的条件集合
-	 * @param likes
-	 *            模糊查询条件集合
-	 * @param ins
-	 *            IN查询条件集合
-	 * @param notIns
-	 *            NOT IN查询条件集合
-	 * @param members
-	 *            隶属于
-	 * @param notMembers
-	 *            非隶属于
-	 * @param andJoin
-	 *            条件的连接方式
-	 * @param order
-	 *            排序方式ASC|DESC
+	 * @param id            上一页最后一条的ID
+	 * @param count         每页条目数:pagesize
+	 * @param sequenceField 作分页序列的属性名
+	 * @param equals        等于的条件集合
+	 * @param notEquals     不等于（例外）的条件集合
+	 * @param likes         模糊查询条件集合
+	 * @param ins           IN查询条件集合
+	 * @param notIns        NOT IN查询条件集合
+	 * @param members       隶属于
+	 * @param notMembers    非隶属于
+	 * @param andJoin       条件的连接方式
+	 * @param order         排序方式ASC|DESC
 	 * @return
 	 * @throws Exception
 	 */
@@ -816,32 +764,19 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 	 * 
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
 	 * 
-	 * @param copier
-	 *            对象转换类
-	 * @param id
-	 *            上一页最后一条的ID
-	 * @param count
-	 *            每页条目数:pagesize
-	 * @param sequenceField
-	 *            作分页序列的属性名
-	 * @param equals
-	 *            等于的条件集合
-	 * @param notEquals
-	 *            不等于（例外）的条件集合
-	 * @param likes
-	 *            模糊查询条件集合
-	 * @param ins
-	 *            IN查询条件集合
-	 * @param notIns
-	 *            NOT IN查询条件集合
-	 * @param members
-	 *            隶属于
-	 * @param notMembers
-	 *            非隶属于
-	 * @param andJoin
-	 *            条件的连接方式
-	 * @param order
-	 *            排序方式ASC|DESC
+	 * @param copier        对象转换类
+	 * @param id            上一页最后一条的ID
+	 * @param count         每页条目数:pagesize
+	 * @param sequenceField 作分页序列的属性名
+	 * @param equals        等于的条件集合
+	 * @param notEquals     不等于（例外）的条件集合
+	 * @param likes         模糊查询条件集合
+	 * @param ins           IN查询条件集合
+	 * @param notIns        NOT IN查询条件集合
+	 * @param members       隶属于
+	 * @param notMembers    非隶属于
+	 * @param andJoin       条件的连接方式
+	 * @param order         排序方式ASC|DESC
 	 * @return
 	 * @throws Exception
 	 */
@@ -1069,6 +1004,13 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		/** 设置查询结果的总条目数 */
 		result.setCount(this.count(emc, tClass, equals, notEquals, likes, ins, notIns, members, notMembers, andJoin));
 		return result;
+	}
+
+	public void setPage(ActionResult<?> result, Integer page, Integer pageSize) {
+		result.setPage((page == null || page < 1) ? 1L : pageSize);
+		result.setPageSize((pageSize == null || pageSize < 1 || pageSize > EntityManagerContainer.MAX_PAGESIZE)
+				? EntityManagerContainer.DEFAULT_PAGESIZE.longValue()
+				: pageSize);
 	}
 
 }

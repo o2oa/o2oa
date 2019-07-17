@@ -18,7 +18,7 @@ public class SmsMessageOperator {
 			unique = okrUserManagerService.getUniqueWithPerson(personName);
 			sendWithUnique(unique, message);
 		} catch (Exception e1) {
-			System.out.println(">>>>>>>>>>>根据员工姓名查询唯一编码发生异常！");
+			System.out.println("system query employee unique with person name  got an exception!");
 			e1.printStackTrace();
 			return false;
 		}
@@ -32,25 +32,25 @@ public class SmsMessageOperator {
 			try {
 				SMS_WSDL = okrConfigSystemService.getValueWithConfigCode("SMS_WSDL");
 			} catch (Exception e) {
-				System.out.println("获取SMS_WSDL参数发生异常");
+				System.out.println("okr system get parameter named 'SMS_WSDL' got an exception!");
 				e.printStackTrace();
 			}
 			
-			message = "执行力管控系统：" + message;
+			message = "O2OA_OKR message: " + message;
 			
 			if(StringUtils.isNotEmpty(SMS_WSDL) && !"NONE".equalsIgnoreCase( SMS_WSDL )) {
 				try {
 					Object result = webservicesClient.jaxws( SMS_WSDL, "SENDSMS", unique, message);
-					System.out.println(">>>>>>>>>>>短信发送接口调用成功！result= " + result.toString());
+					System.out.println("Message send successful! result:" + result.toString());
 					return true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}else {
-				System.out.println(">>>>>>>>>>>未发送短信！WSDL未定义！");
+				System.out.println("Message can not send, because sms wsdl not defind!");
 			}
 		}else {
-			System.out.println(">>>>>>>>>>>未发送短信！员工unique为空！");
+			System.out.println("Message can not send, because employee unique is empty!");
 		}
 		return false;
 	}

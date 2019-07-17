@@ -25,9 +25,10 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.Process", "com.x.processplatform.core.entity.element.Route",
 		"com.x.processplatform.core.entity.element.Script", "com.x.processplatform.core.entity.element.Service",
 		"com.x.processplatform.core.entity.element.Split", "com.x.processplatform.core.entity.element.QueryView",
-		"com.x.processplatform.core.entity.element.QueryStat", "com.x.query.core.entity.Item" }, storageTypes = {
-				StorageType.processPlatform }, storeJars = { "x_organization_core_entity",
-						"x_organization_core_express", "x_processplatform_core_entity", "x_query_core_entity" })
+		"com.x.processplatform.core.entity.element.QueryStat", "com.x.processplatform.core.entity.element.Projection",
+		"com.x.query.core.entity.Item" }, storageTypes = { StorageType.processPlatform }, storeJars = {
+				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
+				"x_query_core_entity" })
 public class x_processplatform_assemble_surface extends Deployable {
 
 //	public x_processplatform_assemble_surface() {

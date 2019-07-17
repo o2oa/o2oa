@@ -63,13 +63,13 @@ public class Dynamic extends SliceJpaObject {
 	 */
 	public static final String optType_FIELDNAME = "optType";
 	@FieldDescribe("操作类别：Create|Modify|Delete|Other")
-	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + optType_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + optType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String optType = "Other";
 
 	public static final String objectType_FIELDNAME = "objectType";
 	@FieldDescribe("动态对象类别:Project|Task|TaskGroup|TaskView|Config|Chat|Other")
-	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + objectType_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + objectType_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + objectType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String objectType = "Other";
@@ -157,19 +157,18 @@ public class Dynamic extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String viewUrl = null;
 	
-	public static final String deleted_FIELDNAME = "deleted";
-	@FieldDescribe("是否已经删除")
-	@Column( name = ColumnNamePrefix + deleted_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + deleted_FIELDNAME )
-	private Boolean deleted = false;
+	public static final String personal_FIELDNAME = "personal";
+	@FieldDescribe("是否是关于用户个人操作比如工作任务组，项目组，工作列表")
+	@Column( name = ColumnNamePrefix + personal_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + personal_FIELDNAME )
+	private Boolean personal = false;
 
-	
-	public Boolean getDeleted() {
-		return deleted;
+	public Boolean getPersonal() {
+		return personal;
 	}
 
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
+	public void setPersonal(Boolean personal) {
+		this.personal = personal;
 	}
 
 	public String getOptType() {

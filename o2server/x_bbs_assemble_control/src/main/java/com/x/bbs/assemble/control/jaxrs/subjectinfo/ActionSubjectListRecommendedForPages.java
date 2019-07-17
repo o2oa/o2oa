@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -14,6 +16,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.ActionSubjectListForPage.Wi;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFilter;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapOut;
@@ -95,7 +98,7 @@ public class ActionSubjectListRecommendedForPages extends BaseAction {
 					subjectInfoList_out.add( subjectInfoList.get( i ) );
 				}
 			}
-			if( subjectInfoList_out != null && !subjectInfoList_out.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList_out ) ){
 				try {
 					wraps = Wo.copier.copy( subjectInfoList_out );					
 				} catch (Exception e) {
@@ -108,7 +111,7 @@ public class ActionSubjectListRecommendedForPages extends BaseAction {
 		}
 		if (check) {
 			//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-			if( wraps != null && !wraps.isEmpty() ){
+			if( ListTools.isNotEmpty( wraps ) ){
 				for( Wo wo : wraps ) {
 					cutPersonNames( wo );
 				}
@@ -133,22 +136,22 @@ public class ActionSubjectListRecommendedForPages extends BaseAction {
 	 */
 	private void cutPersonNames( Wo subject ) {
 		if( subject != null ) {
-			if( subject.getLatestReplyUser() != null && !subject.getLatestReplyUser().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
 				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
 			}
-			if( subject.getbBSIndexSetterName() != null && !subject.getbBSIndexSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getbBSIndexSetterName() ) ) {
 				subject.setbBSIndexSetterNameShort( subject.getbBSIndexSetterName().split( "@" )[0]);
 			}
-			if( subject.getScreamSetterName() != null && !subject.getScreamSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getScreamSetterName() ) ) {
 				subject.setScreamSetterNameShort( subject.getScreamSetterName().split( "@" )[0]);
 			}
-			if( subject.getOriginalSetterName() != null && !subject.getOriginalSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getOriginalSetterName() ) ) {
 				subject.setOriginalSetterNameShort( subject.getOriginalSetterName().split( "@" )[0]);
 			}
-			if( subject.getCreatorName() != null && !subject.getCreatorName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getCreatorName() ) ) {
 				subject.setCreatorNameShort( subject.getCreatorName().split( "@" )[0]);
 			}
-			if( subject.getAuditorName() != null && !subject.getAuditorName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getAuditorName() ) ) {
 				subject.setAuditorNameShort( subject.getAuditorName().split( "@" )[0]);
 			}
 		}

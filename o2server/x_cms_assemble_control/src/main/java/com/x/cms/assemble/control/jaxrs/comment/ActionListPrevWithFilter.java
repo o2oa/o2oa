@@ -31,7 +31,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		ResultObject resultObject = null;
 		List<Wo> wos = new ArrayList<>();
-		WrapInQueryDocumentCommentInfo wrapIn = null;		
+		Wi wrapIn = null;		
 		Boolean check = true;
 		String cacheKey = null;
 		Element element = null;
@@ -42,7 +42,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 		}
 
 		try {
-			wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryDocumentCommentInfo.class);
+			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionCommentQuery(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
@@ -71,6 +71,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 					if( ListTools.isNotEmpty( documentCommentInfoList )) {
 						for( DocumentCommentInfo documentCommentInfo : documentCommentInfoList ) {
 							Wo wo = Wo.copier.copy(documentCommentInfo);
+							wo.setContent( documentCommentInfoQueryService.getCommentContent(documentCommentInfo.getId() ));
 							wos.add( wo );
 						}
 					}
@@ -90,56 +91,24 @@ public class ActionListPrevWithFilter extends BaseAction {
 		return result;
 	}
 
-	public static class Wi {
-
-		@FieldDescribe("用于排列的属性.")
-		private String orderField = "createTime";
-
-		@FieldDescribe("排序方式：DESC | ASC.")
-		private String orderType = "DESC";
-
-		@FieldDescribe("用于搜索的标题.")
-		private String title = "DESC";
-
-		private Long rank = 0L;
-
-		public String getOrderField() {
-			return orderField;
-		}
-
-		public void setOrderField(String orderField) {
-			this.orderField = orderField;
-		}
-
-		public String getOrderType() {
-			return orderType;
-		}
-
-		public void setOrderType(String orderType) {
-			this.orderType = orderType;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public Long getRank() {
-			return rank;
-		}
-
-		public void setRank(Long rank) {
-			this.rank = rank;
-		}
+	public static class Wi extends WrapInQueryDocumentCommentInfo{
 		
 	}
 	
 	public static class Wo extends DocumentCommentInfo {
 		
-		private Long rank;		
+		private Long rank;
+		
+		@FieldDescribe("内容")
+		private String content = "";
+		
+		public String getContent() {
+			return content;
+		}
+
+		public void setContent(String content) {
+			this.content = content;
+		}
 
 		public Long getRank() {
 			return rank;

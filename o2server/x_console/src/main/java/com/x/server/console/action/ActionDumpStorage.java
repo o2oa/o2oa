@@ -77,7 +77,7 @@ public class ActionDumpStorage {
 		for (int i = 0; i < classNames.size(); i++) {
 			Class<StorageObject> cls = (Class<StorageObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManager em = emf.createEntityManager();
 			try {
 				logger.print("dump storage({}/{}): {}, estimate count: {}, estimate size: {}M.", (i + 1),

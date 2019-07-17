@@ -72,7 +72,7 @@ public class ActionDumpData {
 		for (int i = 0; i < classNames.size(); i++) {
 			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					persistence.getName(), PersistenceXmlHelper.properties(cls.getName()));
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManager em = emf.createEntityManager();
 			try {
 				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),

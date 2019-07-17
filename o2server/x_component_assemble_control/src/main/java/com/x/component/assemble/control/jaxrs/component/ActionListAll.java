@@ -169,6 +169,13 @@ class ActionListAll extends ActionBase {
 			o.setIconPath("appicon.png");
 			o.setVisible(true);
 			break;
+		case COMPONENT_SEARCH:
+			o.setName(COMPONENT_SEARCH);
+			o.setPath(COMPONENT_SEARCH);
+			o.setTitle("搜索");
+			o.setIconPath("appicon.png");
+			o.setVisible(true);
+			break;
 		default:
 			break;
 		}

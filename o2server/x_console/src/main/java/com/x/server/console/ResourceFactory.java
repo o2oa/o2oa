@@ -1,5 +1,6 @@
 package com.x.server.console;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.Resource;
+import org.eclipse.jetty.util.RolloverFileOutputStream;
 
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.Storage;
@@ -18,6 +20,9 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
 import io.github.classgraph.ClassGraph;
@@ -26,11 +31,16 @@ import io.github.classgraph.ScanResult;
 
 public class ResourceFactory {
 
+	private static Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
+
 	public static void bind() throws Exception {
 		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().scan()) {
 			containerEntities(sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
+		}
+		if (Config.logLevel().audit().enable()) {
+			auditLog();
 		}
 		if (Config.externalDataSources().enable()) {
 			external();
@@ -115,6 +125,14 @@ public class ResourceFactory {
 			map.put(info.getName(), ListUtils.unmodifiableList(os));
 		}
 		new Resource(Config.RESOUCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
+	}
+
+	private static void auditLog() throws Exception {
+		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
+				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
+				Config.logLevel().audit().logSize());
+		new Resource(Config.RESOUCE_AUDITLOGPRINTSTREAM,
+				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
 	}
 
 }

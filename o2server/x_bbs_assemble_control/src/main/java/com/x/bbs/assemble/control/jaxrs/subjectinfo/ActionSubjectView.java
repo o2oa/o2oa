@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -13,6 +15,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectContentQueryById;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFilter;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectIdEmpty;
@@ -201,11 +204,11 @@ public class ActionSubjectView extends BaseAction {
 			if( currentSubject != null ){//获取该主题的投票选项组
 				try {
 					voteOptionGroupList = subjectVoteService.listVoteOptionGroup( id );
-					if( voteOptionGroupList != null && !voteOptionGroupList.isEmpty() ){
+					if( ListTools.isNotEmpty( voteOptionGroupList ) ){
 						wrapOutSubjectVoteOptionGroupList = WoBBSVoteOptionGroup.copier.copy( voteOptionGroupList );
 						for( WoBBSVoteOptionGroup group : wrapOutSubjectVoteOptionGroupList ){
 							voteOptionList = subjectVoteService.listVoteOptionByGroupId( group.getId() );
-							if( voteOptionList != null  && !voteOptionList.isEmpty() ){
+							if( ListTools.isNotEmpty( voteOptionList ) ){
 								try {
 									wrapOutSubjectVoteOptionList = WoBBSVoteOption.copier.copy( voteOptionList );
 									for( WoBBSVoteOption wrapOutBBSVoteOption: wrapOutSubjectVoteOptionList ){
@@ -272,22 +275,22 @@ public class ActionSubjectView extends BaseAction {
 	 */
 	private void cutPersonNames( WoBBSSubjectInfo subject ) {
 		if( subject != null ) {
-			if( subject.getLatestReplyUser() != null && !subject.getLatestReplyUser().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getLatestReplyUser() ) ) {
 				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
 			}
-			if( subject.getbBSIndexSetterName() != null && !subject.getbBSIndexSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getbBSIndexSetterName() ) ) {
 				subject.setbBSIndexSetterNameShort( subject.getbBSIndexSetterName().split( "@" )[0]);
 			}
-			if( subject.getScreamSetterName() != null && !subject.getScreamSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getScreamSetterName() ) ) {
 				subject.setScreamSetterNameShort( subject.getScreamSetterName().split( "@" )[0]);
 			}
-			if( subject.getOriginalSetterName() != null && !subject.getOriginalSetterName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getOriginalSetterName() ) ) {
 				subject.setOriginalSetterNameShort( subject.getOriginalSetterName().split( "@" )[0]);
 			}
-			if( subject.getCreatorName() != null && !subject.getCreatorName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getCreatorName() ) ) {
 				subject.setCreatorNameShort( subject.getCreatorName().split( "@" )[0]);
 			}
-			if( subject.getAuditorName() != null && !subject.getAuditorName().isEmpty() ) {
+			if( StringUtils.isNotEmpty( subject.getAuditorName() ) ) {
 				subject.setAuditorNameShort( subject.getAuditorName().split( "@" )[0]);
 			}
 		}

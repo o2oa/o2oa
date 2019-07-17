@@ -14,6 +14,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFilter;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapOut;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
@@ -100,7 +101,7 @@ public class ActionSubjectSearchForPage extends BaseAction {
 					subjectInfoList_out.add( subjectInfoList.get( i ) );
 				}
 			}
-			if( subjectInfoList_out != null && !subjectInfoList_out.isEmpty() ){
+			if( ListTools.isNotEmpty( subjectInfoList_out ) ){
 				try {
 					wraps = Wo.copier.copy( subjectInfoList_out );
 					result.setData( wraps );

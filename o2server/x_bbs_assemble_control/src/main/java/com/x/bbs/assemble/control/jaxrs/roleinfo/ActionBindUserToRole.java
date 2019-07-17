@@ -11,6 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.bean.BindObject;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionBindObjectTypeInvalid;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionBindRoleCodeEmpty;
@@ -48,7 +49,7 @@ public class ActionBindUserToRole extends BaseAction {
 			}
 		}
 		if (check) {
-			if (wrapIn.getBindObjectArray() != null && !wrapIn.getBindObjectArray().isEmpty()) {
+			if ( ListTools.isNotEmpty( wrapIn.getBindObjectArray() )) {
 				// 遍历所有的对象，检查对象是否真实存在
 				for (BindObject bindObject : wrapIn.getBindObjectArray()) {
 					if ( "人员".equals(bindObject.getObjectType()) ) {

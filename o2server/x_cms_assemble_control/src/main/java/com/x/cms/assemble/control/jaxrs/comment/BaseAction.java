@@ -4,7 +4,7 @@ import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.service.DocumentCommentInfoPersistService;
 import com.x.cms.assemble.control.service.DocumentCommentInfoQueryService;
-import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import net.sf.ehcache.Ehcache;
 
@@ -16,5 +16,5 @@ public class BaseAction extends StandardJaxrsAction {
 	
 	protected 	DocumentCommentInfoQueryService documentCommentInfoQueryService = new DocumentCommentInfoQueryService();
 	
-	protected DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
+	protected DocumentQueryService documentInfoServiceAdv = new DocumentQueryService();
 }

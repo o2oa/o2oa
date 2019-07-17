@@ -100,17 +100,16 @@ public class Attachment extends StorageObject {
 		if ( StringUtils.isEmpty(  this.projectId )) {
 			throw new Exception("projectId can not be null.");
 		}
-		if ( StringUtils.isEmpty( this.taskId )) {
-			throw new Exception("categoryId can not be null.");
-		}
 		if (StringUtils.isEmpty( id )) {
 			throw new Exception("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
 		str += this.projectId;
-		str += PATHSEPARATOR;
-		str += this.taskId;
+		if( StringUtils.isNotEmpty( this.taskId ) ) {
+			str += PATHSEPARATOR;
+			str += this.taskId;
+		}
 		str += PATHSEPARATOR;
 		str += this.id;
 		str += StringUtils.isEmpty(this.extension) ? "" : ("." + this.extension);
@@ -135,12 +134,6 @@ public class Attachment extends StorageObject {
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String name;
 
-	public static final String cloudId_FIELDNAME = "cloudId";
-	@FieldDescribe("云文件ID")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + cloudId_FIELDNAME)
-	@CheckPersist(fileNameString = true, allowEmpty = true)
-	private String cloudId;
-
 	public static final String fileName_FIELDNAME = "fileName";
 	@FieldDescribe("服务器上编码后的文件名,为了方便辨识带扩展名")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + fileName_FIELDNAME)
@@ -155,7 +148,7 @@ public class Attachment extends StorageObject {
 	private String projectId;
 
 	public static final String taskId_FIELDNAME = "taskId";
-	@FieldDescribe("文件所属分类ID")
+	@FieldDescribe("文件所属工作任务ID")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + taskId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + taskId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -167,11 +160,11 @@ public class Attachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String fileType;
 
-	public static final String fileExtType_FIELDNAME = "fileExtType";
-	@FieldDescribe("文件类别：PICTURE | WORD | EXCEL | PPT | ZIP | TXT | OTHER")
-	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + fileExtType_FIELDNAME)
+	public static final String bundleObjType_FIELDNAME = "bundleObjType";
+	@FieldDescribe("文件宿主类别：PROJECT | TASK")
+	@Column(length = JpaObject.length_8B, name = ColumnNamePrefix + bundleObjType_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
-	private String fileExtType;
+	private String bundleObjType;
 
 	public static final String fileHost_FIELDNAME = "fileHost";
 	@FieldDescribe("文件存储主机名")
@@ -230,14 +223,6 @@ public class Attachment extends StorageObject {
 		this.name = name;
 	}
 
-	public String getCloudId() {
-		return cloudId;
-	}
-
-	public void setCloudId(String cloudId) {
-		this.cloudId = cloudId;
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -268,14 +253,6 @@ public class Attachment extends StorageObject {
 
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
-	}
-
-	public String getFileExtType() {
-		return fileExtType;
-	}
-
-	public void setFileExtType(String fileExtType) {
-		this.fileExtType = fileExtType;
 	}
 
 	public String getFileHost() {
@@ -332,5 +309,13 @@ public class Attachment extends StorageObject {
 
 	public void setLength(Long length) {
 		this.length = length;
+	}
+
+	public String getBundleObjType() {
+		return bundleObjType;
+	}
+
+	public void setBundleObjType(String bundleObjType) {
+		this.bundleObjType = bundleObjType;
 	}
 }

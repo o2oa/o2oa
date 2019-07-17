@@ -34,7 +34,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class ReadAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);
-	
+
 	@JaxrsMethodDescribe(value = "根据job获取待阅.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
@@ -70,7 +70,6 @@ public class ReadAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
-	
 
 	@JaxrsMethodDescribe(value = "列示当前用户的Read对象,下一页.", action = ActionListNext.class)
 	@GET
@@ -494,6 +493,25 @@ public class ReadAction extends StandardJaxrsAction {
 			result = new ActionManageReset().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示当前用户的待阅,分页.", action = ActionListMyPaging.class)
+	@GET
+	@Path("list/my/paging/{page}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMyPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("count") Integer pageSize) {
+		ActionResult<List<ActionListMyPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListMyPaging().execute(effectivePerson, page, pageSize);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

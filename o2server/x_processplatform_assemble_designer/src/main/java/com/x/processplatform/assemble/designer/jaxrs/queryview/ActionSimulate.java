@@ -12,13 +12,11 @@ import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.NameIdPair;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.assemble.designer.wrapin.WrapInQueryViewExecute;
 import com.x.processplatform.core.entity.element.QueryView;
 import com.x.processplatform.core.entity.query.DateRangeEntry;
 import com.x.processplatform.core.entity.query.FilterEntry;
@@ -39,21 +37,21 @@ class ActionSimulate extends BaseAction {
 	ActionResult<Query> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Query> result = new ActionResult<>();
-			WrapInQueryViewExecute wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryViewExecute.class);
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			QueryView queryView = emc.flag(id, QueryView.class);
 			Query query = gson.fromJson(queryView.getData(), Query.class);
-			if (null != wrapIn) {
-				if (null != wrapIn.getDate()) {
-					query.setDateRangeEntry(this.readDateRangeEntry(wrapIn.getDate()));
+			if (null != wi) {
+				if (null != wi.getDate()) {
+					query.setDateRangeEntry(this.readDateRangeEntry(wi.getDate()));
 				}
-				if ((null != wrapIn.getFilter()) && (!wrapIn.getFilter().isJsonNull())) {
-					query.setFilterEntryList(this.readFilterEntryList(wrapIn.getFilter()));
+				if ((null != wi.getFilter()) && (!wi.getFilter().isJsonNull())) {
+					query.setFilterEntryList(this.readFilterEntryList(wi.getFilter()));
 				}
-				if ((null != wrapIn.getColumn()) && (!wrapIn.getColumn().isJsonNull())) {
-					query.setColumnList(this.readColumnList(wrapIn.getColumn(), query.getSelectEntryList()));
+				if ((null != wi.getColumn()) && (!wi.getColumn().isJsonNull())) {
+					query.setColumnList(this.readColumnList(wi.getColumn(), query.getSelectEntryList()));
 				}
-				WhereEntry whereEntry = this.readWhereEntry(wrapIn.getApplication(), wrapIn.getProcess(),
-						wrapIn.getDepartment(), wrapIn.getPerson(), wrapIn.getIdentity());
+				WhereEntry whereEntry = this.readWhereEntry(wi.getApplication(), wi.getProcess(),
+						wi.getUnit(), wi.getPerson(), wi.getIdentity());
 				if (whereEntry.available()) {
 					query.setWhereEntry(whereEntry);
 				}
@@ -76,7 +74,7 @@ class ActionSimulate extends BaseAction {
 
 		private DateRangeEntry date;
 
-		private JsonElement filterList;
+		private JsonElement filter;
 
 		private JsonElement column;
 
@@ -96,6 +94,14 @@ class ActionSimulate extends BaseAction {
 
 		public void setDate(DateRangeEntry date) {
 			this.date = date;
+		}
+
+		public JsonElement getFilter() {
+			return filter;
+		}
+
+		public void setFilter(JsonElement filter) {
+			this.filter = filter;
 		}
 
 		public JsonElement getColumn() {
@@ -122,6 +128,14 @@ class ActionSimulate extends BaseAction {
 			this.process = process;
 		}
 
+		public JsonElement getUnit() {
+			return unit;
+		}
+
+		public void setUnit(JsonElement unit) {
+			this.unit = unit;
+		}
+
 		public JsonElement getPerson() {
 			return person;
 		}
@@ -138,22 +152,7 @@ class ActionSimulate extends BaseAction {
 			this.identity = identity;
 		}
 
-		public JsonElement getUnit() {
-			return unit;
-		}
-
-		public void setUnit(JsonElement unit) {
-			this.unit = unit;
-		}
-
-		public JsonElement getFilterList() {
-			return filterList;
-		}
-
-		public void setFilterList(JsonElement filterList) {
-			this.filterList = filterList;
-		}
-
+		 
 	}
 
 	private WhereEntry readWhereEntry(JsonElement application, JsonElement process, JsonElement unit,

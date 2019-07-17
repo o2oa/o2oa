@@ -29,7 +29,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.queue.DataImportStatus;
@@ -40,19 +39,19 @@ public class DocumentAction extends StandardJaxrsAction{
 	
 	private static  Logger logger = LoggerFactory.getLogger( DocumentAction.class );
 
-	@JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionChangeCategory.class)
+	@JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionPersistChangeCategory.class)
 	@PUT
 	@Path("category/change")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response changeCategory( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public Response persist_changeCategory( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionChangeCategory.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistChangeCategory.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		
 		if( check ){
 			try {
-				result = new ActionChangeCategory().execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistChangeCategory().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -63,18 +62,18 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "指修改指定文档的数据.", action = ActionBatchModifyDataWithIds.class)
+	@JaxrsMethodDescribe(value = "指修改指定文档的数据.", action = ActionPersistBatchModifyData.class)
 	@PUT
 	@Path("batch/data/modify")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response batchDataModify( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public Response persist_batchDataModify( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionBatchModifyDataWithIds.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistBatchModifyData.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionBatchModifyDataWithIds().execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistBatchModifyData().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -84,17 +83,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据导入批次号查询导入状态信息.", action = ActionCehckImportStatus.class)
+	@JaxrsMethodDescribe(value = "根据导入批次号查询导入状态信息.", action = ActionQueryImportStatusWithName.class)
 	@GET
 	@Path("batch/{batchName}/status")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkImportStatus(@Context HttpServletRequest request, 
+	public Response query_checkImportStatus(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("导入批次号") @PathParam("batchName") String batchName) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<DataImportStatus> result = new ActionResult<>();
 		try {
-			result = new ActionCehckImportStatus().execute( request, effectivePerson, batchName );
+			result = new ActionQueryImportStatusWithName().execute( request, effectivePerson, batchName );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -103,16 +102,16 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "查询所有的导入状态信息.", action = ActionCheckAllImportStatus.class)
+	@JaxrsMethodDescribe(value = "查询所有的导入状态信息.", action = ActionQueryAllImportStatus.class)
 	@GET
 	@Path("batch/status")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkAllImportStatus(@Context HttpServletRequest request ) {
+	public Response query_checkAllImportStatus(@Context HttpServletRequest request ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<DataImportStatus>> result = new ActionResult<>();
 		try {
-			result = new ActionCheckAllImportStatus().execute( request, effectivePerson );
+			result = new ActionQueryAllImportStatus().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -121,17 +120,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionQueryGetDocument.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public Response query_get(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryGetDocument.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, id, effectivePerson );
+			result = new ActionQueryGetDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -140,36 +139,36 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据标识强制更新指定的分类Review.", action = ActionUpdateReviewForce.class)
+	@JaxrsMethodDescribe(value = "列示文档对象可供排序和展示使用的列名.", action = ActionQueryListDocumentFields.class)
 	@GET
-	@Path("review/{id}/update")
+	@Path("document/fields")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateReviewForce(@Context HttpServletRequest request, @JaxrsParameterDescribe("文档ID") @PathParam("id") String id) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<WoId> result = new ActionResult<>();
+	public Response query_listDocumentFields(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryListDocumentFields.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionUpdateReviewForce().execute( request, effectivePerson, id );
+			result = new ActionQueryListDocumentFields().execute( request );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionDocumentInfoProcess(e, "根据指定ID强制更新指定的分类Review时发生异常。id:" + id );
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID访问信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionView.class)
+	
+	@JaxrsMethodDescribe(value = "根据ID访问信息发布文档信息对象详细信息，包括附件列表，数据信息.", action = ActionQueryViewDocument.class)
 	@GET
 	@Path("{id}/view")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response view(@Context HttpServletRequest request, 
+	public Response query_view(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionView.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryViewDocument.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionView().execute( request, id, effectivePerson );
+			result = new ActionQueryViewDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -178,17 +177,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息被访问次数.", action = ActionCountViewTimes.class)
+	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息被访问次数.", action = ActionQueryCountViewTimes.class)
 	@GET
 	@Path("{id}/view/count")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getViewCount(@Context HttpServletRequest request, 
+	public Response query_getViewCount(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionCountViewTimes.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryCountViewTimes.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionCountViewTimes().execute( request, id, effectivePerson );
+			result = new ActionQueryCountViewTimes().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -197,19 +196,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "查询符合过滤条件的已发布的信息数量.", action = ActionCountLatestDocumentWithFilter.class)
+	@JaxrsMethodDescribe(value = "查询符合过滤条件的已发布的信息数量.", action = ActionQueryCountWithFilter.class)
 	@PUT
 	@Path("filter/count")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response countDocumentWithFilter( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public Response query_countDocumentWithFilter( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionCountLatestDocumentWithFilter.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryCountWithFilter.Wo> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionCountLatestDocumentWithFilter().execute( request,  jsonElement, effectivePerson );
+				result = new ActionQueryCountWithFilter().execute( request,  jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -219,17 +218,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID删除信息发布文档信息.", action = ActionDelete.class)
+	@JaxrsMethodDescribe(value = "根据ID删除信息发布文档信息.", action = ActionPersistDeleteDocument.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public Response persist_delete(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistDeleteDocument.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionDelete().execute( request, id, effectivePerson );
+			result = new ActionPersistDeleteDocument().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -238,17 +237,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据批次号删除信息发布文档信息.", action = ActionDeleteWithImportBatchName.class)
+	@JaxrsMethodDescribe(value = "根据批次号删除信息发布文档信息.", action = ActionPersistDeleteWithBatch.class)
 	@DELETE
 	@Path("batch/{batchId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteWithBatchName(@Context HttpServletRequest request, 
+	public Response persist_deleteWithBatchName(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("batchId") String batchId) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionDeleteWithImportBatchName.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistDeleteWithBatch.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionDeleteWithImportBatchName().execute( request, batchId, effectivePerson );
+			result = new ActionPersistDeleteWithBatch().execute( request, batchId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -257,17 +256,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID归档信息发布文档信息.", action = ActionArchive.class)
-	@PUT
+	@JaxrsMethodDescribe(value = "根据ID归档信息发布文档信息.", action = ActionPersistArchive.class)
+	@GET
 	@Path("achive/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response achive(@Context HttpServletRequest request, 
+	public Response persist_achive(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionArchive.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistArchive.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionArchive().execute( request, id, effectivePerson );
+			result = new ActionPersistArchive().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -276,20 +275,20 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID修改信息发布文档状态为已发布.", action = ActionPublish.class)
+	@JaxrsMethodDescribe(value = "根据ID修改信息发布文档状态为已发布.", action = ActionPersistPublishDocument.class)
 	@PUT
 	@Path("publish/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response publish(@Context HttpServletRequest request, 
+	public Response persist_publish(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id, JsonElement jsonElement ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionPublish.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistPublishDocument.Wo> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionPublish().execute( request, id, effectivePerson, jsonElement );
+				result = new ActionPersistPublishDocument().execute( request, id, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -300,20 +299,20 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPublishContent.class)
+	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
 	@PUT
 	@Path("publish/content")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response publishContent(@Context HttpServletRequest request, JsonElement jsonElement ) {		
+	public Response persist_publishContent(@Context HttpServletRequest request, JsonElement jsonElement ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionPublishContent.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistPublishContent.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		
 		if( check ){
 			System.out.println( "please wait, system try to publish content......" );
 			try {
-				result = new ActionPublishContent().execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistPublishContent().execute( request, jsonElement, effectivePerson );
 				System.out.println( "system publish content successful!" );
 			} catch (Exception e) {
 				result = new ActionResult<>();
@@ -324,17 +323,17 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID取消信息内容发布状态，修改为草稿.", action = ActionPublishCancel.class)
+	@JaxrsMethodDescribe(value = "根据ID取消信息内容发布状态，修改为草稿.", action = ActionPersistPublishCancel.class)
 	@PUT
 	@Path("publish/{id}/cancel")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response publishCancel(@Context HttpServletRequest request, 
+	public Response persist_publishCancel(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionPublishCancel.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistPublishCancel.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionPublishCancel().execute( request, id, effectivePerson );
+			result = new ActionPersistPublishCancel().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -343,22 +342,22 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionListNextWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListNextWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNextWithFilter( @Context HttpServletRequest request, 
+	public Response query_listNextWithFilter( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionListNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -368,22 +367,22 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "列示符合过滤条件的草稿信息内容, 下一页.", action = ActionListDraftNextWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的草稿信息内容, 下一页.", action = ActionQueryListDraftNextWithFilter.class)
 	@PUT
 	@Path("draft/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listDraftNextWithFilter( @Context HttpServletRequest request, 
+	public Response query_listDraftNextWithFilter( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListDraftNextWithFilter.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionQueryListDraftNextWithFilter.Wo>> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionListDraftNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
+				result = new ActionQueryListDraftNextWithFilter().execute( request, id, count, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -393,19 +392,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionGetFirstPicture.class)
+	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionQueryGetFirstPicture.class)
 	@GET
 	@Path("pictures/{id}/first")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listFirstPictures( @Context HttpServletRequest request, 
+	public Response query_listFirstPictures( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionGetFirstPicture.Wo> result = new ActionResult<>();
+		ActionResult<ActionQueryGetFirstPicture.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionGetFirstPicture().execute( request, id, effectivePerson );
+				result = new ActionQueryGetFirstPicture().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -415,19 +414,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionListAllPictures.class)
+	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionQueryListAllPictures.class)
 	@GET
 	@Path("pictures/{id}/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllPictures( @Context HttpServletRequest request, 
+	public Response query_listAllPictures( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionListAllPictures.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionQueryListAllPictures.Wo>> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListAllPictures().execute( request, id, effectivePerson );
+				result = new ActionQueryListAllPictures().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -437,21 +436,21 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "从Excel文件导入文档数据.", action = ActionImportDataExcel.class)
+	@JaxrsMethodDescribe(value = "从Excel文件导入文档数据.", action = ActionPersistImportDataExcel.class)
 	@POST
 	@Path("import/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public void importDocumentFormExcel(@Suspended final AsyncResponse asyncResponse, 
+	public void persist_importDocumentFormExcel(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId, 
 			@JaxrsParameterDescribe("作为参数的JSON字符串") @FormDataParam("json_data") String json_data,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionImportDataExcel.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistImportDataExcel.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImportDataExcel().execute(request, effectivePerson, categoryId, bytes,  json_data, disposition);
+			result = new ActionPersistImportDataExcel().execute(request, effectivePerson, categoryId, bytes,  json_data, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -459,18 +458,18 @@ public class DocumentAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "保存信息发布文档信息对象.", action = ActionSave.class)
+	@JaxrsMethodDescribe(value = "保存信息发布文档信息对象.", action = ActionPersistSaveDocument.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public Response persist_save( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionSave.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistSaveDocument.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		
 		if( check ){
 			try {
-				result = new ActionSave().execute( request, jsonElement, effectivePerson );
+				result = new ActionPersistSaveDocument().execute( request, jsonElement, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -481,19 +480,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "文档点赞.", action = ActionCommend.class)
+	@JaxrsMethodDescribe(value = "文档点赞.", action = ActionPersistCommend.class)
 	@GET
 	@Path("{id}/commend")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response commend( @Context HttpServletRequest request, 
+	public Response persist_commend( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionCommend.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistCommend.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionCommend().execute( request, id, effectivePerson );
+				result = new ActionPersistCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -503,19 +502,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionUnCommend.class)
+	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionPersistUnCommend.class)
 	@GET
 	@Path("{id}/uncommend")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unCommend( @Context HttpServletRequest request, 
+	public Response persist_unCommend( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionUnCommend.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistUnCommend.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionUnCommend().execute( request, id, effectivePerson );
+				result = new ActionPersistUnCommend().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -525,19 +524,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "文档置顶.", action = ActionTopDocument.class)
+	@JaxrsMethodDescribe(value = "文档置顶.", action = ActionPersistTopDocument.class)
 	@GET
 	@Path("{id}/top")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response top( @Context HttpServletRequest request, 
+	public Response persist_top( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionTopDocument.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistTopDocument.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionTopDocument().execute( request, id, effectivePerson );
+				result = new ActionPersistTopDocument().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -547,19 +546,19 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionUnTopDocument.class)
+	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionPersistUnTopDocument.class)
 	@GET
 	@Path("{id}/unTop")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unTop( @Context HttpServletRequest request, 
+	public Response persist_unTop( @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionUnTopDocument.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistUnTopDocument.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionUnTopDocument().execute( request, id, effectivePerson );
+				result = new ActionPersistUnTopDocument().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

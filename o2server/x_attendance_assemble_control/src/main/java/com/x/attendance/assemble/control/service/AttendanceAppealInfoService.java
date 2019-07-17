@@ -3,6 +3,8 @@ package com.x.attendance.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceDetail;
@@ -29,7 +31,7 @@ public class AttendanceAppealInfoService {
 	}
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		AttendanceAppealInfo attendanceAppealInfo = null;
-		if( id != null && !id.isEmpty() && !"(0)".equals( id )){
+		if( StringUtils.isNotEmpty( id ) && !"(0)".equals( id )){
 			attendanceAppealInfo = emc.find(id, AttendanceAppealInfo.class);
 			if ( null == attendanceAppealInfo ) {
 				throw new Exception("需要删除的申诉信息信息不存在。id=" + id);

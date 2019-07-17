@@ -56,6 +56,8 @@ public class Node extends ConfigObject {
 	private ScheduleRestoreStorage restoreStorage;
 	@FieldDescribe("日志文件保留天数.")
 	private Integer logSize;
+	@FieldDescribe("审计日志文件保留天数.")
+	private Integer auditLogSize;
 	@FieldDescribe("是否启用节点代理")
 	private Boolean nodeAgentEnable;
 	@FieldDescribe("是否启用节点端口")

@@ -9,6 +9,8 @@ public class ThisApplication {
 
 	protected static Context context;
 
+	public static ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -17,6 +19,7 @@ public class ThisApplication {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_processplatform_assemble_designer());
 			MessageConnector.start(context());
+			projectionExecuteQueue.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -24,6 +27,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			projectionExecuteQueue.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();

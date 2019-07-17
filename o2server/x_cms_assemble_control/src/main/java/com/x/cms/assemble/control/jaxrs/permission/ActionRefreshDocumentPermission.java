@@ -24,8 +24,7 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionRefreshDocumentPermission.class);
 
-	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
-			JsonElement jsonElement) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Document document = null;
 		Wi wi = null;
@@ -58,7 +57,7 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 		if (check) {
 			try {
-				document = documentServiceAdv.get(wi.getDocId());
+				document = documentQueryService.get(wi.getDocId());
 				if (document == null) {
 					check = false;
 					Exception exception = new ExceptionServiceLogic("文档不存在。ID：" + wi.getDocId());
@@ -74,7 +73,7 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 		if (check) {
 			try {
-				documentServiceAdv.refreshDocumentPermission(document.getId(), wi.getPermissionList());
+				documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionServiceLogic(e, "系统在为文档设置用户访问权限过程中发生异常。ID：" + wi.getDocId());

@@ -30,6 +30,7 @@ public class AttendanceImportFileInfoFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("列示全部的AttendanceImportFileInfo应用信息列表")
+	@SuppressWarnings("unused")
 	public List<AttendanceImportFileInfo> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceImportFileInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

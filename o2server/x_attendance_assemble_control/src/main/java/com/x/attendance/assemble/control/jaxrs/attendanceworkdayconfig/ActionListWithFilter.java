@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
@@ -56,19 +58,19 @@ public class ActionListWithFilter extends BaseAction {
 				business = new Business(emc);
 				attendanceWorkDayConfigFactory = business.getAttendanceWorkDayConfigFactory();
 				// 获取所有应用列表
-				if (q_Year != null && !q_Year.isEmpty()) {
-					if (q_Month != null && !q_Month.isEmpty()) {
+				if ( StringUtils.isNotEmpty( q_Year )) {
+					if ( StringUtils.isNotEmpty( q_Month )) {
 						// 根据年份月份获取所有节假日配置列表
 						logger.debug(effectivePerson, ">>>>>>>>>>根据年份月份获取所有节假日配置列表");
 						ids = attendanceWorkDayConfigFactory.listByYearAndMonth(q_Year, q_Month);
 					}
-					if (q_Name != null && !q_Name.isEmpty()) {
+					if ( StringUtils.isNotEmpty( q_Name )) {
 						// 根据年份名称获取所有节假日配置列表
 						logger.debug(effectivePerson, ">>>>>>>>>>根据年份名称获取所有节假日配置列表");
 						ids = attendanceWorkDayConfigFactory.listByYearAndName(q_Year, q_Name);
 					}
 				} else {
-					if (q_Name != null && !q_Name.isEmpty()) {
+					if ( StringUtils.isNotEmpty( q_Name )) {
 						// 根据名称获取所有节假日配置列表
 						logger.debug(effectivePerson, ">>>>>>>>>>根据名称获取所有节假日配置列表");
 						ids = attendanceWorkDayConfigFactory.listByName(q_Name);

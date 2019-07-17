@@ -2,9 +2,9 @@ package com.x.teamwork.assemble.control.jaxrs.config;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.teamview.assemble.control.service.SystemConfigPersistService;
-import com.x.teamview.assemble.control.service.SystemConfigQueryService;
-import com.x.teamview.assemble.control.service.UserManagerService;
+import com.x.teamwork.assemble.control.service.SystemConfigPersistService;
+import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
+import com.x.teamwork.assemble.control.service.UserManagerService;
 import com.x.teamwork.core.entity.Project;
 
 import net.sf.ehcache.Ehcache;

@@ -47,6 +47,10 @@ public abstract class AbstractQueue<T> {
 		logger.info(className + " new fixed thread pool with max thread count : " + count);
 	}
 
+	public boolean contains(T t) {
+		return this.queue.contains(t);
+	}
+
 	public void send(T t) throws Exception {
 		queue.put(t);
 	}
@@ -101,7 +105,7 @@ public abstract class AbstractQueue<T> {
 	public Boolean isEmpty() {
 		return this.queue.isEmpty();
 	}
-	
+
 	private static class StopSignal {
 	}
 }

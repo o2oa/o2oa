@@ -175,7 +175,7 @@ public class CategoryInfo extends SliceJpaObject {
 
 	public static final String defaultViewId_FIELDNAME = "defaultViewId";
 	@FieldDescribe("默认视图ID")
-	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + defaultViewId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + defaultViewId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String defaultViewId;
 

@@ -38,4 +38,7 @@ public class Runtime extends GsonPropertyObject {
 	@FieldDescribe("数量")
 	public Integer count = 0;
 
+	@FieldDescribe("限定结果集")
+	public List<String> bundleList = new TreeList<>();
+
 }

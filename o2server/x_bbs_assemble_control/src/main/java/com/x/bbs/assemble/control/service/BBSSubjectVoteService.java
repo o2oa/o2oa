@@ -8,6 +8,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.WiVoteOption;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.WiVoteOptionGroup;
@@ -38,12 +39,12 @@ public class BBSSubjectVoteService {
 			voteOptionGroupList = busines.voteOptionFactory().listVoteOptionGroupBySubject( subjectInfo.getId() );
 			emc.beginTransaction( BBSVoteOptionGroup.class );
 			emc.beginTransaction( BBSVoteOption.class );
-			if( voteOptionList != null && !voteOptionList.isEmpty() ){
+			if( ListTools.isNotEmpty( voteOptionList ) ){
 				for( BBSVoteOption option : voteOptionList ){
 					emc.remove( option, CheckRemoveType.all );
 				}
 			}
-			if( voteOptionGroupList != null && !voteOptionGroupList.isEmpty() ){
+			if( ListTools.isNotEmpty( voteOptionGroupList ) ){
 				for( BBSVoteOptionGroup group : voteOptionGroupList ){
 					emc.remove( group, CheckRemoveType.all );
 				}
@@ -65,7 +66,7 @@ public class BBSSubjectVoteService {
 				voteOptionGroup.setOrderNumber( groupIndex );
 				voteOptionGroup.setId( group.getId() );
 				voteOptionGroup.setVoteChooseCount( group.getVoteChooseCount() );
-				if( group.getVoteOptions() != null && !group.getVoteOptions().isEmpty() ){
+				if( ListTools.isNotEmpty( group.getVoteOptions() ) ){
 					for( WiVoteOption option : group.getVoteOptions() ){
 						optionIndex++;
 						voteOption = new BBSVoteOption();
@@ -116,7 +117,7 @@ public class BBSSubjectVoteService {
 			
 			for( WiVoteOptionGroup group : optionGroups ){
 				//voteOptionGroup = emc.find( group.getId(), BBSVoteOptionGroup.class );
-				if( group.getSelectedVoteOptionIds() != null && !group.getSelectedVoteOptionIds().isEmpty() ){
+				if( ListTools.isNotEmpty( group.getSelectedVoteOptionIds() ) ){
 					for( String selectedOptionId : group.getSelectedVoteOptionIds()){
 						voteOption = emc.find( selectedOptionId, BBSVoteOption.class );
 						if( voteOption != null ){
@@ -158,12 +159,12 @@ public class BBSSubjectVoteService {
 			voteOptionGroupList = busines.voteOptionFactory().listVoteOptionGroupBySubject(subjectId);
 			emc.beginTransaction( BBSVoteOptionGroup.class );
 			emc.beginTransaction( BBSVoteOption.class );
-			if( voteOptionList != null && !voteOptionList.isEmpty() ){
+			if( ListTools.isNotEmpty( voteOptionList ) ){
 				for( BBSVoteOption option : voteOptionList ){
 					emc.remove( option, CheckRemoveType.all );
 				}
 			}
-			if( voteOptionGroupList != null && !voteOptionGroupList.isEmpty() ){
+			if( ListTools.isNotEmpty( voteOptionGroupList ) ){
 				for( BBSVoteOptionGroup group : voteOptionGroupList ){
 					emc.remove( group, CheckRemoveType.all );
 				}
@@ -188,7 +189,7 @@ public class BBSSubjectVoteService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			voteOptionIds = business.voteOptionFactory().listVoteOptionIdsBySubject( subjectId );
-			if( voteOptionIds != null && !voteOptionIds.isEmpty() ){
+			if( ListTools.isNotEmpty( voteOptionIds ) ){
 				return business.voteOptionFactory().list( voteOptionIds );
 			}else{
 				return null;
