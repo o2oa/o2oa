@@ -18,6 +18,7 @@ import com.x.cms.assemble.control.factory.CategoryExtFactory;
 import com.x.cms.assemble.control.factory.CategoryInfoFactory;
 import com.x.cms.assemble.control.factory.CmsBatchOperationFactory;
 import com.x.cms.assemble.control.factory.DocumentCommendFactory;
+import com.x.cms.assemble.control.factory.DocumentCommentCommendFactory;
 import com.x.cms.assemble.control.factory.DocumentCommentInfoFactory;
 import com.x.cms.assemble.control.factory.DocumentFactory;
 import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
@@ -73,9 +74,17 @@ public class Business {
 	private FormFieldFactory formFieldFactory;
 	private CmsBatchOperationFactory cmsBatchOperationFactory;
 	private DocumentCommendFactory documentCommendFactory;
+	private DocumentCommentCommendFactory documentCommentCommendFactory;
 	private DocumentCommentInfoFactory documentCommentInfoFactory;
 	private ReviewFactory reviewFactory;
 
+	public DocumentCommentCommendFactory documentCommentCommendFactory() throws Exception {
+		if (null == this.documentCommentCommendFactory) {
+			this.documentCommentCommendFactory = new DocumentCommentCommendFactory(this);
+		}
+		return documentCommentCommendFactory;
+	}
+	
 	public ReviewFactory reviewFactory() throws Exception {
 		if (null == this.reviewFactory) {
 			this.reviewFactory = new ReviewFactory(this);

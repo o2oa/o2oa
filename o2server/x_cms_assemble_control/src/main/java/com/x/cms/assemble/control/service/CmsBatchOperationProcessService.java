@@ -109,6 +109,7 @@ public class CmsBatchOperationProcessService {
 			Integer maxQueryCount = 1000;
 			Long count = business.getDocumentFactory().countByAppId(appId);
 			Long maxTimes = count/maxQueryCount + 2;
+			AppInfo appInfo = emc.find(appId, AppInfo.class );
 			logger.info( "refreshDocumentReviewInAppInfo -> There are '" + count +"' document need refresh review, need to process '" + maxTimes + "' times ......" );
 			for( int i=0; i<=maxTimes; i++ ) {
 				ids = business.getDocumentFactory().listReviewedIdsByAppId( appId, maxQueryCount );
@@ -121,6 +122,11 @@ public class CmsBatchOperationProcessService {
 					for( Document document : documentList ) {
 						emc.beginTransaction(Document.class );
 						document.setReviewed( false );
+						document.setAppName( appInfo.getAppName() );
+						document.setAppAlias( appInfo.getAppAlias() );
+						if( StringUtils.isEmpty( document.getAppAlias() )) {
+							document.setAppAlias( appInfo.getAppName() );
+						}
 						emc.check( document, CheckPersistType.all );
 						emc.commit();						
 						cmsBatchOperationPersistService.addOperation( 

@@ -13,15 +13,15 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 
 class ActionListMyPaging extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer pageSize) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = emc.fetchEqualDescPaging(TaskCompleted.class, Wo.copier, TaskCompleted.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), page, pageSize, JpaObject.sequence_FIELDNAME);
+			List<Wo> wos = emc.fetchEqualAndNotEqualDescPaging(TaskCompleted.class, Wo.copier,
+					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+					TaskCompleted.latest_FIELDNAME, false, page, size, JpaObject.sequence_FIELDNAME);
 			result.setData(wos);
 			result.setCount(emc.countEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
 					effectivePerson.getDistinguishedName()));
-			this.setPage(result, page, pageSize);
 			return result;
 		}
 	}

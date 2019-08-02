@@ -154,6 +154,7 @@ public class BatchOperationProcessService {
 			List<Task> taskList = null;
 			Long count = business.taskFactory().countWithProject( projectId );
 			logger.info( "refreshTaskReviewInProject -> There are : " + count + " tasks need to refresh review......" );
+			
 			if(ListTools.isNotEmpty( ids )) {
 				taskList = emc.list( Task.class, ids);
 			}
@@ -167,7 +168,7 @@ public class BatchOperationProcessService {
 					task.setReviewed( false );
 					emc.check( task, CheckPersistType.all );
 					emc.commit();
-					
+
 					logger.info( "refreshTaskReviewInProject -> Send ["+ current +"/"+total+"]task permission operation to queue[queueBatchOperation], task:" + task.getName()  );
 					batchOperationPersistService.addOperation( 
 							BatchOperationProcessService.OPT_OBJ_TASK, 

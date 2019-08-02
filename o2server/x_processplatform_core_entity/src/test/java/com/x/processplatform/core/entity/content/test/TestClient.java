@@ -2,10 +2,14 @@ package com.x.processplatform.core.entity.content.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 
@@ -64,5 +68,41 @@ public class TestClient {
 		System.out.println("find:" + tree.find(o_2));
 		// System.out.println("nodes:" + XGsonBuilder.toJson(tree.nodes()));
 
+	}
+
+	@Test
+	public void test3() throws Exception {
+		List<TaskCompleted> tcs = new ArrayList<>();
+		TaskCompleted tc1 = new TaskCompleted();
+		tc1.setId("tc1");
+		tc1.setTask("t11");
+		tcs.add(tc1);
+		TaskCompleted tc2 = new TaskCompleted();
+		tc2.setId("tc2");
+		tc2.setTask("t2");
+		tcs.add(tc2);
+		TaskCompleted tc3 = new TaskCompleted();
+		tc3.setId("tc3");
+		tc3.setTask("t3");
+		tcs.add(tc3);
+		List<Task> ts = new ArrayList<>();
+		Task t1 = new Task();
+		t1.setId("t1");
+		ts.add(t1);
+		Task t2 = new Task();
+		t2.setId("t2");
+		ts.add(t2);
+		Task t3 = new Task();
+		t3.setId("t3");
+		ts.add(t3);
+
+		Map<TaskCompleted, Task> map = ListTools.pairWithProperty(tcs, "task", ts, "id");
+		for (Entry<TaskCompleted, Task> en : map.entrySet()) {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(en.getKey());
+			System.out.println(en.getValue());
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+		}
 	}
 }

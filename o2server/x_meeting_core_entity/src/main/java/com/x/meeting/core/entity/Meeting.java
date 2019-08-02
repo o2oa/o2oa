@@ -28,13 +28,13 @@ import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CitationExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.ListTools;
 
 @Entity
 @ContainerEntity
@@ -181,6 +181,18 @@ public class Meeting extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + rejectPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> rejectPersonList;
+	
+	public static final String checkinPersonList_FIELDNAME = "checkinPersonList";
+	@FieldDescribe("签到人员.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ checkinPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + checkinPersonList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + checkinPersonList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + checkinPersonList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> checkinPersonList;
 
 	public static final String confirmStatus_FIELDNAME = "confirmStatus";
 	@FieldDescribe("会议预定状态")
@@ -377,6 +389,30 @@ public class Meeting extends SliceJpaObject {
 
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+
+	public List<String> getCheckinPersonList() {
+		return checkinPersonList;
+	}
+
+	public void setCheckinPersonList(List<String> checkinPersonList) {
+		this.checkinPersonList = checkinPersonList;
+	}
+	
+	/**
+	 * 添加一个签到人员
+	 * @param distinguishedName
+	 */
+	public void addCheckinPerson( String distinguishedName ) {
+		this.checkinPersonList = ListTools.addStringToList( distinguishedName, this.checkinPersonList );
+	}
+	
+	/**
+	 * 删除一个签到人员
+	 * @param distinguishedName
+	 */
+	public void removeCheckinPerson( String distinguishedName ) {
+		this.checkinPersonList = ListTools.removeStringFromList( distinguishedName, this.checkinPersonList );
 	}
 
 }

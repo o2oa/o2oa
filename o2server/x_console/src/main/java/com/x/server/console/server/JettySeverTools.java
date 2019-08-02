@@ -20,9 +20,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import com.x.base.core.project.x_base_core_project;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.tools.DefaultCharset;
-
-import io.github.classgraph.ClassInfo;
 
 public abstract class JettySeverTools {
 
@@ -64,28 +61,28 @@ public abstract class JettySeverTools {
 		FileUtils.cleanDirectory(dir);
 	}
 
-	protected static void createOfficialDeployDescriptor(ClassInfo info) throws Exception {
-		StringBuffer buffer = new StringBuffer();
-		Class<?> cls = Class.forName(info.getName());
-		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		if (Config.currentNode().getQuickStartWebApp()) {
-			buffer.append("<Configure class=\"org.eclipse.jetty.quickstart.QuickStartWebApp\">");
-			buffer.append("<Set name=\"autoPreconfigure\">true</Set>");
-		} else {
-			buffer.append("<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\">");
-		}
-		buffer.append("<Set name=\"contextPath\">/" + info.getSimpleName() + "</Set>");
-		File war = new File(Config.dir_store(), info.getSimpleName() + ".war");
-		buffer.append("<Set name=\"war\">" + war.getAbsolutePath() + "</Set>");
-		String extraClasspath = calculateExtraClassPath(cls);
-		buffer.append("<Set name=\"extraClasspath\">" + extraClasspath + "</Set>");
-		String tempDirectory = new File(Config.dir_servers_applicationServer_work(), info.getSimpleName())
-				.getAbsolutePath();
-		buffer.append("<Set name=\"tempDirectory\">" + tempDirectory + "</Set>");
-		buffer.append("</Configure>");
-		File file = new File(Config.dir_servers_applicationServer_webapps(), info.getSimpleName() + ".xml");
-		FileUtils.write(file, buffer.toString(), DefaultCharset.charset);
-	}
+//	protected static void createOfficialDeployDescriptor(ClassInfo info) throws Exception {
+//		StringBuffer buffer = new StringBuffer();
+//		Class<?> cls = Class.forName(info.getName());
+//		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//		if (Config.currentNode().getQuickStartWebApp()) {
+//			buffer.append("<Configure class=\"org.eclipse.jetty.quickstart.QuickStartWebApp\">");
+//			buffer.append("<Set name=\"autoPreconfigure\">true</Set>");
+//		} else {
+//			buffer.append("<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\">");
+//		}
+//		buffer.append("<Set name=\"contextPath\">/" + info.getSimpleName() + "</Set>");
+//		File war = new File(Config.dir_store(), info.getSimpleName() + ".war");
+//		buffer.append("<Set name=\"war\">" + war.getAbsolutePath() + "</Set>");
+//		String extraClasspath = calculateExtraClassPath(cls);
+//		buffer.append("<Set name=\"extraClasspath\">" + extraClasspath + "</Set>");
+//		String tempDirectory = new File(Config.dir_servers_applicationServer_work(), info.getSimpleName())
+//				.getAbsolutePath();
+//		buffer.append("<Set name=\"tempDirectory\">" + tempDirectory + "</Set>");
+//		buffer.append("</Configure>");
+//		File file = new File(Config.dir_servers_applicationServer_webapps(), info.getSimpleName() + ".xml");
+//		FileUtils.write(file, buffer.toString(), DefaultCharset.charset);
+//	}
 
 	protected static String calculateExtraClassPath(Class<?> cls) throws Exception {
 		List<String> jars = new ArrayList<>();

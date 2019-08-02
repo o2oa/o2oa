@@ -49,6 +49,9 @@ public class Statement extends SliceJpaObject {
 	public static final String TYPE_UPDATE = "update";
 	public static final String TYPE_INSERT = "insert";
 
+	public static final String TABLETYPE_OFFICIAL = "official";
+	public static final String TABLETYPE_DYNAMIC = "dynamic";
+
 	public String getId() {
 		return id;
 	}
@@ -137,13 +140,13 @@ public class Statement extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
-	public static final String beforeScriptText_FIELDNAME = "beforeScriptText";
-	@FieldDescribe("执行前脚本.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + beforeScriptText_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String beforeScriptText;
+//	public static final String beforeScriptText_FIELDNAME = "beforeScriptText";
+//	@FieldDescribe("执行前脚本.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + beforeScriptText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String beforeScriptText;
 
 	public static final String afterScriptText_FIELDNAME = "afterScriptText";
 	@FieldDescribe("执行后脚本.")
@@ -177,6 +180,12 @@ public class Statement extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + table_FIELDNAME)
 	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Table.class) })
 	private String table;
+
+	public static final String tableType_FIELDNAME = "tableType";
+	@FieldDescribe("表类型,official,dynamic")
+	@Column(length = length_16B, name = ColumnNamePrefix + tableType_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String tableType;
 
 	public String getName() {
 		return name;
@@ -258,14 +267,6 @@ public class Statement extends SliceJpaObject {
 		this.table = table;
 	}
 
-	public String getBeforeScriptText() {
-		return beforeScriptText;
-	}
-
-	public void setBeforeScriptText(String beforeScriptText) {
-		this.beforeScriptText = beforeScriptText;
-	}
-
 	public String getAfterScriptText() {
 		return afterScriptText;
 	}
@@ -288,6 +289,14 @@ public class Statement extends SliceJpaObject {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public String getTableType() {
+		return tableType;
+	}
+
+	public void setTableType(String tableType) {
+		this.tableType = tableType;
 	}
 
 }

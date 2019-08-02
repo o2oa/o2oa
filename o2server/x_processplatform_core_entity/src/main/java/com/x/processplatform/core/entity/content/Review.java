@@ -82,7 +82,8 @@ public class Review extends SliceJpaObject {
 		this.work = work.getId();
 		this.workCompleted = "";
 		this.completed = false;
-		this.title = work.getTitle();
+		// this.title = work.getTitle();
+		this.setTitle(work.getTitle());
 		this.serial = work.getSerial();
 		this.startTime = work.getStartTime();
 		this.startTimeMonth = work.getStartTimeMonth();
@@ -105,7 +106,7 @@ public class Review extends SliceJpaObject {
 		this.work = workCompleted.getWork();
 		this.workCompleted = workCompleted.getId();
 		this.completed = true;
-		this.title = workCompleted.getTitle();
+		this.setTitle(workCompleted.getTitle());
 		this.serial = workCompleted.getSerial();
 		this.startTime = workCompleted.getStartTime();
 		this.startTimeMonth = workCompleted.getStartTimeMonth();
@@ -273,6 +274,13 @@ public class Review extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + creatorUnit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUnit;
+
+	public static final String currentActivityName_FIELDNAME = "currentActivityName";
+	@FieldDescribe("当前活动名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + currentActivityName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String currentActivityName;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -719,6 +727,14 @@ public class Review extends SliceJpaObject {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public String getCurrentActivityName() {
+		return currentActivityName;
+	}
+
+	public void setCurrentActivityName(String currentActivityName) {
+		this.currentActivityName = currentActivityName;
 	}
 
 }

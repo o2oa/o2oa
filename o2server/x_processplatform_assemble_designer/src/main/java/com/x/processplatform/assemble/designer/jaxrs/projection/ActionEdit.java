@@ -11,6 +11,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -34,20 +35,21 @@ class ActionEdit extends BaseAction {
 
 			Business business = new Business(emc);
 
-			Process process = emc.flag(wi.getProcess(), Process.class);
-
-			if (null == process) {
-				throw new ExceptionEntityNotExist(wi.getProcess(), Process.class);
-			}
-
-			Application application = emc.flag(process.getApplication(), Application.class);
+			Application application = emc.flag(wi.getApplication(), Application.class);
 
 			if (null == application) {
-				throw new ExceptionEntityNotExist(process.getApplication(), Application.class);
+				throw new ExceptionEntityNotExist(wi.getApplication(), Application.class);
 			}
 
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+			}
+
+			if (StringUtils.isNotEmpty(wi.getProcess())) {
+				Process process = emc.flag(wi.getProcess(), Process.class);
+				if (null == process) {
+					throw new ExceptionEntityNotExist(wi.getProcess(), Process.class);
+				}
 			}
 
 			Projection projection = emc.flag(flag, Projection.class);
@@ -57,9 +59,6 @@ class ActionEdit extends BaseAction {
 			}
 
 			Wi.copier.copy(wi, projection);
-
-			projection.setProcess(process.getId());
-			projection.setApplication(application.getId());
 
 			if (this.duplicateWorkCompleted(business, projection)) {
 				throw new ExceptionDuplicateWorkCompleted();
@@ -86,14 +85,14 @@ class ActionEdit extends BaseAction {
 			}
 
 			if (StringUtils.equals(Projection.TYPE_TABLE, projection.getType())
-					&& StringUtils.isEmpty(projection.getDynamicClassName())) {
-				throw new ExceptionEntityFieldEmpty(Projection.class, Projection.dynamicClassName_FIELDNAME);
+					&& StringUtils.isEmpty(projection.getDynamicName())) {
+				throw new ExceptionEntityFieldEmpty(Projection.class, Projection.dynamicName_FIELDNAME);
 			}
 
 			try {
-				Class.forName(projection.getDynamicClassName());
+				Class.forName(DynamicEntity.CLASS_PACKAGE + "." + projection.getDynamicName());
 			} catch (Exception e) {
-				throw new ExceptionDynamicClassNotExist(projection.getDynamicClassName());
+				throw new ExceptionDynamicClassNotExist(projection.getDynamicName());
 			}
 
 			try {

@@ -2,8 +2,6 @@ package com.x.processplatform.assemble.surface.factory.content;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -38,5 +36,16 @@ public class JobFactory extends AbstractFactory {
 			return os.get(0).getJob();
 		}
 		return null;
+	}
+
+	public boolean jobExist(String value) throws Exception {
+		if (this.entityManagerContainer().countEqual(Work.class, Work.job_FIELDNAME, value) > 0) {
+			return true;
+		} else if (this.entityManagerContainer().countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+				value) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

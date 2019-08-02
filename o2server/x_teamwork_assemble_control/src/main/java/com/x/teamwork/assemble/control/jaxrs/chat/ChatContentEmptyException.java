@@ -7,6 +7,6 @@ class ChatContentEmptyException extends PromptException {
 	private static final long serialVersionUID = 1859164370743532895L;
 
 	ChatContentEmptyException() {
-		super("工作交流内容信息ID为空。" );
+		super("工作交流内容为空。" );
 	}
 }

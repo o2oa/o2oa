@@ -55,7 +55,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 		}
 		
 		if( check ) {
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPrev", effectivePerson.getDistinguishedName(), 
+			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPrevWithFilter", effectivePerson.getDistinguishedName(), 
 					flag, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = commentInfoCache.get( cacheKey );
 			

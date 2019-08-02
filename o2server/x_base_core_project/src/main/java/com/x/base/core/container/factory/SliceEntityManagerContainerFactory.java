@@ -76,7 +76,7 @@ public abstract class SliceEntityManagerContainerFactory {
 	}
 
 	protected SliceEntityManagerContainerFactory(String source) throws Exception {
-		Set<Class<? extends JpaObject>> classes = this.listUitClass(source);
+		Set<Class<? extends JpaObject>> classes = this.listUnitClass(source);
 		for (Class<? extends JpaObject> clz : classes) {
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
 			checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
@@ -131,7 +131,7 @@ public abstract class SliceEntityManagerContainerFactory {
 		return map;
 	}
 
-	private Set<Class<? extends JpaObject>> listUitClass(String source) throws Exception {
+	private Set<Class<? extends JpaObject>> listUnitClass(String source) throws Exception {
 		try {
 			Set<Class<? extends JpaObject>> classes = new HashSet<>();
 			URL url;

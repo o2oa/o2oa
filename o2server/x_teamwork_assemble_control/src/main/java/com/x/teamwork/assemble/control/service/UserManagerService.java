@@ -107,7 +107,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public String getIdentityWithPerson( String personName, String type ) throws Exception {
-		if( personName.indexOf( "@I" ) > 0 ) {
+		if( personName.endsWith( "@I" )) {
 			return personName;
 		}
 		List<String> identities = null;
@@ -121,7 +121,7 @@ public class UserManagerService {
 			//兼容一下传过来的perosnName有可能是个人，有可能是身份
 			personName = business.organization().person().get( personName );
 			identities = business.organization().identity().listWithPerson( personName );
-			if( ListTools.isNotEmpty( identities )  ) {
+			if( ListTools.isNotEmpty( identities )  ) {				
 				for( String identity : identities ) {
 					unitName = business.organization().unit().getWithIdentity( identity );
 					unit = business.organization().unit().getObject( unitName );

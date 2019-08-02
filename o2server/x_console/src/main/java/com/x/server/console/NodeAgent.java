@@ -13,7 +13,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +26,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 
 import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -67,7 +68,8 @@ public class NodeAgent extends Thread {
 						}
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
-							String result = this.redeploy(matcher.group(1), commandObject.getBody());
+							byte[] bytes = Base64.decodeBase64(commandObject.getBody());
+							String result = this.redeploy(matcher.group(1), bytes);
 							IOUtils.write(result, outputStream, DefaultCharset.charset_utf_8);
 						}
 					}
@@ -81,53 +83,78 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private String redeploy(String name, String body) {
+	private String redeploy(String name, byte[] bytes) {
 		String result = "success";
 		try {
 			logger.print("redeploy:{}.", name);
-			ClassInfo classInfo = this.scanModuleClassInfo(name);
-			if (null == classInfo) {
-				throw new Exception(String.format("module not exist:%s.", name));
-			}
-			Class<?> cls = Class.forName(classInfo.getName());
-			Module module = cls.getAnnotation(Module.class);
-			byte[] bytes = Base64.decodeBase64(body);
-			if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
-					|| Objects.equals(module.type(), ModuleType.SERVICE)) {
-				File war = null;
-				File dir = new File(Config.dir_servers_applicationServer_work(), cls.getSimpleName());
-				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
-					war = new File(Config.dir_store(), cls.getSimpleName() + ".war");
-				} else if (Objects.equals(ModuleCategory.CUSTOM, module.category())) {
-					war = new File(Config.dir_custom(), cls.getSimpleName() + ".war");
-				}
-				FileUtils.writeByteArrayToFile(war, bytes, false);
-				this.redeployAssembleAServiceA(cls, war, dir);
-			} else if (Objects.equals(module.type(), ModuleType.CENTER)) {
-				File war = new File(Config.dir_store(), cls.getSimpleName() + ".war");
-				FileUtils.writeByteArrayToFile(war, bytes);
-				File dir = new File(Config.dir_servers_centerServer_work(), cls.getSimpleName());
-				this.redeployAssembleC(cls, war, dir);
-			} else if (Objects.equals(module.type(), ModuleType.BASE)
-					|| Objects.equals(module.type(), ModuleType.ENTITY)
-					|| Objects.equals(module.type(), ModuleType.EXPRESS)) {
-				File jar = null;
-				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
-					jar = new File(Config.dir_store_jars(), cls.getSimpleName() + ".jar");
-				} else if (Objects.equals(ModuleCategory.CUSTOM, module.category())) {
-					jar = new File(Config.dir_custom(), cls.getSimpleName() + ".jar");
-				}
-				FileUtils.writeByteArrayToFile(jar, bytes);
-				this.redeployCoreA(cls);
+			switch (this.type(name)) {
+			case "storeWar":
+				storeWar(name, bytes);
+				break;
+			case "storeJar":
+				storeJar(name, bytes);
+				break;
+			case "customWar":
+				customWar(name, bytes);
+				break;
+			case "customJar":
+				customJar(name, bytes);
+				break;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			result = e.getMessage();
 		}
 		return result;
 	}
 
-	private boolean redeployCoreA(Class<?> cls) throws Exception {
-		List<ClassInfo> classInfos = this.listModuleDependencyWith(cls.getSimpleName());
+	private void storeWar(String simpleName, byte[] bytes) throws Exception {
+		ClassInfo classInfo = this.scanModuleClassInfo(simpleName);
+		Class<?> cls = Class.forName(classInfo.getName());
+		Module module = cls.getAnnotation(Module.class);
+		File war = new File(Config.dir_store(), cls.getSimpleName() + ".war");
+		FileUtils.writeByteArrayToFile(war, bytes);
+		if (Objects.equals(module.type(), ModuleType.CENTER)) {
+			File dir = new File(Config.dir_servers_centerServer_work(), cls.getSimpleName());
+			if (Servers.centerServerIsRunning()) {
+				GzipHandler gzipHandler = (GzipHandler) Servers.centerServer.getHandler();
+				HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+				for (Handler handler : hanlderList.getHandlers()) {
+					if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
+						QuickStartWebApp app = (QuickStartWebApp) handler;
+						if (StringUtils.equals("/" + cls.getSimpleName(), app.getContextPath())) {
+							app.stop();
+							this.modified(bytes, war, dir);
+							app.start();
+						}
+					}
+				}
+			}
+		} else {
+			File dir = new File(Config.dir_servers_applicationServer_work(), cls.getSimpleName());
+			war = new File(Config.dir_store(), cls.getSimpleName() + ".war");
+			FileUtils.writeByteArrayToFile(war, bytes, false);
+			if (Servers.applicationServerIsRunning()) {
+				GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+				HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+				for (Handler handler : hanlderList.getHandlers()) {
+					if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
+						QuickStartWebApp app = (QuickStartWebApp) handler;
+						if (StringUtils.equals("/" + cls.getSimpleName(), app.getContextPath())) {
+							app.stop();
+							this.modified(bytes, war, dir);
+							app.start();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void storeJar(String simpleName, byte[] bytes) throws Exception {
+		File jar = new File(Config.dir_store_jars(true), simpleName + ".jar");
+		FileUtils.writeByteArrayToFile(jar, bytes, false);
+		List<ClassInfo> classInfos = this.listModuleDependencyWith(simpleName);
 		List<String> contextPaths = new ArrayList<>();
 		for (ClassInfo info : classInfos) {
 			contextPaths.add("/" + info.getSimpleName());
@@ -139,10 +166,33 @@ public class NodeAgent extends Thread {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
 					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(),
-								cls.getSimpleName());
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						app.stop();
-						Thread.sleep(2000);
+					}
+				}
+			}
+		}
+		if (Servers.centerServerIsRunning()) {
+			GzipHandler gzipHandler = (GzipHandler) Servers.centerServer.getHandler();
+			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+			for (Handler handler : hanlderList.getHandlers()) {
+				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
+					QuickStartWebApp app = (QuickStartWebApp) handler;
+					if (contextPaths.contains(app.getContextPath())) {
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
+						app.stop();
+					}
+				}
+			}
+		}
+		if (Servers.applicationServerIsRunning()) {
+			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+			for (Handler handler : hanlderList.getHandlers()) {
+				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
+					QuickStartWebApp app = (QuickStartWebApp) handler;
+					if (contextPaths.contains(app.getContextPath())) {
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						app.start();
 					}
 				}
@@ -155,58 +205,58 @@ public class NodeAgent extends Thread {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
 					if (contextPaths.contains(app.getContextPath())) {
-						logger.print("{} need restart because {} redeployed.", app.getDisplayName(),
-								cls.getSimpleName());
-						app.stop();
-						Thread.sleep(2000);
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						app.start();
 					}
 				}
 			}
 		}
-		return true;
 	}
 
-	private boolean redeployAssembleAServiceA(Class<?> cls, File war, File dir) throws Exception {
+	private void customWar(String simpleName, byte[] bytes) throws Exception {
+		File war = new File(Config.dir_custom(true), simpleName + ".war");
+		File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
+		FileUtils.writeByteArrayToFile(war, bytes, false);
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 			for (Handler handler : hanlderList.getHandlers()) {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (StringUtils.equals("/" + cls.getSimpleName(), app.getContextPath())) {
+					if (StringUtils.equals("/" + simpleName, app.getContextPath())) {
 						app.stop();
-						Thread.sleep(2000);
-						this.modified(war, dir);
+						this.modified(bytes, war, dir);
 						app.start();
-						return true;
 					}
 				}
 			}
 		}
-		return false;
 	}
 
-	private boolean redeployAssembleC(Class<?> cls, File war, File dir) throws Exception {
-		if (Servers.centerServerIsRunning()) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.centerServer.getHandler();
+	private void customJar(String simpleName, byte[] bytes) throws Exception {
+		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
+		FileUtils.writeByteArrayToFile(jar, bytes, false);
+		List<String> contexts = new ArrayList<>();
+		for (String s : Config.dir_custom().list(new WildcardFileFilter("*.war"))) {
+			contexts.add("/" + FilenameUtils.getBaseName(s));
+		}
+		if (Servers.applicationServerIsRunning()) {
+			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 			for (Handler handler : hanlderList.getHandlers()) {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (StringUtils.equals("/" + cls.getSimpleName(), app.getContextPath())) {
+					if (contexts.contains(app.getContextPath())) {
 						app.stop();
-						this.modified(war, dir);
+						Thread.sleep(2000);
 						app.start();
-						return true;
 					}
 				}
 			}
 		}
-		return false;
 	}
 
-	public List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
+	private List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
 		List<ClassInfo> list = new ArrayList<>();
 		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
@@ -226,7 +276,7 @@ public class NodeAgent extends Thread {
 		return list;
 	}
 
-	public ClassInfo scanModuleClassInfo(String name) throws Exception {
+	private ClassInfo scanModuleClassInfo(String name) throws Exception {
 		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
@@ -239,14 +289,14 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private void modified(File war, File dir) throws Exception {
+	private void modified(byte[] bytes, File war, File dir) throws Exception {
 		File lastModified = new File(dir, "WEB-INF/lastModified");
 		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
 				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
 			if (dir.exists()) {
 				FileUtils.forceDelete(dir);
 			}
-			JarTools.unjar(war, "", dir, true);
+			JarTools.unjar(bytes, "", dir, true);
 			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
 		}
 	}
@@ -283,6 +333,22 @@ public class NodeAgent extends Thread {
 			this.credential = credential;
 		}
 
+	}
+
+	private String type(String simpleName) throws Exception {
+		if ((new File(Config.dir_store(), simpleName + ".war")).exists()) {
+			return "storeWar";
+		}
+		if ((new File(Config.dir_store_jars(), simpleName + ".jar")).exists()) {
+			return "storeJar";
+		}
+		if ((new File(Config.dir_custom(), simpleName + ".war")).exists()) {
+			return "customWar";
+		}
+		if ((new File(Config.dir_custom_jars(), simpleName + ".jar")).exists()) {
+			return "customJar";
+		}
+		return null;
 	}
 
 }

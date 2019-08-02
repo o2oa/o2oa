@@ -18,6 +18,7 @@ public class Row extends GsonPropertyObject {
 		data = new LinkedHashMap<String, Object>();
 	}
 
+	@SuppressWarnings("deprecation")
 	public Double getAsDouble(String key) {
 		Object o = this.data.get(key);
 		String val = Objects.toString(o, "");

@@ -19,6 +19,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
+	@SuppressWarnings("unused")
 	protected void notifyMeetingInviteMessage(Business business, Meeting meeting) throws Exception {
 		if (ListTools.isNotEmpty(meeting.getInvitePersonList())) {
 			Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
@@ -33,6 +34,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void notifyMeetingCancelMessage(Business business, Meeting meeting) throws Exception {
 		if (ListTools.isNotEmpty(meeting.getInvitePersonList())) {
 			Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
@@ -51,6 +53,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void notifyMeetingAcceptMessage(Business business, Meeting meeting, String person) throws Exception {
 		Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
 		Building building = business.entityManagerContainer().find(room.getBuilding(), Building.class,
@@ -68,6 +71,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	@SuppressWarnings("unused")
 	protected void notifyMeetingRejectMessage(Business business, Meeting meeting, String person) throws Exception {
 		Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
 		Building building = business.entityManagerContainer().find(room.getBuilding(), Building.class,

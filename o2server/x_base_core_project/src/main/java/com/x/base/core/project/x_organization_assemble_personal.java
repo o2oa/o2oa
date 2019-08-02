@@ -10,8 +10,8 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.organization.core.entity.Identity", "com.x.organization.core.entity.Unit",
 		"com.x.organization.core.entity.UnitAttribute", "com.x.organization.core.entity.UnitDuty",
 		"com.x.organization.core.entity.Custom", "com.x.organization.core.entity.Definition",
-		"com.x.organization.core.entity.accredit.Trust",
-		"com.x.organization.core.entity.accredit.TrustLog" }, storeJars = { "x_organization_core_entity",
+		"com.x.organization.core.entity.accredit.Empower",
+		"com.x.organization.core.entity.accredit.EmpowerLog" }, storeJars = { "x_organization_core_entity",
 				"x_organization_core_express" })
 public class x_organization_assemble_personal extends Deployable {
 

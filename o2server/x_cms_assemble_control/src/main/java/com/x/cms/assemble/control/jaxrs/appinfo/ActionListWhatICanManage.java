@@ -22,7 +22,7 @@ public class ActionListWhatICanManage extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger(ActionListWhatICanManage.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson) throws Exception {
+	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
 		List<AppInfo> appInfoList = null;
@@ -52,7 +52,7 @@ public class ActionListWhatICanManage extends BaseAction {
 			if (check) {
 				if (isXAdmin) {
 					try {
-						appInfoList = appInfoServiceAdv.listAll("全部");
+						appInfoList = appInfoServiceAdv.listAll( null, "全部");
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionAppInfoProcess(e, "查询所有应用栏目信息对象时发生异常");
@@ -63,7 +63,7 @@ public class ActionListWhatICanManage extends BaseAction {
 					try {
 						List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 						List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
-						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, "全部", 1000 );
+						app_ids = permissionQueryService.listManageableAppIdsByPerson( personName, unitNames, groupNames, null, "全部", 1000 );
 						if (app_ids != null && !app_ids.isEmpty()) {
 							try {
 								appInfoList = appInfoServiceAdv.list( app_ids );

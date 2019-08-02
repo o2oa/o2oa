@@ -53,19 +53,17 @@ public class ActionListNextWithFilter extends BaseAction {
 		if( check ) {
 			queryFilter = wrapIn.getQueryFilter();
 		}
-		
 		if( check ) {
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNext", effectivePerson.getDistinguishedName(), flag, count, 
+			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = commentInfoCache.get( cacheKey );
-			
 			if ((null != element) && (null != element.getObjectValue())) {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
 			} else {
 				try {	
-					Long total = documentCommentInfoQueryService.countWithFilter( effectivePerson, queryFilter );					
+					Long total = documentCommentInfoQueryService.countWithFilter( effectivePerson, queryFilter );
 					List<DocumentCommentInfo>  documentCommentInfoList = documentCommentInfoQueryService.listWithFilter( effectivePerson, count, flag, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter );
 					
 					if( ListTools.isNotEmpty( documentCommentInfoList )) {

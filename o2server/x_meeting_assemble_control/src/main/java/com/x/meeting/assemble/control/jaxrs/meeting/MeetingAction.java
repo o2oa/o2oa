@@ -156,6 +156,42 @@ public class MeetingAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+	
+	@JaxrsMethodDescribe(value = "会议签到", action = ActionCheckIn.class)
+	@GET
+	@Path("{id}/checkin")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void checkin(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id) {
+		ActionResult<ActionCheckIn.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCheckIn().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "会议签到二维码", action = ActionCheckinCode.class)
+	@GET
+	@Path("{id}/checkin/code")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void checkInBindCode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id) {
+		ActionResult<ActionCheckinCode.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCheckinCode().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 
 	@JaxrsMethodDescribe(value = "拒绝会议邀请", action = ActionAccept.class)
 	@GET

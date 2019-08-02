@@ -12,10 +12,10 @@ import com.x.cms.core.entity.tools.filter.term.LikeTerm;
 public class WrapInQueryDocumentCommentInfo {
 	
 	@FieldDescribe("用于排列的属性.")
-	private String orderField = "createTime";
+	private String orderField = "orderNumber";
 
 	@FieldDescribe("排序方式：DESC | ASC.")
-	private String orderType = "DESC";
+	private String orderType = "ASC";
 	
 	@FieldDescribe("搜索条件：栏目ID")
 	private String appId;

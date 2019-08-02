@@ -51,7 +51,6 @@ public class DynamicFactory extends AbstractFactory {
 		Root<Dynamic> root = cq.from(Dynamic.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Dynamic_.class, cb, null, root, queryFilter );
 		cq.select(cb.count(root));
-		System.out.println(">>>SQL:" + em.createQuery(cq.where(p)));
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 	
@@ -75,7 +74,6 @@ public class DynamicFactory extends AbstractFactory {
 		if( orderWithField != null ){
 			cq.orderBy( orderWithField );
 		}
-		System.out.println(">>>SQL:" + em.createQuery(cq.where(p)).setMaxResults( maxCount).toString());
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
 	

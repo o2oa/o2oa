@@ -20,30 +20,21 @@ class ActionExecute extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			
-
 			Projection projection = emc.flag(flag, Projection.class);
-
 			if (null == projection) {
 				throw new ExceptionEntityNotExist(flag, Projection.class);
 			}
-
 			Process process = emc.flag(projection.getProcess(), Process.class);
-
 			if (null == process) {
 				throw new ExceptionEntityNotExist(projection.getProcess(), Process.class);
 			}
-
 			Application application = emc.flag(process.getApplication(), Application.class);
-
 			if (null == application) {
 				throw new ExceptionEntityNotExist(process.getApplication(), Application.class);
 			}
-
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
-
 			if (!ThisApplication.projectionExecuteQueue.contains(projection.getId())) {
 				ThisApplication.projectionExecuteQueue.send(projection.getId());
 			} else {

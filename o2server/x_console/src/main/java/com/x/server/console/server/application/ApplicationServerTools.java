@@ -19,7 +19,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -102,8 +101,8 @@ public class ApplicationServerTools extends JettySeverTools {
 		logger.print("start to deploy custom module, size:{}.", customNames.size());
 
 		for (String name : customNames) {
-			File war = new File(Config.dir_custom(), name);
-			File dir = new File(Config.dir_servers_applicationServer_work(), FilenameUtils.getBaseName(name));
+			File war = new File(Config.dir_custom(), name + ".war");
+			File dir = new File(Config.dir_servers_applicationServer_work(), name);
 			if (war.exists()) {
 				modified(war, dir);
 				String className = contextParamProject(dir);
@@ -201,9 +200,8 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static List<String> listCustom() throws Exception {
 		List<String> list = new ArrayList<>();
-		for (String str : Config.dir_custom(true)
-				.list(FileFilterUtils.or(new WildcardFileFilter("*.WAR"), new WildcardFileFilter("*.war")))) {
-			list.add(str);
+		for (String str : Config.dir_custom(true).list(new WildcardFileFilter("*.war"))) {
+			list.add(FilenameUtils.getBaseName(str));
 		}
 		list = ListTools.includesExcludesWildcard(list, Config.currentNode().getApplication().getIncludes(),
 				Config.currentNode().getApplication().getExcludes());

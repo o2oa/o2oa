@@ -44,7 +44,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected boolean duplicateTable(Business business, Projection projection) throws Exception {
 		Long count = business.entityManagerContainer().countEqualAndEqualAndEqualAndNotEqual(Projection.class,
 				Projection.process_FIELDNAME, projection.getProcess(), Projection.type_FIELDNAME, Projection.TYPE_TABLE,
-				Projection.dynamicClassName_FIELDNAME, projection.getDynamicClassName(), Projection.id_FIELDNAME,
+				Projection.dynamicName_FIELDNAME, projection.getDynamicName(), Projection.id_FIELDNAME,
 				projection.getId());
 		return count != 0;
 	}

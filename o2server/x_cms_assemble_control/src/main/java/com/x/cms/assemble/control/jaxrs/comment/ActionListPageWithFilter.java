@@ -51,7 +51,7 @@ public class ActionListPageWithFilter extends BaseAction {
 		
 		if( check ) {
 			
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNext", effectivePerson.getDistinguishedName(), 
+			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPageWithFilter", effectivePerson.getDistinguishedName(), 
 					pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = commentInfoCache.get( cacheKey );
 		}

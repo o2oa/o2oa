@@ -10,14 +10,10 @@ public class FieldInfo {
 	@FieldDescribe("扩展属性类别")
 	private String fieldType = null;
 	
-	@FieldDescribe("扩展属性最大长度")
-	private Integer maxLength = null;
-	
-	public FieldInfo( String fieldName, String fieldType, Integer maxLength ) {
+	public FieldInfo( String fieldName, String fieldType ) {
 		super();
 		this.fieldName = fieldName;
 		this.fieldType = fieldType;
-		this.maxLength = maxLength;
 	}
 
 	public String getFieldName() {
@@ -35,12 +31,4 @@ public class FieldInfo {
 	public void setFieldType(String fieldType) {
 		this.fieldType = fieldType;
 	}
-
-	public Integer getMaxLength() {
-		return maxLength;
-	}
-
-	public void setMaxLength(Integer maxLength) {
-		this.maxLength = maxLength;
-	}	
 }

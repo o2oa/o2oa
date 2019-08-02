@@ -186,6 +186,16 @@ public class Config {
 		return new File(base(), DIR_CUSTOM_JARS);
 	}
 
+	public static File dir_custom_jars(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_CUSTOM_JARS);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
 	public static File dir_dynamic() throws Exception {
 		return new File(base(), DIR_DYNAMIC);
 	}
@@ -370,8 +380,28 @@ public class Config {
 		return new File(base(), DIR_STORE);
 	}
 
+	public static File dir_store(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_STORE);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
 	public static File dir_store_jars() throws Exception {
 		return new File(base(), DIR_STORE_JARS);
+	}
+
+	public static File dir_store_jars(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_STORE_JARS);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static void flush() {

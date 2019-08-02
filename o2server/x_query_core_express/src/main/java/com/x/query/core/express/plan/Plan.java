@@ -1,6 +1,5 @@
 package com.x.query.core.express.plan;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -34,15 +33,13 @@ import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
 public abstract class Plan extends GsonPropertyObject {
 
-	private static Logger logger = LoggerFactory.getLogger(Plan.class);
+ //private static Logger logger = LoggerFactory.getLogger(Plan.class);
 
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
@@ -144,24 +141,24 @@ public abstract class Plan extends GsonPropertyObject {
 	 * [ { "column": "C7AC7F427FC0000141704670375F79F0", "displayName": "金额",
 	 * "value": 2110.0 } ]
 	 */
-	private CalculateRow calculate(Table table, Calculate calculate) throws Exception {
-		/** 非分类总计 */
-		CalculateRow calculateRow = new CalculateRow();
-		for (CalculateEntry o : calculate.calculateList) {
-			switch (StringUtils.trimToEmpty(o.calculateType)) {
-			case CALCULATE_SUM:
-				calculateRow.add(new CalculateCell(o, o.sum(table)));
-				break;
-			case CALCULATE_AVERAGE:
-				calculateRow.add(new CalculateCell(o, o.average(table)));
-				break;
-			default:
-				calculateRow.add(new CalculateCell(o, o.count(table)));
-				break;
-			}
-		}
-		return calculateRow;
-	}
+//	private CalculateRow calculate(Table table, Calculate calculate) throws Exception {
+//		/** 非分类总计 */
+//		CalculateRow calculateRow = new CalculateRow();
+//		for (CalculateEntry o : calculate.calculateList) {
+//			switch (StringUtils.trimToEmpty(o.calculateType)) {
+//			case CALCULATE_SUM:
+//				calculateRow.add(new CalculateCell(o, o.sum(table)));
+//				break;
+//			case CALCULATE_AVERAGE:
+//				calculateRow.add(new CalculateCell(o, o.average(table)));
+//				break;
+//			default:
+//				calculateRow.add(new CalculateCell(o, o.count(table)));
+//				break;
+//			}
+//		}
+//		return calculateRow;
+//	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private GroupTable group(Table table) throws Exception {
@@ -235,6 +232,7 @@ public abstract class Plan extends GsonPropertyObject {
 					bundles = bundles.subList(0, this.runtime.count);
 				}
 			}
+
 			final Table fillTable = this.concreteTable(bundles);
 			List<CompletableFuture<Void>> futures = new TreeList<>();
 			for (List<String> _part_bundles : ListTools.batch(bundles, SQL_STATEMENT_IN_BATCH)) {
@@ -280,7 +278,9 @@ public abstract class Plan extends GsonPropertyObject {
 						text.append("var o= {\n");
 						text.append("'value':extractObject.getValue(),\n");
 						text.append("'entry':extractObject.getEntry(),\n");
-						text.append("'girdData':gird,\n");
+//						text.append(
+//								"'entry':com.x.base.core.project.gson.XGsonBuilder.toJson(extractObject.getEntry()),\n");
+						// text.append("'girdData':gird,\n");
 						text.append("'columnName':extractObject.getColumn()\n");
 						text.append("}\n");
 						text.append("extractObject.setValue(executeScript.apply(o));\n");

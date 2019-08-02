@@ -57,16 +57,20 @@ public class PermissionQueryService {
 
 	/**
 	 * 查询指定用户可以管理的所有栏目ID列表( with List copy )
-	 * @param emc
 	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @param appType
+	 * @param documentType
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames,
+	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames, String appType,
 			String documentType, Integer maxCount) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listManageableAppIdsByPerson(
-					emc, personName, unitNames, groupNames, documentType, maxCount);
+					emc, personName, unitNames, groupNames, appType, documentType, maxCount);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -147,10 +151,16 @@ public class PermissionQueryService {
 	 * @return
 	 */
 	public boolean hasDiffrentViewPermissionInAppInfo( AppInfo old_appInfo, AppInfo appInfo ) {
+		if( old_appInfo == null || appInfo == null ) {
+			return true;
+		}
 		if( !old_appInfo.getAllPeopleView().equals( appInfo.getAllPeopleView() ) ) {
 			return true;
 		}
-		if( !old_appInfo.getAnonymousAble().equals(appInfo.getAnonymousAble() ) ) {
+		if(old_appInfo.getAnonymousAble() != null &&  !old_appInfo.getAnonymousAble().equals( appInfo.getAnonymousAble() ) ) {
+			return true;
+		}
+		if(appInfo.getAnonymousAble() != null &&  !appInfo.getAnonymousAble().equals( old_appInfo.getAnonymousAble() ) ) {
 			return true;
 		}
 		if( !ListTools.isSameList( old_appInfo.getViewablePersonList(), appInfo.getViewablePersonList() )) {

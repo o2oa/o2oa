@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.cxf.jaxb.MarshallerAwareXMLWriter;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -1006,11 +1005,14 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		return result;
 	}
 
-	public void setPage(ActionResult<?> result, Integer page, Integer pageSize) {
-		result.setPage((page == null || page < 1) ? 1L : pageSize);
-		result.setPageSize((pageSize == null || pageSize < 1 || pageSize > EntityManagerContainer.MAX_PAGESIZE)
-				? EntityManagerContainer.DEFAULT_PAGESIZE.longValue()
-				: pageSize);
+	public Integer adjustPage(Integer page) {
+		return (page == null || page < 1) ? 1 : page;
+	}
+
+	public Integer adjustSize(Integer pageSize) {
+		return (pageSize == null || pageSize < 1 || pageSize > EntityManagerContainer.MAX_PAGESIZE)
+				? EntityManagerContainer.DEFAULT_PAGESIZE.intValue()
+				: pageSize;
 	}
 
 }

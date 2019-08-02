@@ -33,6 +33,7 @@ public class ActionConfig extends ActionBase {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private byte[] getZip() throws Exception {
 		String center = Config.nodes().primaryCenterNode();
 		String address = "http://" + center + ":" + Config.centerServer().getPort() + "/x_program_center/jaxrs/config";

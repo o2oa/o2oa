@@ -59,11 +59,12 @@ public class DynamicAction extends StandardJaxrsAction {
 	public void listNextWithProject(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			@JaxrsParameterDescribe("项目ID") @PathParam( "projectId" ) String projectId  ) {
+			@JaxrsParameterDescribe("项目ID") @PathParam( "projectId" ) String projectId,
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
 		ActionResult<List<ActionListNextWithProject.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListNextWithProject().execute(request, effectivePerson, id, count, projectId );
+			result = new ActionListNextWithProject().execute(request, effectivePerson, id, count, projectId, jsonElement );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -79,11 +80,12 @@ public class DynamicAction extends StandardJaxrsAction {
 	public void listNextWithTask(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			@JaxrsParameterDescribe("工作任务ID") @PathParam( "taskId" ) String taskId  ) {
+			@JaxrsParameterDescribe("工作任务ID") @PathParam( "taskId" ) String taskId,
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
 		ActionResult<List<ActionListNextWithTask.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListNextWithTask().execute(request, effectivePerson, id, count, taskId );
+			result = new ActionListNextWithTask().execute(request, effectivePerson, id, count, taskId, jsonElement );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

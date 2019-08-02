@@ -18,6 +18,25 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 public class MessageFactory {
 
+	public static void work_to_workCompleted(WorkCompleted workCompleted) throws Exception {
+		String title = "工作转已完成工作:" + adjustTitle(workCompleted);
+		MessageConnector.send(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED, title, "", workCompleted);
+	}
+
+	public static void task_to_taskCompleted(TaskCompleted taskCompleted) throws Exception {
+		String title = "待办转已办:" + adjustTitle(taskCompleted);
+		title = StringTools.utf8SubString(title, JpaObject.length_255B);
+		MessageConnector.send(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED, title, taskCompleted.getPerson(),
+				taskCompleted);
+	}
+
+	public static void read_to_readCompleted(ReadCompleted readCompleted) throws Exception {
+		String title = "待阅转已阅:" + adjustTitle(readCompleted);
+		title = StringTools.utf8SubString(title, JpaObject.length_255B);
+		MessageConnector.send(MessageConnector.TYPE_READ_TO_READCOMPLETED, title, readCompleted.getPerson(),
+				readCompleted);
+	}
+
 	public static void work_create(Work work) throws Exception {
 		String title = "创建新工作:" + adjustTitle(work);
 		MessageConnector.send(MessageConnector.TYPE_WORK_CREATE, title, "", work);

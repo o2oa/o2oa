@@ -1,6 +1,7 @@
 package test.com.x.base.core.project;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -27,5 +28,12 @@ public class TestClient {
 	public void test1() throws Exception {
 		String aaa = "d:\\a\\b\\c.d";
 		System.out.println(FilenameUtils.getName(aaa));
+	}
+
+	@Test
+	public void test2() {
+
+		ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
+
 	}
 }

@@ -62,6 +62,7 @@ class ActionBundle extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
 		@FieldDescribe("过滤")
 		private List<FilterEntry> filterList = new TreeList<>();
 

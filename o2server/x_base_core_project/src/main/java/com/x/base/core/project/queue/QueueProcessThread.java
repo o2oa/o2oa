@@ -2,7 +2,7 @@ package com.x.base.core.project.queue;
 
 public class QueueProcessThread<T> implements Runnable {
 
-	private T o = null;;
+	private T o = null;
 
 	private AbstractQueue<T> queue = null;
 

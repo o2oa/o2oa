@@ -1,7 +1,6 @@
 package com.x.cms.core.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
-import com.x.cms.core.entity.tools.DateOperation;
+import com.x.cms.core.entity.tools.filter.QueryFilter;
 
 /**
  * 对CMS栏目、分类、文档进行权限过滤查询，在CMS应用中会直接引用
@@ -25,14 +24,9 @@ import com.x.cms.core.entity.tools.DateOperation;
 public class CmsPermissionService{
 	
 	/**
-	 * 普通用戶的查詢，帶權限查詢
-	 * @param title
-	 * @param appIdList
+	 * 根据条件获取用户有权限访问的所有文档ID列表
+	 * @param emc
 	 * @param categoryIdList
-	 * @param publisherList
-	 * @param createDateList
-	 * @param publishDateList
-	 * @param statusList
 	 * @param personName
 	 * @param viewableDocIds
 	 * @param viewableCategoryIds
@@ -40,84 +34,28 @@ public class CmsPermissionService{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> lisViewableDocIdsWithFilter( EntityManagerContainer emc, String title, List<String> appIdList, List<String> categoryIdList,
-			List<String> publisherList, List<String> createDateList, List<String> publishDateList,
-			List<String> statusList, String personName, List<String> unitNames, List<String> groupNames,
-			List<String> viewableDocIds, List<String> viewableCategoryIds, Integer maxResultCount ) throws Exception {
-		Date startDate = null;
-		Date endDate = null;
-		List<String> ids = new ArrayList<>();
-		List<Document> documents = null;
-		EntityManager em = emc.get( Document.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
-		Root<Document> root = cq.from( Document.class );
-		
-		Predicate p = cb.conjunction();
-		if( ListTools.isNotEmpty( viewableDocIds ) ){
-			p = cb.and( p, root.get( Document_.id ).in( viewableDocIds ));
-		}
-		if( ListTools.isNotEmpty( appIdList ) ){
-			p = cb.and( p, root.get( Document_.appId ).in( appIdList ));
-		}
-		if( ListTools.isNotEmpty( categoryIdList ) ){
-			p = cb.and( p, root.get( Document_.categoryId ).in( categoryIdList ));
-		}
-		if( ListTools.isNotEmpty( publisherList ) ){
-			p = cb.and( p, root.get( Document_.creatorPerson ).in( publisherList ));
-		}
-		if( StringUtils.isNotEmpty( title )){
-			p = cb.and( p, cb.like( root.get( Document_.title ), "%" + title + "%" ));
-		}
-		if( ListTools.isEmpty( statusList ) ){
-			p = cb.and( p, cb.equal(root.get( Document_.docStatus ), "published"));
-		}else{
-			p = cb.and( p, root.get( Document_.docStatus ).in( statusList ));
-		}
-		if( createDateList != null && !createDateList.isEmpty() ){
-			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
-				startDate = DateOperation.getDateFromString( createDateList.get(0).toString() );
-				endDate = new Date();
-			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
-				startDate = DateOperation.getDateFromString( createDateList.get(0).toString());
-				endDate = DateOperation.getDateFromString( createDateList.get(1).toString());
-			}
-			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
-		}
-		if( publishDateList != null && !publishDateList.isEmpty() ){
-			if ( publishDateList.size() == 1 ) {
-				// 从开始时间（yyyy-MM-DD），到现在
-				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString() );
-				endDate = new Date();
-			}else if( publishDateList.size() == 2 ){
-				// 从开始时间到结束时间（yyyy-MM-DD）
-				startDate = DateOperation.getDateFromString( publishDateList.get(0).toString());
-				endDate = DateOperation.getDateFromString( publishDateList.get(1).toString());
-			}
-			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
-		}
-		
-		cq.orderBy( cb.desc( root.get( Document_.publishTime ) ) );
+	public List<String> lisViewableDocIdsWithFilter( EntityManagerContainer emc, QueryFilter queryFilter, Integer maxResultCount ) throws Exception {
 		if( maxResultCount == null || maxResultCount == 0 ){
 			maxResultCount = 500;
 		}
-		documents = em.createQuery( cq.where( p ) ).setMaxResults( maxResultCount ).getResultList();
-		if( documents != null && !documents.isEmpty() ){
-			for( Document document : documents ){
-				if( !ids.contains( document.getId() )){
-					ids.add( document.getId() );
+		List<String> ids = new ArrayList<>();
+		List<Review> reviews = null;
+		EntityManager em = emc.get( Review.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Review> cq = cb.createQuery( Review.class );
+		Root<Review> root = cq.from( Review.class );
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb,  null, root, queryFilter );
+		cq.orderBy( cb.desc( root.get( Review_.publishTime ) ) );		
+		System.out.println(">>>>>>>>>>>SQL:" +  em.createQuery( cq.where( p ) ).setMaxResults( maxResultCount ).toString() );
+		reviews = em.createQuery( cq.where( p ) ).setMaxResults( maxResultCount ).getResultList();
+		if( reviews != null && !reviews.isEmpty() ){
+			for( Review review : reviews ){
+				if( !ids.contains( review.getDocId() )){
+					ids.add( review.getDocId() );
 				}
 			}
 		}
 		return ids;
-	}
-	
-	public List<String> lisViewableDocIdsWithFilter( EntityManagerContainer emc, List<String> categoryIdList,
-			String personName, List<String> unitNames, List<String> groupNames,
-			List<String> viewableDocIds, List<String> viewableCategoryIds, Integer maxResultCount ) throws Exception {
-		return lisViewableDocIdsWithFilter(
-				emc, null, null, categoryIdList, null, null, null, null, personName, unitNames, groupNames, 
-				viewableDocIds, viewableCategoryIds, maxResultCount );
 	}
 	
 	/**
@@ -143,7 +81,7 @@ public class CmsPermissionService{
 		if( !isAnonymous ) {
 			// 2、将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			viewableAppInfoIds = addResultToSourceList( this.listManageableAppIdsByPerson(emc, personName, unitNames, groupNames, 
-					documentType, maxCount), viewableAppInfoIds );	
+					null, documentType, maxCount), viewableAppInfoIds );	
 			
 			// 3、将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
 			addResultToSourceList( 
@@ -181,7 +119,7 @@ public class CmsPermissionService{
 		if( !isAnonymous ) {
 			// 2、用户可管理的栏目， 将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			publishableAppInfoIds = addResultToSourceList( this.listManageableAppIdsByPerson( emc, personName, unitNames, groupNames, 
-					documentType, maxCount), publishableAppInfoIds );	
+					null, documentType, maxCount), publishableAppInfoIds );	
 			
 			// 3、用户有发布权限设置的栏目， 将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
 			addResultToSourceList( 
@@ -220,15 +158,19 @@ public class CmsPermissionService{
 	 * 查询指定用户可以管理的所有栏目ID列表( with List copy )
 	 * @param emc
 	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @param appType
+	 * @param documentType
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
 	public List<String> listManageableAppIdsByPerson( EntityManagerContainer emc, String personName, List<String> unitNames, List<String> groupNames,
-			String documentType, Integer maxCount) throws Exception {
+			String appType, String documentType, Integer maxCount) throws Exception {
 		if( StringUtils.isEmpty( personName )){
 			throw new Exception( "personName is empty!" );
-		}
-		
+		}		
 		List<String> appInfoIds = null;
 		List<String> appInfoIds_out = new ArrayList<>();
 		EntityManager em = emc.get(AppInfo.class);
@@ -236,27 +178,33 @@ public class CmsPermissionService{
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		
-		Predicate p = cb.isNotNull(root.get( AppInfo_.id));
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
-			p = cb.equal( root.get( AppInfo_.documentType), documentType);
+		Predicate p = null;
+		if( StringUtils.isNotEmpty( appType ) && !StringUtils.equals( appType, "未分类")) {
+			p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( AppInfo_.appType), appType ));
 		}
-		
+		if( StringUtils.isNotEmpty( appType ) && StringUtils.equals( appType, "未分类")) {
+			CriteriaBuilderTools.predicate_and(cb, p, 
+					CriteriaBuilderTools.predicate_or(
+							cb, cb.isNull(root.get(AppInfo_.appType)), 
+							cb.equal(root.get(AppInfo_.appType), ""))
+			);
+		}	
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+			p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( AppInfo_.documentType), documentType) );
+		}
 		Predicate p_permission = null;	
 		if( StringUtils.isNotEmpty( personName )) {
-			//可以管理的栏目，肯定可以发布信息
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( AppInfo_.manageablePersonList )) );
-			
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( AppInfo_.manageablePersonList )) );			
 		}
 		if( ListTools.isNotEmpty( unitNames )) {
-			p_permission = cb.or( p_permission,  root.get( AppInfo_.manageableUnitList).in(unitNames));
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.or( p_permission,  root.get( AppInfo_.manageableUnitList).in(unitNames)) );
 		}
 		if( ListTools.isNotEmpty( groupNames )) {
-			p_permission = cb.or( p_permission,  root.get( AppInfo_.manageableGroupList).in(groupNames));
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.or( p_permission,  root.get( AppInfo_.manageableGroupList).in(groupNames)) );
 		}
-		p = cb.and( p, p_permission );
+		p =  CriteriaBuilderTools.predicate_and( cb, p, p_permission);
 		
 		cq.select(root.get( AppInfo_.id ));
-		
 		appInfoIds =  em.createQuery(cq.where( p )).setMaxResults(maxCount).getResultList();
 		if( appInfoIds == null ) {
 			appInfoIds = new ArrayList<>();

@@ -158,6 +158,7 @@ public class Excel2007Reader extends DefaultHandler {
 		lastContents = "";
 	}
 
+	@SuppressWarnings("deprecation")
 	public void endElement(String uri, String localName, String name)
 			throws SAXException {
 		

@@ -31,7 +31,9 @@ public class DocumentPersistService {
 		if( document == null ){
 			throw new Exception("document is null!");
 		}
-		
+		if (document.getPictureList() != null && !document.getPictureList().isEmpty()) {
+			document.setHasIndexPic(true);
+		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			document.setModifyTime( new Date());	
 			document.setSequenceAppAlias( document.getAppAlias() + document.getId() );
@@ -295,41 +297,6 @@ public class DocumentPersistService {
 				CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
 				CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "刷新文档权限：ID=" +  docId );
 	}
-	
-	
-	
-//	/**
-//	 * 根据组织好的document对象更新数据库中文档的权限信息
-//	 * @param document
-//	 * @throws Exception
-//	 */
-//	public void updateAllPermission(Document document) throws Exception {
-//		if( document == null ){
-//			throw new Exception("document is null!");
-//		}
-//		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-//			Document document_entity = emc.find( document.getId(), Document.class );
-//			if( document_entity != null ) {
-//				emc.beginTransaction( Document.class );
-//				document_entity.setAuthorPersonList( document.getAuthorPersonList() );
-//				document_entity.setAuthorUnitList( document.getAuthorUnitList() );
-//				document_entity.setAuthorGroupList( document.getAuthorGroupList() );
-//				document_entity.setReadPersonList( document.getReadPersonList() );
-//				document_entity.setReadUnitList( document.getReadUnitList() );
-//				document_entity.setReadGroupList( document.getReadGroupList() );
-//				document_entity.setManagerList( document.getManagerList() );
-//				if( StringUtils.isEmpty( document_entity.getDocumentType() )) {
-//					document_entity.setDocumentType( "信息" );
-//				}
-//				emc.check( document_entity, CheckPersistType.all );
-//				emc.commit();
-//			}
-//		} catch ( Exception e ) {
-//			throw e;
-//		}
-//	}
-
-	
 
 	/**
 	 * 根据组织好的权限信息列表更新指定文档的权限信息

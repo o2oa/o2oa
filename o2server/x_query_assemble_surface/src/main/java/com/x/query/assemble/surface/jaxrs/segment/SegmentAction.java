@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,14 +32,14 @@ public class SegmentAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SegmentAction.class);
 
-	@JaxrsMethodDescribe(value = "搜索.", action = SegmentAction.class)
+	@JaxrsMethodDescribe(value = "搜索.", action = ActionSearch.class)
 	@GET
 	@Path("key/{key}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void search(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("统计标识") @PathParam("key") String key) {
-		ActionResult<List<ActionSearch.Wo>> result = new ActionResult<>();
+			@JaxrsParameterDescribe("搜索关键字") @PathParam("key") String key) {
+		ActionResult<ActionSearch.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionSearch().execute(effectivePerson, key);
@@ -49,4 +49,23 @@ public class SegmentAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "显示指定的搜索条目", action = ActionListEntry.class)
+	@POST
+	@Path("list/entry")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listEntry(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionListEntry.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListEntry().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

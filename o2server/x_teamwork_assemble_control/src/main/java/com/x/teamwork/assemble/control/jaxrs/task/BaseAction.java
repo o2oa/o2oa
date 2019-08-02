@@ -11,6 +11,7 @@ import com.x.teamwork.assemble.control.service.TaskGroupQueryService;
 import com.x.teamwork.assemble.control.service.TaskListPersistService;
 import com.x.teamwork.assemble.control.service.TaskPersistService;
 import com.x.teamwork.assemble.control.service.TaskQueryService;
+import com.x.teamwork.assemble.control.service.TaskTagPersistService;
 import com.x.teamwork.assemble.control.service.TaskTagQueryService;
 import com.x.teamwork.assemble.control.service.TaskViewQueryService;
 import com.x.teamwork.core.entity.Task;
@@ -24,6 +25,8 @@ public class BaseAction extends StandardJaxrsAction {
 	protected 	TaskQueryService taskQueryService = new TaskQueryService();
 	
 	protected 	TaskTagQueryService taskTagQueryService = new TaskTagQueryService();
+	
+	protected 	TaskTagPersistService taskTagPersistService = new TaskTagPersistService();
 	
 	protected 	ProjectQueryService projectQueryService = new ProjectQueryService();
 	

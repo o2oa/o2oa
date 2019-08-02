@@ -53,6 +53,7 @@ public class PermissionOperateService {
 			for( PermissionInfo p : readerList ) {
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
+					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
 					permissionList.add( new_permissionInfo );
 				}
 			}
@@ -63,16 +64,17 @@ public class PermissionOperateService {
 			for( PermissionInfo p : authorList ) {
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
+					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
 					permissionList.add( new_permissionInfo );
 				}				
 				//添加作者信息，作者可以对文档进行编辑
 				new_permissionInfo = createPermissionInfo( PermissionName.AUTHOR, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
+					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
 					permissionList.add( new_permissionInfo );
 				}
 			}
-		}
-		
+		}		
 		return permissionList;
 	}
 	
@@ -80,13 +82,13 @@ public class PermissionOperateService {
 	private PermissionInfo createPermissionInfo( String permission, String permissionObjectType, String permissionObjectCode, String permissionObjectName ) throws Exception {
 		//如果存在身份信息，将身份信息替换为个人信息
 		String personFlag = null;
-		if( StringUtil.isNotEmpty( permissionObjectCode ) && permissionObjectCode.indexOf("@I") > 0 ) {
+		if( StringUtil.isNotEmpty( permissionObjectCode ) && permissionObjectCode.endsWith("@I") ) {
 			//将身份转换为个人 @P
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				personFlag = new Business(emc).organization().person().getWithIdentity( permissionObjectCode );
 			}
 			if( StringUtil.isNotEmpty( personFlag )  ) {
-				if( StringUtil.isNotEmpty( permissionObjectName ) && permissionObjectName.indexOf("@I") > 0 ) {
+				if( StringUtil.isNotEmpty( permissionObjectName ) && permissionObjectName.endsWith("@I")) {
 					permissionObjectName = personFlag;
 				}
 				return new PermissionInfo(permission, permissionObjectType, personFlag, permissionObjectName);
@@ -109,12 +111,11 @@ public class PermissionOperateService {
 		if( StringUtils.isEmpty(docId) ){
 			throw new Exception( "docId is empty！" );
 		}
-		
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction( Document.class );
 			Document document = emc.find( docId, Document.class );		
 			
-			if( document != null ) {				
+			if( document != null ) {
 				//清空文档权限信息
 				document.setManagerList( null );
 				document.setReadPersonList( null );
@@ -125,7 +126,7 @@ public class PermissionOperateService {
 				document.setAuthorGroupList( null );
 				
 				if( ListTools.isNotEmpty( permissionList ) ){
-					for( PermissionInfo permission : permissionList ){
+					for( PermissionInfo permission : permissionList ){					
 						if( "管理".equals( permission.getPermission() )) {
 							document.addManagerList(permission.getPermissionObjectCode());
 						}else if( "读者".equals( permission.getPermission() ) || "阅读".equals( permission.getPermission() )) {

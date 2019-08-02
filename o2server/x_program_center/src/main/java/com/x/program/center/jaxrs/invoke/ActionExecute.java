@@ -10,6 +10,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -29,11 +31,11 @@ import com.x.program.center.core.entity.Invoke;
 
 class ActionExecute extends BaseAction {
 
-	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag,
-			JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
+			String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Invoke invoke = emc.flag(flag, Invoke.class );
+			Invoke invoke = emc.flag(flag, Invoke.class);
 			if (null == invoke) {
 				throw new ExceptionInvokeNotExist(flag);
 			}
@@ -59,9 +61,11 @@ class ActionExecute extends BaseAction {
 			engineScope.put(Resources.RESOURCES_BINDING_NAME, resources);
 			engineScope.put("requestText", gson.toJson(jsonElement));
 			engineScope.put("request", request);
+			engineScope.put("response", response);
 			engineScope.put("effectivePerson", effectivePerson);
 			Wo wo = new Wo();
 			try {
+				engine.eval(Config.mooToolsScriptText());
 				Object o = engine.eval(invoke.getText(), newContext);
 				wo.setValue(o);
 			} catch (Exception e) {

@@ -274,6 +274,9 @@ public class BBSUserInfoService {
 						userInfo.setPermissionContent( permissionContent );
 						userInfo.setPopularity(popularity);
 						userInfo.setCredit( credit );
+						if( userInfo.getLastVisitTime() == null ) {
+							userInfo.setLastVisitTime( userInfo.getUpdateTime() );
+						}
 						emc.check( userInfo, CheckPersistType.all );
 					}else{
 						emc.remove( userInfo, CheckRemoveType.all );

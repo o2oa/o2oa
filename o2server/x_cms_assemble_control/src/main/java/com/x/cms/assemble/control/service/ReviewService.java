@@ -219,11 +219,11 @@ public class ReviewService {
 		if( document == null ) {
 			return false;
 		}
-		if( ListTools.isNotEmpty( document.getReadPersonList() ) ) {
-			if( !document.getReadPersonList().contains( "所有人" )) {
-				return true;
-			}
-		}
+//		if( ListTools.isNotEmpty( document.getReadPersonList() ) ) {
+//			if( !document.getReadPersonList().contains( "所有人" )) {
+//				return true;
+//			}
+//		}
 		if( ListTools.isNotEmpty( document.getReadUnitList() ) ) {
 			return true;
 		}
@@ -440,6 +440,9 @@ public class ReviewService {
 				if( !userManagerService.isTopUnit( objName ) || userManagerService.countTopUnit() > 1 ) {
 					persons  = userManagerService.listPersonWithUnit( objName );
 					permissionObjs = addListToList( permissionObjs, persons );
+				}else {
+					//如果是顶层组织，并且顶层组织只有一个
+					permissionObjs = addStringToList( permissionObjs, "*" );
 				}
 			}else if( objName.endsWith( "@G" ) ) {//将群组拆解为人员
 				persons  = userManagerService.listPersonWithGroup( objName );

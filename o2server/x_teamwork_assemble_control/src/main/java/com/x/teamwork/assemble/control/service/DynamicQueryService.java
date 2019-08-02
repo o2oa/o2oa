@@ -127,34 +127,55 @@ public class DynamicQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Dynamic> listWithFilter(EffectivePerson effectivePerson, Integer count, String lastId, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+	public List<Dynamic> listWithFilter(EffectivePerson effectivePerson, Integer pageSize, String lastId, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		List<Dynamic> dynamicList = null;
-		if( count == null || count == 0) {
-			count = 50;
-		}
+		List<Dynamic> resultList = new ArrayList<>();
+		Dynamic lastDynamic = null;
+		
+		Integer maxCount = 2000;
+		if( pageSize == 0 ) { pageSize = 20; }
+		
 		if( StringUtils.isEmpty( orderField )) {
 			orderField = "createTime";
 		}
 		if( StringUtils.isEmpty( orderType )) {
 			orderType = "desc";
 		}		
-		if( StringUtils.isEmpty( orderField ) ) { 
-			orderField = "createTime";
-		}
-		if( StringUtils.isEmpty( orderType ) ) { 
-			orderType = "desc";
-		}
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Dynamic dynamic = dynamicService.get(emc, lastId );	
-			if( dynamic != null ) {
-				dynamicList = dynamicService.listWithFilterNext(emc, count, dynamic.getId(), orderField, orderType, queryFilter );
-			}else {
-				dynamicList = dynamicService.listWithFilterNext(emc, count, null, orderField, orderType, queryFilter );
+			if( StringUtils.isNotEmpty(lastId) && !"(0)".equals( lastId ) && !"null".equals( lastId )) {
+				lastDynamic = emc.find( lastId, Dynamic.class );
 			}
+			dynamicList = dynamicService.listWithFilterNext(emc, maxCount, null, orderField, orderType, queryFilter );
 		} catch (Exception e) {
 			throw e;
 		}
-		return dynamicList;
+		if( ListTools.isNotEmpty( dynamicList )) {
+			int count = 0;
+			if( lastDynamic != null ) {
+				boolean add = false;
+				//获取自lastDynamic之后的一页内容
+				for( Dynamic dynamic : dynamicList ) {
+					if( add ) {
+						count ++;
+						if( count <= pageSize ) {
+							resultList.add( dynamic );
+						}
+					}
+					if( dynamic.getId().equals( lastDynamic.getId() )) {
+						add = true;
+					}
+				}
+			}else {
+				//只获取第一页内容
+				for( Dynamic dynamic : dynamicList ) {
+					count ++;
+					if( count <= pageSize ) {
+						resultList.add(dynamic);
+					}
+				}
+			}
+		}		
+		return resultList;
 	}
 }

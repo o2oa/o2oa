@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.organization.Trust;
+import com.x.base.core.project.organization.Empower;
 
 public class TaskIdentities extends ArrayList<TaskIdentity> {
 
@@ -18,13 +18,13 @@ public class TaskIdentities extends ArrayList<TaskIdentity> {
 		}
 	}
 
-	public void update(List<Trust> list) {
-		for (Trust trust : list) {
-			if (StringUtils.isNotEmpty(trust.getFromIdentity()) && StringUtils.isNotEmpty(trust.getToIdentity())) {
+	public void update(List<Empower> list) {
+		for (Empower empower : list) {
+			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
 				for (TaskIdentity taskIdentity : this) {
-					if (StringUtils.equals(taskIdentity.getIdentity(), trust.getFromIdentity())) {
-						taskIdentity.setIdentity(trust.getToIdentity());
-						taskIdentity.setFromIdentity(trust.getFromIdentity());
+					if (StringUtils.equals(taskIdentity.getIdentity(), empower.getFromIdentity())) {
+						taskIdentity.setIdentity(empower.getToIdentity());
+						taskIdentity.setFromIdentity(empower.getFromIdentity());
 						break;
 					}
 				}

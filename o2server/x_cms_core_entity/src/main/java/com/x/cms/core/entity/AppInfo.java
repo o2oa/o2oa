@@ -98,6 +98,12 @@ public class AppInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String appAlias;
 
+	public static final String appType_FIELDNAME = "appType";
+	@FieldDescribe("栏目类别")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String appType;
+	
 	public static final String documentType_FIELDNAME = "documentType";
 	@FieldDescribe("默认文档类型：信息 | 数据")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + documentType_FIELDNAME)
@@ -290,6 +296,15 @@ public class AppInfo extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageableGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageableGroupList;
+
+	
+	public String getAppType() {
+		return appType;
+	}
+
+	public void setAppType(String appType) {
+		this.appType = appType;
+	}
 
 	/**
 	 * 获取栏目名称

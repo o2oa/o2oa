@@ -1,10 +1,12 @@
 package com.x.teamwork.assemble.control.jaxrs.project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -17,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectGroup;
@@ -31,6 +34,7 @@ public class ActionSave extends BaseAction {
 		Project project = null;
 		Project old_project = null;
 		Wi wi = null;
+		Wo wo = new Wo();
 		Boolean check = true;
 
 		try {
@@ -73,12 +77,10 @@ public class ActionSave extends BaseAction {
 				ApplicationCache.notify( ProjectGroup.class );
 
 				ApplicationCache.notify( Task.class, ApplicationCache.concreteCacheKey( "ActionStatisticMyTasks", project.getId(), effectivePerson.getDistinguishedName() )  );
-				ApplicationCache.notify( Task.class, ApplicationCache.concreteCacheKey( "ActionStatisticMyTaskViews", project.getId(),  effectivePerson.getDistinguishedName() )  );
+				ApplicationCache.notify( Task.class, ApplicationCache.concreteCacheKey( "ActionStatisticMyTaskViews", project.getId(),  effectivePerson.getDistinguishedName() )  );				
 				
-				
-				Wo wo = new Wo();
 				wo.setId( project.getId() );
-				result.setData( wo );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ProjectPersistException(e, "项目信息保存时发生异常。");
@@ -99,11 +101,18 @@ public class ActionSave extends BaseAction {
 		
 		if (check) {
 			try {					
-				dynamicPersistService.projectSaveDynamic(old_project, project, effectivePerson,  jsonElement.toString() );
+				List<Dynamic> dynamics = dynamicPersistService.projectSaveDynamic(old_project, project, effectivePerson,  jsonElement.toString() );
+				if( dynamics == null ) {
+					dynamics = new ArrayList<>();
+				}
+				if( wo != null ) {
+					wo.setDynamics(WoDynamic.copier.copy(dynamics));
+				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		result.setData( wo );
 		return result;
 	}	
 
@@ -221,7 +230,36 @@ public class ActionSave extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WoId {
+public static class Wo extends WoId {
+		
+		@FieldDescribe("操作引起的动态内容")
+		List<WoDynamic> dynamics = new ArrayList<>();
+
+		public List<WoDynamic> getDynamics() {
+			return dynamics;
+		}
+
+		public void setDynamics(List<WoDynamic> dynamics) {
+			this.dynamics = dynamics;
+		}
+		
+	}
+	
+	public static class WoDynamic extends Dynamic{
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static WrapCopier<Dynamic, WoDynamic> copier = WrapCopierFactory.wo( Dynamic.class, WoDynamic.class, null, JpaObject.FieldsInvisible);
+		
+		private Long rank = 0L;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}		
 	}
 	
 }

@@ -13,15 +13,14 @@ import com.x.processplatform.core.entity.content.Review;
 
 class ActionListMyPaging extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer pageSize) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = emc.fetchEqualDescPaging(Review.class, Wo.copier, Review.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), page, pageSize, JpaObject.sequence_FIELDNAME);
+					effectivePerson.getDistinguishedName(), page, size, JpaObject.sequence_FIELDNAME);
 			result.setData(wos);
 			result.setCount(
 					emc.countEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName()));
-			this.setPage(result, page, pageSize);
 			return result;
 		}
 	}

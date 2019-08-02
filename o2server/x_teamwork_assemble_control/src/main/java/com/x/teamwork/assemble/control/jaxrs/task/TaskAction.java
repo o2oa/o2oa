@@ -244,6 +244,26 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
+	@JaxrsMethodDescribe(value = "更新一个工作任务指定的单个属性信息内容.", action = ActionUpdateSingleProperty.class)
+	@Path("{id}/property")
+	@PUT
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateSingleProperty(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("工作任务信息ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("需要保存的工作任务信息") JsonElement jsonElement ) {
+		ActionResult<ActionUpdateSingleProperty.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateSingleProperty().execute( request, effectivePerson, id, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
 	@JaxrsMethodDescribe(value = "根据标识删除工作任务信息.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -256,25 +276,6 @@ public class TaskAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDelete().execute(request, effectivePerson, id );
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	}
-	
-	@JaxrsMethodDescribe(value = "为工作任务信息更新标签.", action = ActionTagUpdate.class)
-	@PUT
-	@Path("tags/{id}/update")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateTags(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作任务信息ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("需要保存的标签列表") JsonElement jsonElement ) {
-		ActionResult<ActionTagUpdate.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionTagUpdate().execute(request, effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

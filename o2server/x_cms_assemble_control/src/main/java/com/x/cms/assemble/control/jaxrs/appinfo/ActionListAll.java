@@ -33,7 +33,7 @@ public class ActionListAll extends BaseAction {
 			result.setData( wos );
 		} else {
 			try {
-				appInfoList = appInfoServiceAdv.listAll("全部");
+				appInfoList = appInfoServiceAdv.listAll( null, "全部");
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAppInfoProcess( e, "查询所有应用栏目信息对象时发生异常" );

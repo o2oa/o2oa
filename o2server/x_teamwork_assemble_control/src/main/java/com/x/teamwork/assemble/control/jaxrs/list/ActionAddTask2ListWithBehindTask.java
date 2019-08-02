@@ -71,9 +71,7 @@ public class ActionAddTask2ListWithBehindTask extends BaseAction {
 				taskListPersistService.addTaskToTaskListWithBehindTask( wi.getTaskId(), taskListId, wi.getBehindTaskId(), effectivePerson );
 				// 更新缓存
 				ApplicationCache.notify( TaskList.class );
-				ApplicationCache.notify( Task.class );
-				
-				
+				ApplicationCache.notify( Task.class );				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new TaskListQueryException(e, "向指定的工作任务列表中添加任务信息时发生异常。taskListId:" + taskListId);

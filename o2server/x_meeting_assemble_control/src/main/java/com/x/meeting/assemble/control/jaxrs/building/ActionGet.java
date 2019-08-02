@@ -12,7 +12,6 @@ import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutBuilding;
 import com.x.meeting.core.entity.Building;
-import com.x.meeting.core.entity.Meeting;
 
 class ActionGet extends BaseAction {
 

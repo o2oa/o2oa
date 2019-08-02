@@ -14,6 +14,7 @@ import com.x.teamwork.assemble.control.jaxrs.task.BaseAction.TaskListChange;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
+import com.x.teamwork.core.entity.TaskExtField;
 import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
 import com.x.teamwork.core.entity.TaskListRele;
@@ -55,6 +56,23 @@ public class TaskQueryService {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return emc.find(id, TaskDetail.class );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据任务ID查询扩展属性信息
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public TaskExtField getExtField(String id) throws Exception {
+		if ( StringUtils.isEmpty( id )) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return emc.find(id, TaskExtField.class );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -190,7 +208,7 @@ public class TaskQueryService {
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			taskList = emc.find( taskListId, TaskList.class );
-			if( taskList != null ) {
+			if( taskList != null ) {				
 				//查询该TaskList下所有的任务列表
 				taskIds = taskListService.listTaskIdsWithTaskListId( emc, taskListId );
 				//查询这些任务在指定工作任务列表里的关联，按关联的排序号查询任务信息列表
@@ -552,4 +570,6 @@ public class TaskQueryService {
 			throw e;
 		}
 	}
+
+	
 }

@@ -110,10 +110,10 @@ public class DocumentCommentInfoQueryService {
 		startNumber = pageSize * ( pageNum -1 );
 		
 		if( StringUtils.isEmpty( orderField ) ) { 
-			orderField = "createTime";
+			orderField = "orderNumber";
 		}
 		if( StringUtils.isEmpty( orderType ) ) { 
-			orderType = "desc";
+			orderType = "asc";
 		}
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -151,10 +151,10 @@ public class DocumentCommentInfoQueryService {
 		if( pageSize == 0 ) { pageSize = 20; }
 		
 		if( StringUtils.isEmpty( orderField ) ) { 
-			orderField = "createTime";
+			orderField = "orderNumber";
 		}
 		if( StringUtils.isEmpty( orderType ) ) { 
-			orderType = "desc";
+			orderType = "asc";
 		}
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

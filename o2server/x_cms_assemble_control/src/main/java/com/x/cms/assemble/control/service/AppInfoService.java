@@ -24,9 +24,9 @@ public class AppInfoService {
 		return business.getAppInfoFactory().listAllIds(documentType);
 	}
 	
-	public List<AppInfo> listAll(EntityManagerContainer emc, String documentType) throws Exception {
+	public List<AppInfo> listAll(EntityManagerContainer emc, String appType, String documentType) throws Exception {
 		Business business = new Business( emc );
-		return business.getAppInfoFactory().listAll(documentType);
+		return business.getAppInfoFactory().listAll( appType, documentType);
 	}
 	
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
@@ -180,6 +180,21 @@ public class AppInfoService {
 		}
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAppInfoByAppAlias( appAliases );
+	}
+
+	public List<String> listAllAppType(EntityManagerContainer emc ) throws Exception {
+		Business business = new Business( emc );
+		return business.getAppInfoFactory().listAllAppType();
+	}
+
+	public Long countAppInfoWithAppType(EntityManagerContainer emc, String type) throws Exception {
+		Business business = new Business( emc );
+		return business.getAppInfoFactory().countAppInfoWithAppType( type );
+	}
+	
+	public Long countAppInfoWithOutAppType(EntityManagerContainer emc ) throws Exception {
+		Business business = new Business( emc );
+		return business.getAppInfoFactory().countAppInfoWithOutAppType( );
 	}
 	
 }

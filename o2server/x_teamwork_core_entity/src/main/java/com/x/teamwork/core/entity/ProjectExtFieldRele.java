@@ -1,10 +1,13 @@
 package com.x.teamwork.core.entity;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -63,7 +66,7 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	private String projectId;
 
 	public static final String extFieldName_FIELDNAME = "extFieldName";
-	@FieldDescribe("备用列名称（必填）")
+	@FieldDescribe("备用列名（必填）")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + extFieldName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + extFieldName_FIELDNAME)
 	private String extFieldName;
@@ -73,6 +76,52 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + displayName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + displayName_FIELDNAME)
 	private String displayName;
+	
+	public static final String displayType_FIELDNAME = "displayType";
+	@FieldDescribe("显示方式：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|（必填）")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + displayType_FIELDNAME)
+	private String displayType="TEXT";
+	
+	public static final String optionsData_FIELDNAME = "optionsData";
+	@FieldDescribe("选择荐的备选数据，数据Json， displayType=SELECT|MUTISELECT时必须填写，否则无选择项")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + optionsData_FIELDNAME)
+	private String optionsData;
+	
+	public static final String order_FIELDNAME = "order";
+	@FieldDescribe("排序号（非必填）")
+	@Column( name = ColumnNamePrefix  + order_FIELDNAME)
+	private Integer order= 0 ;
+	
+	public static final String nullable_FIELDNAME = "nullable";
+	@FieldDescribe("是否允许为空（非必填）")
+	@Column( name = ColumnNamePrefix  + nullable_FIELDNAME)
+	private Boolean nullable = true ;
+	
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public String getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(String displayType) {
+		this.displayType = displayType;
+	}
+
+	public String getOptionsData() {
+		return optionsData;
+	}
+
+	public void setOptionsData(String optionsData) {
+		this.optionsData = optionsData;
+	}
 
 	public String getProjectId() {
 		return projectId;
@@ -96,5 +145,13 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
-	}	
+	}
+
+	public Boolean getNullable() {
+		return nullable;
+	}
+
+	public void setNullable(Boolean nullable) {
+		this.nullable = nullable;
+	}
 }

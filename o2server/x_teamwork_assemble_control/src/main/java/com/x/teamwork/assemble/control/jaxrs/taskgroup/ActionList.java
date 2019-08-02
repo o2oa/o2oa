@@ -15,6 +15,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.TaskGroup;
 
 import net.sf.ehcache.Element;
@@ -24,13 +25,14 @@ public class ActionList extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionList.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String project ) throws Exception {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String projectId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
 		List<TaskGroup> taskGroups = null;
+		Project project = null;
 		Boolean check = true;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "list.my", effectivePerson.getDistinguishedName() );
+		String cacheKey = ApplicationCache.concreteCacheKey( "ActionList.taskgroup", projectId, effectivePerson.getDistinguishedName() );
 		Element element = taskGroupCache.get( cacheKey );
 		
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -39,7 +41,23 @@ public class ActionList extends BaseAction {
 		} else {
 			if (check) {
 				try {
-					taskGroups = taskGroupQueryService.listGroupByPersonAndProject(effectivePerson, project);
+					project = projectQueryService.get( projectId );
+					if ( project == null) {
+						check = false;
+						Exception exception = new ProjectNotExistsException( projectId );
+						result.error( exception );
+					}
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new TaskGroupQueryException(e, "根据指定ID查询应用项目信息对象时发生异常。ID:" + project);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+			
+			if (check) {
+				try {
+					taskGroups = taskGroupQueryService.listGroupByPersonAndProject(effectivePerson, projectId );
 					if( ListTools.isNotEmpty( taskGroups )) {
 						wos = Wo.copier.copy( taskGroups );
 						

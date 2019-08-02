@@ -10,24 +10,18 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -119,7 +113,7 @@ public class EndProcessor extends AbstractEndProcessor {
 		aeiObjects.getData().setWork(workCompleted);
 		aeiObjects.getData().setAttachmentList(aeiObjects.getAttachments());
 		aeiObjects.getDeleteWorks().addAll(aeiObjects.getWorks());
-		this.projection(aeiObjects);
+	//	this.projection(aeiObjects);
 		return results;
 	}
 
@@ -168,70 +162,70 @@ public class EndProcessor extends AbstractEndProcessor {
 		return workCompleted;
 	}
 
-	private void projection(AeiObjects aeiObjects) {
-		try {
-			List<Projection> projections = aeiObjects.getProjections();
-			if (ListTools.isNotEmpty(projections)) {
-				for (Projection projection : projections) {
-					switch (Objects.toString(projection.getType(), "")) {
-					case Projection.TYPE_WORKCOMPLETED:
-						for (WorkCompleted workCompleted : aeiObjects.getCreateWorkCompleteds()) {
-							try {
-								ProjectionFactory.projectionWorkCompleted(projection, aeiObjects.getData(),
-										workCompleted);
-							} catch (Exception e) {
-								logger.error(e);
-							}
-						}
-						break;
-					case Projection.TYPE_TASKCOMPLETED:
-						for (TaskCompleted taskCompleted : aeiObjects.getUpdateTaskCompleteds()) {
-							try {
-								ProjectionFactory.projectionTaskCompleted(projection, aeiObjects.getData(),
-										taskCompleted);
-							} catch (Exception e) {
-								logger.error(e);
-							}
-						}
-						break;
-					case Projection.TYPE_READ:
-						for (Read read : aeiObjects.getUpdateReads()) {
-							try {
-								ProjectionFactory.projectionRead(projection, aeiObjects.getData(), read);
-							} catch (Exception e) {
-								logger.error(e);
-							}
-						}
-						break;
-					case Projection.TYPE_REVIEW:
-						for (Review review : aeiObjects.getUpdateReviews()) {
-							try {
-								ProjectionFactory.projectionReview(projection, aeiObjects.getData(), review);
-							} catch (Exception e) {
-								logger.error(e);
-							}
-						}
-						break;
-					case Projection.TYPE_TABLE:
-						if (StringUtils.isNotEmpty(projection.getDynamicClassName())) {
-							try {
-								JpaObject jpaObject = (JpaObject) Class.forName(projection.getDynamicClassName())
-										.newInstance();
-								ProjectionFactory.projectionTable(projection, aeiObjects.getData(), jpaObject);
-								aeiObjects.getCreateDynamicEntities().add(jpaObject);
-							} catch (Exception e) {
-								logger.error(e);
-							}
-						}
-						break;
-					default:
-						break;
-					}
-
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-	}
+//	private void projection(AeiObjects aeiObjects) {
+//		try {
+//			List<Projection> projections = aeiObjects.getProjections();
+//			if (ListTools.isNotEmpty(projections)) {
+//				for (Projection projection : projections) {
+//					switch (Objects.toString(projection.getType(), "")) {
+//					case Projection.TYPE_WORKCOMPLETED:
+//						for (WorkCompleted workCompleted : aeiObjects.getCreateWorkCompleteds()) {
+//							try {
+//								ProjectionFactory.projectionWorkCompleted(projection, aeiObjects.getData(),
+//										workCompleted);
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//						}
+//						break;
+//					case Projection.TYPE_TASKCOMPLETED:
+//						for (TaskCompleted taskCompleted : aeiObjects.getUpdateTaskCompleteds()) {
+//							try {
+//								ProjectionFactory.projectionTaskCompleted(projection, aeiObjects.getData(),
+//										taskCompleted);
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//						}
+//						break;
+//					case Projection.TYPE_READ:
+//						for (Read read : aeiObjects.getUpdateReads()) {
+//							try {
+//								ProjectionFactory.projectionRead(projection, aeiObjects.getData(), read);
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//						}
+//						break;
+//					case Projection.TYPE_REVIEW:
+//						for (Review review : aeiObjects.getUpdateReviews()) {
+//							try {
+//								ProjectionFactory.projectionReview(projection, aeiObjects.getData(), review);
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//						}
+//						break;
+//					case Projection.TYPE_TABLE:
+//						if (StringUtils.isNotEmpty(projection.getDynamicClassName())) {
+//							try {
+//								JpaObject jpaObject = (JpaObject) Class.forName(projection.getDynamicClassName())
+//										.newInstance();
+//								ProjectionFactory.projectionTable(projection, aeiObjects.getData(), jpaObject);
+//								aeiObjects.getCreateDynamicEntities().add(jpaObject);
+//							} catch (Exception e) {
+//								logger.error(e);
+//							}
+//						}
+//						break;
+//					default:
+//						break;
+//					}
+//
+//				}
+//			}
+//		} catch (Exception e) {
+//			logger.error(e);
+//		}
+//	}
 }

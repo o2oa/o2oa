@@ -7,13 +7,13 @@ import java.util.List;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.organization.core.express.empower.EmpowerFactory;
+import com.x.organization.core.express.empowerlog.EmpowerLogFactory;
 import com.x.organization.core.express.group.GroupFactory;
 import com.x.organization.core.express.identity.IdentityFactory;
 import com.x.organization.core.express.person.PersonFactory;
 import com.x.organization.core.express.personattribute.PersonAttributeFactory;
 import com.x.organization.core.express.role.RoleFactory;
-import com.x.organization.core.express.trust.TrustFactory;
-import com.x.organization.core.express.trustlog.TrustLogFactory;
 import com.x.organization.core.express.unit.UnitFactory;
 import com.x.organization.core.express.unitattribute.UnitAttributeFactory;
 import com.x.organization.core.express.unitduty.UnitDutyFactory;
@@ -98,22 +98,22 @@ public class Organization {
 		return unitDuty;
 	}
 
-	private TrustFactory trust;
+	private EmpowerFactory empower;
 
-	public TrustFactory trust() throws Exception {
-		if (null == this.trust) {
-			this.trust = new TrustFactory(context);
+	public EmpowerFactory empower() throws Exception {
+		if (null == this.empower) {
+			this.empower = new EmpowerFactory(context);
 		}
-		return trust;
+		return empower;
 	}
 
-	private TrustLogFactory trustLog;
+	private EmpowerLogFactory empowerLog;
 
-	public TrustLogFactory trustLog() throws Exception {
-		if (null == this.trustLog) {
-			this.trustLog = new TrustLogFactory(context);
+	public EmpowerLogFactory empowerLog() throws Exception {
+		if (null == this.empowerLog) {
+			this.empowerLog = new EmpowerLogFactory(context);
 		}
-		return trustLog;
+		return empowerLog;
 	}
 
 	/** 根据个人身份获取组织 */
