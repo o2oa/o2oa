@@ -7,7 +7,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
-import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.core.entity.Meeting;
 
@@ -15,7 +14,6 @@ class ActionAccept extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 			Meeting meeting = emc.find(id, Meeting.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			/* 在被邀请参加的人员之内 */

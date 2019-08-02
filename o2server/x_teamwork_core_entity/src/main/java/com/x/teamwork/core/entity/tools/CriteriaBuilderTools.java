@@ -26,6 +26,7 @@ import com.x.teamwork.core.entity.tools.filter.term.NotEqualsTerm;
 import com.x.teamwork.core.entity.tools.filter.term.NotInTerm;
 import com.x.teamwork.core.entity.tools.filter.term.NotMemberTerm;
 
+
 public class CriteriaBuilderTools {
 	
 	public static Predicate predicate_or( CriteriaBuilder criteriaBuilder, Predicate predicate, Predicate predicate_target ) {
@@ -234,7 +235,7 @@ public class CriteriaBuilderTools {
 			order = "DESC";
 		}
 		if( StringUtils.isEmpty( orderField )){
-			orderField = "createTime";
+			orderField = "sequence";
 		}
 		if( maxCount == null || maxCount == 0 ) {
 			maxCount = 20;
@@ -263,7 +264,7 @@ public class CriteriaBuilderTools {
 		}else{
 			cq.orderBy( cb.asc( root.get( orderField )) );
 		}
-		
+		System.out.println(">>>>>>>>>SQL:" + em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).toString() );
 		return em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).getResultList();
 	}
 	
@@ -289,8 +290,7 @@ public class CriteriaBuilderTools {
 		}
 		if( !fieldExists ) { //如果排序列不存在，就直接返回空，不排序，让SQL可以正常执行
 			return null;
-		}
-		
+		}		
 		if( "desc".equalsIgnoreCase( orderType )) {
 			return cb.desc( root.get( fieldName ).as(String.class) );
 		}else {

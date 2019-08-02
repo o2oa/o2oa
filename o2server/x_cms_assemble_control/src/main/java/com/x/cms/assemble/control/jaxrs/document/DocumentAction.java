@@ -62,7 +62,7 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "指修改指定文档的数据.", action = ActionPersistBatchModifyData.class)
+	@JaxrsMethodDescribe(value = "指修改指定文档的数据。", action = ActionPersistBatchModifyData.class)
 	@PUT
 	@Path("batch/data/modify")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

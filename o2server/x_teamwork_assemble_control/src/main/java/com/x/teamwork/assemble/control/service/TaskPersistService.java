@@ -17,6 +17,7 @@ import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
+import com.x.teamwork.core.entity.TaskExtField;
 import com.x.teamwork.core.entity.TaskStatuType;
 
 /**
@@ -69,11 +70,12 @@ public class TaskPersistService {
 	 * 保存工作任务信息
 	 * @param task
 	 * @param taskDetail
+	 * @param taskExtField
 	 * @param effectivePerson
 	 * @return
 	 * @throws Exception
 	 */
-	public Task save( Task task, TaskDetail taskDetail, EffectivePerson effectivePerson ) throws Exception {
+	public Task save( Task task, TaskDetail taskDetail, TaskExtField taskExtField, EffectivePerson effectivePerson ) throws Exception {
 		if ( task == null) {
 			throw new Exception( "task is null." );
 		}
@@ -107,30 +109,35 @@ public class TaskPersistService {
 			task.setCompleted( true  );
 			task.setArchive(  true );
 		}
-		
-		if( StringUtils.isEmpty( task.getExecutorIdentity() ) ) {
-			//取第一个身份
-			String identity = userManagerService.getIdentityWithPerson( task.getExecutor(), "min");
-			if( StringUtils.isNotEmpty( identity)) {
-				task.setExecutorIdentity(identity);
+		String executor = null;
+		String executorIdentity = null;
+		String executorUnit = null;
+
+		//前端可能传身份，也可以直接传Person
+		if( StringUtils.isNotEmpty( task.getExecutorIdentity() ) ) {
+			executor = userManagerService.getPersonNameWithIdentity(  task.getExecutorIdentity() );
+			if( StringUtils.isEmpty( executor )) {
+				throw new Exception("executor  identity invalid , executorIdentity:" + task.getExecutorIdentity());
+			}
+			task.setExecutor( executor );
+		}else {
+			if( StringUtils.isNotEmpty( task.getExecutor()) ) {
+				executorIdentity = userManagerService.getIdentityWithPerson( task.getExecutor(), "min");
+				if( StringUtils.isEmpty( executorIdentity )) {
+					throw new Exception("executor  has no identity, please concat manager! person:" + task.getExecutor());
+				}
+				task.setExecutorIdentity(executorIdentity);
 			}else {
-				throw new Exception("executor  has no identity, please concat manager! person:" + task.getExecutor());
+				throw new Exception("executor  can not empty! ");
 			}
 		}
 		
-		if( StringUtils.isEmpty( task.getExecutorUnit() ) ) {
-			String unitName = userManagerService.getUnitNameByIdentity( task.getExecutorIdentity() );
-			if( StringUtils.isNotEmpty( unitName)) {
-				task.setExecutorUnit(unitName);
-			}else {
+		if( StringUtils.isNotEmpty( task.getExecutorIdentity() ) ) {
+			executorUnit = userManagerService.getUnitNameByIdentity( task.getExecutorIdentity() );
+			if( StringUtils.isEmpty( executorUnit)) {
 				throw new Exception("executor unit not exists with identity:" + task.getExecutorIdentity());
 			}
-		}
-		
-		if( StringUtils.isNotEmpty( task.getExecutor() ) && task.getExecutor().indexOf( "@I" ) > 0  ) {
-			//选择的是身份
-			String personName = userManagerService.getPersonNameWithIdentity( task.getExecutor() );
-			task.setExecutor( personName );
+			task.setExecutorUnit( executorUnit );
 		}
 		
 		if( StringUtils.isEmpty( task.getCreatorPerson() ) ) {
@@ -139,8 +146,8 @@ public class TaskPersistService {
 		if( ListTools.isEmpty( task.getManageablePersonList()) ) {
 			task.addManageablePerson( effectivePerson.getDistinguishedName());
 		}
-		if( task.getName().length() > 70 ) {
-			task.setName( task.getName().substring(0, 70) + "..." );
+		if(task.getName().length() > 80 ) {
+			task.setName( task.getName().substring(0, 80) + "..." );
 		}
 		
 		
@@ -151,10 +158,12 @@ public class TaskPersistService {
 			task.setEndTime( new Date( ( task.getStartTime().getTime() + 30*60*1000) ) ); //30分钟之后
 		}
 		
-		task.addParticipant( effectivePerson.getDistinguishedName() );
+		if( ListTools.isEmpty( task.getParticipantList() )) {
+			task.addParticipant( effectivePerson.getDistinguishedName() );
+		}
 
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-			task = taskService.save( emc, task, taskDetail );
+			task = taskService.save( emc, task, taskDetail, taskExtField );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -371,4 +380,213 @@ public class TaskPersistService {
 			throw e;
 		}
 	}
+	
+	/**
+	 * 单独修改与任务相关的单个属性值 
+	 * @param taskId
+	 * @param property
+	 * @param mainValue
+	 * @param secondaryValue
+	 * @throws Exception
+	 */
+	public void changeTaskProperty( String taskId, String property, String mainValue, String secondaryValue) throws Exception {
+		if( Task.workStatus_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( Task.priority_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( Task.executor_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( Task.startTime_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );	
+		} else if( Task.endTime_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( Task.name_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( TaskDetail.detail_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskDetailEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( TaskDetail.description_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskDetailEntityProperty( taskId, property, mainValue, secondaryValue );
+		}  else if( TaskExtField.memoString_1_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_2_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_3_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_4_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_5_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_6_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_7_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_8_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_1_lob_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_2_lob_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_3_lob_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		} else if( TaskExtField.memoString_4_lob_FIELDNAME.equalsIgnoreCase( property )) {
+			changeTaskExtFieldEntityProperty( taskId, property, mainValue, secondaryValue );
+		}
+	}
+	
+	private  void changeTaskEntityProperty( String taskId, String property, String mainValue, String secondaryValue) throws Exception {
+		final String dateStyle = "yyyy-MM-dd HH:mm:ss";
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Task task = emc.find( taskId, Task.class );			
+			if( task == null ) {
+				throw new Exception("task info not exists.ID=" + taskId );
+			}	
+			
+			if( Task.name_FIELDNAME.equalsIgnoreCase( property )) {
+					task.setName( mainValue );
+			}else if( Task.workStatus_FIELDNAME.equalsIgnoreCase( property )) {
+				task.setWorkStatus( mainValue );
+			} else if( Task.priority_FIELDNAME.equalsIgnoreCase( property )) {
+				task.setPriority( mainValue );
+			}  else if( Task.executor_FIELDNAME.equalsIgnoreCase( property )) {
+				if( StringUtils.isNotEmpty( mainValue )) {
+					String personName = null, personIdentity = null, personUnit = null;
+					if( mainValue.endsWith( "@I" )) {
+						personName = userManagerService.getPersonNameWithIdentity(mainValue);
+						personUnit = userManagerService.getUnitNameByIdentity(mainValue);
+						task.setExecutor( personName );
+						task.setExecutorIdentity(property);
+						task.setExecutorUnit(personUnit);
+					}else if( mainValue.endsWith( "@P" ) ) {
+						personIdentity = userManagerService.getIdentityWithPerson(personName, "min");
+						personUnit = userManagerService.getUnitNameByIdentity(personIdentity);
+						task.setExecutor( personName );
+						task.setExecutorIdentity(property);
+						task.setExecutorUnit(personUnit);
+					}
+				}else {
+					throw new Exception("executor or indentity invalid. executor:" + mainValue );
+				}
+			}   else if( Task.executorIdentity_FIELDNAME.equalsIgnoreCase( property )) {
+				if( StringUtils.isNotEmpty( mainValue )) {
+					String personName = null, personIdentity = null, personUnit = null;
+					if( mainValue.endsWith( "@I" )) {
+						personName = userManagerService.getPersonNameWithIdentity(mainValue);
+						personUnit = userManagerService.getUnitNameByIdentity(mainValue);
+						task.setExecutor( personName );
+						task.setExecutorIdentity(property);
+						task.setExecutorUnit(personUnit);
+					}else if( mainValue.endsWith( "@P" ) ) {
+						personIdentity = userManagerService.getIdentityWithPerson(personName, "min");
+						personUnit = userManagerService.getUnitNameByIdentity(personIdentity);
+						task.setExecutor( personName );
+						task.setExecutorIdentity(property);
+						task.setExecutorUnit(personUnit);
+					}
+				}else {
+					throw new Exception("executor or indentity invalid. executor:" + mainValue );
+				}
+			}  else if( Task.startTime_FIELDNAME.equalsIgnoreCase( property )) {
+				try {
+					task.setStartTime( DateOperation.getDateFromString( mainValue, dateStyle ));
+				}catch( Exception e ) {
+					new Exception("将传入的参数转化为日期格式时发生异常：" + mainValue  );
+				}
+				
+				if( secondaryValue !=  null && StringUtils.isNotEmpty( secondaryValue.toString()) ) {
+					try {
+						task.setEndTime( DateOperation.getDateFromString( mainValue, dateStyle ) );
+					}catch( Exception e ) {
+						new Exception("将传入的参数转化为日期格式时发生异常：" + mainValue  );
+					}
+				}				
+			} else if( Task.endTime_FIELDNAME.equalsIgnoreCase( property )) {
+				try {
+					task.setEndTime( DateOperation.getDateFromString( mainValue, dateStyle ) );
+				}catch( Exception e ) {
+					new Exception("将传入的参数转化为日期格式时发生异常：" + mainValue  );
+				}
+			} 
+			emc.beginTransaction( Task.class );
+			emc.check( task, CheckPersistType.all );
+			emc.commit();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 变更工作任务详情的属性
+	 * @param taskId
+	 * @param property
+	 * @param mainValue
+	 * @param secondaryValue
+	 * @throws Exception
+	 */
+	private void changeTaskDetailEntityProperty( String taskId, String property, String mainValue, String secondaryValue ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			TaskDetail detail = emc.find( taskId, TaskDetail.class );			
+			if( detail == null ) {
+				throw new Exception("task detail info not exists.ID=" + taskId );
+			}			
+			if( TaskDetail.detail_FIELDNAME.equalsIgnoreCase( property )) {
+				detail.setDetail( mainValue );
+			}else if( TaskDetail.description_FIELDNAME.equalsIgnoreCase( property )) {
+				detail.setDescription(mainValue );
+			}
+			emc.beginTransaction( TaskDetail.class );
+			emc.check( detail, CheckPersistType.all );
+			emc.commit();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 变更工作任务扩展属性信息
+	 * @param taskId
+	 * @param property
+	 * @param mainValue
+	 * @param secondaryValue
+	 * @throws Exception 
+	 */
+	private void changeTaskExtFieldEntityProperty(String taskId, String property, String mainValue, String secondaryValue) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			TaskExtField taskExtField = emc.find( taskId, TaskExtField.class );			
+			if( taskExtField == null ) {
+				throw new Exception("task extField info not exists.ID=" + taskId );
+			}			
+			if( TaskExtField.memoString_1_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_1( mainValue );
+			} else if( TaskExtField.memoString_2_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_2( mainValue );
+			} else if( TaskExtField.memoString_3_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_3( mainValue );
+			} else if( TaskExtField.memoString_4_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_4( mainValue );
+			} else if( TaskExtField.memoString_5_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_5( mainValue );
+			} else if( TaskExtField.memoString_6_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_6( mainValue );
+			} else if( TaskExtField.memoString_7_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_7( mainValue );
+			} else if( TaskExtField.memoString_8_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_8( mainValue );
+			} else if( TaskExtField.memoString_1_lob_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_1_lob( mainValue );
+			} else if( TaskExtField.memoString_2_lob_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_2_lob( mainValue );
+			} else if( TaskExtField.memoString_3_lob_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_3_lob( mainValue );
+			} else if( TaskExtField.memoString_4_lob_FIELDNAME.equalsIgnoreCase( property )) {
+				taskExtField.setMemoString_4_lob( mainValue );
+			}
+			emc.beginTransaction( TaskExtField.class );
+			emc.check( taskExtField, CheckPersistType.all );
+			emc.commit();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	
 }

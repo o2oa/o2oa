@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -456,7 +455,5 @@ public class ProcessPlatformPlan extends Plan {
 						cb.lessThanOrEqualTo(root.get(WorkCompleted_.completedTime), this.dateRange.completed));
 			}
 		}
-
 	}
-
 }

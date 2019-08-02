@@ -6,6 +6,7 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 
 @WebFilter(urlPatterns = { 		
 		"/jaxrs/project/*",
+		"/jaxrs/chat/*",
 		"/jaxrs/task/*",
 		"/jaxrs/task_tag/*",
 		"/jaxrs/attachment/*",

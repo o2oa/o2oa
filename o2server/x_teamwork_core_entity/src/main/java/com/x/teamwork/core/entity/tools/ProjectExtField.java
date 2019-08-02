@@ -8,20 +8,18 @@ public class ProjectExtField {
 	private static List<FieldInfo> fieldList = new ArrayList<>();
 	
 	static {
-		fieldList.add( new FieldInfo("memoString64_1", "字符", 64 ));
-		fieldList.add( new FieldInfo("memoString64_2", "字符", 64 ));
-		fieldList.add( new FieldInfo("memoString64_3", "字符", 64 ));
-		fieldList.add( new FieldInfo("memoString255_1", "字符", 255 ));
-		fieldList.add( new FieldInfo("memoString255_2", "字符", 255 ));
-		fieldList.add( new FieldInfo("memoString255_3", "字符", 255 ));
-		fieldList.add( new FieldInfo("memoInteger1", "整数", 11 ));
-		fieldList.add( new FieldInfo("memoInteger2", "整数", 11 ));
-		fieldList.add( new FieldInfo("memoInteger3", "整数", 11 ));
-		fieldList.add( new FieldInfo("memoDouble1", "小数", 16 ));
-		fieldList.add( new FieldInfo("memoDouble2", "小数", 16 ));		
-		fieldList.add( new FieldInfo("memoLob1", "长文本", 128000000 ));
-		fieldList.add( new FieldInfo("memoLob2", "长文本", 128000000 ));
-		fieldList.add( new FieldInfo("memoLob3", "长文本", 128000000 ));
+		fieldList.add( new FieldInfo("memoString_1", "备用属性1（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_2", "备选属性2（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_3", "备选属性3（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_4", "备选属性4（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_5", "备选属性5（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_6", "备选属性6（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_7", "备选属性7（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_8", "备选属性8（最大长度：255）" ));
+		fieldList.add( new FieldInfo("memoString_1_lob", "备用长文本1（最大长度：10M）" ));
+		fieldList.add( new FieldInfo("memoString_2_lob", "备用长文本2（最大长度：10M）" ));
+		fieldList.add( new FieldInfo("memoString_3_lob", "备用长文本3（最大长度：10M）" ));
+		fieldList.add( new FieldInfo("memoString_4_lob", "备用长文本4（最大长度：10M）" ));
 	}
 	
 	public static List<FieldInfo> listAllExtField() {

@@ -32,9 +32,9 @@ public class ActionResult<T> implements Serializable {
 
 	protected Long size = -1L;
 
-	protected Long page = -1L;
-
-	protected Long pageSize = -1L;
+//	protected Long page = -1L;
+//
+//	protected Long pageSize = -1L;
 
 	protected Long count = 0L;
 
@@ -167,20 +167,20 @@ public class ActionResult<T> implements Serializable {
 		return message;
 	}
 
-	public Long getPage() {
-		return page;
-	}
+//	public Long getPage() {
+//		return page;
+//	}
+//
+//	public void setPage(Long page) {
+//		this.page = page;
+//	}
 
-	public void setPage(Long page) {
-		this.page = page;
-	}
-
-	public Long getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Long pageSize) {
-		this.pageSize = pageSize;
-	}
+//	public Long getPageSize() {
+//		return pageSize;
+//	}
+//
+//	public void setPageSize(Long pageSize) {
+//		this.pageSize = pageSize;
+//	}
 
 }

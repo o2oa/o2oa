@@ -3,6 +3,7 @@ package com.x.organization.core.entity;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -22,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -85,6 +87,7 @@ public class Person extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@SuppressWarnings("deprecation")
 	public void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
@@ -103,6 +106,7 @@ public class Person extends SliceJpaObject {
 		if (null == this.orderNumber) {
 			this.orderNumber = DateTools.timeOrderNumber();
 		}
+		this.signature = StringEscapeUtils.escapeHtml4(Objects.toString(this.signature, ""));
 	}
 
 	/* 更新运行方法 */

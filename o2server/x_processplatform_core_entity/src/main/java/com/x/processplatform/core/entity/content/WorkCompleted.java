@@ -75,6 +75,13 @@ public class WorkCompleted extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.creatorUnitLevelName)) {
 			this.creatorUnitLevelName = "";
 		}
+		if (StringTools.utf8Length(title) > length_255B) {
+			this.title = StringTools.utf8SubString(title, length_255B);
+			this.titleLob = title;
+		} else {
+			this.title = Objects.toString(this.title, "");
+			this.titleLob = null;
+		}
 	}
 
 	/* 更新运行方法 */
@@ -89,7 +96,7 @@ public class WorkCompleted extends SliceJpaObject {
 	public WorkCompleted(Work work, Date completedTime, Long duration, String data, String formData,
 			String formMobileData) {
 		this.job = work.getJob();
-		this.title = work.getTitle();
+		this.setTitle(work.getTitle());
 		this.startTime = work.getStartTime();
 		this.startTimeMonth = work.getStartTimeMonth();
 		this.completedTime = completedTime;
@@ -119,13 +126,7 @@ public class WorkCompleted extends SliceJpaObject {
 	}
 
 	public void setTitle(String title) {
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.titleLob = title;
-			this.title = StringTools.utf8SubString(this.title, 252) + "...";
-		} else {
-			this.titleLob = "";
-			this.title = Objects.toString(title, "");
-		}
+		this.title = title;
 	}
 
 	public String getTitle() {

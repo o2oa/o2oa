@@ -18,6 +18,7 @@ import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.AppInfo_;
+import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 
 /**
  * 应用信息表基础功能服务类
@@ -51,16 +52,26 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 	
-	public List<AppInfo> listAll(String documentType) throws Exception {
+	public List<AppInfo> listAll( String appType, String documentType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = null;
 		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
-			Predicate p = cb.equal(root.get(AppInfo_.documentType), documentType);
-			return em.createQuery(cq.where(p)).getResultList();
+			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo_.documentType), documentType) );
 		}
-		return em.createQuery(cq).getResultList();
+		if (StringUtils.isNotEmpty(appType) &&!StringUtils.equals( "未分类",appType )) {
+			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo_.appType), appType) );
+		}
+		if (StringUtils.isNotEmpty(appType) &&StringUtils.equals( "未分类",appType )) {
+			p = CriteriaBuilderTools.predicate_and(cb, p, 
+					CriteriaBuilderTools.predicate_or(
+							cb, cb.isNull(root.get(AppInfo_.appType)), 
+							cb.equal(root.get(AppInfo_.appType), ""))
+			);
+		}
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 
 	public List<String> listLike(String keyStr) throws Exception {
@@ -470,5 +481,36 @@ public class AppInfoFactory extends AbstractFactory {
 			this.entityManagerContainer().get(AppInfo.class).detach(o);
 		}
 		return o;
+	}
+
+	public List<String> listAllAppType() throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = cb.isNotNull( root.get(AppInfo_.appType));
+		cq.select(root.get(AppInfo_.appType)).distinct(true);
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public Long countAppInfoWithAppType(String type) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = cb.equal( root.get(AppInfo_.appType), type );
+		cq.select(cb.count(root));
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	public Long countAppInfoWithOutAppType() throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = cb.isNull( root.get(AppInfo_.appType) );
+		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), ""));
+		cq.select(cb.count(root));
+		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 }

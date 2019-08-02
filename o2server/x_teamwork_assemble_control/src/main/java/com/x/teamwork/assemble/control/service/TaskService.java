@@ -16,6 +16,7 @@ import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
+import com.x.teamwork.core.entity.TaskExtField;
 import com.x.teamwork.core.entity.TaskGroupRele;
 import com.x.teamwork.core.entity.TaskListRele;
 import com.x.teamwork.core.entity.TaskTag;
@@ -109,7 +110,6 @@ class TaskService {
 		task.setProject( review.getProject() );
 		task.setProjectName( review.getProjectName() );
 		task.setPriority( review.getPriority() );
-		task.setTagContent( review.getTagContent() );
 		task.setProgress( review.getProgress() );
 		task.setRemindRelevance( review.getRemindRelevance());
 		
@@ -130,19 +130,7 @@ class TaskService {
 		
 		task.setCreateTime( review.getCreateTime() );
 		task.setSequence( review.getTaskSequence() );
-		task.setOrder( review.getOrder() );
-		
-		task.setMemoDouble1( review.getMemoDouble1() );
-		task.setMemoDouble2( review.getMemoDouble2() );
-		task.setMemoInteger1( review.getMemoInteger1() );
-		task.setMemoInteger2( review.getMemoInteger2() );
-		task.setMemoInteger3( review.getMemoInteger3() );
-		task.setMemoString255_1( review.getMemoString255_1() );
-		task.setMemoString255_2( review.getMemoString255_2() );
-		task.setMemoString64_1( review.getMemoString64_1() );
-		task.setMemoString64_2( review.getMemoString64_2() );
-		task.setMemoString64_3( review.getMemoString64_3() );
-		
+		task.setOrder( review.getOrder() );		
 		task.setUpdateTime( review.getUpdateTime() );		
 		return task;
 	}
@@ -150,29 +138,37 @@ class TaskService {
 	/**
 	 * 向数据库持久化工作任务信息
 	 * @param emc
+	 * @param taskExtField 
 	 * @param taskDetail 
 	 * @param task
 	 * @return
 	 * @throws Exception 
 	 */
-	protected Task save( EntityManagerContainer emc, Task object, TaskDetail detail ) throws Exception {
+	protected Task save( EntityManagerContainer emc, Task object, TaskDetail detail, TaskExtField extField ) throws Exception {
 		Task task = null;
 		TaskDetail taskDetail = null;
+		TaskExtField taskExtField = null;
 		Project project = null;
+		
 		if( StringUtils.isEmpty( object.getId() )  ){
 			object.setId( Task.createId() );
 		}
 		project = emc.find( object.getProject(), Project.class );
 		task = emc.find( object.getId(), Task.class );
 		taskDetail = emc.find( object.getId(), TaskDetail.class );
+		taskExtField = emc.find( object.getId(), TaskExtField.class );
 		
-		emc.beginTransaction( Project.class );
 		emc.beginTransaction( Task.class );
 		emc.beginTransaction( TaskDetail.class );
+		emc.beginTransaction( TaskExtField.class );
 		
+		if( project  == null ) {
+			throw new Exception("project not exsits!ID=" + object.getProject() );
+		}
+		
+		//处理task的保存
 		object.setProject( project.getId() );
-		object.setProjectName( project.getTitle() );
-		
+		object.setProjectName( project.getTitle() );		
 		if( task == null ){ // 保存一个新的对象
 			task = new Task();
 			object.copyTo( task );
@@ -188,22 +184,34 @@ class TaskService {
 			emc.check( task, CheckPersistType.all );	
 		}
 		
+		//处理taskDetail的保存		
 		if( taskDetail == null ){ // 保存一个新的对象
 			taskDetail = new TaskDetail();
 			detail.copyTo( taskDetail );
-			detail.setId( object.getId() );
-			emc.persist( detail, CheckPersistType.all);
+			taskDetail.setId( object.getId() );
+			taskDetail.setProject( project.getId() );
+			emc.persist( taskDetail, CheckPersistType.all);
 		}else{ //对象已经存在，更新对象信息
 			detail.copyTo( taskDetail, JpaObject.FieldsUnmodify  );
-			detail.setId( object.getId() );
-			emc.check( detail, CheckPersistType.all );	
+			taskDetail.setId( object.getId() );
+			taskDetail.setProject( project.getId() );
+			emc.check( taskDetail, CheckPersistType.all );	
 		}
 		
-		project.addParticipantPerson( task.getCreatorPerson() );
-		project.addParticipantPerson( task.getExecutor() );
-		
+		//处理taskExtField的保存		
+		if( taskExtField == null ){ // 保存一个新的对象
+			taskExtField = new TaskExtField();
+			extField.copyTo( taskExtField );
+			taskExtField.setId( object.getId() );
+			taskExtField.setProject( project.getId() );
+			emc.persist( taskExtField, CheckPersistType.all);
+		}else{ //对象已经存在，更新对象信息
+			extField.copyTo( taskExtField, JpaObject.FieldsUnmodify  );
+			taskExtField.setId( object.getId() );
+			taskExtField.setProject( project.getId() );
+			emc.check( taskExtField, CheckPersistType.all );	
+		}
 		emc.commit();
-		
 		return task;
 	}
 	

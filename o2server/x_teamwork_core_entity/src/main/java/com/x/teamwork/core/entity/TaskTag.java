@@ -77,8 +77,14 @@ public class TaskTag extends SliceJpaObject {
 	@CheckPersist( allowEmpty = false )
 	private String tag;
 	
+	public static final String color_FIELDNAME = "tagColor";
+	@FieldDescribe("标签颜色")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + color_FIELDNAME)
+	@CheckPersist( allowEmpty = false )
+	private String tagColor;
+	
 	public static final String owner_FIELDNAME = "owner";
-	@FieldDescribe("创建者。")
+	@FieldDescribe("创建者")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + owner_FIELDNAME)
 	@Index( name = TABLE + IndexNameMiddle + owner_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
@@ -106,5 +112,15 @@ public class TaskTag extends SliceJpaObject {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
-	}	
+	}
+
+	public String getTagColor() {
+		return tagColor;
+	}
+
+	public void setTagColor(String tagColor) {
+		this.tagColor = tagColor;
+	}
+
+	
 }

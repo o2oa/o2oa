@@ -110,8 +110,9 @@ class ActionProcessing extends BaseAction {
 					}
 				}
 			}
-			MessageFactory.taskCompleted_create(taskCompleted);
-			MessageFactory.task_delete(task);
+			MessageFactory.task_to_taskCompleted(taskCompleted);
+//			MessageFactory.taskCompleted_create(taskCompleted);
+//			MessageFactory.task_delete(task);
 			if (BooleanUtils.isNotFalse(wi.getFinallyProcessingWork())) {
 				ProcessingAttributes processingAttributes = new ProcessingAttributes();
 				processingAttributes.setDebugger(effectivePerson.getDebugger());

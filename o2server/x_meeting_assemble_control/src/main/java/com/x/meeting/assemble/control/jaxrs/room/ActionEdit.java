@@ -9,15 +9,11 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
-import com.x.meeting.assemble.control.WrapTools;
-import com.x.meeting.assemble.control.jaxrs.room.ActionCreate.Wi;
 import com.x.meeting.core.entity.Room;
 
 class ActionEdit extends BaseAction {

@@ -63,4 +63,32 @@ public class ProjectExtFieldReleQueryService {
 			throw e;
 		}
 	}
+
+	public String getExtFieldDisplayName(String projectId, String extFieldName) throws Exception {
+		if( StringUtils.isEmpty( projectId )  ){
+			throw new Exception("projectId can not empty for save field rele.");
+		}
+		if( StringUtils.isEmpty( extFieldName )  ){
+			throw new Exception("extFieldName can not empty for save field rele.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return projectExtFieldReleService.getExtFieldDisplayName(emc, projectId, extFieldName);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public ProjectExtFieldRele getExtFieldRele(String projectId, String extFieldName) throws Exception {
+		if( StringUtils.isEmpty( projectId )  ){
+			throw new Exception("projectId can not empty for save field rele.");
+		}
+		if( StringUtils.isEmpty( extFieldName )  ){
+			throw new Exception("extFieldName can not empty for save field rele.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return projectExtFieldReleService.getExtFieldRele(emc, projectId, extFieldName);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }

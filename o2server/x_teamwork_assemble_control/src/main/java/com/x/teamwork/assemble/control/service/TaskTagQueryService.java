@@ -9,7 +9,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskTag;
+import com.x.teamwork.core.entity.TaskTagRele;
 
 
 /**
@@ -54,21 +56,6 @@ public class TaskTagQueryService {
 			throw e;
 		}
 	}
-	
-	/**
-	 * 根据项目和人员列示的项目标签信息
-	 * @param currentPerson
-	 * @param projectIds
-	 * @return
-	 * @throws Exception
-	 */
-	public List<TaskTag> listWithProjectAndPerson( EffectivePerson currentPerson, String project ) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return taskTagService.listWithProjectAndPerson(emc, project, currentPerson.getDistinguishedName());
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 
 	public List<String> listTagIdsWithTask(EffectivePerson currentPerson, String taskId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -77,8 +64,21 @@ public class TaskTagQueryService {
 			throw e;
 		}
 	}
+
+	public List<TaskTag> listTagsWithTask(EffectivePerson currentPerson, String taskId) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<String> tagIds =  taskTagService.listTagIdsWithTask(emc, taskId, currentPerson.getDistinguishedName());
+			if( ListTools.isNotEmpty( tagIds )) {
+				return emc.list( TaskTag.class, tagIds );
+			}else {
+				return null;
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 	
-	public List<String> listTagsWithTask(EffectivePerson currentPerson, String taskId) throws Exception {
+	public List<String> listTagNamesWithTask(EffectivePerson currentPerson, String taskId) throws Exception {
 		List<String> tagNames = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<String> tagIds = taskTagService.listTagIdsWithTask(emc, taskId, currentPerson.getDistinguishedName());
@@ -96,5 +96,38 @@ public class TaskTagQueryService {
 			throw e;
 		}
 		return tagNames;
+	}
+
+	/**
+	 * 根据项目和人员列示的项目标签信息
+	 * @param effectivePerson
+	 * @param project
+	 * @return
+	 * @throws Exception
+	 */
+	public List<TaskTag> listWithProjectAndPerson( EffectivePerson effectivePerson, String project ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<TaskTag> tags = taskTagService.listWithProjectAndPerson( emc, project, effectivePerson.getDistinguishedName() );
+			return tags;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<TaskTag> listWithTaskAndPerson(EffectivePerson effectivePerson, Task task) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<TaskTagRele> reles = taskTagService.listReleWithTaskAndPerson(emc, task.getId(), effectivePerson.getDistinguishedName());
+			List<TaskTag> tags = new ArrayList<>();
+			TaskTag tag = null;
+			for( TaskTagRele rele : reles ) {
+				tag = emc.find( rele.getTagId(), TaskTag.class );
+				if( tag != null ) {
+					tags.add( tag );
+				}
+			}
+			return tags;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 }

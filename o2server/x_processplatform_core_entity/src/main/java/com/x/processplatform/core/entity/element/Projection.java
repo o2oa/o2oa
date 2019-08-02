@@ -61,11 +61,13 @@ public class Projection extends SliceJpaObject {
 
 	public static final String TYPE_WORK = "work";
 
+	public static final String TYPE_TASK = "task";
+
 	public static final String TYPE_TASKCOMPLETED = "taskCompleted";
 
-	public static final String TYPE_READCOMPLETED = "readCompleted";
-
 	public static final String TYPE_READ = "read";
+
+	public static final String TYPE_READCOMPLETED = "readCompleted";
 
 	public static final String TYPE_REVIEW = "review";
 
@@ -98,25 +100,25 @@ public class Projection extends SliceJpaObject {
 	private String process;
 
 	public static final String type_FIELDNAME = "type";
-	@FieldDescribe("类型:workCompleted,taskCompleted,readCompleted,read,review,table")
+	@FieldDescribe("类型:work,workCompleted,task,taskCompleted,readCompleted,read,review,table")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + type_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String type;
 
 	public static final String data_FIELDNAME = "data";
-	@FieldDescribe("Item文本内容.")
+	@FieldDescribe("映射方案.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
-	public static final String dynamicClassName_FIELDNAME = "dynamicClassName";
+	public static final String dynamicName_FIELDNAME = "dynamicName";
 	@FieldDescribe("动态表类名称")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + dynamicClassName_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + dynamicName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String dynamicClassName;
+	private String dynamicName;
 
 	public String getApplication() {
 		return application;
@@ -155,6 +157,8 @@ public class Projection extends SliceJpaObject {
 		private String path = "";
 		private String column = "";
 		private String type = "";
+		private String name = "";
+		private String scriptText = "";
 
 		public String getPath() {
 			return path;
@@ -180,14 +184,22 @@ public class Projection extends SliceJpaObject {
 			this.type = type;
 		}
 
-	}
+		public String getName() {
+			return name;
+		}
 
-	public String getDynamicClassName() {
-		return dynamicClassName;
-	}
+		public void setName(String name) {
+			this.name = name;
+		}
 
-	public void setDynamicClassName(String dynamicClassName) {
-		this.dynamicClassName = dynamicClassName;
+		public String getScriptText() {
+			return scriptText;
+		}
+
+		public void setScriptText(String scriptText) {
+			this.scriptText = scriptText;
+		}
+
 	}
 
 	public String getDescription() {
@@ -204,6 +216,14 @@ public class Projection extends SliceJpaObject {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public String getDynamicName() {
+		return dynamicName;
+	}
+
+	public void setDynamicName(String dynamicName) {
+		this.dynamicName = dynamicName;
 	}
 
 }

@@ -77,12 +77,12 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	public static class Accredit {
 
-		public static class Trust {
-			public static final String table = "ORG_A_TRUST";
+		public static class Empower {
+			public static final String table = "ORG_A_EMPOWER";
 		}
 
-		public static class TrustLog {
-			public static final String table = "ORG_A_TRUSTLOG";
+		public static class EmpowerLog {
+			public static final String table = "ORG_A_EMPOWERLOG";
 		}
 	}
 }

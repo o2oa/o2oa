@@ -71,9 +71,12 @@ public class ReadCompleted extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.completedTimeMonth) && (null != this.completedTime)) {
 			this.completedTimeMonth = DateTools.format(this.completedTime, DateTools.format_yyyyMM);
 		}
-		/* 将null值赋值为空保证Gson输出 */
-		if (null == this.opinion) {
-			this.setOpinion("");
+		if (StringTools.utf8Length(opinion) > length_255B) {
+			this.opinion = StringTools.utf8SubString(opinion, length_255B);
+			this.opinionLob = opinion;
+		} else {
+			this.opinion = Objects.toString(this.opinion, "");
+			this.opinionLob = null;
 		}
 	}
 
@@ -86,13 +89,7 @@ public class ReadCompleted extends SliceJpaObject {
 	}
 
 	public void setOpinion(String opinion) {
-		if (StringTools.utf8Length(opinion) > length_255B) {
-			this.opinion = StringTools.utf8SubString(opinion, length_255B);
-			this.opinionLob = opinion;
-		} else {
-			this.opinion = opinion;
-			this.opinionLob = null;
-		}
+		this.opinion = opinion;
 	}
 
 	public void setTitle(String title) {
@@ -115,7 +112,7 @@ public class ReadCompleted extends SliceJpaObject {
 		this.workCompleted = read.getWorkCompleted();
 		this.completed = read.getCompleted();
 		this.read = read.getId();
-		this.title = read.getTitle();
+		this.setTitle(read.getTitle());
 		this.application = read.getApplication();
 		this.applicationName = read.getApplicationName();
 		this.applicationAlias = this.getApplicationAlias();
@@ -378,6 +375,13 @@ public class ReadCompleted extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + duration_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Long duration;
+
+	public static final String currentActivityName_FIELDNAME = "currentActivityName";
+	@FieldDescribe("当前活动名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + currentActivityName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String currentActivityName;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -920,6 +924,14 @@ public class ReadCompleted extends SliceJpaObject {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public String getCurrentActivityName() {
+		return currentActivityName;
+	}
+
+	public void setCurrentActivityName(String currentActivityName) {
+		this.currentActivityName = currentActivityName;
 	}
 
 }

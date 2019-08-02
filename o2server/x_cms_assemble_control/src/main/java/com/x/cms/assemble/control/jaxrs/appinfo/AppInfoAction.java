@@ -239,6 +239,26 @@ public class AppInfoAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
+	@JaxrsMethodDescribe(value = "获取所有的栏目分类信息列表.", action = ActionListAllAppType.class)
+	@GET
+	@Path("list/appType")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listAllAppType(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListAllAppType.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListAllAppType().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"系统在获取所有的栏目分类信息列表时发生异常。Name:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
 	@JaxrsMethodDescribe(value = "获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage.class)
 	@GET
 	@Path("list/manage")
@@ -253,6 +273,27 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
 					"系统在根据用户权限查询所有管理的栏目信息时发生异常。Name:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManageWithAppType.class)
+	@GET
+	@Path("list/manage/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWhatICanManageWithAppType(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListWhatICanManageWithAppType().execute(request, effectivePerson, appType);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"系统在根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表时发生异常。Name:" + effectivePerson.getDistinguishedName());
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}

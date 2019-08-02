@@ -50,6 +50,7 @@ public class TaskDetail extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
+		
 	}
 	/*
 	 * =========================================================================
@@ -85,26 +86,7 @@ public class TaskDetail extends SliceJpaObject {
 	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + description_FIELDNAME)
 	private String description = "";
 	
-	public static final String memoLob1_FIELDNAME = "memoLob1";
-	@FieldDescribe("备用LOB信息1(128K)")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob1_FIELDNAME)
-	private String memoLob1 = "";
 	
-	public static final String memoLob2_FIELDNAME = "memoLob2";
-	@FieldDescribe("备用LOB信息2(128K)")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob2_FIELDNAME)
-	private String memoLob2 = "";
-	
-	public static final String memoLob3_FIELDNAME = "memoLob3";
-	@FieldDescribe("备用LOB信息3(128K)")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_128K, name = ColumnNamePrefix + memoLob3_FIELDNAME)
-	private String memoLob3 = "";
 
 	public String getProject() {
 		return project;
@@ -115,7 +97,7 @@ public class TaskDetail extends SliceJpaObject {
 	}
 
 	public String getDetail() {
-		return detail;
+		return detail == null?"":detail;
 	}
 
 	public void setDetail(String detail) {
@@ -123,34 +105,11 @@ public class TaskDetail extends SliceJpaObject {
 	}
 
 	public String getDescription() {
-		return description;
+		return description == null?"":description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public String getMemoLob1() {
-		return memoLob1;
-	}
-
-	public void setMemoLob1(String memoLob1) {
-		this.memoLob1 = memoLob1;
-	}
-
-	public String getMemoLob2() {
-		return memoLob2;
-	}
-
-	public void setMemoLob2(String memoLob2) {
-		this.memoLob2 = memoLob2;
-	}
-
-	public String getMemoLob3() {
-		return memoLob3;
-	}
-
-	public void setMemoLob3(String memoLob3) {
-		this.memoLob3 = memoLob3;
-	}
 }

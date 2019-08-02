@@ -17,7 +17,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.content.Attachment", "com.x.query.core.entity.Item",
 		"com.x.query.core.entity.View", "com.x.cms.core.entity.ReadRemind", "com.x.cms.core.entity.DocumentCommend",
 		"com.x.cms.core.entity.DocumentCommentInfo", "com.x.cms.core.entity.CmsBatchOperation", "com.x.cms.core.entity.Review",
-		"com.x.cms.core.entity.DocumentCommentContent"}, storageTypes = {
+		"com.x.cms.core.entity.DocumentCommentContent", "com.x.cms.core.entity.DocumentCommentCommend"}, storageTypes = {
 				StorageType.cms, StorageType.processPlatform }, storeJars = { "x_processplatform_core_entity",
 						"x_organization_core_entity", "x_organization_core_express", "x_cms_core_entity",
 						"x_query_core_entity", "x_query_core_express" })

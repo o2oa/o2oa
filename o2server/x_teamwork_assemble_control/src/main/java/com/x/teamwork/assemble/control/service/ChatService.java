@@ -1,17 +1,16 @@
 package com.x.teamwork.assemble.control.service;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Chat;
 import com.x.teamwork.core.entity.ChatContent;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
-import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
 /**
  * 对工作交流信息查询的服务
@@ -47,21 +46,12 @@ class ChatService {
 	/**
 	 * 根据过滤条件查询符合要求的工作交流信息数量
 	 * @param emc
-	 * @param projectIds
-	 * @param taskIds
+	 * @param queryFilter
 	 * @return
 	 * @throws Exception
 	 */
-	protected Long countWithFilter( EntityManagerContainer emc, List<String> projectIds, List<String> taskIds ) throws Exception {
+	protected Long countWithFilter( EntityManagerContainer emc, QueryFilter queryFilter ) throws Exception {
 		Business business = new Business( emc );
-		//组织查询条件对象
-		QueryFilter  queryFilter = new QueryFilter();
-		if( ListTools.isNotEmpty( projectIds )) {
-			queryFilter.addInTerm( new InTerm( "projectId", new ArrayList<Object>(projectIds) ) );
-		}
-		if( ListTools.isNotEmpty( taskIds )) {
-			queryFilter.addInTerm( new InTerm( "taskIds", new ArrayList<Object>(taskIds) ) );
-		}
 		return business.chatFactory().countWithFilter(queryFilter);
 	}
 	
@@ -71,23 +61,12 @@ class ChatService {
 	 * @param maxCount
 	 * @param orderField
 	 * @param orderType
-	 * @param projectIds
-	 * @param taskIds
+	 * @param queryFilter
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Chat> listWithFilter( EntityManagerContainer emc, Integer maxCount, String orderField, String orderType, List<String> projectIds, List<String> taskIds ) throws Exception {
+	protected List<Chat> listWithFilter( EntityManagerContainer emc, Integer maxCount, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		Business business = new Business( emc );
-		
-		//组织查询条件对象
-		QueryFilter  queryFilter = new QueryFilter();
-		if( ListTools.isNotEmpty( projectIds )) {
-			queryFilter.addInTerm( new InTerm( "projectId", new ArrayList<Object>(projectIds) ) );
-		}
-		if( ListTools.isNotEmpty( taskIds )) {
-			queryFilter.addInTerm( new InTerm( "taskIds", new ArrayList<Object>(taskIds) ) );
-		}
-		
 		return business.chatFactory().listWithFilter(maxCount, orderField, orderType, queryFilter);
 	}
 	
@@ -102,18 +81,8 @@ class ChatService {
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Chat> listWithFilterNext( EntityManagerContainer emc, Integer maxCount, String sequenceFieldValue, String orderField, String orderType, List<String> projectIds, List<String> taskIds ) throws Exception {
+	protected List<Chat> listWithFilterNext( EntityManagerContainer emc, Integer maxCount, String sequenceFieldValue, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		Business business = new Business( emc );
-		
-		//组织查询条件对象
-		QueryFilter  queryFilter = new QueryFilter();
-		if( ListTools.isNotEmpty( projectIds )) {
-			queryFilter.addInTerm( new InTerm( "projectId", new ArrayList<Object>(projectIds) ) );
-		}
-		if( ListTools.isNotEmpty( taskIds )) {
-			queryFilter.addInTerm( new InTerm( "taskIds", new ArrayList<Object>(taskIds) ) );
-		}
-		
 		return business.chatFactory().listWithFilter(maxCount, sequenceFieldValue, orderField, orderType, queryFilter);
 	}
 
@@ -124,24 +93,36 @@ class ChatService {
 	 * @return
 	 * @throws Exception 
 	 */
-	protected Chat create( EntityManagerContainer emc, Chat object ) throws Exception {
-		Chat chat = null;
-		ChatContent chatContent = null;
+	protected Chat create( EntityManagerContainer emc, Chat object, String lobContent ) throws Exception {
+		ChatContent chatContent_entity = null;
+		Chat chat_entity = null;
+		if( StringUtils.isEmpty( object.getId() )) {
+			object.setId( Chat.createId() );
+		}else {
+			 chat_entity = emc.find( object.getId(), Chat.class );
+			 chatContent_entity = emc.find( object.getId(), ChatContent.class );
+		}
+		
 		emc.beginTransaction( Chat.class );
 		emc.beginTransaction( ChatContent.class );
-		
-		object.setId( Chat.createId() );
-		
-		if( object.getIsLob() ) {
-			chatContent = new ChatContent();
-			chatContent.setId( object.getId() );
-			chatContent.setContent( object.getContent() );
-			emc.persist( chatContent, CheckPersistType.all );
-			object.setContent( null );
+		if( chat_entity != null ) {
+			object.copyTo( chat_entity );
+			emc.check( chat_entity, CheckPersistType.all );
+		}else {
+			emc.persist( object, CheckPersistType.all );
 		}
-		emc.persist( object, CheckPersistType.all );
+		
+		if( chatContent_entity != null ) {
+			chatContent_entity.setContent( lobContent );
+			emc.check( chat_entity, CheckPersistType.all );
+		}else {
+			chatContent_entity = new ChatContent();
+			chatContent_entity.setId( object.getId() );
+			chatContent_entity.setContent( lobContent );
+			emc.persist( chatContent_entity, CheckPersistType.all );
+		}
 		emc.commit();
-		return chat;
+		return object;
 	}
 
 	/**

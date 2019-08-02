@@ -81,6 +81,7 @@ public class ReviewService {
 	private void refreshTaskReview( EntityManagerContainer emc, Project project, Task task, List<String> permissionPersons) throws Exception {
 		Business business = new Business(emc);
 		Review review = null;
+		Project projectEntity = null;
 		List<Review> reviews = null;
 		List<Review> reviews_tmp = null;
 		//先检查该文档是否存在Review信息
@@ -102,12 +103,21 @@ public class ReviewService {
 					if( ListTools.isNotEmpty( permissionPersons) && permissionPersons.contains( review_tmp.getPermissionObj() ) ) {
 						//说明存在的，保留，不需要处理，检查一下，是否有重复的需要删除
 						reviews_tmp = business.reviewFactory().listByTaskAndPerson( task.getId(), review_tmp.getPermissionObj() );
-						if( ListTools.isNotEmpty( reviews_tmp) && reviews_tmp.size() > 1 ) {
-							//纠正，把重复的数据删除掉
+						if( ListTools.isNotEmpty( reviews_tmp) ) {
+							//如果有数据不一致，就更新，把重复的数据删除掉
 							for( int i=0; i<reviews_tmp.size(); i++  ) {
 								if( i > 0 ) {
 									//删除多余的Review
 									emc.remove( reviews_tmp.get(i), CheckRemoveType.all );
+								}else {
+									//只取一个，对比一下，把数据更新一下
+									if( taskInfoChanged( task, reviews_tmp.get(0))) {
+										System.out.println("任务内容变更过了，需要更新所有的Review");
+										 updateWithTask( reviews_tmp.get(0), task );
+										 emc.check( reviews_tmp.get(0), CheckPersistType.all );
+									}else {
+										System.out.println("任务内容没有变更，不需要更新Review");
+									}
 								}
 							}
 						}
@@ -123,6 +133,10 @@ public class ReviewService {
 		//再判断是否需要添加新的Review信息
 		Person personObj = null;
 		String personName = null;
+		projectEntity = emc.find( project.getId(), Project.class );
+		if( projectEntity == null ) {
+			throw new Exception("project not exist! id:" + project.getId());
+		}
 		permissionPersons = ListTools.trim( permissionPersons, true, true, new String[0] ); //去重复
 		for( String person : permissionPersons ) {
 			if( !person.equalsIgnoreCase( "*" )) {
@@ -142,9 +156,73 @@ public class ReviewService {
 					 emc.commit();
 				 }
 			}
+			
+			//判断所有的人员是否全部加入到Project的参与者里
+			projectEntity.addParticipantPerson( person );			
 		}
+		emc.beginTransaction( Project.class );
+		emc.check( projectEntity, CheckPersistType.all);
+		emc.commit();
 	}
 	
+	/**
+	 * 使用Task信息更新已存在的Review信息
+	 * @param review
+	 * @param task
+	 */
+	private void updateWithTask( Review review, Task task) {
+		review.setTaskId( task.getId() );
+		review.setParent( task.getParent() );
+		review.setName( task.getName() );
+		review.setProject( task.getProject() );
+		review.setProjectName( task.getProjectName() );		
+		review.setCreatorPerson( task.getCreatorPerson() );
+		review.setExecutor( task.getExecutor() );
+		review.setExecutorIdentity( task.getExecutorIdentity() );
+		review.setExecutorUnit( task.getExecutorUnit() );
+		review.setStartTime( task.getStartTime() );
+		review.setEndTime( task.getEndTime() );		
+		review.setArchive( task.getArchive() );
+		review.setCompleted( task.getCompleted() );
+		review.setOvertime( task.getOvertime() );
+		review.setDeleted( task.getDeleted() );
+		review.setWorkStatus( task.getWorkStatus() );		
+		review.setPriority( task.getPriority() );
+		review.setProgress( task.getProgress() );
+		review.setOrder( task.getOrder() );		
+		review.setTaskSequence( task.getSequence() );		
+		review.setClaimed( task.getClaimed() );
+		review.setRemindRelevance( task.getRemindRelevance());
+	}
+
+	private boolean taskInfoChanged(Task task, Review review) {
+		if( !review.getTaskId().equalsIgnoreCase( task.getId() )) { return true; }
+		if( !review.getParent().equalsIgnoreCase( task.getParent() )) { return true; }
+		if( !review.getProject().equalsIgnoreCase( task.getProject() )) { return true; }
+		if( !review.getName().equalsIgnoreCase( task.getName() )) { return true; }
+		if( !review.getProjectName().equalsIgnoreCase( task.getProjectName() )) { return true; }
+		if( !review.getCreatorPerson().equalsIgnoreCase( task.getCreatorPerson() )) { return true; }
+		if( !review.getExecutor().equalsIgnoreCase( task.getExecutor() )) { return true; }
+		if( !review.getExecutorIdentity().equalsIgnoreCase( task.getExecutorIdentity() )) { return true; }
+		if( !review.getExecutorUnit().equalsIgnoreCase( task.getExecutorUnit() )) { return true; }
+		if( review.getStartTime().getTime() != task.getStartTime().getTime() ) { return true; }
+		if( review.getEndTime().getTime() != task.getEndTime().getTime() ) { return true; }
+		if( review.getArchive() != task.getArchive() ) { return true; }
+		if( review.getCompleted() != task.getCompleted() ) { return true; }
+		if( review.getOvertime() != task.getOvertime() ) { return true; }
+		if( review.getDeleted() != task.getDeleted() ) { return true; }
+		if( review.getArchive() != task.getArchive() ) { return true; }
+		if( review.getArchive() != task.getArchive() ) { return true; }
+		if( !review.getWorkStatus().equalsIgnoreCase( task.getWorkStatus() )) { return true; }
+		if( !review.getPriority().equalsIgnoreCase( task.getPriority() )) { return true; }
+		if( review.getProgress() != task.getProgress() ) { return true; }
+		if( review.getOrder() == task.getOrder() ) { return true; }
+		if( !review.getSequence().equalsIgnoreCase( task.getSequence() )) { return true; }
+		if( review.getClaimed() != task.getClaimed() ) { return true; }
+		if( review.getRemindRelevance() != task.getRemindRelevance() ) { return true; }
+		return false;
+	}
+
 	/**
 	 * 将一个任务涉及到的所有权限转换为人员
 	 * @param emc
@@ -267,19 +345,7 @@ public class ReviewService {
 		
 		review.setTaskSequence( task.getSequence() );
 		
-		review.setMemoDouble1( task.getMemoDouble1() );
-		review.setMemoDouble2( task.getMemoDouble2() );
-		review.setMemoInteger1( task.getMemoInteger1() );
-		review.setMemoInteger2( task.getMemoInteger2() );
-		review.setMemoInteger3( task.getMemoInteger3() );
-		review.setMemoString255_1( task.getMemoString255_1() );
-		review.setMemoString255_2( task.getMemoString255_2() );
-		review.setMemoString64_1( task.getMemoString64_1() );
-		review.setMemoString64_2( task.getMemoString64_2() );
-		review.setMemoString64_3( task.getMemoString64_3() );
-		
 		review.setClaimed( task.getClaimed() );
-		review.setTagContent( task.getTagContent() );
 		review.setRemindRelevance( task.getRemindRelevance());
 		
 		review.setPermissionObj( person );

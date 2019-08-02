@@ -56,7 +56,7 @@ public class ActionListNextPageViewData extends BaseAction {
 		List<String> sortableFieldNames = null;
 		QueryFilter queryFilter = null;
 		
-		if( pageSize <= 0){
+		if( pageSize <= 0 || pageSize == null ){
 			pageSize = 12;
 		}
 		
@@ -276,14 +276,14 @@ public class ActionListNextPageViewData extends BaseAction {
 									add2List = true;
 								}
 								if( add2List ) {
-									docIds.add( review.getDocId() );
+									if( !docIds.contains( review.getDocId() )) {
+										docIds.add( review.getDocId() );
+										searchResultList.add( documentQueryService.get(  review.getDocId()  ));
+										if( searchResultList.size() >= pageSize ) {
+											break;
+										}
+									}
 								}
-								if( searchResultList.size() >= pageSize ) {
-									break;
-								}
-							}
-							if( ListTools.isNotEmpty( docIds )) {
-								searchResultList = documentQueryService.list( docIds );
 							}
 						}
 					}

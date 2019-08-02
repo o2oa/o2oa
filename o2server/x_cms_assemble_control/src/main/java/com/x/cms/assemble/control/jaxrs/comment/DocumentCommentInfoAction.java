@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,6 +15,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -33,6 +35,25 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger(DocumentCommentInfoAction.class);
 
+	@JaxrsMethodDescribe(value = "根据标识获取评论信息对象.", action = ActionGet.class)
+	@GET
+	@Path("{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response get(@Context HttpServletRequest request, @JaxrsParameterDescribe("评论ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionGet().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionCommentQuery(e, "根据指定ID查询评论信息对象时发生异常。id:" + id );
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
 	@JaxrsMethodDescribe(value = "列示评论信息,按页码分页.", action = ActionListPageWithFilter.class)
 	@PUT
 	@Path("list/{page}/size/{size}")
@@ -128,5 +149,49 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "文档评论点赞.", action = ActionPersistCommend.class)
+	@GET
+	@Path("{id}/commend")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response persist_commend( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("评论ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionPersistCommend.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionPersistCommend().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "取消文档评论点赞.", action = ActionPersistUnCommend.class)
+	@GET
+	@Path("{id}/uncommend")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response persist_unCommend( @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("评论ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionPersistUnCommend.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionPersistUnCommend().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

@@ -79,13 +79,13 @@ public class ActionRestoreData {
 		return this.execute();
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean execute() throws Exception {
 		List<String> containerEntityNames = new ArrayList<>();
 		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
 		List<String> classNames = new ArrayList<>();
 		classNames.addAll(this.catalog.keySet());
-		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
-				Config.dumpRestoreData().getExcludes());
+		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(), Config.dumpRestoreData().getExcludes());
 		classNames = ListTools.includesExcludesWildcard(containerEntityNames, classNames, null);
 
 		logger.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.getAbsolutePath());
@@ -96,19 +96,21 @@ public class ActionRestoreData {
 			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
 					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
-			EntityManager em = emf.createEntityManager();
-			em.setFlushMode(FlushModeType.COMMIT);
-			try {
-				logger.print("restore data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
-						catalog.get(cls.getName()));
-				count = count + this.store(cls, em);
-			} finally {
-				em.close();
-				emf.close();
-			}
+			if( emf != null ) {
+				EntityManager em = emf.createEntityManager();
+				em.setFlushMode( FlushModeType.COMMIT );
+				try {
+					logger.print("restore data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(), catalog.get(cls.getName()));
+					count = count + this.store(cls, em);
+				} finally {
+					em.close();
+					emf.close();
+				}
+			}else {
+				logger.warn("can not create 'EntityManagerFactory' for Entity:[" + cls.getName() + "]" );
+			}		
 		}
-		logger.print("restore data completed, total count: {}, elapsed: {} minutes.", count,
-				(new Date().getTime() - start.getTime()) / 1000 / 60);
+		logger.print("restore data completed, total count: {}, elapsed: {} minutes.", count, (new Date().getTime() - start.getTime()) / 1000 / 60);
 		return true;
 	}
 

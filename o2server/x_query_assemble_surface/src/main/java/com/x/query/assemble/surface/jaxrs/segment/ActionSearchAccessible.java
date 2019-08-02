@@ -39,12 +39,7 @@ class ActionSearchAccessible extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			List<Wo> wos = new ArrayList<>();
-			List<String> keys = new ArrayList<>();
-			for (Term term : HanLP.segment(key)) {
-				if (StringUtils.length(term.word) < 31) {
-					keys.add(term.word);
-				}
-			}
+			List<String> keys = this.keys(key);
 			if (!keys.isEmpty()) {
 				List<String> ids = this.match(business, keys);
 				ids = this.sort(ids);
@@ -89,6 +84,9 @@ class ActionSearchAccessible extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Word> root = cq.from(Word.class);
+		
+		
+		
 		cq.select(root.get(Word_.entry)).where(cb.isMember(root.get(Word_.value), cb.literal(values)));
 		List<String> os = em.createQuery(cq).getResultList();
 		return os;
@@ -143,5 +141,7 @@ class ActionSearchAccessible extends BaseAction {
 		static WrapCopier<Entry, Wo> copier = WrapCopierFactory.wo(Entry.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 	}
+
+
 
 }

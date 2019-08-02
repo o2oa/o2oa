@@ -29,6 +29,7 @@ public class ActionSave extends BaseAction {
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			documentCommentInfo = Wi.copier.copy(wi);
+			documentCommentInfo.setId( wi.getId());;
 			documentCommentInfo.setCreatorName( effectivePerson.getDistinguishedName() );
 			documentCommentInfo.setAuditorName( "" );
 			documentCommentInfo.setCommentAuditStatus( "通过" );			
@@ -81,6 +82,9 @@ public class ActionSave extends BaseAction {
 
 	public static class Wi {
 		
+		@FieldDescribe("评论ID")
+		private String id = "";
+		
 		@FieldDescribe("文档ID")
 		private String documentId = "";
 
@@ -96,7 +100,15 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("是否私信评论")
 		private Boolean isPrivate = false;
 		
-		public static WrapCopier<Wi, DocumentCommentInfo> copier = WrapCopierFactory.wi( Wi.class, DocumentCommentInfo.class, null, null );
+		public static WrapCopier<Wi, DocumentCommentInfo> copier = WrapCopierFactory.wi( Wi.class, DocumentCommentInfo.class, null, null );		
+		
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
 
 		public String getDocumentId() {
 			return documentId;

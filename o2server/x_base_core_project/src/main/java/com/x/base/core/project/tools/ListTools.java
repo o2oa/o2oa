@@ -179,7 +179,7 @@ public class ListTools {
 				arrayList.add(t);
 			}
 		}
-		
+
 		return arrayList;
 	}
 
@@ -351,6 +351,7 @@ public class ListTools {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> List<T> toList(T... ts) {
 		List<T> list = new ArrayList<>();
 		for (T t : ts) {
@@ -359,6 +360,7 @@ public class ListTools {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> List<T> toList(List<T> list, T... ts) {
 		List<T> os = new ArrayList<>();
 		if (!isEmpty(list)) {
@@ -518,8 +520,6 @@ public class ListTools {
 		return false;
 	}
 
-
-
 	public static String toStringJoin(Object obj, String separator) {
 		if (isList(obj)) {
 			return StringUtils.join((List<?>) obj, separator);
@@ -535,19 +535,48 @@ public class ListTools {
 			return obj.toString();
 		}
 	}
-	
-	/**
-	 * 去重
-	 * @param list
-	 */
-	private static void removeDuplicate(List<String> list) {
-	    List<String> result = new ArrayList<String>(list.size());
-	    for (String str : list) {
-	        if (!result.contains(str)) {
-	            result.add(str);
-	        }
-	    }
-	    list.clear();
-	    list.addAll(result);
+
+	/* 根据属性进行配对 */
+	public static <T, W> Map<T, W> pairWithProperty(List<T> ts, String tProperty, List<W> ws, String wProperty)
+			throws Exception {
+		Map<T, W> map = new LinkedHashMap<>();
+		if ((null != ts) && (null != ws) && StringUtils.isNotEmpty(tProperty) && StringUtils.isNotEmpty(wProperty)) {
+			for (T t : ts) {
+				if (null != t) {
+					W w = findWithProperty(ws, wProperty, PropertyUtils.getProperty(t, tProperty));
+					if (null != w) {
+						map.put(t, w);
+					}
+				}
+			}
+		}
+		return map;
 	}
+
+	public static List<String> addStringToList( String source, List<String> targetList ){
+		if( targetList == null ) {
+			targetList = new ArrayList<>();
+		}
+		if( StringUtils.isEmpty( source )) {
+			return targetList;
+		}
+		if( !targetList.contains( source )) {
+			targetList.add( source );
+		}
+		return targetList;
+	}
+
+	public static List<String> removeStringFromList( String source, List<String> targetList ){
+		if( targetList == null ) {
+			targetList = new ArrayList<>();
+		}
+		if( StringUtils.isEmpty( source )) {
+			return targetList;
+		}
+		if( targetList.contains( source )) {
+			targetList.remove( source );
+		}
+		return targetList;
+	}
+
 }

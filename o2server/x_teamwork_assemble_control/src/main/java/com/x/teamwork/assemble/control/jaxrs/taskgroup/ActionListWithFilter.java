@@ -44,7 +44,7 @@ public class ActionListWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( getStringListHeyx( wi.getIds()) );
+		String cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithFilter.taskgroup", getStringListHeyx( wi.getIds()) );
 		Element element = taskGroupCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {

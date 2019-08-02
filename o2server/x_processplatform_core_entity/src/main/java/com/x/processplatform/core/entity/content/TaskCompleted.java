@@ -79,8 +79,12 @@ public class TaskCompleted extends SliceJpaObject {
 		if (null == this.routeName) {
 			this.routeName = "";
 		}
-		if (null == this.opinion) {
-			this.setOpinion("");
+		if (StringTools.utf8Length(opinion) > length_255B) {
+			this.opinion = StringTools.utf8SubString(opinion, length_255B);
+			this.opinionLob = opinion;
+		} else {
+			this.opinion = Objects.toString(this.opinion, "");
+			this.opinionLob = null;
 		}
 	}
 
@@ -93,13 +97,7 @@ public class TaskCompleted extends SliceJpaObject {
 	}
 
 	public void setOpinion(String opinion) {
-		if (StringTools.utf8Length(opinion) > length_255B) {
-			this.opinion = StringTools.utf8SubString(opinion, length_255B);
-			this.opinionLob = opinion;
-		} else {
-			this.opinion = opinion;
-			this.opinionLob = null;
-		}
+		this.opinion = opinion;
 	}
 
 	public void setTitle(String title) {
@@ -119,7 +117,8 @@ public class TaskCompleted extends SliceJpaObject {
 	public TaskCompleted(Work work, Manual manual, Route route, TaskCompleted taskCompleted) {
 		Date now = new Date();
 		this.job = work.getJob();
-		this.title = work.getTitle();
+		// this.title = work.getTitle();
+		this.setTitle(work.getTitle());
 		this.startTime = now;
 		this.completedTime = now;
 		this.work = work.getId();
@@ -158,7 +157,7 @@ public class TaskCompleted extends SliceJpaObject {
 
 	public TaskCompleted(Task task, ProcessingType processingType, Date completedTime, Long duration) {
 		this.job = task.getJob();
-		this.title = task.getTitle();
+		this.setTitle(task.getTitle());
 		this.startTime = task.getStartTime();
 		this.completedTime = completedTime;
 		this.work = task.getWork();
@@ -507,6 +506,13 @@ public class TaskCompleted extends SliceJpaObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + pressActivityToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String pressActivityToken;
+
+	public static final String currentActivityName_FIELDNAME = "currentActivityName";
+	@FieldDescribe("当前活动名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + currentActivityName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String currentActivityName;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1129,6 +1135,14 @@ public class TaskCompleted extends SliceJpaObject {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public String getCurrentActivityName() {
+		return currentActivityName;
+	}
+
+	public void setCurrentActivityName(String currentActivityName) {
+		this.currentActivityName = currentActivityName;
 	}
 
 }

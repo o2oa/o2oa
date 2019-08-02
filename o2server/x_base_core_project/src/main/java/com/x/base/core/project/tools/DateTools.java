@@ -514,5 +514,27 @@ public class DateTools {
 		Date date = new Date();
 		return DateUtils.addMinutes(date, minutes);
 	}
-
+	
+	/**
+	 * 根据需求调整年份
+	 * @param startTime
+	 * @param yearAdjust
+	 * @param monthAdjust
+	 * @param dayAdjust
+	 * @return
+	 */
+	public static  Date getDateAfterYearAdjust( Date startTime, Integer yearAdjust, Integer monthAdjust, Integer dayAdjust) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime( startTime );
+		if ((null != yearAdjust) && (yearAdjust != 0)) {
+			calendar.add(Calendar.YEAR, yearAdjust );
+		}
+		if ((null != monthAdjust) && (monthAdjust != 0)) {
+			calendar.add(Calendar.MONTH, monthAdjust );
+		}
+		if ((null != dayAdjust) && (dayAdjust != 0)) {
+			calendar.add(Calendar.DATE, dayAdjust );
+		}
+		return calendar.getTime();
+	}
 }

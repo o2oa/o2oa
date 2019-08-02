@@ -14,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.SortTools;
 import com.x.teamwork.core.entity.TaskTag;
 
 import net.sf.ehcache.Element;
@@ -46,6 +47,8 @@ public class ActionListWithProject extends BaseAction {
 					}
 					if( wos == null ) {
 						wos = new ArrayList<>();
+					}else {
+						SortTools.desc(  wos, "createTime" );
 					}
 					
 					resultObject = new ResultObject( Long.parseLong( wos.size()+"" ), wos );

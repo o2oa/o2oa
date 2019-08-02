@@ -63,9 +63,12 @@ public class Read extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.startTimeMonth) && (null != this.startTime)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
 		}
-		/* 将null值赋值为空保证Gson输出 */
-		if (null == this.opinion) {
-			this.setOpinion("");
+		if (StringTools.utf8Length(opinion) > length_255B) {
+			this.opinion = StringTools.utf8SubString(opinion, length_255B);
+			this.opinionLob = opinion;
+		} else {
+			this.opinion = Objects.toString(this.opinion, "");
+			this.opinionLob = null;
 		}
 	}
 
@@ -78,13 +81,7 @@ public class Read extends SliceJpaObject {
 	}
 
 	public void setOpinion(String opinion) {
-		if (StringTools.utf8Length(opinion) > length_255B) {
-			this.opinion = StringTools.utf8SubString(opinion, length_255B);
-			this.opinionLob = opinion;
-		} else {
-			this.opinion = opinion;
-			this.opinionLob = null;
-		}
+		this.opinion = opinion;
 	}
 
 	public void setTitle(String title) {
@@ -121,7 +118,7 @@ public class Read extends SliceJpaObject {
 		this.processName = work.getProcessName();
 		this.serial = work.getSerial();
 		this.startTime = new Date();
-		this.title = work.getTitle();
+		this.setTitle(work.getTitle());
 		this.unit = unit;
 		this.viewed = false;
 		this.work = work.getId();
@@ -362,6 +359,13 @@ public class Read extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + viewed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean viewed;
+
+	public static final String currentActivityName_FIELDNAME = "currentActivityName";
+	@FieldDescribe("当前活动名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + currentActivityName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String currentActivityName;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -872,6 +876,14 @@ public class Read extends SliceJpaObject {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public String getCurrentActivityName() {
+		return currentActivityName;
+	}
+
+	public void setCurrentActivityName(String currentActivityName) {
+		this.currentActivityName = currentActivityName;
 	}
 
 }

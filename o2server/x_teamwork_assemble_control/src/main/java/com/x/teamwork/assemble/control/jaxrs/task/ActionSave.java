@@ -1,5 +1,6 @@
 package com.x.teamwork.assemble.control.jaxrs.task;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -20,13 +22,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
+import com.x.teamwork.core.entity.TaskExtField;
 import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
 import com.x.teamwork.core.entity.TaskStatuType;
+import com.x.teamwork.core.entity.TaskTag;
 
 public class ActionSave extends BaseAction {
 
@@ -37,11 +42,16 @@ public class ActionSave extends BaseAction {
 		Task task = null;
 		Task oldTask = null;
 		Task parentTask = null;
+		TaskDetail oldTaskDetail = null;
 		Project project = null;
 		TaskGroup taskGroup = null;
 		Wi wi = null;
 		Boolean check = true;
-
+		Boolean split = false;
+		Wo wo = new Wo();
+		List<Dynamic> dynamics  = new ArrayList<>();
+		List<Dynamic> tagDynamics = new ArrayList<>();
+		
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 		} catch (Exception e) {
@@ -54,6 +64,17 @@ public class ActionSave extends BaseAction {
 		if (check) {
 			try {
 				oldTask = taskQueryService.get( wi.getId() );
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new TaskQueryException(e, "根据指定ID查询工作任务信息对象时发生异常。ID:" + wi.getId());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
+			try {
+				oldTaskDetail = taskQueryService.getDetail( wi.getId() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new TaskQueryException(e, "根据指定ID查询工作任务信息对象时发生异常。ID:" + wi.getId());
@@ -136,6 +157,11 @@ public class ActionSave extends BaseAction {
 						check = false;
 						Exception exception = new TaskPersistException("parent task not exists!PID=" + wi.getParent() );
 						result.error(exception);
+					}else {
+						//判断是否是新的工作拆解操作
+						if( StringUtils.isEmpty( wi.getId() ) || taskQueryService.get( wi.getId() ) == null ) {
+							split = true; //新增下级任务
+						}
 					}
 				} catch (Exception e) {
 					check = false;
@@ -164,13 +190,27 @@ public class ActionSave extends BaseAction {
 			taskDetail.setProject( project.getId() );
 			taskDetail.setDescription( wi.getDescription() );
 			taskDetail.setDetail( wi.getDetail() );
-			taskDetail.setMemoLob1( wi.getMemoLob1() );
-			taskDetail.setMemoLob2( wi.getMemoLob2() );
-			taskDetail.setMemoLob3( wi.getMemoLob3() );
+			
+			TaskExtField taskExtField = new TaskExtField();
+			taskExtField.setId( wi.getId());
+			taskExtField.setProject( project.getId() );
+			taskExtField.setName( wi.getName() );
+			taskExtField.setMemoString_1( wi.getMemoString_1() );
+			taskExtField.setMemoString_2( wi.getMemoString_2() );
+			taskExtField.setMemoString_3( wi.getMemoString_3() );
+			taskExtField.setMemoString_4( wi.getMemoString_4() );
+			taskExtField.setMemoString_5( wi.getMemoString_5() );
+			taskExtField.setMemoString_6( wi.getMemoString_6() );
+			taskExtField.setMemoString_7( wi.getMemoString_7() );
+			taskExtField.setMemoString_8( wi.getMemoString_8() );
+			taskExtField.setMemoString_1_lob( wi.getMemoString_1_lob() );
+			taskExtField.setMemoString_2_lob( wi.getMemoString_2_lob() );
+			taskExtField.setMemoString_3_lob( wi.getMemoString_3_lob() );
+			taskExtField.setMemoString_4_lob( wi.getMemoString_4_lob() );
 			
 			try {	
 				wi.setProject( project.getId() );
-				task = taskPersistService.save( Wi.copier.copy(wi), taskDetail, effectivePerson );
+				task = taskPersistService.save( Wi.copier.copy(wi), taskDetail, taskExtField,  effectivePerson );
 				
 				taskListPersistService.addTaskToTaskListWithOrderNumber( task.getId(), wi.getTaskListIds(), null,  effectivePerson);
 				
@@ -178,11 +218,10 @@ public class ActionSave extends BaseAction {
 				ApplicationCache.notify( Task.class );
 				ApplicationCache.notify( Review.class );	
 				ApplicationCache.notify( TaskGroup.class );	
-				ApplicationCache.notify( TaskList.class );	
+				ApplicationCache.notify( TaskList.class );
 				
-				Wo wo = new Wo();
 				wo.setId( task.getId() );			
-				result.setData( wo );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new TaskPersistException(e, "工作任务信息保存时发生异常。");
@@ -191,6 +230,82 @@ public class ActionSave extends BaseAction {
 			}
 		}
 
+		//检查标签是否有变动
+		if (check) {
+			//检查任务和标签的所有关联
+			List<String> tagIds = taskTagQueryService.listTagIdsWithTask( effectivePerson, task.getId() );
+			if( ListTools.isNotEmpty( wi.getTaskTagIds() )) {
+				TaskTag taskTag = null; 
+				for( String _tagId : wi.getTaskTagIds() ) {
+					try {
+						taskTag = taskTagQueryService.get( _tagId );
+						if ( taskTag == null) {
+							check = false;
+							Exception exception = new TaskTagNotExistsException( _tagId );
+							result.error( exception );
+						}
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new TaskPersistException(e, "根据指定flag查询应用工作任务标签信息对象时发生异常。ID:" + _tagId);
+						result.error(exception);
+						logger.error(e, effectivePerson, request, null);
+						break;
+					}
+					if( !tagIds.contains( _tagId )) {
+						//需要新增
+						taskTagPersistService.addTagRele( task, taskTag, effectivePerson );
+						tagDynamics.add( dynamicPersistService.addTaskTagReleDynamic( task, taskTag, effectivePerson ));
+					}
+				}
+				if( check && ListTools.isNotEmpty( tagIds )) {
+					for( String _tagId : tagIds ) {
+						if( !wi.getTaskTagIds().contains( _tagId )) {
+							try {
+								taskTag = taskTagQueryService.get( _tagId );
+								if ( taskTag == null) {
+									check = false;
+									Exception exception = new TaskTagNotExistsException( _tagId );
+									result.error( exception );
+								}
+							} catch (Exception e) {
+								check = false;
+								Exception exception = new TaskPersistException(e, "根据指定flag查询应用工作任务标签信息对象时发生异常。ID:" + _tagId);
+								result.error(exception);
+								logger.error(e, effectivePerson, request, null);
+								break;
+							}
+							//需要删除
+							taskTagPersistService.removeTagRele( task.getId(), _tagId, effectivePerson);
+							tagDynamics.add( dynamicPersistService.removeTaskTagReleDynamic( task, taskTag, effectivePerson ));
+						}
+					}
+				}
+			}else {
+				if( ListTools.isNotEmpty( tagIds )) {
+					TaskTag taskTag = null; 
+					for( String _tagId : tagIds ) {
+						try {
+							taskTag = taskTagQueryService.get( _tagId );
+							if ( taskTag == null) {
+								check = false;
+								Exception exception = new TaskTagNotExistsException( _tagId );
+								result.error( exception );
+							}
+						} catch (Exception e) {
+							check = false;
+							Exception exception = new TaskPersistException(e, "根据指定flag查询应用工作任务标签信息对象时发生异常。ID:" + _tagId);
+							result.error(exception);
+							logger.error(e, effectivePerson, request, null);
+							break;
+						}
+						//需要删除
+						taskTagPersistService.removeTagRele( task.getId(), _tagId, effectivePerson);
+						tagDynamics.add( dynamicPersistService.removeTaskTagReleDynamic( task, taskTag, effectivePerson ));
+					}
+				}
+			}
+		}
+		
 		if (check) {
 			try {					
 				new BatchOperationPersistService().addOperation( 
@@ -202,13 +317,37 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
+			//记录父工作任务拆解的动态记录
+			if( split && parentTask != null ) {
+				dynamics = new ArrayList<>();
+				try {
+					dynamics.add( dynamicPersistService.taskSplitDynamic( parentTask, task, effectivePerson ));
+				} catch (Exception e) {
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
 			//记录工作任务信息变化记录
 			try {
-				dynamicPersistService.taskSaveDynamic( oldTask, task, effectivePerson,  jsonElement.toString() );
+				if( ListTools.isNotEmpty( dynamics ) ) {
+					dynamicPersistService.taskSaveDynamic( oldTask, task, oldTaskDetail, effectivePerson,  jsonElement.toString() );
+				}else {
+					dynamics = dynamicPersistService.taskSaveDynamic( oldTask, task, oldTaskDetail, effectivePerson,  jsonElement.toString() );
+				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		
+		if( ListTools.isEmpty(dynamics ) ) {
+			dynamics = new ArrayList<>();
+		}
+		
+		dynamics.addAll( tagDynamics );
+		wo.setDynamics( WoDynamic.copier.copy( dynamics ) );
+		result.setData( wo );
 		return result;
 	}	
 
@@ -251,51 +390,12 @@ public class ActionSave extends BaseAction {
 		
 		@FieldDescribe("执行者|负责人身份，非必填，若有则以identity为准")
 		private String executorIdentity;	
-
-		@FieldDescribe("扩展字符串64属性1，非必填.")
-		private String memoString64_1 = "";
-		
-		@FieldDescribe("扩展字符串64属性2，非必填.")
-		private String memoString64_2 = "";
-		
-		@FieldDescribe("扩展字符串64属性3，非必填.")
-		private String memoString64_3 = "";
-
-		@FieldDescribe("扩展字符串255属性1，非必填.")
-		private String memoString255_1 = "";
-		
-		@FieldDescribe("扩展字符串255属性2，非必填.")
-		private String memoString255_2 = "";
-
-		@FieldDescribe("扩展整型属性1，非必填.")
-		private Integer memoInteger1 = 0;
-		
-		@FieldDescribe("扩展整型属性2.，非必填")
-		private Integer memoInteger2 = 0;
-		
-		@FieldDescribe("扩展整型属性3，非必填.")
-		private Integer memoInteger3 = 0;
-		
-		@FieldDescribe("扩展Double属性1，非必填.")
-		private Double memoDouble1 = 0.0;	
-
-		@FieldDescribe("扩展Double属性2，非必填.")
-		private Double memoDouble2 = 0.0;	
 		
 		@FieldDescribe("工作内容(128K)，非必填")
 		private String detail;
 		
 		@FieldDescribe("说明信息(10M)，非必填")
-		private String description;
-		
-		@FieldDescribe("扩展LOB信息1(128K)，非必填")
-		private String memoLob1;
-		
-		@FieldDescribe("扩展LOB信息2(128K)，非必填")
-		private String memoLob2;
-		
-		@FieldDescribe("扩展LOB信息3(128K)，非必填")
-		private String memoLob3;
+		private String description;		
 		
 		@FieldDescribe("工作任务组ID，非必填，与taskListIds必须填写一种")
 		private String taskGroupId;
@@ -303,6 +403,75 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("任务默认归类的任务列表ID，非必填，与taskGroupId必须填写一种")
 		private List<String> taskListIds;
 		
+		@FieldDescribe("工作任务标签ID列表，非必填")
+		private List<String> taskTagIds;
+		
+		@FieldDescribe("工作任务参与者，非必填")
+		private List<String> participantList;
+
+		@FieldDescribe("工作任务管理者，非必填")
+		private List<String> manageablePersonList;		
+
+		@FieldDescribe("备用属性1（最大长度：255）")
+		private String memoString_1 = "";
+
+		@FieldDescribe("备用属性2（最大长度：255）")
+		private String memoString_2 = "";	
+		
+		@FieldDescribe("备用属性3（最大长度：255）")
+		private String memoString_3 = "";	
+
+		@FieldDescribe("备用属性4（最大长度：255）")
+		private String memoString_4 = "";
+		
+		@FieldDescribe("备用属性5（最大长度：255）")
+		private String memoString_5 = "";
+
+		@FieldDescribe("备用属性6（最大长度：255）")
+		private String memoString_6 = "";
+
+		@FieldDescribe("备用属性7（最大长度：255）")
+		private String memoString_7 = "";
+
+		@FieldDescribe("备用属性8（最大长度：255）")
+		private String memoString_8 = "";
+
+		@FieldDescribe("备用长文本1（最大长度：10M）")
+		private String memoString_1_lob = "";
+
+		@FieldDescribe("备用长文本2（最大长度：10M）")
+		private String memoString_2_lob = "";
+
+		@FieldDescribe("备用长文本3（最大长度：10M）")
+		private String memoString_3_lob = "";
+		
+		@FieldDescribe("备用长文本4（最大长度：10M）")
+		private String memoString_4_lob = "";
+		
+		public List<String> getTaskTagIds() {
+			return taskTagIds;
+		}
+
+		public void setTaskTagIds(List<String> taskTagIds) {
+			this.taskTagIds = taskTagIds;
+		}
+
+		public List<String> getParticipantList() {
+			return participantList;
+		}
+
+		public void setParticipantList(List<String> participantList) {
+			this.participantList = participantList;
+		}
+
+		public List<String> getManageablePersonList() {
+			return manageablePersonList;
+		}
+
+		public void setManageablePersonList(List<String> manageablePersonList) {
+			this.manageablePersonList = manageablePersonList;
+		}
+
 		public String getWorkStatus() {
 			return workStatus;
 		}
@@ -325,30 +494,6 @@ public class ActionSave extends BaseAction {
 
 		public void setDescription(String description) {
 			this.description = description;
-		}
-
-		public String getMemoLob1() {
-			return memoLob1;
-		}
-
-		public void setMemoLob1(String memoLob1) {
-			this.memoLob1 = memoLob1;
-		}
-
-		public String getMemoLob2() {
-			return memoLob2;
-		}
-
-		public void setMemoLob2(String memoLob2) {
-			this.memoLob2 = memoLob2;
-		}
-
-		public String getMemoLob3() {
-			return memoLob3;
-		}
-
-		public void setMemoLob3(String memoLob3) {
-			this.memoLob3 = memoLob3;
 		}
 
 		public List<String> getTaskListIds() {
@@ -455,88 +600,134 @@ public class ActionSave extends BaseAction {
 			this.executorIdentity = executorIdentity;
 		}
 
-		public String getMemoString64_1() {
-			return memoString64_1;
+		public String getMemoString_1() {
+			return memoString_1;
 		}
 
-		public void setMemoString64_1(String memoString64_1) {
-			this.memoString64_1 = memoString64_1;
+		public void setMemoString_1(String memoString_1) {
+			this.memoString_1 = memoString_1;
 		}
 
-		public String getMemoString64_2() {
-			return memoString64_2;
+		public String getMemoString_2() {
+			return memoString_2;
 		}
 
-		public void setMemoString64_2(String memoString64_2) {
-			this.memoString64_2 = memoString64_2;
+		public void setMemoString_2(String memoString_2) {
+			this.memoString_2 = memoString_2;
 		}
 
-		public String getMemoString64_3() {
-			return memoString64_3;
+		public String getMemoString_3() {
+			return memoString_3;
 		}
 
-		public void setMemoString64_3(String memoString64_3) {
-			this.memoString64_3 = memoString64_3;
+		public void setMemoString_3(String memoString_3) {
+			this.memoString_3 = memoString_3;
 		}
 
-		public String getMemoString255_1() {
-			return memoString255_1;
+		public String getMemoString_4() {
+			return memoString_4;
 		}
 
-		public void setMemoString255_1(String memoString255_1) {
-			this.memoString255_1 = memoString255_1;
+		public void setMemoString_4(String memoString_4) {
+			this.memoString_4 = memoString_4;
 		}
 
-		public String getMemoString255_2() {
-			return memoString255_2;
+		public String getMemoString_5() {
+			return memoString_5;
 		}
 
-		public void setMemoString255_2(String memoString255_2) {
-			this.memoString255_2 = memoString255_2;
+		public void setMemoString_5(String memoString_5) {
+			this.memoString_5 = memoString_5;
 		}
 
-		public Integer getMemoInteger1() {
-			return memoInteger1;
+		public String getMemoString_6() {
+			return memoString_6;
 		}
 
-		public void setMemoInteger1(Integer memoInteger1) {
-			this.memoInteger1 = memoInteger1;
+		public void setMemoString_6(String memoString_6) {
+			this.memoString_6 = memoString_6;
 		}
 
-		public Integer getMemoInteger2() {
-			return memoInteger2;
+		public String getMemoString_7() {
+			return memoString_7;
 		}
 
-		public void setMemoInteger2(Integer memoInteger2) {
-			this.memoInteger2 = memoInteger2;
+		public void setMemoString_7(String memoString_7) {
+			this.memoString_7 = memoString_7;
 		}
 
-		public Integer getMemoInteger3() {
-			return memoInteger3;
+		public String getMemoString_8() {
+			return memoString_8;
 		}
 
-		public void setMemoInteger3(Integer memoInteger3) {
-			this.memoInteger3 = memoInteger3;
+		public void setMemoString_8(String memoString_8) {
+			this.memoString_8 = memoString_8;
 		}
 
-		public Double getMemoDouble1() {
-			return memoDouble1;
+		public String getMemoString_1_lob() {
+			return memoString_1_lob;
 		}
 
-		public void setMemoDouble1(Double memoDouble1) {
-			this.memoDouble1 = memoDouble1;
+		public void setMemoString_1_lob(String memoString_1_lob) {
+			this.memoString_1_lob = memoString_1_lob;
 		}
 
-		public Double getMemoDouble2() {
-			return memoDouble2;
+		public String getMemoString_2_lob() {
+			return memoString_2_lob;
 		}
 
-		public void setMemoDouble2(Double memoDouble2) {
-			this.memoDouble2 = memoDouble2;
+		public void setMemoString_2_lob(String memoString_2_lob) {
+			this.memoString_2_lob = memoString_2_lob;
 		}
+
+		public String getMemoString_3_lob() {
+			return memoString_3_lob;
+		}
+
+		public void setMemoString_3_lob(String memoString_3_lob) {
+			this.memoString_3_lob = memoString_3_lob;
+		}
+
+		public String getMemoString_4_lob() {
+			return memoString_4_lob;
+		}
+
+		public void setMemoString_4_lob(String memoString_4_lob) {
+			this.memoString_4_lob = memoString_4_lob;
+		}
+
 	}
 
-	public static class Wo extends WoId {
+public static class Wo extends WoId {
+		
+		@FieldDescribe("操作引起的动态内容")
+		List<WoDynamic> dynamics = new ArrayList<>();
+
+		public List<WoDynamic> getDynamics() {
+			return dynamics;
+		}
+
+		public void setDynamics(List<WoDynamic> dynamics) {
+			this.dynamics = dynamics;
+		}
+		
+	}
+	
+	public static class WoDynamic extends Dynamic{
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static WrapCopier<Dynamic, WoDynamic> copier = WrapCopierFactory.wo( Dynamic.class, WoDynamic.class, null, JpaObject.FieldsInvisible);
+		
+		private Long rank = 0L;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}		
 	}
 	
 }

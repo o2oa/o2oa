@@ -51,12 +51,11 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public void persist(JpaObject o) throws Exception {
-		// o.onPersist();
+		//o.onPersist();
 		this.get(o.getClass()).persist(o);
 	}
 
 	public void persist(JpaObject o, CheckPersistType type) throws Exception {
-		// o.onPersist();
 		if (!type.equals(CheckPersistType.none)) {
 			check(o, type);
 		}
@@ -76,7 +75,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	@SuppressWarnings("unchecked")
 	public void check(JpaObject jpa, CheckPersistType checkPersistType) throws Exception {
-		/** 运行方法进行字段处理 */
+		jpa.onPersist();
 		for (Entry<Field, CheckPersist> entry : entityManagerContainerFactory.getCheckPersistFields(jpa.getClass())
 				.entrySet()) {
 			Field field = entry.getKey();
@@ -1379,6 +1378,98 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			selections.add(root.get(str));
 		}
 		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
+		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
+			T t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEqualAndEqualDescPaging(Class<T> clz,
+			WrapCopier<T, W> copier, String equalAttribute, Object equalValue, String otherEqualAttribute,
+			Object otherEqualValue, Integer page, Integer count, String orderAttribute) throws Exception {
+		List<T> os = fetchEqualAndEqualDescPaging(clz, copier.getCopyFields(), equalAttribute, equalValue,
+				otherEqualAttribute, otherEqualValue, page, count, orderAttribute);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetchEqualAndEqualDescPaging(Class<T> clz, String equalAttribute,
+			Object equalValue, String otherEqualAttribute, Object otherEqualValue, Integer page, Integer count,
+			String orderAttribute) throws Exception {
+		return fetchEqualAndEqualDescPaging(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute,
+				equalValue, otherEqualAttribute, otherEqualValue, page, count, orderAttribute);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetchEqualAndEqualDescPaging(Class<T> clz,
+			List<String> fetchAttributes, String equalAttribute, Object equalValue, String otherEqualAttribute,
+			Object otherEqualValue, Integer page, Integer pageSize, String orderAttribute) throws Exception {
+		List<T> list = new ArrayList<>();
+		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		p = cb.and(p, cb.equal(root.get(otherEqualAttribute), otherEqualValue));
+		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
+		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
+			T t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEqualAndNotEqualDescPaging(Class<T> clz,
+			WrapCopier<T, W> copier, String equalAttribute, Object equalValue, String otherNotEqualAttribute,
+			Object otherNotEqualValue, Integer page, Integer count, String orderAttribute) throws Exception {
+		List<T> os = fetchEqualAndNotEqualDescPaging(clz, copier.getCopyFields(), equalAttribute, equalValue,
+				otherNotEqualAttribute, otherNotEqualValue, page, count, orderAttribute);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetchEqualAndNotEqualDescPaging(Class<T> clz, String equalAttribute,
+			Object equalValue, String otherNotEqualAttribute, Object otherNotEqualValue, Integer page, Integer count,
+			String orderAttribute) throws Exception {
+		return fetchEqualAndNotEqualDescPaging(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute,
+				equalValue, otherNotEqualAttribute, otherNotEqualValue, page, count, orderAttribute);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetchEqualAndNotEqualDescPaging(Class<T> clz,
+			List<String> fetchAttributes, String equalAttribute, Object equalValue, String otherNotEqualAttribute,
+			Object otherNotEqualValue, Integer page, Integer pageSize, String orderAttribute) throws Exception {
+		List<T> list = new ArrayList<>();
+		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		p = cb.and(p, cb.notEqual(root.get(otherNotEqualAttribute), otherNotEqualValue));
 		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
 			T t = clz.newInstance();

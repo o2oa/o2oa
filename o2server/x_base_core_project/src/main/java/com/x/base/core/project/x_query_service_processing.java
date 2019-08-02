@@ -20,7 +20,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.cms.core.entity.CategoryInfo" }, storageTypes = { StorageType.processPlatform,
 				StorageType.cms }, storeJars = { "x_query_core_entity", "x_organization_core_entity",
 						"x_organization_core_express", "x_processplatform_core_entity", "x_cms_core_entity" })
-public class x_query_service_processing extends ServiceA {
+public class x_query_service_processing extends Deployable {
 
 //	public x_query_service_processing() {
 //		super();

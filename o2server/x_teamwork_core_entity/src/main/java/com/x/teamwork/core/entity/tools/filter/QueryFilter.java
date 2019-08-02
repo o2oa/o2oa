@@ -18,6 +18,7 @@ import com.x.teamwork.core.entity.tools.filter.term.NotInTerm;
 import com.x.teamwork.core.entity.tools.filter.term.NotMemberTerm;
 
 
+
 public class QueryFilter{
 
 	private String joinType = "and";

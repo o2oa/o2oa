@@ -80,17 +80,24 @@ class ProjectExtFieldReleService {
 			throw new Exception("displayName can not empty for save field rele.");
 		}
 		Business business = new Business( emc );
+		ProjectExtFieldRele projectExtFieldRele = null;
 		List<ProjectExtFieldRele> projectExtFieldReleList =  business.projectExtFieldReleFactory().listWithFieldNameAndProject( object.getExtFieldName(), object.getProjectId() );
 		if( ListTools.isNotEmpty( projectExtFieldReleList )) {
-			return projectExtFieldReleList.get( 0 );
-		}		
-		if( StringUtils.isEmpty( object.getId())) {
-			object.setId( ProjectExtFieldRele.createId() );
+			projectExtFieldRele = projectExtFieldReleList.get( 0 );
+			object.copyTo( projectExtFieldRele );
+			emc.beginTransaction( ProjectExtFieldRele.class );
+			emc.check( projectExtFieldRele, CheckPersistType.all);
+			emc.commit();
+			return projectExtFieldRele;
+		}else {
+			if( StringUtils.isEmpty( object.getId())) {
+				object.setId( ProjectExtFieldRele.createId() );
+			}
+			emc.beginTransaction( ProjectExtFieldRele.class );
+			emc.persist( object, CheckPersistType.all);
+			emc.commit();
+			return object;
 		}
-		emc.beginTransaction( ProjectExtFieldRele.class );
-		emc.persist( object, CheckPersistType.all);
-		emc.commit();
-		return object;
 	}
 	
 	/**
@@ -116,5 +123,35 @@ class ProjectExtFieldReleService {
 		projectExtFieldRele.setExtFieldName(extFieldName);
 		projectExtFieldRele.setDisplayName(displayName);	
 		return  save( emc, projectExtFieldRele );
+	}
+
+	public String getExtFieldDisplayName(EntityManagerContainer emc, String projectId, String extFieldName) throws Exception {
+		if( StringUtils.isEmpty( projectId )  ){
+			throw new Exception("projectId can not empty for save field rele.");
+		}
+		if( StringUtils.isEmpty( extFieldName )  ){
+			throw new Exception("extFieldName can not empty for save field rele.");
+		}
+		Business business = new Business( emc );
+		List<ProjectExtFieldRele> fieldReles = business.projectExtFieldReleFactory().listWithFieldNameAndProject( extFieldName, projectId );
+		if(ListTools.isNotEmpty(fieldReles )) {
+			return fieldReles.get(0).getDisplayName();
+		}
+		return null;
+	}
+	
+	public ProjectExtFieldRele getExtFieldRele(EntityManagerContainer emc, String projectId, String extFieldName) throws Exception {
+		if( StringUtils.isEmpty( projectId )  ){
+			throw new Exception("projectId can not empty for save field rele.");
+		}
+		if( StringUtils.isEmpty( extFieldName )  ){
+			throw new Exception("extFieldName can not empty for save field rele.");
+		}
+		Business business = new Business( emc );
+		List<ProjectExtFieldRele> fieldReles = business.projectExtFieldReleFactory().listWithFieldNameAndProject( extFieldName, projectId );
+		if(ListTools.isNotEmpty(fieldReles )) {
+			return fieldReles.get(0);
+		}
+		return null;
 	}	
 }

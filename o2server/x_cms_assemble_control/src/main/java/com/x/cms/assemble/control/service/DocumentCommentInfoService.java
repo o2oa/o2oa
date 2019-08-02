@@ -90,18 +90,28 @@ class DocumentCommentInfoService {
 		if( StringUtils.isEmpty( object.getId() )  ){
 			object.setId( DocumentCommentInfo.createId() );
 		}
+		
+		Business business = new Business(emc);		
 		documentCommentInfo = emc.find( object.getId(), DocumentCommentInfo.class );
 		documentCommentContent = emc.find( object.getId(), DocumentCommentContent.class );
 		document = emc.find( object.getId(), Document.class );
 		
 		emc.beginTransaction( DocumentCommentContent.class );
 		emc.beginTransaction( DocumentCommentInfo.class );
+		
+		Integer maxOrder = 0;
+		
 		if( documentCommentInfo == null ){ // 保存一个新的对象
+			maxOrder = business.documentCommentInfoFactory().getMaxOrder( object.getDocumentId() );
+			if( maxOrder == null ) {
+				maxOrder = 0;
+			}
 			documentCommentInfo = new DocumentCommentInfo();
 			object.copyTo( documentCommentInfo );
 			if( StringUtils.isNotEmpty( object.getId() ) ){
 				documentCommentInfo.setId( object.getId() );
 			}
+			documentCommentInfo.setOrderNumber( maxOrder + 1 );
 			emc.persist( documentCommentInfo, CheckPersistType.all);
 			//document 评论数加1
 			if( document != null ) {
@@ -110,10 +120,12 @@ class DocumentCommentInfoService {
 				emc.check( document, CheckPersistType.all );
 			}
 		}else{ //对象已经存在，更新对象信息
+			Integer orderNumber = documentCommentInfo.getOrderNumber();
 			if(StringUtils.isNotEmpty( documentCommentInfo.getCreatorName() )) {
 				object.setCreatorName(documentCommentInfo.getCreatorName());
 			}
 			object.copyTo( documentCommentInfo, JpaObject.FieldsUnmodify  );
+			object.setOrderNumber(orderNumber);
 			emc.check( documentCommentInfo, CheckPersistType.all );	
 		}
 		

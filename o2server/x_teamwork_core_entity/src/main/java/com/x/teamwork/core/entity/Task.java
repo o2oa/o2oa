@@ -123,13 +123,6 @@ public class Task extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private Date endTime;
 	
-	public static final String tagContent_FIELDNAME = "tagContent";
-	@FieldDescribe("展示用，工作任务的标签信息，用#号分隔")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + tagContent_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + tagContent_FIELDNAME)
-	@CheckPersist( allowEmpty = true )
-	private String tagContent = "";
-	
 	public static final String priority_FIELDNAME = "priority";
 	@FieldDescribe("工作等级：普通 | 紧急 | 特急")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + priority_FIELDNAME)
@@ -249,88 +242,6 @@ public class Task extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageablePersonList;
-
-	public static final String memoString64_1_FIELDNAME = "memoString64_1";
-	@FieldDescribe("备用字符串64属性1.")
-	@Column(length = length_64B, name = ColumnNamePrefix + memoString64_1_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String memoString64_1 = "";
-	
-	public static final String memoString64_2_FIELDNAME = "memoString64_2";
-	@FieldDescribe("备用字符串64属性2.")
-	@Column(length = length_64B, name = ColumnNamePrefix + memoString64_2_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String memoString64_2 = "";
-	
-	public static final String memoString64_3_FIELDNAME = "memoString64_3";
-	@FieldDescribe("备用字符串64属性3.")
-	@Column(length = length_255B, name = ColumnNamePrefix + memoString64_3_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String memoString64_3 = "";
-	
-	public static final String memoString255_1_FIELDNAME = "memoString255_1";
-	@FieldDescribe("备用字符串255属性1.")
-	@Column(length = length_255B, name = ColumnNamePrefix + memoString255_1_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String memoString255_1 = "";
-	
-	public static final String memoString255_2_FIELDNAME = "memoString255_2";
-	@FieldDescribe("备用字符串255属性2.")
-	@Column(length = length_255B, name = ColumnNamePrefix + memoString255_2_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String memoString255_2 = "";
-	
-	public static final String memoInteger1_FIELDNAME = "memoInteger1";
-	@FieldDescribe("备用整型属性1.")
-	@Column( name = ColumnNamePrefix + memoInteger1_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer memoInteger1 = 0;
-	
-	public static final String memoInteger2_FIELDNAME = "memoInteger2";
-	@FieldDescribe("备用整型属性2.")
-	@Column( name = ColumnNamePrefix + memoInteger2_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer memoInteger2 = 0;
-	
-	public static final String memoInteger3_FIELDNAME = "memoInteger3";
-	@FieldDescribe("备用整型属性3.")
-	@Column( name = ColumnNamePrefix + memoInteger3_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer memoInteger3 = 0;
-	
-	public static final String memoDouble1_FIELDNAME = "memoDouble1";
-	@FieldDescribe("备用Double属性1.")
-	@Column( name = ColumnNamePrefix + memoDouble1_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Double memoDouble1 = 0.0;	
-	
-	public static final String memoDouble2_FIELDNAME = "memoDouble2";
-	@FieldDescribe("备用Double属性2.")
-	@Column( name = ColumnNamePrefix + memoDouble2_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Double memoDouble2 = 0.0;	
-
-	public String composeTagContent( List<String> tags ) {
-		StringBuffer sb = new StringBuffer();
-		if(ListTools.isNotEmpty( tags )) {
-			for( String tag : tags ) {
-				if( StringUtils.isEmpty( sb.toString() ) ) {
-					sb.append( tag );
-				}else {
-					sb.append( "#" ).append( tag );
-				}
-			}
-		}
-		return sb.toString();
-	}
-	
-	public String getTagContent() {
-		return this.tagContent;
-	}
-
-	public void setTagContent(String tagContent) {
-		this.tagContent = tagContent;
-	}
 
 	public String getProject() {
 		return project;
@@ -483,46 +394,6 @@ public class Task extends SliceJpaObject {
 	public void setManageablePersonList(List<String> manageablePersonList) {
 		this.manageablePersonList = manageablePersonList;
 	}
-	
-	public String getMemoString64_1() {
-		return memoString64_1;
-	}
-
-	public void setMemoString64_1(String memoString64_1) {
-		this.memoString64_1 = memoString64_1;
-	}
-
-	public String getMemoString64_2() {
-		return memoString64_2;
-	}
-
-	public void setMemoString64_2(String memoString64_2) {
-		this.memoString64_2 = memoString64_2;
-	}
-
-	public String getMemoString64_3() {
-		return memoString64_3;
-	}
-
-	public void setMemoString64_3(String memoString64_3) {
-		this.memoString64_3 = memoString64_3;
-	}
-
-	public String getMemoString255_1() {
-		return memoString255_1;
-	}
-
-	public void setMemoString255_1(String memoString255_1) {
-		this.memoString255_1 = memoString255_1;
-	}
-
-	public String getMemoString255_2() {
-		return memoString255_2;
-	}
-
-	public void setMemoString255_2(String memoString255_2) {
-		this.memoString255_2 = memoString255_2;
-	}	
 
 	public String getSummay() {
 		return summay;
@@ -530,46 +401,6 @@ public class Task extends SliceJpaObject {
 
 	public void setSummay(String summay) {
 		this.summay = summay;
-	}
-
-	public Integer getMemoInteger1() {
-		return memoInteger1;
-	}
-
-	public void setMemoInteger1(Integer memoInteger1) {
-		this.memoInteger1 = memoInteger1;
-	}
-
-	public Integer getMemoInteger2() {
-		return memoInteger2;
-	}
-
-	public void setMemoInteger2(Integer memoInteger2) {
-		this.memoInteger2 = memoInteger2;
-	}
-
-	public Integer getMemoInteger3() {
-		return memoInteger3;
-	}
-
-	public void setMemoInteger3(Integer memoInteger3) {
-		this.memoInteger3 = memoInteger3;
-	}
-
-	public Double getMemoDouble1() {
-		return memoDouble1;
-	}
-
-	public void setMemoDouble1(Double memoDouble1) {
-		this.memoDouble1 = memoDouble1;
-	}
-
-	public Double getMemoDouble2() {
-		return memoDouble2;
-	}
-
-	public void setMemoDouble2(Double memoDouble2) {
-		this.memoDouble2 = memoDouble2;
 	}
 
 	public String getProjectName() {

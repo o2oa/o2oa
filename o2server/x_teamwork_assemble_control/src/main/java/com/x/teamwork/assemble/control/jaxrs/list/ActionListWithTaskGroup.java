@@ -30,7 +30,7 @@ public class ActionListWithTaskGroup extends BaseAction {
 		List<TaskList> taskLists = null;
 		Boolean check = true;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", effectivePerson.getDistinguishedName(), taskGroupId );
+		String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", taskGroupId, effectivePerson.getDistinguishedName() );
 		Element element = taskListCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {

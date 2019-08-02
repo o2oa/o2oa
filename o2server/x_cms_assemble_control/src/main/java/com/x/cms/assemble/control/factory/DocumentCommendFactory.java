@@ -39,7 +39,6 @@ public class DocumentCommendFactory extends AbstractFactory {
 		Root<DocumentCommend> root = cq.from( DocumentCommend.class );
 		Predicate p = cb.equal(root.get( DocumentCommend_.commendPerson), personName );
 		cq.select( root.get( DocumentCommend_.id) ).where(p);
-		cq.orderBy( cb.desc( root.get( DocumentCommend_.createTime ) ) );
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
 
@@ -53,7 +52,6 @@ public class DocumentCommendFactory extends AbstractFactory {
 		Root<DocumentCommend> root = cq.from( DocumentCommend.class );
 		Predicate p = cb.equal(root.get( DocumentCommend_.documentId), docId );
 		cq.select( root.get( DocumentCommend_.id) ).where(p);
-		cq.orderBy( cb.desc( root.get( DocumentCommend_.createTime ) ) );
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
 	

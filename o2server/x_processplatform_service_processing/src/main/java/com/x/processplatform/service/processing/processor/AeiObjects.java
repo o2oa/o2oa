@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
@@ -13,6 +15,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
@@ -35,6 +38,7 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessingAttributes;
@@ -461,6 +465,8 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	public void commit() throws Exception {
+		this.modify();
+		this.executeProjection();
 		this.commitWork();
 		this.commitWorkCompleted();
 		this.commitWorkLog();
@@ -477,6 +483,167 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitDynamicEntity();
 		this.entityManagerContainer().commit();
 		this.message();
+	}
+
+	private void modify() {
+		this.modifyTaskCompleted();
+		this.modifyRead();
+		this.modifyReadCompleted();
+		this.modifyReview();
+	}
+
+	private void modifyTaskCompleted() {
+		for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+			o.setTitle(this.getWork().getTitle());
+		}
+		for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+			o.setTitle(this.getWork().getTitle());
+		}
+	}
+
+	private void modifyRead() {
+		for (Read o : this.getCreateReads()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+			o.setTitle(this.getWork().getTitle());
+		}
+		for (Read o : this.getUpdateReads()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+			o.setTitle(this.getWork().getTitle());
+		}
+	}
+
+	private void modifyReadCompleted() {
+		for (ReadCompleted o : this.getCreateReadCompleteds()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+		}
+		for (ReadCompleted o : this.getUpdateReadCompleteds()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+		}
+	}
+
+	private void modifyReview() {
+		for (Review o : this.getCreateReviews()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+		}
+		for (Review o : this.getUpdateReviews()) {
+			o.setCurrentActivityName(this.getWork().getActivityName());
+		}
+	}
+
+	private void executeProjection() throws Exception {
+		for (Projection p : this.getProjections()) {
+			switch (Objects.toString(p.getType(), "")) {
+			case Projection.TYPE_WORK:
+				executeProjectionWork(p);
+				break;
+			case Projection.TYPE_WORKCOMPLETED:
+				executeProjectionWorkCompleted(p);
+				break;
+			case Projection.TYPE_TASK:
+				executeProjectionTask(p);
+				break;
+			case Projection.TYPE_TASKCOMPLETED:
+				executeProjectionTaskCompleted(p);
+				break;
+			case Projection.TYPE_READ:
+				executeProjectionRead(p);
+				break;
+			case Projection.TYPE_READCOMPLETED:
+				executeProjectionReadCompleted(p);
+				break;
+			case Projection.TYPE_REVIEW:
+				executeProjectionReview(p);
+				break;
+			case Projection.TYPE_TABLE:
+				/* 仅处理最后work转workCompleted的事件 */
+				executeProjectionTable(p);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private void executeProjectionWork(Projection projection) throws Exception {
+		for (Work o : this.getCreateWorks()) {
+			ProjectionFactory.projectionWork(projection, this.getData(), o);
+		}
+		for (Work o : this.getUpdateWorks()) {
+			ProjectionFactory.projectionWork(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionWorkCompleted(Projection projection) throws Exception {
+		for (WorkCompleted o : this.getCreateWorkCompleteds()) {
+			ProjectionFactory.projectionWorkCompleted(projection, this.getData(), o);
+		}
+		for (WorkCompleted o : this.getUpdateWorkCompleteds()) {
+			ProjectionFactory.projectionWorkCompleted(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionTask(Projection projection) throws Exception {
+		for (Task o : this.getCreateTasks()) {
+			ProjectionFactory.projectionTask(projection, this.getData(), o);
+		}
+		for (Task o : this.getUpdateTasks()) {
+			ProjectionFactory.projectionTask(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionTaskCompleted(Projection projection) throws Exception {
+		for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+			ProjectionFactory.projectionTaskCompleted(projection, this.getData(), o);
+		}
+		for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
+			ProjectionFactory.projectionTaskCompleted(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionRead(Projection projection) throws Exception {
+		for (Read o : this.getCreateReads()) {
+			ProjectionFactory.projectionRead(projection, this.getData(), o);
+		}
+		for (Read o : this.getUpdateReads()) {
+			ProjectionFactory.projectionRead(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionReadCompleted(Projection projection) throws Exception {
+		for (ReadCompleted o : this.getCreateReadCompleteds()) {
+			ProjectionFactory.projectionReadCompleted(projection, this.getData(), o);
+		}
+		for (ReadCompleted o : this.getUpdateReadCompleteds()) {
+			ProjectionFactory.projectionReadCompleted(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionReview(Projection projection) throws Exception {
+		for (Review o : this.getCreateReviews()) {
+			ProjectionFactory.projectionReview(projection, this.getData(), o);
+		}
+		for (Review o : this.getUpdateReviews()) {
+			ProjectionFactory.projectionReview(projection, this.getData(), o);
+		}
+	}
+
+	private void executeProjectionTable(Projection projection) throws Exception {
+		/* 仅处理最后work转workCompleted的事件 */
+		if ((!this.getCreateTaskCompleteds().isEmpty()) || (!this.getUpdateTaskCompleteds().isEmpty())) {
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Class
+					.forName(DynamicEntity.CLASS_PACKAGE + "." + projection.getDynamicName());
+			this.entityManagerContainer().beginTransaction(cls);
+			JpaObject o = this.entityManagerContainer().find(this.getWork().getJob(), cls);
+			if (null == o) {
+				o = (JpaObject) cls.newInstance();
+				o.setId(this.getWork().getJob());
+				this.entityManagerContainer().persist(o, CheckPersistType.all);
+			}
+			ProjectionFactory.projectionTable(projection, this.getData(), o);
+		}
 	}
 
 	private void commitWork() throws Exception {
@@ -869,26 +1036,56 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	private void message() throws Exception {
-		this.messageDeleteTask();
+
+		/* 待办转已办处理 */
+		List<TaskCompleted> copyOfCreateTaskCompleteds = new ArrayList<>(this.getCreateTaskCompleteds());
+		List<Task> copyOfDeleteTasks = new ArrayList<>(this.getDeleteTasks());
+		for (Entry<TaskCompleted, Task> entry : ListTools.pairWithProperty(copyOfCreateTaskCompleteds,
+				TaskCompleted.task_FIELDNAME, copyOfDeleteTasks, Task.id_FIELDNAME).entrySet()) {
+			copyOfCreateTaskCompleteds.remove(entry.getKey());
+			copyOfDeleteTasks.remove(entry.getValue());
+			MessageFactory.task_to_taskCompleted(entry.getKey());
+		}
+		/* 待阅转已阅处理 */
+		List<ReadCompleted> copyOfCreateReadCompleteds = new ArrayList<>(this.getCreateReadCompleteds());
+		List<Read> copyOfDeleteReads = new ArrayList<>(this.getDeleteReads());
+		for (Entry<ReadCompleted, Read> entry : ListTools.pairWithProperty(copyOfCreateReadCompleteds,
+				ReadCompleted.read_FIELDNAME, copyOfDeleteReads, Read.id_FIELDNAME).entrySet()) {
+			copyOfCreateReadCompleteds.remove(entry.getKey());
+			copyOfDeleteReads.remove(entry.getValue());
+			MessageFactory.read_to_readCompleted(entry.getKey());
+		}
+
+		/* 工作转已完成工作 */
+		List<WorkCompleted> copyOfCreateWorkCompleteds = new ArrayList<>(this.getCreateWorkCompleteds());
+		List<Work> copyOfDeleteWorks = new ArrayList<>(this.getDeleteWorks());
+		for (Entry<WorkCompleted, Work> entry : ListTools.pairWithProperty(copyOfCreateWorkCompleteds,
+				WorkCompleted.work_FIELDNAME, copyOfDeleteWorks, Read.id_FIELDNAME).entrySet()) {
+			copyOfCreateWorkCompleteds.remove(entry.getKey());
+			copyOfDeleteWorks.remove(entry.getValue());
+			MessageFactory.work_to_workCompleted(entry.getKey());
+		}
+
+		this.messageDeleteTask(copyOfDeleteTasks);
 		this.messageDeleteTaskCompleted();
-		this.messageDeleteRead();
+		this.messageDeleteRead(copyOfDeleteReads);
 		this.messageDeleteReadCompleted();
 		this.messageDeleteReview();
 		this.messageDeleteAttachment();
-		this.messageDeleteWork();
+		this.messageDeleteWork(copyOfDeleteWorks);
 		this.messageDeleteWorkCompleted();
 		this.messageCreateTask();
-		this.messageCreateTaskCompleted();
+		this.messageCreateTaskCompleted(copyOfCreateTaskCompleteds);
 		this.messageCreateRead();
-		this.messageCreateReadCompleted();
+		this.messageCreateReadCompleted(copyOfCreateReadCompleteds);
 		this.messageCreateReview();
 		this.messageCreateAttachment();
 		this.messageCreateWork();
-		this.messageCreateWorkCompleted();
+		this.messageCreateWorkCompleted(copyOfCreateWorkCompleteds);
 	}
 
-	private void messageDeleteWork() throws Exception {
-		for (Work o : this.getDeleteWorks()) {
+	private void messageDeleteWork(List<Work> list) throws Exception {
+		for (Work o : list) {
 			MessageFactory.work_delete(o);
 		}
 	}
@@ -905,14 +1102,14 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void messageCreateWorkCompleted() throws Exception {
-		for (WorkCompleted o : this.getCreateWorkCompleteds()) {
+	private void messageCreateWorkCompleted(List<WorkCompleted> list) throws Exception {
+		for (WorkCompleted o : list) {
 			MessageFactory.workCompleted_create(o);
 		}
 	}
 
-	private void messageDeleteTask() throws Exception {
-		for (Task o : this.getDeleteTasks()) {
+	private void messageDeleteTask(List<Task> list) throws Exception {
+		for (Task o : list) {
 			MessageFactory.task_delete(o);
 		}
 	}
@@ -929,14 +1126,17 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void messageCreateTaskCompleted() throws Exception {
-		for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+	private void messageCreateTaskCompleted(List<TaskCompleted> list) throws Exception {
+		for (TaskCompleted o : list) {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^^^^^^^^^^^^");
+			System.out.println(o);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^^^^^^^^^^^^");
 			MessageFactory.taskCompleted_create(o);
 		}
 	}
 
-	private void messageDeleteRead() throws Exception {
-		for (Read o : this.getDeleteReads()) {
+	private void messageDeleteRead(List<Read> list) throws Exception {
+		for (Read o : list) {
 			MessageFactory.read_delete(o);
 		}
 	}
@@ -953,8 +1153,8 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void messageCreateReadCompleted() throws Exception {
-		for (ReadCompleted o : this.getCreateReadCompleteds()) {
+	private void messageCreateReadCompleted(List<ReadCompleted> list) throws Exception {
+		for (ReadCompleted o : list) {
 			MessageFactory.readCompleted_create(o);
 		}
 	}

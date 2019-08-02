@@ -31,15 +31,17 @@ public class StatementAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "执行语句.", action = ActionExecute.class)
 	@POST
-	@Path("{flag}/execute")
+	@Path("{flag}/execute/page/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void execute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("页码") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<Object> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionExecute().execute(effectivePerson, flag, jsonElement);
+			result = new ActionExecute().execute(effectivePerson, flag, page, size, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

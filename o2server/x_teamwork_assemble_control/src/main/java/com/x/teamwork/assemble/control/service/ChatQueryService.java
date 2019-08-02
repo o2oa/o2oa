@@ -7,9 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Chat;
+import com.x.teamwork.core.entity.ChatContent;
+import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 
 
 /**
@@ -38,6 +39,18 @@ public class ChatQueryService {
 		}
 	}
 	
+	public String getContent(String id) throws Exception {
+		if ( StringUtils.isEmpty( id )) {
+			throw new Exception("id is empty.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ChatContent chatContent = chatService.getContent(emc, id );
+			return chatContent == null ? "":chatContent.getContent();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	/**
 	 * 根据ID列表查询工作交流信息列表
 	 * @param ids
@@ -57,15 +70,13 @@ public class ChatQueryService {
 	
 	/**
 	 * 根据过滤条件查询符合要求的工作交流信息数量
-	 * @param currentPerson
-	 * @param group
-	 * @param title
+	 * @param queryFilter
 	 * @return
 	 * @throws Exception
 	 */
-	public Long countWithFilter( EffectivePerson currentPerson, List<String> projectIds, List<String> taskIds ) throws Exception {
+	public Long countWithFilter( QueryFilter queryFilter ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return chatService.countWithFilter(emc, projectIds, taskIds);
+			return chatService.countWithFilter(emc, queryFilter);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -83,14 +94,11 @@ public class ChatQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Chat> listWithFilter( EffectivePerson currentPerson, Integer pageSize, Integer pageNum, List<String> projectIds, List<String> taskIds ) throws Exception {
+	public List<Chat> listWithFilter( Integer pageSize, Integer pageNum, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		List<Chat> chatList = null;
 		List<Chat> result = new ArrayList<>();
 		Integer maxCount = 20;
-		Integer startNumber = 0;		
-		String orderField = "createTime";
-		String orderType = "desc";
-		
+		Integer startNumber = 0;
 		if( pageNum == 0 ) { pageNum = 1; }
 		if( pageSize == 0 ) { pageSize = 20; }
 		maxCount = pageSize * pageNum;
@@ -104,7 +112,7 @@ public class ChatQueryService {
 		}
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			chatList = chatService.listWithFilter(emc, maxCount, orderField, orderType, projectIds, taskIds );			
+			chatList = chatService.listWithFilter(emc, maxCount, orderField, orderType, queryFilter );			
 			if( ListTools.isNotEmpty( chatList )) {
 				for( int i = 0; i<chatList.size(); i++ ) {
 					if( i >= startNumber ) {
@@ -130,12 +138,10 @@ public class ChatQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Chat> listWithFilterNext( EffectivePerson currentPerson, Integer pageSize, String lastId, List<String> projectIds, List<String> taskIds ) throws Exception {
+	public List<Chat> listWithFilterNext( Integer pageSize, String lastId, String orderField, String orderType, QueryFilter queryFilter  ) throws Exception {
 		List<Chat> chatList = null;
 		Integer maxCount = 20;
-		String orderField = "createTime";
-		String orderType = "desc";
-		
+
 		if( pageSize == 0 ) { pageSize = 20; }
 		
 		if( StringUtils.isEmpty( orderField ) ) { 
@@ -146,8 +152,12 @@ public class ChatQueryService {
 		}
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Chat chat = chatService.get(emc, lastId );			
-			chatList = chatService.listWithFilterNext(emc, maxCount, chat.getId(), orderField, orderType, projectIds, taskIds );
+			Chat chat = chatService.get(emc, lastId );	
+			if( chat != null ) {
+				chatList = chatService.listWithFilterNext(emc, maxCount, chat.getId(), orderField, orderType, queryFilter );
+			}else {
+				chatList = chatService.listWithFilterNext(emc, maxCount, null, orderField, orderType, queryFilter );
+			}
 		} catch (Exception e) {
 			throw e;
 		}

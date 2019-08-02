@@ -64,21 +64,10 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
-//	public void delete(String id, EffectivePerson currentPerson, String documentType, Integer maxCount ) throws Exception {
-//		if (id == null || id.isEmpty()) {
-//			throw new Exception("id is null.");
-//		}
-//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//			appInfoService.delete(emc, id, documentType, maxCount);
-//		} catch (Exception e) {
-//			throw e;
-//		}
-//	}
 
-	public List<AppInfo> listAll(String documentType) throws Exception {
+	public List<AppInfo> listAll( String appType, String documentType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return appInfoService.listAll(emc, documentType);
+			return appInfoService.listAll(emc, appType, documentType);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -391,6 +380,35 @@ public class AppInfoServiceAdv {
 			emc.beginTransaction( AppInfo.class );
 			emc.persist( appInfo, CheckPersistType.all );
 			emc.commit();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 获取系统内已经存在的所有的栏目类别
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllAppType() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.listAllAppType(emc);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Long countAppInfoWithAppType(String type) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.countAppInfoWithAppType(emc, type);
+		} catch (Exception e) {
+			throw e;
+		}
+	}	
+	
+	public Long countAppInfoWithOutAppType() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.countAppInfoWithOutAppType(emc );
 		} catch (Exception e) {
 			throw e;
 		}

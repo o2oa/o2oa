@@ -73,6 +73,26 @@ public class TaskListAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
+	@JaxrsMethodDescribe(value = "根据工作任务组查询工作列表信息列表.", action = ActionListWithTaskGroupWithTask.class)
+	@GET
+	@Path("list/taskgroup/{taskgroup}/{withTask}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithTaskGroupWithTask(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作任务组ID") @PathParam("taskgroup") String taskgroup,
+			@JaxrsParameterDescribe("是否包含工作列表") @PathParam("withTask") Boolean withTask) {
+		ActionResult<List<ActionListWithTaskGroupWithTask.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithTaskGroupWithTask().execute( request, effectivePerson, taskgroup, withTask );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
 	@JaxrsMethodDescribe(value = "创建或者更新一个工作任务列表信息.", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

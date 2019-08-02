@@ -60,6 +60,17 @@ public class DocumentCommentInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
+	public Integer getMaxOrder(String documentId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentCommentInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Integer> cq = cb.createQuery( Integer.class );
+		Root<DocumentCommentInfo> root = cq.from( DocumentCommentInfo.class );
+		Predicate p = cb.equal(root.get( DocumentCommentInfo_.documentId ), documentId );
+		cq.select( cb.max( root.get( DocumentCommentInfo_.orderNumber )));
+		Integer max = em.createQuery(cq.where(p)).getSingleResult();
+		return max == null ? 0 : max;
+	}
+	
 	public List<String> listWithPerson( String personName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentCommentInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -151,6 +162,5 @@ public class DocumentCommentInfoFactory extends AbstractFactory {
 			cq.orderBy( orderWithField );
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
-	}
-	
+	}	
 }

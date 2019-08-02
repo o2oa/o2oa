@@ -1,6 +1,8 @@
 package com.x.teamwork.assemble.control.jaxrs.attachment;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,6 +24,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.teamwork.assemble.control.ThisApplication;
 import com.x.teamwork.core.entity.Attachment;
+import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 
 public class ActionProjectAttachmentUpload extends BaseAction {
@@ -32,6 +39,7 @@ public class ActionProjectAttachmentUpload extends BaseAction {
 		StorageMapping mapping = null;
 		String fileName = null;
 		Boolean check = true;		
+		Wo wo = new Wo();
 		
 		if( check ){
 			if( StringUtils.isEmpty( projectId ) ){
@@ -88,9 +96,9 @@ public class ActionProjectAttachmentUpload extends BaseAction {
 				attachment.saveContent(mapping, bytes, fileName);
 				attachment = attachmentPersistService.saveAttachment( project, attachment );
 				
-				Wo wo = new Wo();
+				
 				wo.setId( attachment.getId() );
-				result.setData(wo);
+				
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
@@ -101,11 +109,17 @@ public class ActionProjectAttachmentUpload extends BaseAction {
 		
 		if (check) {
 			try {
-				dynamicPersistService.uploadAttachmentDynamic(attachment, effectivePerson);
+				Dynamic dynamic = dynamicPersistService.uploadAttachmentDynamic(attachment, effectivePerson);
+				if( dynamic != null ) {
+					List<WoDynamic> dynamics = new ArrayList<>();
+					dynamics.add( WoDynamic.copier.copy( dynamic ) );
+					wo.setDynamics(dynamics);
+				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		result.setData(wo);
 		return result;
 	}
 
@@ -140,6 +154,32 @@ public class ActionProjectAttachmentUpload extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+		@FieldDescribe("操作引起的动态内容")
+		List<WoDynamic> dynamics = new ArrayList<>();
 
+		public List<WoDynamic> getDynamics() {
+			return dynamics;
+		}
+
+		public void setDynamics(List<WoDynamic> dynamics) {
+			this.dynamics = dynamics;
+		}
+	}
+	
+	public static class WoDynamic extends Dynamic{
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static WrapCopier<Dynamic, WoDynamic> copier = WrapCopierFactory.wo( Dynamic.class, WoDynamic.class, null, JpaObject.FieldsInvisible);
+		
+		private Long rank = 0L;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}		
 	}
 }

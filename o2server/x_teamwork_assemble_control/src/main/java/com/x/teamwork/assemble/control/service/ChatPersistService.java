@@ -43,7 +43,7 @@ public class ChatPersistService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Chat create( Chat object, EffectivePerson effectivePerson ) throws Exception {
+	public Chat create( EffectivePerson effectivePerson, Chat object, String lobContent  ) throws Exception {
 		if ( object == null) {
 			throw new Exception("chat object is null.");
 		}
@@ -52,7 +52,7 @@ public class ChatPersistService {
 		}
 
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
-			return  chatService.create( emc, object );
+			return  chatService.create( emc, object, lobContent );
 		} catch (Exception e) {
 			throw e;
 		}

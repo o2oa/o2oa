@@ -55,7 +55,8 @@ class ActionProcessing extends BaseAction {
 			}
 			emc.remove(read, CheckRemoveType.all);
 			emc.commit();
-			MessageFactory.read_delete(read);
+			MessageFactory.read_to_readCompleted(readCompleted);
+			// MessageFactory.read_delete(read);
 			Wo wo = new Wo();
 			wo.setId(read.getId());
 			result.setData(wo);
