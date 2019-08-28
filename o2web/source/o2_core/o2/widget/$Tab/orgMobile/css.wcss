@@ -13,6 +13,9 @@
 		"display": "none",
 		"opacity": 0
 	},
+    "tabNodeContainerArea" : {
+        "overflow" : "hidden"
+    },
 	"tabNode": {
         "position": "relative",
         "margin-left": "2px",
@@ -20,7 +23,7 @@
         "float": "left",
         "height": "40px",
         "cursor": "pointer",
-        "min-width": "60px",
+        //"min-width": "60px",
         "background": "#ffffff",
         "border": "0px"
     },
@@ -45,7 +48,7 @@
         "margin-right": "0px",
         "float": "left",
         "height": "40px",
-        "min-width": "60px",
+        //"min-width": "60px",
         "background": "#ffffff",
         "border-bottom": "2px solid #bf6364"
     },

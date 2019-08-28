@@ -9,7 +9,11 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class({
         //MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", function(){
         //    debugger;
             var process = (this.form.businessData.work) ? this.form.businessData.work.process : this.form.businessData.workCompleted.process;
-            this.monitor = new MWF.xApplication.process.Xform.widget.Monitor(this.node, this.form.businessData.workLogList, process);
+            this.monitor = new MWF.xApplication.process.Xform.widget.Monitor(this.node, this.form.businessData.workLogList, process,{
+                "onPostLoad" : function(){
+                    this.fireEvent("postLoad");
+                }.bind(this)
+            });
         //}.bind(this), false);
     }
 });

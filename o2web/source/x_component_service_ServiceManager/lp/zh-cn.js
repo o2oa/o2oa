@@ -40,7 +40,9 @@ MWF.xApplication.service.ServiceManager.LP = {
         "deleteProcessTitle": "删除代理确认",
         "deleteProcess": "是否确定要删除当前代理？",
         "deletePageTemplateTitle": "删除代理模板确认",
-        "deletePageTemplate": "是否确定要删除当前代理模板吗？"
+        "deletePageTemplate": "是否确定要删除当前代理模板吗？",
+
+        "noPermission" : "您没有管理员权限，不能查看代理。"
     },
 
     "invoke": {
@@ -54,7 +56,8 @@ MWF.xApplication.service.ServiceManager.LP = {
         "deleteProcessTitle": "删除接口确认",
         "deleteProcess": "是否确定要删除当前接口？",
         "deletePageTemplateTitle": "删除接口模板确认",
-        "deletePageTemplate": "是否确定要删除当前接口模板吗？"
+        "deletePageTemplate": "是否确定要删除当前接口模板吗？",
+        "noPermission" : "您没有管理员权限，不能查看接口。"
     },
 
     "application": {

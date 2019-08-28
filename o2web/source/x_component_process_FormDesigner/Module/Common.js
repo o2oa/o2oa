@@ -21,6 +21,13 @@ MWF.xApplication.process.FormDesigner.Module.Common = MWF.FCCommon = new Class({
 	},
 
     _setNodeProperty: function(){
+
+        this.node.store("module", this);
+        if (this.form.moduleList.indexOf(this)==-1) this.form.moduleList.push(this);
+        if (this.form.moduleNodeList.indexOf(this.node)==-1) this.form.moduleNodeList.push(this.node);
+        if (this.form.moduleContainerNodeList.indexOf(this.node)==-1) this.form.moduleContainerNodeList.push(this.node);
+        this.node.store("module", this);
+
         this._setEditStyle_custom("innerHTML");
     },
 

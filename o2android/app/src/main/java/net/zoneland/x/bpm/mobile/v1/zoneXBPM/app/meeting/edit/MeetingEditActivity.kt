@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.content_meeting_edit_form.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
@@ -26,7 +26,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.meeting.MeetingInfoJso
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goWithRequestCode
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
@@ -47,7 +46,6 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
     companion object {
         val MEETING_INFO_KEY = "xbpm.meeting.edit.info"
         val MEETING_INFO_ROOM_NAME_KEY = "xbpm.meeting.edit.room.name"
-        val MEETING_CHOOSE_INVITE_PERSON = 1000
         val MEETING_FILE_CODE = 1003
 
         fun startBundleData(info: MeetingInfoJson, roomName:String): Bundle {
@@ -94,7 +92,18 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
         invitePersonList.add(invitePersonAdd)
         invitePersonAdapter.setOnItemClickListener { _, position ->
             when(position) {
-                invitePersonList.size-1 -> goWithRequestCode<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(mode = NewOrganizationActivity.MULTI_PERSON_CHOOSE_MODE), MEETING_CHOOSE_INVITE_PERSON)
+                invitePersonList.size-1 -> {
+                    val bundle = ContactPickerActivity.startPickerBundle(
+                            arrayListOf("personPicker"),
+                            multiple = true)
+                    contactPicker(bundle) { result ->
+                        if (result != null) {
+                            val users = result.users.map { it.distinguishedName }
+                            XLog.debug("choose invite person, list:$users,")
+                            chooseInvitePersonCallback(users)
+                        }
+                    }
+                }
                 else -> {
                     invitePersonList.removeAt(position)
                     invitePersonAdapter.notifyDataSetChanged()
@@ -140,13 +149,7 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode){
-                MEETING_CHOOSE_INVITE_PERSON -> {
-                    val result = data?.getStringArrayListExtra(NewOrganizationActivity.MULTI_PERSON_CHOOSE_RESULT) ?: ArrayList<String>()
-                    XLog.debug("choose invite person, list:$result,")
-                    if (!result.isEmpty()) {
-                        chooseInvitePersonCallback(result)
-                    }
-                }
+
                 MEETING_FILE_CODE -> {
                     val result = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
                     if (!TextUtils.isEmpty(result)) {
@@ -191,10 +194,10 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
         hideLoadingDialog()
     }
 
-    private fun chooseInvitePersonCallback(result: java.util.ArrayList<String>) {
+    private fun chooseInvitePersonCallback(result: List<String>) {
         val allList = ArrayList<String>()
         invitePersonList.remove(invitePersonAdd)
-        if (!invitePersonList.isEmpty()){
+        if (invitePersonList.isNotEmpty()){
             allList.addAll(invitePersonList)
         }
         allList.addAll(result)

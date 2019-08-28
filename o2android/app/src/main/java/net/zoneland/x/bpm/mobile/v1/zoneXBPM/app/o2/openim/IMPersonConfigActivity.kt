@@ -3,11 +3,10 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim
 import android.os.Bundle
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_im_person_config.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.person.PersonActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson
@@ -15,6 +14,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderOptions
+import java.util.*
 
 class IMPersonConfigActivity : BaseMVPActivity<IMPersonConfigContract.View, IMPersonConfigContract.Presenter>(), IMPersonConfigContract.View {
     override var mPresenter: IMPersonConfigContract.Presenter = IMPersonConfigActivityPresenter()
@@ -49,7 +49,20 @@ class IMPersonConfigActivity : BaseMVPActivity<IMPersonConfigContract.View, IMPe
         }
         rl_im_person_tribe_create_btn.setOnClickListener {
             val personList = arrayListOf(O2SDKManager.instance().cId, personId)
-            goThenKill<NewOrganizationActivity>(NewOrganizationActivity.startBundleDataForIMChoose(personList))
+            val bundle = ContactPickerActivity.startPickerBundle(
+                    arrayListOf("personPicker"),
+                    multiple = true,
+                    initUserList = personList
+            )
+            contactPicker(bundle) { result ->
+                if (result != null) {
+                    val list = ArrayList<String>()
+                    val users = result.users
+                    users.map { list.add(it.distinguishedName) }
+                    goThenKill<IMTribeCreateActivity>(IMTribeCreateActivity.startCreate(list))
+                }
+            }
+
         }
         showLoadingDialog()
         mPresenter.loadPersonInfo(personId)

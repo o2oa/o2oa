@@ -42,7 +42,6 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
         this.loadSubModule();
 	},
     loadSubModule: function(){
-	    debugger;
         this.tab.pages.each(function(page){
             var node = page.tabNode;
             var json = this.form._getDomjson(node);

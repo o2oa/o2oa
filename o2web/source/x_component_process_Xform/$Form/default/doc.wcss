@@ -1,0 +1,190 @@
+{
+    "doc_toolbar": {
+        "height": "30px",
+        "border-bottom": "1px solid #cccccc"
+    },
+    "doc_toolbar_doublePage": {
+        "line-height": "30px",
+        "color": "#0b82ff",
+        "cursor": "pointer",
+        "width": "60px",
+        "text-align": "center",
+        "float": "right"
+    },
+
+    "doc_content": {
+        "min-height": "30.7cm",
+        "overflow": "hidden",
+        "padding": "0.3cm 0px"
+    },
+    "doc_page": {
+        "width": "15.6cm",
+        "min-height": "22.5cm",
+        "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
+        "margin": "0.2cm auto 0 auto",
+        "background": "#ffffff",
+        "overflow": "hidden",
+    },
+
+    "doc_layout_page_content": {
+        "overflow": "hidden",
+        "width": "15.6cm",
+        "min-height": "22.5cm",
+        "position": "relative",
+        "font-size": "16pt",
+        "font-family": "'仿宋', serif",
+        "line-height": "1.02cm",
+        "letter-spacing": "-0.01cm"
+    },
+
+    "doc_layout_copiesSecretPriority": {
+        "overflow": "hidden",
+        "font-size": "16pt",
+        "font-family": "'黑体', serif",
+        "line-height": "1.02cm",
+        "position": "absolute"
+    },
+    "doc_layout_copies": {},
+    "doc_layout_secret": {},
+    "doc_layout_priority": {},
+
+    "doc_layout_redHeader": {
+        "text-align": "center",
+        "padding-top": "3.5cm",
+        "color": "red",
+        "font-size": "1.8cm",
+        "font-family": "'宋体', serif",
+        "line-height": "normal",
+        "overflow": "hidden"
+    },
+
+    "doc_layout_filenoup": {
+        "margin-top": "2.04cm"
+    },
+    "doc_layout_filenoup_fileno_td": {
+        "width": "50%",
+        "vertical-align": "bottom"
+    },
+    "doc_layout_filenoup_fileno": {
+        "text-align": "left"
+    },
+    "doc_layout_filenoup_signer_td": {
+        "width": "50%",
+        "text-align": "right"
+    },
+    "doc_layout_filenoup_signer_table": {
+        "margin-right": "0.6cm",
+        "float": "right"
+    },
+    "doc_layout_filenoup_signerTitle_td": {
+        "vertical-align": "top"
+    },
+    "doc_layout_filenoup_signer": {},
+
+    "doc_layout_filenoup_signerContent_td": {
+        "max-width": "4cm"
+    },
+    "doc_layout_filenoup_signerContent": {
+        "font-family": "'楷体', serif"
+    },
+
+    "doc_layout_fileno": {
+        "overflow": "hidden",
+        "font-size": "16pt",
+        "font-family": "'仿宋', serif",
+        "line-height": "1.02cm",
+        "text-align": "center",
+        "margin-top": "2.04cm"
+    },
+    "doc_layout_redline": {
+        "color": "#FF0000",
+        "height": "0.4mm",
+        "background-color": "#ff0000"
+    },
+    "doc_layout_subject": {
+        "overflow": "hidden",
+        "font-size": "22.0pt",
+        "font-family": "'宋体', serif",
+        "line-height": "1.02cm",
+        "margin": "auto",
+        "margin-top": "2.04cm",
+        "text-align": "center",
+        "width": "90%"
+    },
+    "doc_layout_mainSend": {
+        "font-size": "16pt",
+        "font-family": "'仿宋', serif",
+        "line-height": "1.02cm",
+        "margin-top": "1.02cm"
+    },
+    "doc_layout_filetext": {
+        "font-size": "16pt",
+        "font-family": "'仿宋', serif",
+        "line-height": "1.02cm"
+    },
+    "doc_layout_attachment": {
+        "margin-top": "1.02cm"
+    },
+    "doc_layout_attachment_title_td": {
+        "width": "2.8cm",
+        "vertical-align": "top"
+    },
+    "doc_layout_attachment_title": {},
+    "doc_layout_attachment_content_td": {},
+    "doc_layout_attachment_content": {},
+
+    "doc_layout_issuance": {
+        "margin-top": "2.6cm",
+        "margin-right": "1.2cm",
+        "float": "right",
+    },
+    "doc_layout_issuanceUnit": {
+        "text-align": "center"
+    },
+    "doc_layout_issuanceDate": {
+        "text-align": "center"
+    },
+    "doc_layout_annotation": {
+        "margin-left": "1.2cm",
+        "clear": "both"
+    },
+    "doc_layout_edition": {
+        "border-top": "0.35mm solid #000000",
+        "border-bottom": "0.35mm solid #000000",
+        "font-size": "14pt",
+        "margin-top": "2.04cm",
+        //"position": "absolute",
+        //"bottom": "0px"
+    },
+    "doc_layout_edition_read": {
+        "position": "absolute",
+        "bottom": "0px"
+    },
+    "doc_layout_edition_copyto": {
+        "text-align": "center",
+        "border-bottom": "0.25mm solid #000000"
+    },
+    "doc_layout_edition_copyto_table": {
+        "width": "14.4cm",
+        "text-align": "left"
+    },
+    "doc_layout_edition_copyto_title": {
+        "width": "1.8cm"
+    },
+    "doc_layout_edition_copyto_content": {},
+
+    "doc_layout_edition_issuance": {
+        "text-align": "center"
+    },
+    "doc_layout_edition_issuance_table": {
+        "width": "14.4cm",
+        "text-align": "left"
+    },
+    "doc_layout_edition_issuance_unit": {
+        "text-align": "left"
+    },
+    "doc_layout_edition_issuance_date": {
+        "text-align": "right"
+    }
+    
+}

@@ -177,11 +177,14 @@ MWF.xApplication.query.Query.ViewItem = new Class({
         this.isSelected = false;
     },
     loadView: function(){
+        debugger;
         MWF.xDesktop.requireApp("query.Query", "Viewer",function(){
             this.viewContent.empty();
+            var data = JSON.parse(this.view.data);
             this.viewer = new MWF.QViewer(this.viewContent, {
                 "application": this.view.query,
-                "viewName": this.view.name
+                "viewName": this.view.name,
+                "isExpand": data.isExpand
             }, {"export": true});
         }.bind(this));
     }

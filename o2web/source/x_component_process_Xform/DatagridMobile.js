@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 	Extends: MWF.APP$Module,
 	isEdit: false,
     options: {
-        "moduleEvents": ["completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
+        "moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
     },
 
     initialize: function(node, json, form, options){
@@ -757,7 +757,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 //var color = currentTr.retrieve("bgcolor");
                 //currentTr.tween("background-color", color);
                 this.close();
-            }, null);
+            }, null, null, this.form.json.confirmStyle);
         }
         this.validationMode();
     },

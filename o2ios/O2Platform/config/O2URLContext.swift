@@ -77,6 +77,7 @@ struct PersonContext {
 struct ContactContext {
     static let contactsContextKey = "x_organization_assemble_express"
     static let contactsContextKeyV2 = "x_organization_assemble_control"
+    static let topLevelUnitByIdentity = "jaxrs/unit/identity/level/object" // x_organization_assemble_express 上下文下的
     static let personInfoByNameQuery = "jaxrs/person/##name##"
     static let personIconByNameQuery = "servlet/icon/##name##" //获取图像
     static let personIconByNameQueryV2 = "jaxrs/person/##name##/icon"

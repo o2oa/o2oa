@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout
+        android:id="@+id/swipe_refresh_contact_person_group_picker_main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_contact_person_group_picker_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
+</android.support.constraint.ConstraintLayout>

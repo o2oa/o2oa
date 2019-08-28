@@ -20,7 +20,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "redo", "|",
             "size",
             "color", "|",
-            "reset",//,
+            "image",
+            "imageClipper", "|",
+            "reset",
             //"clear" //橡皮
             "cancel"
         ],
@@ -53,7 +55,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
             undo : "撤销",
             redo : "重做",
             size : "粗细",
-            color : "颜色",//,
+            color : "颜色",
+            image : "插入图片",
+            imageClipper : "裁剪图片",
             //clear : "橡皮"
             "cancel": "取消"
         };
@@ -157,6 +161,31 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.toolbar = new o2.widget.Tablet.Toolbar( this , this.toolbarNode  );
         this.toolbar.load();
     },
+    storeToPreArray : function(){
+        //当前绘图表面状态
+        var preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
+        //当前绘图表面进栈
+        this.preDrawAry.push(preData);
+    },
+    storeToMiddleArray : function(){
+        //当前绘图表面状态
+        var preData= this.ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
+        if( this.nextDrawAry.length==0){
+            //当前绘图表面进栈
+            this.middleAry.push(preData);
+        }else{
+            this.middleAry=[];
+            this.middleAry=this.middleAry.concat(this.preDrawAry);
+            this.middleAry.push(preData);
+            this.nextDrawAry=[];
+            this.toolbar.enableItem("redo");
+        }
+
+        if(this.preDrawAry.length){
+            this.toolbar.enableItem("undo");
+            this.toolbar.enableItem("reset");
+        }
+    },
     loadContent : function( ){
 
         this.canvas = new Element("canvas", {
@@ -184,10 +213,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             ctx.beginPath();
             ctx.moveTo(ev.clientX-position.x,ev.clientY-position.y);
 
-            //当前绘图表面状态
-            var preData= ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
-            //当前绘图表面进栈
-            this.preDrawAry.push(preData);
+            this.storeToPreArray();
 
             var mousemove = function(ev){
                 ctx.lineTo(ev.client.x - position.x,ev.client.y - position.y);
@@ -203,23 +229,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 doc.removeEvent("touchmove", mousemove);
                 doc.removeEvent("touchend", mouseup);
 
-                //当前绘图表面状态
-                var preData= ctx.getImageData(0,0,this.contentWidth,this.contentHeight);
-                if( this.nextDrawAry.length==0){
-                    //当前绘图表面进栈
-                    this.middleAry.push(preData);
-                }else{
-                    this.middleAry=[];
-                    this.middleAry=this.middleAry.concat(this.preDrawAry);
-                    this.middleAry.push(preData);
-                    this.nextDrawAry=[];
-                    this.toolbar.enableItem("redo");
-                }
-
-                if(this.preDrawAry.length){
-                    this.toolbar.enableItem("undo");
-                    this.toolbar.enableItem("reset");
-                }
+                this.storeToMiddleArray();
 
                 ctx.closePath();
             }.bind(this);
@@ -285,8 +295,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         return new Blob([ia], {type: this.fileType });
     },
     getBase64Code : function(){
-
-
         var ctx = this.ctx;
         var canvas = this.canvas;
         //var container = this.contentNode;
@@ -383,6 +391,89 @@ o2.widget.Tablet = o2.Tablet = new Class({
             });
         }
     },
+    getImageSize : function(naturalWidth, naturalHeight ){
+        var ratio = naturalWidth / naturalHeight;
+        var ww = this.contentWidth,
+            wh = this.contentHeight;
+        var flag = ( naturalWidth / parseInt(ww) ) > ( naturalHeight / parseInt(wh) );
+        if( flag ){
+            var width = Math.min( naturalWidth, parseInt( ww )  );
+            return { width : width,  height : width / ratio }
+        }else{
+            var height = Math.min( naturalHeight, parseInt( wh )  );
+            return { width : height * ratio,  height : height }
+        }
+    },
+    parseFileToImage : function( file, callback ){
+        var imageNode = new Element("img");
+
+        var onImageLoad = function(){
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
+                setTimeout( function(){ onImageLoad(); }.bind(this), 100 );
+            }else{
+                _onImageLoad();
+            }
+        };
+
+        var _onImageLoad = function(){
+
+            var nh = imageNode.naturalHeight,
+                nw = imageNode.naturalWidth;
+            var size = this.getImageSize( nw, nh );
+            imageNode.setStyles({
+                width : size.width,
+                height : size.height
+            });
+
+            var mover = new o2.widget.Tablet.ImageMover( this, imageNode, this.contentNode , {
+                onPostOk : function(){
+                    var coordinate =  mover.getCoordinage();
+                    this.storeToPreArray();
+                    this.ctx.drawImage(imageNode, coordinate.left, coordinate.top, coordinate.width, coordinate.height);
+                    this.storeToMiddleArray();
+                }.bind(this)
+            });
+            mover.load();
+
+
+            if( callback )callback();
+        }.bind(this);
+
+        var reader=new FileReader();
+        reader.onload=function(){
+            imageNode.src=reader.result;
+            reader = null;
+            onImageLoad();
+        }.bind(this);
+        reader.readAsDataURL(file);
+    },
+    image : function( itemNode ){
+        var uploadFileAreaNode = new Element("div");
+        var html = "<input name=\"file\" type=\"file\" />"; //accept=\"images/*\"
+
+        uploadFileAreaNode.set("html", html);
+
+        var fileUploadNode = uploadFileAreaNode.getFirst();
+        fileUploadNode.addEvent("change", function () {
+            var file =  fileUploadNode.files[0];
+            this.parseFileToImage( file, function(){
+                uploadFileAreaNode.destroy();
+            })
+        }.bind(this));
+        fileUploadNode.click();
+    },
+    imageClipper : function( itemNode ){
+        var clipper = new o2.widget.Tablet.ImageClipper(this.app, {
+            "style": "default",
+            "aspectRatio" : 0,
+            "onOk" : function( img ){
+                this.parseFileToImage( img );
+            }.bind(this)
+        });
+        clipper.load();
+    },
     clear : function( itemNode ){
 
     },
@@ -391,8 +482,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.fireEvent("cancel");
     }
 });
-
-
 
 o2.widget.Tablet.Toolbar = new Class({
     Implements: [Options, Events],
@@ -423,6 +512,12 @@ o2.widget.Tablet.Toolbar = new Class({
             },
             color : {
                 enable : function(){ return true }
+            },
+            image : {
+                enable : function(){ return true }
+            },
+            imageClipper : {
+                enable : function(){ return true }
             }
         }
     },
@@ -438,7 +533,9 @@ o2.widget.Tablet.Toolbar = new Class({
                 "undo", "|",
                 "redo", "|",
                 "size", "|",
-                "color"//, "|",
+                "color", "|",
+                "image", "|",
+                "imageClipper"
                 //"clear" //橡皮
             ];
         }
@@ -467,6 +564,12 @@ o2.widget.Tablet.Toolbar = new Class({
                     break;
                 case "color" :
                     html +=  "<div item='color' styles='" + style + "'>"+ this.lp.color  +"</div>";
+                    break;
+                case "image" :
+                    html +=  "<div item='image' styles='" + style + "'>"+ this.lp.image  +"</div>";
+                    break;
+                case "imageClipper" :
+                    html +=  "<div item='imageClipper' styles='" + style + "'>"+ this.lp.imageClipper  +"</div>";
                     break;
                 case "clear" :
                     html +=  "<div item='clear' styles='" + style + "'>"+ this.lp.clear  +"</div>";
@@ -552,7 +655,6 @@ o2.widget.Tablet.Toolbar = new Class({
     }
 
 });
-
 
 o2.xDesktop.requireApp("Template", "MTooltips", null, false);
 o2.widget.Tablet.SizePicker = new Class({
@@ -757,5 +859,401 @@ o2.widget.Tablet.SizePicker = new Class({
 
        ctx.lineTo( 200, 15  );
         ctx.stroke();
+    }
+});
+
+MWF.require("MWF.widget.ImageClipper", null, false);
+o2.widget.Tablet.ImageClipper = new Class({
+    Implements: [Options, Events],
+    Extends: MWF.widget.Common,
+    options: {
+        "imageUrl" : "",
+        "resultMaxSize" : 800,
+        "description" : "",
+        "title": "裁剪图片",
+        "style": "default",
+        "aspectRatio": 0
+    },
+    initialize: function(app, options){
+        this.setOptions(options);
+        this.app = app;
+        this.path = "/x_component_process_Xform/widget/$ImageClipper/";
+        this.cssPath = "/x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
+        this._loadCss();
+    },
+
+    load: function(data){
+        this.data = data;
+
+        var options = {};
+        var width = "668";
+        var height = "510";
+        width = width.toInt();
+        height = height.toInt();
+
+        var size = (( this.app && this.app.content )  || $(document.body) ).getSize();
+        var x = (size.x-width)/2;
+        var y = (size.y-height)/2;
+        if (x<0) x = 0;
+        if (y<0) y = 0;
+        if (layout.mobile){
+            x = 20;
+            y = 0;
+        }
+
+        var _self = this;
+        MWF.require("MWF.xDesktop.Dialog", function() {
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": this.options.title || "Select Image",
+                "style": options.style || "user",
+                "top": y,
+                "left": x - 20,
+                "fromTop": y,
+                "fromLeft": x - 20,
+                "width": width,
+                "height": height,
+                "html": "<div></div>",
+                "maskNode": this.app ? this.app.content : $(document.body),
+                "container": this.app ? this.app.content : $(document.body),
+                "buttonList": [
+                    {
+                        "text": MWF.LP.process.button.ok,
+                        "action": function () {
+                            var img = _self.image.getResizedImage();
+                            _self.fireEvent("ok", [img] );
+                            this.close();
+                        }
+                    },
+                    {
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.close();
+                        }
+                    }
+                ],
+                "onPostShow" : function(){
+                    this.node.setStyle("z-index",1003);
+                    this.content.setStyle("margin-left","20px");
+                }
+            });
+            dlg.show();
+
+            this.image = new MWF.widget.ImageClipper(dlg.content.getFirst(), {
+                "description" : this.options.description,
+                "resetEnable" : true
+            });
+            this.image.load(this.data);
+        }.bind(this))
+    }
+
+});
+
+o2.widget.Tablet.ImageMover = new Class({
+    Implements: [Options, Events],
+    options: {
+        imageMinSize : 100
+    },
+    initialize: function(tablet, imageNode, relativeNode, options){
+        this.setOptions(options);
+        this.tablet = tablet;
+        this.imageNode = imageNode;
+        this.relativeNode = relativeNode;
+        this.path = this.tablet.path + this.tablet.options.style + "/"
+    },
+    load: function(){
+        this.maskNode = new Element("div.maskNode",{
+            styles : {
+                "width": "100%",
+                "height": "100%",
+                "opacity": 0.6,
+                "position": "absolute",
+                "background-color": "#CCC",
+                "top": "0px",
+                "left": "0px",
+                "z-index" : 1002,
+                "-webkit-user-select": "none",
+                "-moz-user-select": "none",
+                "user-select" : "none"
+            }
+        }).inject($(document.body));
+
+        var coordinates = this.relativeNode.getCoordinates();
+
+        this.node = new Element( "div", {
+            styles : {
+                "width" : coordinates.width,
+                "height" : coordinates.height,
+                "position" : "absolute",
+                "top" : coordinates.top,
+                "left" : coordinates.left,
+                "background" : "rgba(255,255,255,0.5)",
+                "z-index" : 1003,
+                "-webkit-user-select": "none",
+                "-moz-user-select": "none",
+                "user-select" : "none"
+            }
+        }).inject($(document.body));
+
+        this.dragNode = new Element("div",{
+            styles : {
+                "cursor" : "move"
+            }
+        }).inject( this.node );
+
+        this.imageNode.inject( this.dragNode );
+
+        //this.maskNode.ondragstart = function(){
+        //    return false;
+        //};
+        //this.node.ondragstart = function(){
+        //    return false;
+        //};
+        //this.imageNode.ondragstart = function(){
+        //    return false;
+        //};
+
+        this.originalImageSize = this.imageNode.getSize();
+        this.dragNode.setStyles({
+            width : this.originalImageSize.x,
+            height : this.originalImageSize.y
+        });
+
+        this.okNode = new Element("div",{
+            styles : {
+                "background" : "url("+ this.path + "icon/ok.png) no-repeat",
+                "width" : "16px",
+                "height" : "16px",
+                "right" : "-20px",
+                "top" : "5px",
+                "position" : "absolute",
+                "cursor" : "pointer"
+            },
+            events : {
+                click : function(){
+                    this.ok();
+                    this.close();
+                }.bind(this)
+            }
+        }).inject(this.dragNode);
+
+        this.cancelNode = new Element("div",{
+            styles : {
+                "background" : "url("+ this.path + "icon/cancel.png) no-repeat",
+                "width" : "16px",
+                "height" : "16px",
+                "right" : "-20px",
+                "top" : "30px",
+                "position" : "absolute",
+                "cursor" : "pointer"
+            },
+            events : {
+                click : function(){
+                    this.close();
+                }.bind(this)
+            }
+        }).inject(this.dragNode);
+
+        this.drag = this.dragNode.makeDraggable({
+            "container" : this.node,
+            "handle": this.dragNode
+        });
+
+
+        this.reizeNode = new Element("div.reizeNode",{ styles :  {
+            "cursor" : "nw-resize",
+            "position": "absolute",
+            "bottom": "0px",
+            "right": "0px",
+            "border" : "2px solid #52a3f5",
+            "width" : "8px",
+            "height" : "8px"
+        }}).inject(this.dragNode);
+
+        this.docBody = window.document.body;
+        this.reizeNode.addEvents({
+            "touchstart" : function(ev){
+                this.drag.detach();
+                this.dragNode.setStyle("cursor", "nw-resize" );
+                this.docBody.setStyle("cursor", "nw-resize" );
+                this.resizeMode = true;
+                this.getOffset(ev);
+                ev.stopPropagation();
+            }.bind(this),
+            "mousedown" : function(ev){
+                this.drag.detach();
+                this.dragNode.setStyle("cursor", "nw-resize" );
+                this.docBody.setStyle("cursor", "nw-resize" );
+                this.resizeMode = true;
+                this.getOffset(ev);
+                ev.stopPropagation();
+            }.bind(this),
+            "touchmove" : function(ev){
+                if(!this.lastPoint)return;
+                var offset= this.getOffset(ev);
+                this.resizeDragNode( offset );
+                ev.stopPropagation();
+            }.bind(this),
+            "mousemove" : function(ev){
+                if(!this.lastPoint)return;
+                var offset= this.getOffset(ev);
+                this.resizeDragNode( offset );
+                ev.stopPropagation();
+            }.bind(this),
+            "touchend" : function(ev){
+                this.drag.attach();
+                this.dragNode.setStyle("cursor", "move" );
+                this.docBody.setStyle("cursor", "default" );
+                this.resizeMode = false;
+                this.lastPoint=null;
+                ev.stopPropagation();
+            }.bind(this),
+            "mouseup" : function(ev){
+                this.drag.attach();
+                this.dragNode.setStyle("cursor", "move" );
+                this.docBody.setStyle("cursor", "default" );
+                this.resizeMode = false;
+                this.lastPoint=null;
+                ev.stopPropagation();
+            }.bind(this)
+        });
+
+        this.bodyMouseMoveFun = this.bodyMouseMove.bind(this);
+        this.docBody.addEvent("touchmove", this.bodyMouseMoveFun);
+        this.docBody.addEvent("mousemove", this.bodyMouseMoveFun);
+
+        this.bodyMouseEndFun = this.bodyMouseEnd.bind(this);
+        this.docBody.addEvent("touchend", this.bodyMouseEndFun);
+        this.docBody.addEvent("mouseup", this.bodyMouseEndFun);
+    },
+    bodyMouseMove: function(ev){
+        if(!this.lastPoint)return;
+        if( this.resizeMode ){
+            var offset= this.getOffset(ev);
+            this.resizeDragNode( offset );
+        }
+    },
+    bodyMouseEnd: function(ev){
+        this.lastPoint=null;
+        if( this.resizeMode ){
+            this.drag.attach();
+            this.dragNode.setStyle("cursor", "move" );
+            this.docBody.setStyle("cursor", "default" );
+            this.resizeMode = false;
+        }
+    },
+    resizeDragNode : function(offset){
+        var x=offset.x;
+        if( x == 0 )return;
+
+        var	y=offset.y;
+        if( y == 0 )return;
+
+        debugger;
+
+        var coordinates = this.dragNode.getCoordinates( this.node );
+        var containerSize = this.node.getSize();
+        var	top=coordinates.top,
+            left=coordinates.left,
+            width=containerSize.x,
+            height=containerSize.y,
+            ratio = this.originalImageSize.x / this.originalImageSize.y,
+            w,
+            h;
+
+        //if( ratio ){
+            if( Math.abs(x)/Math.abs(y) > ratio ){
+                if( x+coordinates.width+left>width ){
+                    return;
+                }else{
+                    w = x + coordinates.width;
+                    h = w / ratio;
+                    if( h+top > height ){
+                        return;
+                    }
+                }
+            }else{
+                if(y+coordinates.height+top>height){
+                    return;
+                }else{
+                    h = y+ coordinates.height;
+                    w = h * ratio;
+                }
+                if( w+left > width ){
+                    return;
+                }
+            }
+        //}else{
+        //    if( x+coordinates.width+left>width ){
+        //        return;
+        //    }else{
+        //        w = x + coordinates.width
+        //    }
+        //    if(y+coordinates.height+top>height){
+        //        return;
+        //    }else{
+        //        h = y+ coordinates.height;
+        //    }
+        //}
+
+        var minWidth = this.options.imageMinSize;
+        var minHeight = this.options.imageMinSize;
+        w=w< minWidth ? minWidth:w;
+        h=h< minHeight ? minHeight:h;
+
+        this.dragNode.setStyles({
+            width:w+'px',
+            height:h+'px'
+        });
+        this.imageNode.setStyles({
+            width:w+'px',
+            height:h+'px'
+        });
+    },
+    getOffset: function(event){
+        event=event.event;
+        var x,y;
+        if(event.touches){
+            var touch=event.touches[0];
+            x=touch.clientX;
+            y=touch.clientY;
+        }else{
+            x=event.clientX;
+            y=event.clientY;
+        }
+
+        if(!this.lastPoint){
+            this.lastPoint={
+                x:x,
+                y:y
+            };
+        }
+
+        var offset={
+            x:x-this.lastPoint.x,
+            y:y-this.lastPoint.y
+        };
+        this.lastPoint={
+            x:x,
+            y:y
+        };
+        return offset;
+    },
+    getCoordinage : function(){
+        return this.imageNode.getCoordinates( this.node );
+    },
+    ok : function(){
+        this.fireEvent("postOk")
+    },
+    close : function(){
+        this.docBody.removeEvent("touchmove",this.bodyMouseMoveFun);
+        this.docBody.removeEvent("mousemove",this.bodyMouseMoveFun);
+        this.docBody.removeEvent("touchend",this.bodyMouseEndFun);
+        this.docBody.removeEvent("mouseup",this.bodyMouseEndFun);
+
+        //this.backgroundNode.destroy();
+        this.maskNode.destroy();
+        this.node.destroy();
+
+        delete this;
     }
 });

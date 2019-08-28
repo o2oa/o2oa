@@ -30,26 +30,37 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
                     switch type {
                     case "date.datePicker":
                         datePicker(json: String(json))
+                        break
                     case "date.timePicker":
                         timePicker(json: String(json))
+                        break
                     case "date.dateTimePicker":
                         dateTimePicker(json: String(json))
+                        break
                     case "calendar.chooseOneDay":
                         calendarPickDay(json: String(json))
+                        break
                     case "calendar.chooseDateTime":
                         calendarPickerDateTime(json: String(json))
+                        break
                     case "calendar.chooseInterval":
                         calendarPickerDateInterval(json: String(json))
+                        break
                     case "device.getPhoneInfo":
                         getPhoneInfo(json: String(json))
+                        break
                     case "device.scan":
                         scan(json: String(json))
+                        break
                     case "navigation.setTitle":
                         navigationSetTitle(json: String(json))
+                        break
                     case "navigation.close":
                         navigationClose(json: String(json))
+                        break
                     case "navigation.goBack":
                         navigationGoBack(json: String(json))
+                        break
                     default:
                         DDLogError("notification类型不正确, type: \(type)")
                     }

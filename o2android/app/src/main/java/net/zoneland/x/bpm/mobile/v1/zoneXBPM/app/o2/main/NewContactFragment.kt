@@ -66,7 +66,7 @@ class NewContactFragment : BaseMVPViewPagerFragment<NewContactContract.View, New
                 val icon = holder?.getView<CircleImageView>(R.id.image_item_contact_fragment_body_collect_icon)
                 val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(collect.personId)
                 if (icon!=null) {
-                    if (collect.gender.equals("男")) {
+                    if (collect.gender == "男") {
                         O2ImageLoaderManager.instance()
                                 .showImage(icon, url, O2ImageLoaderOptions(placeHolder = R.mipmap.icon_avatar_men))
 

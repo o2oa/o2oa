@@ -35,6 +35,7 @@ class O2BaseJsMessageHandler: O2WKScriptMessageHandlerImplement {
             }else {
                 DDLogDebug("console.log: unkown type \(message.body)")
             }
+            break
         case "ReplyAction":
             DDLogDebug("回复 帖子 message.body = \(message.body)")
             let pId : String?

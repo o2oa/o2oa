@@ -93,6 +93,14 @@
 		B130E64D223B778000B68354 /* shared_preferences.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B130E647223B774D00B68354 /* shared_preferences.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B130E64E223B778000B68354 /* Flutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B130E60D223B774400B68354 /* Flutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B13707DD212D3F19002113F1 /* CMSCategoryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13707DC212D3F19002113F1 /* CMSCategoryData.swift */; };
+		B142B081230FB56400E7D127 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B080230FB56400E7D127 /* MimeType.swift */; };
+		B142B083230FB58B00E7D127 /* Swime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B082230FB58B00E7D127 /* Swime.swift */; };
+		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
+		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
+		B14E07882301419500AE85A0 /* ContactIdentityPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07872301419500AE85A0 /* ContactIdentityPickerViewController.swift */; };
+		B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */; };
+		B14E078C230141BE00AE85A0 /* ContactPersonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */; };
+		B14E07C523025C6A00AE85A0 /* OOContactExpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */; };
 		B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */; };
 		B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B158E95D215DD3F500AB2727 /* AIConstants.swift */; };
 		B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F80F2210EB93000B81F35 /* OOCalendarMainMonthViewController.swift */; };
@@ -160,6 +168,12 @@
 		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
 		B1FAE9E12115F95800981A25 /* OOCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */; };
 		B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAFD432105C23B008A0CDF /* Operators.swift */; };
+		B1FB9FAE2302891F00A90722 /* ContactPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */; };
+		B1FB9FE123029EC900A90722 /* UnitBreadcrumbViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FE023029EC900A90722 /* UnitBreadcrumbViewCell.swift */; };
+		B1FB9FE32302A93500A90722 /* UnitPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FE22302A93500A90722 /* UnitPickerTableViewCell.swift */; };
+		B1FB9FE72304EF7900A90722 /* GroupPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FE62304EF7900A90722 /* GroupPickerTableViewCell.swift */; };
+		B1FBA01A230533FA00A90722 /* PersonPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBA019230533FA00A90722 /* PersonPickerTableViewCell.swift */; };
+		B1FBA01D230A3AB500A90722 /* O2JsApiBizUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBA01C230A3AB500A90722 /* O2JsApiBizUtil.swift */; };
 		B1FD027021FAE00E000E9817 /* O2MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FD026F21FAE00E000E9817 /* O2MainController.swift */; };
 		B1FDBE8D22952F0C00BB434E /* O2WorkMoreActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */; };
 		B1FEDA9B22D305C90002ECF4 /* CMSSingleApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */; };
@@ -1411,6 +1425,14 @@
 		B130E646223B774D00B68354 /* path_provider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = path_provider.framework; path = plugins/path_provider.framework; sourceTree = "<group>"; };
 		B130E647223B774D00B68354 /* shared_preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared_preferences.framework; path = plugins/shared_preferences.framework; sourceTree = "<group>"; };
 		B13707DC212D3F19002113F1 /* CMSCategoryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSCategoryData.swift; sourceTree = "<group>"; };
+		B142B080230FB56400E7D127 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
+		B142B082230FB58B00E7D127 /* Swime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swime.swift; sourceTree = "<group>"; };
+		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
+		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
+		B14E07872301419500AE85A0 /* ContactIdentityPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactIdentityPickerViewController.swift; sourceTree = "<group>"; };
+		B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupPickerViewController.swift; sourceTree = "<group>"; };
+		B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPersonPickerViewController.swift; sourceTree = "<group>"; };
+		B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOContactExpressAPI.swift; sourceTree = "<group>"; };
 		B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2DemoAlertView.swift; sourceTree = "<group>"; };
 		B158E95D215DD3F500AB2727 /* AIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConstants.swift; sourceTree = "<group>"; };
 		B15F80F2210EB93000B81F35 /* OOCalendarMainMonthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarMainMonthViewController.swift; sourceTree = "<group>"; };
@@ -1477,6 +1499,12 @@
 		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
 		B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarViewController.swift; sourceTree = "<group>"; };
 		B1FAFD432105C23B008A0CDF /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
+		B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewModel.swift; sourceTree = "<group>"; };
+		B1FB9FE023029EC900A90722 /* UnitBreadcrumbViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitBreadcrumbViewCell.swift; sourceTree = "<group>"; };
+		B1FB9FE22302A93500A90722 /* UnitPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitPickerTableViewCell.swift; sourceTree = "<group>"; };
+		B1FB9FE62304EF7900A90722 /* GroupPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPickerTableViewCell.swift; sourceTree = "<group>"; };
+		B1FBA019230533FA00A90722 /* PersonPickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonPickerTableViewCell.swift; sourceTree = "<group>"; };
+		B1FBA01C230A3AB500A90722 /* O2JsApiBizUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiBizUtil.swift; sourceTree = "<group>"; };
 		B1FD026F21FAE00E000E9817 /* O2MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2MainController.swift; sourceTree = "<group>"; };
 		B1FDBE8C22952F0C00BB434E /* O2WorkMoreActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WorkMoreActionSheet.swift; sourceTree = "<group>"; };
 		B1FEDA9A22D305C90002ECF4 /* CMSSingleApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMSSingleApplication.swift; sourceTree = "<group>"; };
@@ -2574,6 +2602,15 @@
 			path = SwiftTheme;
 			sourceTree = "<group>";
 		};
+		B142B04E230FB53E00E7D127 /* MagicBytesMimeType */ = {
+			isa = PBXGroup;
+			children = (
+				B142B080230FB56400E7D127 /* MimeType.swift */,
+				B142B082230FB58B00E7D127 /* Swime.swift */,
+			);
+			path = MagicBytesMimeType;
+			sourceTree = "<group>";
+		};
 		B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */ = {
 			isa = PBXGroup;
 			children = (
@@ -2706,6 +2743,7 @@
 				B19FF89D226DBD3600FA0B76 /* O2JsApiNotification.swift */,
 				B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */,
 				B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */,
+				B1FBA01C230A3AB500A90722 /* O2JsApiBizUtil.swift */,
 			);
 			path = o2JsApi;
 			sourceTree = "<group>";
@@ -3324,6 +3362,7 @@
 			isa = PBXGroup;
 			children = (
 				E4B6978320764A2B0062F6E8 /* OOContactAPI.swift */,
+				B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */,
 			);
 			path = ContactAPI;
 			sourceTree = "<group>";
@@ -3748,6 +3787,7 @@
 		E4B887821D9D48F1002E1A46 /* framework */ = {
 			isa = PBXGroup;
 			children = (
+				B142B04E230FB53E00E7D127 /* MagicBytesMimeType */,
 				B108F3C3229E34B700778050 /* scan */,
 				B12FD1892283D5B700E636BA /* SwiftTheme */,
 				B165CD402242093500373B66 /* Presentr */,
@@ -4818,6 +4858,7 @@
 				E4C24C26208D7EDE00E426B0 /* OOLinkManViewModel.swift */,
 				E4C24C27208D7EDE00E426B0 /* OOListUnitViewModel.swift */,
 				E4F45448208F00A7002FBC32 /* OOPersonListViewModel.swift */,
+				B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -4825,6 +4866,7 @@
 		E4C24C28208D7EDE00E426B0 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */,
 				E4C24C29208D7EDE00E426B0 /* OOLinkeManViewController.swift */,
 				E4C24C2A208D7EDE00E426B0 /* OOContactMainViewController.swift */,
 				E4C24C2B208D7EDE00E426B0 /* OOUISearchController.swift */,
@@ -4832,6 +4874,10 @@
 				E4C24C2D208D7EDE00E426B0 /* OOContactSearchResultController.swift */,
 				E4F45444208EC359002FBC32 /* OOPersonsViewController.swift */,
 				E4F45445208EC359002FBC32 /* OOPersonsViewController.xib */,
+				B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */,
+				B14E07872301419500AE85A0 /* ContactIdentityPickerViewController.swift */,
+				B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */,
+				B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -4865,6 +4911,10 @@
 				E4D2310E209C40F600837868 /* OOPersonCollectionViewCell.xib */,
 				E4D23111209C42E700837868 /* OOSelectPersonTableViewCell.swift */,
 				E4D23112209C42E700837868 /* OOSelectPersonTableViewCell.xib */,
+				B1FB9FE023029EC900A90722 /* UnitBreadcrumbViewCell.swift */,
+				B1FB9FE22302A93500A90722 /* UnitPickerTableViewCell.swift */,
+				B1FB9FE62304EF7900A90722 /* GroupPickerTableViewCell.swift */,
+				B1FBA019230533FA00A90722 /* PersonPickerTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5820,6 +5870,7 @@
 				B190923521071777009A7906 /* OOCalendarModels.swift in Sources */,
 				B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */,
 				E40E24D520B7DA3C009F8BE7 /* OMeetingPersonActionCell.swift in Sources */,
+				B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */,
 				B107453F21A533E70015F1B2 /* O2PersonalViewModel.swift in Sources */,
 				E4B888A11D9D48F1002E1A46 /* MJRefreshAutoNormalFooter.m in Sources */,
 				E4B698242079AA0D0062F6E8 /* OOTableViewController.swift in Sources */,
@@ -5874,9 +5925,11 @@
 				B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */,
 				E4C24B9520844F3C00E426B0 /* JCConversationCell.swift in Sources */,
 				E45DA8F71DADC04E00E0735D /* TaskUIToolbar.swift in Sources */,
+				B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */,
 				E4C24BAD20844F3C00E426B0 /* JCGroupSettingViewController.swift in Sources */,
 				09E02E921F16319600579887 /* NSHTTPURLResponse+Haneke.swift in Sources */,
 				E4C24BA720844F3C00E426B0 /* FileManagerViewController.swift in Sources */,
+				B14E07C523025C6A00AE85A0 /* OOContactExpressAPI.swift in Sources */,
 				B130A74F2281559900282AD1 /* DeviceListViewController.swift in Sources */,
 				E4B888631D9D48F1002E1A46 /* ZLNavigationController.swift in Sources */,
 				E4B889021D9D48F1002E1A46 /* TodoedStatusCell.swift in Sources */,
@@ -5966,6 +6019,7 @@
 				E4C24B5520844F3C00E426B0 /* SAIToolboxInputView.swift in Sources */,
 				E4C24B5320844F3C00E426B0 /* SAIInputView.swift in Sources */,
 				E40E24CF20B7DA3C009F8BE7 /* OOFormDateItemView.swift in Sources */,
+				B1FBA01D230A3AB500A90722 /* O2JsApiBizUtil.swift in Sources */,
 				E4B69776207630240062F6E8 /* UIView+Extension.swift in Sources */,
 				E4C24BB420844F3C00E426B0 /* JCMessageContentViewType.swift in Sources */,
 				E4C24B9420844F3C00E426B0 /* JCGroupSettingCell.swift in Sources */,
@@ -5994,6 +6048,7 @@
 				B12FD1E62283D5B700E636BA /* ThemeActivityIndicatorViewStylePicker.swift in Sources */,
 				E40E246B20B68AEB009F8BE7 /* OOAttandanceTotalHeaderView.swift in Sources */,
 				09E02E0A1F14B1C600579887 /* ContactPersonInfoV2ViewController.swift in Sources */,
+				B14E07882301419500AE85A0 /* ContactIdentityPickerViewController.swift in Sources */,
 				E4AA17171EE189FE0030D9AB /* LogFileTableViewCell.swift in Sources */,
 				E4B6976E207630240062F6E8 /* UIButton+Extension.swift in Sources */,
 				E4C24BCA20844F3C00E426B0 /* JCJChatInfoCell.swift in Sources */,
@@ -6012,6 +6067,7 @@
 				E4C24B4520844F3C00E426B0 /* Extensions.swift in Sources */,
 				E4B781731DF912E6007B58A9 /* CMSCategoryListViewController.swift in Sources */,
 				B12FD1E02283D5B700E636BA /* ThemeCGColorPicker.swift in Sources */,
+				B1FBA01A230533FA00A90722 /* PersonPickerTableViewCell.swift in Sources */,
 				E4B6981A2079A8BB0062F6E8 /* OOBindNodeViewController.swift in Sources */,
 				E4F4544F20902263002FBC32 /* OOConfigInfoModels.swift in Sources */,
 				E4B2321A20B3E9440082F30A /* OOAttanceCheckinPromptView.swift in Sources */,
@@ -6096,6 +6152,7 @@
 				E4B8886A1D9D48F1002E1A46 /* O2URLContext.swift in Sources */,
 				E45DA8F31DACD7CA00E0735D /* SegmentedControl.swift in Sources */,
 				E4C24B4020844F3C00E426B0 /* JMSGConversation+.swift in Sources */,
+				B1FB9FE123029EC900A90722 /* UnitBreadcrumbViewCell.swift in Sources */,
 				E4B697002075DE5F0062F6E8 /* OOGuidePageController.swift in Sources */,
 				E4B888F81D9D48F1002E1A46 /* CreateProcessBean.swift in Sources */,
 				E40502C920722208009A8D30 /* ImageRow.swift in Sources */,
@@ -6125,6 +6182,7 @@
 				E4C24B7920844F3C00E426B0 /* GroupAvatorCell.swift in Sources */,
 				09E02E8F1F16319600579887 /* Log.swift in Sources */,
 				E4B888701D9D48F1002E1A46 /* ContactPersonInfoController.swift in Sources */,
+				B142B083230FB58B00E7D127 /* Swime.swift in Sources */,
 				E4C24BB920844F3C00E426B0 /* JCEmoticonInputViewLayout.swift in Sources */,
 				E4C24C45208D7EDE00E426B0 /* OOListUnitViewController.swift in Sources */,
 				E4B6970D2075FA560062F6E8 /* OOUISwitch.swift in Sources */,
@@ -6235,6 +6293,7 @@
 				E40E24B320B7DA3C009F8BE7 /* OOMeetingMeetingRoomManageController.swift in Sources */,
 				E42700A81E7A762200DCCC71 /* ZoneHUD.swift in Sources */,
 				E40E24D820B7DA3C009F8BE7 /* OOMeetingPersonFooterView.swift in Sources */,
+				B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */,
 				E4B697C520764A2D0062F6E8 /* O2InformationAPI.swift in Sources */,
 				E4CB276F1E78D5B1004A7ACB /* String+Convenience.swift in Sources */,
 				E4C24C0C20844F4400E426B0 /* JCIdentityVerificationViewController.swift in Sources */,
@@ -6309,6 +6368,7 @@
 				B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */,
 				E4C24BC720844F3C00E426B0 /* JCMainTabBarController.swift in Sources */,
 				B165CD6C2242093500373B66 /* Presentr+Equatable.swift in Sources */,
+				B14E078C230141BE00AE85A0 /* ContactPersonPickerViewController.swift in Sources */,
 				B12FD1D62283D5B700E636BA /* ThemeBarStylePicker.swift in Sources */,
 				E4B697152075FA560062F6E8 /* OOBaseUIButton.swift in Sources */,
 				E4B6974620761B310062F6E8 /* OOBindRegisterController.swift in Sources */,
@@ -6346,7 +6406,9 @@
 				E45DA8F41DACD7CA00E0735D /* Style.swift in Sources */,
 				E4A748D31EC1598600163F58 /* O2TaskAttachmentInfoData.swift in Sources */,
 				E4C24BDD20844F3C00E426B0 /* UserProtocols.swift in Sources */,
+				B1FB9FAE2302891F00A90722 /* ContactPickerViewModel.swift in Sources */,
 				B12FD1EF228425BE00E636BA /* OOMeetingTabBarController.swift in Sources */,
+				B1FB9FE32302A93500A90722 /* UnitPickerTableViewCell.swift in Sources */,
 				B130A7832281565F00282AD1 /* DeviceTableViewCell.swift in Sources */,
 				E4CB278B1E797B58004A7ACB /* CMSQLViewController.swift in Sources */,
 				B1C1905D2114410D00935829 /* CalendarTableViewCell.swift in Sources */,
@@ -6453,6 +6515,7 @@
 				E4C24B3C20844F3C00E426B0 /* Date+JChat.swift in Sources */,
 				E4C24C0120844F4400E426B0 /* JCUserInfoCell.swift in Sources */,
 				B1B2148F216073B400D9CA7E /* ScanHelper.swift in Sources */,
+				B142B081230FB56400E7D127 /* MimeType.swift in Sources */,
 				B104303C21469E3D0011B08E /* OOCircleRippleView.swift in Sources */,
 				E4B888FE1D9D48F1002E1A46 /* MainAppActionCell.swift in Sources */,
 				B165CD652242093500373B66 /* PresentationType.swift in Sources */,
@@ -6465,6 +6528,7 @@
 				E4B697ED20764A2D0062F6E8 /* OOTaskAPI.swift in Sources */,
 				E4C24B7120844F3C00E426B0 /* JCCEmoticon.swift in Sources */,
 				E4CB27731E78D5B1004A7ACB /* AppearanceConfigurator.swift in Sources */,
+				B1FB9FE72304EF7900A90722 /* GroupPickerTableViewCell.swift in Sources */,
 				E40958BD207F46F5000FECC3 /* OOPlusButtonSubclass.swift in Sources */,
 				E4B697E120764A2D0062F6E8 /* OOHotpicAPI.swift in Sources */,
 			);

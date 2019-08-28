@@ -113,6 +113,17 @@ MWF.xApplication.process.ProcessManager.LP = {
         "uploadSuccess": "附件已上传",
         "loadFiles": "批量上传附件"
     },
+    "projection": {
+        "create": "新建数据映射",
+        "search": "搜索数据映射",
+        "searchText": "请输入关键字",
+
+        "noDictionaryNoticeText": "此应用现在还没有数据映射，您可以点击此处创建一个新数据映射",
+        "noDictionaryNoCreateNoticeText": "此应用现在没有数据映射",
+        "loaded": "数据映射加载完毕",
+        "deleteFormTitle": "删除数据映射确认",
+        "deleteForm": "是否确定要删除当前数据映射？"
+    },
     
     "application": {
         "inputApplicationName": "请输入应用名称",

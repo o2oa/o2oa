@@ -87,7 +87,7 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.job, function(json){
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
@@ -107,7 +107,7 @@ MWF.xScript.Environment = function(ev){
             var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             var list;
-            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByWork(ev.work.job, function(json){
+            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByWork(ev.work.id, function(json){
                 list = json.data;
                 if (cb) cb(list);
             }, ecb, !!cb);
@@ -391,6 +391,26 @@ MWF.xScript.Environment = function(ev){
             }else{
                 orgActions.listPersonWithUnitDirect(data, function(json){v = json.data;}, null, false);
             }
+            return v;
+        },
+        //根据属性查询人员--返回人员的对象数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttribute(data, function(json){v = json.data;}, null, false);
+            return v;
+        },
+        //根据属性查询人员--返回人员的全称数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonNameWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttributeValue(data, function(json){v = json.data.personList;}, null, false);
             return v;
         },
 
@@ -932,8 +952,10 @@ MWF.xScript.Environment = function(ev){
         },
 
         "process": function(option){
+            var op = _form.getOpinion();
+            var mds = op.medias;
             if (option){
-                _form.submitWork(option.routeName, option.opinion, null, option.callback);
+                _form.submitWork(option.routeName, option.opinion, mds, option.callback);
             }else{
                 _form.processWork();
             }
@@ -1009,7 +1031,7 @@ MWF.xScript.Environment = function(ev){
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             layout.desktop.openApplication(this.event, "process.Work", op);
         },
-        "openJob": function(id, choice){
+        "openJob": function(id, choice, options){
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                 var len = json.data.workList.length + json.data.workCompletedList.length;
                 if (len){
@@ -1023,10 +1045,10 @@ MWF.xScript.Environment = function(ev){
                     }else{
                         if (json.data.workList.length){
                             var work =  json.data.workList[0];
-                            this.openWork(work.id, null, work.title);
+                            this.openWork(work.id, null, work.title, options);
                         }else{
                             var work =  json.data.workCompletedList[0];
-                            this.openWork(null, work.id, work.title);
+                            this.openWork(null, work.id, work.title, options);
                         }
                     }
                 }

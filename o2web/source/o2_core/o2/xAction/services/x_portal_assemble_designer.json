@@ -22,7 +22,7 @@
   "listSource": {"uri": "/jaxrs/source/list/portal/{id}"},
   "listScript": {"uri": "/jaxrs/script/list/portal/{id}"},
   "listMenu": {"uri": "/jaxrs/menu/list/portal/{id}"},
-  "listWidget": {"uri": "/jaxrs/menu/list/portal/{id}"},
+  "listWidget": {"uri": "/jaxrs/widget/list/portal/{id}"},
   "listFile": {"uri": "/jaxrs/file/list/application/{id}"},
 
   "getPage": {"uri": "/jaxrs/page/{id}"},

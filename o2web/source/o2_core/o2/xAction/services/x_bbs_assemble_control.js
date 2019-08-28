@@ -25,7 +25,7 @@ MWF.xAction.RestActions.Action["x_bbs_assemble_control"] = new Class({
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            window.open(this.actionAttachment.address+url);
+            window.open(this.action.address+url);
         }.bind(this));
     },
     getAttachmentStream: function(id, documentid){

@@ -160,14 +160,17 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	setStyleTemplate: function(){
-		if (this.form.stylesList){
-			if (this.form.json.formStyleType){
-				if (this.form.stylesList[this.form.json.formStyleType]){
-					if (this.form.stylesList[this.form.json.formStyleType][this.moduleName]){
-						this.setTemplateStyles(this.form.stylesList[this.form.json.formStyleType][this.moduleName]);
-					}
-				}
-			}
+		//if (this.form.stylesList){
+		//	if (this.form.json.formStyleType){
+		//		if (this.form.stylesList[this.form.json.formStyleType]){
+		//			if (this.form.stylesList[this.form.json.formStyleType][this.moduleName]){
+		//				this.setTemplateStyles(this.form.stylesList[this.form.json.formStyleType][this.moduleName]);
+		//			}
+		//		}
+		//	}
+		//}
+		if( this.form.templateStyles && this.form.templateStyles[this.moduleName] ){
+			this.setTemplateStyles(this.form.templateStyles[this.moduleName]);
 		}
 	},
 	setAllStyles: function(){
@@ -305,7 +308,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	_setNodeEvent: function(){
-		if (this.form.moduleType!="subform"){
+		if (this.form.moduleType!="subform" && this.form.moduleType!="subpage"){
 			if (!this.isSetEvents){
 				this.node.addEvent("click", function(e){
 					if (!this.form.noSelected) this.selected();
@@ -454,6 +457,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this._createMoveNode();
 		this._setNodeMove(e);
 	},
+	createImmediately: function(data, relativeNode, position, selectDisabled){
+		this.json = data;
+		this.json.id = this._getNewId();
+		this._createMoveNode();
+		this._dragComplete( relativeNode, position, selectDisabled );
+	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
 			"MWFType": "label",
@@ -578,7 +587,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.injectActionEffect.start(this.form.css.injectActionArea_to);
 	},
 	_hideInjectAction : function(){
-		debugger;
 		this.draggingModule = null;
 		if( this.injectActionArea ){
 			this.injectActionArea.setStyle("display","none");
@@ -734,7 +742,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this._dragCancel();
 		}
 	},
-	_dragComplete: function( relativeNode, position ){
+	_dragComplete: function( relativeNode, position, selectDisabled ){
 		this.setStyleTemplate();
 
 		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
@@ -772,7 +780,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.form.json.moduleList[this.json.id] = this.json;
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
 
-		this.selected();
+		if( !selectDisabled )this.selected();
 	},
 	_resetTreeNode: function(){
 
@@ -896,7 +904,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this._setControlModeNode();
 		}
 	},
-
+	deletePropertiesOrStyles: function(name, key){
+		if (name=="properties"){
+			try{
+				this.node.removeProperty(key);
+			}catch(e){}
+		}
+	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			try{

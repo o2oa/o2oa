@@ -15,6 +15,42 @@
 		"html": ""
 	},
 	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "load" : {
+		"code": "",
+		"html": ""
+	  },
+		"editCheck": {
+		  "code": "",
+		  "html": ""
+		},
+		"completeLineEdit": {
+		  "code": "",
+		  "html": ""
+		},
+		"addLine": {
+		  "code": "",
+		  "html": ""
+		},
+		"deleteLine": {
+		  "code": "",
+		  "html": ""
+		},
+		"afterDeleteLine": {
+		  "code": "",
+		  "html": ""
+		},
+		"editLine": {
+		  "code": "",
+		  "html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""
@@ -62,11 +98,8 @@
 		"blur": {
 			"code": "",
 			"html": ""
-		},
-		"editCheck": {
-			"code": "",
-			"html": ""
 		}
+
 	},
 	"properties": {},
 	"class": "",

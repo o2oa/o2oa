@@ -43,7 +43,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             var name = node.get("name");
             var actionContent = this.data[name];
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
-                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
@@ -77,11 +77,14 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             var name = node.get("name");
             var actionContent = this.data[name] || this.module.defaultToolBarsData;
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
-                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "isSystemTool" : true,
                     "noCreate": true,
-                    "noDelete": true,
+                    "noDelete": false,
                     "noCode": true,
+                    "noReadShow": true,
+                    "noEditShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
                         this.changeData(name);

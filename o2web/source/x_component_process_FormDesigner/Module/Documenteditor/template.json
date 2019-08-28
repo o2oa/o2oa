@@ -69,20 +69,26 @@
 			"html": ""
 		}
 	},
-	"editorProperties": {
-		"resize_enabled": true,
-		"resize_minHeight": "200",
-		"autoParagraph": true,
-		"enterMode": 3,
-		"height": "1000",
-		"readOnly": false,
-		"title": ""
+	"defaultValue": {
+		"copies": "",
+		"secret":"",
+		"priority": "",
+		"redHeader": "文件红头",
+		"fileno":"[文号]",
+		"signerTitle": "签发人：",
+		"signer": "[签发人]",
+		"subject": "[文件标题]",
+		"mainSend": "[主送单位：]",
+		"filetext": "[请在此处编辑正文内容]",
+		"attachmentTitle":"附件：",
+		"attachment":"[附件]",
+		"issuanceUnit":"[发文机关]",
+		"issuanceDate":"[成文日期]",
+		"annotation":"",
+		"copytoTitle":"抄送：",
+		"copyto":"[抄送]",
+		"editionUnit":"[印发机关]",
+		"editionDate":"[印发日期]"
 	},
-    "config": {
-      "code": "",
-      "html": ""
-    },
-	"class": "",
-	"styles": {},
 	"container": ""
 }

@@ -19,6 +19,86 @@
       },
 
       "events": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforeProcess": {
+          "code": "",
+          "html": ""
+        },
+        "beforeProcessWork": {
+          "code": "",
+          "html": ""
+        },
+        "afterProcess": {
+          "code": "",
+          "html": ""
+        },
+        "beforeReset":{
+          "code": "",
+          "html": ""
+        },
+        "afterReset":{
+          "code": "",
+          "html": ""
+        },
+        "beforeRetract":{
+          "code": "",
+          "html": ""
+        },
+        "afterRetract":{
+          "code": "",
+          "html": ""
+        },
+        "beforeReroute":{
+          "code": "",
+          "html": ""
+        },
+        "afterReroute":{
+          "code": "",
+          "html": ""
+        },
+        "beforeDelete":{
+          "code": "",
+          "html": ""
+        },
+        "afterDelete":{
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
+          "code": "",
+          "html": ""
+        },
         "help": {
           "code": "",
           "html": ""

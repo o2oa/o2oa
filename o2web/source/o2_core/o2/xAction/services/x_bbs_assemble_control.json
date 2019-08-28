@@ -131,7 +131,7 @@
   "deleteAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
   "uploadAttachment": {"uri": "/jaxrs/attachment/upload/subject/{documentid}", "method": "POST", "enctype": "formData"},
   //"replaceAttachment": {"uri": "/servlet/download/{id}/stream", "method": "POST", "enctype": "formData"},
-  "getAttachmentData": {"uri": "/jaxrs/attachment/download/{id}/stream/true", "method": "GET"},
+  "getAttachmentData": {"uri": "/jaxrs/attachment/download/{id}", "method": "GET"},
   "getAttachmentStream": {"uri": "/jaxrs/attachment/download/{id}/stream/true", "method": "GET"},
   //"getAttachmentData": {"uri": "/servlet/download/subjectattachment/{id}/stream", "method": "GET"},
   //"getAttachmentStream": {"uri": "/servlet/download/subjectattachment/{id}/stream", "method": "GET"},

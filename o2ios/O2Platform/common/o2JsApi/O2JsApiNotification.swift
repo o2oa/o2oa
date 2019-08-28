@@ -33,20 +33,28 @@ class O2JsApiNotification: O2WKScriptMessageHandlerImplement {
                     switch type {
                     case "alert":
                         alert(json: String(json))
+                        break
                     case "confirm":
                         confirm(json: String(json))
+                        break
                     case "prompt":
                         prompt(json: String(json))
+                        break
                     case "vibrate":
                         vibrate(json: String(json))
+                        break
                     case "toast":
                         toast(json: String(json))
+                        break
                     case "actionSheet":
                         actionSheet(json: String(json))
+                        break
                     case "showLoading":
                         showLoading(json: String(json))
+                        break
                     case "hideLoading":
                         hideLoading(json: String(json))
+                        break
                     default:
                         DDLogError("notification类型不正确, type: \(type)")
                     }

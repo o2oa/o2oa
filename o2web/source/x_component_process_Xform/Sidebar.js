@@ -170,6 +170,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
 
     },
     setCustomToolbars: function(tools, node){
+        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
         tools.each(function(tool){
             var flag = true;
             if (this.readonly){
@@ -190,7 +191,8 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
                     var actionNode = new Element("div", {
                         "id": tool.id,
                         "MWFnodetype": tool.type,
-                        "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                        //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                        "MWFButtonImage": path+(this.form.options.style||"default") +"/custom/"+tool.img,
                         "title": tool.title,
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
@@ -207,6 +209,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node, readonly, noCondition){
+        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
         tools.each(function(tool){
             var flag = true;
             if (tool.control){
@@ -226,7 +229,8 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
                 var actionNode = new Element("div", {
                     "id": tool.id,
                     "MWFnodetype": tool.type,
-                    "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                    //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                    "MWFButtonImage": path+(this.form.options.style||"default") +"/tools/default/"+tool.img,
                     "title": tool.title,
                     "MWFButtonAction": tool.action,
                     "MWFButtonText": tool.text

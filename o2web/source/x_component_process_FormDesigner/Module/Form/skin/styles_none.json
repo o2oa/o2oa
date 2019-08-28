@@ -1,0 +1,180 @@
+{
+  "name": "空样式",
+  "form": {
+    "styles":{
+      "background-color": "#ffffff"
+    }
+  },
+  "label": {
+    "banner": {
+      "name": "横幅",
+      "styles": {}
+    },
+
+    "title": {
+      "name": "标题",
+      "styles": {}
+    },
+
+    "section": {
+      "name": "区段标题",
+      "styles": {}
+    }
+  },
+
+  "div": {
+    "banner": {
+      "name": "横幅",
+      "styles": {}
+    },
+
+    "title": {
+      "name": "标题",
+      "styles": {}
+    },
+    "section": {
+      "name": "区段",
+      "styles": {}
+    }
+  },
+
+  "tab": {
+    "styles": {},
+    "tabAreaStyles": {
+      "height": "40px",
+      "border-bottom": "2px solid #3c76b7"
+    },
+    "contentAreaStyles": {
+      "line-height": "normal",
+      "clear": "both",
+      "overflow": "hidden"
+    },
+    "tabStyles": {
+      "position": "relative",
+      "margin-left": "4px",
+      "margin-top": "0px",
+      "margin-right": "0px",
+      "float": "left",
+      "height": "40px",
+      "cursor": "pointer",
+      "min-width": "100px",
+      "background": "transparent ",
+      "border-top-left-radius": "5px",
+      "border-top-right-radius": "5px",
+      "border": "0px solid #f0f0f0",
+      "border-bottom": "1px solid #3c76b7"
+    },
+    "tabTextStyles": {
+      "color": "#666",
+      "font-weight": "bold",
+      "line-height": "40px",
+      "text-align": "center",
+      "margin-right": "8px",
+      "margin-top": "0px",
+      "margin-left": "8px"
+    },
+    "tabCurrentStyles": {
+      "position": "relative",
+      "margin-top": "0px",
+      "margin-left": "2px",
+      "margin-right": "0px",
+      "float": "left",
+      "height": "40px",
+      "min-width": "100px",
+      "background": "#3c76b7",
+      "border-top-left-radius": "5px",
+      "border-top-right-radius": "5px",
+      "border-top": "0px solid #f0f0f0",
+      "border-left": "0px solid #f0f0f0",
+      "border-right": "0px solid #f0f0f0",
+      "border-bottom": "1px solid #3c76b7"
+    },
+    "tabCurrentTextStyles": {
+      "color": "#FFF",
+      "font-weight": "bold",
+      "line-height": "40px",
+      "text-align": "center",
+      "margin-right": "8px",
+      "margin-left": "8px",
+      "margin-top": "0px"
+    }
+  },
+  "tab$Content": {
+    "styles": {
+      "padding": "20px 0px"
+    }
+  },
+  "table": {
+    "styles": {},
+    "titleStyles":{},
+    "contentStyles": {},
+    "layoutStyles": {},
+    "properties": {}
+  },
+  "log" : {
+    "tableStyles": {},
+    "titleStyles":{},
+    "contentStyles": {},
+    "properties": {}
+  },
+  "datagrid": {
+    "styles": {},
+    "tableStyles": {},
+    "titleStyles": {},
+    "contentStyles": {},
+    "actionStyles": {},
+    "editStyles": {},
+    "amountStyles": {},
+    "itemTitleStyles": {},
+    "properties": {}
+  },
+  "datagrid$Title": {
+    "styles": {}
+  },
+  "address": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "combox": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "textfield": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "calendar": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "number": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "personfield": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "orgfield": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "select": {
+    "styles": {}
+  },
+  "textarea": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "opinion": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "actionbar": {
+    "style": "xform_blue_simple",
+    "customIconStyle" : ""
+  },
+  "attachment" : {
+    "style" : "default"
+  }
+}

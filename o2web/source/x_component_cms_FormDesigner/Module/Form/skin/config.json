@@ -1,0 +1,38 @@
+{
+  "none": {
+    "name": "空样式",
+    "file": "styles_none.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "default": {
+    "name": "传统样式",
+    "file": "styles_default.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "red-simple": {
+    "name": "红色简洁",
+    "file": "styles_red-simple.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "blue-simple": {
+    "name": "蓝色简洁",
+    "file": "styles_blue-simple.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "defaultMobile": {
+    "name": "手机样式",
+    "file": "styles_defaultMobile.json",
+    "mode": [
+      "pc",
+      "mobile"
+    ]
+  }
+}

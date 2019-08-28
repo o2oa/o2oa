@@ -88,8 +88,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
-        this.json.mode = this.options.mode;
-        if (!this.json.css) this.json.css = {"code":""};
+		this.json.mode = this.options.mode;
+		if (!this.json.css) this.json.css = {"code":""};
 
 		if (this.options.mode==="Mobile"){
 			if (!this.json.defaultTools){
@@ -102,44 +102,43 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if (this.isNewForm) this.checkUUID();
 		if(this.designer.application) this.data.json.applicationName = this.designer.application.name;
 		if(this.designer.application) this.data.json.application = this.designer.application.id;
-		
+
 		this.container.set("html", this.html);
-        this.loadStylesList(function(){
-            var oldStyleValue = "";
-            if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType="blue-simple";
-            if (this.options.mode=="Mobile"){
-                if (this.json.formStyleType != "defaultMobile"){
-                    oldStyleValue = this.json.formStyleType;
-                    this.json.formStyleType = "defaultMobile";
-                }
-            }
+		this.loadStylesList(function(){
+			var oldStyleValue = "";
+			if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType="blue-simple";
+			if (this.options.mode=="Mobile"){
+				if (this.json.formStyleType != "defaultMobile"){
+					oldStyleValue = this.json.formStyleType;
+					this.json.formStyleType = "defaultMobile";
+				}
+			}
 
-            this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
-            this.loadDomModules();
+			this.loadTemplateStyles( this.stylesList[this.json.formStyleType].file, function( templateStyles ){
+				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
+				this.templateStyles = templateStyles;
+				this.loadDomModules();
 
-            if (this.json.formStyleType){
-                if (this.stylesList[this.json.formStyleType]){
-                    if (this.stylesList[this.json.formStyleType]["form"]){
-                        this.setTemplateStyles(this.stylesList[this.json.formStyleType]["form"]);
-                    }
-                }
-            }
+				if (this.json.formStyleType && this.templateStyles && this.templateStyles["form"]){
+					this.setTemplateStyles(this.templateStyles["form"]);
+				}
 
-            this.setCustomStyles();
-            this.node.setProperties(this.json.properties);
+				this.setCustomStyles();
+				this.node.setProperties(this.json.properties);
 
-            this.setNodeEvents();
+				this.setNodeEvents();
 
-            if (this.options.mode=="Mobile"){
-                if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
-            }
+				if (this.options.mode=="Mobile"){
+					if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
+				}
 
-            this.selected();
-            this.autoSave();
-            this.designer.addEvent("queryClose", function(){
-                if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-            }.bind(this));
-        }.bind(this));
+				this.selected();
+				this.autoSave();
+				this.designer.addEvent("queryClose", function(){
+					if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+				}.bind(this));
+			}.bind(this));
+		}.bind(this));
 	},
     removeStyles: function(from, to){
         if (this.json[to]){
@@ -161,22 +160,52 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             if (styles.styles) this.removeStyles(styles.styles, "styles");
             if (styles.properties) this.removeStyles(styles.properties, "properties");
         }
+		if( this.json.confirmStyle )delete this.json.confirmStyle;
+		if( this.json.dialogStyle )delete this.json.dialogStyle;
     },
     setTemplateStyles: function(styles){
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
+		if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
+		if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;
     },
 
+	loadTemplateStyles : function( file, callback ){
+		if( !file ){
+			if (callback) callback({});
+			return;
+		}
+		this.templateStylesList = this.templateStylesList || {};
+		if( this.templateStylesList[file] ){
+			if (callback) callback(this.templateStylesList[file]);
+			return;
+		}
+		var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/"+file;
+		MWF.getJSON(stylesUrl,{
+				"onSuccess": function(responseJSON){
+					this.templateStylesList[file] = responseJSON;
+					if (callback) callback(responseJSON);
+				}.bind(this),
+				"onRequestFailure": function(){
+					if (callback) callback({});
+				}.bind(this),
+				"onError": function(){
+					if (callback) callback({});
+				}.bind(this)
+			}
+		);
+	},
     loadStylesList: function(callback){
         //var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
-        var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
-        MWF.getJSON(stylesUrl,{
+        //var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		var configUrl = "/x_component_process_FormDesigner/Module/Form/skin/config.json";
+        MWF.getJSON(configUrl,{
                 "onSuccess": function(responseJSON){
-                    this.stylesList= responseJSON;
+                    this.stylesList = responseJSON;
                     if (callback) callback(this.stylesList);
                 }.bind(this),
                 "onRequestFailure": function(){
-                    this.stylesList = {};
+					this.stylesList = {};
                     if (callback) callback(this.stylesList);
                 }.bind(this),
                 "onError": function(){
@@ -337,7 +366,23 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 		}.bind(this));
 	},
-	
+
+	createModuleImmediately: function( className, parentModule, relativeNode, position, selectDisabled, async ){
+		var module;
+		this.getTemplateData(className, function(data){
+			var moduleData = Object.clone(data);
+			module = new MWF["PC"+className](this);
+			if( parentModule ){
+				module.onDragModule = parentModule;
+				if (!parentModule.Component) module.inContainer = parentModule;
+				module.parentContainer = parentModule;
+				module.nextModule = null;
+			}
+			module.createImmediately(moduleData, relativeNode, position, selectDisabled);
+		}.bind(this), async);
+		return module;
+	},
+
 	createModule: function(className, e){
 		this.getTemplateData(className, function(data){
 			var moduleData = Object.clone(data);
@@ -500,14 +545,20 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		//debugger;
 		this.draggingModule = module;
-		if( !this.node.getFirst() ){
-			this.inject( "top" );
-			return;
-		}
+		//if( !this.node.getFirst() ){
+		//	this.inject( "top" );
+		//	return;
+		//}
 
 		if( !this.injectActionArea )this._createInjectAction();
-		this.injectActionArea.setStyle("display","");
+		this.injectActionArea.setStyle("display","block");
 		this._setInjectActionAreaPosition();
+
+		this.injectActionEffect = new Fx.Morph(this.injectActionArea, {
+			duration: 200,
+			transition: Fx.Transitions.Sine.easeOut
+		});
+		this.injectActionEffect.start(this.form.css.injectActionArea_to);
 	},
 	_hideInjectAction : function(){
 		this.draggingModule = null;
@@ -856,25 +907,39 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.node.set("id", this.json.id);
 		}
         if (name=="formStyleType"){
-            this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
-            if (oldValue) {
-                var oldTemplateStyles = this.stylesList[oldValue];
-                if (oldTemplateStyles){
-                    if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
-                }
-            }
-            if (this.templateStyles){
-                if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
-            }
-            this.setAllStyles();
 
-            this.moduleList.each(function(module){
-                if (oldTemplateStyles){
-                    module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
-                }
-                module.setStyleTemplate();
-                module.setAllStyles();
-            }.bind(this));
+			var file = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].file : null;
+			this.loadTemplateStyles( file, function( templateStyles ){
+				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
+				this.templateStyles = templateStyles;
+
+				var oldFile;
+				if( oldValue && this.stylesList[oldValue] ){
+					oldFile = this.stylesList[oldValue].file;
+				}
+				this.loadTemplateStyles( oldFile, function( oldTemplateStyles ){
+					//if (oldValue) {
+					//	var oldTemplateStyles = this.stylesList[oldValue];
+					//	if (oldTemplateStyles){
+					//		if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+					//	}
+					//}
+
+					if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+					if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
+
+					this.setAllStyles();
+
+					this.moduleList.each(function(module){
+						if (oldTemplateStyles[module.moduleName]){
+							module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
+						}
+						module.setStyleTemplate();
+						module.setAllStyles();
+					}.bind(this));
+				}.bind(this))
+
+			}.bind(this))
         }
         if (name==="css"){
             this.reloadCss();
@@ -926,11 +991,28 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
             var id = this.json.id.replace(/\-/g, "");
+			var prefix = ".css" + id + " ";
+
             while ((match = rex.exec(cssText)) !== null) {
-                var prefix = ".css" + id + " ";
-                var rule = prefix + match[0];
-                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                rex.lastIndex = rex.lastIndex + prefix.length;
+                // var rule = prefix + match[0];
+                // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                // rex.lastIndex = rex.lastIndex + prefix.length;
+
+				var rulesStr = match[0];
+				if (rulesStr.indexOf(",")!=-1){
+					var rules = rulesStr.split(/\s*,\s*/g);
+					rules = rules.map(function(r){
+						return prefix + r;
+					});
+					var rule = rules.join(", ");
+					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+					rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+				}else{
+					var rule = prefix + match[0];
+					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+					rex.lastIndex = rex.lastIndex + prefix.length;
+				}
             }
 
             var styleNode = document.createElement("style");
@@ -977,8 +1059,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 			return {"fieldConflict": fieldConflict, "elementConflict": elementConflict};
 		}
-		if (this.subformList){
-			Object.each(this.subformList, function(subform){
+		//if (this.subformList){
+		//	Object.each(this.subformList, function(subform){
+		//		if (!currentSubform || currentSubform!=subform.id){
+		//			if (subform.moduleList[id]){
+		//				elementConflict = true;
+		//				if (this.options.fields.indexOf(type)!=-1 || this.options.fields.indexOf(subform.moduleList[id].type)!=-1){
+		//					fieldConflict = true;
+		//				}
+		//			}
+		//		}
+		//	}.bind(this));
+		//}
+		var subformList = this.getAllSubformJsonObject();
+		if (subformList){
+			Object.each(subformList, function(subform){
 				if (!currentSubform || currentSubform!=subform.id){
 					if (subform.moduleList[id]){
 						elementConflict = true;
@@ -991,7 +1086,58 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		}
         return {"fieldConflict": fieldConflict, "elementConflict": elementConflict};
 	},
-    _resetTreeNode: function(){}
+    _resetTreeNode: function(){},
+
+	clearSubformList : function( level1subformName ){
+		if( !this.level1Subformlist )return;
+		if( !this.level1Subformlist[level1subformName] )return;
+		delete this.level1Subformlist[level1subformName];
+	},
+	addSubformList : function( level1subformName, addedSubformId ){
+		if( !this.level1Subformlist ){
+			this.level1Subformlist = {};
+		}
+		if( !this.level1Subformlist[level1subformName] ){
+			this.level1Subformlist[level1subformName] = [];
+		}
+		this.level1Subformlist[level1subformName].push( addedSubformId );
+	},
+	isSubformUnique : function( checkedSubformId, level1subformName,  deletedSubformId){
+		if( !this.level1Subformlist )return true;
+		var level1Subformlist = Object.clone( this.level1Subformlist );
+		if( deletedSubformId && level1Subformlist[deletedSubformId] )delete level1Subformlist[deletedSubformId];
+		for( var key in level1Subformlist ){
+			if( key !== level1subformName ){
+				if( level1Subformlist[key].contains( checkedSubformId ) ){
+					return false;
+				}
+			}
+		}
+		return true;
+	},
+	getAllSubformTiled : function(){
+		var _nestToTiled = function( form , array ){
+			if ( form.subformModuleList && form.subformModuleList.length){
+				Array.each( form.subformModuleList, function( module ){
+					array.push( module );
+					if( module.subformModule )_nestToTiled( module.subformModule, array );
+				}.bind(this))
+			}
+		};
+		var array = [];
+		_nestToTiled( this, array );
+		return array;
+	},
+	getAllSubformJsonObject : function(){
+		var list = this.getAllSubformTiled();
+		var object = {};
+		Array.each( list, function( subform ){
+			if( subform && subform.json.subformSelected  && subform.subformData && subform.subformData.json){
+				object[ subform.json.subformSelected ] = subform.subformData.json;
+			}
+		}.bind(this));
+		return object;
+	}
 	// getAllFieldModuleNameList: function(){
     	// var moduleNameList = [];
     	// Object.each(this.json.moduleList, function(o, k){

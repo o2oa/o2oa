@@ -618,40 +618,88 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
     loadProcessSelector: function(){
         var nodes = this.propertyContent.getElements(".MWFProcessSelect");
         if (nodes.length){
-            this._getProcessSelector(function(){
-                nodes.each(function(node){
-                    var title = new Element("div", {"styles": this.process.css.applicationSelectTitle, "text": node.get("title")}).inject(node);
-                    var action = new Element("div", {"styles": this.process.css.applicationSelectAction, "text": node.get("title")}).inject(node);
-                    var content = new Element("div", {"styles": this.process.css.applicationSelectContent}).inject(node);
-                    action.addEvent("click", function(e){
-                        var id = this.data.targetApplication;
-                        this.processSelector.load([id], function(pros){
-                            content.empty();
-                            if (pros.length){
-                                this.data.targetProcess = pros[0].id;
-                                this.data.targetProcessName = pros[0].name;
-                                this.data.targetProcessAlias = pros[0].alias;
+            nodes.each(function(node){
+                var title = new Element("div", {"styles": this.process.css.applicationSelectTitle, "text": node.get("title")}).inject(node);
+                var action = new Element("div", {"styles": this.process.css.applicationSelectAction, "text": node.get("title")}).inject(node);
+                var content = new Element("div", {"styles": this.process.css.applicationSelectContent}).inject(node);
+
+                action.addEvent("click", function(e){
+                    new o2.O2Selector(this.process.designer.content, {
+                        "count": 1,
+                        "type": "process",
+                        "onComplete": function(items){
+                            if (items.length){
+                                this.data.targetApplication = items[0].data.application;
+                                this.data.targetApplicationName = items[0].data.applicationName;
+                                this.data.targetApplicationAlias = "";
+                                this.data.targetProcess = items[0].data.id;
+                                this.data.targetProcessName = items[0].data.name;
+                                this.data.targetProcessAlias = items[0].data.alias;
 
                                 new Element("div", {
                                     "styles": this.process.css.applicationSelectItem,
-                                    "text": pros[0].name
+                                    "text": this.data.targetProcessName
                                 }).inject(content);
+
                             }else{
+                                this.data.targetApplication = "";
+                                this.data.targetApplicationName = "";
+                                this.data.targetApplicationAlias = "";
                                 this.data.targetProcess = "";
                                 this.data.targetProcessName = "";
                                 this.data.targetProcessAlias = "";
+                                content.empty();
                             }
-                        }.bind(this));
-                    }.bind(this));
+                            alert(items[0].data.name)
+                        }.bind(this)
+                    });
 
-                    if (this.data.targetProcess){
-                        new Element("div", {
-                            "styles": this.process.css.applicationSelectItem,
-                            "text": this.data.targetProcessName
-                        }).inject(content);
-                    }
                 }.bind(this));
+
+                if (this.data.targetProcess){
+                    new Element("div", {
+                        "styles": this.process.css.applicationSelectItem,
+                        "text": this.data.targetProcessName
+                    }).inject(content);
+                }
             }.bind(this));
+
+
+
+            // this._getProcessSelector(function(){
+            //     nodes.each(function(node){
+            //         var title = new Element("div", {"styles": this.process.css.applicationSelectTitle, "text": node.get("title")}).inject(node);
+            //         var action = new Element("div", {"styles": this.process.css.applicationSelectAction, "text": node.get("title")}).inject(node);
+            //         var content = new Element("div", {"styles": this.process.css.applicationSelectContent}).inject(node);
+            //         action.addEvent("click", function(e){
+            //             var id = this.data.targetApplication;
+            //             this.processSelector.load([id], function(pros){
+            //                 content.empty();
+            //                 if (pros.length){
+            //                     this.data.targetProcess = pros[0].id;
+            //                     this.data.targetProcessName = pros[0].name;
+            //                     this.data.targetProcessAlias = pros[0].alias;
+            //
+            //                     new Element("div", {
+            //                         "styles": this.process.css.applicationSelectItem,
+            //                         "text": pros[0].name
+            //                     }).inject(content);
+            //                 }else{
+            //                     this.data.targetProcess = "";
+            //                     this.data.targetProcessName = "";
+            //                     this.data.targetProcessAlias = "";
+            //                 }
+            //             }.bind(this));
+            //         }.bind(this));
+            //
+            //         if (this.data.targetProcess){
+            //             new Element("div", {
+            //                 "styles": this.process.css.applicationSelectItem,
+            //                 "text": this.data.targetProcessName
+            //             }).inject(content);
+            //         }
+            //     }.bind(this));
+            // }.bind(this));
         }
     },
     _getProcessSelector: function(callback){

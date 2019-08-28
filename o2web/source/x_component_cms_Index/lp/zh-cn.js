@@ -2,7 +2,7 @@ MWF.xApplication.cms.Index.LP = {
 	"title": "内容管理首页",
 	"createDocument" : "新建文档",
 	"selectCategory" : "选择分类",
-	"searchKey": "请输入关键字",
+	"searchKey": "请输入搜索关键字",
 	"all": "全部",
 	"filter": "筛选",
 	"ok": "确定",

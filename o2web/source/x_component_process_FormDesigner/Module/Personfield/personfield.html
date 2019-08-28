@@ -194,6 +194,13 @@
             <div id="text{$.pid}dutyRangeScriptValue" style="border-bottom: 1px solid #999; display: text{($.dutyRange=='duty')?'block':'none'}; ">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
+                        <td class="editTableTitle">分类:</td>
+                        <td class="editTableValue">
+                            <input type="radio" name="categoryType" value="unit" text{(['duty'].indexOf($.categoryType)==-1)?'checked':''}/>按组织
+                            <input type="radio" name="categoryType" value="duty" text{($.categoryType && ($.categoryType.indexOf('duty')!=-1))?'checked':''}/>按职务<br/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="editTableTitle">选择职务:</td>
                         <td class="editTableValue"><div class="MWFPersonDuty" name="rangeDuty" type="rangeDuty"></div></td>
                     </tr>

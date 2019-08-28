@@ -66,7 +66,6 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		// copyNode.inject(this.node);
 	},
 	_setControlModeNode: function(){
-		debugger;
 		if (this.controlMode){
 			if (this.copyNode) this.copyNode.hide();
 		}else{

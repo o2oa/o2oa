@@ -706,7 +706,7 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
 
         this.descriptionNode = new Element("div", {
             "styles": this.css.meetingDescriptionNode,
-            "text" : available ? this.data.summary : this.app.lp.noPermission
+            "text" : available ? (this.data.summary || "") : this.app.lp.noPermission
         }).inject(this.contentNode);
         if( !available || rejected )this.descriptionNode.setStyle("color" , "#ccc");
 

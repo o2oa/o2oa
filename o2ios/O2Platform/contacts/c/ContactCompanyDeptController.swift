@@ -83,7 +83,7 @@ class ContactCompanyDeptController: UITableViewController {
     }
     
     
-    func loadCompData(_ obj:AnyObject?){
+    @objc func loadCompData(_ obj:AnyObject?){
         self.showMessage(title: "加载中...")
         Alamofire.request(self.myCompanyURL!).responseJSON {
             response in

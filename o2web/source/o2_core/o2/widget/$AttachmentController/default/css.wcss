@@ -143,7 +143,7 @@
 	    "text-overflow": "ellipsis",
 	    "text-align": "center"
 	},
-    attachmentNode_sequence: {
+    "attachmentNode_sequence": {
         "width": "auto",
         "height": "30px",
         "padding": "0px",
@@ -312,6 +312,18 @@
     },
 
 
+    "minActionNode": {
+        "float": "left",
+        "width": "26px",
+        "height": "26px",
+        "cursor": "default"
+    },
+    "minActionIconNode": {
+        "width": "26px",
+        "height": "26px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
     "minAttachmentNode_sequence": {
         "width": "auto",
         "height": "30px",
@@ -335,21 +347,25 @@
     "minAttachmentNode_list": {
         "width": "auto",
         "height": "30px",
-        "padding": "0px",
+        "padding": "0px 10px",
         "float": "left",
         "border-radius": "0px",
         "border": "0px solid #FFF",
         "background": "transparent",
-        "margin": "0px 5px",
+        "margin": "5px 5px",
         "-webkit-user-select": "text",
-        "-moz-user-select": "text"
+        "-moz-user-select": "text",
+        "width" : "47%",
+        "border-right" : "1px dashed #dcdcdc"
+    },
+    "minAttachmentSepNode_list" : {
     },
     "minAttachmentNode_list_over": {
-        "border": "0px solid #cdcfd1",
+        //"border": "0px solid #cdcfd1",
         "background-color": "#eaf0f5"
     },
     "minAttachmentNode_list_selected": {
-        "border": "0px solid #d7e1e8",
+        //"border": "0px solid #d7e1e8",
         "background-color": "#d7e1e8"
     },
     "minAttachmentIconNode_list": {
@@ -371,12 +387,24 @@
         "cursor": "default",
         "line-height": "30px",
         "margin-left": "0px",
-        "margin-right": "6px",
+        "margin-right": "0px",
         "font-size": "12px",
         "overflow": "hidden",
         "word-break": "break-all",
         "text-overflow": "ellipsis",
         "text-align": "left"
+    },
+    "minAttachmentSizeNode_list": {
+        "height": "30px",
+        "font-size": "12px",
+        "line-height": "30px",
+        "margin-left" : "0px",
+        "margin-right": "6px",
+        "display" : "inline"
+    },
+    "minAttachmentActionAreaNode" : {
+      "float" : "right",
+        "overflow" : "hidden"
     },
     "inputUploadAreaNode": {
         "width": "450px",

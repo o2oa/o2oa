@@ -36,6 +36,7 @@
   "deleteView": {"uri": "/jaxrs/view/{id}","method": "DELETE"},
   "updateView": {"uri": "/jaxrs/view/{id}","method": "PUT"},
   "loadView": {"uri": "/jaxrs/view/{id}/simulate", "method": "PUT"},
+  "bundleView": {"uri": "/jaxrs/view/{id}/bundle", "method": "PUT"},
 
   "getStat": {"uri": "/jaxrs/stat/{id}"},
   "addStat": {"uri": "/jaxrs/stat","method": "POST"},
@@ -69,7 +70,7 @@
   "updateStatement":{ "uri": "/jaxrs/statement/{flag}", "method": "PUT" },
   "createStatement":{ "uri": "/jaxrs/statement", "method": "POST" },
   "deleteStatement" : { "uri": "/jaxrs/statement/{flag}", "method": "DELETE" },
-  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute", "method": "POST" },
+  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 
   "buildAllTable" : { "uri" : "/jaxrs/table/build/all" }, //编译表对象生成实体类进行数据库建表,执行后需要重新启动.
   "listTableNext" : {"uri": "/jaxrs/table/list/{id}/next/{count}"},

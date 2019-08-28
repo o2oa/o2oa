@@ -1,17 +1,15 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 
 import android.content.Context
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.TextView
-import com.readystatesoftware.systembartint.SystemBarTintManager
-import net.muliba.changeskin.FancySkinManager
+import com.wugang.activityresult.library.ActivityResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.ImmersedStatusBarUtils
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.LoadingDialog
 
 
@@ -101,5 +99,19 @@ abstract class BaseMVPActivity<in V: BaseView, T: BasePresenter<V>>: AppCompatAc
         loadingDialog?.dismiss()
     }
 
+
+    fun contactPicker(bundle: Bundle, callback: (ContactPickerResult?)-> Unit) {
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(bundle)
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null) {
+                        callback(result)
+                    }else {
+                        callback(null)
+                    }
+                }
+    }
 
 }

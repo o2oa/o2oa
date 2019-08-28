@@ -25,12 +25,12 @@ import cn.jpush.im.android.api.model.GroupInfo
 import cn.jpush.im.android.api.model.UserInfo
 import cn.jpush.im.android.eventbus.EventBus
 import jiguang.chat.activity.ChatActivity
-import jiguang.chat.utils.DialogCreator
 import kotlinx.android.synthetic.main.fragment_main_news.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim.IMTribeCreateActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.im.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
@@ -122,7 +122,10 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
         mListAdapter = ConversationListAdapter(activity, mDatas, mConvListView)
         conv_list_view.adapter = mListAdapter
         XLog.info("init news fragment ui finish..........................")
-
+        tv_conversation_log_error.setOnClickListener {
+            XLog.info("click reload 。。。。。。。。。。。。。。")
+            lazyLoad()
+        }
         if (O2App.instance._JMIsLogin()) {
             isLogin = true
             failInitIM(false)
@@ -211,7 +214,20 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
                 XLog.info("创建群聊。。。。。。。。。。。。。。。。。。。。。。。。。。。")
                 if (isLogin) {
                     try {
-                        activity.go<NewOrganizationActivity>(NewOrganizationActivity.startBundleDataForIMChoose(arrayListOf(JMessageClient.getMyInfo().userName)))
+                        val bundle = ContactPickerActivity.startPickerBundle(
+                                arrayListOf("personPicker"),
+                                multiple = true,
+                                initUserList = arrayListOf(JMessageClient.getMyInfo().userName)
+                        )
+                        (activity as MainActivity).contactPicker(bundle) { result ->
+                            if (result != null) {
+                                val list = ArrayList<String>()
+                                val users = result.users
+                                users.map { list.add(it.distinguishedName) }
+                                activity.go<IMTribeCreateActivity>(IMTribeCreateActivity.startCreate(list))
+                            }
+                        }
+
                     } catch (e: Exception) {
                     }
                 } else {

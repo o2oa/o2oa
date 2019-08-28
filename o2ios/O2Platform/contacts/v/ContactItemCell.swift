@@ -11,11 +11,20 @@ import Alamofire
 import AlamofireImage
 import AlamofireObjectMapper
 
+
+protocol ContactItemCellBreadcrumbClickDelegate {
+    func breadcrumbTap(name: String, distinguished: String)
+}
+
 class ContactItemCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var headBarView: UITextView!
+    
     @IBOutlet weak var iconTagLabel: UILabel!
+    // 面包屑导航栏
+    @IBOutlet weak var headBarScrollView: UIScrollView!
+    
+    var delegate: ContactItemCellBreadcrumbClickDelegate?
     
     var cellViewModel:CellViewModel? {
         didSet {
@@ -87,16 +96,37 @@ class ContactItemCell: UITableViewCell {
     private func configTitle(_ t:HeadTitle){
         let title = t
         if title.isBar {
-            headBarView.textContainer.maximumNumberOfLines = 1
-            headBarView.textContainer.lineBreakMode = .byTruncatingTail
-            headBarView.text = ""
+            
+            self.headBarScrollView.removeSubviews()
+            var oX = CGFloat(4.0)
+            
             if let bars = title.barText {
                 bars.forEachEnumerated { (index, bar) in
+                    var name: String
+                    var textColor:UIColor
                     if bars.count == (index+1) {
-                        self.headBarView.appendLinkString(string: bar.name ?? "")
-                    }else{
-                        self.headBarView.appendLinkString(string: (bar.name ?? "") + " > ", withURLString: "reloadto:\(bar.id ?? "")")
+                        name = bar.name ?? ""
+                        textColor = base_color
+                    }else {
+                        name = bar.name ?? ""
+                        name = name + " > "
+                        textColor = UIColor(hex:"#333333")
                     }
+                    let firstSize = name.getSize(with: 15)
+                    let oY = (self.headBarScrollView.bounds.height - firstSize.height) / 2
+                    let firstLabel = UILabel(frame: CGRect(x: CGFloat(oX), y: oY, width: firstSize.width, height: firstSize.height))
+                    firstLabel.textAlignment = .left
+                    let textAttributes = [NSAttributedString.Key.foregroundColor: textColor,NSAttributedString.Key.font:UIFont(name:"PingFangSC-Regular",size:15)!]
+                    firstLabel.attributedText = NSMutableAttributedString(string: name, attributes: textAttributes)
+                    firstLabel.sizeToFit()
+                    oX += firstSize.width
+                    self.headBarScrollView.addSubview(firstLabel)
+                    firstLabel.addTapGesture(action: { (rec) in
+                        if bars.count != (index+1) {
+                            self.delegate?.breadcrumbTap(name: bar.name ?? "", distinguished: bar.distinguishedName ?? "")
+                        }
+                    })
+                    
                 }
             }
         }else{

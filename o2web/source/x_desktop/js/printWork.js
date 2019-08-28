@@ -99,9 +99,11 @@ o2.addReady(function(){
 
                 layout.loadWork = function(options){
                     var id = options.workCompletedId || options.workId || options.workid || options.workcompletedid;
+                    var form = options.form;
+                    var app = options.app;
                     if (id){
                         o2.Actions.invokeAsync([
-                            {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
+                            {"action": this.action, "name": "getForm"},
                             {"action": this.action, "name": "loadWork"},
                             {"action": this.action, "name": "getWorkControl"},
                             {"action": this.action, "name": "getWorkLog"},
@@ -115,7 +117,7 @@ o2.addReady(function(){
                                 } else{
                                     layout.errorWork();
                                 }
-                            }.bind(this), "failure": function(){}}, [id, true, true, true], id);
+                            }.bind(this), "failure": function(){}}, [form, app], id);
                     }
 
                     // var id = options.workid || options.workcompletedid;

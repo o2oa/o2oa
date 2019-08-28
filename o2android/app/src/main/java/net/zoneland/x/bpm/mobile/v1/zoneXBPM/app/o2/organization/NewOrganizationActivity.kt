@@ -81,16 +81,16 @@ class NewOrganizationActivity : BaseMVPActivity<NewOrganizationContract.View, Ne
             return bundle
         }
 
-        fun startBundleDataForIMChoose(choosePersonList: ArrayList<String>, chooseFromRequest: Int = IM_CHOOSE_NEED_START_ACTIVITY): Bundle {
-            val bundle = Bundle()
-            bundle.putInt(FROM_IM_CHOOSE_KEY, chooseFromRequest)
-            bundle.putString(UNIT_PARENT_KEY, "")
-            bundle.putString(UNIT_PARENT_NAME_KEY, "")
-            bundle.putInt(MODE_KEY, MULTI_PERSON_CHOOSE_MODE)
-            bundle.putInt(STATUS_KEY, DEFAULT_STATUS)
-            bundle.putStringArrayList(ALREADY_CHOOSE_PERSON_LIST_KEY, choosePersonList)
-            return bundle
-        }
+//        fun startBundleDataForIMChoose(choosePersonList: ArrayList<String>, chooseFromRequest: Int = IM_CHOOSE_NEED_START_ACTIVITY): Bundle {
+//            val bundle = Bundle()
+//            bundle.putInt(FROM_IM_CHOOSE_KEY, chooseFromRequest)
+//            bundle.putString(UNIT_PARENT_KEY, "")
+//            bundle.putString(UNIT_PARENT_NAME_KEY, "")
+//            bundle.putInt(MODE_KEY, MULTI_PERSON_CHOOSE_MODE)
+//            bundle.putInt(STATUS_KEY, DEFAULT_STATUS)
+//            bundle.putStringArrayList(ALREADY_CHOOSE_PERSON_LIST_KEY, choosePersonList)
+//            return bundle
+//        }
     }
 
 
@@ -134,7 +134,7 @@ class NewOrganizationActivity : BaseMVPActivity<NewOrganizationContract.View, Ne
 
             override fun bindIdentity(hold: CommonRecyclerViewHolder?, identity: NewContactListVO.Identity, position: Int) {
                 hold?.setText(R.id.tv_item_contact_person_body_name, identity.name)
-                        ?.setText(R.id.tv_item_contact_person_body_mobile, identity.mobile)
+                        ?.setText(R.id.tv_item_contact_person_body_mobile, "")
                 val icon = hold?.getView<CircleImageView>(R.id.image_item_contact_person_body_icon)
                 if (icon != null) {
                     val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(identity.person)

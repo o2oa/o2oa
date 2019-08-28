@@ -610,7 +610,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         "hasTopContent" : false,
         "hasBottom": false,
         "draggable": true,
-        "closeAction": true
+        "closeAction": true,
+        "maxAction" : true
     },
     open: function (e) {
         this.fireEvent("queryOpen");
@@ -642,10 +643,10 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.formTopTextNode.set( "text", this.lp.addMeeting );
         }else if( this.isEdited ){
             this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = "590";
+            this.options.height = "610";
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
-            this.options.height = "500";
+            this.options.height = "540";
         }
 
         var defaultDate, defaultBeginTime, date1, defaultEndTime;
@@ -673,11 +674,15 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             defaultEndTime =  (date1.getHours()+1)+":"+"00";
         }
 
+        this.formTableArea.setStyle("position","relative");
+
 
         var data = this.data;
-        var editEnable = ( !this.isEdited && !this.isNew && this.data.status == "wait" && ( this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator() ) );
 
-        var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+        var isEditer = this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator();
+        var editEnable = ( !this.isEdited && !this.isNew && this.data.status == "wait" &&  isEditer  );
+
+        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:100px;height:130px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr>"+
             "   <td styles='formTableTitle' width='70'>"+this.lp.applyPerson+":</td>" +
@@ -703,6 +708,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             ) +
             "   </td>" +
             "</tr>" +
+            "<tr style='display:"+ ( this.isNew ? "none" : "") +" ;' item='checkPersonTr'><td styles='formTableTitle'>签到人员:</td>" +
+            "    <td styles='formTableValue' item='checkinPersonList'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingSubject+":</td>" +
             "    <td styles='formTableValue' item='subject'></td></tr>" +
             "<tr><td styles='formTableTitle'>"+this.lp.meetingDescription+":</td>" +
@@ -732,6 +739,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         this.meetingRoomArea = this.formTableArea.getElement("[item='meetingRoom']");
         this.attachmentTr = this.formTableArea.getElement("[item='attachmentTr']");
         this.attachmentArea = this.formTableArea.getElement("[item='attachment']");
+
+
+        this.qrCodeArea = this.formTableArea.getElement("[item='qrCode']");
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, data, {
@@ -769,6 +779,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             this.loadAcceptAndReject( item );
                         }.bind(this)
                     }},
+                    checkinPersonList : { type: "org", isEdited : false, orgType: ["identity","person"], count : 0},
                     selectinvitePerson : { type : "button", value : this.lp.addInvitePerson1, style : {"margin-left": "20px"}, event : {
                         click : function( it ){
                             var options = {
@@ -829,11 +840,40 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
             this.loadSelectRoom();
             if( this.data.id )this.loadAttachment();
+
+            if( isEditer && !this.isNew ){
+                this.loadQrCode();
+            }else{
+                this.qrCodeArea.destroy();
+            }
         }.bind(this), true);
     },
     getString : function( str ){
         var s = "00" + str;
         return s.substr(s.length - 2, 2 );
+    },
+    loadQrCode : function(){
+        this.actions.getCheckinQrCode( this.data.id, function(json){
+            var img = new Element("img",{
+                src : "data:image/png;base64,"+json.data.image,
+                styles : {
+                    width : "100px",
+                    height : "100px"
+                }
+            }).inject( this.qrCodeArea );
+            var div = new Element("div",{
+                text : "打印签到二维码",
+                styles : {
+                    color : "#3c75b7",
+                    cursor : "pointer"
+                },
+                events : {
+                    click : function(){
+                        window.open( "/x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id, "_blank" );
+                    }.bind(this)
+                }
+            }).inject( this.qrCodeArea );
+        }.bind(this));
     },
     loadAcceptAndReject : function( item ){
         var personName = item.data.distinguishedName;

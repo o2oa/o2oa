@@ -19,7 +19,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
     
     var superOrgUnit : OrgUnit? {
         didSet {
-            subUnitURL = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.subUnitByNameQuery, parameter: ["##name##":(superOrgUnit?.unique)! as AnyObject])
+            subUnitURL = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.subUnitByNameQuery, parameter: ["##name##":(superOrgUnit?.distinguishedName)! as AnyObject])
 
             subIdentityURL = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.subIdentityByNameQuery, parameter: ["##name##":(superOrgUnit?.unique)! as AnyObject])
             if self.headBars.count == 0 {
@@ -27,7 +27,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
             }else{
                 var tag = true
                 for (index,unit) in self.headBars.enumerated() {
-                    if unit.id! == self.superOrgUnit!.id! {
+                    if unit.distinguishedName! == self.superOrgUnit!.distinguishedName! {
                         tag = false
                         let n = self.headBars.count - index
                         if n>1 {
@@ -101,7 +101,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
         
         cell.cellViewModel = cellMod
         if indexPath.section == 0 {
-            cell.headBarView.delegate = self
+            cell.delegate = self
         }
         return cell
     }
@@ -140,9 +140,9 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
         if let scheme = URL.scheme {
             switch scheme {
             case "reloadto" :
-                let id = (URL.description as NSString).substring(from: 9)
+                let distinguishedName = (URL.description as NSString).substring(from: 9)
                 for unit in self.headBars {
-                    if id == unit.id! {
+                    if distinguishedName == unit.distinguishedName! {
                         self.superOrgUnit = unit
                         self.reloadView()
                         break;
@@ -167,7 +167,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
     }
     
     
-    func loadMyDeptData(_ sender:AnyObject?){
+    @objc func loadMyDeptData(_ sender:AnyObject?){
         let urls = [0:"111",1:subUnitURL,2:subIdentityURL]
         self.showMessage(title:"加载中...")
         var num = 0
@@ -234,4 +234,19 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
         }
     }
 
+}
+
+
+extension ContactDeptPersonController: ContactItemCellBreadcrumbClickDelegate {
+    func breadcrumbTap(name: String, distinguished: String) {
+        for unit in self.headBars {
+            if distinguished == unit.distinguishedName! {
+                self.superOrgUnit = unit
+                self.reloadView()
+                break;
+            }
+        }
+    }
+    
+    
 }

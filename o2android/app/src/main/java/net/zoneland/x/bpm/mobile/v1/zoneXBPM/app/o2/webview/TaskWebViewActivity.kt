@@ -94,6 +94,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     var imageUploadData: O2UploadImageData? = null
     private val jsNotification: JSInterfaceO2mNotification by lazy { JSInterfaceO2mNotification.with(this) }
     private val jsUtil: JSInterfaceO2mUtil by lazy { JSInterfaceO2mUtil.with(this) }
+    private val jsBiz: JSInterfaceO2mBiz by lazy { JSInterfaceO2mBiz.with(this) }
 
 
 
@@ -120,8 +121,10 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         web_view.addJavascriptInterface(this, "o2android")
         jsNotification.setupWebView(web_view)
         jsUtil.setupWebView(web_view)
+        jsBiz.setupWebView(web_view)
         web_view.addJavascriptInterface(jsNotification, JSInterfaceO2mNotification.JSInterfaceName)
         web_view.addJavascriptInterface(jsUtil, JSInterfaceO2mUtil.JSInterfaceName)
+        web_view.addJavascriptInterface(jsBiz, JSInterfaceO2mBiz.JSInterfaceName)
         web_view.webChromeClient = webChromeClient
         web_view.webViewClient = object : WebViewClient() {
             override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {

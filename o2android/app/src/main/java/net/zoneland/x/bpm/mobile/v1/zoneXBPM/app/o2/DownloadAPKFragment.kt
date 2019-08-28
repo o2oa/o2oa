@@ -33,8 +33,8 @@ class DownloadAPKFragment : DialogFragment()  {
     override fun onStart() {
         super.onStart()
         val window = dialog.window
-        window.setGravity(Gravity.CENTER)
-        window.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
+        window?.setGravity(Gravity.CENTER)
+        window?.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =

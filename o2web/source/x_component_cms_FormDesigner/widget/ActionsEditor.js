@@ -7,17 +7,35 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
         if (!this.options.noCreate) this.loadCreateActionButton();
 
 		this.data = data;
-        if (this.data){
-            if (typeOf(this.data)!="array") this.data = [];
-            this.data.each(function(actionData, idx){
+        if ( !this.data || typeOf(this.data)!="array") this.data = [];
+        this.loadRestoreActionButton();
+
+        this.data.each(function(actionData, idx){
                 var action = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction(this);
                 action.load(actionData);
                 this.actions.push(action);
             }.bind(this));
-        }
 
 	},
-
+    listRemovedSystemTool : function(){
+        var list = [];
+        if( !this.defaultTools ){
+            MWF.getJSON( "/x_component_cms_FormDesigner/Module/Actionbar/toolbars.json", function(tools){
+                this.defaultTools = tools;
+            }.bind(this), false);
+        }
+        this.defaultTools.each( function( tool ){
+            var flag = true;
+            for( var i=0; i<(this.data || []).length; i++ ){
+                if( this.data[i].id === tool.id ){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)list.push(tool);
+        }.bind(this));
+        return list;
+    },
 	addButtonAction: function(){
         var o = {
             "type": "MWFToolBarButton",
@@ -35,7 +53,42 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
         this.data.push(o);
         this.actions.push(action);
         this.fireEvent("change");
-	}
+	},
+    restoreButtonAction : function(){
+        var list = this.listRemovedSystemTool();
+        if( !list.length )return;
+        var selectableItems = [];
+        list.each( function(d){
+            selectableItems.push( {
+                name : d.text,
+                id : d.id
+            })
+        }.bind(this));
+        MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false);
+        var opt  = {
+            "count": 0,
+            "title": this.designer.lp.actionbar.selectDefaultTool,
+            "selectableItems" : selectableItems,
+            "values": [],
+            "onComplete": function( array ){
+                if( !array || array.length == 0 )return;
+                array.each( function(tool){
+                    for( var i=0; i<list.length; i++ ){
+                        if( list[i].id === tool.data.id ){
+                            this.data.push( list[i] );
+                            var action = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction(this);
+                            action.load(list[i]);
+                            this.actions.push(action);
+                            break;
+                        }
+                    }
+                }.bind(this));
+                this.fireEvent("change");
+            }.bind(this)
+        };
+        var selector = new MWF.xApplication.Template.Selector.Custom(this.options.maxObj, opt );
+        selector.load();
+    }
 
 });
 
@@ -49,7 +102,35 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         this.iconNode = new Element("div", {"styles": this.css.actionIconNode}).inject(this.titleNode);
         this.textNode = new Element("div", {"styles": this.css.actionTextNode, "text": this.data.text}).inject(this.titleNode);
 
-        if (!this.editor.options.noDelete)this.delButton = new Element("div", {"styles": this.css.actionDelButtonNode, "text": "-"}).inject(this.titleNode);
+        this.upButton = new Element("div", {"styles": this.css.actionUpButtonNode, "title": this.editor.designer.lp.actionbar.up}).inject(this.titleNode);
+
+        this.propertiesButton = new Element("div", {"styles": this.css.actionPropertiesButtonNode, "title": this.editor.designer.lp.actionbar.property}).inject(this.titleNode);
+        if (!this.data.properties || Object.keys(this.data.properties).length === 0 ){
+            this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property_empty.png)");
+        }else{
+            this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property.png)");
+        }
+        this.propertiesNode = new Element("div", {"styles": this.css.actionScriptNode}).inject(this.node);
+        this.propertiesArea = new MWF.widget.Maplist(this.propertiesNode, {
+            "title": this.editor.designer.lp.actionbar.setProperties,
+            "collapse": false,
+            "onChange": function(){
+                this.data.properties = this.propertiesArea.toJson();
+                if (!this.data.properties || Object.keys(this.data.properties).length === 0 ){
+                    this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property_empty.png)");
+                }else{
+                    this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property.png)");
+                }
+                this.editor.fireEvent("change");
+            }.bind(this)
+        });
+        this.propertiesArea.load( this.data.properties || {});
+
+        if (!this.editor.options.noDelete) this.delButton = new Element("div", {
+            "styles": this.css.actionDelButtonNode,
+            "text": "-",
+            "title" : this.editor.designer.lp.actionbar.delete
+        }).inject(this.titleNode);
 
         this.conditionButton = new Element("div", {"styles": this.css.actionConditionButtonNode, "title": this.editor.designer.lp.actionbar.hideCondition}).inject(this.titleNode);
         if (this.data.condition){
@@ -58,18 +139,22 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.conditionButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/code_empty.png)");
         }
 
-        this.editButton = new Element("div", {"styles": this.css.actionEditButtonNode, "title": this.editor.designer.lp.actionbar.edithide}).inject(this.titleNode);
-        if (this.data.editShow){
-            this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
-        }else{
-            this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
+        if (!this.editor.options.noEditShow){
+            this.editButton = new Element("div", {"styles": this.css.actionEditButtonNode, "title": this.editor.designer.lp.actionbar.edithide}).inject(this.titleNode);
+            if (this.data.editShow){
+                this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
+            }else{
+                this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
+            }
         }
 
-        this.readButton = new Element("div", {"styles": this.css.actionReadButtonNode, "title": this.editor.designer.lp.actionbar.readhide}).inject(this.titleNode);
-        if (this.data.readShow){
-            this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
-        }else{
-            this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
+        if (!this.editor.options.noReadShow){
+            this.readButton = new Element("div", {"styles": this.css.actionReadButtonNode, "title": this.editor.designer.lp.actionbar.readhide}).inject(this.titleNode);
+            if (this.data.readShow){
+                this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
+            }else{
+                this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
+            }
         }
 
 
@@ -159,6 +244,43 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             item.iconName = i+".png";
         }
 
+        this.upButton.addEvent("click", function(e){
+            var actions = this.editor.actions;
+            var dataList = this.editor.data;
+
+            var dataIndex = dataList.indexOf( this.data );
+            var index = actions.indexOf( this );
+
+            if( index === 0 || dataIndex === 0 ){
+                e.stopPropagation();
+                return;
+            }
+
+            var index_before = index-1;
+            var action = actions[index_before];
+            this.node.inject(action.node, "before");
+
+            actions[index_before] = actions.splice(index, 1, actions[index_before])[0]; //数组交换位置
+            this.editor.actions = actions;
+
+            var dataIndex_before = dataIndex - 1;
+            dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0]; //数组交换位置
+            this.editor.data = dataList;
+
+            this.editor.fireEvent("change");
+            e.stopPropagation();
+        }.bind(this));
+
+        this.propertiesButton.addEvent("click", function(e){
+            var dis = this.propertiesNode.getStyle("display");
+            if (dis=="none"){
+                this.propertiesNode.setStyle("display", "block");
+            }else{
+                this.propertiesNode.setStyle("display", "none");
+            }
+            e.stopPropagation();
+        }.bind(this));
+
         this.textNode.addEvent("click", function(e){
             this.textNode.empty();
             var editTitleNode = new Element("input", {"styles": this.css.actionEditTextNode, "type": "text", "value": this.data.text}).inject(this.textNode);
@@ -175,7 +297,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.editCondition();
         }.bind(this));
 
-        this.editButton.addEvent("click", function(e){
+        if (this.editButton)this.editButton.addEvent("click", function(e){
             if (this.data.editShow){
                 this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
                 this.data.editShow = false;
@@ -186,7 +308,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.editor.fireEvent("change");
             e.stopPropagation();
         }.bind(this));
-        this.readButton.addEvent("click", function(e){
+        if (this.readButton)this.readButton.addEvent("click", function(e){
             if (this.data.readShow){
                 this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
                 this.data.readShow = false;
