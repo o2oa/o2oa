@@ -15,7 +15,12 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         //this.node.empty();
 
             MWF.require("MWF.widget.SimpleToolbar", function(){
-                this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
+                this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {
+                    "style": this.json.style,
+                    "onPostLoad" : function(){
+                        this.fireEvent("afterLoad");
+                    }.bind(this)
+                }, this);
 
                 //var json = this.readonly ? this.json.sysTools.readTools : this.json.sysTools.editTools;
                 //if( this.json.style == "xform_red_simple" ){
@@ -58,7 +63,15 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
 	},
     setCustomToolbars: function(tools, node){
         var path = "/x_component_cms_FormDesigner/Module/Actionbar/";
-        var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+        //var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+        var style;
+        if( this.json.customIconStyle ){
+            style = this.json.customIconStyle;
+        }else{
+            style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+        }
+        var style_over = this.json.customIconOverStyle || "white";
+
         tools.each(function(tool){
             var flag = true;
             if (this.readonly){
@@ -80,13 +93,16 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
                         "id": tool.id,
                         "MWFnodetype": tool.type,
                         "MWFButtonImage": path+""+this.form.options.style+"/custom/"+ style + "/" +tool.img,
-                        "MWFButtonImageOver": path+""+this.form.options.style+"/custom/white/"+tool.img,
+                        "MWFButtonImageOver": path+""+this.form.options.style+"/custom/" + style_over + "/"+tool.img,
                         //"MWFButtonImage": "/x_component_cms_FormDesigner/Module/Actionbar/"+ (this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
                         //"MWFButtonImageOver": "/x_component_cms_FormDesigner/Module/Actionbar/"+ (this.options.style||"default")+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
                         "title": tool.title,
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
                     }).inject(node);
+                    if( tool.properties ){
+                        actionNode.set(tool.properties);
+                    }
                     if (tool.actionScript){
                         actionNode.store("script", tool.actionScript);
                     }
@@ -106,7 +122,7 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
             }
             if (!noCondition) if (tool.condition){
                 var hideFlag = this.form.Macro.exec(tool.condition, this);
-                flag = !hideFlag;
+                flag = flag && (!hideFlag);
             }
             //if (tool.id == "action_processWork"){
             //    if (!this.form.businessData.task){

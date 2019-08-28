@@ -20,6 +20,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             this._loadValue();
         }
 	},
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    (this.node.getFirst() || this.node).addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
     _loadEvents: function(){
         Object.each(this.json.events, function(e, key){
             if (e.code){
@@ -34,6 +45,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                 }
             }
         }.bind(this));
+    },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            (this.node.getFirst() || this.node).addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
     },
 
     _loadNode: function(){
@@ -102,7 +124,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         var node = new Element("div", {"styles": {
             "overflow": "hidden",
             "position": "relative",
-            "margin-right": "20px"
+            "margin-right": "20px",
+            "padding-right": "4px"
         }}).inject(this.node, "after");
         input.inject(node);
 
@@ -263,7 +286,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         }
     },
     showNotValidationMode: function(node){
-        debugger;
         var p = node.getParent("div");
         if (p){
             var mwftype = p.get("MWFtype") || p.get("mwftype");

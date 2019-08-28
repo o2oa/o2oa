@@ -91,8 +91,11 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
                 if (this.page.currentSelectedModule) {
                     var module = this.page.currentSelectedModule;
                     if (module.moduleType != "page" && module.moduleName.indexOf("$") == -1) {
+
+                        this.page.fireEvent("queryGetPageData", [module.node]);
                         var html = module.getHtml();
                         var json = module.getJson();
+                        this.page.fireEvent("postGetPageData", [module.node]);
 
                         MWF.clipboard.data = {
                             "type": "page",
@@ -1293,8 +1296,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 			}.bind(this)
 		});
 	},
+    getPageTemplate : function(templateId, callback){
+        this.actions.getPageTemplate(templateId, function(page){
+            if(callback)callback(page);
+        }.bind(this))
+    },
     loadNewPageDataFromTemplate: function(callback){
-        this.actions.getPageTemplate(this.options.templateId, function(page){
+        this.getPageTemplate(this.options.templateId, function(page){
             if (page){
                 this.pageData = JSON.decode(MWF.decodeJsonString(page.data.data));
                 this.pageData.isNewPage = true;
@@ -1311,8 +1319,18 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             }
         }.bind(this));
     },
+    getPage : function(id, callback){
+        this.actions.getPage(id, function(page){
+            if(callback)callback(page);
+        }.bind(this))
+    },
+    getApplication : function(portal, callback){
+        this.actions.getApplication(portal, function(page){
+            if(callback)callback(page);
+        }.bind(this))
+    },
 	loadPageData: function(callback){
-		this.actions.getPage(this.options.id, function(page){
+		this.getPage(this.options.id, function(page){
 			if (page){
 
 				this.pageData = JSON.decode(MWF.decodeJsonString(page.data.data));
@@ -1333,7 +1351,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 				this.options.appTitle = this.options.appTitle + "-"+this.pageData.json.name;
 
                 if (!this.application){
-                    this.actions.getApplication(page.data.portal, function(json){
+                    this.getApplication(page.data.portal, function(json){
                         this.application = {"name": json.data.name, "id": json.data.id};
                         if (callback) callback();
                     }.bind(this));
@@ -1372,6 +1390,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
     saveForm: function(){
         this.savePage()
     },
+    _savePage : function(pcData, mobileData, fieldList, success, failure ){
+        this.actions.savePage(pcData, mobileData, fieldList, function(responseJSON){
+            success(responseJSON)
+        }.bind(this), function(xhr, text, error){
+            failure(xhr, text, error)
+        }.bind(this));
+    },
 	savePage: function(){
         if (!this.isSave){
             var pcData, mobileData;
@@ -1388,7 +1413,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
             this.isSave = true;
             var fieldList = this.getFieldList();
-            this.actions.savePage(pcData, mobileData, fieldList, function(responseJSON){
+            this._savePage(pcData, mobileData, fieldList, function(responseJSON){
                 this.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
                 if (!this.pcPage.json.name) this.pcPage.treeNode.setText("<"+this.json.type+"> "+this.json.id);
                 this.pcPage.treeNode.setTitle(this.pcPage.json.id);
@@ -1535,6 +1560,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             }
         }).inject(actionAreaNode);
     },
+    addPageTemplate : function(pcData, mobileData, data, success, failure){
+        this.actions.addPageTemplate( pcData, mobileData, data, function(json){
+            if(success)success(json);
+        }.bind(this), function(xhr, text, error){
+            if(failure)failure(xhr, text, error);
+        }.bind(this))
+    },
     saveTemplate: function(markNode, areaNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode){
         var pcData, mobileData;
         if (this.pcPage){
@@ -1564,7 +1596,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             "description": description,
             "outline": iconNode.get("html")
         };
-        this.actions.addPageTemplate(pcData, mobileData, data, function(){
+        this.addPageTemplate(pcData, mobileData, data, function(){
             this.notice(MWF.APPPD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
             markNode.destroy();
             areaNode.destroy();

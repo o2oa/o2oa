@@ -70,7 +70,14 @@ MWF.xApplication.process.FormDesigner.LP = {
             "action": "操作",
             "condition": "显示条件",
             "editScript": "操作脚本编辑",
-            "editCondition": "隐藏条件编辑（返回true隐藏操作）"
+            "editCondition": "隐藏条件编辑（返回true隐藏操作）",
+            "up" : "上移",
+            "property" : "属性",
+            "addCustomTool" : "添加自定义操作",
+            "delete" : "删除",
+            "setProperties" : "设置操作属性",
+            "restoreDefaultTool" : "恢复删除的系统操作",
+            "selectDefaultTool" : "选择系统操作"
         },
         "isSave": "正在保存，请稍候...",
         "validation": {
@@ -150,7 +157,11 @@ MWF.xApplication.process.FormDesigner.LP = {
     "subformNameConflictTitle": "子表单字段名称冲突",
     "subformNameConflictInfor": "子表单的以下字段名称和现有表单冲突：\n{name}",
     "subformConflictTitle": "子表单嵌入错误",
-    "subformConflictInfor": "您不能嵌入两个相同的子表单",
+    "subformConflictInfor": "您不能重复嵌入同一个子表单",
+
+    "subformNestedTitle": "子表单嵌入错误",
+    "subformNestedInfor": "不能相互嵌套的嵌入子表单",
+    "checkSubformNestedError" : "您选择的子表单存在相互嵌套的情况，请检查！",
 
     "checkSubformTitle": "表单保存校验",
     "checkFormSaveError": "无法保存表单，原因如下：<br>",

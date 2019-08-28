@@ -760,6 +760,14 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             this.app.notice("设置分类导入导出视图成功");
         }.bind(this))
     },
+    setCategoryAlias : function( alias ){
+        var d = this.data;
+        d.categoryAlias = alias;
+        d.alias = alias;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice("设置分类别名成功");
+        }.bind(this))
+    },
     setDocumentType : function( documentType ){
         var d = this.data;
         d.documentType = documentType;
@@ -2615,7 +2623,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
 
         var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center'>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.idLabel +"</td><td id='formCategoryId' class='formValue'>"+this.category.data.id+"</td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.category.aliasLabel +"</td><td id='formCategoryId' class='formValue'>"+this.category.data.categoryAlias+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.category.aliasLabel +"</td><td id='formCategoryAlias' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
        // html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.documentType +"</td><td id='formCategoryType' class='formValue'>"+"</td></tr>"; //(this.category.data.documentType || "" )+
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
@@ -2624,6 +2632,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
         this.propertyContentNode.getElements("td.formValue").setStyles(this.app.css.propertyBaseContentTdValue);
+
+
+        this.aliasInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formCategoryAlias"), this.category.data.categoryAlias, this.category.css.formInput);
+        this.aliasInput.editMode();
+        this.aliasInput.input.addEvent("change", function( el ){
+            this.category.setCategoryAlias( el.target.get("value") );
+        }.bind(this));
 
         this.typeSelect = new MDomItem( this.propertyContentNode.getElement("#formCategoryType"), {
             type : "select",

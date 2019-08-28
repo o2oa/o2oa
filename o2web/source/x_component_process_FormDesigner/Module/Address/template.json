@@ -24,15 +24,27 @@
 		"html": ""
 	},
 	"events": {
+	  "queryLoad" : {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad" : {
+		"code": "",
+		"html": ""
+	  },
+	  "load" : {
+		"code": "",
+		"html": ""
+	  },
+	  "commitInput": {
+		"code": "",
+		"html": ""
+	  },
 		"click": {
 			"code": "",
 			"html": ""
 		},
 		"dblclick": {
-			"code": "",
-			"html": ""
-		},
-		"commitInput": {
 			"code": "",
 			"html": ""
 		},

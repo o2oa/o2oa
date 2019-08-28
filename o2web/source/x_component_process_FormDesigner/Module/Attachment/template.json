@@ -4,6 +4,22 @@
   "type": "Attachment",
   "description": "",
   "events": {
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "upload": {
+      "code": "",
+      "html": ""
+    },
+    "delete": {
+      "code": "",
+      "html": ""
+    },
+    "afterDelete": {
+      "code": "",
+      "html": ""
+    },
     "click": {
       "code": "",
       "html": ""
@@ -31,14 +47,6 @@
     "mouseup": {
       "code": "",
       "html": ""
-    },
-    "upload": {
-      "code": "",
-      "html": ""
-    },
-    "delete": {
-      "code": "",
-      "html": ""
     }
   },
   "size": "max", //max, min
@@ -51,6 +59,7 @@
   "isDelete": "y",
   "isReplace": "y",
   "isDownload": "y",
+  "availableListStyles" : ["list","seq","icon","preview"],
 
 
   "class": "",

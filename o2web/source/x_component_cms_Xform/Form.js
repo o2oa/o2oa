@@ -29,6 +29,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
             "beforePublish",
             "postPublish",
             "afterPublish",
+            "beforeDelete",
+            "afterDelete",
             "beforeModulesLoad",
             "resize",
             "afterModulesLoad"]
@@ -52,7 +54,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
 
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
-    load: function(){
+    load: function(callback){
         if (this.app){
             if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
             if (this.app.addEvent) this.app.addEvent("resize", function(){
@@ -75,10 +77,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
             this.fireEvent("beforeLoad");
             if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
 
-            this.loadContent()
+            this.loadContent(callback)
         }
     },
-    loadContent: function(){
+    loadContent: function(callback){
         this._loadHtml();
         this._loadForm();
         this.fireEvent("beforeModulesLoad");
@@ -99,7 +101,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                 });
             }.bind(this));
         }
-
         this.fireEvent("afterModulesLoad");
         this.fireEvent("postLoad");
         this.fireEvent("afterLoad");
@@ -107,6 +108,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
             this.app.fireEvent("afterModulesLoad");
             this.app.fireEvent("postLoad");
             this.app.fireEvent("afterLoad");
+        }
+        // 告诉移动端表单加载完成
+        if (this.app && this.app.mobile) {
+            if (callback) callback();
         }
     },
     autoSave: function(){
@@ -166,6 +171,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         moduleNodes.each(function(node){
             var json = this._getDomjson(node);
             if( !this.options.showAttachment && json.type == "Attachment" ){
+                return;
+            }
+            //移动端去掉操作栏
+            if(this.app.mobile && json.type === "Actionbar") {
                 return;
             }
             var module = this._loadModule(json, node);
@@ -397,18 +406,18 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         }
         return true;
     },
-    publishDocument: function(callback){
+    publishDocument: function(callback) {
         this.fireEvent("beforePublish");
         this.app.content.mask({
             "destroyOnHide": true,
             "style": this.app.css.maskNode
         });
-        if (!this.formValidation("publish")){
+        if (!this.formValidation("publish")) {
             this.app.content.unmask();
             //if (callback) callback();
             return false;
         }
-        if (!this.formPublishValidation()){
+        if (!this.formPublishValidation()) {
             this.app.content.unmask();
             if (callback) callback();
             return false;
@@ -427,24 +436,29 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         delete documentData.attachmentList;
         //this.documentAction.saveDocument(documentData, function(){
         this.fireEvent("postPublish", [documentData]);
-        if (this.officeList){
-            this.officeList.each(function(module){
+        if (this.officeList) {
+            this.officeList.each(function (module) {
                 module.save(history);
             });
         }
-        this.documentAction.publishDocumentComplex(documentData, function(json){
+        this.documentAction.publishDocumentComplex(documentData, function (json) {
             this.businessData.data.isNew = false;
             this.fireEvent("afterPublish");
             if (callback) callback();
-            if( this.businessData.document.title ){
-                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished+": “"+this.businessData.document.title+"”", "success");
-            }else{
-                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
+            if (this.app.mobile) {
+                this.app.content.unmask();
+                console.log('这里是移动端');
+            } else {
+                if (this.businessData.document.title) {
+                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
+                } else {
+                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
+                }
+                this.options.saveOnClose = false;
             }
-            this.options.saveOnClose = false;
             this.app.close();
-            //this.close();
-        }.bind(this) );
+        }.bind(this));
+
             //}.bind(this))
         //}.bind(this), null, this.businessData.document.id, data);
     },
@@ -483,6 +497,29 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
     //    }.bind(this), null, this.businessData.document.id, data);
     //},
 
+    deleteDocumentForMobile: function() {
+        if (this.app.mobile) {
+            this.app.content.mask({
+                "style": {
+                    "background-color": "#999",
+                    "opacity": 0.6
+                }
+            });
+
+            this.fireEvent("beforeDelete");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeDelete");
+
+            this.documentAction.removeDocument(this.businessData.document.id, function(json){
+                this.fireEvent("afterDelete");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterDelete");
+                this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete+": “"+this.businessData.document.title+"”", "success");
+                this.options.autoSave = false;
+                this.options.saveOnClose = false;
+                this.fireEvent("postDelete");
+                this.app.close();
+            }.bind(this) );
+        }
+    },
     deleteDocument: function(){
         var _self = this;
         var p = MWF.getCenterPosition(this.app.content, 380, 150);
@@ -501,7 +538,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                     "opacity": 0.6
                 }
             });
+
+            _self.fireEvent("beforeDelete");
+            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+
             _self.documentAction.removeDocument(_self.businessData.document.id, function(json){
+                _self.fireEvent("afterDelete");
+                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                 _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete+": “"+_self.businessData.document.title+"”", "success");
                 _self.options.autoSave = false;
                 _self.options.saveOnClose = false;

@@ -88,5 +88,15 @@
     "icon": "checkbox.png",
     "text": "多选框",
     "className": "Checkbox"
-  }
+ }
+//  "widget": {
+//    "icon": "subpage.png",
+//    "text": "部件",
+//    "className": "Widget"
+//  },
+//  "widgetmodules": {
+//    "icon": "subpage.png",
+//    "text": "部件元素",
+//    "className": "Widgetmodules"
+//  }
 }

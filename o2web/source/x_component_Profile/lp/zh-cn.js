@@ -47,5 +47,7 @@ MWF.xApplication.Profile.LP = {
     "middle" : "中",
     "high" : "强",
 
-    "bindOauth": "绑定Oauth账号"
+    "bindOauth": "绑定Oauth账号",
+
+    "empower": "外出授权"
 };

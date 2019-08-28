@@ -272,6 +272,26 @@ MWF.xScript.PageEnvironment = function(ev){
             }
             return v;
         },
+        //根据属性查询人员--返回人员的对象数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttribute(data, function(json){v = json.data;}, null, false);
+            return v;
+        },
+        //根据属性查询人员--返回人员的全称数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonNameWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttributeValue(data, function(json){v = json.data.personList;}, null, false);
+            return v;
+        },
 
         //人员属性************
         //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
@@ -818,6 +838,11 @@ MWF.xScript.PageEnvironment = function(ev){
         "node": function(){return _form.node;},
         //"readonly": _form.options.readonly,
         "get": function(name){return (_form.all) ? _form.all[name] : null;},
+        "getWidgetModule": function(widget, moduleName){
+            if( !_form.widgetModules || !_form.widgetModules[widget] )return null;
+            var module = _form.widgetModules[widget][moduleName];
+            return module || null;
+        },
         "getField": function(name){return _forms[name];},
         "getAction": function(){return _form.workAction},
         "getDesktop": function(){return _form.app.desktop},
@@ -853,10 +878,28 @@ MWF.xScript.PageEnvironment = function(ev){
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             layout.desktop.openApplication(this.event, "process.Work", op);
         },
+        "openJob": function(id, choice, options){
+            o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
+                var len = json.data.workList.length + json.data.workCompletedList.length;
+                if (len){
+                    if (len>1 && choice){
+
+                    }else{
+                        if (json.data.workList.length){
+                            var work =  json.data.workList[0];
+                            this.openWork(work.id, null, work.title, options);
+                        }else{
+                            var work =  json.data.workCompletedList[0];
+                            this.openWork(null, work.id, work.title, options);
+                        }
+                    }
+                }
+            }.bind(this));
+        },
         "openDocument": function(id, title, options){
             var op = options || {};
             op.documentId = id;
-            op.docTitle = title;
+            op.docTitle = title || "";
             layout.desktop.openApplication(this.event, "cms.Document", op);
         },
         "openPortal": function(name, page, par){
@@ -993,7 +1036,14 @@ MWF.xScript.PageEnvironment = function(ev){
                 }
             });
         },
-        "parameters": _form.options.parameters
+        "parameters": _form.options.parameters,
+        "getWidgetPrameters" : function(){
+            if( !this.target )return null;
+            if( !this.target.widget )return null;
+            if( !this.widgetParameters )return null;
+            var pageId = this.target.widget.json.id;
+            return this.widgetParameters[pageId];
+        }.bind(this)
        //"app": _form.app
     };
     this.form.currentRouteName = _form.json.currentRouteName;

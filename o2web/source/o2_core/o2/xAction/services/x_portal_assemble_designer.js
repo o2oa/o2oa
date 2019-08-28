@@ -11,7 +11,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
     },
     listApplicationSummary: function(categoryName, success, failure, async){
         if (categoryName){
-            this.action.invoke({"name": "listApplicationByCategorySummary","async": async, "parameter": {"applicationCategory": categoryName}, "success": success,	"failure": failure});
+            this.action.invoke({"name": "listApplicationByCategorySummary","async": async, "parameter": {"applictionCategory": categoryName}, "success": success,	"failure": failure});
         }else{
             this.action.invoke({"name": "listApplicationSummary","async": async, "success": success,	"failure": failure});
         }
@@ -30,6 +30,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             this.addPage(pageData, mobileData, fieldList, success, failure);
         }
     },
+
     updatePage: function(pageData, mobileData, fieldList, success, failure){
         var data, mobileDataStr;
         if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
@@ -124,6 +125,95 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             this.action.invoke({"name": "addPage","data": json, "parameter": {"id": pageData.json.categoryId}, "success": success,"failure": failure});
         }
     },
+    saveWidget: function(pageData, mobileData, fieldList, success, failure){
+        if (!pageData.isNewPage){
+            this.updateWidget(pageData, mobileData, fieldList, success, failure);
+        }else{
+            this.addWidget(pageData, mobileData, fieldList, success, failure);
+        }
+    },
+    updateWidget: function(pageData, mobileData, fieldList, success, failure){
+        var data, mobileDataStr;
+        if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
+        if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+        var json = {
+            "id": pageData.json.id,
+            "name": pageData.json.name,
+            "alias": pageData.json.name,
+            //"hasMobile": false,
+            "description": pageData.json.description,
+            "portal": pageData.json.application,
+            "icon": pageData.json.formIcon,
+            "formFieldList": fieldList
+        };
+        if (mobileData && mobileData.json.moduleList){
+            if (Object.keys(mobileData.json.moduleList).length){
+                json.hasMobile = true;
+            }else{
+                json.hasMobile = false;
+            }
+        }
+        if (pageData) json.data = data;
+        if (mobileData) json.mobileData = mobileDataStr;
+        this.action.invoke({"name": "updateWidget","data": json,"parameter": {"id": pageData.json.id},"success": success,"failure": failure});
+    },
+    addWidget: function(pageData, mobileData, fieldList, success, failure){
+        var data, mobileDataStr;
+        if (!pageData.json.id){
+            this.getUUID(function(id){
+                pageData.json.id = id;
+
+                if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
+                if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+                var json = {
+                    "id": pageData.json.id,
+                    "name": pageData.json.name,
+                    "hasMobile": false,
+                    "alias": pageData.json.name,
+                    "description": pageData.json.description,
+                    "portal": pageData.json.application,
+                    "icon": pageData.json.formIcon,
+                    "formFieldList": fieldList
+                };
+                if (mobileData && mobileData.json.moduleList){
+                    if (Object.keys(mobileData.json.moduleList).length){
+                        json.hasMobile = true;
+                    }else{
+                        json.hasMobile = false;
+                    }
+                }
+
+                if (pageData) json.data = data;
+                if (mobileData) json.mobileData = mobileDataStr;
+                this.action.invoke({"name": "addWidget","data": json, "parameter": {"id": pageData.json.categoryId}, "success": success,"failure": failure});
+            }.bind(this));
+        }else{
+            if (pageData) data = MWF.encodeJsonString(JSON.encode(pageData));
+            if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+            var json = {
+                "id": pageData.json.id,
+                "name": pageData.json.name,
+                "alias": pageData.json.name,
+                "hasMobile": false,
+                "description": pageData.json.description,
+                "portal": pageData.json.application
+            };
+
+            if (mobileData && mobileData.json.moduleList){
+                if (Object.keys(mobileData.json.moduleList).length){
+                    json.hasMobile = true;
+                }else{
+                    json.hasMobile = false;
+                }
+            }
+            if (pageData) json.data = data;
+            if (mobileData) json.mobileData = mobileDataStr;
+            this.action.invoke({"name": "addWidget","data": json, "parameter": {"id": pageData.json.categoryId}, "success": success,"failure": failure});
+        }
+    },
+
     addPageTemplate: function(pageData, mobileData, templateData, success, failure){
         var data, mobileDataStr;
         this.getUUID(function(id){

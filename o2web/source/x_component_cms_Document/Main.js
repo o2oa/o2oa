@@ -278,6 +278,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.isControl = true;
             isAdmin = true;
         }
+        this.isAdmin = isAdmin;
         ////系统管理员
         //if( MWF.AC.isAdministrator() ){
         //    this.options.isControl = true;

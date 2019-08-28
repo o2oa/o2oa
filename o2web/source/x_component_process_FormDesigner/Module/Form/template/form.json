@@ -19,7 +19,27 @@
       },
 
       "events": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
         "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
           "code": "",
           "html": ""
         },
@@ -43,15 +63,47 @@
           "code": "",
           "html": ""
         },
+        "beforeProcessWork": {
+          "code": "",
+          "html": ""
+        },
         "afterProcess": {
           "code": "",
           "html": ""
         },
-        "help": {
+        "beforeReset":{
           "code": "",
           "html": ""
         },
-        "load": {
+        "afterReset":{
+          "code": "",
+          "html": ""
+        },
+        "beforeRetract":{
+          "code": "",
+          "html": ""
+        },
+        "afterRetract":{
+          "code": "",
+          "html": ""
+        },
+        "beforeReroute":{
+          "code": "",
+          "html": ""
+        },
+        "afterReroute":{
+          "code": "",
+          "html": ""
+        },
+        "beforeDelete":{
+          "code": "",
+          "html": ""
+        },
+        "afterDelete":{
+          "code": "",
+          "html": ""
+        },
+        "help": {
           "code": "",
           "html": ""
         },

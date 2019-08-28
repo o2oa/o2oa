@@ -22,6 +22,15 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     _loadNodeRead: function(){
         this.node.empty();
     },
+    _setValue: function(value){
+        this._setBusinessData(value);
+        if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
+        if (this.readonly || this.json.isReadonly){
+            var reg = new RegExp("\n","g");
+            var text = value.replace(reg,"<br/>");
+            this.node.set("html", text);
+        }
+    },
     _loadNodeEdit: function(){
 		var input = new Element("textarea", {"styles": {
             "background": "transparent",
@@ -30,7 +39,11 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         }});
 		input.set(this.json.properties);
 
-        var node = new Element("div", {"styles": {"ovwrflow": "hidden", "position": "relative"}}).inject(this.node, "after");
+        var node = new Element("div", {"styles": {
+            "ovwrflow": "hidden",
+            "position": "relative",
+            "padding-right": "2px"
+        }}).inject(this.node, "after");
         input.inject(node);
         this.node.destroy();
         this.node = node;

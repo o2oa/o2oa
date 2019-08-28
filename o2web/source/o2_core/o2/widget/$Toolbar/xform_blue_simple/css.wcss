@@ -31,6 +31,7 @@
 		"position": "static",
 		"float": "left",
 		"border": "1px solid #fff",
+	  	"color" : "inherit",
 		"background-color": "#fff",
 		"height": "30px",
 		"margin-right": "8px",

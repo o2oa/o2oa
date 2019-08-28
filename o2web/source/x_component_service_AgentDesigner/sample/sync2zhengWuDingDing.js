@@ -106,7 +106,7 @@ for (var i in messages) {
 }
 
 function send(agentId, user, message) {
-    var body = '{"agentId":"184707353","touser":"' + '10001461928' + '","toparty": "","msgtype":"text","context":"' + message + '"}';
+    var body = '{"agentId":"agentId","touser":"' + 'touser' + '","toparty": "","msgtype":"text","context":"' + message + '"}';
     var address = com.x.base.core.project.config.Config.zhengwuDingding().getOapiAddress() + "/ent_message/send?access_token=" + com.x.base.core.project.config.Config.zhengwuDingding().appAccessToken();
     com.x.base.core.project.connection.HttpConnection.postAsString(address, null, body);
 }

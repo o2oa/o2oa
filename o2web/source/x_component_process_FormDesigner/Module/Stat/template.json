@@ -8,6 +8,10 @@
     "select": "no",  //single, multi
     "isOpen": "yes",
 	"events": {
+	  	"loadData" : {
+		  "code": "",
+		  "html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""

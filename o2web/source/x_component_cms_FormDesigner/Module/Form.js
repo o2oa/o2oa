@@ -7,8 +7,23 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		"style": "default",
 		"propertyPath": "/x_component_cms_FormDesigner/Module/Form/form.html",
 		"mode": "PC",
-		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Radio", "Select", "Textarea", "Textfield"]
-
+		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Radio", "Select", "Textarea", "Textfield"],
+		"injectActions" : [
+			{
+				"name" : "top",
+				"styles" : "injectActionTop",
+				"event" : "click",
+				"action" : "injectTop",
+				"title": MWF.APPFD.LP.formAction["insertTop"]
+			},
+			{
+				"name" : "bottom",
+				"styles" : "injectActionBottom",
+				"event" : "click",
+				"action" : "injectBottom",
+				"title": MWF.APPFD.LP.formAction["insertBottom"]
+			}
+		]
 	},
 	initialize: function(designer, container, options){
 		this.setOptions(options);
@@ -38,11 +53,39 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		this.selectedModules = [];
 	},
 
-    loadStylesList: function(callback){
-		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+
+	loadTemplateStyles : function( file, callback ){
+		if( !file ){
+			if (callback) callback({});
+			return;
+		}
+		this.templateStylesList = this.templateStylesList || {};
+		if( this.templateStylesList[file] ){
+			if (callback) callback(this.templateStylesList[file]);
+			return;
+		}
+		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+file;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
-					this.stylesList= responseJSON;
+					this.templateStylesList[file] = responseJSON;
+					if (callback) callback(responseJSON);
+				}.bind(this),
+				"onRequestFailure": function(){
+					if (callback) callback({});
+				}.bind(this),
+				"onError": function(){
+					if (callback) callback({});
+				}.bind(this)
+			}
+		);
+	},
+	loadStylesList: function(callback){
+		//var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
+		//var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		var configUrl = "/x_component_cms_FormDesigner/Module/Form/skin/config.json";
+		MWF.getJSON(configUrl,{
+				"onSuccess": function(responseJSON){
+					this.stylesList = responseJSON;
 					if (callback) callback(this.stylesList);
 				}.bind(this),
 				"onRequestFailure": function(){
@@ -55,7 +98,26 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 				}.bind(this)
 			}
 		);
-    },
+	},
+
+    //loadStylesList: function(callback){
+		//var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		//MWF.getJSON(stylesUrl,{
+		//		"onSuccess": function(responseJSON){
+		//			this.stylesList= responseJSON;
+		//			if (callback) callback(this.stylesList);
+		//		}.bind(this),
+		//		"onRequestFailure": function(){
+		//			this.stylesList = {};
+		//			if (callback) callback(this.stylesList);
+		//		}.bind(this),
+		//		"onError": function(){
+		//			this.stylesList = {};
+		//			if (callback) callback(this.stylesList);
+		//		}.bind(this)
+		//	}
+		//);
+    //},
 	
 	loadModule: function(json, dom, parent){
 		//var classPre = "CMSFC";
@@ -165,6 +227,43 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			}
 		}.bind(this));
 	},
+	//_setEditStyle: function(name, obj, oldValue){
+	//	if (name=="name"){
+	//		var title = this.json.name || this.json.id;
+	//		this.treeNode.setText("<"+this.json.type+"> "+title+" ["+this.options.mode+"] ");
+	//	}
+	//	if (name=="id"){
+	//		if (!this.json.name) this.treeNode.setText("<"+this.json.type+"> "+this.json.id+" ["+this.options.mode+"] ");
+	//		this.treeNode.setTitle(this.json.id);
+	//		this.node.set("id", this.json.id);
+	//	}
+     //   if (name=="formStyleType"){
+     //       this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
+     //       if (oldValue) {
+     //           var oldTemplateStyles = this.stylesList[oldValue];
+     //           if (oldTemplateStyles){
+     //               if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+     //           }
+     //       }
+     //       if (this.templateStyles){
+     //           if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
+     //       }
+     //       this.setAllStyles();
+    //
+     //       this.moduleList.each(function(module){
+     //           if (oldTemplateStyles){
+     //               module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
+     //           }
+     //           module.setStyleTemplate();
+     //           module.setAllStyles();
+     //       }.bind(this));
+     //   }
+     //   if (name==="css"){
+     //       this.reloadCss();
+     //   }
+	//	this._setEditStyle_custom(name, obj, oldValue);
+	//},
+
 	_setEditStyle: function(name, obj, oldValue){
 		if (name=="name"){
 			var title = this.json.name || this.json.id;
@@ -175,30 +274,44 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			this.treeNode.setTitle(this.json.id);
 			this.node.set("id", this.json.id);
 		}
-        if (name=="formStyleType"){
-            this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
-            if (oldValue) {
-                var oldTemplateStyles = this.stylesList[oldValue];
-                if (oldTemplateStyles){
-                    if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
-                }
-            }
-            if (this.templateStyles){
-                if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
-            }
-            this.setAllStyles();
+		if (name=="formStyleType"){
 
-            this.moduleList.each(function(module){
-                if (oldTemplateStyles){
-                    module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
-                }
-                module.setStyleTemplate();
-                module.setAllStyles();
-            }.bind(this));
-        }
-        if (name==="css"){
-            this.reloadCss();
-        }
+			var file = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].file : null;
+			this.loadTemplateStyles( file, function( templateStyles ){
+				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
+				this.templateStyles = templateStyles;
+
+				var oldFile;
+				if( oldValue && this.stylesList[oldValue] ){
+					oldFile = this.stylesList[oldValue].file;
+				}
+				this.loadTemplateStyles( oldFile, function( oldTemplateStyles ){
+					//if (oldValue) {
+					//	var oldTemplateStyles = this.stylesList[oldValue];
+					//	if (oldTemplateStyles){
+					//		if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+					//	}
+					//}
+
+					if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+					if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
+
+					this.setAllStyles();
+
+					this.moduleList.each(function(module){
+						if (oldTemplateStyles[module.moduleName]){
+							module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
+						}
+						module.setStyleTemplate();
+						module.setAllStyles();
+					}.bind(this));
+				}.bind(this))
+
+			}.bind(this))
+		}
+		if (name==="css"){
+			this.reloadCss();
+		}
 		this._setEditStyle_custom(name, obj, oldValue);
 	},
 

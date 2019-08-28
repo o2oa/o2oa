@@ -42,120 +42,34 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		this.node.addEvent("selectstart", function(e){
 			e.preventDefault();
 		});
-//		this.loadCkeditor();
 	},
 	
 	_setEditStyle_custom: function(name){
-		if (name=="editorProperties"){
-			if (this.editor){
-				Object.each(this.json.editorProperties, function(value, key){
-					if (value=="true") this.json.editorProperties[key] = true;
-					if (value=="false") this.json.editorProperties[key] = false;
-				}.bind(this));
-				this.distroyCkeditor();
-
-                var config = Object.clone(this.json.editorProperties);
-                if (this.json.config){
-                    if (this.json.config.code){
-                        var obj = MWF.Macro.exec(this.json.config.code, this);
-                        Object.each(obj, function(v, k){
-                            config[k] = v;
-                        });
-                    }
-                }
-
-				this.loadCkeditor(config);
-			}
-		}
-
-        if (name=="templateCode"){
-            if (this.editor) this.editor.setData(this.json.templateCode);
-        }
 	},
 
 	_initModule: function(){
 		this.node.empty();
 
-        var config = Object.clone(this.json.editorProperties);
-        if (this.json.config){
-            if (this.json.config.code){
-                var obj = MWF.Macro.exec(this.json.config.code, this);
-                Object.each(obj, function(v, k){
-                    config[k] = v;
-                });
-            }
-        }
+		var pageNode = new Element("div.doc_layout_page", {"styles": this.css.doc_page}).inject(this.node);
+		var pageContentNode = new Element("div.doc_layout_page_content", {"styles": this.css.doc_layout_page_content}).inject(pageNode);
 
-		this.loadCkeditor(config);
+		var html = '<div class="doc_block doc_layout_redHeader">文件红头</div>' +
+			"<div class=\"doc_block doc_layout_fileno\">[文号]</div>" +
+			"<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>" +
+			"<div class=\"doc_block doc_layout_subject\">[文件标题]</div>" +
+			"<div class=\"doc_block doc_layout_mainSend\">[主送单位：]</div>"+
+			"<div class=\"doc_block doc_layout_filetext\">　　[正文内容]</div>";
+		pageContentNode.set("html", html);
+
+		pageContentNode.getElement(".doc_layout_redHeader").setStyles(this.css.doc_layout_redHeader);
+		pageContentNode.getElement(".doc_layout_fileno").setStyles(this.css.doc_layout_fileno);
+		pageContentNode.getElement(".doc_layout_redline").setStyles(this.css.doc_layout_redline);
+		pageContentNode.getElement(".doc_layout_subject").setStyles(this.css.doc_layout_subject);
+		pageContentNode.getElement(".doc_layout_mainSend").setStyles(this.css.doc_layout_mainSend);
+		pageContentNode.getElement(".doc_layout_filetext").setStyles(this.css.doc_layout_filetext);
+
 		this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction() ;
 		this._setNodeEvent();
-	},
-	//ckeditor
-	loadCkeditor: function(config){
-		COMMON.AjaxModule.load("ckeditor", function(){
-			//CKEDITOR.disableAutoInline = true;
-			var toolbaeDiv = new Element("div").inject(this.node);
-			var editorDiv = new Element("div").inject(this.node);
-            if (this.json.templateCode) editorDiv.set("html", this.json.templateCode);
-
-			var height = this.node.getSize().y;
-			var editorConfig = config || {
-				"bodyClass": "document-editor"
-			};
-            if (this.form.options.mode=="Mobile"){
-            //    if (!editorConfig.toolbar && !editorConfig.toolbarGroups){
-                    editorConfig.toolbar = [
-                        //{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-                        //{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-                        //{ name: 'links' },
-                        //{ name: 'insert' },
-                        //{ name: 'forms' },
-                        //{ name: 'tools' },
-                        //{ name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
-                        //{ name: 'others' },
-                        //'/',
-                        { name: 'paragraph',   items: [ 'Bold', 'Italic', "-" , 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo' ] },
-                        { name: 'basicstyles', items: [ 'Styles', 'FontSize']}
-                        //{ name: 'colors' },
-                        //{ name: 'about' }
-                    ];
-            //    }
-            }
-
-			editorConfig.toolbarGroups = [
-				{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-				{ name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-				{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-				{ name: 'forms', groups: [ 'forms' ] },
-				{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
-				{ name: 'insert', groups: [ 'insert' ] },
-				{ name: 'tools', groups: [ 'tools' ] },
-				'/',
-				{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-				{ name: 'links', groups: [ 'links' ] },
-				'/',
-				{ name: 'styles', groups: [ 'styles' ] },
-				{ name: 'colors', groups: [ 'colors' ] },
-				{ name: 'others', groups: [ 'others' ] },
-				{ name: 'about', groups: [ 'about' ] }
-			];
-			editorConfig.removeButtons = 'Source,Templates,Scayt,Form,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Indent,Outdent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,PageBreak,Styles,Format,Font,FontSize,TextColor,BGColor,About,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField';
-
-
-			editorConfig.bodyClass = "document-editor";
-			editorConfig.contentsCss = [ '/x_desktop/mystyles.css' ];
-			editorConfig.extraPlugins = 'ecnet';
-			editorConfig.height = "230";
-			this.editor = CKEDITOR.replace(editorDiv, editorConfig);
-
-			this.editor.on("dataReady", function(){
-				this.editor.setReadOnly(true);
-			}, this);
-		}.bind(this));
-	},
-	distroyCkeditor: function(){
-		if (this.editor) this.editor.destroy();
-		this.editor = null;
 	}
 });

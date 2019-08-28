@@ -12,6 +12,17 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer = new Class({
             "noElement": MWF.xApplication.service.ServiceManager.LP.invoke.noInvokeNoticeText
         }
     },
+    createCreateElementNode: function(){
+        if( MWF.AC.isAdministrator() ) {
+            this.createElementNode = new Element("div", {
+                "styles": this.css.createElementNode,
+                "title": this.options.tooltip.create
+            }).inject(this.toolbarNode);
+            this.createElementNode.addEvent("click", function (e) {
+                this._createElement(e);
+            }.bind(this));
+        }
+    },
     createTitleElementNode: function() {
         this.titleElementNode = new Element("div", {
             "styles": this.css.titleElementNode,
@@ -28,6 +39,32 @@ MWF.xApplication.service.ServiceManager.InvokeExplorer = new Class({
             }
         };
         this.app.desktop.openApplication(e, "service.InvokeDesigner", options);
+    },
+    loadElementList: function(){
+        if( MWF.AC.isAdministrator() ){
+            this._loadItemDataList(function(json){
+                if (json.data.length){
+                    json.data.each(function(item){
+                        var itemObj = this._getItemObject(item);
+                        itemObj.load()
+                    }.bind(this));
+                }else{
+                    var noElementNode = new Element("div.noElementNode", {
+                        "styles": this.css.noElementNode,
+                        "text": this.options.tooltip.noElement
+                    }).inject(this.elementContentListNode);
+                    noElementNode.addEvent("click", function(e){
+                        this._createElement(e);
+                    }.bind(this));
+                }
+            }.bind(this));
+        }else{
+            var noElementNode = new Element("div.noElementNode", {
+                "styles": this.css.noElementNode,
+                "text": MWF.xApplication.service.ServiceManager.LP.invoke.noPermission
+            }).inject(this.elementContentListNode);
+        }
+
     },
     _loadItemDataList: function(callback){
         this.app.restActions.listInvoke(callback);

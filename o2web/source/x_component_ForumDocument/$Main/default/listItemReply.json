@@ -115,7 +115,7 @@
           "deleteAction": {
             "text" : "delete",
             "action": "deleteReply",
-            "condition" : "function( d ){ return layout.desktop.session.user.distinguishedName == d.creatorName }",
+            "condition" : "function( d ){ return layout.desktop.session.user.distinguishedName == d.creatorName || this.view.app.sectionPermission.replyManageAble }",
             "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.deleteAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.deleteAction ) }"
           },
           "satisfiedAction": {

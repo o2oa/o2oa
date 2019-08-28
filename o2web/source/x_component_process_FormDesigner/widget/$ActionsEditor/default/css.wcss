@@ -21,11 +21,14 @@
         "cursor": "pointer",
         "color": "#333"
     },
-
-
-
-
-
+    "restoreActionButton" : {
+        "height": "20px",
+        "width": "20px",
+        "margin-left": "6px",
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url(/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/restore.png) no-repeat center center"
+    },
     "actionNode": {
         "overflow": "hidden",
         "border-bottom": "1px solid #666"
@@ -51,23 +54,35 @@
         "cursor": "pointer",
         "color": "#333"
     },
+    "actionPropertiesButtonNode" : {
+        "height": "24px",
+        "width": "20px",
+        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/property.png) no-repeat center center",
+        "float": "right"
+    },
+    "actionUpButtonNode" : {
+        "height": "24px",
+        "width": "20px",
+        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/up.png) no-repeat center center",
+        "float": "right"
+    },
     "actionEditButtonNode": {
        "height": "24px",
        "width": "20px",
        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/edit.png) no-repeat center center",
-       "float": "right",
+       "float": "right"
     },
     "actionReadButtonNode": {
        "height": "24px",
        "width": "20px",
        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/read.png) no-repeat center center",
-       "float": "right",
+       "float": "right"
     },
     "actionConditionButtonNode": {
        "height": "24px",
        "width": "20px",
        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/code_empty.png) no-repeat center center",
-       "float": "right",
+       "float": "right"
     },
     "actionTextNode": {
         "height": "24px",

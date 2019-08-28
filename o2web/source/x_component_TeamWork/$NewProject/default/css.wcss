@@ -1,0 +1,106 @@
+{
+    "newProjectTop":{
+            "height":"40px",
+            "width":"100%",
+            "border-bottom":"1px solid #E6E6E6"
+        },
+        "newProjectTopText":{
+            "float":"left",
+            "height":"100%",
+            "line-height":"40px",
+            "width":"90%",
+            "text-align":"center",
+            "font-size":"16px",
+            "color":"#333333"
+        },
+        "newProjectTopClose":{
+            "cursor":"pointer",
+            "float":"right",
+            "margin-right":"2px",
+            "margin-top":"12px",
+            "width":"16px",
+            "height":"16px",
+            "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+        },
+        newProjectContainer:{
+            "margin-top":"10px",
+            "width":"80%",
+            "margin":"20px auto",
+            "height":"36px",
+            "border-radius": "10px",
+            "border":"1px solid #DEDEDE"
+        },
+        newProjectIn:{
+            "border":"0px",
+            "height":"32px",
+            "width":"90%",
+            "margin-left":"10px",
+            "font-size":"14px",
+            "color":"#666666",
+            "outline":"none"
+        },
+        newProjectDesContainer:{
+            "margin-top":"10px",
+            "width":"80%",
+            "margin":"20px auto",
+            "height":"36px",
+            "border-radius": "10px",
+            "border":"1px solid #DEDEDE",
+            "padding-top":"5px"
+        },
+        newProjectDesIn:{
+            "overflow":"auto",
+            "border":"0px",
+            "height":"32px",
+            "line-height":"32px",
+            "width":"92%",
+            "margin-left":"10px",
+            "font-size":"12px",
+            "color":"#666666",
+            "outline":"none",
+            "resize":"none"
+        },
+        "newProjectGroupText":{
+            "height":"20px",
+            "width":"80%",
+            "font-size":"13px",
+            "color":"#333333",
+            "margin":"20px auto 0px auto"
+        },
+        "newProjectGroupContainer":{
+            "cursor":"pointer",
+            "width":"80%",
+            "margin":"5px auto 20px auto",
+            "height":"36px",
+            "border-radius": "10px",
+            "border":"1px solid #DEDEDE"
+        },
+        "newProjectGroupValue":{
+            "width":"80%",
+            "margin-left":"6px",
+            "float":"left",
+            "height":"36px",
+            "line-height":"36px",
+            "outline":"none"
+        },
+        "newProjectGroupArrow":{
+            "float":"right",
+            "width":"16px",
+            "height":"16px",
+            "margin-top":"10px",
+            "margin-right":"10px",
+            "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_triangle_down.png) no-repeat center "
+        },
+        newProjectAdd:{
+            "text-align":"center",
+            "font-size":"16px",
+            "color":"#666666",
+            "width":"80%",
+            "margin":"20px auto",
+            "height":"40px",
+            "line-height":"40px",
+            "background-color":"#F0F0F0",
+            "border-radius":"10px",
+            "margin":"20px auto"
+        },
+}

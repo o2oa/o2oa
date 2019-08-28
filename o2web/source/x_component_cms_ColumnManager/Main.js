@@ -976,7 +976,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center' style='margin-top: 20px'>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.id +"</td><td id='formApplicationId' class='formValue'>"+this.data.id+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.sign+"</td><td id='formApplicationAlias' class='formValue'>"+(this.data.alias||this.data.appAlias||'')+"</td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.sign+"</td><td id='formApplicationAlias'></td></tr>"; //"+(this.data.alias||this.data.appAlias||'')+"
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.appType+"</td><td id='formApplicationAppType'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || "信息" )+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
@@ -988,7 +989,10 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.propertyContentNode.getElements("td.formValue").setStyles(this.app.css.propertyBaseContentTdValue);
 
         this.nameInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationName"), this.data.name || this.data.appName, this.app.css.formInput);
-        //this.aliasInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationAlias"), this.data.alias, this.app.css.formInput);
+
+        this.aliasInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationAlias"), this.data.alias || this.data.appAlias, this.app.css.formInput);
+
+        this.appTypeInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationAppType"), this.data.appType || "", this.app.css.formInput);
 
         this.typeSelect = new MDomItem( this.propertyContentNode.getElement("#formApplicationType"), {
             type : "select",
@@ -1033,7 +1037,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
     editMode: function(){
         this.nameInput.editMode();
-        //this.aliasInput.editMode();
+        this.aliasInput.editMode();
+        this.appTypeInput.editMode();
         this.descriptionInput.editMode();
         this.sortInput.editMode();
 
@@ -1043,7 +1048,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
     readMode: function(){
         this.nameInput.readMode();
-        //this.aliasInput.readMode();
+        this.aliasInput.readMode();
+        this.appTypeInput.readMode();
         this.descriptionInput.readMode();
         this.sortInput.readMode();
         this.typeSelect.readMode();
@@ -1093,18 +1099,20 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.data.name = this.nameInput.input.get("value");
         this.data.appName = this.data.name;
-        //this.data.alias = this.aliasInput.input.get("value");
-        //this.data.appAlias = this.data.alias;
+        this.data.alias = this.aliasInput.input.get("value");
+        this.data.appAlias = this.data.alias;
+        this.data.appType = this.appTypeInput.input.get("value");
         this.data.description = this.descriptionInput.input.get("value");
         this.data.appInfoSeq = this.sortInput.input.get("value");
         this.data.documentType = this.typeSelect.getValue();
-        //this.data.applicationCategory = this.typeInput.input.get("value");
+        //this.data.applicationCategory = this.appTypeInput.input.get("value");
 
         this.app.restActions.saveColumn(this.data, function(json){
             this.propertyTitleBar.set("text", this.data.name);
             this.data.id = json.data.id;
             this.nameInput.save();
-            //this.aliasInput.save();
+            this.aliasInput.save();
+            this.appTypeInput.save();
             this.descriptionInput.save();
             this.sortInput.save();
             this.typeSelect.save();
