@@ -141,5 +141,8 @@ MWF.xApplication.query.Query.LP = {
     "amount": "总计",
     "selecteAll": "全选",
     "selecteAllCol": "选择所有列",
-    "selecteAllRow": "选择所有行"
+    "selecteAllRow": "选择所有行",
+
+    "firstPage": "第一页",
+    "lastPage": "最后一页"
 };

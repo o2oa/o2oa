@@ -255,7 +255,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.saveSilence(function(){
             var json = this.jsonEditor.editor.getValue();
             var o = JSON.parse(json);
-            o2.Actions.get("x_query_assemble_designer").executeStatement(this.json.id, o, function(json){
+            o2.Actions.get("x_query_assemble_designer").executeStatement(this.json.id, 1, 10 , o, function(json){
                 o2.require("o2.widget.JsonParse", function(){
                     this.runResultNode.empty();
                     var jsonResult = new o2.widget.JsonParse(json.data, this.runResultNode);
@@ -271,6 +271,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
         }
+        if( !this.data.tableType ){
+            this.data.tableType = "dynamic";
+        }
+
         this.designer.actions.saveStatement(this.data, function(json){
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
 

@@ -54,6 +54,7 @@ MWF.xApplication.Selector.Person = new Class({
         });
         this.node = new Element("div", {"styles": this.css.containerNodeMobile});
         this.node.setStyle("z-index", this.options.zIndex.toInt()+1);
+        this.node.setStyle("height", ( document.body.getSize().y ) + "px");
         this.titleNode = new Element("div", {
             "styles": this.css.titleNodeMobile
         }).inject(this.node);
@@ -75,14 +76,16 @@ MWF.xApplication.Selector.Person = new Class({
         this.contentNode = new Element("div", {
             "styles": this.css.contentNode
         }).inject(this.node);
-        var size = this.container.getSize();
+        debugger;
+        var size = document.body.getSize();
         var height = size.y-40;
+        //var height = size.y;
         this.contentNode.setStyle("height", ""+height+"px");
 
 
         this.loadContent();
 
-        this.node.inject(this.container);
+        this.node.inject(document.body);
         this.node.setStyles({
             "top": "0px",
             "left": "0px"

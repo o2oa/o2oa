@@ -876,7 +876,7 @@ MWFCalendar.EventForm = new Class({
             }.bind(this))
         }else if( data.id ){ //编辑
             var text = this.app.lp.cancel_confirm.replace(/{name}/g, this.data.title);
-            var confirm = ( this.app && this.app.confirm ) ? this.app.confirm : MWF.xDesktop.confirm;
+            var confirm = MWF.xDesktop.confirm; //( this.app && this.app.confirm ) ? this.app.confirm : MWF.xDesktop.confirm;
             confirm("infor", e, this.app.lp.cancel_confirm_title, text, 380, 200, function(){
                 _self._cancelEvent();
                 this.close();

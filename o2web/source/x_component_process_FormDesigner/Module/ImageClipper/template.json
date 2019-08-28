@@ -8,6 +8,18 @@
   	"imageHeight": "",
   	"imageRatio" : "",
 	"events": {
+	  "queryLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoad": {
+		"code": "",
+		"html": ""
+	  },
+	  "load": {
+		"code": "",
+		"html": ""
+	  },
 		"click": {
 			"code": "",
 			"html": ""

@@ -617,16 +617,16 @@ MWF.xApplication.MinderEditor.Main = new Class({
             codemirror_marked: markedPath + "/lib/marked.js"
         };
 
-        var modules = [];
-        for( var key in jsModules ){
-            if( !COMMON.AjaxModule[ key ] ){
-                COMMON.AjaxModule[ key ] = jsModules[key];
-            }
-            modules.push( key );
-        }
+        //var modules = [];
+        //for( var key in jsModules ){
+        //    if( !COMMON.AjaxModule[ key ] ){
+        //        COMMON.AjaxModule[ key ] = jsModules[key];
+        //    }
+        //    modules.push( key );
+        //}
 
         COMMON.AjaxModule.loadCss(codeMirrorPath + "/lib/codemirror.css", function () {
-            COMMON.AjaxModule.load( modules, function () {
+            o2.load( Object.values(jsModules), function () {
                 marked.setOptions({
                     gfm: true,
                     tables: true,

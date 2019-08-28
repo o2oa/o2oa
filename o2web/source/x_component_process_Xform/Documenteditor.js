@@ -2,7 +2,10 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class({
 	Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["load", "postLoad", "afterLoad"]
+        "moduleEvents": ["load", "postLoad", "afterLoad"],
+        "docPageHeight": 850.4,
+        "docPageFullWidth": 794,
+        "pageShow": "double"
     },
     initialize: function(node, json, form, options){
         this.node = $(node);
@@ -11,8 +14,34 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.form = form;
         this.field = true;
     },
+    _loadCss: function(reload){
+        var key = encodeURIComponent(this.cssPath);
+        if (!reload && o2.widget.css[key]){
+            this.css = o2.widget.css[key];
+        }else{
+            this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+o2.version.v : this.cssPath+"?v="+o2.version.v;
+            var r = new Request.JSON({
+                url: this.cssPath,
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: false,
+                onSuccess: function(responseJSON, responseText){
+                    this.css = responseJSON;
+                    o2.widget.css[key] = responseJSON;
+                }.bind(this),
+                onError: function(text, error){
+                    console.log(error + text);
+                }
+            });
+            r.send();
+        }
+    },
     load: function(){
         if (this.fireEvent("queryLoad")){
+            this.cssPath = this.form.path+this.form.options.style+"/doc.wcss";
+            this._loadCss();
+
             this._queryLoaded();
             this._loadUserInterface();
             this._loadStyles();
@@ -23,312 +52,821 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
 
+    _createNewPage: function(){
+        var pageNode = new Element("div.doc_layout_page", {"styles": this.css.doc_page}).inject(this.contentNode);
+        var pageContentNode = new Element("div.doc_layout_page_content", {"styles": this.css.doc_layout_page_content}).inject(pageNode);
+        pageNode.set("data-pagecount", this.pages.length+1);
+        this.pages.push(pageNode);
+        return pageNode;
+    },
+    _getShow: function(name, typeItem, scriptItem){
+	    switch (this.json[typeItem]) {
+            case "y":
+                return true;
+            case "n":
+                return false;
+            case "a":
+                if (["copies", "secret", "priority", "attachment", "annotation", "copyto"].indexOf(name!=-1)){
+                    return !!this.data[name];
+                }
+                return true;
+            case "s":
+                if (this.json[scriptItem] && this.json[scriptItem].code){
+                    return !!this.form.Macro.exec(this.json[scriptItem].code, this);
+                }
+                return true;
+        }
+    },
+    _createPage: function(){
+	    debugger;
+        var pageContentNode = this._createNewPage().getFirst();
+
+        var html = '<div class="doc_block doc_layout_copiesSecretPriority">';
+        if (this._getShow("copies", "copiesShow", "copiesShowScript")) html += '   <div class="doc_layout_copies"></div>';
+        if (this._getShow("secret", "secretShow", "secretShowScript")) html += '   <div class="doc_layout_secret"></div>';
+        if (this._getShow("priority", "priorityShow", "priorityShowScript")) html += '   <div class="doc_layout_priority"></div>';
+        html += '</div>'
+        if (this._getShow("redHeader", "redHeaderShow", "redHeaderShowScript")) html += '<div class="doc_block doc_layout_redHeader"></div>';
+
+        if (this._getShow("signer", "signerShow", "signerShowScript")){
+            this.json.fileup = true;
+            html += '<table class="doc_block doc_layout_filenoup" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+                '<tr><td class="doc_layout_filenoup_fileno_td">';
+            if (this._getShow("fileno", "filenoShow", "filenoShowScript")) html += '   <span>　</span><span class="doc_layout_filenoup_fileno"></span>';
+
+            html += '   </td><td class="doc_layout_filenoup_signer_td">' +
+                '       <table class="doc_layout_filenoup_signer_table" cellpadding="0" cellspacing="0" border="0">' +
+                '           <tr><td class="doc_layout_filenoup_signerTitle_td">'+
+                '               <span class="doc_layout_filenoup_signer"></span>' +
+                '           </td><td class="doc_layout_filenoup_signerContent_td">' +
+                '               <span class="doc_layout_filenoup_signerContent"></span><span>　</span>' +
+                '           </td></tr>' +
+                '       </table>' +
+                '   </td></tr>' +
+                '</table>';
+        }else{
+            if (this._getShow("fileno", "filenoShow", "filenoShowScript")) html += '<div class=\"doc_block doc_layout_fileno\"></div>';
+        }
+        html += "<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>";
+        if (this._getShow("subject", "subjectShow", "subjectShowScript")) html += "<div class=\"doc_block doc_layout_subject\"></div>";
+        if (this._getShow("mainSend", "mainSendShow", "mainSendShowScript")) html += "<div class=\"doc_block doc_layout_mainSend\"></div>";
+        html += "<div class=\"doc_block doc_layout_filetext\"></div>";
+
+        if (this._getShow("attachment", "attachmentShow", "attachmentShowScript")){
+            html += '<table class="doc_block doc_layout_attachment" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+                '   <tr><td class="doc_layout_attachment_title_td">' +
+                '       <span>　　</span><span class="doc_layout_attachment_title"></span>' +
+                '   </td><td class="doc_layout_attachment_content_td">' +
+                '       <span class="doc_layout_attachment_content"></span>' +
+                '   </td></tr>' +
+                '</table>';
+        };
+
+        // html += '<table class="doc_block doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">' +
+        //     '   <tr><td class="doc_layout_issuanceUnit"></td></tr>' +
+        //     '   <tr><td class="doc_layout_issuanceDate"></td></tr>' +
+        //     '</table>'
+
+        var showIssuanceUnit = this._getShow("issuanceUnit", "issuanceUnitShow", "issuanceUnitShowScript");
+        var showIssuanceDate = this._getShow("issuanceDate", "issuanceDateShow", "issuanceDateShowScript");
+        if (showIssuanceUnit || showIssuanceDate){
+            html += '<div class="doc_block" style="overflow: hidden;"><table class="doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">';
+            if (showIssuanceUnit) html += '   <tr><td class="doc_layout_issuanceUnit"></td></tr>';
+            if (showIssuanceDate) html += '   <tr><td class="doc_layout_issuanceDate"></td></tr>';
+            html += '</table></div>';
+        }
+        if (this._getShow("annotation", "annotationShow", "annotationShowScript")) html += '<div class="doc_block doc_layout_annotation"></div>';
+
+        html += '<table class="doc_block doc_layout_edition" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+            '   <tr><td class="doc_layout_edition_copyto">';
+
+        if (this._getShow("copyto", "copytoShow", "copytoShowScript")){
+            html +=  '  <table class="doc_layout_edition_copyto_table" align="center" cellpadding="0" cellspacing="0" border="0">' +
+                '           <tr>' +
+                '               <td class="doc_layout_edition_copyto_title"></td>' +
+                '               <td class="doc_layout_edition_copyto_content"></td>' +
+                '           </tr>' +
+                '       </table>';
+        }
+
+
+        html += '   </td></tr><tr><td class="doc_layout_edition_issuance">'+
+        '       <table class="doc_layout_edition_issuance_table" align="center" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+        '           <tr>';
+
+        if (this._getShow("editionUnit", "editionUnitShow", "editionUnitShowScript")) html += '<td class="doc_layout_edition_issuance_unit"></td>';
+        if (this._getShow("editionDate", "editionDateShow", "editionDateShowScript")) html += '<td class="doc_layout_edition_issuance_date"></td>';
+
+        html += '   </tr>' +
+            '   </table>' +
+            '</td></tr>' +
+            '</table>';
+
+        //@todo
+
+        //     '<table class="doc_block doc_layout_filenoup" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+        //     '   <tr><td class="doc_layout_filenoup_fileno_td">' +
+        //     '       <span>　</span><span class="doc_layout_filenoup_fileno">浙移发〔2019〕20号</span>' +
+        //     '   </td><td class="doc_layout_filenoup_signer_td">' +
+        //     '       <table class="doc_layout_filenoup_signer_table" cellpadding="0" cellspacing="0" border="0">' +
+        //     '           <tr><td class="doc_layout_filenoup_signerTitle_td">' +
+        //     '               <span class="doc_layout_filenoup_signer">签发人：</span>' +
+        //     '           </td><td class="doc_layout_filenoup_signerContent_td">' +
+        //     '               <span class="doc_layout_filenoup_signerContent"></span><span>　</span>' +
+        //     '           </td></tr>' +
+        //     '       </table>' +
+        //     '   </td></tr>' +
+        //     '</table>'+
+        //
+        //
+        //     "<div class=\"doc_block doc_layout_fileno\"></div>" +
+        //     "<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>" +
+        //     "<div class=\"doc_block doc_layout_subject\"></div>" +
+        //     "<div class=\"doc_block doc_layout_mainSend\">：</div>"+
+        //     "<div class=\"doc_block doc_layout_filetext\"></div>" +
+        //
+        //     '<table class="doc_block doc_layout_attachment" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+        //     '   <tr><td class="doc_layout_attachment_title_td">' +
+        //     '       <span>　　</span><span class="doc_layout_attachment_title"></span>' +
+        //     '   </td><td class="doc_layout_attachment_content_td">' +
+        //     '       <span class="doc_layout_attachment_content"></span>' +
+        //     '   </td></tr>' +
+        //     '</table>' +
+        //     '<table class="doc_block doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">' +
+        //     '   <tr><td class="doc_layout_issuanceUnit"></td></tr>' +
+        //     '   <tr><td class="doc_layout_issuanceDate"></td></tr>' +
+        //     '</table>' +
+        //     '<div class="doc_block doc_layout_annotation"></div>'+
+        // // pageContentNode.set("html", html);
+        // //
+        // // pageContentNode = this._createNewPage().getFirst();
+        // // html = '' +
+        //     '<table class="doc_block doc_layout_edition" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+        //     '   <tr><td class="doc_layout_edition_copyto">' +
+        //     '       <table class="doc_layout_edition_copyto_table" align="center" cellpadding="0" cellspacing="0" border="0">' +
+        //     '           <tr>' +
+        //     '               <td class="doc_layout_edition_copyto_title"></td>' +
+        //     '               <td class="doc_layout_edition_copyto_content"></td>' +
+        //     '           </tr>' +
+        //     '       </table>' +
+        //     '   </td></tr>' +
+        //     '   <tr><td class="doc_layout_edition_issuance">' +
+        //     '       <table class="doc_layout_edition_issuance_table" align="center" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+        //     '           <tr>' +
+        //     '               <td class="doc_layout_edition_issuance_unit"></td>' +
+        //     '               <td class="doc_layout_edition_issuance_date"></td>' +
+        //     '           </tr>' +
+        //     '       </table>' +
+        //     '   </td></tr>' +
+        //     '</table>';
+        pageContentNode.set("html", html);
+    },
+    //份数 密级 紧急程度
+    _loadCopiesSecretPriority: function(){
+        this.layout_copiesSecretPriority = this.contentNode.getElement(".doc_layout_copiesSecretPriority");
+        if (this.layout_copiesSecretPriority) this.layout_copiesSecretPriority.setStyles(this.css.doc_layout_copiesSecretPriority);
+
+        this.layout_copies = this.contentNode.getElement(".doc_layout_copies");
+        if (this.layout_copies) this.layout_copies.setStyles(this.css.doc_layout_copies);
+
+        this.layout_secret = this.contentNode.getElement(".doc_layout_secret");
+        if (this.layout_secret) this.layout_secret.setStyles(this.css.doc_layout_secret);
+
+        this.layout_priority = this.contentNode.getElement(".doc_layout_priority");
+        if (this.layout_priority) this.layout_priority.setStyles(this.css.doc_layout_priority);
+    },
+
+    //红头
+    _loadRedHeader: function(){
+        this.layout_redHeader = this.contentNode.getElement(".doc_layout_redHeader");
+        if (this.layout_redHeader) this.layout_redHeader.setStyles(this.css.doc_layout_redHeader);
+    },
+    //文号签发人（上行文）
+    _loadFileNoUp: function(){
+        this.layout_fileNoUpTable = this.contentNode.getElement(".doc_layout_filenoup");
+        if (this.layout_fileNoUpTable) this.layout_fileNoUpTable.setStyles(this.css.doc_layout_filenoup);
+
+        var td = this.contentNode.getElement(".doc_layout_filenoup_fileno_td");
+        if (td) td.setStyles(this.css.doc_layout_filenoup_fileno_td);
+
+        this.layout_fileno = this.contentNode.getElement(".doc_layout_filenoup_fileno");
+        if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_filenoup_fileno);
+
+        td = this.contentNode.getElement(".doc_layout_filenoup_signer_td");
+        if (td) td.setStyles(this.css.doc_layout_filenoup_signer_td);
+
+        var node = this.contentNode.getElement(".doc_layout_filenoup_signer_table");
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signer_table);
+        node = this.contentNode.getElement(".doc_layout_filenoup_signerTitle_td").setStyles(this.css.doc_layout_filenoup_signerTitle_td);
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signerTitle_td);
+        this.layout_signerTitle = this.contentNode.getElement(".doc_layout_filenoup_signer").setStyles(this.css.doc_layout_filenoup_signer);
+        if (this.layout_signerTitle) this.layout_signerTitle.setStyles(this.css.doc_layout_filenoup_signer);
+        node = this.contentNode.getElement(".doc_layout_filenoup_signerContent_td").setStyles(this.css.doc_layout_filenoup_signerContent_td);
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signerContent_td);
+
+        this.layout_signer = this.contentNode.getElement(".doc_layout_filenoup_signerContent");
+        if (this.layout_signer) this.layout_signer.setStyles(this.css.doc_layout_filenoup_signerContent);
+    },
+
+    //文号
+    _loadFileNo: function(){
+        this.layout_fileno = this.contentNode.getElement(".doc_layout_fileno");
+        if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_fileno);
+    },
+
+    //红线
+    _loadRedLine: function(){
+        this.layout_redLine = this.contentNode.getElement(".doc_layout_redline");
+        if (this.layout_redLine) this.layout_redLine.setStyles(this.css.doc_layout_redline);
+    },
+
+    //标题
+    _loadSubject:function(){
+        this.layout_subject = this.contentNode.getElement(".doc_layout_subject");
+        if (this.layout_subject) this.layout_subject.setStyles(this.css.doc_layout_subject);
+    },
+
+    //主送
+    _loadMainSend: function(){
+        this.layout_mainSend = this.contentNode.getElement(".doc_layout_mainSend");
+        if (this.layout_mainSend) this.layout_mainSend.setStyles(this.css.doc_layout_mainSend);
+    },
+
+    //正文
+    // _createFiletext: function(filetextNode, node, where){
+	//     if (!filetextNode){
+    //         var filetextNode = new Element("div.doc_layout_filetext").inject(node, where);
+    //         filetextNode.addClass("doc_block");
+    //         filetextNode.setAttribute('contenteditable', true);
+    //     }
+    //     CKEDITOR.disableAutoInline = true;
+    //     var filetextEditor = CKEDITOR.inline(filetextNode, this._getEditorConfig());
+    //     filetextNode.store("editor", filetextEditor);
+    //     if (!this.filetextEditors) this.filetextEditors = [];
+    //     this.filetextEditors.push(filetextEditor);
+    //
+    //     filetextEditor.on( 'blur', function(e) {
+    //         // var filetextNode = e.editor.container.$;
+    //         // var pageNode = filetextNode.getParent(".doc_layout_page");
+    //         // this._checkSplitPage(pageNode);
+    //         // this._repage();
+    //     }.bind(this));
+    //
+    //     return filetextNode;
+    // },
+    _loadFiletext: function(){
+        this.layout_filetext = this.contentNode.getElement(".doc_layout_filetext");
+        this.layout_filetext.setStyles(this.css.doc_layout_filetext);
+
+        //this.layout_filetext = this.contentNode.getElement(".doc_layout_filetext");
+        // if (this.layout_filetexts.length){
+        //     this.layout_filetexts.each(function(layout_filetext){
+        //         layout_filetext.setStyles(this.css.doc_layout_filetext);
+        //     }.bind(this));
+        // }
+    },
+
+    //附件
+    _loadAttachment: function(){
+        this.layout_attachmentTable = this.contentNode.getElement(".doc_layout_attachment");
+        if (this.layout_attachmentTable) this.layout_attachmentTable.setStyles(this.css.doc_layout_attachment);
+
+        var node = this.contentNode.getElement(".doc_layout_attachment_title_td");
+        if (node) node.setStyles(this.css.doc_layout_attachment_title_td);
+
+        this.layout_attachmentTitle = this.contentNode.getElement(".doc_layout_attachment_title");
+        if (node) node.setStyles(this.css.doc_layout_attachment_title);
+
+        node = this.contentNode.getElement(".doc_layout_attachment_content_td");
+        if (node) node.setStyles(this.css.doc_layout_attachment_content_td);
+
+        this.layout_attachment = this.contentNode.getElement(".doc_layout_attachment_content");
+        if (this.layout_attachment) this.layout_attachment.setStyles(this.css.doc_layout_attachment_content);
+    },
+
+    //发布单位
+    _loadIssuance: function(){
+        this.layout_issuanceTable = this.contentNode.getElement(".doc_layout_issuance");
+        this.layout_issuanceUnit = this.contentNode.getElement(".doc_layout_issuanceUnit");
+        this.layout_issuanceDate = this.contentNode.getElement(".doc_layout_issuanceDate");
+
+        if (this.layout_issuanceTable) this.layout_issuanceTable.setStyles(this.css.doc_layout_issuance);
+        if (this.layout_issuanceUnit) this.layout_issuanceUnit.setStyles(this.css.doc_layout_issuanceUnit);
+        if (this.layout_issuanceDate) this.layout_issuanceDate.setStyles(this.css.doc_layout_issuanceDate);
+    },
+
+    //附注
+    _loadAnnotation: function(){
+        this.layout_annotation = this.contentNode.getElement(".doc_layout_annotation");
+        if (this.layout_annotation) this.layout_annotation.setStyles(this.css.doc_layout_annotation);
+    },
+
+    //版记
+    _loadEdition: function(){
+        this.layout_edition = this.contentNode.getElement(".doc_layout_edition");
+        if (this.layout_edition) this.layout_edition.setStyles(this.css.doc_layout_edition);
+
+        var node = this.contentNode.getElement(".doc_layout_edition_copyto");
+        if (node) node.setStyles(this.css.doc_layout_edition_copyto);
+        node = this.contentNode.getElement(".doc_layout_edition_copyto_table");
+        if (node) node.setStyles(this.css.doc_layout_edition_copyto_table);
+
+        this.layout_copytoTitle = this.contentNode.getElement(".doc_layout_edition_copyto_title");
+        if (this.layout_copytoTitle) this.layout_copytoTitle.setStyles(this.css.doc_layout_edition_copyto_title);
+        this.layout_copytoContent = this.contentNode.getElement(".doc_layout_edition_copyto_content");
+        if (this.layout_copytoContent) this.layout_copytoContent.setStyles(this.css.doc_layout_edition_copyto_content);
+
+        var issuance = this.contentNode.getElement(".doc_layout_edition_issuance");
+        if (issuance) issuance.setStyles(this.css.doc_layout_edition_issuance);
+        var issuance_table = this.contentNode.getElement(".doc_layout_edition_issuance_table");
+        if (issuance_table) issuance_table.setStyles(this.css.doc_layout_edition_issuance_table);
+        this.layout_edition_issuance_unit = this.contentNode.getElement(".doc_layout_edition_issuance_unit");
+        if (this.layout_edition_issuance_unit) this.layout_edition_issuance_unit.setStyles(this.css.doc_layout_edition_issuance_unit);
+        this.layout_edition_issuance_date = this.contentNode.getElement(".doc_layout_edition_issuance_date");
+        if (this.layout_edition_issuance_date) this.layout_edition_issuance_date.setStyles(this.css.doc_layout_edition_issuance_date);
+    },
+
+    _loadPageLayout: function(){
+	    this._loadCopiesSecretPriority();
+	    this._loadRedHeader();
+
+	    if (this.json.fileup){
+            this._loadFileNoUp();
+        }else{
+            this._loadFileNo();
+        }
+        this._loadRedLine();
+	    this._loadSubject();
+
+        this._loadMainSend();
+        this._loadFiletext();
+        this._loadAttachment();
+
+        this._loadIssuance();
+
+        this._loadAnnotation();
+
+        this._loadEdition();
+
+        // 份数:          this.layout_copies
+        // 密级:          this.layout_secret
+        // 紧急程度:       this.layout_priority
+        // 红头:          this.layout_redHeader
+        // 上行文编号签发：  this.layout_fileNoUpTable
+        // 文号:           this.layout_fileno
+        // 签发:           this.layout_signerTitle
+        // 签发人:         this.layout_signer
+        // 文号：          this.layout_fileno
+        // 红线：          this.layout_redLine
+        // 标题：          this.layout_subject
+        // 主送单位：       this.layout_mainSend
+        // 正文：          this.layout_filetexts
+        // 附件：          this.layout_attachmentTitle
+        // 附件：          this.layout_attachment
+        // 单位：          this.layout_issuanceUnit
+        // 签发时间：       this.layout_issuanceDate
+        // 附注：          this.layout_annotation
+        // 抄送：          this.layout_copytoTitle
+        // 抄送：          this.layout_copytoContent
+        // 版记单位         this.layout_edition_issuance_unit
+        // 版记日期         this.layout_edition_issuance_date
+    },
 	_loadUserInterface: function(){
 		this.node.empty();
         this.node.setStyles(this.form.css.documentEditorNode);
         this.pages = [];
 
-        var pageNode = new Element("div.pageNode", {
-            "styles": this.form.css.documentEditorNode_page
-        }).inject(this.node);
+        this.allowEdit = this._isAllowEdit();
 
-        var config = Object.clone(this.json.editorProperties);
-        if (this.json.config){
-            if (this.json.config.code){
-                var obj = MWF.Macro.exec(this.json.config.code, this);
-                Object.each(obj, function(v, k){
-                    config[k] = v;
-                });
-            }
+        this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
+        this.contentNode = new Element("div", {"styles": this.css.doc_content}).inject(this.node);
+        //this.contentNode.addEvent("resize", this._checkScale.bind(this));
+
+        this._loadToolbars();
+        this._loadFiletextPage();
+
+        if (this.options.pageShow==="single"){
+            this._singlePage();
+        }else{
+            this._doublePage();
         }
-        pageNode.setAttribute('contenteditable', true);
-        this.loadCkeditor(config, pageNode);
+        //this._checkScale();
+        //var pages = this.contentNode.getElements(".doc_layout_page");
 
-        // if (this.readonly){
-        //     this.node.set("html", this._getBusinessData());
-        //     this.node.setStyles({
-        //         "-webkit-user-select": "text",
-        //         "-moz-user-select": "text"
-        //     });
-        // }else{
-        //     var config = Object.clone(this.json.editorProperties);
-        //     if (this.json.config){
-        //         if (this.json.config.code){
-        //             var obj = MWF.Macro.exec(this.json.config.code, this);
-        //             Object.each(obj, function(v, k){
-        //                 config[k] = v;
-        //             });
-        //         }
-        //     }
-        //     this.loadCkeditor(config);
-        // }
+
+        this.form.addEvent("afterSave", function(){
+            this.resetData();
+        }.bind(this));
 	},
-    loadCkeditor: function(config, pageNode){
-        COMMON.AjaxModule.loadDom("ckeditor", function(){
-            CKEDITOR.disableAutoInline = true;
-            //var editorDiv = new Element("div").inject(this.node);
-            var editorDiv = pageNode;
-            var htmlData = this._getBusinessData();
-            if (htmlData){
-                editorDiv.set("html", htmlData);
-            }else if (this.json.templateCode){
-                editorDiv.set("html", this.json.templateCode);
-            }
-            var height = this.node.getSize().y;
-            var editorConfig = config || {};
+    _returnScale: function(){
+        this.isScale = false;
+        this.scale = 0;
+        this.contentNode.setStyles({
+            "transform":"scale(1)",
+        });
 
-            if (this.form.json.mode==="Mobile"){
-                if (!editorConfig.toolbar && !editorConfig.toolbarGroups){
-                    editorConfig.toolbar = [
-                        { name: 'paragraph',   items: [ 'Bold', 'Italic', "-" , 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo' ] },
-                        { name: 'basicstyles', items: [ 'Styles', 'FontSize']}
-                    ];
-                }
-            }
-            var editorConfig = {};
-            editorConfig.localImageMaxWidth = 800;
-            editorConfig.reference = this.form.businessData.work.job;
-            editorConfig.referenceType = "processPlatformJob";
-
-            editorConfig.toolbarGroups = [
-                { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-                { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-                { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-                { name: 'forms', groups: [ 'forms' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
-                { name: 'insert', groups: [ 'insert' ] },
-                { name: 'tools', groups: [ 'tools' ] },
-                '/',
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'links', groups: [ 'links' ] },
-                '/',
-                { name: 'styles', groups: [ 'styles' ] },
-                { name: 'colors', groups: [ 'colors' ] },
-                { name: 'others', groups: [ 'others' ] },
-                { name: 'about', groups: [ 'about' ] }
-            ];
-            editorConfig.removeButtons = 'Templates,Scayt,Form,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Indent,Outdent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,PageBreak,Styles,Format,Font,FontSize,TextColor,BGColor,About,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField';
-            // editorConfig.bodyClass = "document-editor";
-            editorConfig.contentsCss = [ '/x_component_process_Xform/$Form/doc.css' ];
-            editorConfig.extraPlugins = ['ecnet','doc_redHeader'];
-            editorConfig.allowedContent = "div(o2_editorPlugin_redHeader)";
-
-            editorConfig.disableAutoInline = false;
-            this.editor = CKEDITOR.inline(editorDiv, editorConfig);
-            //this.editor = CKEDITOR.inline(editorDiv);
-debugger;
-            this.editor.on("key",function(e){
-                var sel = e.editor.getSelection();
-                var h = e.editor.getSelectedHtml().getHtml();
-                if (h.indexOf("o2_editorPlugin_redHeader")!=-1 ||
-                    h.indexOf("o2_editorPlugin_doc_Page")!=-1){
-                    e.cancel();
-                }
-                debugger;
-                var el = sel.getSelectedElement();
-            })
-            //
-            //
-            // this._loadEvents();
-            // this.editor.on("change", function(){
-            //     //this._setBusinessData(this.getData());
-            // }.bind(this));
-
-        }.bind(this));
-    },
-    getEcnetString: function(node, nodes){
-        for (var i=0; i<node.childNodes.length; i++){
-            if (node.childNodes[i].nodeType===Node.TEXT_NODE){
-                var s = this.ecnetString.length;
-                this.ecnetString += node.childNodes[i].nodeValue;
-                var e = this.ecnetString.length;
-
-                nodes.push({
-                    "pnode": node,
-                    "node": node.childNodes[i],
-                    "start": s, "end": e
+        if (this.pages.length){
+            this.pages.each(function(page){
+                page.setStyles({
+                    "transform":"scale(1)",
                 });
-            }else{
-                this.getEcnetString(node.childNodes[i], nodes);
-            }
+            });
         }
+        this.node.setStyles({
+            "height": "auto"
+        });
     },
-    createEcnetNode: function(node){
-        var newNode = node.node.ownerDocument.createElement("span");
+    _checkScale: function(offset){
+	    debugger;
+        offset = 0;
+        if (this.pages.length){
+            var pageSize = this.pages[0].getSize();
+            var contentSize = this.node.getSize();
+            var contentWidth = (offset) ? contentSize.x-20-offset : contentSize.x-20;
+            if (contentWidth<pageSize.x){
+                this.isScale = true;
+                var scale = (contentWidth)/pageSize.x;
+                this.scale = scale;
 
-        var increment = 0;
-        var html = node.node.nodeValue;;
-        node.ecnets.each(function(ecnet){
-            var s = ecnet.begin+increment-node.start;
-            var e = ecnet.end+increment-node.start;
-            if (s<0) s=0;
-            if (e>node.end+increment) e = node.end+increment;
-            var length = html.length;
+                var h = this.node.getSize().y;
+                h = h - contentSize.y*(1-scale);
 
-            var left = html.substring(0, s);
-            var ecnetStr = html.substring(s, e);
-            var right = html.substring(e, html.length);
+                this.node.setStyles({
+                    "height":""+h+"px"
+                });
+                this.contentNode.setStyles({
+                    "transform":"scale(1, "+scale+")",
+                    "transform-origin": "0px 0px",
+                    "overflow": "visible"
+                });
 
-            html = left+"<span class='o2_ecnet_item' style='color: red'><u>"+ecnetStr+"</u></span>"+right;
-            increment += (html.length-length);
-
-        }.bind(this));
-        newNode.innerHTML = html;
-        node.pnode.replaceChild(newNode, node.node);
-        node.pnode.textNode = node.node;
-        node.pnode.ecnetNode = newNode;
-
-        var _self = this;
-        var editorFrame = this.editor.document.$.defaultView.frameElement;
-        var spans = newNode.getElementsByTagName("span");
-        if (spans.length){
-            for (var i = 0; i<spans.length; i++){
-                var span = spans[i];
-                if (span.className==="o2_ecnet_item"){
-                    var ecnetNode = new Element("div", {"styles": {
-                        "border": "1px solid #999999",
-                        "box-shadow": "0px 0px 5px #999999",
-                        "background-color": "#ffffff",
-                        "position": "fixed",
-                        "display": "none"
-                    }}).inject(editorFrame, "after");
-                    var correctNode = new Element("div", {
-                        "styles": {
-                            "padding": "3px 10px",
-                            "font-weight": "bold",
-                            "font-size": "12px",
-                            "cursor": "pointer"
-                        },
-                        "text": node.ecnets[i].origin+"->"+node.ecnets[i].correct,
-                        "events": {
-                            "mouseover": function(){this.setStyle("background-color", "#dddddd")},
-                            "mouseout": function(){this.setStyle("background-color", "#ffffff")},
-                            "mousedown": function(){
-                                var ecnetNode = this.getParent();
-                                var node = ecnetNode.node;
-                                var item = ecnetNode.node.ecnets[ecnetNode.idx];
-                                var textNode = node.node.ownerDocument.createTextNode(item.correct);
-                                ecnetNode.span.parentNode.replaceChild(textNode, ecnetNode.span);
-                                ecnetNode.destroy();
-                                node.node.nodeValue = node.pnode.ecnetNode.innerText;
-
-                                node.ecnets.erase(item);
-                                if (!node.ecnets.length){
-                                    _self.ecnetNodes.erase(node);
-                                }
-                            }
-                        }
-                    }).inject(ecnetNode);
-                    var ignoreNode = new Element("div", {
-                        "styles": {
-                            "padding": "3px 10px",
-                            "font-size": "12px",
-                            "cursor": "pointer"
-                        },
-                        "text": MWF.xApplication.process.Xform.LP.ignore,
-                        "events": {
-                            "mouseover": function(){this.setStyle("background-color", "#dddddd")},
-                            "mouseout": function(){this.setStyle("background-color", "#ffffff")},
-                            "mousedown": function(){
-                                var ecnetNode = this.getParent();
-                                var node = ecnetNode.node;
-                                var item = ecnetNode.node.ecnets[ecnetNode.idx];
-                                var textNode = node.node.ownerDocument.createTextNode(ecnetNode.span.innerText);
-                                ecnetNode.span.parentNode.replaceChild(textNode, ecnetNode.span);
-                                ecnetNode.destroy();
-                                node.node.nodeValue = node.pnode.ecnetNode.innerText;
-
-                                node.ecnets.erase(item);
-                                if (!node.ecnets.length){
-                                    _self.ecnetNodes.erase(node);
-                                }
-                            }
-                        }
-                    }).inject(ecnetNode);
-                    ecnetNode.node = node;
-                    ecnetNode.idx = i;
-
-                    span.ecnetNode = ecnetNode;
-                    ecnetNode.span = span;
-                    span.addEventListener("click", function(){
-                        var ecnetNode = this.ecnetNode;
-                        ecnetNode.show();
-                        var y = this.offsetTop;
-                        var x = this.offsetLeft;
-                        var w = this.offsetWidth;
-                        var h = this.offsetHeight;
-                        var p = editorFrame.getPosition();
-                        var s = ecnetNode.getSize();
-                        var top = y+p.y+h+5;
-                        var left = x+p.x-((s.x-w)/2);
-
-                        ecnetNode.style.left = ""+left+"px";
-                        ecnetNode.style.top = ""+top+"px";
-
-                        var _span = this;
-                        var hideEcnetNode = function(){
-                            ecnetNode.hide();
-                            _span.ownerDocument.removeEventListener("mousedown", hideEcnetNode);
-                        };
-                        this.ownerDocument.addEventListener("mousedown", hideEcnetNode);
-
+                this._singlePage();
+                this.pages.each(function(page){
+                    page.setStyles({
+                        "transform":"scale("+scale+", 1)",
+                        "transform-origin": "0px 0px",
+                        "overflow": "visible",
+                        "margin-left": "10px"
                     });
+                });
 
-                }
+                if (this.doublePageAction) this.doublePageAction.hide();
+
             }
         }
     },
-    clearEcnetNodes: function(){
-        if (this.ecnetNodes && this.ecnetNodes.length){
-            this.ecnetNodes.each(function(node){
-                if (node.pnode.ecnetNode){
-                    if (node.pnode.ecnetInforNode) node.pnode.ecnetInforNode.destroy();
-                    node.pnode.ecnetInforNode = null;
-                    node.pnode.replaceChild(node.pnode.textNode, node.pnode.ecnetNode);
-                }
-            }.bind(this));
-            this.ecnetNodes = [];
+
+    _switchReadOrEdit: function(){
+	    if (this.eiitMode){
+	        this._readFiletext();
+            this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+            this.eiitMode = false;
+        }else{
+            this._editFiletext();
+            this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted)
+            this.eiitMode = true;
         }
     },
-    ecnet: function(data){
-        //this.editor.document.$.body.innerText
-        var editorFrame = this.editor.document.$.defaultView.frameElement;
-        //var data = this.editor.getData();
-        var body = this.editor.document.$.body;
+    _readFiletext: function(){
+        this._returnScale();
+        if (this.filetextEditor) this.filetextEditor.destroy();
+        this.layout_filetext.setAttribute('contenteditable', false);
+        this.data = this.getData();
+        this._checkSplitPage(this.pages[0]);
+        this._repage();
+    },
+    _editFiletext: function(){
+	    this._returnScale();
 
-        if (!this.ecnetNodes) this.ecnetNodes = [];
-        if (this.ecnetNodes.length) this.clearEcnetNodes();
+        this.pages = [];
+        this.contentNode.empty();
+        this._createPage();
+        this._loadPageLayout();
 
-        var nodes = [];
-        this.ecnetString = "";
-        this.getEcnetString(body, nodes);
+        // var docData = this._getBusinessData();
+        // if (!docData) docData = this._getDefaultData();
 
-        MWF.Actions.get("x_general_assemble_control").ecnetCheck({"value": this.ecnetString}, function(json){
-            if (json.data.itemList && json.data.itemList.length){
+        this.setData(this.data);
 
-                nodes.each(function(node){
-                    var items = [];
-                    json.data.itemList.each(function(item){
-                        if ((node.end<=item.end && node.end>item.begin) || (node.start>=item.begin && node.start<item.end) || (node.start<=item.begin && node.end>item.end)){
-                            items.push(item);
-                        }
-                    }.bind(this));
-                    if (items.length){
-                        node.ecnets = items;
-                        this.ecnetNodes.push(node);
-                    }
+        this._checkScale();
+        this.node.setStyles({
+            "height":"auto"
+        });
+
+        this._createEditor();
+    },
+    _createEditor: function(){
+        if (this.allowEdit){
+            this.loadCkeditorFiletext(function(e){
+                e.editor.focus();
+                e.editor.getSelection().scrollIntoView();
+            }.bind(this));
+        }
+    },
+
+    _isAllowEdit:function(){
+	    if (this.readonly) return false;
+	    if (this.json.allowEdit=="n") return false;
+        if (this.json.allowEdit=="s"){
+            if (this.josn.allowEditScript && this.josn.allowEditScript.code){
+                return !!this.form.Macro.exec(this.josn.allowEditScript.code, this);
+            }
+        }
+        return true;
+    },
+
+    _getEdit: function(name, typeItem, scriptItem){
+        switch (this.json[typeItem]) {
+            case "y":
+                return true;
+            case "n":
+                return false;
+            case "s":
+                if (this.json[scriptItem] && this.json[scriptItem].code){
+                    return !!this.form.Macro.exec(this.json[scriptItem].code, this);
+                }
+                return true;
+        }
+    },
+    loadCkeditorStyle: function(node){
+        if (node){
+            o2.load("ckeditor", function(){
+                //CKEDITOR.disableAutoInline = true;
+                node.setAttribute('contenteditable', true);
+                var editor = CKEDITOR.inline(this.layout_filetext, this._getEditorConfig());
+                this.filetextEditor.on("instanceReady", function(e){
+                    if (callback) callback(e);
                 }.bind(this));
+            }.bind(this));
+        }
+    },
 
 
-                this.ecnetNodes.each(function(node){
-                    this.createEcnetNode(node);
-                }.bind(this));
+    _loadToolbars: function(){
+	    var html ="";
+        if (this.allowEdit){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+           //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
+        }
+
+        this.toolNode.set("html", html);
+
+        MWF.require("MWF.widget.Toolbar", function() {
+            this.toolbar = new MWF.widget.Toolbar(this.toolNode, {"style": "documentEdit"}, this);
+            this.toolbar.load();
+        }.bind(this));
+
+        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolNode);
+        this.doublePageAction.addEvent("click", function(){
+            if (this.options.pageShow==="single"){
+                this._doublePage();
             }else{
-                body = null;
-                nodes = null;
+                this._singlePage();
             }
         }.bind(this));
     },
+    _repage: function(delay){
+        if (this.options.pageShow==="single"){
+            this._singlePage();
+        }else{
+            this._doublePage();
+        }
+        if (delay){
+            if (!this.form.isLoaded){
+                this.form.addEvent("afterLoad", this._checkScale.bind(this));
+            }else{
+                this._checkScale();
+            }
+        }else{
+            this._checkScale();
+        }
+    },
+    _singlePage: function(){
+        var w = this.contentNode.getSize().x;
+        var count = 1;
+        var pageWidth = count * this.options.docPageFullWidth;
+        var margin = (w-pageWidth)/(count+1);
+        if (this.isScale){
+            margin = "10"
+        }
+        this.pages.each(function(page, i){
+            page.setStyles({
+                "float": "left",
+                "margin-left": ""+margin+"px"
+            });
+        });
+
+        // this.pages.each(function(page){
+        //     page.setStyle("float", "none");
+        // });
+        this.options.pageShow="single";
+        this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.doublePage);
+    },
+    _doublePage: function(){
+	    var w = this.contentNode.getSize().x;
+	    var count = (w/this.options.docPageFullWidth).toInt();
+        var pages = this.contentNode.getElements(".doc_layout_page");
+        count = Math.min(pages.length, count);
+
+	    var pageWidth = count * this.options.docPageFullWidth;
+        var margin = (w-pageWidth)/(count+1);
+        this.pages.each(function(page, i){
+            page.setStyles({
+                "float": "left",
+                "margin-left": ""+margin+"px"
+            });
+        });
+        // this.pages.each(function(page, i){
+        //     if ((i % 2)===0){
+        //         page.setStyle("float", "left");
+        //     }else{
+        //         page.setStyle("float", "right");
+        //     }
+        // });
+        this.options.pageShow="double";
+        this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.singlePage);
+    },
+    _getDefaultData: function(){
+	    return this.json.defaultValue;
+        //return Object.clone(MWF.xApplication.process.Xform.LP.documentEditor);
+    },
+
+    _loadFiletextPage: function(){
+        this.data = this._getBusinessData();
+        if (!this.data) this.data = this._getDefaultData();
+        this._computeData(true);
+
+        this._createPage();
+        this._loadPageLayout();
+
+        // this.data = this._getBusinessData();
+        // if (!this.data) this.data = this._getDefaultData();
+
+        this.setData(this.data);
+        this._checkSplitPage(this.pages[0]);
+        this._repage(true);
+        //this.loadCkeditorFiletext();
+
+        if (!this.readonly){
+            //if (this.json.allowEditFiletext!==false) this.loadCkeditorFiletext();
+            // if (this.json.allowEditRedheader) this.loadCkeditorRedheader();
+            // if (this.json.allowEditSubject) this.loadCkeditorSubject();
+            // if (this.json.allowEditMainSend) this.loadCkeditorMainSend();
+            // if (this.json.allowEditFileNo) this.loadCkeditorFileNo();
+            // if (this.json.allowEditSigner) this.loadCkeditorSigner();
+            // if (this.json.allowEditAttachment) this.loadCkeditorAttachment();
+        }
+    },
+
+
+    _getEditorConfig: function(){
+        var editorConfig = {};
+        editorConfig.toolbarGroups = [
+            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+            { name: 'forms', groups: [ 'forms' ] },
+            //{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+            { name: 'links', groups: [ 'links' ] },
+            "/",
+            { name: 'insert', groups: [ 'insert' ] },
+            { name: 'styles', groups: [ 'styles' ] },
+            { name: 'colors', groups: [ 'colors' ] },
+            { name: 'tools', groups: [ 'tools' ] },
+            { name: 'others', groups: [ 'others' ] },
+            { name: 'about', groups: [ 'about' ] }
+        ];
+        editorConfig.removeButtons = 'NewPage,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,Styles,Font,FontSize,TextColor,BGColor,ShowBlocks,About';
+        editorConfig.enterMode = 3;
+        editorConfig.extraPlugins = ['ecnet','mathjax'];
+        editorConfig.removePlugins = ['magicline'];
+        editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML';
+        return editorConfig;
+    },
+
+    _checkSplitPage: function(pageNode){
+        if (this.layout_edition)  this.layout_edition.setStyles({ "position": "static"});
+        var contentNode = pageNode.getFirst();
+        if (contentNode.getSize().y>this.options.docPageHeight){
+            this._splitPage(pageNode);
+        }
+        var i = pageNode.get("data-pagecount").toInt();
+
+        if (i && this.pages.length-1>=i){
+            this._checkSplitPage(this.pages[i]);
+        }
+        if (this.layout_edition)  this.layout_edition.setStyles({ "position": "absolute", "bottom": "0px" });
+    },
+
+    _splitFiletextNodeOneWord:function(lnode, nextPageNode){
+        var text = lnode.textContent;
+        var len = text.length;
+        var left = text.substring(0, len-1);
+        var right = text.substring(len-1, len);
+        lnode.textContent = left;
+        nextPageNode.textContent = right+nextPageNode.textContent;
+        //nextPageNode.appendText(right, "top");
+    },
+    _splitFiletext: function(node, nextPageNode, nextFiletextNode, pageNode){
+        var contentNode = pageNode.getFirst();
+        var lnode = node.lastChild;
+        if (!lnode){
+            if (node.parentNode) node.parentNode.removeChild(node);
+            //node.remove();
+        }else{
+            while (contentNode.getSize().y>this.options.docPageHeight && lnode) {
+                var tmpnode = lnode.previousSibling;
+                var nodeType = lnode.nodeType;
+                if (!nextPageNode) nextPageNode = nextFiletextNode;
+
+                if (nodeType == Node.ELEMENT_NODE) {
+                    if (lnode.tagName == "table") {
+                        lnode.inject(nextPageNode);
+                    } else if (lnode.tagName == "BR") {
+                        if (lnode.parentNode) lnode.parentNode.removeChild(lnode);
+                    } else {
+                        var id = lnode.get("data-pagePart");
+                        if (!id){
+                            id = (new o2.widget.UUID()).toString();
+                            lnode.set("data-pagePart", id);
+                        }
+                        var tmpNode = nextPageNode.getFirst();
+                        if (tmpNode && tmpNode.get("data-pagePart")==id){
+                            nextPageNode = tmpNode;
+                        }else{
+                            nextPageNode = lnode.clone(false).inject(nextPageNode, "top");
+                        }
+                        //var subnode = lnode.getLast();
+                        this._splitFiletext(lnode, nextPageNode, nextFiletextNode, pageNode);
+                        if (!lnode.firstChild) if (lnode.parentNode) lnode.parentNode.removeChild(lnode);
+                        nextPageNode = nextPageNode.getParent();
+                    }
+                } else if (nodeType == Node.TEXT_NODE) {
+                    var nextPageTextNode = nextPageNode.insertBefore(document.createTextNode(""), nextPageNode.firstChild);
+                    while ((contentNode.getSize().y > this.options.docPageHeight) && lnode.textContent) {
+                        //console.log(contentNode.getSize().y);
+                        this._splitFiletextNodeOneWord(lnode, nextPageTextNode)
+                    }
+                    if (!lnode.textContent) if (lnode.parentNode) lnode.parentNode.removeChild(lnode); //lnode.remove();
+                } else {
+                    //lnode.remove();
+                    if (lnode.parentNode) lnode.parentNode.removeChild(lnode);
+                }
+
+                lnode = tmpnode;
+            }
+            if (!node.lastChild) if (node.parentNode) node.parentNode.removeChild(node); //node.remove();
+        }
+        //this._checkSplitPage(pageNode);
+    },
+
+    _splitPage: function(pageNode){
+        var contentNode = pageNode.getFirst();
+        var blockNodes = pageNode.getElements(".doc_block");
+        if (blockNodes.length){
+            var blockNode = blockNodes[blockNodes.length-1];
+            var idx = this.pages.indexOf(pageNode);
+            if (this.pages.length<=idx+1) this._createNewPage();
+            var nextPage = this.pages[idx+1];
+            if (blockNode.hasClass("doc_layout_filetext")){
+
+                var filetextNode = nextPage.getElement(".doc_layout_filetext");
+                if (!filetextNode){
+                    filetextNode = new Element("div.doc_layout_filetext").inject(nextPage.getFirst(), "top");
+                    //filetextNode.setAttribute('contenteditable', true);
+                }
+                if (!filetextNode.hasClass("doc_block"))filetextNode.addClass("doc_block");
+                //var nextEditor = filetextNode.retrieve("editor");
+
+                var node = blockNode;
+
+                var nextPageNode = filetextNode;
+                this._splitFiletext(node, nextPageNode, filetextNode, pageNode);
+
+            }else{
+                blockNode.inject(nextPage.getFirst(), "top");
+                //var contentNode = pageNode.getFirst();
+                if (contentNode.getSize().y>this.options.docPageHeight){
+                    this._splitPage(pageNode);
+                }
+            }
+        }
+    },
+
+    loadCkeditorFiletext: function(callback){
+        if (this.layout_filetext){
+            o2.load("ckeditor", function(){
+                CKEDITOR.disableAutoInline = true;
+                this.layout_filetext.setAttribute('contenteditable', true);
+                this.filetextEditor = CKEDITOR.inline(this.layout_filetext, this._getEditorConfig());
+                this.filetextEditor.on("instanceReady", function(e){
+                    if (callback) callback(e);
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+
     _loadEvents: function(editorConfig){
         Object.each(this.json.events, function(e, key){
             if (e.code){
@@ -339,19 +877,188 @@ debugger;
         }.bind(this));
 
     },
+
+    _bindFieldChange: function(name,dataItem, dom){
+	    debugger;
+        var field = this.form.all[this.json[dataItem]];
+        if (field){
+            field.addModuleEvent("change", function(){
+                debugger;
+                this._computeItemFieldData(name, dataItem);
+                if (this.data[name]){
+                    if (this[dom]){
+                        if (dom=="layout_redHeader"){
+                            this[dom].set("html", this.data[name]|| "");
+                        }else{
+                            this[dom].set("text", this.data[name]|| "");
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+    },
+    _computeItemFieldData: function(name, dataItem){
+        var v = this.form.businessData.data[this.json[dataItem]];
+        if (v){
+            var t = o2.typeOf(v);
+            switch (t) {
+                case "string":
+                    switch (name) {
+                        case "issuanceDate":
+                        case "editionDate":
+                            var d = Date.parse(v);
+                            this.data[name] = (d.isValid()) ? d.format("“％Y年％m月％d％日") : v;
+                            break;
+                        case "mainSend":
+                            this.data[name] = v + "：";
+                            break;
+                        default:
+                            this.data[name] = v;
+                    }
+                    break;
+                case "array":
+                    var strs = [];
+                    v.each(function(value){
+                        if (o2.typeOf(value)=="object" && value.distinguishedName){
+                            strs.push(value.name);
+                        }else{
+                            strs.push(value.toString());
+                        }
+                    });
+                    if (strs.length){
+                        switch (name) {
+                            case "attachment":
+                                this.data[name] = strs.map(function(n, i){ var j = i+1; return j+"、"+n}).join("<br>");
+                                break;
+                            case "issuanceDate":
+                            case "editionDate":
+                                var tmpStrs = strs.map(function(n, i){
+                                    var d = Date.parse(n);
+                                    return (d.isValid()) ? d.format("“％Y年％m月％d％日") : n;
+                                });
+                                this.data[name] = tmpStrs.join("，")
+                                break;
+                            case "mainSend":
+                                debugger;
+                                this.data[name] = strs.join("，") + "：";
+                                break;
+                            default:
+                                this.data[name] = strs.join("，");
+                        }
+                    }
+                    break;
+                default:
+                    this.data[name] = v.toString();
+            }
+        }
+    },
+    _computeItemData: function(name, typeItem, dataItem, scriptItem, ev, dom){
+        switch (this.json[typeItem]) {
+            case "data":
+                if (this.json[dataItem]){
+                    if (ev) this._bindFieldChange(name, dataItem, dom);
+                    this._computeItemFieldData(name, dataItem);
+                }
+                break;
+            case "script":
+                if (this.json[scriptItem] && this.json[scriptItem].code){
+                    var v = this.form.Macro.exec(this.json[scriptItem].code, this);
+                    this.data[name] = v;
+                    if (name=="attachment") this.data[name] = (typeOf(v)=="array") ? v.map(function(n, i){ var j = i+1; return j+"、"+n}).join("<br>") : v;
+                    if (name=="issuanceDate" || name=="editionDate"){
+                        var d = Date.parse(v);
+                        this.data[name] = (d.isValid()) ? d.format("“％Y年％m月％d％日") : v;
+                    }
+                }
+                break;
+        }
+    },
+
+    _computeData: function(ev){
+        this._computeItemData("copies", "copiesValueType", "copiesValueData", "copiesValueScript", ev, "layout_copies");
+        this._computeItemData("secret", "secretValueType", "secretValueData", "secretValueScript", ev, "layout_secret");
+        this._computeItemData("priority", "priorityValueType", "priorityValueData", "priorityValueScript", ev, "layout_priority");
+        this._computeItemData("redHeader", "redHeaderValueType", "redHeaderValueData", "redHeaderValueScript", ev, "layout_redHeader");
+        this._computeItemData("fileno", "filenoValueType", "filenoValueData", "filenoValueScript", ev, "layout_fileno");
+        this._computeItemData("signer", "signerValueType", "signerValueData", "signerValueScript", ev, "layout_signer");
+        this._computeItemData("subject", "subjectValueType", "subjectValueData", "subjectValueScript", ev, "layout_subject");
+        this._computeItemData("mainSend", "mainSendValueType", "mainSendValueData", "mainSendValueScript", ev, "layout_mainSend");
+        this._computeItemData("attachment", "attachmentValueType", "attachmentValueData", "attachmentValueScript", ev, "layout_attachment");
+        this._computeItemData("issuanceUnit", "issuanceUnitValueType", "issuanceUnitValueData", "issuanceUnitValueScript", ev, "layout_issuanceUnit");
+        this._computeItemData("issuanceDate", "issuanceDateValueType", "issuanceDateValueData", "issuanceDateValueScript", ev, "layout_issuanceDate");
+        this._computeItemData("annotation", "annotationValueType", "annotationValueData", "annotationValueScript", ev, "layout_annotation");
+        this._computeItemData("copyto", "copytoValueType", "copytoValueData", "copytoValueScript", ev, "layout_copytoContent");
+        this._computeItemData("editionUnit", "editionUnitValueType", "editionUnitValueData", "editionUnitValueScript", ev, "layout_edition_issuance_unit");
+        this._computeItemData("editionDate", "editionDateValueType", "editionDateValueData", "editionDateValueScript", ev, "layout_edition_issuance_date");
+        debugger;
+    },
+
     _loadValue: function(){
         var data = this._getBusinessData();
     },
     resetData: function(){
-        this.setData(this._getBusinessData());
+        this._computeData();
+
+        this.pages = [];
+        this.contentNode.empty();
+        this._createPage();
+        this._loadPageLayout();
+
+        this.setData(this.data);
+        this._checkSplitPage(this.pages[0]);
+
+        this._repage();
     },
     getData: function(){
-        this.clearEcnetNodes();
-        return this.editor.getData();
+        if (this.eiitMode){
+            if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
+            if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
+            if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
+            if (this.layout_redHeader) this.data.redHeader = this.layout_redHeader.get("html");
+            if (this.layout_fileno) this.data.fileno = this.layout_fileno.get("text");
+            if (this.layout_signerTitle) this.data.signerTitle = this.layout_signerTitle.get("text");
+            if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+            if (this.layout_subject) this.data.subject = this.layout_subject.get("text");
+            if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
+            if (this.layout_filetext) this.data.filetext = this.layout_filetext.get("html");
+            if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+            if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
+            if (this.layout_attachment) this.data.attachment = this.layout_attachment.get("html");
+            if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("text");
+            if (this.layout_issuanceDate) this.data.issuanceDate = this.layout_issuanceDate.get("text");
+            if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
+            if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
+            if (this.layout_copytoContent) this.data.copyto = this.layout_copytoContent.get("text");
+            if (this.layout_edition_issuance_unit) this.data.editionUnit = this.layout_edition_issuance_unit.get("text");
+            if (this.layout_edition_issuance_date) this.data.editionDate = this.layout_edition_issuance_date.get("text");
+        }
+        return this.data;
     },
     setData: function(data){
-        this._setBusinessData(data);
-        if (this.editor) this.editor.setData(data);
+        if (data){
+            this.data = data;
+            this._setBusinessData(data);
+            if (this.layout_copies) this.layout_copies.set("text", data.copies || " ");
+            if (this.layout_secret) this.layout_secret.set("text", data.secret || " ");
+            if (this.layout_priority) this.layout_priority.set("text", data.priority || " ");
+            if (this.layout_redHeader) this.layout_redHeader.set("html", data.redHeader || "");
+            if (this.layout_fileno) this.layout_fileno.set("text", data.fileno || " ");
+            if (this.layout_signerTitle) this.layout_signerTitle.set("text", data.signerTitle || " ");
+            if (this.layout_signer) this.layout_signer.set("text", data.signer || " ");
+            if (this.layout_subject) this.layout_subject.set("text", data.subject || " ");
+            if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
+            if (this.layout_filetext) this.layout_filetext.set("html", data.filetext || "");
+            if (this.layout_signer) this.layout_signer.set("text", data.signer || "");
+            if (this.layout_attachmentTitle) this.layout_attachmentTitle.set("text", data.attachmentTitle || " ");
+            if (this.layout_attachment) this.layout_attachment.set("html", data.attachment || " ");
+            if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("text", data.issuanceUnit || " ");
+            if (this.layout_issuanceDate) this.layout_issuanceDate.set("text", data.issuanceDate || " ");
+            if (this.layout_annotation) this.layout_annotation.set("text", data.annotation || " ");
+            if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
+            if (this.layout_copytoContent) this.layout_copytoContent.set("text", data.copyto || " ");
+            if (this.layout_edition_issuance_unit) this.layout_edition_issuance_unit.set("text", data.editionUnit || " ");
+            if (this.layout_edition_issuance_date) this.layout_edition_issuance_date.set("text", data.editionDate || " ");
+        }
     },
     createErrorNode: function(text){
         var node = new Element("div");
@@ -374,6 +1081,7 @@ debugger;
         }).inject(node);
         return node;
     },
+
     notValidationMode: function(text){
         if (!this.isNotValidationMode){
             this.isNotValidationMode = true;

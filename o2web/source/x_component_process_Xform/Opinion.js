@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.xDesktop.requireApp("process.Work", "lp."+o2.language, null, false);
 MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Input,
@@ -89,7 +90,11 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         }});
 		input.set(this.json.properties);
 
-        var node = new Element("div", {"styles": {"ovwrflow": "hidden", "position": "relative"}}).inject(this.node, "after");
+        var node = new Element("div", {"styles": {
+            "ovwrflow": "hidden",
+            "position": "relative",
+            "padding-right": "2px"
+        }}).inject(this.node, "after");
         input.inject(node);
         this.node.destroy();
         this.node = node;
@@ -109,14 +114,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             }.bind(this));
         }
 
-        if (this.json.isAudio!=="no"){
-            if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
-                this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
-                this.audioRecordAction.addEvent("click", function(){
-                    this.audioRecord();
-                }.bind(this));
-            }
-        }
+        // if (this.json.isAudio!=="no"){
+        //     if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
+        //         this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
+        //         this.audioRecordAction.addEvent("click", function(){
+        //             this.audioRecord();
+        //         }.bind(this));
+        //     }
+        // }
 
         this.node.addEvent("change", function(){
             this._setBusinessData(this.getInputData());
@@ -264,14 +269,13 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         });
     },
     createHandwriting: function(){
-	    debugger;
         this.handwritingNode = new Element("div", {"styles": this.form.css.handwritingNode}).inject(this.node, "after");
         var size = this.node.getSize();
-        var y = Math.max(size.y, 320);
-        var x = Math.max(size.x, 400);
-        x = Math.min(x, 600);
-        y = 320;
-        x = 500;
+        var x = Math.max( this.json.tabletWidth || size.x , 500);
+        var y = Math.max(this.json.tabletHeight ? (parseInt(this.json.tabletHeight) + 110) : size.y, 320);
+        //x = Math.min(x, 600);
+        //y = 320;
+        //x = 500;
         var zidx = this.node.getStyle("z-index").toInt() || 0;
         zidx = (zidx<1000) ? 1000 : zidx;
         this.handwritingNode.setStyles({
@@ -294,13 +298,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         MWF.require("MWF.widget.Tablet", function () {
             this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, {
                 "style": "default",
+                "contentWidth" : this.json.tabletWidth || 0,
+                "contentHeight" : this.json.tabletHeight || 0,
                 "onSave" : function( base64code, base64Image, imageFile ){
                     this.handwritingFile[layout.session.user.distinguishedName] = imageFile;
                     if (this.previewNode){
                         this.previewNode.destroy();
                         this.previewNode = null;
                     }
-                    debugger;
                     if(this.json.isHandwritingPreview!=="no") this.previewNode = new Element("img", {"src": base64Image}).inject(this.node);
                     this.handwritingNode.hide();
                     // this.page.get("div_image").node.set("src",base64Image);
@@ -410,6 +415,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         var leftStr = v.substr(0, v.length-t.length);
         this.input.set("value", leftStr+op);
         this.hideSelectOpinionNode();
+        this._setBusinessData(this.getInputData());
     },
 
 	_afterLoaded: function(){

@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
 	Extends: MWF.APP$Input,
 	iconStyle: "calendarIcon",
     options: {
-        "moduleEvents": ["complete", "clear", "change"]
+        "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change"]
     },
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly){

@@ -9723,6 +9723,7 @@ var Mask = this.Mask = new Class({
 		var dim = this.target.getComputedSize(opt);
 		var s = this.target.getSize();
 		if (dim.totalHeight<s.y) dim.totalHeight = s.y;
+		if (dim.totalWidth<s.x) dim.totalWidth = s.x;
 		if (this.target == document.body){
 			this.element.setStyles({width: 0, height: 0});
 			var win = window.getScrollSize();

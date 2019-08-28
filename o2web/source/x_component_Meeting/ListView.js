@@ -302,35 +302,44 @@ MWF.xApplication.Meeting.ListView.View.Line = new Class({
         var btime = sTime.format("%H:%M");
         var etime = Date.parse(this.data.completedTime).format("%H:%M");
 
-        this.app.actions.getRoom(this.data.room, function (json){
-            this.app.actions.getBuilding(json.data.building, function (bjson){
-                var room = json.data.name+"("+bjson.data.name+((json.data.roomNumber) ? " #"+json.data.roomNumber : "")+")";
+        //this.app.actions.getRoom(this.data.room, function (json){
+        var roomData = this.data.woRoom;
+        var bulidingData = this.getBulidingData( roomData.building );
 
-                this.node = new Element("tr",{
-                    "html": "<td></td><td>"+bdate+"</td><td>"+btime+"-"+etime+"</td><td>"+this.data.subject+"</td><td>"+room+"</td>"
-                }).inject(this.container);
+        var room = roomData.name+"("+bulidingData.name+((roomData.roomNumber) ? " #"+roomData.roomNumber : "")+")";
 
-                this.personNode = this.node.getFirst("td");
-                if (this.data.applicant){
-                    // var explorer = {
-                    //     "actions": this.app.personActions,
-                    //     "app": {
-                    //         "lp": this.app.lp
-                    //     }
-                    // };
-                    MWF.require("MWF.widget.O2Identity", function(){
-                        var person = new MWF.widget.O2Person({"name": this.data.applicant}, this.personNode, {"style": "room"});
-                    }.bind(this));
-                }
+        this.node = new Element("tr",{
+            "html": "<td></td><td>"+bdate+"</td><td>"+btime+"-"+etime+"</td><td>"+this.data.subject+"</td><td>"+room+"</td>"
+        }).inject(this.container);
 
-                this.node.getElements("td").setStyles(this.css.listViewTableTd);
-
-                this.node.addEvent("click", function(e){
-                    this.openMeeting(e);
-                }.bind(this));
-
+        this.personNode = this.node.getFirst("td");
+        if (this.data.applicant){
+            // var explorer = {
+            //     "actions": this.app.personActions,
+            //     "app": {
+            //         "lp": this.app.lp
+            //     }
+            // };
+            MWF.require("MWF.widget.O2Identity", function(){
+                var person = new MWF.widget.O2Person({"name": this.data.applicant}, this.personNode, {"style": "room"});
             }.bind(this));
+        }
+
+        this.node.getElements("td").setStyles(this.css.listViewTableTd);
+
+        this.node.addEvent("click", function(e){
+            this.openMeeting(e);
         }.bind(this));
+    },
+    getBulidingData : function( id ){
+        if( !this.bulidingList )this.bulidingList = {};
+        if( !this.bulidingList[ id ] ){
+            this.app.actions.getBuilding(id, function (bjson){
+                this.bulidingList[ id ] = bjson.data;
+            }.bind(this), null, false)
+        }
+
+        return this.bulidingList[ id ];
     },
     openMeeting: function(e){
         this.form = new MWF.xApplication.Meeting.MeetingForm(this,this.data, {}, {app:this.app});

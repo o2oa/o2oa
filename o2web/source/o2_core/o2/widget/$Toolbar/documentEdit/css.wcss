@@ -1,0 +1,104 @@
+{
+	"container": {
+		"background-color": "#f9f9f9",
+		"padding-top": "6px",
+		"padding-bottom": "1px",
+		"padding-left": "10px",
+		"padding-right": "2px",
+		"word-wrap" : "normal",
+		"word-break" : "keep-all",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"height": "30px",
+		"display":"block",
+		"font-size": "14px"
+	},
+	"toolbarSeparator": {
+		"display":"block",
+		"float": "left",
+		"margin-bottom": "5px",
+		"margin-top": "3px",
+		"height": "18px",
+		"width": "1px",
+		"background-color": "#888888",
+		"border-right": "1px solid #FFFFFF",
+		"overflow": "hidden"
+	},
+
+	"button": {
+		"display":"block",
+		"position": "static",
+		"float": "left",
+		"border": "1px solid #f9f9f9",
+		"background-color": "#f9f9f9",
+		"height": "24px",
+		"margin-right": "8px",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"cursor": "pointer",
+		"color": "#333333",
+		"border-radius": "0px"
+	},
+	"buttonImgDiv": {
+		"display":"block",
+		"float": "left",
+		"padding-top": "4px",
+		"padding-bottom": "1px",
+		"padding-left": "1px",
+		"padding-right": "1px",
+		"cursor": "pointer"
+	},
+	"buttonImg": {
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer",
+		"margin-top": "0px"
+	},
+	"buttonTextDiv": {
+		"display":"block",
+		"float": "left",
+		"height": "24px",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"line-height": "24px",
+		"cursor": "pointer"
+	},
+
+	"buttonDisable": {
+		"color": "#999"
+	},
+	"buttonImgDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDisable": {
+		"color": "#999"
+	},
+
+	"buttonOver": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"buttonOut": {
+		"background-color": "#f9f9f9",
+		"color": "#333333"
+	},
+	"buttonDown": {
+		"background-color": "#dddddd",
+		//"background-color": "#1f77b4",
+		"color": "#333333"
+	},
+	"buttonUp": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "3px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	}
+}

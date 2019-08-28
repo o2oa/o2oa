@@ -1,0 +1,94 @@
+{
+	"content": {
+	    "height": "430px",
+        "width": "355px",
+        "background-color": "#EEE",
+        "overflow": "hidden",
+        "border": "3px solid #666",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 15px #666",
+        "position": "absolute",
+        "z-index":101
+	},
+	"titleNode": {
+	    "height": "29px",
+	    "border-bottom": "0px solid #666",
+	    "padding": "0px 5px",
+	    "line-height": "29px"
+	},
+	"contentNode": {
+        "height": "360px",
+        "background-color": "#FFF",
+        "border-top": "1px solid #666",
+        "border-left": "1px solid #666",
+        "border-bottom": "1px solid #CCC",
+        "border-right": "1px solid #CCC",
+        "margin": "0px 5px"
+	},
+	"buttonAreaNode": {
+	    "height": "40px"
+	},
+	"okButton": {
+	    "height": "24px",
+	    "text-align": "center",
+	    "line-height": "24px",
+	    "border": "1px solid #666",
+	    "color": "#FFF",
+	    "background-color": "#4c6b87",
+	    "border-radius": "3px",
+	    "width": "80px",
+	    "float": "right",
+	    "margin-right": "8px",
+	    "margin-top": "8px",
+	    "cursor": "pointer"
+	},
+	"button": {
+        "height": "24px",
+        "text-align": "center",
+        "line-height": "24px",
+        "border": "1px solid #666",
+        "color": "#666",
+        "border-radius": "3px",
+        "width": "80px",
+        "float": "right",
+        "margin-right": "8px",
+        "margin-top": "8px",
+        "cursor": "pointer"
+    },
+    "textarea": {
+        "width": "340px",
+        "height": "355px",
+        "border": "0px"
+    },
+    "progressBarNode": {
+        "height": "60px",
+        "width": "400px",
+        "background-color": "#EEE",
+        "overflow": "hidden",
+        "border": "3px solid #666",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 15px #666",
+        "position": "absolute",
+        "z-index":101
+    },
+    "progressBarTextNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#555",
+        "width": "360px",
+        "margin": "10px auto 5px auto"
+    },
+    "progressBar": {
+        "height": "8px",
+        "width": "358px",
+        "border": "1px solid #666",
+        "background-color": "#FFF",
+        "border-radius": "3px",
+        "margin": "0px 20px"
+    },
+    "progressBarPercent": {
+        "height": "8px",
+        "width": "0px",
+        "background-color": "#4c6b87"
+    }
+}

@@ -3,7 +3,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "widget.AttachmentController", null,
 MWF.xApplication.cms.Xform.AttachmentController = new Class({
     Extends: MWF.xApplication.cms.FormDesigner.widget.AttachmentController,
     "options": {
-        "officeFiles": ["doc","docx","dotx","dot","xls","xlsx","xlsm","xlt","xltx","pptx","ppt","pot","potx","potm","pdf"],
+        "officeFiles": ["doc","docx","dotx","dot","xls","xlsx","xlsm","xlt","xltx","pptx","ppt","pot","potx","potm","pdf"]
     },
     checkDeleteAction: function(){
         if (this.options.readonly){
@@ -142,16 +142,51 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
         }
     },
 
+    //createTopNode: function(){
+    //    if (this.options.title){
+    //        if (!this.titleNode) this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.options.title}).inject(this.node);
+    //    }
+    //    this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
+    //    this.createEditGroupActions();
+    //    this.createReadGroupActions();
+    //    this.createListGroupActions();
+    //    if (this.module.json.isOpenInOffice && this.module.json.officeControlName) this.createOfficeGroupActions();
+    //    this.createViewGroupActions();
+    //},
     createTopNode: function(){
         if (this.options.title){
             if (!this.titleNode) this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.options.title}).inject(this.node);
         }
-        this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
-        this.createEditGroupActions();
-        this.createReadGroupActions();
-        this.createListGroupActions();
-        if (this.module.json.isOpenInOffice && this.module.json.officeControlName) this.createOfficeGroupActions();
-        this.createViewGroupActions();
+        if( !this.topNode ){
+            this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
+        }else{
+            this.topNode.empty();
+            this.editActionBoxNode = null;
+            this.editActionsGroupNode=null;
+            this.topNode.setStyle("display","");
+            if( this.isHiddenTop ){
+                //this.container.setStyle("height", this.container.getSize().y + 45 );
+                //this.node.setStyle("height", this.node.getSize().y + 45 );
+                if( this.oldContentScrollNodeHeight ){
+                    this.contentScrollNode.setStyle("min-height",this.oldContentScrollNodeHeight);
+                    this.oldContentScrollNodeHeight = null;
+                }
+                this.isHiddenTop = false;
+            }
+        }
+        var hiddenGroup = this.options.toolbarGroupHidden;
+        if( hiddenGroup.contains("edit") && hiddenGroup.contains("read") && hiddenGroup.contains("list") && hiddenGroup.contains("view")){
+            this.oldContentScrollNodeHeight = this.contentScrollNode.getStyle("min-height");
+            this.contentScrollNode.setStyle("min-height",this.node.getStyle("min-height"));
+            this.topNode.setStyle("display","none");
+            this.isHiddenTop = true;
+            return;
+        }
+        if( !hiddenGroup.contains("edit") )this.createEditGroupActions();
+        if( !hiddenGroup.contains("read") )this.createReadGroupActions();
+        if( !hiddenGroup.contains("list") )this.createListGroupActions();
+        if( !hiddenGroup.contains("view") )this.createViewGroupActions();
+        this.checkActions();
     },
     createOfficeGroupActions: function(){
         this.officeActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
@@ -203,7 +238,7 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
 	Extends: MWF.APPAttachment,
     options: {
-        "moduleEvents": ["upload", "delete", "afterDelete", "load"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load","queryLoad","postLoad"]
     },
 
     initialize: function(node, json, form, options){
@@ -228,12 +263,13 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
                 "size": this.json.size || "max",
                 "resize": (this.json.size=="true") ? true : false,
                 "attachmentCount": this.json.attachmentCount || 0,
-                "isUpload": (this.json.isUpload=="y") ? true : false,
-                "isDelete": (this.json.isDelete=="y") ? true : false,
-                "isReplace": (this.json.isReplace=="y") ? true : false,
-                "isDownload": (this.json.isDownload=="y") ? true : false,
-                "isSizeChange": (this.json.isSizeChange=="y") ? true : false,
-                "readonly": (this.json.readonly=="y") ? true : false,
+                "isUpload": (this.json.isUpload==="y" || this.json.isUpload==="true"),
+                "isDelete": (this.json.isDelete==="y" || this.json.isDelete==="true"),
+                "isReplace": (this.json.isReplace==="y" || this.json.isReplace==="true"),
+                "isDownload": (this.json.isDownload==="y" || this.json.isDownload==="true"),
+                "isSizeChange": (this.json.isSizeChange==="y" || this.json.isSizeChange==="true"),
+                "readonly": (this.json.readonly==="y" || this.json.readonly==="true"),
+                "availableListStyles" : this.json.availableListStyles ? this.json.availableListStyles : ["list","seq","icon","preview"],
                 "isDeleteOption": this.json.isDelete,
                 "isReplaceOption": this.json.isReplace,
                 "toolbarGroupHidden" : this.json.toolbarGroupHidden || []

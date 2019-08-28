@@ -1,7 +1,7 @@
 MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
 	Extends: MWF.APPDiv,
     options: {
-        "moduleEvents": ["load", "loadData"]
+        "moduleEvents": ["queryLoad","postLoad","load", "postLoadData", "loadData"]
     },
 
 	_loadUserInterface: function(){
@@ -77,6 +77,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
     _invoke: function(callback){
         MWF.restful(this.json.httpMethod, this.uri, JSON.encode(this.body), function(json){
             this.data = json;
+            this.fireEvent("postLoadData");
             if (callback) callback();
         }.bind(this), true, true);
 

@@ -9,6 +9,7 @@
     "html": "<tr styles='documentNode'></tr>",
     "mouseoverStyles": "documentNode_over",
     "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true,
     "action": "open"
   },
   "items": [

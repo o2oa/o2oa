@@ -14,6 +14,7 @@
   "listView": {"uri": "/jaxrs/view/list/query/{queryFlag}"},
   "loadViewById": {"uri": "/jaxrs/view/{id}/execute", "method": "PUT"},
   "loadView": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/execute", "method": "PUT"},
+  "bundleView": {"uri": "/jaxrs/view/{id}/bundle", "method": "PUT"},
 
   "exportViewWithQuery": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/excel", "method": "PUT"},
   "exportView": {"uri": "/jaxrs/view/{id}/excel", "method": "PUT"},
@@ -21,7 +22,7 @@
 
   "search": {"uri": "/jaxrs/segment/key/{key}"},
 
-  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute", "method": "POST" },
+  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 
   "listRowNext" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/next/{count}" },
   "listRowPrev" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}" },
@@ -34,5 +35,7 @@
   "deleteRow" : { "uri": "/jaxrs/table/{tableFlag}/row/{id}", "method": "DELETE" }, //更新指定表中指定行数据.
   "deleteAllRow" : { "uri": "/jaxrs/table/{tableFlag}/row/delete/all", "method": "DELETE"}, //通过where 统计数量
 
-  "calculateNeural": {"uri": "/jaxrs/neural/list/calculate/model/{modelFlag}/work/{workId}"}
+  "calculateNeural": {"uri": "/jaxrs/neural/list/calculate/model/{modelFlag}/work/{workId}"},
+
+  "clazz": "x_query_assemble_surface"
 }

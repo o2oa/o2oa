@@ -25,6 +25,19 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this.systemTools = [];
 		this.customTools = [];
 	},
+	setTemplateStyles: function(styles){
+		this.json.style = styles.style;
+		this.json.customIconStyle = styles.customIconStyle;
+		this.json.customIconOverStyle = styles.customIconOverStyle;
+	},
+	clearTemplateStyles: function(styles){
+		this.json.style = "form";
+		this.json.customIconStyle = "blue";
+		this.json.customIconOverStyle = "white";
+	},
+	setAllStyles: function(){
+		this._refreshActionbar();
+	},
 	_createNode: function(callback){
 		this.node = new Element("div", {
 			"id": this.json.id,
@@ -46,6 +59,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
 
 			MWF.getJSON(this.path+"toolbars.json", function(json){
+			    this.json.defaultTools = json;
 				this.setToolbars(json, this.toolbarNode);
 				this.toolbarWidget.load();
 				this._setEditStyle_custom( "hideSystemTools" );
@@ -72,6 +86,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.toolbarNode = this.node.getFirst("div");
 			this.toolbarNode.empty();
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
+            //if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            //this.toolbarWidget.css = this.json.actionStyles;
 
 			if (this.json.defaultTools){
 				var json = Array.clone(this.json.defaultTools);
@@ -148,12 +164,19 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		}.bind(this));
 	},
 	setCustomToolbars: function(tools, node){
-		var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+		//var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+		var style;
+		if( this.json.customIconStyle ){
+			style = this.json.customIconStyle;
+		}else{
+			style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+		}
+		var style_over = this.json.customIconOverStyle || "white";
 		tools.each(function(tool){
 			var actionNode = new Element("div", {
 				"MWFnodetype": tool.type,
 				"MWFButtonImage": this.path+""+this.options.style +"/custom/"+ style +"/"+tool.img,
-				"MWFButtonImageOver": this.path+""+this.options.style+"/custom/white/"+tool.img,
+				"MWFButtonImageOver": this.path+""+this.options.style+"/custom/"+ style_over +"/"+tool.img,
 				"title": tool.title,
 				"MWFButtonAction": tool.action,
 				"MWFButtonText": tool.text
@@ -192,7 +215,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 				});
 			}
 		}
-		if (name=="defaultTools" || name=="tools"){
+		if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
 			this._refreshActionbar();
 		}
 	}

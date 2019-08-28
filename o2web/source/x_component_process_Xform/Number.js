@@ -10,6 +10,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         return (isNaN(n)) ? 0 : n;
     },
     validationFormat: function(){
+        debugger;
         var n = this.node.getElement("input").get("value");
         if (isNaN(n)) {
             this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
@@ -29,7 +30,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                 while (s_x.length <= pos_decimal + 2){
                     s_x += '0';
                 }
-                this.node.set("value", s_x);
+                this.node.getFirst().set("value", s_x);
             }
         }
         return true;
@@ -133,7 +134,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         var node = new Element("div", {"styles": {
             "overflow": "hidden",
             "position": "relative",
-            "margin-right": "20px"
+            "margin-right": "20px",
+            "padding-right": "4px"
         }}).inject(this.node, "after");
         input.inject(node);
 

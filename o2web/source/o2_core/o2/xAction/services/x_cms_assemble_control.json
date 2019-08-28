@@ -4,6 +4,10 @@
   "getApplication": {"uri": "/jaxrs/appinfo/{id}"},
   "getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"},
 
+  "listAllAppType" : {"uri":"/jaxrs/appinfo/list/appType"},
+  "listWhatICanManageWithAppType" : {"uri":"/jaxrs/appinfo/list/manage/type/{appType}"},
+  "listWhatICanViewWithAppType" : {"uri":"/jaxrs/appinfo/list/user/view/all/type/{appType}"},
+
   "listCMSCategory" : {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}/all" },
   "getCMSForm" : {"uri": "/jaxrs/form/{id}" },
 
@@ -73,6 +77,7 @@
   "getScript": {"uri": "/jaxrs/script/{id}"},
   "addScript": {"uri": "/jaxrs/script", "method": "POST"},
   "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "deleteScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
   "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
   "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
 
@@ -142,6 +147,7 @@
   "archiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
   "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
   "publishDocumentComplex" : {  "uri":"/jaxrs/document/publish/content","method":"PUT" },  //直接一次性发布
+  "moveDocumentToCategory" : { "uri" : "/jaxrs/document/category/change" , "method":"PUT" },
 
   //"getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
 
@@ -207,30 +213,10 @@
 
   //--index----
   "listDocumentAll": {"uri" : "/jaxrs/document/list/category/{categoryId}"},
-  /*
-  过滤条件：
-    private List<NameValueCountPair> appIdList; //一个APPID   [{"appId":""}]
-    private List<NameValueCountPair> categoryIdList;//一个CATEGORYID       [{"categoryId":""}]
-    private List<NameValueCountPair> creatorList;//一个创建人        [{"creatorUid":""}]
-    private List<NameValueCountPair> statusList;//一个DOCSTATUS    [{"docStatus":""}]
-    private List<NameValueCountPair> titleList;	//一个标题         [{"title":""}]
-    private List<NameValueCountPair> formList;//一个FORM          [{"form":""}]
-    private List<NameValueCountPair> createDateList;	//创建年份月份，可以传入一个或者两个   [{"startDate":""},{"endDate":""}]
-  */
   "listDocumentFilterNext": {"uri" : "/jaxrs/document/filter/list/{id}/next/{count}", "method": "PUT"},
   "listDocumentFilterPrev": {"uri" : "/jaxrs/document/filter/list/{id}/prev/{count}", "method": "PUT"},
 
   "listViewDataNext": {"uri" : "/jaxrs/view/viewdata/list/{id}/next/{count}", "method": "POST"},
-  /*
-  参数：
-  {
-      "orderField":"createTime",
-      "orderType":"desc",
-      "categoryId":"86b3a04e-a245-40e9-9580-615abda330b1",
-      "viewId":"6e69d043-d8ae-4887-a8d1-e8fb2c981d7d",
-      "searchDocStatus":"published"
-  }
-  */
 
   "listDraftNext": {"uri" : "/jaxrs/document/draft/list/{id}/next/{count}", "method": "PUT"},
   "listDraftPrev": {"uri" : "/jaxrs/document/draft/list/{id}/prev/{count}", "method": "PUT"},
@@ -256,6 +242,13 @@
 
   //{  docIds : docIds, dataChanges : dataChanges }
   "batchModifyData" :  {"uri":"/jaxrs/document/batch/data/modify","method":"PUT"}, //批量修改数据
+
+  //评论
+  "listCommentNextWithFilter" : {"uri":"/jaxrs/comment/list/{id}/next/{count}","method":"PUT"},
+  "listCommentPageWithFilter" : {"uri":"/jaxrs/comment/list/{page}/size/{size}","method":"PUT"},
+  "listCommentPrevWithFilter" : {"uri":"/jaxrs/comment/list/{id}/prev/{count}","method":"PUT"},
+  "deleteComment" :  {"uri":"/jaxrs/comment/{id}","method":"DELETE"},
+  "saveComment" :  {"uri":"/jaxrs/comment","method":"POST"},
 
   "clazz": "x_cms_assemble_control"
 }

@@ -51,8 +51,12 @@
   //data: {"unitList": []}
   "listPersonWithUnitDirect": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织直接成员的人员对象
   "listPersonWithUnitNested": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织嵌套成员的人员对象
-  //*****************************************************************
 
+  //{"name":"","attribute":""}
+  "listPersonWithAttributeValue": {"uri": "/jaxrs/person/list/personattribute", "method": "POST"}, //根据属性查询人员
+  "listPersonWithAttribute": {"uri": "/jaxrs/person/list/personattribute/object", "method": "POST"}, //根据属性查询人员对象
+
+  //*****************************************************************
 
 
   //人员属性***********************************************************
@@ -90,6 +94,7 @@
   "listUnitSubNested": {"uri": "/jaxrs/unit/list/unit/sub/nested/object", "method": "POST"}, //查询指定组织的嵌套下级组织
   "listUnitSupDirect": {"uri": "/jaxrs/unit/list/unit/sup/direct/object", "method": "POST"}, //查询指定组织的直接上级组织
   "listUnitSupNested": {"uri": "/jaxrs/unit/list/unit/sup/nested/object", "method": "POST"}, //查询指定组织的嵌套上级组织
+  "listUnitNameSubNested": {"uri": "/jaxrs/unit/list/unit/sub/nested", "method": "POST"}, //查询指定组织的嵌套下级组织
 
   //data: {"identity":"","level":""}
   "getUnitWithIdentityAndLevel": {"uri": "/jaxrs/unit/identity/level/object", "method": "POST"}, //获取身份所在的第（level）组织

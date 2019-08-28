@@ -100,7 +100,8 @@ MWF.xApplication.cms.Xform.Personfield = MWF.CMSPersonfield =  new Class({
 
 				//this._setBusinessData(values);
 				this.validationMode();
-				this.validation()
+				this.validation();
+				this.fireEvent("select");
 			}.bind(this),
 			"onCancel": function(){
 				this.validation();

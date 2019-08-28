@@ -28,11 +28,16 @@
         "opacity": 1,
         "position": "absolute"
     },
+    "processNode_Area": {
+        "height": "300px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
     "processNodeMobile_from": {
         "width": "480px",
         "min-height": "280px",
         "height": "auto",
-        "z-index":300,
+        "z-index":3000,
         "background-color": "#eeeeee",
         "overflow": "hidden",
         "border": "0px",

@@ -19,7 +19,27 @@
       },
 
       "events": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
+          "code": "",
+          "html": ""
+        },
         "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
           "code": "",
           "html": ""
         },
@@ -47,11 +67,15 @@
           "code": "",
           "html": ""
         },
-        "help": {
+        "beforeDelete":{
           "code": "",
           "html": ""
         },
-        "load": {
+        "afterDelete":{
+          "code": "",
+          "html": ""
+        },
+        "help": {
           "code": "",
           "html": ""
         },
