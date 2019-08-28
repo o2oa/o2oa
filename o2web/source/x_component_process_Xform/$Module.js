@@ -119,6 +119,17 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
             }
         }.bind(this));
     },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
     _getBusinessData: function(){
         if (this.json.section=="yes"){
             return this._getBusinessSectionData();

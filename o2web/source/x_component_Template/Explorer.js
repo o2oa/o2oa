@@ -497,7 +497,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
                 this._getCurrentPageData(function (json) {
                     var itemList = [];
 
-                    this.fireEvent("queryCreateViewBody");
+                    this.fireEvent("queryCreateViewBody",[this]);
                     this._queryCreateViewBody( );
 
                     var length = this.dataCount = json.count;  //|| json.data.length;
@@ -524,7 +524,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
                             this.makeSortable();
                         }
                     }
-                    this.fireEvent("postCreateViewBody");
+                    this.fireEvent("postCreateViewBody", [this]);
                     this._postCreateViewBody( this.viewBodyNode || this.viewNode );
 
                     if (this.loadItemQueue > 0) {
@@ -564,7 +564,7 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
             }
 
             var top;
-            if( itemNum ){
+            if( itemNum && this.documents[ itemNum ] ){
                 if( this.options.documentKeyWord ){
                     top = this.documents[ itemNum ].node.getTop();
                 }else{

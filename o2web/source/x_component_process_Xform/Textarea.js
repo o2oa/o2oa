@@ -26,7 +26,9 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
         if (this.readonly || this.json.isReadonly){
-            this.node.set("text", value);
+            var reg = new RegExp("\n","g");
+            var text = value.replace(reg,"<br/>");
+            this.node.set("html", text);
         }
     },
     _loadNodeEdit: function(){

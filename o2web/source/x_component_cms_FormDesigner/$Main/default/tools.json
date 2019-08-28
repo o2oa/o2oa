@@ -175,5 +175,10 @@
     "icon": "office.png",
     "text": "Office控件",
     "className": "Office"
+  },
+  "comment": {
+    "icon": "comment.png",
+    "text": "评论",
+    "className": "Comment"
   }
 }

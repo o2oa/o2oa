@@ -86,7 +86,7 @@ o2.addReady(function(){
                     //MWF.xDesktop.requireApp("Common", "", null, false);
                     var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
+                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
                     o2.require("MWF.widget.Common", function(){
                         _loadProgressBar();
                         o2.require(modules, {
@@ -137,7 +137,7 @@ o2.addReady(function(){
                 //MWF.xDesktop.requireApp("Common", "", null, false);
                 var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                o2.load(["../o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
+                o2.load(["/o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
                 o2.require("MWF.widget.Common", function(){
                     _loadProgressBar();
                     o2.require(modules, {
@@ -199,7 +199,6 @@ o2.addReady(function(){
         });
     };
     var _createNewApplication = function(e, appNamespace, appName, options, statusObj){
-        debugger;
         var app = new appNamespace["Main"](this, options);
         app.desktop = layout;
         app.inBrowser = true;
@@ -223,9 +222,9 @@ o2.addReady(function(){
     var _openWorkAndroid = function(options){
         if (window.o2android && window.o2android.openO2Work) {
             if (options.workId) {
-                window.o2android.openO2Work(options.workId, "", title);
+                window.o2android.openO2Work(options.workId, "", options.title || "");
             } else if (options.workCompletedId) {
-                window.o2android.openO2Work("", options.workCompletedId, title);
+                window.o2android.openO2Work("", options.workCompletedId, options.title || "");
             }
             return true;
         }
@@ -237,13 +236,13 @@ o2.addReady(function(){
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": options.workId,
                     "workCompleted": "",
-                    "title": title
+                    "title": options.title || ""
                 });
             } else if (options.workCompletedId) {
                 window.webkit.messageHandlers.openO2Work.postMessage({
                     "work": "",
                     "workCompleted": options.workCompletedId,
-                    "title": title
+                    "title": options.title || ""
                 });
             }
             return true;
@@ -268,6 +267,8 @@ o2.addReady(function(){
         if (!_openWorkAndroid(options)) if (!_openWorkIOS(options)) _openWorkHTML(options);
     };
     var _openDocument = function(appNames, options, statusObj){
+        var title = typeOf( options ) === "object" ? ( options.docTitle || options.title ) : "";
+        title = title || "";
         var par = "app="+encodeURIComponent(appNames)+"&status="+encodeURIComponent((statusObj)? JSON.encode(statusObj) : "")+"&option="+encodeURIComponent((options)? JSON.encode(options) : "");
         if (window.o2android && window.o2android.openO2CmsDocument){
             window.o2android.openO2CmsDocument(options.documentId, title);
@@ -280,7 +281,7 @@ o2.addReady(function(){
     var _openCms = function(appNames, options, statusObj){
         var par = "app="+encodeURIComponent(appNames)+"&status="+encodeURIComponent((statusObj)? JSON.encode(statusObj) : "")+"&option="+encodeURIComponent((options)? JSON.encode(options) : "");
         if (window.o2android && window.o2android.openO2CmsApplication){
-            window.o2android.openO2CmsApplication(options.columnId, title);
+            window.o2android.openO2CmsApplication(options.columnId, options.title || "");
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication){
             window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
         }else{

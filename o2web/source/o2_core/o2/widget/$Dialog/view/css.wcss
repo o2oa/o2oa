@@ -49,8 +49,14 @@
 		"background-color": "#CCC"
 	},
 	"button": {
+//		"border": "1px solid #999",
+//		"color": "#333",
+//		"margin": "0px 5px",
 		"border": "1px solid #999",
-		"color": "#333",
-		"margin": "0px 5px"
+        "width": "80px",
+        "padding": "3px",
+        "border-radius": "5px",
+        "color": "#333",
+        "margin": "0px 5px"
 	}
 }

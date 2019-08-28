@@ -46,6 +46,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }
         }.bind(this));
     },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            (this.node.getFirst() || this.node).addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
 
     _loadNode: function(){
         if (this.readonly){

@@ -76,6 +76,8 @@
   "isReplace": "y",
   "isDownload": "y",
   "toolbarGroupHidden" : [],
+  "availableListStyles" : ["list","seq","icon","preview"],
+
   "downloadEvent" : "",
 
   "class": "",

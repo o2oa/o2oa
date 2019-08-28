@@ -366,7 +366,23 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 		}.bind(this));
 	},
-	
+
+	createModuleImmediately: function( className, parentModule, relativeNode, position, selectDisabled, async ){
+		var module;
+		this.getTemplateData(className, function(data){
+			var moduleData = Object.clone(data);
+			module = new MWF["PC"+className](this);
+			if( parentModule ){
+				module.onDragModule = parentModule;
+				if (!parentModule.Component) module.inContainer = parentModule;
+				module.parentContainer = parentModule;
+				module.nextModule = null;
+			}
+			module.createImmediately(moduleData, relativeNode, position, selectDisabled);
+		}.bind(this), async);
+		return module;
+	},
+
 	createModule: function(className, e){
 		this.getTemplateData(className, function(data){
 			var moduleData = Object.clone(data);
@@ -1043,8 +1059,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 			return {"fieldConflict": fieldConflict, "elementConflict": elementConflict};
 		}
-		if (this.subformList){
-			Object.each(this.subformList, function(subform){
+		//if (this.subformList){
+		//	Object.each(this.subformList, function(subform){
+		//		if (!currentSubform || currentSubform!=subform.id){
+		//			if (subform.moduleList[id]){
+		//				elementConflict = true;
+		//				if (this.options.fields.indexOf(type)!=-1 || this.options.fields.indexOf(subform.moduleList[id].type)!=-1){
+		//					fieldConflict = true;
+		//				}
+		//			}
+		//		}
+		//	}.bind(this));
+		//}
+		var subformList = this.getAllSubformJsonObject();
+		if (subformList){
+			Object.each(subformList, function(subform){
 				if (!currentSubform || currentSubform!=subform.id){
 					if (subform.moduleList[id]){
 						elementConflict = true;
@@ -1057,7 +1086,58 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		}
         return {"fieldConflict": fieldConflict, "elementConflict": elementConflict};
 	},
-    _resetTreeNode: function(){}
+    _resetTreeNode: function(){},
+
+	clearSubformList : function( level1subformName ){
+		if( !this.level1Subformlist )return;
+		if( !this.level1Subformlist[level1subformName] )return;
+		delete this.level1Subformlist[level1subformName];
+	},
+	addSubformList : function( level1subformName, addedSubformId ){
+		if( !this.level1Subformlist ){
+			this.level1Subformlist = {};
+		}
+		if( !this.level1Subformlist[level1subformName] ){
+			this.level1Subformlist[level1subformName] = [];
+		}
+		this.level1Subformlist[level1subformName].push( addedSubformId );
+	},
+	isSubformUnique : function( checkedSubformId, level1subformName,  deletedSubformId){
+		if( !this.level1Subformlist )return true;
+		var level1Subformlist = Object.clone( this.level1Subformlist );
+		if( deletedSubformId && level1Subformlist[deletedSubformId] )delete level1Subformlist[deletedSubformId];
+		for( var key in level1Subformlist ){
+			if( key !== level1subformName ){
+				if( level1Subformlist[key].contains( checkedSubformId ) ){
+					return false;
+				}
+			}
+		}
+		return true;
+	},
+	getAllSubformTiled : function(){
+		var _nestToTiled = function( form , array ){
+			if ( form.subformModuleList && form.subformModuleList.length){
+				Array.each( form.subformModuleList, function( module ){
+					array.push( module );
+					if( module.subformModule )_nestToTiled( module.subformModule, array );
+				}.bind(this))
+			}
+		};
+		var array = [];
+		_nestToTiled( this, array );
+		return array;
+	},
+	getAllSubformJsonObject : function(){
+		var list = this.getAllSubformTiled();
+		var object = {};
+		Array.each( list, function( subform ){
+			if( subform && subform.json.subformSelected  && subform.subformData && subform.subformData.json){
+				object[ subform.json.subformSelected ] = subform.subformData.json;
+			}
+		}.bind(this));
+		return object;
+	}
 	// getAllFieldModuleNameList: function(){
     	// var moduleNameList = [];
     	// Object.each(this.json.moduleList, function(o, k){

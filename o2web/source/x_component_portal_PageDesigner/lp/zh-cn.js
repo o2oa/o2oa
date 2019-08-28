@@ -39,7 +39,16 @@ MWF.APPPD.LP = {
             "notUseModuleInMobile": "移动端不支持此组件",
 
             "changeToSequenceTitle": "确认",
-            "changeToSequence": "此操作会删除已经添加的组件，确定要改成“序号”列吗？"
+            "changeToSequence": "此操作会删除已经添加的组件，确定要改成“序号”列吗？",
+
+            //"confiltNoPix" : "请填写前缀或后缀",
+            "selectPage" : "请选择页面",
+            "selectWidget" : "请选择部件",
+            //"moduleConflitError" : "组件标识重复",
+            //"moduleConflitErrorOnPix" : "添加了前缀或后缀后组件标识仍然重复"
+            "widgetNameEmpty": "请填写部件名称",
+            "widgetNameConflict" : "部件名称冲突",
+            "widget_save_success" : "部件保存成功"
 		},
 		
 		"formAction": {
@@ -53,7 +62,9 @@ MWF.APPPD.LP = {
 			"copy": "复制",
 			"delete": "删除",
 			"add": "添加",
-			"script": "脚本"
+			"script": "脚本",
+            "makeWidget" : "设置为部件",
+            "defaultWidgetName" : "部件"
 		},
 
         "actionbar": {
@@ -135,6 +146,21 @@ MWF.APPPD.LP = {
     "implodeEmpty": "请在编辑框中填入要导入的数据",
     "implodeConfirmTitle": "导入确认",
     "implodeConfirmText": "导入数据将清除当前页面，并无法撤销，您确定要导入吗？",
+
+    "subpageNameConflictTitle": "子页面字段名称冲突",
+    "subpageNameConflictInfor": "子页面的以下字段名称和现有表单冲突：\n{name}",
+    "subpageConflictTitle": "子页面嵌入错误",
+    "subpageConflictInfor": "您不能嵌入两个相同的子页面",
+
+    "subpageNestedTitle": "子页面嵌入错误",
+    "subpageNestedInfor": "不能相互嵌套的嵌入子页面",
+    "checkSubpageNestedError" : "您选择的子页面存在相互嵌套的情况，请检查！",
+
+    "checkSubpageTitle": "页面保存校验",
+    "checkFormSaveError": "无法保存页面，原因如下：<br>",
+    "checkSubpagePcInfor": "PC页面中，有以下子字段冲突：<br>{subform}<br>",
+    "checkSubpageMobileInfor": "Mobile页面中，有以下子字段冲突：<br>{subform}",
+
 
     "design": "设计",
     "script": "脚本",

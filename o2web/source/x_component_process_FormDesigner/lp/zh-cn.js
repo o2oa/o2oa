@@ -157,7 +157,11 @@ MWF.xApplication.process.FormDesigner.LP = {
     "subformNameConflictTitle": "子表单字段名称冲突",
     "subformNameConflictInfor": "子表单的以下字段名称和现有表单冲突：\n{name}",
     "subformConflictTitle": "子表单嵌入错误",
-    "subformConflictInfor": "您不能嵌入两个相同的子表单",
+    "subformConflictInfor": "您不能重复嵌入同一个子表单",
+
+    "subformNestedTitle": "子表单嵌入错误",
+    "subformNestedInfor": "不能相互嵌套的嵌入子表单",
+    "checkSubformNestedError" : "您选择的子表单存在相互嵌套的情况，请检查！",
 
     "checkSubformTitle": "表单保存校验",
     "checkFormSaveError": "无法保存表单，原因如下：<br>",

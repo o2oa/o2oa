@@ -4,8 +4,9 @@ layout.addReady(function(){
         var appNames = "portal.Portal";
         var id = uri.getData("id");
         var page = uri.getData("page");
+        var widget = uri.getData("widget");
         var statusObj = null;
-        var options = {"portalId": id, "pageId": page};
+        var options = {"portalId": id, "pageId": page, "widgetId":widget };
 
         var _load = function(){
             //o2.require("MWF.xDesktop.MessageMobile", function(){

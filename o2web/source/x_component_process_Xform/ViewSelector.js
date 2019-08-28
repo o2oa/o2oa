@@ -283,7 +283,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             };
             var options = {};
             var width = options.width || "800";
-            var height = options.height || "450";
+            var height = options.height || "600";
 
             if (layout.mobile){
                 var size = document.body.getSize();
@@ -331,7 +331,12 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                             "text": MWF.LP.process.button.cancel,
                             "action": function(){this.close();}
                         }
-                    ]
+                    ],
+                    "onPostShow": function(){
+                        MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
+                        }.bind(this));
+                    }.bind(this)
                 });
                 dlg.show();
 
@@ -351,9 +356,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 // MWF.xDesktop.requireApp("process.Xform", "widget.View", function(){
                 //     this.view = new MWF.xApplication.process.Xform.widget.View(dlg.content.getFirst(), viewJson, {"style": "select"});
                 // }.bind(this));
-                MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                    this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson);
-                }.bind(this));
+                // MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+                //     this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
+                // }.bind(this));
             }.bind(this));
         }
     },

@@ -14,6 +14,18 @@
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
 		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">编辑:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit!='n' && $.allowEdit!='s')?'checked':''} type="radio" value="y"/>允许
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit=='n')?'checked':''} type="radio" value="n"/>不允许
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'block')}" name="allowEdit" text{($.allowEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}allowEditScriptArea" style="display: text{($.copiesEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="allowEditScript" title="编辑脚本 (S)"></div>
+
 
 <!--		<div class="MWFMaplist" name="editorProperties" title="属性"></div>-->
 <!--		<div style="text-align:center">更多属性帮助请查看 <a target="_blank" href="http://docs.ckeditor.com/">CKEditor Documentation</a></div>-->
@@ -48,17 +60,17 @@
 			</table>
 			<div id="text{$.pid}copiesShowScriptArea" style="display: text{($.copiesShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copiesShowScript" title="份数显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'none')}" name="copiesEdit" text{($.copiesEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'none')}" name="copiesEdit" text{($.copiesEdit!='y' && $.copiesEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'block')}" name="copiesEdit" text{($.copiesEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}copiesEditScriptArea" style="display: text{($.copiesEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="copiesEditScript" title="份数编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'none')}" name="copiesEdit" text{($.copiesEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'none')}" name="copiesEdit" text{($.copiesEdit!='y' && $.copiesEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesEditScriptArea').setStyle('display', 'block')}" name="copiesEdit" text{($.copiesEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}copiesEditScriptArea" style="display: text{($.copiesEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="copiesEditScript" title="份数编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -99,17 +111,17 @@
 			</table>
 			<div id="text{$.pid}secretShowScriptArea" style="display: text{($.secretShow=='s')?'block':'none'}" class="MWFFormulaArea" name="secretShowScript" title="密级显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'none')}" name="secretEdit" text{($.secretEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'none')}" name="secretEdit" text{($.secretEdit!='y' && $.secretEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'block')}" name="secretEdit" text{($.secretEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}secretEditScriptArea" style="display: text{($.secretEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="secretEditScript" title="密级编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'none')}" name="secretEdit" text{($.secretEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'none')}" name="secretEdit" text{($.secretEdit!='y' && $.secretEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}secretEditScriptArea').setStyle('display', 'block')}" name="secretEdit" text{($.secretEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}secretEditScriptArea" style="display: text{($.secretEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="secretEditScript" title="密级编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -149,17 +161,17 @@
 			</table>
 			<div id="text{$.pid}priorityShowScriptArea" style="display: text{($.priorityShow=='s')?'block':'none'}" class="MWFFormulaArea" name="priorityShowScript" title="紧急度显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'none')}" name="priorityEdit" text{($.priorityEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'none')}" name="priorityEdit" text{($.priorityEdit!='y' && $.priorityEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'block')}" name="priorityEdit" text{($.priorityEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}priorityEditScriptArea" style="display: text{($.priorityEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="priorityEditScript" title="紧急度编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'none')}" name="priorityEdit" text{($.priorityEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'none')}" name="priorityEdit" text{($.priorityEdit!='y' && $.priorityEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}priorityEditScriptArea').setStyle('display', 'block')}" name="priorityEdit" text{($.priorityEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}priorityEditScriptArea" style="display: text{($.priorityEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="priorityEditScript" title="紧急度编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -199,17 +211,17 @@
 			</table>
 			<div id="text{$.pid}redHeaderShowScriptArea" style="display: text{($.redHeaderShow=='s')?'block':'none'}" class="MWFFormulaArea" name="redHeaderShowScript" title="红头显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'none')}" name="redHeaderEdit" text{($.redHeaderEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'none')}" name="redHeaderEdit" text{($.redHeaderEdit!='y' && $.redHeaderEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'block')}" name="redHeaderEdit" text{($.redHeaderEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}redHeaderEditScriptArea" style="display: text{($.redHeaderEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="redHeaderEditScript" title="红头编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'none')}" name="redHeaderEdit" text{($.redHeaderEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'none')}" name="redHeaderEdit" text{($.redHeaderEdit!='y' && $.redHeaderEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redHeaderEditScriptArea').setStyle('display', 'block')}" name="redHeaderEdit" text{($.redHeaderEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}redHeaderEditScriptArea" style="display: text{($.redHeaderEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="redHeaderEditScript" title="红头编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -249,17 +261,17 @@
 			</table>
 			<div id="text{$.pid}filenoShowScriptArea" style="display: text{($.filenoShow=='s')?'block':'none'}" class="MWFFormulaArea" name="filenoShowScript" title="文号显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'none')}" name="filenoEdit" text{($.filenoEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'none')}" name="filenoEdit" text{($.filenoEdit!='y' && $.filenoEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'block')}" name="filenoEdit" text{($.filenoEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}filenoEditScriptArea" style="display: text{($.filenoEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="filenoEditScript" title="文号编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'none')}" name="filenoEdit" text{($.filenoEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'none')}" name="filenoEdit" text{($.filenoEdit!='y' && $.filenoEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}filenoEditScriptArea').setStyle('display', 'block')}" name="filenoEdit" text{($.filenoEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}filenoEditScriptArea" style="display: text{($.filenoEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="filenoEditScript" title="文号编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -299,17 +311,17 @@
 			</table>
 			<div id="text{$.pid}signerShowScriptArea" style="display: text{($.signerShow=='s')?'block':'none'}" class="MWFFormulaArea" name="signerShowScript" title="签发人显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'none')}" name="signerEdit" text{($.signerEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'none')}" name="signerEdit" text{($.signerEdit!='y' && $.signerEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'block')}" name="signerEdit" text{($.signerEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}signerEditScriptArea" style="display: text{($.signerEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="signerEditScript" title="签发人编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'none')}" name="signerEdit" text{($.signerEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'none')}" name="signerEdit" text{($.signerEdit!='y' && $.signerEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}signerEditScriptArea').setStyle('display', 'block')}" name="signerEdit" text{($.signerEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}signerEditScriptArea" style="display: text{($.signerEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="signerEditScript" title="签发人编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -349,17 +361,17 @@
 			</table>
 			<div id="text{$.pid}subjectShowScriptArea" style="display: text{($.subjectShow=='s')?'block':'none'}" class="MWFFormulaArea" name="subjectShowScript" title="文件标题显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit!='y' && $.subjectEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'block')}" name="subjectEdit" text{($.subjectEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}subjectEditScriptArea" style="display: text{($.subjectEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="subjectEditScript" title="文件标题编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit!='y' && $.subjectEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'block')}" name="subjectEdit" text{($.subjectEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}subjectEditScriptArea" style="display: text{($.subjectEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="subjectEditScript" title="文件标题编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -399,17 +411,17 @@
 			</table>
 			<div id="text{$.pid}mainSendShowScriptArea" style="display: text{($.mainSendShow=='s')?'block':'none'}" class="MWFFormulaArea" name="mainSendShowScript" title="主送显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'none')}" name="mainSendEdit" text{($.mainSendEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'none')}" name="mainSendEdit" text{($.mainSendEdit!='y' && $.mainSendEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'block')}" name="mainSendEdit" text{($.mainSendEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}mainSendEditScriptArea" style="display: text{($.mainSendEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="mainSendEditScript" title="主送编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'none')}" name="mainSendEdit" text{($.mainSendEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'none')}" name="mainSendEdit" text{($.mainSendEdit!='y' && $.mainSendEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}mainSendEditScriptArea').setStyle('display', 'block')}" name="mainSendEdit" text{($.mainSendEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}mainSendEditScriptArea" style="display: text{($.mainSendEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="mainSendEditScript" title="主送编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -449,17 +461,17 @@
 			</table>
 			<div id="text{$.pid}attachmentShowScriptArea" style="display: text{($.attachmentShow=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentShowScript" title="附件显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'none')}" name="attachmentEdit" text{($.attachmentEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'none')}" name="attachmentEdit" text{($.attachmentEdit!='y' && $.attachmentEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'block')}" name="attachmentEdit" text{($.attachmentEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}attachmentEditScriptArea" style="display: text{($.attachmentEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentEditScript" title="附件编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'none')}" name="attachmentEdit" text{($.attachmentEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'none')}" name="attachmentEdit" text{($.attachmentEdit!='y' && $.attachmentEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}attachmentEditScriptArea').setStyle('display', 'block')}" name="attachmentEdit" text{($.attachmentEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}attachmentEditScriptArea" style="display: text{($.attachmentEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="attachmentEditScript" title="附件编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -499,17 +511,17 @@
 			</table>
 			<div id="text{$.pid}issuanceUnitShowScriptArea" style="display: text{($.issuanceUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitShowScript" title="成文单位显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="成文单位编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="成文单位编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -549,17 +561,17 @@
 			</table>
 			<div id="text{$.pid}issuanceDateShowScriptArea" style="display: text{($.issuanceDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateShowScript" title="成文日期显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'none')}" name="issuanceDateEdit" text{($.issuanceDateEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'none')}" name="issuanceDateEdit" text{($.issuanceDateEdit!='y' && $.issuanceDateEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'block')}" name="issuanceDateEdit" text{($.issuanceDateEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}issuanceDateEditScriptArea" style="display: text{($.issuanceDateEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateEditScript" title="成文日期编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'none')}" name="issuanceDateEdit" text{($.issuanceDateEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'none')}" name="issuanceDateEdit" text{($.issuanceDateEdit!='y' && $.issuanceDateEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceDateEditScriptArea').setStyle('display', 'block')}" name="issuanceDateEdit" text{($.issuanceDateEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}issuanceDateEditScriptArea" style="display: text{($.issuanceDateEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceDateEditScript" title="成文日期编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -599,17 +611,17 @@
 			</table>
 			<div id="text{$.pid}annotationShowScriptArea" style="display: text{($.annotationShow=='s')?'block':'none'}" class="MWFFormulaArea" name="annotationShowScript" title="附注显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'none')}" name="annotationEdit" text{($.annotationEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'none')}" name="annotationEdit" text{($.annotationEdit!='y' && $.annotationEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'block')}" name="annotationEdit" text{($.annotationEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}annotationEditScriptArea" style="display: text{($.annotationEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="annotationEditScript" title="附注编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'none')}" name="annotationEdit" text{($.annotationEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'none')}" name="annotationEdit" text{($.annotationEdit!='y' && $.annotationEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}annotationEditScriptArea').setStyle('display', 'block')}" name="annotationEdit" text{($.annotationEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}annotationEditScriptArea" style="display: text{($.annotationEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="annotationEditScript" title="附注编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -649,17 +661,17 @@
 			</table>
 			<div id="text{$.pid}copytoShowScriptArea" style="display: text{($.copytoShow=='s')?'block':'none'}" class="MWFFormulaArea" name="copytoShowScript" title="抄送显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'none')}" name="copytoEdit" text{($.copytoEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'none')}" name="copytoEdit" text{($.copytoEdit!='y' && $.copytoEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'block')}" name="copytoEdit" text{($.copytoEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}copytoEditScriptArea" style="display: text{($.copytoEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="copytoEditScript" title="抄送编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'none')}" name="copytoEdit" text{($.copytoEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'none')}" name="copytoEdit" text{($.copytoEdit!='y' && $.copytoEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copytoEditScriptArea').setStyle('display', 'block')}" name="copytoEdit" text{($.copytoEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}copytoEditScriptArea" style="display: text{($.copytoEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="copytoEditScript" title="抄送编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -699,17 +711,17 @@
 			</table>
 			<div id="text{$.pid}editionUnitShowScriptArea" style="display: text{($.editionUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionUnitShowScript" title="印发单位显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'none')}" name="editionUnitEdit" text{($.editionUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'none')}" name="editionUnitEdit" text{($.editionUnitEdit!='y' && $.editionUnitEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'block')}" name="editionUnitEdit" text{($.editionUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}editionUnitEditScriptArea" style="display: text{($.editionUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="editionUnitEditScript" title="印发单位编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'none')}" name="editionUnitEdit" text{($.editionUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'none')}" name="editionUnitEdit" text{($.editionUnitEdit!='y' && $.editionUnitEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionUnitEditScriptArea').setStyle('display', 'block')}" name="editionUnitEdit" text{($.editionUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}editionUnitEditScriptArea" style="display: text{($.editionUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="editionUnitEditScript" title="印发单位编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
@@ -749,17 +761,17 @@
 			</table>
 			<div id="text{$.pid}editionDateShowScriptArea" style="display: text{($.editionDateShow=='s')?'block':'none'}" class="MWFFormulaArea" name="editionDateShowScript" title="印发单位显示脚本 (S)"></div>
 
-			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-				<tr>
-					<td class="editTableTitle">允许编辑:</td>
-					<td class="editTableValue">
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'none')}" name="editionDateEdit" text{($.editionDateEdit=='y')?'checked':''} type="radio" value="y"/>允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'none')}" name="editionDateEdit" text{($.editionDateEdit!='y' && $.editionDateEdit!='n')?'checked':''} type="radio" value="n"/>不允许
-						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'block')}" name="editionDateEdit" text{($.editionDateEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-					</td>
-				</tr>
-			</table>
-			<div id="text{$.pid}editionDateEditScriptArea" style="display: text{($.editionDateEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="editionDateEditScript" title="印发单位编辑脚本 (S)"></div>
+<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--				<tr>-->
+<!--					<td class="editTableTitle">允许编辑:</td>-->
+<!--					<td class="editTableValue">-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'none')}" name="editionDateEdit" text{($.editionDateEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'none')}" name="editionDateEdit" text{($.editionDateEdit!='y' && $.editionDateEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}editionDateEditScriptArea').setStyle('display', 'block')}" name="editionDateEdit" text{($.editionDateEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+<!--					</td>-->
+<!--				</tr>-->
+<!--			</table>-->
+<!--			<div id="text{$.pid}editionDateEditScriptArea" style="display: text{($.editionDateEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="editionDateEditScript" title="印发单位编辑脚本 (S)"></div>-->
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>

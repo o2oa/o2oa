@@ -180,7 +180,13 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                                             if (k!=this.json.data.group.column){
                                                 var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
                                                 //td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.groupGrid, "data": json.data, "entry": entry}) : d);
-                                                td.set("text", d);
+
+                                                if (c.isHtml){
+                                                    td.set("html", d);
+                                                }else{
+                                                    td.set("text", d);
+                                                }
+
                                             }
                                         }
                                     }.bind(this));
@@ -227,7 +233,12 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                                     if (d!=undefined){
                                         var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
                                         //td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.grid, "data": json.data, "entry": line}) : d);
-                                        td.set("text", d);
+                                        if (c.isHtml){
+                                            td.set("html", d);
+                                        }else{
+                                            td.set("text", d);
+                                        }
+                                        //td.set("text", d);
                                     }
                                 }.bind(this));
 
@@ -255,7 +266,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 //            this.setContentColumnWidth();
                 //            this.setContentHeight();
                 //        }
-                //
                 //    }.bind(this)});
                 //}.bind(this));
             }.bind(this));

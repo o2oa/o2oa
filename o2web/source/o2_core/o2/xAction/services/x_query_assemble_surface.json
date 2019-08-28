@@ -22,7 +22,7 @@
 
   "search": {"uri": "/jaxrs/segment/key/{key}"},
 
-  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute", "method": "POST" },
+  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 
   "listRowNext" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/next/{count}" },
   "listRowPrev" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}" },

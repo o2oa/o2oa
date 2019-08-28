@@ -441,6 +441,30 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
     },
     loadStat: function(id, success, failure, async){
         this.action.invoke({"name": "loadStat","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
-    }
+    },
+
+    saveProjection: function(data, success, failure){
+        if (!data.isNewProjection){
+            this.updateProjection(data, success, failure);
+        }else{
+            this.addProjection(data, success, failure);
+        }
+    },
+    updateProjection: function(data, success, failure){
+        this.action.invoke({"name": "updataProjection","data": data,"parameter": {"id": data.id},"success": success,"failure": failure});
+    },
+    addProjection: function(data, success, failure){
+        if (!data.id){
+            this.getUUID(function(id){
+                data.id = id;
+                this.action.invoke({"name": "addProjection","data": data,"success": success,"failure": failure});
+            }.bind(this));
+        }else{
+            this.action.invoke({"name": "addProjection","data": data,"success": success,"failure": failure});
+        }
+    },
+    deleteProjection: function(id, success, failure, async){
+        this.action.invoke({"name": "removeProjection", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
+    },
 
 });

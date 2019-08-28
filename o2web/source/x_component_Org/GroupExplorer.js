@@ -158,24 +158,27 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
             {"style": "width: 30px", "text": ""}
         ], this.addPersonMember.bind(this), "personCountNode", this.explorer.app.lp.deletePersonMemeberTitle, this.explorer.app.lp.deletePersonMemeber);
 
-        this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName", "description", {
-            "get": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
-                    _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
-            },
-            "events": {
-                "click": function(){
-                    _self.explorer.openGroup(this.data, this.td);
+        this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName",  //"description",
+            {
+                "get": function(){
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                        _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+                },
+                "events": {
+                    "click": function(){
+                        _self.explorer.openGroup(this.data, this.td);
+                    }
                 }
             }
-        }], [
+        ], [
             {"style": "width: 20%", "text": this.explorer.app.lp.groupName},
             {"style": "width: 40%", "text": this.explorer.app.lp.groupDn},
-            {"style": "", "text": this.explorer.app.lp.groupDescription},
+            //{"style": "", "text": this.explorer.app.lp.groupDescription},
             {"style": "width: 30px", "text": ""}
         ], this.addGroupMember.bind(this), "groupCountNode", this.explorer.app.lp.deleteGroupMemeberTitle, this.explorer.app.lp.deleteGroupMemeber);
 
-        this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", "typeList", {
+        this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", //"typeList",
+            {
             "get": function(){
                 return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
@@ -188,7 +191,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         }], [
             {"style": "width: 20%", "text": this.explorer.app.lp.unitName},
             {"style": "width: 40%", "text": this.explorer.app.lp.unitLevelName},
-            {"style": "", "text": this.explorer.app.lp.unitTypeList},
+            //{"style": "", "text": this.explorer.app.lp.unitTypeList},
             {"style": "width: 30px", "text": ""}
         ], this.addUnitMember.bind(this), "unitCountNode", this.explorer.app.lp.deleteUnitMemeberTitle, this.explorer.app.lp.deleteUnitMemeber);
     },

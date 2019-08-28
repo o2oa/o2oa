@@ -46,13 +46,14 @@ MWF.xDesktop.WebSocket = new Class({
         //---------------------------------*/
     },
     onOpen: function(e){
-       //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
+        console.log("websocket is open ...");
+        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
     },
     onClose: function(e){
-       //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
+        console.log("websocket is closed ...");
+        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
     onMessage: function(e){
-        debugger;
         if (e.data){
             try{
                 var data = JSON.decode(e.data);
@@ -130,7 +131,8 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     onError: function(e){
-        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
+        console.log("websocket is error ...");
+        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
     },
     close: function(){
         if (this.webSocket) this.webSocket.close();

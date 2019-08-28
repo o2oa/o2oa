@@ -64,6 +64,20 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             }
         }.bind(this));
     },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            var inputs = this.node.getElements("input");
+            inputs.each(function(input){
+                input.addEvent(key, function(event){
+                    return (fun) ? fun(this, event) : null;
+                }.bind(this));
+            }.bind(this));
+        }
+    },
     resetOption: function(){
         this.node.empty();
         this.setOptions();
@@ -101,6 +115,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                     "styles" : { "cursor" : "default" }
                 }).inject(this.node);
                 textNode.addEvent("click", function( ev ){
+                    if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
                     this.radio.checked = ! this.radio.checked;
                     this.radio.fireEvent("change");
                     this.radio.fireEvent("click");

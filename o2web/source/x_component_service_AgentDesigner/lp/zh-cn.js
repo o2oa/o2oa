@@ -11,7 +11,7 @@ MWF.xApplication.service.AgentDesigner.LP = {
         "description": "描述",
         "validated" : "代码格式是否正确",
         "isEnable" : "是否启用",
-        "cron" : "定时任务corn表达式",
+        "cron" : "定时任务cron表达式",
         "lastStartTime" : "最近开始时间",
         "lastEndTime" : "最近结束时间",
         "appointmentTime" : "预计下次执行时间",

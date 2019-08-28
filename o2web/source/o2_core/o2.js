@@ -53,8 +53,8 @@
     }
     this.o2 = {
         "version": {
-            "v": '2.1.0',
-            "build": "2018.11.22",
+            "v": '2.1.4',
+            "build": "2019.07.31",
             "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
         },
         "session": {
@@ -723,6 +723,10 @@
             if (type==="boolean") return (!!returnValue);
             if (type==="object") return returnValue;
             returnValue = returnValue.toString();
+            returnValue = returnValue.replace(/\&/g, "&amp;");
+            returnValue = returnValue.replace(/>/g, "&gt;");
+            returnValue = returnValue.replace(/</g, "&lt;");
+            returnValue = returnValue.replace(/\"/g, "&quot;");
             return returnValue || "";
         }catch(e){
             if (type==="boolean") return false;

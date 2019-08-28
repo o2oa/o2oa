@@ -652,6 +652,7 @@ MDomItem.Util = {
                 if( callback )callback( array );
             }.bind(this)
         };
+        if( opt.types.length === 0 )opt.types = null;
         var selector = new MWF.O2Selector(container, opt );
     },
     replaceText : function( value, selectValue, selectText, separator ){

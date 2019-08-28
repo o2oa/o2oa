@@ -207,7 +207,20 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     loadContent: function(){
         if (layout.mobile){
             MWF.require("MWF.widget.Tab", function(){
+
                 this.tab = new MWF.widget.Tab(this.titleTextNode, {"style": "orgMobile" });
+
+                var width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
+                var w = width / this.options.types.length - 2;
+                var tabWidth = w < 60 ? w : 60;
+
+                if( this.tab.css.tabNode ){
+                    this.tab.css.tabNode["min-width"] = tabWidth+"px";
+                }
+                if( this.tab.css.tabNodeCurrent ){
+                    this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
+                }
+
                 this.tab.load();
                 this.tab.contentNodeContainer.inject(this.contentNode);
             }.bind(this), false);

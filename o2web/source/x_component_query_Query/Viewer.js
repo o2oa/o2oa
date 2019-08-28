@@ -191,12 +191,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         });
     },
     searchView: function(){
-        if (this.viewJson.customFilterList){
+        if (this.viewJson.customFilterList) {
             var key = this.viewSearchInputNode.get("value");
-            if (key && key!==this.lp.searchKeywork){
+            if (key && key !== this.lp.searchKeywork) {
                 var filterData = this.json.filter ? this.json.filter : [];
-                this.viewJson.customFilterList.each(function(entry){
-                    if (entry.formatType==="textValue"){
+                this.viewJson.customFilterList.each(function (entry) {
+                    if (entry.formatType === "textValue") {
                         var d = {
                             "path": entry.path,
                             "value": key,
@@ -206,9 +206,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         };
                         filterData.push(d);
                     }
-                    if (entry.formatType==="numberValue"){
+                    if (entry.formatType === "numberValue") {
                         var v = key.toFloat();
-                        if (!isNaN(v)){
+                        if (!isNaN(v)) {
                             var d = {
                                 "path": entry.path,
                                 "value": v,
@@ -222,6 +222,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 }.bind(this));
 
                 this.createViewNode({"filterList": filterData});
+            }else{
+                this.createViewNode();
             }
         }
     },
@@ -308,7 +310,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
     loadViewSearchCustomComparisonList: function(){
-        debugger;
         var idx = this.viewSearchCustomPathListNode.selectedIndex;
         var option = this.viewSearchCustomPathListNode.options[idx];
         var entry = option.retrieve("entry");
@@ -612,7 +613,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
         this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
         this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
-            if (this.currentPage<this.pages-1) this.currentPage++;
+            if (this.currentPage<=this.pages-1) this.currentPage++;
             this.loadCurrentPageData();
         }.bind(this));
     },
@@ -657,7 +658,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     this.bundleItems = json.data.valueList;
 
                     this._initPage();
-                    this.loadCurrentPageData();
+                    if (this.bundleItems.length){
+                        this.loadCurrentPageData();
+                    }else{
+                        this._loadPageNode();
+                        if (this.loadingAreaNode){
+                            this.loadingAreaNode.destroy();
+                            this.loadingAreaNode = null;
+                        }
+                    }
+
 
                 }.bind(this));
             }
@@ -669,7 +679,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
         d.bundleList = valueList;
 
-        debugger;
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
         }
@@ -684,14 +693,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.gridJson = json.data.grid;
                 this.loadData();
             }
+            if (this.gridJson.length) this._loadPageNode();
             if (this.loadingAreaNode){
                 this.loadingAreaNode.destroy();
                 this.loadingAreaNode = null;
             }
             this.fireEvent("loadView");
         }.bind(this));
-
-        this._loadPageNode();
     },
 
 
@@ -704,6 +712,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             // }else{
             //     this.loadPaging();
             // }
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
     },
     loadPaging : function(){
@@ -757,6 +767,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }.bind(this));
 
             if (this.json.isExpand=="yes") this.expandOrCollapseAll();
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
     },
     expandOrCollapseAll: function(){
@@ -922,7 +934,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                     if (k!== this.view.viewJson.group.column){
                         //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
                         var v = cell;
-                        td.set("text", v);
+                        if (c.isHtml){
+                            td.set("html", v);
+                        }else{
+                            td.set("text", v);
+                        }
                     }
                     if (this.view.openColumns.indexOf(k)!==-1){
                         this.setOpenWork(td)
@@ -949,7 +965,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.setEvent();
     },
     setOpenWork: function(td){
-        debugger;
         td.setStyle("cursor", "pointer");
         if (this.view.json.type==="cms"){
             td.addEvent("click", this.openCms.bind(this));

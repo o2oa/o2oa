@@ -1,0 +1,85 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <!--<tr>-->
+		    <!--<td class="editTableTitle">Class:</td>-->
+		    <!--<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>-->
+		  <!--</tr>-->
+		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubpage').setStyle('display', 'block'); $('text{$.pid}scriptSubpage').setStyle('display', 'none');}" name="subpageType" value="select" text{($.subpageType!='script')?'checked':''}/>选择子页面
+					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubpage').setStyle('display', 'none'); $('text{$.pid}scriptSubpage').setStyle('display', 'block');}" name="subpageType" value="script" text{($.subpageType=='script')?'checked':''}/>计算子页面<br/>
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}selectSubpage" style="display: text{($.subpageType!='script')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">子页面:</td>
+					<td class="editTableValue">
+						<div class="MWFPageSelect" name="subpageSelected"></div>
+					</td>
+				</tr>
+				<!--<tr>-->
+					<!--<td class="editTableTitle"></td>-->
+					<!--<td class="editTableValue">-->
+						<!--<input type="button" value="编辑页面" onclick="">-->
+					<!--</td>-->
+				<!--</tr>-->
+			</table>
+		</div>
+		<div id="text{$.pid}scriptSubpage" style="display: text{($.subpageType=='script')?'block':'none'}">
+			<div class="MWFScriptArea" name="subpageScript" title="子页面脚本 (S)"></div>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">参数:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="
+						if (this.checked){
+							$('text{$.pid}parametersMapList').setStyle('display', 'block');
+							$('text{$.pid}parametersScript').setStyle('display', 'none')}
+					" name="parameterType" text{($.parameterType!='script')?'checked':''} type="radio" value="map"/>固定值
+					<input class="editTableRadio" onclick="
+						if (this.checked){
+						 	$('text{$.pid}parametersScript').setStyle('display', 'block');
+						 	$('text{$.pid}parametersMapList').setStyle('display', 'none')}
+					"  name="parameterType" text{($.parameterType=='script')?'checked':''} type="radio" value="script"/>脚本
+				</td>
+			</tr>
+		</table>
+		<!--<div id="text{$.pid}labelEditTextValue" title="值" style="display: text{($.valueType=='text')?'block':'none'}">-->
+			<!--<textarea  name="text" class="editTableTextarea">text{$.text}</textarea>-->
+		<!--</div>-->
+		<div id="text{$.pid}parametersMapList" class="MWFMaplist" name="parametersMapList" title="参数" style="display: text{($.parameterType !=='script')?'block':'none'}" ></div>
+		<div id="text{$.pid}parametersScript" class="MWFScriptArea" name="parametersScript" title="参数脚本 (返回对象)" style="display: text{($.parameterType=='script')?'block':'none'}"></div>
+
+
+
+	<!--<div title="事件"  class="MWFTab">-->
+		<!--<div class="MWFEventsArea" name="events"></div>-->
+	<!--</div>-->
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

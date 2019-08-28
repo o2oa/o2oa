@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/o2_lib/mootools/mootools-1.6.0_all.js"></script>
+    <script>
+        function post(){
+            new Request({
+                mothed: "post"
+            }).send();
+        }
+    </script>
+</head>
+<body>
+<form action="http://dev.o2oa.net:20030/x_program_center/jaxrs/invoke/testres/execute" method="post" enctype="text/plain">
+
+    <input type="submit">
+</form>
+
+</body>
+</html>

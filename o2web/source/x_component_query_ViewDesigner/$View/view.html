@@ -25,6 +25,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">展开分类:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是
+                    <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand!=='yes')?'checked':''} type="radio" value="no"/>否
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">最大行数:</td>
                 <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
             </tr>
@@ -82,8 +89,20 @@
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableValue" colspan="2" align="center">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateRangeType_process').setStyle('display', 'block'); $('text{$.id}dateRangeType_cms').setStyle('display', 'none');}" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>流程平台数据
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateRangeType_process').setStyle('display', 'none'); $('text{$.id}dateRangeType_cms').setStyle('display', 'block');}" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>内容管理数据
+                    <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'block');
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
+                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', '');
+                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', 'none');
+                    }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>流程平台数据
+                    <input class="editTableRadio" onclick="
+                    if (this.checked){
+                        $('text{$.id}dateRangeType_process').setStyle('display', 'none');
+                        $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
+                        $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', 'none');
+                        $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', '');
+                     }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>内容管理数据
                 </td>
             </tr>
         </table>
@@ -123,7 +142,7 @@
         <div id="text{$.id}dateRangeType_cms" style="display: text{($.type=='cms')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">流转状态:</td>
+                    <td class="editTableTitle">数据类型:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
