@@ -1,5 +1,7 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.Objects;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CitationExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
@@ -50,6 +53,25 @@ public class Projection extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		this.process = Objects.toString(this.process, "");
+		this.application = Objects.toString(this.application, "");
+		this.enable = (this.enable == null) ? false : this.enable;
+	}
+
+	public String getProcess() {
+		return Objects.toString(this.process, "");
+	}
+
+	public void setProcess(String process) {
+		this.process = Objects.toString(process, "");
+	}
+
+	public String getApplication() {
+		return Objects.toString(this.application, "");
+	}
+
+	public void setApplication(String application) {
+		this.application = Objects.toString(application, "");
 	}
 
 	/* 更新运行方法 */
@@ -71,13 +93,18 @@ public class Projection extends SliceJpaObject {
 
 	public static final String TYPE_REVIEW = "review";
 
-	public static final String TYPE_TABLE = "table";
-
 	public static final String enable_FIELDNAME = "enable";
 	@FieldDescribe("是否启用.")
 	@Column(name = ColumnNamePrefix + enable_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean enable;
+
+	public static final String name_FIELDNAME = "name";
+	@RestrictFlag
+	@FieldDescribe("名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+	@CheckPersist(allowEmpty = false, simplyString = true)
+	private String name;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
@@ -96,11 +123,11 @@ public class Projection extends SliceJpaObject {
 	@FieldDescribe("所属流程.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + process_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + process_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Process.class) })
+	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Process.class) })
 	private String process;
 
 	public static final String type_FIELDNAME = "type";
-	@FieldDescribe("类型:work,workCompleted,task,taskCompleted,readCompleted,read,review,table")
+	@FieldDescribe("类型:work,workCompleted,task,taskCompleted,readCompleted,read,review")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + type_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -113,28 +140,6 @@ public class Projection extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
-
-	public static final String dynamicName_FIELDNAME = "dynamicName";
-	@FieldDescribe("动态表类名称")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + dynamicName_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String dynamicName;
-
-	public String getApplication() {
-		return application;
-	}
-
-	public void setApplication(String application) {
-		this.application = application;
-	}
-
-	public String getProcess() {
-		return process;
-	}
-
-	public void setProcess(String process) {
-		this.process = process;
-	}
 
 	public String getType() {
 		return type;
@@ -155,7 +160,6 @@ public class Projection extends SliceJpaObject {
 	public static class Item {
 
 		private String path = "";
-		private String column = "";
 		private String type = "";
 		private String name = "";
 		private String scriptText = "";
@@ -166,14 +170,6 @@ public class Projection extends SliceJpaObject {
 
 		public void setPath(String path) {
 			this.path = path;
-		}
-
-		public String getColumn() {
-			return column;
-		}
-
-		public void setColumn(String column) {
-			this.column = column;
 		}
 
 		public String getType() {
@@ -218,12 +214,12 @@ public class Projection extends SliceJpaObject {
 		this.enable = enable;
 	}
 
-	public String getDynamicName() {
-		return dynamicName;
+	public String getName() {
+		return name;
 	}
 
-	public void setDynamicName(String dynamicName) {
-		this.dynamicName = dynamicName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

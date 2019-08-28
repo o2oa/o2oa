@@ -71,7 +71,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户创建的Task对象,下一页.", action = ActionListNext.class)
+	@JaxrsMethodDescribe(value = "列示当前用户创建的待办对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -90,7 +90,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户创建的Task对象,上一页.", action = ActionListPrev.class)
+	@JaxrsMethodDescribe(value = "列示当前用户创建的待办对象,上一页.", action = ActionListPrev.class)
 	@GET
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -109,7 +109,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,下一页.", action = ActionListNextWithApplication.class)
+	@JaxrsMethodDescribe(value = "列示指定应用当前用户的待办对象,下一页.", action = ActionListNextWithApplication.class)
 	@GET
 	@Path("list/{id}/next/{count}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -129,7 +129,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,上一页.", action = ActionListPrevWithApplication.class)
+	@JaxrsMethodDescribe(value = "列示指定应用当前用户的待办对象,上一页.", action = ActionListPrevWithApplication.class)
 	@GET
 	@Path("list/{id}/prev/{count}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -149,7 +149,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定流程当前用户的Task对象,下一页.", action = ActionListNextWithProcess.class)
+	@JaxrsMethodDescribe(value = "列示指定流程当前用户的待办对象,下一页.", action = ActionListNextWithProcess.class)
 	@GET
 	@Path("list/{id}/next/{count}/process/{processFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -169,7 +169,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定流程当前用户的Task对象,上一页.", action = ActionListPrevWithProcess.class)
+	@JaxrsMethodDescribe(value = "列示指定流程当前用户的待办对象,上一页.", action = ActionListPrevWithProcess.class)
 	@GET
 	@Path("list/{id}/prev/{count}/process/{processFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -189,13 +189,13 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Id获取Task.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "根据Id获取待办.", action = ActionGet.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -207,7 +207,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "统计当前用户待办，按应用分类.", action = ActionListCountWithApplication.class)
+	@JaxrsMethodDescribe(value = "统计当前用户待办,按应用分类.", action = ActionListCountWithApplication.class)
 	@GET
 	@Path("list/count/application")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -225,7 +225,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "统计当前用户在指定应用下的待办，按流程分类.", action = ActionListCountWithProcess.class)
+	@JaxrsMethodDescribe(value = "统计当前用户在指定应用下的待办,按流程分类.", action = ActionListCountWithProcess.class)
 	@GET
 	@Path("list/count/application/{applicationFlag}/process")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -278,7 +278,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户对Task的过滤信息,下一页.", action = ActionListNextFilter.class)
+	@JaxrsMethodDescribe(value = "获取用户对待办的过滤信息,下一页.", action = ActionListNextFilter.class)
 	@POST
 	@Path("list/{id}/next/{count}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -297,7 +297,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户对Task的过滤信息,上一页.", action = ActionListNextFilter.class)
+	@JaxrsMethodDescribe(value = "获取用户对待办的过滤信息,上一页.", action = ActionListNextFilter.class)
 	@POST
 	@Path("list/{id}/prev/{count}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -305,10 +305,10 @@ public class TaskAction extends StandardJaxrsAction {
 	public void listPrevWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
-		ActionResult<List<ActionListNextFilter.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListPrevFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListNextFilter().execute(effectivePerson, id, count, jsonElement);
+			result = new ActionListPrevFilter().execute(effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -370,7 +370,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "重置待办，将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人", action = ActionReset.class)
+	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = ActionReset.class)
 	@PUT
 	@Path("{id}/reset")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -405,24 +405,6 @@ public class TaskAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
-
-	// @JaxrsMethodDescribe(value = "获取当前人员的待办数量.", action = ActionMyCount.class)
-	// @GET
-	// @Path("mycount")
-	// @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	// @Consumes(MediaType.APPLICATION_JSON)
-	// public void countWithPerson(@Suspended final AsyncResponse asyncResponse,
-	// @Context HttpServletRequest request) {
-	// ActionResult<ActionMyCount.Wo> result = new ActionResult<>();
-	// EffectivePerson effectivePerson = this.effectivePerson(request);
-	// try {
-	// result = new ActionMyCount().execute(effectivePerson);
-	// } catch (Exception e) {
-	// logger.error(e, effectivePerson, request, null);
-	// result.error(e);
-	// }
-	// asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	// }
 
 	@JaxrsMethodDescribe(value = "获取指定人员的待办数量,没有权限限制.", action = ActionCountWithPerson.class)
 	@GET
@@ -478,17 +460,17 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "待办转已办.", action = ActionManageCompleted.class)
+	@JaxrsMethodDescribe(value = "待办转已办.", action = ActionManageProcessing.class)
 	@PUT
-	@Path("{id}/completed/manage")
+	@Path("{id}/processing/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionManageCompleted.Wo> result = new ActionResult<>();
+	public void manageProcessing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManageProcessing.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageCompleted().execute(effectivePerson, id, jsonElement);
+			result = new ActionManageProcessing().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -496,7 +478,25 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "重置待办，将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人", action = ActionManageReset.class)
+	@JaxrsMethodDescribe(value = "管理修改意见.", action = ActionManageOpinion.class)
+	@PUT
+	@Path("{id}/opinion/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageOpinion(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageOpinion().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = ActionManageReset.class)
 	@PUT
 	@Path("{id}/reset/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -545,6 +545,101 @@ public class TaskAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListMyFilterPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示所有创建的待办对象,下一页.", action = ActionManageListNext.class)
+	@GET
+	@Path("list/{id}/next/{count}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+						 @JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionManageListNext.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListNext().execute(effectivePerson, id, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示所有创建的待办对象,上一页.", action = ActionManageListPrev.class)
+	@GET
+	@Path("list/{id}/prev/{count}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListPrev(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+						 @JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionManageListPrev.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListPrev().execute(effectivePerson, id, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取指定条件的待办,下一页.", action = ActionManageListNextFilter.class)
+	@POST
+	@Path("list/{id}/next/{count}/filter/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+								   @JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionManageListNextFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListNextFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取指定条件的待办,上一页.", action = ActionManageListPrevFilter.class)
+	@POST
+	@Path("list/{id}/prev/{count}/filter/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListPrevWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+								   @JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionManageListPrevFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListPrevFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "按条件对待办分页显示.", action = ActionManageListFilterPaging.class)
+	@POST
+	@Path("list/filter/{page}/size/{size}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListFilterPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+								   @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionManageListFilterPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListFilterPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

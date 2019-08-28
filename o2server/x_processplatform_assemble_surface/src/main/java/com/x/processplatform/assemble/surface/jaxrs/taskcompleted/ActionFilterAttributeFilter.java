@@ -195,6 +195,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -243,6 +245,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -291,6 +295,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -333,6 +339,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -375,6 +383,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -417,6 +427,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}

@@ -102,7 +102,7 @@ class ActionOauthLogin extends BaseAction {
 				/* 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);
 				if (StringUtils.isEmpty(personId)) {
-					throw new ExceptionPersonNotExist(credential);
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				Person o = emc.find(personId, Person.class);
 				wo = this.user(request, response, business, o, Wo.class);

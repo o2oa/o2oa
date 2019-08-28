@@ -44,14 +44,14 @@ class ActionLogin extends BaseAction {
 			}
 			if (Config.token().isInitialManager(credential)) {
 				if (!StringUtils.equals(Config.token().getPassword(), password)) {
-					throw new ExceptionInvalidPassword();
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.manager(request, response, business, Wo.class);
 			} else {
 				/** 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);
 				if (StringUtils.isEmpty(personId)) {
-					throw new ExceptionPersonNotExist(credential);
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				Person o = emc.find(personId, Person.class);
 				/** 先判断是否使用superPermission登录 */
@@ -60,7 +60,7 @@ class ActionLogin extends BaseAction {
 					logger.warn("user: {} use superPermission.", credential);
 				} else if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
 					/* 普通用户认证密码 */
-					throw new ExceptionInvalidPassword();
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.user(request, response, business, o, Wo.class);
 				audit.log(o.getDistinguishedName());

@@ -264,7 +264,7 @@ public class CriteriaBuilderTools {
 		}else{
 			cq.orderBy( cb.asc( root.get( orderField )) );
 		}
-		System.out.println(">>>>>>>>>SQL:" + em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).toString() );
+		//System.out.println(">>>>>>>>>SQL:" + em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).toString() );
 		return em.createQuery(cq.where(p).distinct(true)).setMaxResults( maxCount ).getResultList();
 	}
 	

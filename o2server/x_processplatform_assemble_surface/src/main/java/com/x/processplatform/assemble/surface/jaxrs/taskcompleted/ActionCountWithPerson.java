@@ -41,7 +41,8 @@ class ActionCountWithPerson extends BaseAction {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), person);
-		p = cb.and(p, cb.notEqual(root.get(TaskCompleted_.latest), false));
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}

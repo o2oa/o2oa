@@ -12,10 +12,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Projection;
 
 class ActionListWithApplication extends BaseAction {
@@ -46,8 +44,8 @@ class ActionListWithApplication extends BaseAction {
 
 		private static final long serialVersionUID = -7495725325510376323L;
 
-		public static WrapCopier<Projection, Wo> copier = WrapCopierFactory.wo(Projection.class, Wo.class, null,
-				JpaObject.singularAttributeField(Projection.class, true, true));
+		public static WrapCopier<Projection, Wo> copier = WrapCopierFactory.wo(Projection.class, Wo.class,
+				JpaObject.singularAttributeField(Projection.class, true, true), null);
 
 	}
 }

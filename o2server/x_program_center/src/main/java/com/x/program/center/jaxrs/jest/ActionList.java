@@ -20,28 +20,30 @@ class ActionList extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		Boolean fromProxy = this.formProxy(request, source);
+		String httpProtocol = "http://"; //O2LEE，修正如果开启SSL，x_program_center/jest/list.html 给出的URL都是HTTP协议的，无法访问的问题
 		for (Entry<String, CopyOnWriteArrayList<Application>> en : ThisApplication.context().applications()
 				.entrySet()) {
 			Wo wo = new Wo();
 			wo.setName(en.getKey());
 			wo.setUrlList(new ArrayList<String>());
 			for (Application o : en.getValue()) {
+				
+				if( o.getSslEnable() ) {
+					httpProtocol = "https://";
+				}
+				
 				if (fromProxy) {
 					if (this.isUndefindHost(o.getProxyHost())) {
-						wo.getUrlList().add("http://" + this.getHost(request) + ":" + o.getProxyPort()
-								+ o.getContextPath() + "/jest/index.html");
+						wo.getUrlList().add( httpProtocol + this.getHost(request) + ":" + o.getProxyPort() + o.getContextPath() + "/jest/index.html");
 					} else {
-						wo.getUrlList().add("http://" + o.getProxyHost() + ":" + o.getProxyPort() + o.getContextPath()
-								+ "/jest/index.html");
+						wo.getUrlList().add( httpProtocol + o.getProxyHost() + ":" + o.getProxyPort() + o.getContextPath() + "/jest/index.html");
 					}
 				} else {
-					wo.getUrlList()
-							.add("http://" + o.getNode() + ":" + o.getPort() + o.getContextPath() + "/jest/index.html");
+					wo.getUrlList().add( httpProtocol + o.getNode() + ":" + o.getPort() + o.getContextPath() + "/jest/index.html");
 				}
 			}
 			wos.add(wo);
-			wos = wos.stream().sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo)))
-					.collect(Collectors.toList());
+			wos = wos.stream().sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo))) .collect(Collectors.toList());
 		}
 		result.setData(wos);
 		return result;

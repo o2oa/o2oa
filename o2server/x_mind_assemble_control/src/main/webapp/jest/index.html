@@ -5,6 +5,68 @@
 <meta http-equiv="pragma" content="no-cache" />
 <script src="./jquery.min.js"></script>
 <script src="./clipboard.min.js"></script>
+<style type="text/css">
+	<!--
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size:12px;
+		color:#666666;
+		background:#fff;
+		text-align:left;
+	}
+	a {
+		color:#1E7ACE;
+		text-decoration:none; 
+	}
+	a:hover {
+		color:#000;
+		text-decoration:underline;
+	}
+	h3 {
+		font-size:14px;
+		font-weight:bold;
+	}
+	
+	pre,p {
+		color:#1E7ACE;
+		margin:4px;
+	}
+	input, select,textarea {
+		padding:1px;
+		margin:2px;
+		font-size:11px;
+	}
+	
+	fieldset {
+		padding:10px;
+		margin-top:10px;
+		border:1px solid #A4CDF2;
+		background:#fff;
+	}
+	
+	fieldset legend {
+		color:#1E7ACE;
+		font-weight:bold;
+		padding:3px 20px 3px 20px;
+		border:1px solid #A4CDF2; 
+		background:#fff;
+	}
+	
+	input {
+		border:1px solid #A4CDF2;
+	}
+	
+	button {
+		border:1px solid #A4CDF2;
+		background-color : #FFFFFF;
+		height:25px;
+		margin-top:10px;
+		font-weight:bold;
+		color:#1E7ACE;
+	}
+	-->
+</style>
+	
 <script>
     $.getScript('./describe.js?rd=' + Math.random()).then(function() {
 		var describe = new Describe();
@@ -14,7 +76,7 @@
     });
 	
 	$(document).ready(function(){
-        var clipboard = new Clipboard("#btn");
+        var clipboard = new Clipboard("#btn_copy");
 	});	
 </script>
 </head>
@@ -24,19 +86,19 @@
 		<tr>
 			<td style="width: 350px;" valign="top">
 				<fieldset>
-					<legend>Menu</legend>
+					<legend>API Menu</legend>
 					<div id="menu" style="height: 850px; overflow: auto">&nbsp;</div>
 				</fieldset>
 			</td>
 			<td valign="top">
 				<fieldset>
-					<legend>Content</legend>
+					<legend>API Content</legend>
 					<div id="content"
 						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word">&nbsp;</div>
 				</fieldset>
 				<fieldset>
 					<legend>
-						Result&nbsp;<a href="javascript:" data-clipboard-target="#result">copy</a>&nbsp;
+						Result&nbsp;<a id="btn_copy" href="javascript:" data-clipboard-target="#result">copy</a>&nbsp;
 					</legend>
 					<div id="result"
 						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; width: 1400px">&nbsp;</div>

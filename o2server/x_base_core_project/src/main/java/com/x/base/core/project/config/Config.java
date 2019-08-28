@@ -2,6 +2,7 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
@@ -101,7 +102,9 @@ public class Config {
 
 	public static final String RESOUCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
 
-	public static final String RESOUCE_CONFIG = "config";
+	// public static final String RESOUCE_CONFIG = "config";
+
+	public static final String RESOUCE_NODE = "node";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
@@ -1029,6 +1032,15 @@ public class Config {
 
 	public static Object resource_jdbc(String name) throws Exception {
 		return initialContext().lookup(RESOUCE_JDBC_PREFIX + name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ConcurrentHashMap<String, Object> resource_node() throws Exception {
+		return (ConcurrentHashMap<String, Object>) initialContext().lookup(RESOUCE_NODE);
+	}
+
+	public static void registWebServer() {
+
 	}
 
 }

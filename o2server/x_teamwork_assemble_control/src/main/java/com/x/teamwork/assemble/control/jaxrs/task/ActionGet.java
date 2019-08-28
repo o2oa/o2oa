@@ -108,12 +108,19 @@ public class ActionGet extends BaseAction {
 						wo.setDetail( taskDetail.getDetail() );
 						wo.setDescription( taskDetail.getDescription() );
 					}
+					
+//					if( taskExtField != null ) {
+//						wo.setExtField( WoTaskExtField.copier.copy( taskExtField ));
+//					}
+					
 					if( ListTools.isNotEmpty( extFieldReleList )) {
-						wo.setExtFieldConfigs( WoExtFieldRele.copier.copy( extFieldReleList ) );
+						List<WoExtFieldRele> reles = WoExtFieldRele.copier.copy( extFieldReleList ) ;
+						for( WoExtFieldRele woExtFieldRele :  reles ) {
+							woExtFieldRele.setValue( taskQueryService.getValueFromTaskExtField( taskExtField, woExtFieldRele.getExtFieldName() ));
+						}
+						wo.setExtFieldConfigs( reles );
 					}
-					if( taskExtField != null ) {
-						wo.setExtField( WoTaskExtField.copier.copy( taskExtField ));
-					}
+					
 					tags = taskTagQueryService.listWithTaskAndPerson(effectivePerson, task);
 					if( ListTools.isNotEmpty( tags )) {
 						wo.setTags( WoTaskTag.copier.copy( tags ));
@@ -138,8 +145,8 @@ public class ActionGet extends BaseAction {
 		@FieldDescribe("说明详细信息(10M)")
 		private String description;
 		
-		@FieldDescribe("扩展属性信息(对象)")
-		private WoTaskExtField extField;
+//		@FieldDescribe("扩展属性信息(对象)")
+//		private WoTaskExtField extField;
 		
 		@FieldDescribe("任务标签(列表)")
 		private List<WoTaskTag> tags = null;
@@ -149,13 +156,13 @@ public class ActionGet extends BaseAction {
 		
 		private Long rank;
 
-		public WoTaskExtField getExtField() {
-			return extField;
-		}
-
-		public void setExtField(WoTaskExtField extField) {
-			this.extField = extField;
-		}
+//		public WoTaskExtField getExtField() {
+//			return extField;
+//		}
+//
+//		public void setExtField(WoTaskExtField extField) {
+//			this.extField = extField;
+//		}
 
 		public List<WoExtFieldRele> getExtFieldConfigs() {
 			return extFieldConfigs;
@@ -227,12 +234,33 @@ public class ActionGet extends BaseAction {
 	}
 	
 	public static class WoExtFieldRele{
-	
-		@FieldDescribe("备用列名称")
+
+		@FieldDescribe("项目ID（必填）")
+		private String projectId;
+
+		@FieldDescribe("备用列名（必填）")
 		private String extFieldName;
-		
-		@FieldDescribe("显示属性名称")
+
+		@FieldDescribe("显示属性名称（必填）")
 		private String displayName;
+
+		@FieldDescribe("显示方式：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|（必填）")
+		private String displayType="TEXT";
+		
+		@FieldDescribe("选择荐的备选数据，数据Json， displayType=SELECT|MUTISELECT时必须填写，否则无选择项")
+		private String optionsData;
+		
+		@FieldDescribe("排序号（非必填）")
+		private Integer order= 0 ;
+
+		@FieldDescribe("是否允许为空（非必填）")
+		private Boolean nullable = true ;
+
+		@FieldDescribe("说明信息（非必填）")
+		private String description;
+		
+		@FieldDescribe("属性值")
+		private String value = "";
 
 		public static List<String> Excludes = new ArrayList<String>();
 
@@ -252,6 +280,62 @@ public class ActionGet extends BaseAction {
 
 		public void setDisplayName(String displayName) {
 			this.displayName = displayName;
+		}
+
+		public String getProjectId() {
+			return projectId;
+		}
+
+		public void setProjectId(String projectId) {
+			this.projectId = projectId;
+		}
+
+		public String getDisplayType() {
+			return displayType;
+		}
+
+		public void setDisplayType(String displayType) {
+			this.displayType = displayType;
+		}
+
+		public String getOptionsData() {
+			return optionsData;
+		}
+
+		public void setOptionsData(String optionsData) {
+			this.optionsData = optionsData;
+		}
+
+		public Integer getOrder() {
+			return order;
+		}
+
+		public void setOrder(Integer order) {
+			this.order = order;
+		}
+
+		public Boolean getNullable() {
+			return nullable;
+		}
+
+		public void setNullable(Boolean nullable) {
+			this.nullable = nullable;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
 		}
 	}
 }

@@ -3,6 +3,9 @@ package com.x.processplatform.assemble.surface.copier;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
+import com.x.base.core.project.tools.PropertyTools;
+import com.x.processplatform.core.entity.element.Manual;
+
 public class TestClient {
 	@Test
 	public void test1() throws Exception {
@@ -15,11 +18,10 @@ public class TestClient {
 
 	@Test
 	public void test3() throws Exception {
-		char c = '\\';
-		char s = '/';
-		System.out.println((int) c);
-		System.out.println((int) s);
-
+		Manual manual = new Manual();
+	//	manual.setForm("");
+		String formId = PropertyTools.getOrElse(manual, Manual.form_FIELDNAME, String.class, "a");
+		System.out.println(formId);
 	}
 
 }

@@ -380,7 +380,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置），非必填" )
 		private Boolean skipPermission  = false;	
 
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify);
+		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
 		
 		public String getId() {
 			return id;

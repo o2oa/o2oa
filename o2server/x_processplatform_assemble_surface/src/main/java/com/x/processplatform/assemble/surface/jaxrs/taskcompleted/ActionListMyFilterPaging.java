@@ -53,7 +53,8 @@ class ActionListMyFilterPaging extends BaseAction {
 		CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.notEqual(root.get(TaskCompleted_.latest), false));
+		p = cb.and(p,
+				cb.or(cb.isNull(root.get(TaskCompleted_.latest)), cb.equal(root.get(TaskCompleted_.latest), true)));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
@@ -73,9 +74,9 @@ class ActionListMyFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
+			String key = StringUtils.trim(StringUtils.replaceEach(wi.getKey(), new String[] { "\u3000", "?", "%" },
+					new String[] { " ", "", "" }));
 			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
 				p = cb.and(p,
 						cb.or(cb.like(root.get(TaskCompleted_.title), "%" + key + "%"),
 								cb.like(root.get(TaskCompleted_.opinion), "%" + key + "%"),
@@ -95,6 +96,8 @@ class ActionListMyFilterPaging extends BaseAction {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.isNull(root.get(TaskCompleted_.latest)), cb.equal(root.get(TaskCompleted_.latest), true)));
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}

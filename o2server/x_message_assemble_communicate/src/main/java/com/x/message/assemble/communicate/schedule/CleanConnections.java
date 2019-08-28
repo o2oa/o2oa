@@ -12,7 +12,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.message.assemble.communicate.ThisApplication;
+import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
 
 public class CleanConnections implements Job {
 
@@ -22,16 +22,16 @@ public class CleanConnections implements Job {
 	/* 定时清理session已经关闭的用户 */
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			List<String> removes = new ArrayList<>();
-			for (Entry<String, Session> entry : ThisApplication.connections.entrySet()) {
-				if ((null == entry.getValue()) || (!entry.getValue().isOpen())) {
+			List<Session> removes = new ArrayList<>();
+			for (Entry<Session, String> entry : ActionCollaboration.clients.entrySet()) {
+				if (!entry.getKey().isOpen()) {
 					removes.add(entry.getKey());
 				}
 			}
-			for (String str : removes) {
-				ThisApplication.connections.remove(str);
+			for (Session session : removes) {
+				ActionCollaboration.clients.remove(session);
 			}
-			logger.debug("clean {} websocket session, {} online.", removes.size(), ThisApplication.connections.size());
+			logger.debug("clean {} websocket session, {} online.", removes.size(), ActionCollaboration.clients.size());
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);

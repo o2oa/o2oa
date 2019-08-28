@@ -45,7 +45,7 @@ public class AppInfoFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get(AppInfo_.id));
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			Predicate p = cb.equal(root.get(AppInfo_.documentType), documentType);
 			return em.createQuery(cq.where(p)).getResultList();
 		}
@@ -58,7 +58,7 @@ public class AppInfoFactory extends AbstractFactory {
 		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = null;
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo_.documentType), documentType) );
 		}
 		if (StringUtils.isNotEmpty(appType) &&!StringUtils.equals( "未分类",appType )) {
@@ -68,7 +68,11 @@ public class AppInfoFactory extends AbstractFactory {
 			p = CriteriaBuilderTools.predicate_and(cb, p, 
 					CriteriaBuilderTools.predicate_or(
 							cb, cb.isNull(root.get(AppInfo_.appType)), 
-							cb.equal(root.get(AppInfo_.appType), ""))
+							CriteriaBuilderTools.predicate_or(
+									cb, cb.equal(root.get(AppInfo_.appType), ""), 
+									cb.equal(root.get(AppInfo_.appType), "未分类")
+							)
+					)
 			);
 		}
 		return em.createQuery(cq.where(p)).getResultList();
@@ -95,7 +99,7 @@ public class AppInfoFactory extends AbstractFactory {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get(AppInfo_.id));
 		Predicate p = cb.isTrue(root.get(AppInfo_.allPeoplePublish));
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
@@ -116,7 +120,7 @@ public class AppInfoFactory extends AbstractFactory {
 		cq.select(root.get(AppInfo_.id));
 		Predicate p = cb.isTrue(root.get(AppInfo_.allPeopleView));
 		p = cb.or(p, cb.isTrue(root.get(AppInfo_.allPeoplePublish)));
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
@@ -186,7 +190,7 @@ public class AppInfoFactory extends AbstractFactory {
 		if (ListTools.isNotEmpty(groupNames)) {
 			p_permission = cb.or(p_permission, root.get(AppInfo_.manageableGroupList).in(groupNames));
 		}
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p_permission = cb.equal(p_permission, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		cq.select(root.get(AppInfo_.id));
@@ -257,7 +261,7 @@ public class AppInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		cq.select(root.get(AppInfo_.id));
@@ -326,7 +330,7 @@ public class AppInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		cq.select(root.get(AppInfo_.id));
@@ -398,7 +402,7 @@ public class AppInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		cq.select(root.get(AppInfo_.id));
@@ -468,7 +472,7 @@ public class AppInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)) {
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo_.documentType), documentType));
 		}
 		cq.select(root.get(AppInfo_.id));
@@ -510,6 +514,7 @@ public class AppInfoFactory extends AbstractFactory {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.isNull( root.get(AppInfo_.appType) );
 		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), ""));
+		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), "未分类"));
 		cq.select(cb.count(root));
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}

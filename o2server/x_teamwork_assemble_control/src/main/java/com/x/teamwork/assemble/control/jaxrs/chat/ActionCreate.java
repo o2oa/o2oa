@@ -18,6 +18,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Chat;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Task;
@@ -105,6 +106,14 @@ public class ActionCreate extends BaseAction {
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}			
+		}
+		
+		if (check) {
+			try {
+				MessageFactory.message_to_chat( chat );
+			} catch (Exception e) {
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 		
 		if (check) {

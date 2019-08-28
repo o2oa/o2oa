@@ -22,6 +22,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
@@ -329,6 +330,18 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
+			try {
+				if( oldTask == null ) {
+					MessageFactory.message_to_teamWorkCreate( task );
+				}else {
+					MessageFactory.message_to_teamWorkUpdate( task );
+				}
+			} catch (Exception e) {
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
 			//记录工作任务信息变化记录
 			try {
 				if( ListTools.isNotEmpty( dynamics ) ) {
@@ -341,7 +354,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( ListTools.isEmpty(dynamics ) ) {
+		if( ListTools.isEmpty( dynamics ) ) {
 			dynamics = new ArrayList<>();
 		}
 		

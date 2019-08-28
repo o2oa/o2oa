@@ -9,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -32,7 +31,7 @@ class ActionCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			List<String> consumers = Config.messages().getConsumers(wi.getType());
+			List<String> consumers = Config.messages().getConsumers(wi.getType());			
 			Instant instant = this.instant(effectivePerson, business, wi, consumers);
 			if (ListTools.isNotEmpty(consumers)) {
 				for (String consumer : consumers) {

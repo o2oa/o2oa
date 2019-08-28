@@ -134,8 +134,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse postQuery(Boolean xdebugger, Application application, String uri, Object body)
 			throws Exception {
-		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
-				body);
+		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), 	body);
 	}
 
 	public ActionResponse postQuery(String applicationName, String uri, Object body) throws Exception {

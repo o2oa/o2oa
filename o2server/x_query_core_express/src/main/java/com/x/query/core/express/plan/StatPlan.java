@@ -217,7 +217,7 @@ public class StatPlan extends GsonPropertyObject {
 		});
 		logger.debug("init group calculateGrid table:{}.", table);
 		for (Entry<String, Plan> en : plans.entrySet()) {
-			if (null != en.getValue().group || en.getValue().group.available()) {
+			if ((null != en.getValue().group) && en.getValue().group.available()) {
 				en.getValue().selectList.stream().forEach(o -> {
 					/* 分类统计只能统计分类视图 */
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
@@ -286,29 +286,29 @@ public class StatPlan extends GsonPropertyObject {
 			if ((null == en.getValue().group) || (!en.getValue().group.available())) {
 				/* 分类视图非分类统计 */
 				en.getValue().selectList.stream().forEach(o -> {
-					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
-						List<Double> values = new ArrayList<>();
-						CalculateEntry calculateEntry = calculate.get(en.getKey());
-						NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
-						if (null != calculateEntry) {
-							en.getValue().groupGrid.stream().forEach(r -> {
-								CalculateCell cell = row.getCell(calculateEntry.id);
-								if (null != cell) {
-									r.list.stream().forEach(c -> {
-										values.add(c.getAsDouble(o.column));
-									});
-									if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
-										cell.value = numberFormat
-												.format(values.stream().mapToDouble(d -> d).average().orElse(0));
-									} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
-										cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
-									} else {
-										cell.value = numberFormat.format(values.stream().count());
-									}
+					// if (!StringUtils.equals(o.column, en.getValue().group.column)) {
+					List<Double> values = new ArrayList<>();
+					CalculateEntry calculateEntry = calculate.get(en.getKey());
+					NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
+					if ((null != calculateEntry) && (null != en.getValue().groupGrid)) {
+						en.getValue().groupGrid.stream().forEach(r -> {
+							CalculateCell cell = row.getCell(calculateEntry.id);
+							if (null != cell) {
+								r.list.stream().forEach(c -> {
+									values.add(c.getAsDouble(o.column));
+								});
+								if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
+									cell.value = numberFormat
+											.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+								} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
+									cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+								} else {
+									cell.value = numberFormat.format(values.stream().count());
 								}
-							});
-						}
+							}
+						});
 					}
+					// }
 				});
 			} else if ((null != en.getValue()) && (null != en.getValue().grid)) {
 				/* 非分类视图非分类统计 */
@@ -364,7 +364,7 @@ public class StatPlan extends GsonPropertyObject {
 	public static class ColumnComparator implements Comparator<CalculateGroupRow> {
 
 		Collator collator = Collator.getInstance(java.util.Locale.CHINA);
-		
+
 		private String column;
 
 		public ColumnComparator(String column) {

@@ -58,6 +58,7 @@ class ActionProcessing extends BaseAction {
 			}
 			/* 强制覆盖多媒体意见 */
 			task.setMediaOpinion(wi.getMediaOpinion());
+
 			emc.commit();
 			/* processing task */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,

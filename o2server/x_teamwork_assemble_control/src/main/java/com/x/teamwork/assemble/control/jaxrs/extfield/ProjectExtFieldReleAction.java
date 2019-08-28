@@ -51,6 +51,44 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
+	@JaxrsMethodDescribe(value = "根据指定ID查询项目扩展属性关联信息.", action = ActionGet.class)
+	@GET
+	@Path("rele/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("关联信息ID") @PathParam("id") String id ) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);	
+		try {
+			result = new ActionGet().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据项目ID，需要的扩展属性类别获取下一个可用的属性名称.", action = ActionGetNextUseableExtFieldName.class)
+	@GET
+	@Path("next/field/{projectId}/{fieldType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getNextUseableFieldName(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("项目ID") @PathParam("projectId") String projectId,
+			@JaxrsParameterDescribe("属性类别：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|") @PathParam("fieldType") String fieldType ) {
+		ActionResult<ActionGetNextUseableExtFieldName.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);	
+		try {
+			result = new ActionGetNextUseableExtFieldName().execute( request, effectivePerson, projectId, fieldType );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
 	@JaxrsMethodDescribe(value = "查询用户创建的所有项目扩展属性关联信息列表.", action = ActionListWithProject.class)
 	@GET
 	@Path("list/{projectId}")

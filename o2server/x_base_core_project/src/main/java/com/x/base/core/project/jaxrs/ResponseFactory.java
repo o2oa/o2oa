@@ -1,7 +1,9 @@
 package com.x.base.core.project.jaxrs;
 
+import java.net.URI;
+import java.util.Objects;
+
 import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.exception.CallbackPromptException;
@@ -37,6 +39,22 @@ public class ResponseFactory {
 						.build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
 				return Response.ok(callback((WoCallback) result.getData())).cacheControl(defaultCacheControl).build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
+				WoSeeOther wo = (WoSeeOther) result.getData();
+				try {
+					return Response.seeOther(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
+			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
+				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
+				try {
+					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
 			} else {
 				return Response.ok(result.toJson()).cacheControl(defaultCacheControl).build();
 			}
@@ -63,8 +81,24 @@ public class ResponseFactory {
 						.build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
 				return Response.ok(callback((WoCallback) result.getData())).cacheControl(maxAgeCacheControl).build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
+				WoSeeOther wo = (WoSeeOther) result.getData();
+				try {
+					return Response.seeOther(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
+			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
+				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
+				try {
+					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
 			} else {
-				return Response.ok(result.toJson()).cacheControl(maxAgeCacheControl).build();
+				return Response.ok(result.toJson()).cacheControl(defaultCacheControl).build();
 			}
 		}
 	}

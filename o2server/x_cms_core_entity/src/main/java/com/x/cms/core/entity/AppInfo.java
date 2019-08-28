@@ -102,7 +102,7 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("栏目类别")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String appType;
+	private String appType = "未分类";
 	
 	public static final String documentType_FIELDNAME = "documentType";
 	@FieldDescribe("默认文档类型：信息 | 数据")

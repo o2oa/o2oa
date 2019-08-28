@@ -27,15 +27,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
  */
 @ContainerEntity
 @Entity
-@Table(name = PersistenceProperties.Task.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Task.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.TaskExtField.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.TaskExtField.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class TaskExtField extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
-	private static final String TABLE = PersistenceProperties.Task.table;
+	private static final String TABLE = PersistenceProperties.TaskExtField.table;
 
 	public String getId() {
 		return id;

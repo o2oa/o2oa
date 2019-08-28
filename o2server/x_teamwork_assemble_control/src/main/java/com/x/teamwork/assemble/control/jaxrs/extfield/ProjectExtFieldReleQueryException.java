@@ -13,4 +13,8 @@ class ProjectExtFieldReleQueryException extends PromptException {
 	ProjectExtFieldReleQueryException( Throwable e, String message ) {
 		super("系统在查询项目扩展属性关联信息时发生异常。Message:" + message, e );
 	}
+	
+	ProjectExtFieldReleQueryException(  String message ) {
+		super("系统在查询项目扩展属性关联信息时发生异常。Message:" + message );
+	}
 }

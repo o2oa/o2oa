@@ -20,6 +20,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.entity.dynamic.DynamicEntityBuilder;
 import com.x.base.core.project.config.Config;
@@ -55,6 +56,8 @@ class ActionBuildAll extends BaseAction {
 			FileUtils.cleanDirectory(target);
 			List<Table> tables = emc.listAll(Table.class);
 			boolean empty = true;
+			/* 产生用于创建persistence.xml */
+			List<String> classNames = new ArrayList<>();
 			for (Table table : tables) {
 				emc.beginTransaction(Table.class);
 				table.setBuildSuccess(false);
@@ -66,6 +69,7 @@ class ActionBuildAll extends BaseAction {
 						DynamicEntityBuilder builder = new DynamicEntityBuilder(dynamicEntity, src);
 						builder.build();
 						table.setBuildSuccess(true);
+						classNames.add(dynamicEntity.className());
 						empty = false;
 					}
 				} catch (Exception e) {
@@ -76,12 +80,16 @@ class ActionBuildAll extends BaseAction {
 			}
 
 			if (!empty) {
+
+				PersistenceXmlHelper.directWrite(new File(target, "META-INF/persistence.xml").getAbsolutePath(),
+						classNames);
 				List<File> classPath = new ArrayList<>();
 				classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(),
 						FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
 				classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
 						DirectoryFileFilter.INSTANCE));
 
+				// JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
 						DefaultCharset.charset_utf_8);

@@ -7,7 +7,6 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.Application;
@@ -24,13 +23,9 @@ class ActionExecute extends BaseAction {
 			if (null == projection) {
 				throw new ExceptionEntityNotExist(flag, Projection.class);
 			}
-			Process process = emc.flag(projection.getProcess(), Process.class);
-			if (null == process) {
-				throw new ExceptionEntityNotExist(projection.getProcess(), Process.class);
-			}
-			Application application = emc.flag(process.getApplication(), Application.class);
+			Application application = emc.flag(projection.getApplication(), Application.class);
 			if (null == application) {
-				throw new ExceptionEntityNotExist(process.getApplication(), Application.class);
+				throw new ExceptionEntityNotExist(projection.getApplication(), Application.class);
 			}
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());

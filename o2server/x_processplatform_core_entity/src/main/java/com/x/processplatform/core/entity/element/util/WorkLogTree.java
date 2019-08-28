@@ -38,7 +38,7 @@ public class WorkLogTree {
 		List<String> values = ListUtils.subtract(froms, arriveds);
 		WorkLog begin = list.stream()
 				.filter(o -> BooleanUtils.isTrue(o.getConnected()) && values.contains(o.getFromActivityToken()))
-				.findFirst().orElse(null);
+				.findFirst().orElse(null); 
 		if (null == begin) {
 			throw new ExceptionBeginNotFound();
 		}

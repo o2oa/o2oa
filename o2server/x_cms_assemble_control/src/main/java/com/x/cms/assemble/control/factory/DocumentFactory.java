@@ -64,7 +64,7 @@ public class DocumentFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal(root.get( Document_.appId ), appId );
 		cq.select( root.get( Document_.id) ).where(p);
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( Document_.documentType), documentType));
 		}
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
@@ -332,7 +332,7 @@ public class DocumentFactory extends AbstractFactory {
 		if(ListTools.isNotEmpty( categoryIdList )) {
 			p = cb.and( p, root.get( Document_.categoryId ).in( categoryIdList ));
 		}
-		if(StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)) {
+		if(StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( Document_.documentType ), documentType));
 		}
 		return em.createQuery(cq.where(p)).getResultList();

@@ -32,6 +32,12 @@ public class Empower extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Accredit.Empower.table;
 
+	public static final String TYPE_ALL = "all";
+
+	public static final String TYPE_APPLICATION = "application";
+
+	public static final String TYPE_PROCESS = "process";
+
 	public String getId() {
 		return id;
 	}
@@ -121,12 +127,19 @@ public class Empower extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
-	public static final String whole_FIELDNAME = "whole";
-	@FieldDescribe("全部进行授权.")
-	@Column(name = ColumnNamePrefix + whole_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + whole_FIELDNAME)
+//	public static final String whole_FIELDNAME = "whole";
+//	@FieldDescribe("全部进行授权,如果启用全部授权,那么指定身份的待办全部进行授权.")
+//	@Column(name = ColumnNamePrefix + whole_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + whole_FIELDNAME)
+//	@CheckPersist(allowEmpty = false)
+//	private Boolean whole;
+
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("授权类型:all,application,process.")
+	@Column(name = ColumnNamePrefix + type_FIELDNAME, length = length_32B)
+	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private Boolean whole;
+	private String type;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("授权开始时间.")
@@ -229,14 +242,6 @@ public class Empower extends SliceJpaObject {
 		this.processAlias = processAlias;
 	}
 
-	public Boolean getWhole() {
-		return whole;
-	}
-
-	public void setWhole(Boolean whole) {
-		this.whole = whole;
-	}
-
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -259,5 +264,13 @@ public class Empower extends SliceJpaObject {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

@@ -28,6 +28,7 @@ import com.x.processplatform.core.entity.element.Process;
 class ActionUploadWithWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId, String site, String fileName,
 			byte[] bytes, FormDataContentDisposition disposition, String extraParam) throws Exception {
+		System.out.println(">>>>>>>>ActionUploadWithWorkCompleted"  );
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -59,9 +60,11 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
+				System.out.println(">>>>>>>>fileName with disposition=" + fileName  );
 			}
 			/* 天印扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
+				System.out.println(">>>>>>>>extraParam=" + extraParam );
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
 					fileName = wiExtraParam.getFileName();

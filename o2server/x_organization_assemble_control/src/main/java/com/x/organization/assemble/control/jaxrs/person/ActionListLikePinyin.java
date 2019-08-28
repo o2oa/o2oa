@@ -22,6 +22,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
@@ -37,12 +38,12 @@ class ActionListLikePinyin extends BaseAction {
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getKey(),
 					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
-			Element element =  business.cache().get(cacheKey);
+			Element element = business.cache().get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
 				List<Wo> wos = this.list(business, wi);
-				 business.cache().put(new Element(cacheKey, wos));
+				business.cache().put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
@@ -100,9 +101,7 @@ class ActionListLikePinyin extends BaseAction {
 			return wos;
 		}
 		List<String> personIds = business.expendGroupRoleToPerson(wi.getGroupList(), wi.getRoleList());
-		String str = wi.getKey().replaceAll("_", "\\\\_");
-		str = str.replaceAll("%", "\\\\%");
-		str = str.toLowerCase();
+		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);

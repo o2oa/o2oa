@@ -32,11 +32,6 @@ class ActionGroup2 extends BaseAction {
 			Path<String> path = root.get(Word_.value);
 			cq.multiselect(cb.count(path), cb.count(path)).groupBy(path);
 			List<Object> os = em.createQuery(cq).getResultList();
-			for (Object o : os) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!");
-				System.out.println(o);
-				System.out.println("!!!!!!!!!!!!!!!!!!!");
-			}
 			return result;
 		}
 	}

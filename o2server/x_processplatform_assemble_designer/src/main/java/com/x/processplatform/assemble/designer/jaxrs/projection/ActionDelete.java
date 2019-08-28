@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.projection;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -10,7 +11,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 
 class ActionDelete extends BaseAction {
@@ -27,24 +27,14 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Projection.class);
 			}
 
-			Process process = emc.flag(projection.getProcess(), Process.class);
+			Application application = emc.flag(projection.getApplication(), Application.class);
 
-			if (null == process) {
-				throw new ExceptionEntityNotExist(projection.getProcess(), Process.class);
-			}
-
-			Application application = emc.flag(process.getApplication(), Application.class);
-
-			if (null == application) {
-				throw new ExceptionEntityNotExist(process.getApplication(), Application.class);
-			}
-
-			if (!business.editable(effectivePerson, application)) {
+			if ((null != application) && (!business.editable(effectivePerson, application))) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 
 			emc.beginTransaction(Projection.class);
-			emc.remove(projection);
+			emc.remove(projection, CheckRemoveType.all);
 			emc.commit();
 
 			ApplicationCache.notify(Projection.class);

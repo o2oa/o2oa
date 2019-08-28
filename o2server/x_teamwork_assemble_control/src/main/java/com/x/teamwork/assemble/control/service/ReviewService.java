@@ -163,6 +163,8 @@ public class ReviewService {
 		emc.beginTransaction( Project.class );
 		emc.check( projectEntity, CheckPersistType.all);
 		emc.commit();
+		
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>refreshTaskReview over!");
 	}
 	
 	/**
@@ -196,6 +198,12 @@ public class ReviewService {
 	}
 
 	private boolean taskInfoChanged(Task task, Review review) {
+		if( review.getExecutor() == null ) {
+			review.setExecutor( "" );
+		}
+		if( task.getExecutor() == null ) {
+			task.setExecutor( "" );
+		}
 		if( !review.getTaskId().equalsIgnoreCase( task.getId() )) { return true; }
 		if( !review.getParent().equalsIgnoreCase( task.getParent() )) { return true; }
 		if( !review.getProject().equalsIgnoreCase( task.getProject() )) { return true; }
@@ -203,8 +211,8 @@ public class ReviewService {
 		if( !review.getProjectName().equalsIgnoreCase( task.getProjectName() )) { return true; }
 		if( !review.getCreatorPerson().equalsIgnoreCase( task.getCreatorPerson() )) { return true; }
 		if( !review.getExecutor().equalsIgnoreCase( task.getExecutor() )) { return true; }
-		if( !review.getExecutorIdentity().equalsIgnoreCase( task.getExecutorIdentity() )) { return true; }
-		if( !review.getExecutorUnit().equalsIgnoreCase( task.getExecutorUnit() )) { return true; }
+//		if( !review.getExecutorIdentity().equalsIgnoreCase( task.getExecutorIdentity() )) { return true; }
+//		if( !review.getExecutorUnit().equalsIgnoreCase( task.getExecutorUnit() )) { return true; }
 		if( review.getStartTime().getTime() != task.getStartTime().getTime() ) { return true; }
 		if( review.getEndTime().getTime() != task.getEndTime().getTime() ) { return true; }
 		if( review.getArchive() != task.getArchive() ) { return true; }

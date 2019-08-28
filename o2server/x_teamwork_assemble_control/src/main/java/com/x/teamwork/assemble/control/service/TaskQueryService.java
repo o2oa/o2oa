@@ -571,5 +571,38 @@ public class TaskQueryService {
 		}
 	}
 
-	
+	public String getValueFromTaskExtField( TaskExtField taskExtField, String extFieldName) {
+		if( StringUtils.isEmpty( extFieldName )) {
+			return "";
+		}
+		if( taskExtField == null ) {
+			return "";
+		}
+		if( StringUtils.equals( extFieldName, "memoString_1" ) ) {
+			return taskExtField.getMemoString_1();
+		}else if( StringUtils.equals( extFieldName, "memoString_2" ) ) {
+			return taskExtField.getMemoString_2();
+		}else if( StringUtils.equals( extFieldName, "memoString_3" ) ) {
+			return taskExtField.getMemoString_3();
+		}else if( StringUtils.equals( extFieldName, "memoString_4" ) ) {
+			return taskExtField.getMemoString_4();
+		}else if( StringUtils.equals( extFieldName, "memoString_5" ) ) {
+			return taskExtField.getMemoString_5();
+		}else if( StringUtils.equals( extFieldName, "memoString_6" ) ) {
+			return taskExtField.getMemoString_6();
+		}else if( StringUtils.equals( extFieldName, "memoString_7" ) ) {
+			return taskExtField.getMemoString_7();
+		}else if( StringUtils.equals( extFieldName, "memoString_8" ) ) {
+			return taskExtField.getMemoString_8();
+		}else if( StringUtils.equals( extFieldName, "memoString_1_lob" ) ) {
+			return taskExtField.getMemoString_1_lob();
+		}else if( StringUtils.equals( extFieldName, "memoString_2_lob" ) ) {
+			return taskExtField.getMemoString_2_lob();
+		}else if( StringUtils.equals( extFieldName, "memoString_3_lob" ) ) {
+			return taskExtField.getMemoString_3_lob();
+		}else if( StringUtils.equals( extFieldName, "memoString_4_lob" ) ) {
+			return taskExtField.getMemoString_4_lob();
+		}
+		return "";
+	}	
 }

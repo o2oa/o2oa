@@ -99,6 +99,11 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix  + nullable_FIELDNAME)
 	private Boolean nullable = true ;
 	
+	public static final String description_FIELDNAME = "description";
+	@FieldDescribe("说明信息（非必填）")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	private String description;
+	
 	public Integer getOrder() {
 		return order;
 	}
@@ -154,4 +159,12 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	public void setNullable(Boolean nullable) {
 		this.nullable = nullable;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}	
 }

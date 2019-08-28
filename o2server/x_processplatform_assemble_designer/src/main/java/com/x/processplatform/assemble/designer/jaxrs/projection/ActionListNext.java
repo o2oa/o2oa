@@ -32,8 +32,8 @@ class ActionListNext extends BaseAction {
 
 		private static final long serialVersionUID = -7495725325510376323L;
 
-		public static WrapCopier<Projection, Wo> copier = WrapCopierFactory.wo(Projection.class, Wo.class, null,
-				JpaObject.singularAttributeField(Projection.class, true, true));
+		public static WrapCopier<Projection, Wo> copier = WrapCopierFactory.wo(Projection.class, Wo.class,
+				JpaObject.singularAttributeField(Projection.class, true, true), null);
 
 		@FieldDescribe("排序号")
 		private Long rank;

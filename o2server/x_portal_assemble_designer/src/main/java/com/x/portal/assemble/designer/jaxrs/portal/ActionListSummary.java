@@ -28,7 +28,8 @@ class ActionListSummary extends BaseAction {
 			/* 由于有多值字段所以需要全部取出 */
 			for (Wo wo : wos) {
 				List<String> os = business.page().listWithPortal(wo.getId());
-				wo.setPageList(WoPage.copier.copy(emc.list(Page.class, os)));
+				// wo.setPageList(WoPage.copier.copy(emc.list(Page.class, os)));
+				wo.setPageList(emc.fetch(os, WoPage.copier));
 			}
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());

@@ -9,6 +9,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.tools.FieldInfo;
+import com.x.teamwork.core.entity.tools.ProjectExtField;
 
 
 /**
@@ -90,5 +92,33 @@ public class ProjectExtFieldReleQueryService {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	/**
+	 * 在可用的扩展属性里选择一个未占用的属性名
+	 * @param projectId
+	 * @param displayType
+	 * @return
+	 * @throws Exception 
+	 */
+	public String getNextUseableExtFieldName( String projectId, String displayType ) throws Exception {
+		List<ProjectExtFieldRele>  reles = listReleWithProject( projectId );
+		 List<FieldInfo> fieldInfos = ProjectExtField.listAllExtField();
+		 List<String> fieldNames = new ArrayList<>();
+		 for( ProjectExtFieldRele projectExtFieldRele : reles  ) {
+			 fieldNames.add( projectExtFieldRele.getExtFieldName() );
+		 }
+		for( FieldInfo fieldInfo : fieldInfos  ) {
+			if( "RICHTEXT".equalsIgnoreCase(displayType)) {
+				if( fieldInfo.getFieldName().indexOf("lob") > 0 && !fieldNames.contains( fieldInfo.getFieldName() )) {
+					return fieldInfo.getFieldName();
+				}
+			}else {
+				if( fieldInfo.getFieldName().indexOf("lob") < 0 && !fieldNames.contains( fieldInfo.getFieldName() )) {
+					return fieldInfo.getFieldName();
+				}
+			}
+		}
+		return null;
 	}
 }

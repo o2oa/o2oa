@@ -1,6 +1,5 @@
 package com.x.organization.assemble.personal.jaxrs.empower;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,29 +27,8 @@ class ActionCreate extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (StringUtils.isEmpty(wi.getFromIdentity())) {
-				throw new ExceptionEmptyFromIdentity();
-			}
-			if (StringUtils.isEmpty(wi.getToIdentity())) {
-				throw new ExceptionEmptyToIdentity();
-			}
-			if (BooleanUtils.isTrue(wi.getWhole())) {
-				if (!this.checkWhole(business, wi)) {
-					throw new ExceptionWholeExist(wi.getFromIdentity());
-				}
-			} else {
-				if (StringUtils.isNotEmpty(wi.getApplication())) {
-					if (StringUtils.isNotEmpty(wi.getProcess())) {
-						if (!this.checkProcess(business, wi)) {
-							throw new ExceptionProcessExist(wi.getFromIdentity(), wi.getApplication(), wi.getProcess());
-						}
-					} else if (!this.checkApplication(business, wi)) {
-						throw new ExceptionApplicationExist(wi.getFromIdentity(), wi.getApplication());
-					}
-				}
-			}
-			Empower empower = new Empower();
-			Wi.copier.copy(wi, empower);
+			Empower empower = Wi.copier.copy(wi);
+			this.check(business, empower);
 			String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
 			if (StringUtils.isEmpty(fromPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());

@@ -14,9 +14,9 @@ class ActionTest6 extends BaseAction {
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println("!");
 			System.out.println(Config.workTime().minutesOfWorkDay());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println("!");
 			return null;
 		}
 	}

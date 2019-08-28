@@ -51,6 +51,25 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionWorkCompletedDelete.class)
+	@DELETE
+	@Path("{id}/workcompleted/{workCompletedId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteWithWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+					   @JaxrsParameterDescribe("工作标识") @PathParam("workCompletedId") String workCompletedId) {
+		ActionResult<ActionWorkCompletedDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionWorkCompletedDelete().execute(effectivePerson, id, workCompletedId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "由指定的工作拷贝附件.", action = ActionCopyToWork.class)
 	@POST
 	@Path("copy/work/{workId}")

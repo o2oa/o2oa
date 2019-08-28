@@ -158,9 +158,9 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 				WoTaskCompleted.class,
 				ListTools.toList(TaskCompleted.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.unit_FIELDNAME, TaskCompleted.routeName_FIELDNAME,
-						TaskCompleted.opinion_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
-						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
-						Task.activityToken_FIELDNAME),
+						TaskCompleted.opinion_FIELDNAME, TaskCompleted.opinionLob_FIELDNAME,
+						TaskCompleted.startTime_FIELDNAME, TaskCompleted.activityName_FIELDNAME,
+						TaskCompleted.completedTime_FIELDNAME, Task.activityToken_FIELDNAME),
 				null);
 	}
 

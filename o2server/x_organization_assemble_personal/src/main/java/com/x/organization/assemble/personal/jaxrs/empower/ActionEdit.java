@@ -1,6 +1,5 @@
 package com.x.organization.assemble.personal.jaxrs.empower;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -33,28 +32,8 @@ class ActionEdit extends BaseAction {
 			if (null == empower) {
 				throw new ExceptionEntityNotExist(id, Empower.class);
 			}
-			if (StringUtils.isEmpty(wi.getFromIdentity())) {
-				throw new ExceptionEmptyFromIdentity();
-			}
-			if (StringUtils.isEmpty(wi.getToIdentity())) {
-				throw new ExceptionEmptyToIdentity();
-			}
-			if (BooleanUtils.isTrue(wi.getWhole())) {
-				if (!this.checkWhole(business, wi)) {
-					throw new ExceptionWholeExist(wi.getFromIdentity());
-				}
-			} else {
-				if (StringUtils.isNotEmpty(wi.getApplication())) {
-					if (StringUtils.isNotEmpty(wi.getProcess())) {
-						if (!this.checkProcess(business, wi)) {
-							throw new ExceptionProcessExist(wi.getFromIdentity(), wi.getApplication(), wi.getProcess());
-						}
-					} else if (!this.checkApplication(business, wi)) {
-						throw new ExceptionApplicationExist(wi.getFromIdentity(), wi.getApplication());
-					}
-				}
-			}
 			Wi.copier.copy(wi, empower);
+			this.check(business, empower);
 			String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
 			if (StringUtils.isEmpty(fromPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());
@@ -68,7 +47,7 @@ class ActionEdit extends BaseAction {
 				empower.setToPerson(toPerson);
 			}
 			emc.beginTransaction(Empower.class);
-			emc.persist(empower, CheckPersistType.all);
+			emc.check(empower, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Empower.class);
 			Wo wo = new Wo();

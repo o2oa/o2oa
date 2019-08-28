@@ -21,7 +21,7 @@ public class ActionDestroySingleEventWithId extends BaseAction {
 	private Logger logger = LoggerFactory.getLogger( ActionDestroySingleEventWithId.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
-		LogUtil.INFO( ">>>>>>ActionDestroySingleEventWithId.execute......" );
+		//LogUtil.INFO( ">>>>>>ActionDestroySingleEventWithId.execute......" );
 		ActionResult<Wo> result = new ActionResult<>();
 		Calendar calendar = null;
 		Calendar_Event calendar_event = null;

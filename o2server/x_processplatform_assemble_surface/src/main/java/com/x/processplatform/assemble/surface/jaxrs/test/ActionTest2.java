@@ -28,12 +28,7 @@ class ActionTest2 extends BaseAction {
 			Root<Work> root = cq.from(Work.class);
 			List<Work> list = em.createQuery(cq.select(root)).setMaxResults(1).getResultList();
 			Work newWork = new Work();
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println("newWork:" + emc.get(Work.class).contains(newWork));
-			System.out.println("work:" + emc.get(Work.class).contains(list.get(0)));
 			emc.persist(newWork);
-			System.out.println("newWork:" + emc.get(Work.class).contains(newWork));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return result;
 		}
 	}

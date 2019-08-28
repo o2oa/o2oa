@@ -2,6 +2,8 @@ package com.x.teamwork.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -85,21 +87,27 @@ public class BatchOperationProcessService {
 		Project project = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			batchOperation = emc.find( id, BatchOperation.class );
-			task = emc.find( taskId, Task.class );
-			project = emc.find( task.getProject(), Project.class );			
+			task = emc.find( taskId, Task.class );				
 			if( task != null ) {
+				project = emc.find( task.getProject(), Project.class );		
+				
 				emc.beginTransaction( Task.class );
 				task.setReviewed( true );
 				if( project != null ) {
 					 task.setProjectName( project.getTitle() );
 				}
+				if( StringUtils.isEmpty( task.getParent() )) {
+					task.setParent( "0" );
+				}
 				emc.check( task, CheckPersistType.all );
 				emc.commit();
 			}
 			
+			//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>reviewService.refreshTaskReview......");
 			reviewService.refreshTaskReview( emc, taskId );
 			
 			if( batchOperation != null ) {
+				//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>delete batch operation......");
 				emc.beginTransaction( BatchOperation.class );
 				emc.remove( batchOperation, CheckRemoveType.all );
 				logger.info( "refreshTaskReview -> task delete batch operation: " + batchOperation.toString()  );

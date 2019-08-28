@@ -139,14 +139,6 @@ public class CryptoClass {
 		String value = rsaEncrypt(Base64.encodeBase64String(ss), TEST_PUBLIC_KEY);
 		byte[] ds = Base64.decodeBase64(rsaDecrypt(value, TEST_PRIVATE_KEY));
 		FileUtils.writeByteArrayToFile(new File("e:/2.war"), ds);
-		System.out.println(ds.length + "<>" + ss.length);
-		for (int i = 0; i < ss.length; i++) {
-			if (ss[i] != ds[i]) {
-				System.out.println("!!!!!!!!@##");
-				System.out.println(i);
-				System.out.println("!!!!!!!!@##");
-			}
-		}
 	}
 
 }

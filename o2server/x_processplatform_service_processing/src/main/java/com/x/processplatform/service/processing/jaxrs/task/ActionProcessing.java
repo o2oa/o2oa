@@ -88,6 +88,7 @@ class ActionProcessing extends BaseAction {
 			Date now = new Date();
 			Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 			TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
+			taskCompleted.onPersist();
 			emc.persist(taskCompleted, CheckPersistType.all);
 			emc.remove(task, CheckRemoveType.all);
 			emc.commit();

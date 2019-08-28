@@ -16,8 +16,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
-import com.x.teamwork.core.entity.tools.FieldInfo;
-import com.x.teamwork.core.entity.tools.ProjectExtField;
 
 import net.sf.ehcache.Element;
 
@@ -32,7 +30,7 @@ public class ActionListWithProject extends BaseAction {
 		List<ProjectExtFieldRele> projectExtFieldReles = null;
 		Boolean check = true;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "ActionList", effectivePerson.getDistinguishedName() );
+		String cacheKey = ApplicationCache.concreteCacheKey( "ActionList", projectId, effectivePerson.getDistinguishedName() );
 		Element element = projectExtFieldReleCache.get( cacheKey );
 		
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -63,8 +61,6 @@ public class ActionListWithProject extends BaseAction {
 	public static class Wo extends ProjectExtFieldRele {
 		
 		private Long rank;
-		
-		private List<FieldInfo> fieldInfos = ProjectExtField.listAllExtField();
 
 		public Long getRank() {
 			return rank;
@@ -72,14 +68,6 @@ public class ActionListWithProject extends BaseAction {
 
 		public void setRank(Long rank) {
 			this.rank = rank;
-		}
-		
-		public List<FieldInfo> getFieldInfos() {
-			return fieldInfos;
-		}
-
-		public void setFieldInfos(List<FieldInfo> fieldInfos) {
-			this.fieldInfos = fieldInfos;
 		}
 		
 		private static final long serialVersionUID = -5076990764713538973L;

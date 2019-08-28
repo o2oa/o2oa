@@ -25,7 +25,7 @@ public class TestClientHanLP {
 		String text = ExtractTextHelper.extract(FileUtils.readFileToByteArray(file), file.getName(), true, true, true,
 				false);
 		System.out.println(text);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!");
 		System.out.println(HanLP.extractKeyword(text, 30));
 		System.out.println(HanLP.extractWords(text, 30));
 	}

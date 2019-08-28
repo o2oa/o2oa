@@ -54,14 +54,14 @@ class ActionCaptchaLogin extends BaseAction {
 			}
 			if (Config.token().isInitialManager(credential)) {
 				if (!StringUtils.equals(Config.token().getPassword(), password)) {
-					throw new ExceptionInvalidPassword();
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.manager(request, response, business, Wo.class);
 			} else {
 				/* 普通用户登录,也有可能拥有管理员角色 */
 				String personId = business.person().getWithCredential(credential);
 				if (StringUtils.isEmpty(personId)) {
-					throw new ExceptionPersonNotExist(credential);
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				Person o = emc.find(personId, Person.class);
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
@@ -75,7 +75,7 @@ class ActionCaptchaLogin extends BaseAction {
 							emc.beginTransaction(Person.class);
 							this.failure(o);
 							emc.commit();
-							throw new ExceptionInvalidPassword();
+							throw new ExceptionPersonNotExistOrInvalidPassword();
 						}
 					}
 				}
