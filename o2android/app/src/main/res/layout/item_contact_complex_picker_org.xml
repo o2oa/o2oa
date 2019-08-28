@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+    <CheckBox
+        android:id="@+id/check_item_contact_complex_picker_org_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:visibility="gone"
+        />
+    <View
+        android:id="@+id/view_item_contact_complex_picker_org_body_divider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/check_item_contact_complex_picker_org_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/z_color_split_line_ddd" />
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleTextView
+        android:id="@+id/image_item_contact_complex_picker_org_body_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toEndOf="@+id/check_item_contact_complex_picker_org_body"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        app:c_width="40dp"
+        app:c_height="40dp"
+        app:c_text="X"
+        app:c_textColor="@color/z_color_white"
+        app:c_inColor="@color/z_color_primary"/>
+
+    <TextView
+        android:id="@+id/tv_item_contact_complex_picker_org_body_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        app:layout_constraintStart_toEndOf="@+id/image_item_contact_complex_picker_org_body_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_item_contact_complex_picker_org_body_next"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:textSize="@dimen/font_normal"
+        tools:text="@string/contact_list_depart" />
+
+
+    <Button
+        android:id="@+id/btn_item_contact_complex_picker_org_body_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        app:layout_constraintStart_toEndOf="@+id/tv_item_contact_complex_picker_org_body_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="下级"
+        android:textColor="@color/icon_blue"
+        android:drawableEnd="@mipmap/icon_arrow_22dp"
+        />
+</android.support.constraint.ConstraintLayout>

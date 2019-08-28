@@ -19,7 +19,7 @@ import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.room.MeetingRoomChooseActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
@@ -33,7 +33,7 @@ import java.util.*
 
 
 class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingApplyContract.Presenter>(),
-        MeetingApplyContract.View, View.OnClickListener,com.borax12.materialdaterangepicker.time.TimePickerDialog.OnTimeSetListener{
+        MeetingApplyContract.View, View.OnClickListener, TimePickerDialog.OnTimeSetListener{
 
     override var mPresenter: MeetingApplyContract.Presenter = MeetingApplyPresenter()
     override fun layoutResId(): Int = R.layout.activity_meeting_create_form
@@ -47,7 +47,6 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
     private var roomId: String = ""
 
     companion object {
-        val MEETING_CHOOSE_INVITE_PERSON = 1000
         val MEETING_CHOOSE_ROOM = 1001
         val MEETING_FILE_CODE = 1003
     }
@@ -81,7 +80,18 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
 
         invitePersonAdapter.setOnItemClickListener { _, position ->
             when (position) {
-                invitePersonList.size - 1 -> goWithRequestCode<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(mode = NewOrganizationActivity.MULTI_PERSON_CHOOSE_MODE), MEETING_CHOOSE_INVITE_PERSON)
+                invitePersonList.size - 1 -> {
+                    val bundle = ContactPickerActivity.startPickerBundle(
+                            arrayListOf("personPicker"),
+                            multiple = true)
+                    contactPicker(bundle) { result ->
+                        if (result != null) {
+                            val users = result.users.map { it.distinguishedName }
+                            XLog.debug("choose invite person, list:$users,")
+                            chooseInvitePersonCallback(users)
+                        }
+                    }
+                }
                 else -> {
                     invitePersonList.removeAt(position)
                     invitePersonAdapter.notifyDataSetChanged()
@@ -208,13 +218,7 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                MEETING_CHOOSE_INVITE_PERSON -> {
-                    val result = data?.getStringArrayListExtra(NewOrganizationActivity.MULTI_PERSON_CHOOSE_RESULT) ?: ArrayList<String>()
-                    XLog.debug("choose invite person, list:$result,")
-                    if (!result.isEmpty()) {
-                        chooseInvitePersonCallback(result)
-                    }
-                }
+
                 MEETING_CHOOSE_ROOM -> {
                     val resultRoomName = data?.getStringExtra(MeetingRoomChooseActivity.RESULT_ROOM_NAME_KEY) ?: ""
                     val resultRoomId = data?.getStringExtra(MeetingRoomChooseActivity.RESULT_ROOM_ID_KEY) ?: ""
@@ -347,10 +351,10 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
         }
     }
 
-    private fun chooseInvitePersonCallback(result: ArrayList<String>) {
+    private fun chooseInvitePersonCallback(result: List<String>) {
         val allList = ArrayList<String>()
         invitePersonList.remove(invitePersonAdd)
-        if (!invitePersonList.isEmpty()) {
+        if (invitePersonList.isNotEmpty()) {
             allList.addAll(invitePersonList)
         }
         allList.addAll(result)

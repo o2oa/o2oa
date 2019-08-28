@@ -1,6 +1,5 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -18,17 +17,15 @@ import jiguang.chat.application.JGApplication
 import jiguang.chat.entity.Event
 import jiguang.chat.entity.EventType
 import kotlinx.android.synthetic.main.activity_im_tribe_create.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goWithRequestCode
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
 
@@ -49,7 +46,6 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
     }
 
     private val invitePersonAdd = "添加"
-    private val choosePersonRequestCode = 1024
 
     private var personList = ArrayList<String>()
 
@@ -67,7 +63,20 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
                     personList.filter { it != invitePersonAdd }.map {
                         nowList.add(it)
                     }
-                    goWithRequestCode<NewOrganizationActivity>(NewOrganizationActivity.startBundleDataForIMChoose(nowList, NewOrganizationActivity.IM_CHOOSE_FROM_REQUEST), choosePersonRequestCode)
+                    val bundle = ContactPickerActivity.startPickerBundle(
+                            arrayListOf("personPicker"),
+                            multiple = true,
+                            initUserList = nowList
+                    )
+                    contactPicker(bundle) { result ->
+                        if (result != null) {
+                            val users = result.users
+                            personList.clear()
+                            personList.add(invitePersonAdd)
+                            users.map { personList.add(it.distinguishedName)  }
+                            personAdapter.notifyDataSetChanged()
+                        }
+                    }
                 }
                 else -> {
                     if (personList[position] != O2SDKManager.instance().cId) {
@@ -155,21 +164,6 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
         finish()
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                choosePersonRequestCode -> {
-                    val result = data?.extras?.getStringArrayList(NewOrganizationActivity.MULTI_PERSON_CHOOSE_RESULT) ?: ArrayList()
-                    personList.clear()
-                    personList.add(invitePersonAdd)
-                    personList.addAll(result)
-                    personAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
 
     private val personAdapter: CommonRecycleViewAdapter<String> by lazy {
         object : CommonRecycleViewAdapter<String>(this, personList, R.layout.item_person_avatar_name) {

@@ -958,9 +958,11 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
         Alamofire.download(url, to: localFileDestination).response(completionHandler: { (response) in
             if response.error == nil , let fileurl = response.destinationURL?.path {
                 DDLogDebug("文件地址：\(fileurl)")
+                let newUrl = self.dealDocFileSaveAsDocx(fileUrl: response.destinationURL!)
+                DDLogDebug("处理过的文件地址：\(newUrl.path)")
                 //打开文件
                 self.dismissProgressHUD()
-                self.previewAttachment(fileurl)
+                self.previewAttachment(newUrl.path)
             }else{
                 let msg = response.error?.localizedDescription ?? ""
                 DDLogError("下载文件出错，\(msg)")
@@ -1081,5 +1083,28 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
         
     }
 
+    
+    
+    
+    //处理特殊情况 docx的文件有可能是doc 需要判断下文件信息头
+    private func dealDocFileSaveAsDocx(fileUrl: URL) -> URL {
+        if fileUrl.pathExtension == "docx" {
+            if let data = try? Data(contentsOf: fileUrl) {
+                let mimeType = Swime.mimeType(data: data)
+                if mimeType?.type == .msi {
+                    let newURL = fileUrl.appendingPathExtension("doc")
+                    do {
+                        DDLogDebug("copy 了一个 文件。。。。。。")
+                        try FileManager.default.copyItem(at: fileUrl, to: newURL)
+                        return newURL
+                    }catch {
+                        DDLogError(error.localizedDescription)
+                    }
+                }
+            }
+        }
+        
+        return fileUrl
+    }
 }
 

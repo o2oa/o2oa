@@ -48,32 +48,39 @@ class OOControl : NSObject, NSCoding, DataModel{
     
 }
 
+// 面包屑导航对象
+struct ContactBreadcrumbBean {
+    var key: String = ""
+    var name: String = ""
+    var level: Int = 0
+}
+
 // MARK: - Unit Model
 
 class OOUnitModel : NSObject, NSCoding, DataModel{
     
-    var control : OOControl?
-    var controllerList : [AnyObject]?
-    var createTime : String?
-    var desc : String?
-    var descriptionField : String?
-    var distinguishedName : String?
-    var id : String?
-    var inheritedControllerList : [AnyObject]?
+    @objc open var control : OOControl?
+    @objc open var controllerList : [AnyObject]?
+    @objc open var createTime : String?
+    @objc open var desc : String?
+    @objc open var descriptionField : String?
+    @objc open var distinguishedName : String?
+    @objc open var id : String?
+    @objc open var inheritedControllerList : [AnyObject]?
     var level : Int?
-    var levelName : String?
-    var name : String?
+    @objc open var levelName : String?
+   @objc open  var name : String?
     var orderNumber : Int?
-    var pinyin : String?
-    var pinyinInitial : String?
-    var shortName : String?
+    @objc open var pinyin : String?
+    @objc open var pinyinInitial : String?
+    @objc open var shortName : String?
     var subDirectIdentityCount : Int?
     var subDirectUnitCount : Int?
-    var superior : String?
-    var typeList : [String]?
-    var unique : String?
-    var updateTime : String?
-    var woSubDirectIdentityList:[OOIdentityModel]?
+    @objc open var superior : String?
+   @objc open  var typeList : [String]?
+    @objc open var unique : String?
+    @objc open var updateTime : String?
+    @objc open var woSubDirectIdentityList:[OOIdentityModel]?
     
     override required init(){}
     

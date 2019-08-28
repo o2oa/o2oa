@@ -103,3 +103,58 @@ struct O2UtilPhoneInfo: HandyJSON {
     var netInfo: String?
     var operatorType: String?
 }
+//身份选择传入参数对象
+struct O2BizIdentityPickerMessage: HandyJSON {
+    var topList: [String]?
+    var multiple: Bool?
+    var maxNumber: Int?
+    var pickedIdentities: [String]?
+    var duty: [String]?
+}
+//组织选择传入参数对象
+struct O2BizUnitPickerMessage: HandyJSON {
+    var topList: [String]?
+    var multiple: Bool?
+    var maxNumber: Int?
+    var pickedDepartments: [String]?
+    var orgType: String?
+}
+//群组选择传入参数对象
+struct O2BizGroupPickerMessage: HandyJSON {
+    var multiple: Bool?
+    var maxNumber: Int?
+    var pickedGroups: [String]?
+}
+//人员选择传入参数对象
+struct O2BizPersonPickerMessage: HandyJSON {
+    var multiple: Bool?
+    var maxNumber: Int?
+    var pickedUsers: [String]?
+}
+//复合选择传入参数对象
+struct O2BizComplexPickerMessage: HandyJSON {
+    var topList: [String]?
+    var pickMode: [String]?
+    var multiple: Bool?
+    var maxNumber: Int?
+    var pickedDepartments: [String]?
+    var pickedIdentities: [String]?
+    var pickedGroups: [String]?
+    var pickedUsers: [String]?
+    var duty: [String]?
+    var orgType: String?
+}
+
+struct O2BizComplexPickerResults: HandyJSON {
+    var results: [String]?
+}
+struct O2BizContactPickerResult: HandyJSON {
+    var departments: [O2BizContactPickerResultItem]?
+    var identities: [O2BizContactPickerResultItem]?
+    var groups: [O2BizContactPickerResultItem]?
+    var users: [O2BizContactPickerResultItem]?
+}
+struct O2BizContactPickerResultItem: HandyJSON {
+    var distinguishedName: String?
+    var name: String?
+}

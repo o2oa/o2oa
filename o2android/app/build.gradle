@@ -23,7 +23,6 @@ ext {
 
 
 def loadProperties() {
-    // load properties
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
@@ -42,7 +41,6 @@ def loadProperties() {
 
     project.jpushIMPassword = properties.getProperty("JM_IM_USER_PASSWORD")
 
-    //bugly
     project.buglyAppId = properties.getProperty("BUGLY_APPID")
 
 
@@ -95,7 +93,6 @@ android {
         ndk {
             //选择要添加的对应cpu类型的.so库。
             abiFilters 'armeabi', 'armeabi-v7a'
-            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
         multiDexKeepProguard file('multidex_keep_file.pro')
         vectorDrawables.useSupportLibrary = true
@@ -165,7 +162,6 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    //All flavors must now belong to a named flavor dimension. Learn more at https://d.android.com/r/tools/flavorDimensions-missing-error-message.html
     flavorDimensions "type"
     productFlavors {
         O2PLATFORM {
@@ -217,7 +213,6 @@ dependencies {
     implementation(name: 'image_picker-release', ext: 'aar')
     implementation(name: 'path_provider-release', ext: 'aar')
 
-    //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-common:$anko_version"
 
@@ -248,7 +243,6 @@ dependencies {
     implementation 'com.yanzhenjie:recyclerview-swipe:1.1.4'
     implementation 'com.race604.waveloading:library:1.1.1'
 
-    //http
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
@@ -266,8 +260,6 @@ dependencies {
     // 此处以JMessage 2.5.0 版本为例。
     implementation 'cn.jiguang.sdk:jcore:1.1.9'
 
-    // 此处以JCore 1.1.9 版本为例。
-
     //im
     implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     implementation 'com.jakewharton:butterknife:8.4.0'
@@ -279,6 +271,9 @@ dependencies {
 
     //滚动选择器
     implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
+
+    //activity result
+    implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
     //google architecture component
     def lifecycle_version = "1.1.1"
@@ -294,7 +289,6 @@ dependencies {
     // alternatively - just LiveData
     implementation "android.arch.lifecycle:livedata:$lifecycle_version"
 
-    // alternatively - Lifecycles only (no ViewModel or LiveData).
 
     //     Support library depends on this lightweight import
     implementation "android.arch.lifecycle:runtime:$lifecycle_version"
@@ -303,12 +297,9 @@ dependencies {
     //noinspection GradleDependency
     kapt "com.android.databinding:compiler:$gradle_version"
 
-    //test
     testImplementation 'junit:junit:4.12'
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    //activity result
-    implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
 }
 

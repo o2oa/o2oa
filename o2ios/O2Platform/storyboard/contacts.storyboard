@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="iDJ-yD-7GA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="iDJ-yD-7GA">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -507,20 +507,19 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="49.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="eY3-cV-9oc">
-                                            <rect key="frame" x="8" y="7" width="360" height="36"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="tintColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="textColor" red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="16"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <dataDetectorType key="dataDetectorTypes" link="YES"/>
-                                        </textView>
+                                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UbD-xq-ZqX">
+                                            <rect key="frame" x="10" y="0.0" width="355" height="49.5"/>
+                                        </scrollView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="UbD-xq-ZqX" firstAttribute="leading" secondItem="KbZ-H9-Myg" secondAttribute="leading" constant="10" id="KOd-Ia-wsV"/>
+                                        <constraint firstAttribute="bottom" secondItem="UbD-xq-ZqX" secondAttribute="bottom" id="Pfb-G7-nzn"/>
+                                        <constraint firstAttribute="trailing" secondItem="UbD-xq-ZqX" secondAttribute="trailing" constant="10" id="ZIW-ig-luQ"/>
+                                        <constraint firstItem="UbD-xq-ZqX" firstAttribute="top" secondItem="KbZ-H9-Myg" secondAttribute="top" id="oib-Pp-jGF"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="headBarView" destination="eY3-cV-9oc" id="bEn-AF-awP"/>
+                                    <outlet property="headBarScrollView" destination="UbD-xq-ZqX" id="Ce1-n4-Gsv"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="addressUnitCell" id="Tw8-69-DnB" customClass="ContactItemCell" customModule="O2Platform" customModuleProvider="target">
@@ -604,7 +603,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f9A-8k-8kY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2516" y="1003"/>
+            <point key="canvasLocation" x="2516" y="1002.5487256371815"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="C0x-SJ-txD">
@@ -631,7 +630,7 @@
         <image name="icon_collection_nor" width="50" height="50"/>
         <image name="icon_collection_pro" width="50" height="50"/>
         <image name="icon_girl_1" width="50" height="50"/>
-        <image name="personDefaultIcon" width="48" height="48"/>
+        <image name="personDefaultIcon" width="24" height="24"/>
         <image name="pic_beijing1" width="375" height="230"/>
     </resources>
     <inferredMetricsTieBreakers>

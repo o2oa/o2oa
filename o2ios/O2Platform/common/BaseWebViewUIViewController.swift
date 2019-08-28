@@ -70,6 +70,9 @@ open class BaseWebViewUIViewController: UIViewController {
         //o2m.util
         let o2Util = O2JsApiUtil(viewController: self)
         addScriptMessageHandler(key: "o2mUtil", handler: o2Util)
+        // o2m.biz
+        let biz = O2JsApiBizUtil(viewController: self)
+        addScriptMessageHandler(key: "o2mBiz", handler: biz)
         
         setupWebView()
     }

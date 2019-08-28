@@ -96,6 +96,7 @@ class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDat
         if let segue = cellModel?.segueIdentifier {
             if segue == "showIdeaBackSegue" {
                 PgyManager.shared().showFeedbackView()
+//                self.testShowPicker()
             }else{
                 self.performSegue(withIdentifier: segue, sender: nil)
             }
@@ -123,5 +124,7 @@ class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDat
         let avatarUrl = URL(string: avatarUrlString!)
         self.iconImageView.hnk_setImageFromURL(avatarUrl!)
     }
+    
+    
 
 }

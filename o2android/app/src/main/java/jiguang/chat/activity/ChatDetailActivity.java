@@ -12,9 +12,12 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.wugang.activityresult.library.ActivityResult;
+
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity;
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResultItem;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -48,7 +51,6 @@ public class ChatDetailActivity extends BaseActivity {
     public final static String START_FOR_WHICH = "which";
     private final static int GROUP_NAME_REQUEST_CODE = 1;
     private final static int MY_NAME_REQUEST_CODE = 2;
-    private static final int ADD_FRIEND_REQUEST_CODE = 3;
 
     public static final int GROUP_DESC = 70;
     public static final int FLAGS_GROUP_DESC = 71;
@@ -180,14 +182,6 @@ public class ChatDetailActivity extends BaseActivity {
                 case JGApplication.REQUEST_CODE_ALL_MEMBER:
                     mChatDetailController.refreshMemberList();
                     break;
-                //单聊添加人进群
-                case ADD_FRIEND_REQUEST_CODE:
-                    ArrayList<String> list = data.getStringArrayListExtra(NewOrganizationActivity.Companion.getMULTI_PERSON_CHOOSE_RESULT());
-                    XLog.info("list:"+list.size());
-                    if (null != list && list.size() != 0) {
-                        mChatDetailController.addMembersToGroup(list);
-                    }
-                    break;
                 case 4://修改群头像
                     String path = data.getStringExtra("groupAvatarPath");
                     if (path != null) {
@@ -224,10 +218,37 @@ public class ChatDetailActivity extends BaseActivity {
      * 从ContactsActivity中选择朋友加入到群组中
      */
     public void showContacts(Long group) {
-        Intent intent = new Intent(this, NewOrganizationActivity.class);
-        Bundle bundle = NewOrganizationActivity.Companion.startBundleDataForIMChoose(new ArrayList<String>(), NewOrganizationActivity.Companion.getIM_CHOOSE_FROM_REQUEST());
-        intent.putExtras(bundle);
-        startActivityForResult(intent, ADD_FRIEND_REQUEST_CODE);
+        ArrayList<String> modes = new ArrayList<>();
+        modes.add("personPicker");
+        Bundle bundle1 = ContactPickerActivity.Companion.startPickerBundle(modes,
+                new ArrayList<>(),
+                "",
+                0,
+                true,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>());
+        ActivityResult.of(this)
+                .className(ContactPickerActivity.class)
+                .params(bundle1)
+                .greenChannel().forResult((resultCode, data) -> {
+                    if (data != null) {
+                        ContactPickerResult result = data.getParcelableExtra(ContactPickerActivity.CONTACT_PICKED_RESULT);
+                        if (result != null) {
+                            ArrayList<ContactPickerResultItem> users = result.getUsers();
+                            if (users.size() != 0) {
+                                ArrayList<String> list = new ArrayList<>();
+                                for (int i = 0; i < users.size(); i++) {
+                                    list.add(users.get(i).getDistinguishedName());
+                                }
+                                mChatDetailController.addMembersToGroup(list);
+                            }
+                        }
+                    }
+                });
+
     }
 
 

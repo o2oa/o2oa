@@ -17,10 +17,15 @@ class BBSForumCell: UICollectionViewCell {
     var bbsSectionData:BBSectionListData? {
         didSet {
             self.bbsSectionTitleLabel.text = bbsSectionData?.sectionName
-            //self.bbsSectionIconImageView.image =  UIImage.sd_image(with: Data(base64Encoded: (bbsSectionData?.icon)!, options:NSData.Base64DecodingOptions.ignoreUnknownCharacters))
-            let urlstr = AppDelegate.o2Collect.generateURLWithAppContextKey(BBSContext.bbsContextKey, query: BBSContext.bbsSectionIconQuery, parameter: ["##id##":bbsSectionData?.id as AnyObject], generateTime: false)
-            let url = URL(string: urlstr!)
-            self.bbsSectionIconImageView.hnk_setImageFromURL(url!)
+            if bbsSectionData?.icon != nil {
+                self.bbsSectionIconImageView.image =  UIImage.sd_image(with: Data(base64Encoded: (bbsSectionData?.icon)!, options:NSData.Base64DecodingOptions.ignoreUnknownCharacters))
+            }else {
+                self.bbsSectionIconImageView.image = UIImage(named: "icon_forum_default")
+            }
+            
+//            let urlstr = AppDelegate.o2Collect.generateURLWithAppContextKey(BBSContext.bbsContextKey, query: BBSContext.bbsSectionIconQuery, parameter: ["##id##":bbsSectionData?.id as AnyObject], generateTime: false)
+//            let url = URL(string: urlstr!)
+//            self.bbsSectionIconImageView.hnk_setImageFromURL(url!)
         }
     }
     

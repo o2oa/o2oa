@@ -1,7 +1,5 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.text.TextUtils
@@ -12,13 +10,12 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_im_tribe_info.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goWithRequestCode
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
@@ -43,7 +40,6 @@ class IMTribeInfoActivity : BaseMVPActivity<IMTribeInfoContract.View, IMTribeInf
     }
 
     private val invitePersonAdd = "添加"
-    private val choosePersonRequestCode = 1024
     private val personList = ArrayList<String>()
     private var tribeId: Long = DEFAULT_ID
     override fun afterSetContentView(savedInstanceState: Bundle?) {
@@ -63,7 +59,31 @@ class IMTribeInfoActivity : BaseMVPActivity<IMTribeInfoContract.View, IMTribeInf
                 personList.filter { it != invitePersonAdd }.map {
                     nowList.add(it)
                 }
-                goWithRequestCode<NewOrganizationActivity>(NewOrganizationActivity.startBundleDataForIMChoose(nowList, NewOrganizationActivity.IM_CHOOSE_FROM_REQUEST), choosePersonRequestCode)
+                val bundle = ContactPickerActivity.startPickerBundle(
+                        arrayListOf("personPicker"),
+                        multiple = true,
+                        initUserList = nowList
+                )
+                contactPicker(bundle) { result ->
+                    if (result != null) {
+                        val users = result.users
+                        val addList = ArrayList<String>()
+                        for (rId in users) {
+                            var isOld = false
+                            personList.map {
+                                if (rId.distinguishedName == it) {
+                                    isOld = true
+                                    return@map
+                                }
+                            }
+                            if (!isOld){
+                                addList.add(rId.distinguishedName)
+                            }
+                        }
+                        //add
+                        addNewMembers(addList)
+                    }
+                }
             }
         }
         loadTribeInfo()
@@ -139,31 +159,7 @@ class IMTribeInfoActivity : BaseMVPActivity<IMTribeInfoContract.View, IMTribeInf
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                choosePersonRequestCode -> {
-                    val result = data?.extras?.getStringArrayList(NewOrganizationActivity.MULTI_PERSON_CHOOSE_RESULT) ?: ArrayList()
-                    val addList = ArrayList<String>()
-                    for (rId in result) {
-                        var isOld = false
-                        personList.map {
-                            if (rId == it) {
-                                isOld = true
-                                return@map
-                            }
-                        }
-                        if (!isOld){
-                            addList.add(rId)
-                        }
-                    }
-                    //add
-                    addNewMembers(addList)
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+
 
     private fun addNewMembers(addList: ArrayList<String>) {
         if (addList.isEmpty()) {

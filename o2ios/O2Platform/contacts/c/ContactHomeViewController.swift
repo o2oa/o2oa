@@ -31,6 +31,17 @@ class ContactHomeViewController: UITableViewController {
         return url
     }
     
+    //当前用户信息 用来查询身份的
+    var myPersonURL:String? {
+        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(PersonContext.personContextKey, query: PersonContext.personInfoQuery, parameter: nil)
+        return url
+    }
+    //根据身份查询顶级组织
+    var topUnitByIdentityURL: String? {
+        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKey, query: ContactContext.topLevelUnitByIdentity, parameter: nil)
+        return url
+    }
+    
     let searchUrl = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.personSearchByKeyQueryV2, parameter: nil)
     
     var searchController : UISearchController!
@@ -250,25 +261,14 @@ class ContactHomeViewController: UITableViewController {
         }
         self.showMessage(title: "加载中...")
         for (order,url) in urls {
-            Alamofire.request(url!, method: .get, parameters: nil, encoding:URLEncoding.default, headers: ["X-ORDER":String(order)]).validate().responseJSON {
-                response in
-                switch response.result {
-                case .success(let val):
-                    let objects = JSON(val)["data"]
-                    print(objects.description)
-                    self.contacts[order]?.removeAll()
-                    switch order {
-                    case 1:
-                        let tile = HeadTitle(name: "组织架构", icon: O2ThemeManager.string(for: "Icon.icon_bumen")!)
-                        let vmt = CellViewModel(name: tile.name, sourceObject: tile)
-                        self.contacts[order]?.append(vmt)
-                        if let units = Mapper<OrgUnit>().mapArray(JSONString:objects.description) {
-                            for unit in units{
-                                let vm = CellViewModel(name: unit.name,sourceObject: unit)
-                                self.contacts[order]?.append(vm)
-                            }
-                        }
-                    case 0:
+            if order == 0 {
+                Alamofire.request(url!, method: .get, parameters: nil, encoding:URLEncoding.default, headers: ["X-ORDER":String(order)]).validate().responseJSON {
+                    response in
+                    switch response.result {
+                    case .success(let val):
+                        let objects = JSON(val)["data"]
+                        print(objects.description)
+                        self.contacts[order]?.removeAll()
                         let tile = HeadTitle(name: "我的部门", icon: O2ThemeManager.string(for: "Icon.icon_company")!)
                         let vmt = CellViewModel(name: tile.name, sourceObject: tile)
                         self.contacts[order]?.append(vmt)
@@ -280,32 +280,90 @@ class ContactHomeViewController: UITableViewController {
                                         let vm = CellViewModel(name: unit.name,sourceObject: unit as AnyObject)
                                         self.contacts[order]?.append(vm)
                                     }
-                                    
                                 }
                             }
                         }
-                    case 2:
-                        break
-                    default:
-                        break
-                        //DDLogDebug(objects.description)
+                    case .failure(let err):
+                        DDLogError(err.localizedDescription)
                     }
                     
-                case .failure(let err):
-                    DDLogError(err.localizedDescription)
+                    count += 1
+                    if count == urls.count {
+                        self.dismissProgressHUD()
+                        if self.tableView.mj_header.isRefreshing() == true {
+                            self.tableView.mj_header.endRefreshing()
+                        }
+                    }
+                    self.tableView.reloadData()
+                    
                 }
+            } else if order == 1 {
                 
-                count += 1
-                if count == urls.count {
-                    self.dismissProgressHUD()
-                    if self.tableView.mj_header.isRefreshing() == true {
-                        self.tableView.mj_header.endRefreshing()
+                Alamofire.request(myPersonURL!, method: .get, parameters: nil, encoding:URLEncoding.default, headers: ["X-ORDER":String(order)]).validate().responseJSON {
+                    response in
+                    switch response.result {
+                    case .success(let val):
+                        let objects = JSON(val)["data"]
+                        print(objects.description)
+                        var identity = ""
+                        if let person = Mapper<PersonV2>().map(JSONString:objects.description) {
+                            if let identities = person.woIdentityList, identities.count > 0 {
+                                identity = identities[0].distinguishedName ?? ""
+                            }
+                        }
+                        if !identity.isEmpty {
+                            Alamofire.request(self.topUnitByIdentityURL!, method: .post, parameters: ["identity": identity as AnyObject, "level": 1 as AnyObject], encoding: JSONEncoding.default, headers: nil).responseJSON(completionHandler: { (res) in
+                                switch res.result {
+                                case .success(let val):
+                                    let objects = JSON(val)["data"]
+                                    print(objects.description)
+                                    
+                                    if let unit = Mapper<OrgUnit>().map(JSONString:objects.description) {
+                                        unit.subDirectUnitCount = 1 //这个接口查询出来的组织没有下级组织的数量，假设是有下级组织的
+                                        let tile = HeadTitle(name: "组织架构", icon: O2ThemeManager.string(for: "Icon.icon_bumen")!)
+                                        let vmt = CellViewModel(name: tile.name, sourceObject: tile)
+                                        self.contacts[order]?.append(vmt)
+                                        // 顶级组织
+                                        let vm = CellViewModel(name: unit.name,sourceObject: unit)
+                                        self.contacts[order]?.append(vm)
+                                    }
+                                    break
+                                case .failure(let err):
+                                    DDLogError(err.localizedDescription)
+                                }
+                                count += 1
+                                if count == urls.count {
+                                    self.dismissProgressHUD()
+                                    if self.tableView.mj_header.isRefreshing() == true {
+                                        self.tableView.mj_header.endRefreshing()
+                                    }
+                                }
+                                self.tableView.reloadData()
+                            })
+                        }else {
+                            count += 1
+                            if count == urls.count {
+                                self.dismissProgressHUD()
+                                if self.tableView.mj_header.isRefreshing() == true {
+                                    self.tableView.mj_header.endRefreshing()
+                                }
+                            }
+                            self.tableView.reloadData()
+                        }
+                        
+                    case .failure(let err):
+                        DDLogError(err.localizedDescription)
+                        count += 1
+                        if count == urls.count {
+                            self.dismissProgressHUD()
+                            if self.tableView.mj_header.isRefreshing() == true {
+                                self.tableView.mj_header.endRefreshing()
+                            }
+                        }
+                        self.tableView.reloadData()
                     }
                 }
-                self.tableView.reloadData()
-                
             }
-            //debugPrint(request)
         }
     }
     

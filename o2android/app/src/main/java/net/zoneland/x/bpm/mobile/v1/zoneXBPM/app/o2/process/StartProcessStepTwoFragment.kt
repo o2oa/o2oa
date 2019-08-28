@@ -149,10 +149,11 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
 
 
     private fun startProcess() {
-        val title = edit_start_process_step_two_title.text.toString()
+        var title = edit_start_process_step_two_title.text.toString()
         if (TextUtils.isEmpty(title)) {
-            XToast.toastShort(activity, "请输入文件标题")
-            return
+//            XToast.toastShort(activity, "请输入文件标题")
+//            return
+            title = "无标题"
         }
         showLoadingDialog()
         mPresenter.startProcess(title, identity, processId)

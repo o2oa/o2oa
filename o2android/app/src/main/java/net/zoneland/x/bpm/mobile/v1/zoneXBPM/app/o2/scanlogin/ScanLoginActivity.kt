@@ -4,20 +4,25 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.scanlogin
 import android.os.Bundle
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_scan_login.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.StringUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
 
 class ScanLoginActivity : BaseMVPActivity<ScanLoginContract.View, ScanLoginContract.Presenter>(), ScanLoginContract.View {
     override var mPresenter: ScanLoginContract.Presenter = ScanLoginPresenter()
 
-    override fun layoutResId(): Int = R.layout.activity_scan_login
+    override fun layoutResId(): Int = net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.layout.activity_scan_login
 
     companion object {
         val SCAN_RESULT_KEY = "scan_result_key"
@@ -57,12 +62,14 @@ class ScanLoginActivity : BaseMVPActivity<ScanLoginContract.View, ScanLoginContr
             if (result.contains("pgyer.com")) {
                 parseMeta()
                 if (!TextUtils.isEmpty(meta)) {
-                    title = getString(R.string.scan_login_confirm_title)
+                    title = getString(net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.string.scan_login_confirm_title)
                     activity_scan_login.visible()
                     tv_scan_login_text_content.gone()
                 }else{
                     gotoDefaultBrowser()
                 }
+            }else if (result.contains("x_meeting_assemble_control") && result.contains("/checkin")){
+                meetingCheckin(result)//会议签到
             }else{
                 gotoDefaultBrowser()
             }
@@ -70,7 +77,37 @@ class ScanLoginActivity : BaseMVPActivity<ScanLoginContract.View, ScanLoginContr
             activity_scan_login.gone()
             tv_scan_login_text_content.text = result
             tv_scan_login_text_content.visible()
-            title = getString(R.string.scan_login_title)
+            title = getString(net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.string.scan_login_title)
+        }
+    }
+
+    private fun  meetingCheckin(url: String) {
+        XLog.debug("会议签到：$url")
+        val request = Request.Builder().get().url(url).build()
+        val client = RetrofitClient.instance().getO2HttpClient()
+        if (client != null) {
+            val call = client.newCall(request)
+            call.enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    XLog.error("", e)
+                    runOnUiThread {
+                        XToast.toastShort(this@ScanLoginActivity, "签到失败")
+                        finish()
+                    }
+
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val result = response.body()?.string()
+                    XLog.debug(result)
+                    runOnUiThread {
+                        XToast.toastShort(this@ScanLoginActivity, "签到成功")
+                        finish()
+                    }
+
+                }
+
+            })
         }
     }
 

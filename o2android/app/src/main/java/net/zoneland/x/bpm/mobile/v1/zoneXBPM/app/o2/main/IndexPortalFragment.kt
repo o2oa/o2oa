@@ -21,10 +21,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.ReadCompletedListAct
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.ReadListActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.TaskCompletedListActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.TaskListActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.JSInterfaceO2mNotification
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.JSInterfaceO2mUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.PortalWebViewActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.TaskWebViewActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSApplicationInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
@@ -63,6 +60,7 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
             by lazy { WebChromeClientWithProgressAndValueCallback.with(this) }
     private val jsNotification: JSInterfaceO2mNotification by lazy { JSInterfaceO2mNotification.with(this) }
     private val jsUtil: JSInterfaceO2mUtil by lazy { JSInterfaceO2mUtil.with(this) }
+    private val jsBiz: JSInterfaceO2mBiz by lazy { JSInterfaceO2mBiz.with(this) }
 
     private var portalId: String = ""
     private var portalUrl: String = ""
@@ -77,11 +75,14 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
             web_view_portal_content.addJavascriptInterface(this, "o2android") //注册js对象
             jsNotification.setupWebView(web_view_portal_content)
             jsUtil.setupWebView(web_view_portal_content)
+            jsBiz.setupWebView(web_view_portal_content)
             web_view_portal_content.addJavascriptInterface(
                     jsNotification,
                     JSInterfaceO2mNotification.JSInterfaceName
+
             )
             web_view_portal_content.addJavascriptInterface(jsUtil, JSInterfaceO2mUtil.JSInterfaceName)
+            web_view_portal_content.addJavascriptInterface(jsBiz, JSInterfaceO2mBiz.JSInterfaceName)
             web_view_portal_content.webViewSetCookie(activity, portalUrl)
             web_view_portal_content.webChromeClient = webChromeClient
             web_view_portal_content.webViewClient = object : WebViewClient() {

@@ -16,7 +16,7 @@ import net.muliba.changeskin.FancySkinManager
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.NewOrganizationActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonFragmentPagerAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.FileOperateType
@@ -24,7 +24,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goWithRequestCode
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import org.jetbrains.anko.doAsync
@@ -43,7 +42,6 @@ class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveCo
 
     companion object {
         val YUNPAN_UPLOAD_FILE_REQUEST_CODE = 1
-        val YUNPAN_CHOOSE_PERSON_REQUEST_CODE = 2
         val YUNPAN_FROM_SHARE = "YUNPAN_FROM_SHARE"
         val YUNPAN_FROM_SEND = "YUNPAN_FROM_SEND"
 
@@ -142,19 +140,7 @@ class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveCo
                     XLog.debug( "uri path:$filePath")
                     (fragmentList[0] as CloudDriveMyFileFragment).menuUploadFile(filePath)
                 }
-                YUNPAN_CHOOSE_PERSON_REQUEST_CODE -> {
-                    //选人
-                    val array = data?.getStringArrayListExtra(NewOrganizationActivity.MULTI_PERSON_CHOOSE_RESULT) ?: ArrayList<String>()
-                    XLog.debug("$array")
-                    if (back.equals(YUNPAN_FROM_SHARE)){
-                        (fragmentList[0] as CloudDriveMyFileFragment).menuSendResult(array, FileOperateType.SHARE)
-                    }else if (back.equals(YUNPAN_FROM_SEND)){
-                        (fragmentList[0] as CloudDriveMyFileFragment).menuSendResult(array, FileOperateType.SEND)
-                    }else {
-                        XLog.error( "error back , back:"+back)
-                    }
 
-                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -225,8 +211,22 @@ class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveCo
     fun menuShareOrSend(from: String) {
         back = from
         if (!TextUtils.isEmpty(back)) {
-            goWithRequestCode<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(mode = NewOrganizationActivity.MULTI_PERSON_CHOOSE_MODE),
-                    YUNPAN_CHOOSE_PERSON_REQUEST_CODE)
+            val bundle = ContactPickerActivity.startPickerBundle(
+                    arrayListOf("personPicker"),
+                    multiple = true)
+            contactPicker(bundle) { result ->
+                if (result != null) {
+                    val users = ArrayList<String>()
+                    result.users.forEach {
+                        users.add(it.distinguishedName)
+                    }
+                    when (back) {
+                        YUNPAN_FROM_SHARE -> (fragmentList[0] as CloudDriveMyFileFragment).menuSendResult(users, FileOperateType.SHARE)
+                        YUNPAN_FROM_SEND -> (fragmentList[0] as CloudDriveMyFileFragment).menuSendResult(users, FileOperateType.SEND)
+                        else -> XLog.error("error back , back:$back")
+                    }
+                }
+            }
         }
     }
 
