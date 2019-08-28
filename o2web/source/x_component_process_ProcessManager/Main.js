@@ -240,6 +240,14 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
             this.fileConfiguratorContent.destroy();
             this.fileConfiguratorContent = null;
         }
+        if (this.projectionConfiguratorContent){
+            if (this.projectionConfigurator){
+                if (this.projectionConfigurator.destroy) this.projectionConfigurator.destroy();
+                delete this.projectionConfigurator;
+            }
+            this.projectionConfiguratorContent.destroy();
+            this.projectionConfiguratorContent = null;
+        }
     },
 
     applicationProperty: function(){
@@ -249,6 +257,21 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         }).inject(this.node);
         this.property = new MWF.xApplication.process.ProcessManager.ApplicationProperty(this, this.propertyConfiguratorContent);
         this.property.load();
+    },
+    projectionConfig: function(){
+        this.clearContent();
+        this.projectionConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadProjectionConfig();
+    },
+    loadProjectionConfig: function(){
+        MWF.xDesktop.requireApp("process.ProcessManager", "ProjectionExplorer", function(){
+            this.restActions = MWF.Actions.get("x_processplatform_assemble_designer");
+            this.projectionConfigurator = new MWF.xApplication.process.ProcessManager.ProjectionExplorer(this.projectionConfiguratorContent, this.restActions);
+            this.projectionConfigurator.app = this;
+            this.projectionConfigurator.load();
+        }.bind(this));
     },
 
 

@@ -75,6 +75,24 @@
     "mine-height": "50px",
     "border-bottom" : "1px solid #ccc"
   },
+  "titleActionBar" : {
+    "overflow": "hidden",
+    "float" : "right"
+  },
+  "batchAction" : {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/batch.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "batchAction_over" : {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/batch_over.png) 20px center no-repeat"
+  },
 
 
   "createDocumentAction": {
@@ -90,6 +108,21 @@
   "createDocumentAction_over": {
     "color" : "#3c76b7",
     "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument_over.png) 20px center no-repeat"
+  },
+
+  "moveDocumentAction" : {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/moveto.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "moveDocumentAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/moveto_over.png) 20px center no-repeat"
   },
 
   "copyDocumentAction": {

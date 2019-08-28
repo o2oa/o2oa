@@ -53,3 +53,136 @@ body.document-editor table thead th {
 body.document-editor table thead th:first-of-type {
     border-left: 1px solid #d0d0d0;
 }
+
+.o2_editorPlugin_doc_Page {
+    width: 15.6cm;
+    height: 22.5cm;
+    padding: 3.7cm 2.6cm 3.5cm 2.8cm;
+    margin: 0.5cm auto;
+    /*border: 0px #D3D3D3 solid;*/
+    /*border-radius: 5px;*/
+    background: #ffffff;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    letter-spacing:-0.01cm;
+    position: relative;
+}
+.o2_editorPlugin_doc_Page_content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.o2_editorPlugin_doc_redline {
+    color: #FF0000;
+    height: 0.4mm;
+    background-color: #ff0000;
+}
+.o2_editorPlugin_doc_fileno {
+    overflow: hidden;
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    text-align: center;
+    margin-top: 2.04cm;
+}
+.o2_editorPlugin_doc_filenoup {
+    overflow: hidden;
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    margin-top: 2.04cm;
+}
+.o2_editorPlugin_redHeader{
+    overflow: hidden;
+    text-align: center;
+    padding-top: 3.5cm;
+}
+.o2_editorPlugin_redHeader_content{
+    color: red;
+    font-size: 1.8cm;
+    font-family: "宋体", serif;
+    line-height: normal;
+    /*font-weight: bold;*/
+    overflow: hidden;
+}
+.o2_editorPlugin_redHeader_info{
+    color: #888888;
+    font-weight: normal;
+}
+.o2_editorPlugin_doc_emptyLine {
+    overflow: hidden;
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    top: 0;
+    left:0;
+}
+.o2_editorPlugin_doc_copiesSecretPriority {
+    overflow: hidden;
+    font-size: 16pt;
+    font-family: "黑体", serif;
+    line-height: 1.02cm;
+    position: absolute;
+    top: 0;
+    left:0;
+}
+.o2_editorPlugin_doc_subject {
+    overflow: hidden;
+    font-size: 22.0pt;
+    font-family: "宋体", serif;
+    line-height: 1.02cm;
+    margin: auto;
+    margin-top: 2.04cm;
+    text-align: center;
+    width: 90%;
+}
+.o2_editorPlugin_doc_mainSend {
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+    margin-top: 1.02cm;
+}
+.o2_editorPlugin_doc_file {
+    font-size: 16pt;
+    font-family: "仿宋", serif;
+    line-height: 1.02cm;
+}
+.o2_editorPlugin_doc_filenoup {
+    margin-top: 2.04cm;
+}
+.o2_editorPlugin_doc_filenoup_td{
+    width: 50%;
+    vertical-align: bottom;
+}
+.o2_editorPlugin_doc_filenoup_td_signer{
+    width: 50%;
+    text-align: right;
+}
+.o2_editorPlugin_doc_filenoup_signer_table{
+    margin-right: 0.6cm;
+    float: right;
+}
+.o2_editorPlugin_doc_filenoup_signer_td{
+    vertical-align: top;
+}
+.o2_editorPlugin_doc_filenoup_fileno{
+    text-align: center;
+}
+.o2_editorPlugin_doc_filenoup_signer{
+
+}
+.o2_editorPlugin_doc_filenoup_signerContent{
+    font-family: "楷体", serif;
+}
+.o2_editorPlugin_doc_filenoup_signerContent_td {
+    max-width: 4cm;
+}
+
+.o2_editorPlugin_doc_attachment{
+    margin-top: 1.02cm
+}
+.o2_editorPlugin_doc_attachment_title_td {
+    width: 2.8cm;
+}

@@ -19,7 +19,27 @@
       },
 
       "events": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
+          "code": "",
+          "html": ""
+        },
         "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
           "code": "",
           "html": ""
         },
@@ -27,31 +47,11 @@
           "code": "",
           "html": ""
         },
-        "beforeSave": {
-          "code": "",
-          "html": ""
-        },
-        "afterSave": {
-          "code": "",
-          "html": ""
-        },
         "beforeClose": {
           "code": "",
           "html": ""
         },
-        "beforeProcess": {
-          "code": "",
-          "html": ""
-        },
-        "afterProcess": {
-          "code": "",
-          "html": ""
-        },
         "help": {
-          "code": "",
-          "html": ""
-        },
-        "load": {
           "code": "",
           "html": ""
         },

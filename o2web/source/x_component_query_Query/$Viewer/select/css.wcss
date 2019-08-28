@@ -11,6 +11,118 @@
     "viewAreaNode": {
         "overflow": "hidden"
     },
+
+    "viewPageNode": {
+        "padding-top": "10px",
+        "height": "30px"
+    },
+    "viewPageAreaNode": {
+        "height": "24px",
+        //"margin-top": "28px"
+    },
+    "viewPageContentNode": {
+        "float": "left",
+        "margin-left": "10px",
+        "height": "24px"
+    },
+    "viewPageFirstLastNode": {
+        "height": "24px",
+        "width": "80px",
+        "border": "1px solid #e6e6e6",
+        "color": "#777777",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left"
+    },
+    "viewPageFirstLastNode_over": {
+        "background-color": "#f1f1f1"
+    },
+    "viewPageFirstLastNode_down": {
+        "background-color": "#dddddd"
+    },
+    "viewPageFirstLastNode_up": {
+        "background-color": "#ffffff"
+    },
+
+    "viewPageButtonNode": {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid #e6e6e6",
+        "color": "#777777",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left",
+        "margin-right": "10px"
+    },
+    "viewPageButtonNode_over": {
+        "background-color": "#f1f1f1"
+    },
+    "viewPageButtonNode_down": {
+        "background-color": "#dddddd"
+    },
+    "viewPageButtonNode_up": {
+        "background-color": "#ffffff"
+    },
+
+    "viewPageButtonNode_current": {
+        "background-color": "#4a90e2",
+        "color": "#ffffff"
+    },
+    "viewPagePrevButtonNode": {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid #e6e6e6",
+        "color": "#777777",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left",
+        "margin-right": "10px",
+        "background": "url(/x_component_query_Query/$Viewer/default/page/left.png) center center no-repeat"
+    },
+    "viewPagePrevButtonNode_over": {
+        "background-color": "#f1f1f1"
+    },
+    "viewPagePrevButtonNode_down": {
+        "background-color": "#dddddd"
+    },
+    "viewPagePrevButtonNode_up": {
+        "background-color": "#ffffff"
+    },
+
+    "viewPagePrevButtonNode_gray": {
+        "background": "url(/x_component_query_Query/$Viewer/default/page/left_gray.png) center center no-repeat"
+    },
+    "viewPageNextButtonNode": {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid #e6e6e6",
+        "color": "#777777",
+        "text-align": "center",
+        "line-height": "24px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "float": "left",
+        "margin-right": "10px",
+        "background": "url(/x_component_query_Query/$Viewer/default/page/right.png) center center no-repeat"
+    },
+    "viewPageNextButtonNode_over": {
+        "background-color": "#f1f1f1"
+    },
+    "viewPageNextButtonNode_down": {
+        "background-color": "#dddddd"
+    },
+    "viewPageNextButtonNode_up": {
+        "background-color": "#ffffff"
+    },
+    "viewPageNextButtonNode_gray": {
+        "background": "url(/x_component_query_Query/$Viewer/default/page/right_gray.png) center center no-repeat"
+    },
     "searchSimpleNode": {
         "height": "24px",
         "border": "1px solid #CCCCCC",

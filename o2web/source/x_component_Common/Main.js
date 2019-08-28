@@ -67,7 +67,7 @@ MWF.xApplication.Common.Main = new Class({
 		
 		this.cssPath =this.path+this.options.style+"/css.wcss";
         if (this.options.mvcStyle) this.stylePath = this.path+this.options.style+"/"+this.options.mvcStyle;
-		this._loadCss();
+		if (!this.options.mvcStyle) this._loadCss();
 	},
 	fireAppEvent: function(when){
 		this.fireEvent(when);
@@ -113,7 +113,7 @@ MWF.xApplication.Common.Main = new Class({
 				this.setContentEvent();
 
 				//load css
-				if (this.stylePath) o2.loadCss(this.stylePath);
+				if (this.stylePath) this.content.loadCss(this.stylePath);
 				this.loadApplication(function(){
 					this.fireAppEvent("postLoadApplication");
 				}.bind(this));
@@ -460,10 +460,12 @@ MWF.xApplication.Common.Main = new Class({
                 "maskNode": mask || this.content,
 				"buttonList": [
 				    {
+						"type" : "ok",
 				    	"text": MWF.LP.process.button.ok,
 				    	"action": ok
 				    },
 				    {
+						"type" : "cancel",
 				    	"text": MWF.LP.process.button.cancel,
 				    	"action": cancel
 				    }

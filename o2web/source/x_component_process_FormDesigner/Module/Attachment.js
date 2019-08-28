@@ -22,7 +22,12 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 		this.container = null;
 		this.containerNode = null;
 	},
-	
+	setTemplateStyles: function(styles){
+		this.json.style = styles.style || "default";
+	},
+	clearTemplateStyles: function(styles){
+		this.json.style = "default";
+	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
 			"MWFType": "itmleditor",

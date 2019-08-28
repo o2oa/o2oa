@@ -50,6 +50,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             }.bind(this));
         }
 
+        //var data = JSON.parse(this.json.data);
         var viewJson = {
             "application": (this.json.queryView) ? this.json.queryView.appName : this.json.application,
             "viewName": (this.json.queryView) ? this.json.queryView.name : this.json.viewName,

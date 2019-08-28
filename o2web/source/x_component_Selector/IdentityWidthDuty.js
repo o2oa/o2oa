@@ -167,19 +167,35 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                 var data = {"name":this.data.name, "unit":""};
                 var count = this.selector.options.units.length;
                 var i = 0;
-                this.selector.options.units.each(function(u){
-                    if (typeOf(u)==="string"){
-                        data.unit = u;
-                    }else{
-                        data.unit = u.distinguishedName || u.unique || u.id || u.levelName
-                    }
-                    action.getDuty(data, function(json){
-                        json.data.each(function(idSubData){
-                            if( !this.selector.isExcluded( idSubData ) ) {
-                                var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1);
-                                this.selector.items.push(item);
+
+                if (this.selector.options.expandSubEnable) {
+                    this.selector.options.units.each(function(u){
+                        var unitName = ""
+                        if (typeOf(u)==="string"){
+                            unitName = u;
+                        }else{
+                            unitName = u.distinguishedName || u.unique || u.id || u.levelName
+                        }
+                        if (unitName){
+                            var unitNames;
+                            action.listUnitNameSubNested({"unitList": [unitName]}, function(json){
+                                unitNames = json.data.unitList;
+                            }.bind(this), null, false);
+
+                            unitNames.push(unitName);
+                            if (unitNames && unitNames.length){
+                                data.unitList = unitNames;
+                                action.getDuty(data, function(json){
+                                    json.data.each(function(idSubData){
+                                        if( !this.selector.isExcluded( idSubData ) ) {
+                                            var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1);
+                                            this.selector.items.push(item);
+                                        }
+                                    }.bind(this));
+                                }.bind(this), null, false);
                             }
-                        }.bind(this));
+                        }
+
                         i++;
                         if (i>=count){
                             if (!this.loaded) {
@@ -188,8 +204,30 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                             }
                         }
                     }.bind(this));
-                }.bind(this));
-
+                }else{
+                    this.selector.options.units.each(function(u){
+                        if (typeOf(u)==="string"){
+                            data.unit = u;
+                        }else{
+                            data.unit = u.distinguishedName || u.unique || u.id || u.levelName
+                        }
+                        action.getDuty(data, function(json){
+                            json.data.each(function(idSubData){
+                                if( !this.selector.isExcluded( idSubData ) ) {
+                                    var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1);
+                                    this.selector.items.push(item);
+                                }
+                            }.bind(this));
+                            i++;
+                            if (i>=count){
+                                if (!this.loaded) {
+                                    this.loaded = true;
+                                    if (callback) callback();
+                                }
+                            }
+                        }.bind(this));
+                    }.bind(this));
+                }
                 //if (callback) callback();
 
             }else{

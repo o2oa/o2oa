@@ -28,7 +28,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
             //     "action": "styleBrush",
             //     "title": MWF.APPFD.LP.formAction["styleBrush"]
             // }
-        ],
+        ]
 	},
 	
 	initialize: function(form, options){
@@ -94,6 +94,9 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
         this._setNodeEvent();
         this.json.isSaved = true;
 
+        if( !this.form.subformModuleList )this.form.subformModuleList = [];
+        this.form.subformModuleList.push( this );
+
         this.queryGetFormDataFun = this.queryGetFormData.bind(this);
         this.postGetFormDataFun = this.postGetFormData.bind(this);
         this.form.addEvent("queryGetFormData", this.queryGetFormDataFun);
@@ -147,7 +150,13 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
     },
     show: function(){
         if (this.subformData){
-            this.subformModule = new MWF.FCSubform.Form(this.form, this.node);
+            this.subformModule = new MWF.FCSubform.Form(this.form, this.node, {
+                parentformIdList : this.getParentformIdList(),
+                level : this.getLevel()
+            });
+            this.subformModule.subformSelector = this.getSubformSelector();
+            this.subformModule.subformSelectedValue = this.getSubformSelectedValue();
+            this.subformModule.level1Subform = this.getLevel1Subform();
             this.subformModule.load(this.subformData);
         }else{
             this.node.empty();
@@ -170,6 +179,39 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
             module.form.designer.shortcut = true;
             this.close();
         }, null);
+    },
+    getLevel : function(){
+        return ( this.form.options.level1 || 0 ) + 1;
+    },
+    getLevel1Subform : function(){
+        return this.form.level1Subform || this;
+    },
+    getSubformSelector : function(){
+        return this.subformSelector || this.form.subformSelector;
+    },
+    getSubformSelectedValue : function(){
+        return this.subformSelectedValue || this.form.subformSelectedValue;
+    },
+    checkSubformNested : function( id ){
+        if( this.form.options.parentformIdList ){
+            return !this.form.options.parentformIdList.contains( id );
+        }
+        return true;
+    },
+    isSubformUnique : function( id , oldId ){
+        if( !this.form.topform )return true;
+        if( !this.getLevel1Subform() || !this.getLevel1Subform().json )return true;
+        return this.form.topform.isSubformUnique( id, this.getLevel1Subform().json.id,  oldId );
+    },
+    getParentformIdList : function(){
+        var parentformIdList;
+        if( this.form.options.parentformIdList ){
+            parentformIdList = Array.clone( this.form.options.parentformIdList );
+            parentformIdList.push( this.form.json.id )
+        }else{
+            parentformIdList = [ this.form.json.id ];
+        }
+        return parentformIdList;
     },
     refreshSubform: function(){
         if (this.json.subformSelected && this.json.subformSelected!=="none" && this.json.subformType!=="script"){
@@ -226,26 +268,67 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
     redoSelectedSubform: function(name, input, oldValue){
         if (this.json.subformSelected==="none") this.json.subformSelected="";
         if (this.json.subformSelected && this.json.subformSelected!=="none"){
-            if (this.form.subformList && this.form.subformList[this.json.subformSelected]){
-                //var p = (input) ? input.getPosition() : this.node.getPosition();
-                var p = this.node.getPosition(document.bosy);
-                this.form.designer.alert("error", {
-                    "event": {
-                        "x": p.x+150,
-                        "y": p.y+80
-                    }
-                }, this.form.designer.lp.subformConflictTitle, this.form.designer.lp.subformConflictInfor, 400, 120);
-                this.json.subformSelected = oldValue;
-                if (input){
-                    for (var i=0; i<input.options.length; i++){
-                        if (input.options[i].value===oldValue){
+
+            if(input)this.subformSelector = input;
+            if( !input )input = this.getSubformSelector();
+
+            if( oldValue )this.subformSelectedValue = oldValue;
+            if( !oldValue )oldValue = this.getSubformSelectedValue() || "";
+
+            var level1Subform = this.getLevel1Subform();
+
+            if( !this.checkSubformNested(this.json.subformSelected) ){
+                //var p = level1Subform.node.getPosition(document.body);
+                //this.form.designer.alert("error", {
+                //    "event": {
+                //        "x": p.x + 150,
+                //        "y": p.y + 80
+                //    }
+                //}, this.form.designer.lp.subformNestedTitle, this.form.designer.lp.subformNestedInfor, 400, 120);
+                this.form.designer.notice( this.form.designer.lp.subformNestedInfor, "error", level1Subform.node );
+                level1Subform.json.subformSelected = oldValue;
+                if (input) {
+                    for (var i = 0; i < input.options.length; i++) {
+                        if (input.options[i].value === oldValue || (input.options[i].value==="none" && !oldValue ) ) {
                             input.options[i].set("selected", true);
                             break;
                         }
                     }
                 }
-                this.node.empty();
-                this.loadIcon();
+                if( !oldValue ){
+                    level1Subform.node.empty();
+                    level1Subform.loadIcon();
+                }else{
+                    level1Subform.refreshSubform();
+                }
+            }else if( !this.isSubformUnique( this.json.subformSelected , oldValue ) ){
+                //if (this.form.subformList && this.form.subformList[this.json.subformSelected]  ){
+                //var p = (input) ? input.getPosition() : this.node.getPosition();
+                //var p = level1Subform.node.getPosition(document.body);
+                //this.form.designer.alert("error", {
+                //    "event": {
+                //        "x": p.x+150,
+                //        "y": p.y+80
+                //    }
+                //}, this.form.designer.lp.subformConflictTitle, this.form.designer.lp.subformConflictInfor, 400, 120);
+
+                this.form.designer.notice( this.form.designer.lp.subformConflictInfor, "error", level1Subform.node );
+                level1Subform.json.subformSelected = oldValue;
+
+                if (input){
+                    for (var i=0; i<input.options.length; i++){
+                        if (input.options[i].value===oldValue || (input.options[i].value==="none" && !oldValue ) ){
+                            input.options[i].set("selected", true);
+                            break;
+                        }
+                    }
+                }
+                if( !oldValue ){
+                    level1Subform.node.empty();
+                    level1Subform.loadIcon();
+                }else{
+                    level1Subform.refreshSubform();
+                }
             }else{
                 MWF.Actions.get("x_processplatform_assemble_designer").getForm(this.json.subformSelected, function(json){
                     this.reloadSubform(json.data, input, oldValue);
@@ -261,10 +344,16 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
     clearSubformList: function(formName){
         if (!this.form.subformList) this.form.subformList = {};
         if (formName) if (this.form.subformList[formName]) delete this.form.subformList[formName];
+
+        if( !this.form.topform )this.form.topform = this.form;
+       this.form.topform.clearSubformList( this.getLevel1Subform().json.id );
     },
     addSubformList: function(){
         if (!this.form.subformList) this.form.subformList = {};
         this.form.subformList[this.json.subformSelected] = Object.clone(this.subformData.json);
+
+        if( !this.form.topform )this.form.topform = this.form;
+        this.form.topform.addSubformList( this.getLevel1Subform().json.id, this.json.subformSelected );
     },
 	getSubformData: function(data){
         var subformDataStr = null;
@@ -287,7 +376,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
 
             if (this.checkSubform(data, input)){
                 this.node.empty();
-                this.loadSubform();
+                this.loadSubform( null );
                 this.addSubformList();
             }else{
                 if (oldSubformData){
@@ -392,7 +481,13 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
         this.subformData.json.formStyleType = this.form.json.formStyleType;
         //this.subformData.json.id = this.json.id;
 
-        this.subformModule = new MWF.FCSubform.Form(this.form, this.node);
+        this.subformModule = new MWF.FCSubform.Form(this.form, this.node, {
+            parentformIdList : this.getParentformIdList(),
+            level : this.getLevel()
+        });
+        this.subformModule.subformSelector = this.getSubformSelector();
+        this.subformModule.subformSelectedValue = this.getSubformSelectedValue();
+        this.subformModule.level1Subform = this.getLevel1Subform();
         this.subformModule.load(this.subformData);
 
        //this.createRefreshNode();
@@ -401,6 +496,9 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
         this.form.moduleList.erase(this);
         this.form.moduleNodeList.erase(this.node);
         this.form.moduleElementNodeList.erase(this.node);
+
+        this.form.subformModuleList.erase(this);
+
         this.clearSubformList(this.json.subformSelected);
 
         this.node.destroy();
@@ -417,7 +515,9 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
 MWF.xApplication.process.FormDesigner.Module.Subform.Form = new Class({
     Extends: MWF.FCForm,
     initialize: function(form, container, options){
-    	this.parentform = form
+        this.setOptions(options);
+        this.topform = form.topform || form;
+    	this.parentform = form;
         this.css = this.parentform.css;
 
         this.container = container;

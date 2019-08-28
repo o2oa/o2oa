@@ -16,7 +16,6 @@ o2.widget.Toolbar = new Class({
 
 		this.path = o2.session.path+"/widget/$Toolbar/";
 		this.cssPath = o2.session.path+"/widget/$Toolbar/"+this.options.style+"/css.wcss";
-
 		this._loadCss();
 
 		this.node = $(container);
@@ -26,7 +25,6 @@ o2.widget.Toolbar = new Class({
 	},
 	load: function(){
         if (this.fireEvent("queryLoad")){
-
             this.node.set("styles", this.css.container);
 
             this._loadToolbarItemNode();

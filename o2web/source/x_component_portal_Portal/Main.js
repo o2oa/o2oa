@@ -12,6 +12,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
 		"title": MWF.xApplication.portal.Portal.LP.title,
         "portalId": "",
         "pageId": "",
+        "widgetId" : "",
         "isControl": false,
         "taskObject": null,
         "parameters": "",
@@ -22,6 +23,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         if (this.status){
             this.options.portalId = this.status.portalId;
             this.options.pageId = this.status.pageId;
+            this.options.widgetId = this.status.widgetId;
         }
 	},
 	loadApplication: function(callback){
@@ -44,7 +46,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     //this.mask.loadNode(this.content);
                     this.loadPortal(this.options.parameters, callback);
                 }
-        if (callback) callback();
+        //if (callback) callback();
             //}.bind(this));
 
         //}.bind(this));
@@ -133,8 +135,13 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     });
                 }
             }
-            var m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
-            this.action[m](this.options.pageId, this.options.portalId, function(json){
+            var m;
+            if( this.options.widgetId ){
+                m = (layout.mobile) ? "getWidgetByNameMobile" : "getWidgetByName";
+            }else{
+                m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
+            }
+            this.action[m]( this.options.widgetId || this.options.pageId, this.options.portalId, function(json){
                 // if (layout.mobile) {
                 //     this.page = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
                 //     if (!this.page || !this.page.json.moduleList.length){

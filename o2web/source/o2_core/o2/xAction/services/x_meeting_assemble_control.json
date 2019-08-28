@@ -72,9 +72,8 @@
   "getAttachmentData": {"uri": "/jaxrs/attachment/{id}/download/false"},
   "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/true"},
 
-
-
-
+  "getCheckinQrCode" : {"uri" : "/jaxrs/meeting/{id}/checkin/code"},
+  "checkin" : {"uri":"/jaxrs/meeting/{id}/checkin"},
 
   "clazz": "x_meeting_assemble_control"
 }

@@ -25,3 +25,5 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Checkbox", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Source", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SourceText", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SubSource", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Widget", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Widgetmodules", null, false);

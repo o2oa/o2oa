@@ -5,17 +5,13 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
     _loadUserInterface: function(){
         this.node.empty();
         this.getSubform(function(){
-            if (this.subformData){
-                this.loadSubform();
-            }
+            this.loadSubform();
         }.bind(this));
     },
     reload: function(){
         this.node.empty();
         this.getSubform(function(){
-            if (this.subformData){
-                this.loadSubform();
-            }
+            this.loadSubform();
         }.bind(this));
     },
     loadCss: function(){
@@ -54,18 +50,44 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
             }
         }
     },
+    checkSubformNested : function( id ){
+        if( this.parentformIdList ){
+            return !this.parentformIdList.contains( id );
+        }else{
+            return ![ this.form.json.id ].contains( id );
+        }
+    },
+    checkSubformUnique : function( id ){
+        if( !this.form.subformLoaded )return true;
+        return !this.form.subformLoaded.contains( id );
+    },
+    getParentformIdList : function(){
+        var parentformIdList;
+        if( this.parentformIdList ){
+            parentformIdList = Array.clone( this.parentformIdList );
+            parentformIdList.push( this.subformData.json.id )
+        }else{
+            parentformIdList = [ this.form.json.id, this.subformData.json.id ];
+        }
+        return parentformIdList;
+    },
     loadSubform: function(){
         if (this.subformData){
-            //this.form.addEvent("postLoad", function(){
+            if( !this.checkSubformNested( this.subformData.json.id ) ){
+                this.form.notice(MWF.xApplication.process.Xform.LP.subformNestedError, "error");
+            }else if( !this.checkSubformUnique( this.subformData.json.id ) ){
+                this.form.notice(MWF.xApplication.process.Xform.LP.subformUniqueError, "error");
+            }else{
+                //this.form.addEvent("postLoad", function(){
 
-            this.loadCss();
+                this.loadCss();
 
                 this.node.set("html", this.subformData.html);
-                Object.each(this.subformData.json.moduleList, function(module, key){
+                Object.each(this.subformData.json.moduleList, function (module, key) {
                     var formKey = key;
-                    if (this.form.json.moduleList[key]){
-                        formKey = this.json.id+"_"+key;
-                        var moduleNode = this.node.getElement("#"+key);
+                    if (this.form.json.moduleList[key]) {
+                        formKey = this.json.id + "_" + key;
+                        var moduleNode = this.node.getElement("#" + key);
                         if (moduleNode) moduleNode.set("id", formKey);
                         module.id = formKey;
                     }
@@ -73,15 +95,30 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                 }.bind(this));
 
                 var moduleNodes = this.form._getModuleNodes(this.node);
-                moduleNodes.each(function(node){
-                    if (node.get("MWFtype")!=="form"){
+                moduleNodes.each(function (node) {
+                    if (node.get("MWFtype") !== "form") {
+                        var _self = this;
                         var json = this.form._getDomjson(node);
-                        var module = this.form._loadModule(json, node);
+                        //if( json.type === "Subform" || json.moduleName === "subform" )this.form.subformCount++;
+                        var module = this.form._loadModule(json, node, function(){
+                            this.parentformIdList = _self.getParentformIdList();
+                        });
                         this.form.modules.push(module);
                     }
                 }.bind(this));
-            //}.bind(this));
+
+                this.form.subformLoaded.push( this.subformData.json.id );
+
+                //}.bind(this));
+            }
         }
+        if( this.form.subformLoadedCount ){
+            this.form.subformLoadedCount++;
+        }else{
+            this.form.subformLoadedCount = 1
+        }
+        //console.log( "add subformLoadedCount , this.form.subformLoadedCount = "+ this.form.subformLoadedCount)
+        this.form.checkSubformLoaded();
     },
     getSubform: function(callback){
         if (this.json.subformType==="script"){
@@ -93,6 +130,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                         this.getSubformData(json.data);
                         if (callback) callback();
                     }.bind(this));
+                }else{
+                    if (callback) callback();
                 }
             }
         }else{

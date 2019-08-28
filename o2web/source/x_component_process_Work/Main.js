@@ -27,27 +27,30 @@ MWF.xApplication.process.Work.Main = new Class({
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
+    loadWorkApplication: function(callback, mask){
+        if (mask) this.mask = new MWF.widget.Mask({"style": "desktop"});
+        this.formNode = new Element("div", {"styles": this.css.formNode}).inject(this.node);
+        if (!this.options.isRefresh){
+            this.maxSize(function(){
+                if (mask) this.mask.loadNode(this.content);
+                this.loadWork();
+            }.bind(this));
+        }else{
+            if (mask) this.mask.loadNode(this.content);
+            this.loadWork();
+        }
+        if (callback) callback();
+    },
 	loadApplication: function(callback){
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
 
-        MWF.require("MWF.widget.Mask", function(){
-            this.mask = new MWF.widget.Mask({"style": "desktop"});
-
-            this.formNode = new Element("div", {"styles": this.css.formNode}).inject(this.node);
-
-            if (!this.options.isRefresh){
-                this.maxSize(function(){
-                    this.mask.loadNode(this.content);
-                    this.loadWork();
-                }.bind(this));
-            }else{
-                this.mask.loadNode(this.content);
-                this.loadWork();
-            }
-            if (callback) callback();
-            //}.bind(this));
-
-        }.bind(this));
+        if (layout.mobile){
+            this.loadWorkApplication(callback, false)
+        }else{
+            MWF.require("MWF.widget.Mask", function(){
+                this.loadWorkApplication(callback, true)
+            }.bind(this));
+        }
 
         this.addEvent("postClose", function(){
             //this.refreshTaskCenter();
@@ -110,12 +113,13 @@ MWF.xApplication.process.Work.Main = new Class({
                 if (json_work && json_control && json_form && json_log && json_att){
                     this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
                     if (this.mask) this.mask.hide();
-                    if (layout.mobile) this.loadMobileActions();
+                    //if (layout.mobile) this.loadMobileActions();
                     this.openWork();
                 } else{
                     this.close();
                 }
-            }.bind(this), "failure": function(){}}, [id, true, true, true], id);
+            }.bind(this), "failure": function(){}}, id);
+            //}.bind(this), "failure": function(){}}, [id, true, true, true], id);
         }
     },
     parseData: function(workData, controlData, formData, logData, attData){
@@ -330,7 +334,17 @@ MWF.xApplication.process.Work.Main = new Class({
                 };
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
-                this.appForm.load();
+                debugger;
+                this.appForm.load(function(){
+                    if (window.o2android && window.o2android.appFormLoaded){
+                        layout.appForm = this.appForm;
+                        window.o2android.appFormLoaded(JSON.stringify(this.appForm.mobileTools));
+                    }
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
+                        layout.appForm = this.appForm;
+                        window.webkit.messageHandlers.appFormLoaded.postMessage(JSON.stringify(this.appForm.mobileTools));
+                    }
+                }.bind(this));
             }.bind(this));
         }
     },

@@ -1,0 +1,422 @@
+{
+    topLayout:{
+        "height":"40px",
+        "width":"100%",
+        "flex":1,
+        "border-bottom":"1px solid #bebebe"
+    },
+    topImage:{
+
+        "float": "left",
+        "background": "url(/x_component_TeamWork/$Task/default/icon/document.png) no-repeat center"
+    },
+    topContent:{
+        "float":"left",
+        "line-height":"40px",
+        "font-size":"16px",
+        "max-width":"700px",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis",
+    },
+    topIconContainer:{
+        "float":"right",
+        "height":"100%"
+    },
+    topIconClose:{
+        "float":"left",
+        "cursor":"pointer",
+        "height":"24px",
+        "width":"24px",
+        "margin-top":"8px",
+        "margin-left":"4px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
+    },
+    topIconMore:{
+        "float":"left",
+        "cursor":"pointer",
+        "height":"24px",
+        "width":"24px",
+        "margin-left":"4px",
+        "margin-top":"8px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_more.png) no-repeat center"
+    },
+    contentLayout:{
+
+        "width":"100%",
+        "position":"absolute",
+        "top":"40px",
+        "left":"0px",
+        "bottom":"0px",
+        "overflow-y":"hidden"
+    },
+    taskInforContainer:{
+        "float":"left",
+        "height":"100%",
+        "width":"650px",
+        "border-right":"1px solid #bebebe"
+    },
+    taskActionBar:{
+        "height":"50px",
+        "width":"100%"
+    },
+    taskActionSave:{
+        "float":"right",
+        "width":"70px",
+        "margin-right":"20px",
+        "margin-top":"18px",
+        "height":"30px",
+        "line-height":"30px",
+        "text-align":"center",
+        "cursor":"pointer",
+        "color":"#666666",
+        "background-color":"#ffffff",
+        "border":"1px solid #bebebe",
+        "border-radius":"4px"
+    },
+    taskNameContainer:{
+        "width":"90%",
+        "height":"50px",
+        "line-height":"50px",
+        "font-size":"18px",
+        "margin":"10px auto 0px auto",
+        "border-radius":"4px"
+    },
+    taskNameInput:{
+        "line-height":"48px",
+        "height":"48px",
+        "font-size":"18px",
+        "width":"100%",
+        "color":"#666",
+        "border":"1px solid #f5f5f5",
+        "background-color":"#f5f5f5",
+        "border-radius":"4px"
+    },
+    taskStatusContainer:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskStatusIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_status.png) no-repeat center"
+    },
+    taskStatusText:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"80px"
+    },
+    taskStatusValue:{
+        "float":"left"
+    },
+    taskStatusValueContainer:{
+        "cursor":"pointer",
+        "height":"24px",
+        "background-color":"#f5f5f5",
+        "margin-top":"13px",
+        "border-radius":"2px",
+        "padding-left":"6px",
+        "padding-right":"10px"
+    },
+    taskStatusValueIcon:{
+        "float":"left",
+        "width":"24px",
+        "height":"24px",
+        //"margin-top":"2px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_draft.png) no-repeat center"
+    },
+    taskStatusValueText:{
+        "float":"left",
+        "line-height":"24px"
+    },
+    taskDutyContainer:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskDutyIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_duty.png) no-repeat center"
+    },
+    taskDutyText:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"80px"
+    },
+    taskDutyValue:{
+        "float":"left",
+        "line-height":"50px"
+    },
+    taskDutyValueContainer:{
+        "margin-top":"13px",
+        "height":"100%"
+    },
+    taskDutyAddIcon:{
+        "float":"left",
+        "width":"24px",
+        "height":"24px",
+        //"margin-top":"2px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_wcyd_xm_click.png) no-repeat center"
+    },
+    taskDutyAddText:{
+        "cursor":"pointer",
+        "float":"left",
+        "line-height":"24px"
+    },
+    taskTimeContainer:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskTimeIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_time.png) no-repeat center"
+    },
+    taskTimeText:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"80px"
+    },
+    taskTimeValue:{
+        "float":"left",
+        "line-height":"50px"
+    },
+    taskStartTime:{
+        "float":"left",
+        "height":"24px",
+        "color":"#999999",
+        "line-height":"24px",
+        "margin-top":"13px",
+        "padding":"0px 5px",
+        "border-radius":"4px"
+    },
+    taskTimeLine:{
+        "float":"left",
+        "height":"24px",
+        "text-align":"center",
+        "line-height":"24px",
+        "margin-top":"13px",
+        "padding":"0px 5px"
+    },
+    taskEndTime:{
+        "float":"left",
+        "height":"24px",
+        "color":"#999999",
+        "line-height":"24px",
+        "margin-top":"13px",
+        "padding":"0px 5px",
+        "border-radius":"4px"
+    },
+    taskRemarkContainer:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskRemarkIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_remark.png) no-repeat center"
+    },
+    taskRemarkText:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"80px"
+    },
+    taskRemarkValue:{
+        "float":"left",
+        "line-height":"50px"
+    },
+    taskPriorityContainer:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskPriorityIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_priority.png) no-repeat center"
+    },
+    taskPriorityText:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"80px"
+    },
+    taskPriorityValue:{
+        "float":"left",
+        "line-height":"50px"
+    },
+
+
+
+
+
+    taskDetailLayout:{
+        "float":"left",
+        "height":"100%",
+        "width":"340px"
+    },
+
+    bottomLayout:{
+        "height":"40px"
+    },
+
+
+    "formMaskNode": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0.2,
+        "position": "absolute",
+        "background-color": "#999999",
+        "top": "0px",
+        "left": "0px"
+    },
+    "formAreaNode": {
+        "position": "absolute",
+        "opacity": 0,
+        "top": "0px"
+    },
+    "formNode": {
+        "background-color": "#FFF",
+        "box-shadow": "0px 0px 10px #999",
+        "border-radius": "5px",
+        "margin": "auto",
+        "border": "1px solid #fff",
+        "overflow": "hidden",
+        "color":"#333333"
+    },
+    "formTopNode": {
+        "color": "#fff",
+        "height": "40px",
+        "background-color": "#fff",
+        "border-bottom": "1px solid #b6b6b6",
+        "line-height": "40px",
+        "font-size": "14px",
+        "padding-left": "5px",
+        "text-align": "left"
+    },
+    "formTopIconNode": {
+        "width": "32px",
+        "height": "32px",
+        "float": "left",
+        "background": "url(/x_component_TeamWork/$Task/default/icon/document.png) no-repeat center 4px"
+    },
+    "formTopTextNode": {
+        "font-size": "16px",
+        "float": "left",
+        "width": "500px",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    "formTopCloseActionNode": {
+        "width": "40px",
+        "height": "40px",
+        "float": "right",
+        "padding-right": "4px",
+        "background": "url(/x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center",
+        "cursor": "pointer"
+    },
+    "formTopContentNode": {
+        "float": "right",
+        "padding-right": "10px",
+        "text-align": "right"
+    },
+    "formTopContentTitle": {},
+    "formTopContentValue": {
+        "padding-right": "20px",
+        "font-size": "12px"
+    },
+    "formNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    },
+    "formIconNode": {
+        "width": "47px",
+        "height": "47px"
+    },
+    "formEditNode": {
+        "width": "47px",
+        "height": "47px"
+    },
+    "formContentNode": {
+        "border": "0px solid #666",
+        "width": "100%",
+        "margin": "auto",
+        "font-size": "14px",
+        "color": "#666",
+        "font-family": "微软雅黑",
+        "overflow": "hidden"
+    },
+    "formTableContainer": {
+        "margin": "0px 10px",
+        "overflow": "hidden",
+        "positon": "static"
+    },
+    "formTableArea":{
+        "height":"100%"
+    },
+    "formBottomNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "background-color": "#3d77c1",
+        "overflow": "hidden",
+        "padding-top": "10px"
+    },
+    "formOkActionNode": {
+        "height": "30px",
+        "width": "75px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border": "1px solid #3d77c1",
+        "background-color": "#5d97e1",
+        "color": "#FFF",
+        "margin-right": "20px",
+        "box-shadow": "0px 0px 3px #5d97e1"
+    },
+    "formCancelActionNode": {
+        "height": "30px",
+        "width": "75px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border": "1px solid #3d77c1",
+        "background-color": "#5d97e1",
+        "color": "#FFF",
+        "margin-right": "20px",
+        "box-shadow": "0px 0px 3px #5d97e1"
+    },
+    "formActionNode": {
+        "height": "30px",
+        "width": "75px",
+        "cursor": "pointer",
+        "float": "left",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "color": "#FFF",
+        "margin-left": "10px",
+        "margin-right": "20px"
+    }
+}

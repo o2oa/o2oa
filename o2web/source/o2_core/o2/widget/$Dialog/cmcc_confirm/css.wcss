@@ -1,0 +1,92 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#3C76B7",
+		"border-width": "0px",
+	    "overflow": "hidden",
+		"background-color": "#fff",
+		"box-shadow": "0px 0px 20px #999999",
+		"z-index": "20000",
+
+		"padding": "3px" ,
+
+		"opacity": 0
+	},
+	"to": {
+		"background-color": "#fff",
+		"border-style": "solid",
+		"border-color": "#3C76B7",
+		"border-width": "0px",
+		"box-shadow": "0px 0px 20px #999999",
+		"z-index": "20000",
+		"overflow": "hidden",
+		"font-size": "14px",
+		"height": "60",
+		"padding": "0px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"opacity": 1
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.5,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "19999",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#a1a1a1"
+	},
+	"button": {
+	  "border" : "1px solid #1E9FFF",
+	  "background-color" : "#1E9FFF",
+	  "color" : "#fff",
+	  "height" : "28px",
+	  "line-height" : "28px",
+	  "margin": "10px 5px",
+	  "padding" : "0px 15px",
+	  "border-radius" : "2px",
+	  "font-weight" : "400",
+	  "cursor" : "pointer"
+	},
+	"button": {
+	  "border" : "1px solid #1E9FFF",
+	  "background-color" : "#1E9FFF",
+	  "color" : "#fff",
+	  "height" : "28px",
+	  "line-height" : "28px",
+	  "margin": "10px 5px",
+	  "padding" : "0px 15px",
+	  "border-radius" : "2px",
+	  "font-weight" : "400",
+	  "cursor" : "pointer"
+	},
+  	"cancelButton" : {
+	  "border" : "1px solid #f1f4f9",
+	  "background-color" : "#f1f4f9",
+	  "color" : "#333",
+	  "height" : "28px",
+	  "line-height" : "28px",
+	  "margin": "10px 5px",
+	  "padding" : "0px 15px",
+	  "border-radius" : "2px",
+	  "font-weight" : "400",
+	  "cursor" : "pointer"
+	},
+	"closeAction": {
+	    "height": "32px",
+	    "width": "32px",
+	    "float": "right",
+	    "cursor": "pointer",
+	    "background": "url("+o2.session.path+"/widget/$Dialog/cmcc/img/close.png) center center no-repeat",
+	}
+}

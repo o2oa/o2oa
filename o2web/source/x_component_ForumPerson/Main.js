@@ -472,7 +472,6 @@ MWF.xApplication.ForumPerson.Explorer = new Class({
 		this.view = new MWF.xApplication.ForumPerson.SubjectView( this.viewContainer, this.app, this, {
 			templateUrl : this.parent.path+"listItem.json",
 			pagingEnable : true,
-			holdMouseDownStyles : true,
 			pagingPar : {
 				//currentPage : this.options.viewPageNum,
 				countPerPage : 30,
@@ -503,7 +502,6 @@ MWF.xApplication.ForumPerson.Explorer = new Class({
 		this.view = new MWF.xApplication.ForumPerson.ReplyView( this.viewContainer, this.app, this, {
 			templateUrl : this.parent.path+"listItemReply.json",
 			pagingEnable : true,
-			holdMouseDownStyles : true,
 			pagingPar : {
 				//currentPage : this.options.viewPageNum,
 				countPerPage : 30,

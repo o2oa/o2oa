@@ -93,5 +93,14 @@
 
   "updateApplicationIcon": {"uri": "/jaxrs/application/{id}/icon", "method": "PUT", "enctype": "formData"},
 
+  "listProjection": {"uri": "/jaxrs/projection/list/application/{id}"},
+  "getProjection": {"uri": "/jaxrs/projection/{flag}"},
+  "addProjection": {"uri": "/jaxrs/projection", "method": "POST"},
+  "removeProjection": {"uri": "/jaxrs/projection/{id}", "method": "DELETE"},
+  "updataProjection": {"uri": "/jaxrs/projection/{id}", "method": "PUT"},
+  "runProjection": {"uri": "/jaxrs/projection/{flag}/execute"},
+
+
+
   "clazz": "x_processplatform_assemble_designer"
 }

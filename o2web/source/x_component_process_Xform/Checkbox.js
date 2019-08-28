@@ -47,6 +47,8 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		});
 		this.setOptions();
 	},
+    _loadDomEvents: function(){
+    },
     _loadEvents: function(){
         Object.each(this.json.events, function(e, key){
             if (e.code){
@@ -61,6 +63,20 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 }
             }
         }.bind(this));
+    },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            var inputs = this.node.getElements("input");
+            inputs.each(function(input){
+                input.addEvent(key, function(event){
+                    return (fun) ? fun(this, event) : null;
+                }.bind(this));
+            }.bind(this));
+        }
     },
     resetOption: function(){
         this.node.empty();
@@ -92,7 +108,18 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                     "showText": text,
                     "styles": this.json.buttonStyles
                 }).inject(this.node);
-                radio.appendText(text, "after");
+                //radio.appendText(text, "after");
+
+                var textNode = new Element( "span", {
+                    "text" : text,
+                    "styles" : { "cursor" : "default" }
+                }).inject(this.node);
+                textNode.addEvent("click", function( ev ){
+                    if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
+                    this.radio.checked = ! this.radio.checked;
+                    this.radio.fireEvent("change");
+                    this.radio.fireEvent("click");
+                }.bind( {radio : radio} ) );
 
                 radio.addEvent("click", function(){
                     this.validationMode();

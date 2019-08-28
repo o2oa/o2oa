@@ -2,7 +2,9 @@
 MWF.require("MWF.widget.Tree", null, false);
 MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	Extends: MWF.APP$Module,
-
+    options: {
+        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
+    },
 	_loadUserInterface: function(){
         // if (this.form.json.mode == "Mobile"){
         //     this.node.empty();
@@ -13,7 +15,12 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
             this.toolbarNode.empty();
 
             MWF.require("MWF.widget.Toolbar", function(){
-                this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+                this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {
+                    "style": this.json.style,
+                    "onPostLoad" : function(){
+                        this.fireEvent("afterLoad");
+                    }.bind(this)
+                }, this);
                 if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
                 //alert(this.readonly)
 
@@ -48,7 +55,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                             this.setToolbars(json, this.toolbarNode, this.readonly, true);
                             this.setCustomToolbars(this.json.tools, this.toolbarNode);
                             this.toolbarWidget.load();
-                        }.bind(this), false);
+                        }.bind(this), null);
                     }
                 }
 
@@ -84,7 +91,11 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	},
 
     setCustomToolbars: function(tools, node){
-	    debugger;
+        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var iconPath = "";
+        if( this.json.customIconStyle ){
+            iconPath = this.json.customIconStyle+"/";
+        }
         tools.each(function(tool){
             var flag = true;
             if (this.readonly){
@@ -105,11 +116,14 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                     var actionNode = new Element("div", {
                         "id": tool.id,
                         "MWFnodetype": tool.type,
-                        "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                        "MWFButtonImage": path+""+this.form.options.style+"/custom/"+iconPath+tool.img,
                         "title": tool.title,
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
                     }).inject(node);
+                    if( tool.properties ){
+                        actionNode.set(tool.properties);
+                    }
                     if (tool.actionScript){
                         actionNode.store("script", tool.actionScript);
                     }
@@ -123,6 +137,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     },
 
     setToolbarItem: function(tool, node, readonly, noCondition){
+        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
         var flag = true;
         if (tool.control){
             flag = this.form.businessData.control[tool.control]
@@ -142,11 +157,15 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
             var actionNode = new Element("div", {
                 "id": tool.id,
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                "MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
+            if( tool.properties ){
+                actionNode.set(tool.properties);
+            }
             if (tool.sub){
                 var subNode = node.getLast();
                 this.setToolbars(tool.sub, subNode, readonly, noCondition);

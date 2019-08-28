@@ -26,6 +26,7 @@ MWF.xApplication.cms.Column.LP = {
 		"descriptionLabel" : "栏目描述",
 		"sortLabel" : "栏目排序",
 		"iconLabel" : "栏目图标",
+		"typeLabel" : "栏目类型",
 		"cancel" : "取消",
 		"ok" : "确定",
 		"inputName":"请输入栏目名称",

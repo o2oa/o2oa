@@ -48,6 +48,9 @@
   //data: {"unitList": []}
   "listPersonWithUnitDirect": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织直接成员的人员对象
   "listPersonWithUnitNested": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织嵌套成员的人员对象
+
+  "listPersonWithAttributeValue": {"uri": "/jaxrs/person/list/personattribute", "method": "POST"}, //根据属性查询人员
+  "listPersonWithAttribute": {"uri": "/jaxrs/person/list/personattribute/object", "method": "POST"}, //根据属性查询人员对象
   //*****************************************************************
 
 

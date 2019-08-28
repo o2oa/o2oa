@@ -25,7 +25,7 @@
         <div style="border-top: 1px solid #999; margin-top:10px">
             <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
             <div class="MWFDataData" id="text{$.pid}dataDataEditor">
-                <div style="display:block" id="text{$.pid}dataPathSelectedProcessArea">
+                <div style="display:text{($.vtype=='process')?'block':'none'}" id="text{$.pid}dataPathSelectedProcessArea" class="text{$.vid}dataPathSelectedProcessArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle">选择数据:</td>
@@ -58,7 +58,7 @@
                         </tr>
                     </table>
                 </div>
-                <div style="display:none" id="text{$.pid}dataPathSelectedCMSArea">
+                <div style="display:text{($.vtype=='cms')?'block':'none'}" id="text{$.pid}dataPathSelectedCMSArea" class="text{$.vid}dataPathSelectedCMSArea">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle">选择数据:</td>
@@ -122,6 +122,13 @@
                     <td class="editTableValue">
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>是
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>否
+                    </td>
+                </tr>
+                <tr class="MWFColumnExportGroup">
+                    <td class="editTableTitle">HTML值:</td>
+                    <td class="editTableValue">
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="true" text{($.isHtml)===true?'checked':''}/>是
+                        <input class="MWFWorkDataCheck" name="isHtml" type="radio" value="false" text{($.isHtml)!==true?'checked':''}/>否
                     </td>
                 </tr>
             </table>

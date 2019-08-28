@@ -72,6 +72,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.work.job;
             editorConfig.referenceType = "processPlatformJob";
+            editorConfig.extraPlugins = ['mathjax','pagebreak'];
             
             // CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";
             // CKEDITOR.plugins.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/plugins/";
@@ -293,7 +294,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
         }
     },
     ecnet: function(data){
-        debugger;
         //this.editor.document.$.body.innerText
         var editorFrame = this.editor.document.$.defaultView.frameElement;
         //var data = this.editor.getData();
@@ -360,6 +360,11 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             }
         }.bind(this));
 
+    },
+    addModuleEvent: function(key, fun){
+        this.editor.on(key, function(event){
+            return (fun) ? fun(this, event) : null;
+        }.bind(this), this);
     },
     _loadValue: function(){
         var data = this._getBusinessData();

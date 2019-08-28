@@ -167,7 +167,7 @@ MWF.xApplication.process.ProcessManager.widget.ApplicationSelector.Application =
             "styles": this.css.applicationItemNode
         });
 
-        this.loadTopNode();
+        //this.loadTopNode();
 
         this.loadIconNode();
 

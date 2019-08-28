@@ -1,0 +1,31 @@
+<div class="o2_process_AppExp_item_titleArea">
+    <div class="o2_process_AppExp_item_titleNode">
+        <div class="o2_process_AppExp_item_icon"></div>
+        <div class="o2_process_AppExp_item_titleContent">
+            <div class="o2_process_AppExp_item_titleName">{{ $.data.name }}</div>
+            <div class="o2_process_AppExp_item_titleDescription">{{ $.data.description || $.lp.unDescription }}</div>
+        </div>
+    </div>
+</div>
+<div class="o2_process_AppExp_item_contentArea">
+    <div class="o2_process_AppExp_item_contentNode">
+        <div class="o2_process_AppExp_item_contentView">
+            <div class="o2_process_AppExp_item_contentTitle">【{{ $.lp.view}}】</div>
+            <div class="o2_process_AppExp_item_contentList o2_process_AppExp_item_contentViewList"></div>
+        </div>
+        <div class="o2_process_AppExp_item_contentStat">
+            <div class="o2_process_AppExp_item_contentTitle">【{{ $.lp.stat}}】</div>
+            <div class="o2_process_AppExp_item_contentList o2_process_AppExp_item_contentStatList"></div>
+        </div>
+    </div>
+    {{ if $.canManage }}
+    <div class="o2_process_AppExp_item_ActionArea">
+        <div class="o2_process_AppExp_item_Action_delete"></div>
+        <div class="o2_process_AppExp_item_Action_export"></div>
+    </div>
+    {{ end if }}
+</div>
+<div class="o2_process_AppExp_item_categoryNode"></div>
+<div class="o2_process_AppExp_item_newNode">
+    <div class="o2_process_AppExp_item_newNode_text">NEW</div>
+</div>

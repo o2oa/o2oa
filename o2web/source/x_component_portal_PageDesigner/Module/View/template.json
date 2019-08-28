@@ -8,6 +8,30 @@
     "select": "no",  //single, multi
     "isOpen": "yes",
 	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"load" : {
+		  "code": "",
+		  "html": ""
+		},
+	  	"loadView" : {
+		  "code": "",
+		  "html": ""
+		},
+		"select": {
+		  "code": "",
+		  "html": ""
+		},
+		"openDocument": {
+		  "code": "",
+		  "html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""
@@ -53,14 +77,6 @@
 			"html": ""
 		},
 		"blur": {
-			"code": "",
-			"html": ""
-		},
-        "select": {
-          "code": "",
-          "html": ""
-        },
-		"openDocument": {
 			"code": "",
 			"html": ""
 		}

@@ -7,7 +7,9 @@ MWF.xApplication.process.Work.Processor = new Class({
 	options: {
 		"style": "default",
         "mediaNode": null,
-        "opinion": ""
+        "opinion": "",
+        "tabletWidth" : 0,
+        "tabletHeight" : 0
 	},
 	
 	initialize: function(node, task, options){
@@ -127,6 +129,10 @@ MWF.xApplication.process.Work.Processor = new Class({
         //     }.bind(this));
         // }
 
+        if (layout.mobile){
+            this.selectIdeaNode.inject(this.routeOpinionArea, "after");
+        }
+
         MWF.require("MWF.widget.ScrollBar", function(){
             new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
                 "style":"small", "where": "before", "distance": 30, "friction": 4, "indent": false,	"axis": {"x": false, "y": true}
@@ -134,6 +140,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         }.bind(this));
 
         MWF.require("MWF.widget.UUID", function(){
+            debugger;
             MWF.UD.getDataJson("idea", function(json){
                 if (json){
                     if (json.ideas){
@@ -201,8 +208,12 @@ MWF.xApplication.process.Work.Processor = new Class({
         var y = size.y;
         var x = size.x;
         if (!layout.mobile){
-            y = Math.max(size.y, 320);
-            x = Math.max(size.x, 480);
+
+            x = Math.max( this.options.tabletWidth || x , 500);
+            y = Math.max(this.options.tabletHeight ? (parseInt(this.options.tabletHeight) + 110) : y, 320);
+
+            //y = Math.max(size.y, 320);
+            //x = Math.max(size.x, 480);
         }
         // for (k in this.node.style){
         //     if (this.node.style[k]) this.handwritingNode.style[k] = this.node.style[k];
@@ -213,6 +224,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             "width": ""+x+"px",
             "z-index": zidx+1
         });
+        if( layout.mobile ){
+            debugger;
+            this.handwritingNode.addEvent('touchmove' , function(e){
+                e.preventDefault();
+            })
+        }
         this.handwritingNode.position({
             "relativeTo": this.options.mediaNode || this.node,
             "position": "center",
@@ -227,6 +244,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         MWF.require("MWF.widget.Tablet", function () {
             this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, {
                 "style": "default",
+                "contentWidth" : this.options.tabletWidth || 0,
+                "contentHeight" : this.options.tabletHeight || 0,
                 "onSave" : function( base64code, base64Image, imageFile ){
                     this.handwritingFile = imageFile;
                     this.handwritingNode.hide();
@@ -253,6 +272,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                 "styles": this.css.selectIdeaItemNode,
                 "text": idea,
                 "events": {
+                    "click": function(){
+                        if (_self.inputTextarea.get("value")==MWF.xApplication.process.Work.LP.inputText){
+                            _self.inputTextarea.set("value", this.get("text"));
+                        }else{
+                            _self.inputTextarea.set("value", _self.inputTextarea.get("value")+", "+this.get("text"));
+                        }
+                    },
                     "dblclick": function(){
                         if (_self.inputTextarea.get("value")==MWF.xApplication.process.Work.LP.inputText){
                             _self.inputTextarea.set("value", this.get("text"));

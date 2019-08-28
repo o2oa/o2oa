@@ -36,6 +36,7 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Stat"],
         ["process.Xform", "ImageClipper"],
         ["process.Xform", "Subform"],
+        ["process.Xform", "Widget"],
         ["process.Xform", "Source"],
         ["process.Xform", "SourceText"],
         ["process.Xform", "SubSource"]

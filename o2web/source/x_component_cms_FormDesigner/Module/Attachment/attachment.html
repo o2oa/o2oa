@@ -69,11 +69,21 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许使用的附件样式:</td>
+                <td class="editTableValue">
+                    <input type="checkbox" name="availableListStyles" text{(!$.availableListStyles || $.availableListStyles.indexOf('list')!=-1)?'checked':''} value="list">列表
+                    <input type="checkbox" name="availableListStyles" text{(!$.availableListStyles || $.availableListStyles.indexOf('seq')!=-1)?'checked':''} value="seq">序列
+                    <input type="checkbox" name="availableListStyles" text{(!$.availableListStyles || $.availableListStyles.indexOf('icon')!=-1)?'checked':''} value="icon">图标
+                    <input type="checkbox" name="availableListStyles" text{(!$.availableListStyles || $.availableListStyles.indexOf('preview')!=-1)?'checked':''} value="preview">预览
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">附件样式:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="listStyle" text{($.listStyle=='list')?'checked':''} type="radio" value="list"/>列表 </br>
                     <input class="editTableRadio" name="listStyle" text{($.listStyle=='icon')?'checked':''} type="radio" value="icon"/>图标 </br>
-                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='preview')?'checked':''} type="radio" value="preview"/>预览
+                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='preview')?'checked':''} type="radio" value="preview"/>预览</br>
+                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='sequence')?'checked':''} type="radio" value="sequence"/>序列
                 </td>
             </tr>
             <tr>

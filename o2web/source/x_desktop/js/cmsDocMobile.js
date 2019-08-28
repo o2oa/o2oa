@@ -59,8 +59,14 @@ o2.addReady(function(){
                         //});
                     }
                 };
+                layout.addEvent = function(){};
                 layout.close = function(){
-                    $(document.body).addEvent("click", function(){window.close();});
+                    if (window.o2android && window.o2android.closeDocumentWindow){
+                        window.o2android.closeDocumentWindow('close');
+                    }
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow){
+                        window.webkit.messageHandlers.closeDocumentWindow.postMessage('close');
+                    }
                 };
                 layout._loadCss = function(){
                     var key = encodeURIComponent(this.cssPath);
@@ -97,10 +103,11 @@ o2.addReady(function(){
                 };
 
                 layout.loadDocument = function(options){
-                    this.action.viewDocument( options.id, function(document){
+                    // this.action.viewDocument( options.id, function(document){
+                    this.action.getDocument( options.id, function(document){
                         if (this.mask) this.mask.hide();
                         this.parseData(document.data);
-                        if( !this.formId || this.formId=="" ){
+                        if( !this.formId || this.formId==="" ){
                             this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
                         }else{
                             this.loadForm( this.formId );
@@ -136,7 +143,7 @@ o2.addReady(function(){
                         }
                         //this.listAttachment();
                         if (this.mask) this.mask.hide();
-                        this.attachmentList = [];
+                        // this.attachmentList = [];
                         this.openDocument();
                     }.bind(this), function(error){
                         if (this.mask) this.mask.hide();
@@ -182,22 +189,46 @@ o2.addReady(function(){
                         att.person = att.creatorUid;
                     });
 
-                    this.readonly = true;
+
+                    //控制权限
+                    var isControl = false;
+                    if( data.isAppAdmin ){//应用管理员
+                        isControl = true;
+                    }
+                    if( data.isCategoryAdmin ){//分类管理员
+                        isControl = true;
+                    }
+                    if( data.isManager){//管理员
+                        isControl = true;
+                    }
+                    if( data.isCreator ){//创建者
+                        isControl = true;
+                    }
+                    if( data.isEditor ){ //编辑权限
+                        isControl = true;
+                    }
+                    // if( this.options.readonly ){ //强制只读
+                    //     this.readonly = true;
+                    // }else{
+                    this.readonly = !(isControl && this.document.docStatus === "draft");
+                    // }
 
                     this.formId = this.document.form || this.document.readFormId;
-                    if( this.readonly == true && this.document.readFormId && this.document.readFormId != "" ){
-                        this.formId  = this.document.readFormId;
+                    if( this.readonly === true && this.document.readFormId && this.document.readFormId !== "" ){
+                        this.formId  = this.document.readFormId; //阅读表单
+                    }else {
+                        this.formId = this.document.form;//编辑表单
                     }
 
                     this.control = data.control ||  {
                         "allowRead": true,
-                        "allowPublishDocument": false,
-                        "allowArchiveDocument" : false,
-                        "allowRedraftDocument" : false,
-                        "allowSave": false,
+                        "allowPublishDocument": isControl && this.document.docStatus === "draft",
+                        "allowSave": isControl && this.document.docStatus === "published",
                         "allowPopularDocument": false,
-                        "allowEditDocument":  false,
-                        "allowDeleteDocument":  false
+                        "allowEditDocument":  isControl ,
+                        "allowDeleteDocument":  isControl ,
+                        "allowArchiveDocument" : false,
+                        "allowRedraftDocument" : false
                     };
                 };
                 layout.openDocument = function(){
@@ -205,9 +236,9 @@ o2.addReady(function(){
                         MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
                             this.appForm = new MWF.CMSForm(this.node, this.form, {
                                 "readonly": this.readonly,
-                                "autoSave" : false,
+                                "autoSave" : !this.readonly,
                                 "saveOnClose" : false,
-                                "showAttachment" : false,
+                                "showAttachment" : true,
                                 "onPostPublish" : null
                             });
                             this.appForm.businessData = {
@@ -218,11 +249,27 @@ o2.addReady(function(){
                                 "status": {
                                     //"readonly": (this.options.readonly) ? true : false
                                     "readonly": this.readonly
+                                },
+                                //work.job 图片编辑器控件 使用上传图片到云盘的关联id
+                                "work": {
+                                    "referencetype": "cmsDocument",
+                                    "job": this.document.id
                                 }
                             };
                             this.appForm.documentAction = this.action;
                             this.appForm.app = this;
-                            this.appForm.load();
+                            this.appForm.load(function(){
+                                console.log('加载表单完成。。。。。。。。。。。。。');
+                                //告诉移动端表单加载完成
+                                if (window.o2android && window.o2android.cmsFormLoaded){
+                                    layout.appForm = this.appForm;
+                                    window.o2android.cmsFormLoaded(JSON.stringify(this.control));
+                                }
+                                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded){
+                                    layout.appForm = this.appForm;
+                                    window.webkit.messageHandlers.cmsFormLoaded.postMessage(JSON.stringify(this.control));
+                                }
+                            }.bind(this));
                         }.bind(this));
                     }
                 };

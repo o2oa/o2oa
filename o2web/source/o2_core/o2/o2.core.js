@@ -55,9 +55,9 @@
 
     var _loaded = {};
 
-    var _requireJs = function(url, callback, async, compression){
+    var _requireJs = function(url, callback, async, compression, module){
         var key = encodeURIComponent(url);
-        if (_loaded[key]){o2.runCallback(callback, "success"); return "";}
+        if (_loaded[key]){o2.runCallback(callback, "success", [module]); return "";}
 
         var jsPath = (compression || !this.o2.session.isDebugger) ? url.replace(/\.js/, ".min.js") : url;
         jsPath = (jsPath.indexOf("?")!==-1) ? jsPath+"&v="+this.o2.version.v : jsPath+"?v="+this.o2.version.v;
@@ -66,8 +66,8 @@
             url: jsPath, async: async, method: "get",
             onSuccess: function(){
                 //try{
-                    _loaded[key] = true;
-                o2.runCallback(callback, "success");
+                _loaded[key] = true;
+                o2.runCallback(callback, "success", [module]);
                 //}catch (e){
                 //    o2.runCallback(callback, "failure", [e]);
                 //}
@@ -89,13 +89,14 @@
 
         var loadAsync = (async!==false);
 
-        _requireJs(jsPath, callback, loadAsync, compression);
+        _requireJs(jsPath, callback, loadAsync, compression, module);
     };
     var _requireSequence = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
         var m = module.shift();
         fun(m, {
-            "onSuccess": function(){
-                thisLoaded.push(module[i]);
+            "onSuccess": function(m){
+                thisLoaded.push(m);
+                o2.runCallback(callback, "every", [m]);
                 if (module.length){
                     _requireSequence(module, thisLoaded, thisErrorLoaded, callback);
                 }else{
@@ -115,8 +116,9 @@
     var _requireDisarray = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
         for (var i=0; i<module.length; i++){
             fun(module[i], {
-                "onSuccess": function(){
-                    thisLoaded.push(module[i]);
+                "onSuccess": function(m){
+                    thisLoaded.push(m);
+                    o2.runCallback(callback, "every", [m]);
                     if ((thisLoaded.length+thisErrorLoaded.length)===module.length){
                         if (thisErrorLoaded.length){
                             o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
