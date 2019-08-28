@@ -308,6 +308,43 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         return flag;
     },
 
+	_cancelLineEdit: function(){
+		this.isEdit = false;
+
+		var flag = true;
+
+		var griddata = {};
+		var newTr = null;
+
+		if (this.currentEditLine){
+			newTr = this.currentEditLine;
+			griddata = this.currentEditLine.retrieve("data");
+		}else{
+			newTr = new Element("tr").inject(this.editorTr, "before");
+			griddata = {};
+		}
+
+		if (flag){
+			newTr.destroy();
+		}
+		this.currentEditLine = null;
+
+		this._editorTrGoBack();
+
+		// if (this.json.contentStyles){
+		// 	var tds = newTr.getElements("td");
+		// 	tds.setStyles(this.json.contentStyles);
+		// }
+		// if (this.json.actionStyles){
+		// 	newTr.getFirst().setStyles(this.json.actionStyles);
+		// }
+
+		// this._loadBorderStyle();
+		// this._loadZebraStyle();
+		// this._loadSequence();
+
+		this.fireEvent("cancelLineEdit");
+	},
 	_completeLineEdit: function(){
 		//this.currentEditLine.getElemets(td);
         if (!this.editValidation()){

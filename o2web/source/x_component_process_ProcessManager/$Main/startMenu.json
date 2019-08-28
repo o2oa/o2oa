@@ -57,6 +57,14 @@
     "sub": []
   },
   {
+    "title": "数据映射",
+    "id": "1.1",
+    "action": "projectionConfig",
+    "icon": "process_projection.png",
+    "expand": false,
+    "sub": []
+  },
+  {
     "title": "应用属性",
     "id": "1.1",
     "action": "applicationProperty",

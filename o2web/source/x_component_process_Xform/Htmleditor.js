@@ -361,6 +361,11 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
         }.bind(this));
 
     },
+    addModuleEvent: function(key, fun){
+        this.editor.on(key, function(event){
+            return (fun) ? fun(this, event) : null;
+        }.bind(this), this);
+    },
     _loadValue: function(){
         var data = this._getBusinessData();
     },

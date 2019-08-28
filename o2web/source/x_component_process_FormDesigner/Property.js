@@ -68,6 +68,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadHTMLArea();
                     this.loadJSONArea();
                     this.loadFormSelect();
+                    //this.loadPageSelect();
+                    this.loadWidgetSelect();
                     this.loadANNModelSelect();
                     //this.loadViewSelect();
                     this.loadValidation();
@@ -255,7 +257,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 formNodes.each(function(node){
                     var select = new Element("select").inject(node);
                     select.addEvent("change", function(e){
-                        this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value, select);
+                        var value = e.target.options[e.target.selectedIndex].value;
+                        //if( !this.module.checkSubformNested( value ) ){
+                        //    this.designer.notice(MWF.APPPD.LP.checkSubformNestedError, "error", e.target, {
+                        //        x: "right",
+                        //        y: "bottom"
+                        //    });
+                        //}else {
+                            this.setValue(e.target.getParent("div").get("name"), value, select);
+                        //}
                     }.bind(this));
                     this.setFormSelectOptions(node, select);
 
@@ -277,11 +287,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         select.empty();
         var option = new Element("option", {"text": "none"}).inject(select);
         this.forms.each(function(form){
-            var option = new Element("option", {
-                "text": form.name,
-                "value": form.id,
-                "selected": (this.data[name]==form.id)
-            }).inject(select);
+            if( this.form.json.id !== form.id ){
+                var option = new Element("option", {
+                    "text": form.name,
+                    "value": form.id,
+                    "selected": (this.data[name]==form.id)
+                }).inject(select);
+            }
         }.bind(this));
     },
     getFormList: function(callback, refresh){
@@ -294,6 +306,101 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             if (callback) callback();
         }
     },
+
+    loadPageSelect: function(){
+        var pageNodes = this.propertyContent.getElements(".MWFPageSelect");
+        if (pageNodes.length){
+            this.getPageList(function(){
+                pageNodes.each(function(node){
+                    var select = new Element("select").inject(node);
+                    select.addEvent("change", function(e){
+                        var value = e.target.options[e.target.selectedIndex].value;
+                        this.setValue(e.target.getParent("div").get("name"), value, select);
+                    }.bind(this));
+                    this.setPageSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getPageList(function(){
+                            this.setPageSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    setPageSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.pages.each(function(page){
+            if( this.form.json.id !== page.id ){
+                var option = new Element("option", {
+                    "text": page.name,
+                    "value": page.id,
+                    "selected": (this.data[name]==page.id)
+                }).inject(select);
+            }
+        }.bind(this));
+    },
+    getPageList: function(callback, refresh){
+        if (!this.pages || refresh){
+            this.form.designer.actions.listPage(this.form.designer.application.id, function(json){
+                this.pages = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
+    loadWidgetSelect: function(){
+        var widgetNodes = this.propertyContent.getElements(".MWFWidgetSelect");
+        if (widgetNodes.length){
+            this.getWidgetList(function(){
+                widgetNodes.each(function(node){
+                    var select = new Element("select").inject(node);
+                    select.addEvent("change", function(e){
+                        var value = e.target.options[e.target.selectedIndex].value;
+                        this.setValue(e.target.getParent("div").get("name"), value, select);
+                    }.bind(this));
+                    this.setWidgetSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getWidgetList(function(){
+                            this.setWidgetSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    setWidgetSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.widgets.each(function(widget){
+            if( this.form.json.id !== widget.id ){
+                var option = new Element("option", {
+                    "text": widget.name,
+                    "value": widget.id,
+                    "selected": (this.data[name]==widget.id)
+                }).inject(select);
+            }
+        }.bind(this));
+    },
+    getWidgetList: function(callback, refresh){
+        if (!this.widgets || refresh){
+            this.form.designer.actions.listWidget(this.form.designer.application.id, function(json){
+                this.widgets = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
 //	clearStyles: function(node){
 //		node.removeProperty("style");
 //		var subNode = node.getFirst();

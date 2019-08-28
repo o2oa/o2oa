@@ -308,7 +308,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	_setNodeEvent: function(){
-		if (this.form.moduleType!="subform"){
+		if (this.form.moduleType!="subform" && this.form.moduleType!="subpage"){
 			if (!this.isSetEvents){
 				this.node.addEvent("click", function(e){
 					if (!this.form.noSelected) this.selected();
@@ -456,6 +456,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.json.id = this._getNewId();
 		this._createMoveNode();
 		this._setNodeMove(e);
+	},
+	createImmediately: function(data, relativeNode, position, selectDisabled){
+		this.json = data;
+		this.json.id = this._getNewId();
+		this._createMoveNode();
+		this._dragComplete( relativeNode, position, selectDisabled );
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
@@ -736,7 +742,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this._dragCancel();
 		}
 	},
-	_dragComplete: function( relativeNode, position ){
+	_dragComplete: function( relativeNode, position, selectDisabled ){
 		this.setStyleTemplate();
 
 		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
@@ -774,7 +780,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.form.json.moduleList[this.json.id] = this.json;
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
 
-		this.selected();
+		if( !selectDisabled )this.selected();
 	},
 	_resetTreeNode: function(){
 

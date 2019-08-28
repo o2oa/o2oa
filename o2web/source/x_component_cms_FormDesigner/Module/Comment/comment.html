@@ -1,0 +1,81 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">标识:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">Class:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>每页评论数:</b>
+					<input type="text" name="countPerPage" value="text{$.countPerPage}" class="editTableInputNoWidth" style="width: 50px;margin-right:5px;"/>条
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<b>发布后允许修改:</b>
+					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==true)?'checked':''} type="radio" value="true"/>是
+					<input class="editTableRadio" name="isAllowModified" text{($.isAllowModified==false)?'checked':''} type="radio" value="false"/>否
+				</td>
+			</tr>
+		</table>
+
+		<!--<div class="MWFMaplist" name="styles" title="样式"></div>-->
+		<!--<div class="MWFMaplist" name="properties" title="属性"></div>-->
+
+
+		<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+			<!--<tr>-->
+				<!--<td class="editTableTitle">样式:</td>-->
+				<!--<td class="editTableValue">-->
+					<!--<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'none')}"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>表格-->
+					<!--<input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}labelTextStyleValue').setStyle('display', 'block')}"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>文本-->
+				<!--</td>-->
+			<!--</tr>-->
+		<!--</table>-->
+		<!--<div id="text{$.id}labelTextStyleValue" title="格式" style="display: text{(($.mode=='text') || ($.mode=='defalut')) ?'block':'none'}">-->
+			<!--<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>-->
+		<!--</div>-->
+
+		<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+		<!--<tr>-->
+		<!--<td class="editTableTitle">当前<br/>处理人:</td>-->
+		<!--<td class="editTableValue">-->
+		<!--<input class="editTableRadio" name="isTask" text{($.isTask=='true')?'checked':''} type="radio" value="true"/>显示-->
+		<!--<input class="editTableRadio" name="isTask" text{($.isTask=='false')?'checked':''} type="radio" value="false"/>不显示-->
+		<!--</td>-->
+		<!--</tr>-->
+		<!--</table>-->
+
+	</div>
+	<!--<div title="过滤" class="MWFTab">-->
+	<!--<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px">活动过滤</div>-->
+	<!--<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>-->
+
+	<!--<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">处理人过滤</div>-->
+	<!--<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>-->
+
+	<!--<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">路由过滤</div>-->
+	<!--<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>-->
+
+	<!--<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>-->
+	<!--</div>-->
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

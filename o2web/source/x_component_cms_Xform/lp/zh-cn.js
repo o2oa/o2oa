@@ -39,7 +39,22 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
 
     "readedLogTitle" : "阅读记录",
     "readedCountText" : "共{person}人、{count}次阅读",
-    "defaultReadedLogText" : "<font style='color:#00F;'>{person}</font>（{department}） 阅于<font style='color:#00F'>{date}</font>，共<font style='color:#00F'>{count}</font>次"
+    "defaultReadedLogText" : "<font style='color:#00F;'>{person}</font>（{department}） 阅于<font style='color:#00F'>{date}</font>，共<font style='color:#00F'>{count}</font>次",
+
+    "reply" : "评论",
+    "commentTitle" : "评论区域",
+    "commentCountText" : "共{count}次评论",
+
+    "saveComment" : "发表评论",
+    "saveCommentSuccess" : "发布评论成功",
+    "deleteCommentTitle" : "删除评论确认",
+    "deleteCommentText" : "删除评论后不能恢复，您确定要删除此评论？",
+    "deleteCommentSuccess" : "删除评论成功",
+    "commentFormTitle" : "编辑评论",
+    "createCommentSuccess" : "创建评论成功",
+    "updateSuccess" : "更新成功",
+    "save" : "保存"
+
     //"at" : "阅于",
     //"readdDocument" : "，",
     //"historyRead" : "共",

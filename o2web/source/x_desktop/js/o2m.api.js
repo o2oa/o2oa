@@ -35,7 +35,7 @@
     log: function(message) {
       window.o2android&&window.o2android.o2mLog ? window.o2android.o2mLog(message) : window.webkit.messageHandlers.o2mLog.postMessage(message);
     }
-  }
+  };
 
 /** ***** BEGIN NOTIFICATION BLOCK *****
   notification 模块   
@@ -54,21 +54,20 @@
   var _notification_post = function(body, onFail) {
     if (body == null) {
       if (onFail && typeof onFail === "function") {
-        onFail("参数异常！")
+        onFail("参数异常！");
         return
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mNotification&&window.o2mNotification.postMessage) || (window.webkit.messageHandlers.o2mNotification)) {
+    if ((window.o2mNotification && window.o2mNotification.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mNotification)) {
       window.o2mNotification&&window.o2mNotification.postMessage ? window.o2mNotification.postMessage(message) : window.webkit.messageHandlers.o2mNotification.postMessage(message);
     }else {
       if (onFail && typeof onFail === "function") {
-        onFail("请在O2OA移动端使用！")
+        onFail("请在O2OA移动端使用！");
         return
       }
     }
-   
-  }
+  };
 
   // notification.alert
   this.o2m.notification.alertSuccess = function(){
@@ -189,7 +188,7 @@
       }
     };
     _notification_post(body, onFail);
-  }
+  };
   this.o2m.notification.vibrate = _o2m_n_vibrate;
 
   //notification.toast
@@ -217,7 +216,7 @@
       }
     };
     _notification_post(body, onFail);
-  }
+  };
   this.o2m.notification.toast = _o2m_n_toast;
 
   //notification.actionSheet
@@ -251,7 +250,7 @@
       }
     };
     _notification_post(body, onFail);
-  }
+  };
   this.o2m.notification.actionSheet = _o2m_n_actionSheet;
 
   //notification.showLoading
@@ -273,7 +272,7 @@
       }
     };
     _notification_post(body, onFail);
-  }
+  };
   this.o2m.notification.showLoading = _o2m_n_showLoading;
 
   //notification.hideLoading
@@ -324,26 +323,27 @@
 
 this.o2m.util = {
   date: {},
-  calendar: {}
+  calendar: {},
+  device:{},
+  navigation:{}
 };
 
 var _util_post = function(body, onFail) {
   if (body == null) {
     if (onFail && typeof onFail === "function") {
-      onFail("参数异常！")
-      return
+      onFail("参数异常！");
+      return;
     }
   }
   var message = JSON.stringify(body);
-  if ((window.o2mUtil&&window.o2mUtil.postMessage) || (window.webkit.messageHandlers.o2mUtil)) {
+  if ((window.o2mUtil&&window.o2mUtil.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mUtil)) {
     window.o2mUtil&&window.o2mUtil.postMessage ? window.o2mUtil.postMessage(message) : window.webkit.messageHandlers.o2mUtil.postMessage(message);
   }else {
     if (onFail && typeof onFail === "function") {
-      onFail("请在O2OA移动端使用！")
-      return
+      onFail("请在O2OA移动端使用！");
     }
   }
-}
+};
 
 //o2m.util.date.datePicker
 this.o2m.util.date.datePickerSuccess = function(result) {
@@ -364,7 +364,7 @@ var _o2m_u_date_datePicker = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.date.datePicker = _o2m_u_date_datePicker;
 
 //o2m.util.date.timePicker
@@ -386,7 +386,7 @@ var _o2m_u_date_timePicker = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.date.timePicker = _o2m_u_date_timePicker;
 
 
@@ -410,7 +410,7 @@ var _o2m_u_date_dateTimePicker = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.date.dateTimePicker = _o2m_u_date_dateTimePicker;
 
 
@@ -434,7 +434,7 @@ var _o2m_u_calendar_chooseOneDay = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.calendar.chooseOneDay = _o2m_u_calendar_chooseOneDay;
 
 
@@ -457,7 +457,7 @@ var _o2m_u_calendar_chooseDateTime = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.calendar.chooseDateTime = _o2m_u_calendar_chooseDateTime;
 
 
@@ -482,7 +482,7 @@ var _o2m_u_calendar_chooseInterval = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.calendar.chooseInterval = _o2m_u_calendar_chooseInterval;
 
 
@@ -504,7 +504,7 @@ var _o2m_u_device_getPhoneInfo = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.device.getPhoneInfo = _o2m_u_device_getPhoneInfo;
 
 
@@ -526,7 +526,7 @@ var _o2m_u_device_scan = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.device.scan = _o2m_u_device_scan;
 
 
@@ -549,7 +549,7 @@ var _o2m_u_navigation_setTitle = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.navigation.setTitle = _o2m_u_navigation_setTitle;
 
 
@@ -570,7 +570,7 @@ var _o2m_u_navigation_close = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.navigation.close = _o2m_u_navigation_close;
 
 
@@ -591,8 +591,196 @@ var _o2m_u_navigation_goBack = function(c) {
     }
   };
   _util_post(body, onFail);
-}
+};
 this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
+
+
+
+
+  /** ***** BEGIN BIZ BLOCK *****
+   biz 模块
+   contact
+   o2m.biz.contact.PersonPicker
+   o2m.biz.contact.IdentityPicker
+   o2m.biz.contact.departmentsPicker
+   o2m.biz.contact.ComplexPicker
+   o2m.biz.contact.GroupPicker
+
+   * ***** END UTIL BLOCK ******/
+
+  this.o2m.biz = {
+    contact: {}
+  };
+
+  var _biz_post = function(body, onFail) {
+    if (body == null) {
+      if (onFail && typeof onFail === "function") {
+        onFail("参数异常！");
+        return;
+      }
+    }
+    var message = JSON.stringify(body);
+    if ((window.o2mBiz&&window.o2mBiz.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mBiz)) {
+      window.o2mBiz&&window.o2mBiz.postMessage ? window.o2mBiz.postMessage(message) : window.webkit.messageHandlers.o2mBiz.postMessage(message);
+    }else {
+      if (onFail && typeof onFail === "function") {
+        onFail("请在O2OA移动端使用！");
+      }
+    }
+  };
+
+
+//o2m.biz.contact.departmentsPicker
+  this.o2m.biz.contact.departmentsPickerSuccess = function(result) {
+    console.log("biz contact departmentsPicker back, result:"+result);
+  };
+  var _o2m_b_contact_department_picker = function(c) {
+    var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+    var onFail  = c&&c.onFail ? c.onFail : null;
+    if(onSuccess && typeof onSuccess === "function"){
+      o2m.biz.contact.departmentsPickerSuccess  = onSuccess;
+    }
+    var topList = c&&c.topList ? c.topList : [];
+    var orgType = c&&c.orgType ? c.orgType : "";
+    var multiple = c&&c.multiple ? c.multiple : false;
+    var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
+    var pickedDepartments = c&&c.pickedDepartments ? c.pickedDepartments : [];
+    var body = {
+      type: "contact.departmentPicker",
+      callback: "o2m.biz.contact.departmentsPickerSuccess",
+      data: {
+        topList: topList,
+        orgType: orgType,
+        multiple: multiple,
+        maxNumber: maxNumber,
+        pickedDepartments: pickedDepartments,
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  this.o2m.biz.contact.departmentsPicker = _o2m_b_contact_department_picker;
+
+
+//o2m.biz.contact.IdentityPicker
+  this.o2m.biz.contact.IdentityPickerSuccess = function(result) {
+    console.log("biz contact IdentityPicker back, result:"+result);
+  };
+  var _o2m_b_contact_identity_picker = function(c) {
+    var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+    var onFail  = c&&c.onFail ? c.onFail : null;
+    if(onSuccess && typeof onSuccess === "function"){
+      o2m.biz.contact.IdentityPickerSuccess  = onSuccess;
+    }
+    var topList = c&&c.topList ? c.topList : [];
+    var multiple = c&&c.multiple ? c.multiple : false;
+    var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
+    var pickedIdentities = c&&c.pickedIdentities ? c.pickedIdentities : [];
+    var duty = c&&c.duty ? c.duty : [];
+    var body = {
+      type: "contact.identityPicker",
+      callback: "o2m.biz.contact.IdentityPickerSuccess",
+      data: {
+        topList: topList,
+        multiple: multiple,
+        maxNumber: maxNumber,
+        pickedIdentities: pickedIdentities,
+        duty: duty,
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  this.o2m.biz.contact.IdentityPicker = _o2m_b_contact_identity_picker;
+
+
+
+//o2m.biz.contact.GroupPicker
+  this.o2m.biz.contact.GroupPickerSuccess = function(result) {
+    console.log("biz contact GroupPicker back, result:"+result);
+  };
+  var _o2m_b_contact_group_picker = function(c) {
+    var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+    var onFail  = c&&c.onFail ? c.onFail : null;
+    if(onSuccess && typeof onSuccess === "function"){
+      o2m.biz.contact.GroupPickerSuccess  = onSuccess;
+    }
+    var multiple = c&&c.multiple ? c.multiple : false;
+    var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
+    var pickedGroups = c&&c.pickedGroups ? c.pickedGroups : [];
+    var body = {
+      type: "contact.groupPicker",
+      callback: "o2m.biz.contact.GroupPickerSuccess",
+      data: {
+        multiple: multiple,
+        maxNumber: maxNumber,
+        pickedGroups: pickedGroups,
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  this.o2m.biz.contact.GroupPicker = _o2m_b_contact_group_picker;
+
+
+//o2m.biz.contact.PersonPicker
+  this.o2m.biz.contact.PersonPickerSuccess = function(result) {
+    console.log("biz contact PersonPicker back, result:"+result);
+  };
+  var _o2m_b_contact_person_picker = function(c) {
+    var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+    var onFail  = c&&c.onFail ? c.onFail : null;
+    if(onSuccess && typeof onSuccess === "function"){
+      o2m.biz.contact.PersonPickerSuccess  = onSuccess;
+    }
+    var multiple = c&&c.multiple ? c.multiple : false;
+    var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
+    var pickedPersonList = c&&c.pickedPersonList ? c.pickedPersonList : [];
+    var body = {
+      type: "contact.personPicker",
+      callback: "o2m.biz.contact.PersonPickerSuccess",
+      data: {
+        multiple: multiple,
+        maxNumber: maxNumber,
+        pickedPersonList: pickedPersonList,
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  this.o2m.biz.contact.PersonPicker = _o2m_b_contact_person_picker;
+
+
+//o2m.biz.contact.ComplexPicker
+  this.o2m.biz.contact.ComplexPickerSuccess = function(result) {
+    console.log("biz contact ComplexPicker back, result:"+result);
+  };
+  var _o2m_b_contact_complex_picker = function(c) {
+    var onSuccess  = c&&c.onSuccess ? c.onSuccess : null;
+    var onFail  = c&&c.onFail ? c.onFail : null;
+    if(onSuccess && typeof onSuccess === "function"){
+      o2m.biz.contact.ComplexPickerSuccess  = onSuccess;
+    }
+    var pickMode = c&&c.pickMode ? c.pickMode : [];
+    var multiple = c&&c.multiple ? c.multiple : false;
+    var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
+    var topList = c&&c.topList ? c.topList : [];
+    var orgType = c&&c.orgType ? c.orgType : "";
+    var duty = c&&c.duty ? c.duty : [];
+    var pickedList = c&&c.pickedList ? c.pickedList : [];
+    var body = {
+      type: "contact.complexPicker",
+      callback: "o2m.biz.contact.ComplexPickerSuccess",
+      data: {
+        pickMode: pickMode,
+        multiple: multiple,
+        maxNumber: maxNumber,
+        topList: topList,
+        orgType: orgType,
+        duty: duty,
+        pickedList: pickedList,
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  this.o2m.biz.contact.ComplexPicker = _o2m_b_contact_complex_picker;
+
 
 
 })();

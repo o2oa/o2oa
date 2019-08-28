@@ -111,17 +111,17 @@
 		  </tr>
 		</table>
 
-		<table id="text{$.pid}handwritingSize" style="display: text{ ($.mode!=='text') ?'block':'none'}"
+		<table id="text{$.pid}handwritingSize" style="display: text{ ($.mode!=='text') ?'':'none'}"
 			   width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
-				<td colspan="2" class="editTableValue"><b>手写意见宽度:</b>
-					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" style="width: 50px;" />px
+				<td class="editTableValue"><b>手写意见宽度:</b>
+					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
 					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" class="editTableValue"><b>手写意见高度:</b>
-					<input type="text" name="handwritingHeight" value="text{$.handwritingHeight}" style="width: 50px;" />px
+				<td class="editTableValue"><b>手写意见高度:</b>
+					<input type="text" name="handwritingHeight" value="text{$.handwritingHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
 					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
 				</td>
 			</tr>

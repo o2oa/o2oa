@@ -12,14 +12,15 @@ MWF.O2Selector = new Class({
         "units": [],
         "unitType": "",
         "values": [],
-        "exclude" : []
+        "exclude" : [],
+        "categoryType": "unit"
     },
     initialize: function(container, options){
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.setOptions(options);
         this.container = container;
 
-        if( this.options.types && typeOf(this.options.types) === "array" ){
+        if( this.options.types && typeOf(this.options.types) === "array" && this.options.types.length > 0 ){
             MWF.xDesktop.requireApp("Selector", "MultipleSelector", function() {
                 this.selector = new MWF.xApplication.Selector.MultipleSelector(this.container, this.options );
                 this.selector.load();
@@ -32,7 +33,7 @@ MWF.O2Selector = new Class({
                         this.selector = new MWF.xApplication.Selector.UnitWithType(this.container, options);
                         this.selector.load();
                     }.bind(this));
-                }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
+                }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length) && this.options.categoryType.toLowerCase()==="duty"){
                     MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", function(){
                         this.selector = new MWF.xApplication.Selector.IdentityWidthDuty(this.container, options);
                         this.selector.load();

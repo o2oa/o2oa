@@ -296,8 +296,11 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
+        if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.searchContainer || this.node );
         this.viewAreaNode = new Element("div.viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.node);
+        this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
     //loadData: function(){
     //    if (this.gridJson.length){

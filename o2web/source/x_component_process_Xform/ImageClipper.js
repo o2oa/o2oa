@@ -53,10 +53,15 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
                     this.validation();
                     o2.imageClipperCallback = null;
                 }.bind(this);
+                // 兼容cms编辑表单
+                var referencetype = "processPlatformJob";
+                if(this.form.businessData.work && this.form.businessData.work.referencetype) {
+                    referencetype = this.form.businessData.work.referencetype
+                }
                 var jsonString = JSON.stringify({
                     "mwfId" : this.json.id,
                     "callback" : "o2.imageClipperCallback",
-                    "referencetype":"processPlatformJob",
+                    "referencetype": referencetype,
                     "reference": this.form.businessData.work.job
                 });
                 if( window.o2android && window.o2android.uploadImage2FileStorage ){

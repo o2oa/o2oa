@@ -596,12 +596,13 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 "size": this.json.size || "max",
                 "resize": (this.json.size==="true"),
                 "attachmentCount": this.json.attachmentCount || 0,
-                "isUpload": (this.json.isUpload==="y"),
-                "isDelete": (this.json.isDelete==="y"),
-                "isReplace": (this.json.isReplace==="y"),
-                "isDownload": (this.json.isDownload==="y"),
-                "isSizeChange": (this.json.isSizeChange==="y"),
-                "readonly": (this.json.readonly==="y"),
+                "isUpload": (this.json.isUpload==="y" || this.json.isUpload==="true"),
+                "isDelete": (this.json.isDelete==="y" || this.json.isDelete==="true"),
+                "isReplace": (this.json.isReplace==="y" || this.json.isReplace==="true"),
+                "isDownload": (this.json.isDownload==="y" || this.json.isDownload==="true"),
+                "isSizeChange": (this.json.isSizeChange==="y" || this.json.isSizeChange==="true"),
+                "readonly": (this.json.readonly==="y" || this.json.readonly==="true"),
+                "availableListStyles" : this.json.availableListStyles ? this.json.availableListStyles : ["list","seq","icon","preview"],
                 "isDeleteOption": this.json.isDelete,
                 "isReplaceOption": this.json.isReplace
             };
@@ -749,7 +750,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
     uploadAttachment: function(e, node){
         if (window.o2android && window.o2android.uploadAttachment){
             window.o2android.uploadAttachment(this.json.id);
-        }else if(window.webkit && window.webkit.messageHandlers) {
+        }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachment ) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({"site": this.json.id});
         }else{
             // if (!this.uploadFileAreaNode){
@@ -933,7 +934,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
-                }else if(window.webkit && window.webkit.messageHandlers) {
+                }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else{
                     this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
@@ -943,7 +944,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
-                }else if(window.webkit && window.webkit.messageHandlers) {
+                }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else{
                     this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
@@ -956,7 +957,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
-                }else if(window.webkit && window.webkit.messageHandlers) {
+                }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else {
                     this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
@@ -966,7 +967,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
-                }else if(window.webkit && window.webkit.messageHandlers) {
+                }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage(att.data.id, this.json.id);
                 }else {
                     this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));

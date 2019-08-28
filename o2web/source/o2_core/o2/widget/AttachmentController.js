@@ -14,6 +14,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "isDownload": true,
         "isSizeChange": true,
         "readonly": false,
+        "availableListStyles" : ["list","seq","icon","preview"],
         "images": ["bmp", "gif", "png", "jpeg", "jpg", "jpe", "ico"],
         "audios": ["mp3", "wav", "wma", "wmv"],
         "videos": ["avi", "mkv", "mov", "ogg", "mp4", "mpa", "mpe", "mpeg", "mpg", "rmvb"]
@@ -242,24 +243,36 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
     },
     createListGroupActions: function(){
-        this.listActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
-        this.listActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.listActionBoxNode);
+        var availableListStyles = this.options.availableListStyles;
+        if( availableListStyles && availableListStyles.length > 0 ){
+            this.listActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+            this.listActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.listActionBoxNode);
 
-        this.listAction = this.createAction(this.listActionsGroupNode, "list", o2.LP.widget.list, function(){
-            this.changeListStyle("list");
-        }.bind(this));
+            if( availableListStyles.contains("list") ){
+                this.listAction = this.createAction(this.listActionsGroupNode, "list", o2.LP.widget.list, function(){
+                    this.changeListStyle("list");
+                }.bind(this));
+            }
 
-        this.sequenceAction = this.createAction(this.listActionsGroupNode, "seq", o2.LP.widget.sequence, function(){
-            this.changeListStyle("sequence");
-        }.bind(this));
+            if( availableListStyles.contains("seq") ) {
+                this.sequenceAction = this.createAction(this.listActionsGroupNode, "seq", o2.LP.widget.sequence, function () {
+                    this.changeListStyle("sequence");
+                }.bind(this));
+            }
 
-        this.iconAction = this.createAction(this.listActionsGroupNode, "icon", o2.LP.widget.icon, function(){
-            this.changeListStyle("icon");
-        }.bind(this));
+            if( availableListStyles.contains("icon") ) {
+                this.iconAction = this.createAction(this.listActionsGroupNode, "icon", o2.LP.widget.icon, function () {
+                    this.changeListStyle("icon");
+                }.bind(this));
+            }
 
-        this.previewAction = this.createAction(this.listActionsGroupNode, "preview", o2.LP.widget.preview, function(){
-            this.changeListStyle("preview");
-        }.bind(this));
+            if( availableListStyles.contains("preview") ) {
+                this.previewAction = this.createAction(this.listActionsGroupNode, "preview", o2.LP.widget.preview, function () {
+                    this.changeListStyle("preview");
+                }.bind(this));
+            }
+        }
+
     },
 
     createViewGroupActions: function(){

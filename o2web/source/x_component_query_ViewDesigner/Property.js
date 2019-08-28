@@ -13,6 +13,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 		this.module = module;
 		this.view = module.view;
 		this.data = module.json;
+        this.data.vid = this.view.json.id;
+        this.data.vtype = this.view.json.type;
 		this.data.pid = this.view.json.id+this.data.id;
 		this.htmlPath = this.options.path;
 		this.designer = designer;

@@ -134,6 +134,12 @@ MWF.xApplication.process.Xform.LP = {
     "editdoc": "编辑正文",
     "editdocCompleted": "编辑完成",
 
+    "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
+    "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
+
+    "subformUniqueError" : "该表单重复嵌入了同一子表单，请联系管理员！",
+    "moduleUniqueError" : "该表单存在重名的字段，请联系管理员！",
+
     "documentEditor": {
         "copies": "",
         "secret":"",

@@ -232,6 +232,26 @@ MWF.xScript.CMSEnvironment = function(ev){
             }
             return v;
         },
+        //根据属性查询人员--返回人员的对象数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttribute(data, function(json){v = json.data;}, null, false);
+            return v;
+        },
+        //根据属性查询人员--返回人员的全称数组
+        //name  string 属性名
+        //value  string 属性值
+        listPersonNameWithAttribute: function(name, value){
+            getOrgActions();
+            var data = {"name": name, "attribute": value};
+            var v = null;
+            orgActions.listPersonWithAttributeValue(data, function(json){v = json.data.personList;}, null, false);
+            return v;
+        },
 
         //人员属性************
         //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)

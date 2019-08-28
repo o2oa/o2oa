@@ -38,6 +38,8 @@ MWF.xScript.Actions.UnitActions = new Class({
     listPersonWithUnitDirect: invoke("listPersonWithUnitDirect"),
     listPersonWithUnitNested: invoke("listPersonWithUnitNested"),
     listPersonAllAttribute: invoke("listPersonAllAttribute"),
+    listPersonWithAttributeValue: invoke("listPersonWithAttributeValue"),
+    listPersonWithAttribute: invoke("listPersonWithAttribute"),
 
     //人员属性-------
     appendPersonAttribute: invoke("appendPersonAttribute"),

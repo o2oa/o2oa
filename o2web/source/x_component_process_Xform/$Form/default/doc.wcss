@@ -126,7 +126,8 @@
         "margin-top": "1.02cm"
     },
     "doc_layout_attachment_title_td": {
-        "width": "2.8cm"
+        "width": "2.8cm",
+        "vertical-align": "top"
     },
     "doc_layout_attachment_title": {},
     "doc_layout_attachment_content_td": {},

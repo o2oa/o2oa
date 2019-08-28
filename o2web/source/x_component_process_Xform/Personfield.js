@@ -256,7 +256,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (this.json.range==="draftUnit"){
             var dn = (this.form.businessData.work || this.form.businessData.workCompleted).creatorIdentityDn;
             if (!dn){
-                if (layout.session.user.identityList.length){
+                if ( layout.session.user.identityList && layout.session.user.identityList.length){
                     var ids = [];
                     layout.session.user.identityList.each(function(id){ ids.push(id.id); });
                     return this.getNextSelectUnit(ids);
@@ -276,7 +276,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                     this.form.app.taskList.each(function(task){ ids.push(task.identity); });
                     return this.getNextSelectUnit(ids);
                 }else{
-                    if (layout.session.user.identityList.length){
+                    if ( layout.session.user.identityList && layout.session.user.identityList.length){
                         var ids = [];
                         layout.session.user.identityList.each(function(id){ ids.push(id.id); });
                         return this.getNextSelectUnit(ids);
@@ -301,6 +301,8 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         switch (this.json.range){
             case "":
         }
+
+        debugger;
 
         var selectUnits = this.getSelectRange();
         if (this.json.selectType=="identity"){
@@ -337,6 +339,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "dutys": (this.json.selectType=="identity") ? selectDutys : [],
             "exclude" : exclude,
             "expandSubEnable" : (this.json.expandSubEnable=="no") ? false : true,
+            "categoryType": this.json.categoryType || "unit",
             "onComplete": function(items){
                 this.selectOnComplete(items);
             }.bind(this),

@@ -7,1029 +7,737 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 
 	options: {
 		"style": "default",
+		"mvcStyle": "style.css",
 		"name": "process.ApplicationExplorer",
 		"icon": "icon.png",
-		"width": "1000",
-		"height": "600",
+		"width": "1500",
+		"height": "760",
+		"isResize": true,
+		"isMax": true,
 		"title": MWF.xApplication.process.ApplicationExplorer.LP.title,
-        "tooltip": {
-            "cancel": MWF.xApplication.process.ApplicationExplorer.LP.application.action_cancel,
-            "ok": MWF.xApplication.process.ApplicationExplorer.LP.application.action_ok,
-
-            "create": MWF.xApplication.process.ApplicationExplorer.LP.application.create,
-            "search": MWF.xApplication.process.ApplicationExplorer.LP.application.search,
-            "searchText": MWF.xApplication.process.ApplicationExplorer.LP.application.searchText,
-            "allCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.allCategory,
-            "unCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.unCategory,
-            "selectCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.selectCategory,
-
-            "nameLabel": MWF.xApplication.process.ApplicationExplorer.LP.application.name,
-            "aliasLabel": MWF.xApplication.process.ApplicationExplorer.LP.application.alias,
-            "descriptionLabel": MWF.xApplication.process.ApplicationExplorer.LP.application.description,
-            "typeLabel": MWF.xApplication.process.ApplicationExplorer.LP.application.type,
-            "iconLabel": MWF.xApplication.process.ApplicationExplorer.LP.application.icon,
-            "createApplication_cancel_title": MWF.xApplication.process.ApplicationExplorer.LP.application.createApplication_cancel_title,
-            "createApplication_cancel": MWF.xApplication.process.ApplicationExplorer.LP.application.createApplication_cancel,
-            "inputApplicationName": MWF.xApplication.process.ApplicationExplorer.LP.application.inputApplicationName,
-            "createApplicationSuccess": MWF.xApplication.process.ApplicationExplorer.LP.application.createApplicationSuccess,
-            //"unCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.unCategory,
-            "unDescription": MWF.xApplication.process.ApplicationExplorer.LP.application.unDescription,
-            "noProcess": MWF.xApplication.process.ApplicationExplorer.LP.application.noProcess,
-            "noForm": MWF.xApplication.process.ApplicationExplorer.LP.application.noForm,
-            "noApplication": MWF.xApplication.process.ApplicationExplorer.LP.application.noApplication,
-            "noApplicationCreate": MWF.xApplication.process.ApplicationExplorer.LP.application.noApplicationCreate,
-            "loadding": MWF.xApplication.process.ApplicationExplorer.LP.application.loadding
-        }
+		"maxWidth": 840,
+		"minWidth": 720
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.ApplicationExplorer.LP;
-		this.currentContentNode = null;
+		this.viewPath = this.path+this.options.style+"/view.html";
+		this.restActions = MWF.Actions.get("x_processplatform_assemble_designer");
+		this.deleteElements = [];
 	},
 	loadApplication: function(callback){
-        if (!this.restActions) this.restActions = MWF.Actions.get("x_processplatform_assemble_designer");
-        //if (!this.restActions) this.restActions = new MWF.xApplication.process.ApplicationExplorer.Actions.RestActions();
-        this.category = null;
-        this.applications = [];
-        this.deleteElements = [];
-		this.createNode();
-		this.loadApplicationContent();
+	    this.loadControl();
+		this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp, "control": this.control}}, function(){
+			if (!this.options.isRefresh){
+				this.maxSize(function(){
+					this.loadApp(callback);
+				}.bind(this));
+			}else{
+				this.loadApp(callback);
+			}
+		}.bind(this));
+	},
+	loadApp: function(callback){
+		this.loadNodes();
+
+		this.resizeContent();
+		this.addEvent("resize", this.resizeContent.bind(this));
+
+		this.loadApplicationCategoryList();
+		//this.loadApplicationList();
+		this.clickAllCategoryNode();
 		if (callback) callback();
 	},
-    hasCreatorRole: function(){
-	    return MWF.AC.isProcessPlatformCreator();
-    },
-    hasManagerRole: function(){
-        if (MWF.AC.isAdministrator()) return true;
-        if (MWF.AC.isProcessManager()) return true;
-        return false;
-    },
-	loadApplicationContent: function(){
-	//	this.loadStartMenu();
-        this.loadToolbar();
-        this.loadCategoryArea();
-		this.loadApplicationArea();
+
+
+	loadControl: function(){
+		this.control = {};
+		this.control.canCreate = MWF.AC.isProcessPlatformCreator();
+		this.control.canManage = !!(MWF.AC.isAdministrator() || MWF.AC.isProcessManager());
 	},
-	createNode: function(){
-		this.content.setStyle("overflow", "hidden");
-		this.node = new Element("div", {
-			"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
-		}).inject(this.content);
+	loadNodes: function(){
+		this.node = this.content.getElement(".o2_process_AppExp_content");
+		this.topNode = this.content.getElement(".o2_process_AppExp_top");
+		this.allCategoryNode = this.content.getElement(".o2_process_AppExp_All");
+		this.category = this.allCategoryNode;
+		if (this.allCategoryNode) this.allCategoryNode.addEvent("click", this.clickAllCategoryNode.bind(this));
+
+		this.createNode = this.content.getElement(".o2_process_AppExp_create");
+		if (this.createNode) this.createNode.addEvent("click", this.createApplication.bind(this));
+
+		this.importNode = this.content.getElement(".o2_process_AppExp_import");
+		this.categoryAreaNode = this.content.getElement(".o2_process_AppExp_category");
+		this.contentArea = this.content.getElement(".o2_process_AppExp_contentArea");
+		this.contentNode = this.content.getElement(".o2_process_AppExp_contentNode");
+		this.bottomNode = this.content.getElement(".o2_process_AppExp_bottom");
+		if (this.importNode){
+			this.importNode.addEvent("click", function(e){
+				this.importApplication(e);
+			}.bind(this));
+		}
 	},
-    loadToolbar: function(){
-        this.toolbarAreaNode = new Element("div", {
-            "styles": this.css.toolbarAreaNode
-        }).inject(this.node);
-        this.createCreateAction();
-        this.createSearchAction();
-    },
-    createCreateAction: function(){
-        if (this.hasCreatorRole()){
-            this.createApplicationNode = new Element("div", {
-                "styles": this.css.createApplicationNode,
-                "title": this.options.tooltip.create
-            }).inject(this.toolbarAreaNode);
-            this.createApplicationNode.addEvent("click", function(){
-                this.createApplication();
-            }.bind(this));
-        }
-    },
-    createSearchAction: function(){
-        this.searchApplicationNode = new Element("div", {
-            "styles": this.css.searchApplicationNode,
-            "text": this.options.title
-        }).inject(this.toolbarAreaNode);
+	importApplication: function(e){
+		MWF.xDesktop.requireApp("process.ApplicationExplorer", "Importer", function(){
+			(new MWF.xApplication.process.ApplicationExplorer.Importer(this, e)).load();
+		}.bind(this));
+	},
+	createApplication: function(){
+		this.createApplicationCreateMarkNode();
+		this.createApplicationCreateAreaNode();
+		this.createApplicationCreateNode();
 
-        //@todo
-        this.searchApplicationNode.setStyles({
-            "color": "#FFF",
-            "font-size": "18px",
-            "font-weight": "bold",
-            "line-height": "50px",
-            "text-align": "right",
-            "margin-right": "20px"
-        });
-        return true;
+		this.applicationCreateAreaNode.inject(this.applicationCreateMarkNode, "after");
+		this.applicationCreateAreaNode.fade("in");
+		$("createApplicationName").focus();
 
-        //this.searchApplicationButtonNode = new Element("div", {
-        //    "styles": this.css.searchApplicationButtonNode,
-        //    "title": this.options.tooltip.search
-        //}).inject(this.searchApplicationNode);
-        //
-        //this.searchApplicationInputAreaNode = new Element("div", {
-        //    "styles": this.css.searchApplicationInputAreaNode
-        //}).inject(this.searchApplicationNode);
-        //
-        //this.searchApplicationInputBoxNode = new Element("div", {
-        //    "styles": this.css.searchApplicationInputBoxNode
-        //}).inject(this.searchApplicationInputAreaNode);
-        //
-        //this.searchApplicationInputNode = new Element("input", {
-        //    "type": "text",
-        //    "value": this.options.tooltip.searchText,
-        //    "styles": this.css.searchApplicationInputNode,
-        //    "x-webkit-speech": "1"
-        //}).inject(this.searchApplicationInputBoxNode);
-        //var _self = this;
-        //this.searchApplicationInputNode.addEvents({
-        //    "focus": function(){
-        //        if (this.value==_self.options.tooltip.searchText) this.set("value", "");
-        //    },
-        //    "blur": function(){if (!this.value) this.set("value", _self.options.tooltip.searchText);},
-        //    "keydown": function(e){
-        //        if (e.code==13){
-        //            this.searchApplication();
-        //            e.preventDefault();
-        //        }
-        //    }.bind(this),
-        //    "selectstart": function(e){
-        //        e.preventDefault();
-        //    }
-        //});
-        //this.searchApplicationButtonNode.addEvent("click", function(){this.searchApplication();}.bind(this));
-    },
-    importApplication: function(e){
-        MWF.xDesktop.requireApp("process.ApplicationExplorer", "Importer", function(){
-            (new MWF.xApplication.process.ApplicationExplorer.Importer(this, e)).load();
-        }.bind(this));
-    },
-    loadCategoryArea: function(){
-        this.categoryAreaNode = new Element("div", {
-            "styles": this.css.categoryAreaNode
-        }).inject(this.node);
+		this.setApplicationCreateNodeSize();
+		this.setApplicationCreateNodeSizeFun = this.setApplicationCreateNodeSize.bind(this);
+		this.addEvent("resize", this.setApplicationCreateNodeSizeFun);
+	},
+	createApplicationCreateMarkNode: function(){
+		this.applicationCreateMarkNode = new Element("div.o2_process_AppExp_applicationCreateMarkNode", {
+			"events": {
+				"mouseover": function(e){e.stopPropagation();},
+				"mouseout": function(e){e.stopPropagation();}
+			}
+		}).inject(this.node, "after");
+	},
+	createApplicationCreateAreaNode: function(){
+		this.applicationCreateAreaNode = new Element("div.o2_process_AppExp_applicationCreateAreaNode");
+	},
+	createApplicationCreateNode: function(){
+		this.applicationCreateNode = new Element("div.o2_process_AppExp_applicationCreateNode").inject(this.applicationCreateAreaNode);
+		this.applicationCreateNewNode = new Element("div.o2_process_AppExp_applicationCreateNewNode").inject(this.applicationCreateNode);
+		this.applicationCreateFormNode = new Element("div.o2_process_AppExp_applicationCreateFormNode").inject(this.applicationCreateNode);
 
-        //this.categoryActionNode = new Element("div", {
-        //    "styles": this.css.categoryActionNode,
-        //    "text": this.options.tooltip.selectCategory
-        //}).inject(this.categoryAreaNode);
-        if (this.hasCreatorRole()){
-            this.importActionNode = new Element("div", {
-                "styles": this.css.importActionNode,
-                "text": this.lp.application.import
-            }).inject(this.categoryAreaNode);
-            this.importActionNode.addEvent("click", function(e){
-                this.importApplication(e);
-            }.bind(this));
-        }
+		var html = "<table width=\"100%\" height=\"80%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
+			"<tr><td style=\"height: 30px; line-height: 30px; text-align: left; min-width: 80px; width:25%\">" +
+			this.lp.name+":</td>" +
+			"<td style=\"; text-align: right;\"><input type=\"text\" class='o2_process_AppExp_createApplicationName' id=\"createApplicationName\" " +
+			"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+			"height: 26px;\"/></td></tr>" +
+			"<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">"+this.lp.alias+":</td>" +
+			"<td style=\"; text-align: right;\"><input type=\"text\" class='o2_process_AppExp_createApplicationAlias' id=\"createApplicationAlias\" " +
+			"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+			"height: 26px;\"/></td></tr>" +
+			"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.lp.description+":</td>" +
+			"<td style=\"; text-align: right;\"><input type=\"text\" class='o2_process_AppExp_createApplicationDescription' id=\"createApplicationDescription\" " +
+			"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+			"height: 26px;\"/></td></tr>" +
+			"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.lp.type+":</td>" +
+			"<td style=\"; text-align: right;\"><input type=\"text\" class='o2_process_AppExp_createApplicationType' id=\"createApplicationType\" " +
+			"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+			"height: 26px;\"/></td></tr>" +
+			//"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.iconLabel+":</td>" +
+			//"<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationType\" " +
+			//"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+			//"height: 26px;\"/></td></tr>" +
+			"</table>";
+		this.applicationCreateFormNode.set("html", html);
 
-        this.categoryListAreaNode = new Element("div", {
-            "styles": this.css.categoryListAreaNode
-        }).inject(this.categoryAreaNode);
+		this.applicationCancelActionNode = new Element("div.o2_process_AppExp_applicationCreateCancelActionNode", {
+			"text": this.lp.action_cancel
+		}).inject(this.applicationCreateFormNode);
+		this.applicationCreateOkActionNode = new Element("div.o2_process_AppExp_applicationCreateOkActionNode", {
+			"text": this.lp.action_ok
+		}).inject(this.applicationCreateFormNode);
 
-        this.createAllCategoryItemNode();
+		this.applicationCancelActionNode.addEvent("click", function(e){
+			this.cancelCreateApplication(e);
+		}.bind(this));
+		this.applicationCreateOkActionNode.addEvent("click", function(e){
+			this.okCreateApplication(e);
+		}.bind(this));
+	},
 
-        this.createCategoryNodes();
+	setApplicationCreateNodeSize: function(){
+		var size = this.node.getSize();
+		var allSize = this.content.getSize();
+		this.applicationCreateMarkNode.setStyles({
+			"width": ""+allSize.x+"px",
+			"height": ""+allSize.y+"px"
+		});
+		this.applicationCreateAreaNode.setStyles({
+			"width": ""+size.x+"px",
+			"height": ""+size.y+"px"
+		});
+		var hY = size.y*0.8;
+		var mY = size.y*0.2/2;
+		this.applicationCreateNode.setStyles({
+			"height": ""+hY+"px",
+			"margin-top": ""+mY+"px"
+		});
 
-        //this.createCategoryItemNode("公文类");
-        //this.createCategoryItemNode("工单类");
-        //this.createCategoryItemNode("财务类");
-        //this.createCategoryItemNode("合同类");
-        //this.createCategoryItemNode("人力资源类");
-        //this.createCategoryItemNode("固定资产类");
-        //this.createCategoryItemNode("业务类");
-    },
-    createCategoryNodes: function(){
-        this.restActions.listApplicationCategory(function(json){
-            var emptyCategory = null;
-            json.data.each(function(category){
-                if (category.applicationCategory || category.portalCategory){
-                    this.createCategoryItemNode(category.applicationCategory || category.portalCategory, category.count);
-                }else{
-                    emptyCategory = category;
-                }
-            }.bind(this));
+		var iconSize = this.applicationCreateNewNode.getSize();
+		var formHeight = hY*0.7;
+		if (formHeight>250) formHeight = 250;
+		var formMargin = hY*0.3/2-iconSize.y;
+		this.applicationCreateFormNode.setStyles({
+			"height": ""+formHeight+"px",
+			"margin-top": ""+formMargin+"px"
+		});
+	},
+	cancelCreateApplication: function(e){
+		var _self = this;
+		var nameNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationName");
+		var aliasNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationAlias");
+		var descriptionNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationDescription");
+		if (nameNode.get("value") || aliasNode.get("value") || descriptionNode.get("value")){
+			this.confirm("warn", e, this.lp.createApplication_cancel_title, this.lp.createApplication_cancel, 320, 100, function(){
+				_self.applicationCreateMarkNode.destroy();
+				_self.applicationCreateAreaNode.destroy();
+				this.close();
+			},function(){
+				this.close();
+			});
+		}else{
+			this.applicationCreateMarkNode.destroy();
+			this.applicationCreateAreaNode.destroy();
+		}
+	},
+	okCreateApplication: function(e){
+		var nameNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationName");
+		var aliasNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationAlias");
+		var descriptionNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationDescription");
+		var typeNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationType");
+		var data = {
+			"name": nameNode.get("value"),
+			"alias": aliasNode.get("value"),
+			"description": descriptionNode.get("value"),
+			"applicationCategory": typeNode.get("value")
+		};
+		if (data.name){
+			this.restActions.saveApplication(data, function(json){
+				this.applicationCreateMarkNode.destroy();
+				this.applicationCreateAreaNode.destroy();
 
-         //   if (emptyCategory) this.createCategoryItemNode()
-        }.bind(this));
-    },
+				this.restActions.getApplication(json.data.id, function(json){
+					json.data.processList = [];
+					json.data.formList = [];
+					this.createApplicationItem(json.data, "top");
+					// var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, json.data, "top");
+					// application.load();
+					//this.applications.push(application);
+				}.bind(this));
 
+				this.notice(this.lp.application.createApplicationSuccess, "success");
+				//    this.app.processConfig();
+			}.bind(this));
+		}else{
+			nameNode.setStyle("border-color", "red");
+			nameNode.focus();
+			this.notice(this.lp.application.inputApplicationName, "error");
+		}
+	},
 
-    createAllCategoryItemNode: function(){
-        var itemNode = new Element("div", {
-            "styles": this.css.allCategoryItemNode,
-            "text": this.options.tooltip.allCategory
-        }).inject(this.categoryListAreaNode);
-        itemNode.setStyles(this.css.allCategoryItemNode_current);
-        this.category = itemNode;
-        var _self = this;
-        itemNode.addEvents({
-            "click": function(){_self.clickAllCategoryNode(this)}
-        });
-    },
-    createCategoryItemNode: function(text, count){
-        var categoryName = text || this.options.tooltip.allCategory;
+	clickAllCategoryNode: function(){
+		if (this.category){
+			this.category.removeClass("o2_process_AppExp_categoryItem_current");
+			this.category.removeClass("o2_process_AppExp_All_current");
+			this.category.removeClass("o2_process_AppExp_categoryItem_over");
+			this.category.removeClass("o2_process_AppExp_All_over");
+		}
+		this.allCategoryNode.removeClass("o2_process_AppExp_categoryItem_over");
+		this.allCategoryNode.addClass("o2_process_AppExp_All_current");
+		this.category = this.allCategoryNode;
+		this.loadApplicationList(this.allCategoryNode);
+	},
 
-        var itemNode = new Element("div.categoryItem", {
-            "styles": this.css.categoryItemNode,
-            "text": (count) ? categoryName+" ("+count+") " : categoryName
-        }).inject(this.categoryListAreaNode);
-        itemNode.store("categoryName", categoryName);
+	resizeContent: function(){
+		var size = this.content.getSize();
+		var topSize = this.topNode.getComputedSize();
+		var bottomSize = this.bottomNode.getComputedSize();
+		var h = size.y-topSize.totalHeight-bottomSize.totalHeight;
+		this.contentArea.setStyle("height", ""+h+"px");
+		this.getApplicationDimension();
 
-        var _self = this;
-        itemNode.addEvents({
-            "mouseover": function(){if (_self.category != this) this.setStyles(_self.css.categoryItemNode_over);},
-            "mouseout": function(){if (_self.category != this) this.setStyles(_self.css.categoryItemNode);},
-            "click": function(){_self.clickCategoryNode(this)}
-        });
-    },
-    createLoadding: function(){
-        this.loaddingNode = new Element("div", {
-            "styles": this.css.noApplicationNode,
-            "text": this.options.tooltip.loadding
-        }).inject(this.applicationContentNode);
-    },
-    removeLoadding: function(){
-        if (this.loaddingNode) this.loaddingNode.destroy();
-    },
-    loadApplicationArea: function(){
-        this.applicationAreaNode = new Element("div", {
-            "styles": this.css.applicationAreaNode
-        }).inject(this.node);
-        this.setApplicationAreaSize();
-        this.addEvent("resize", this.setApplicationAreaSize);
+		if (this.contentNode){
+			this.contentNode.setStyles({
+				"margin-left": ""+this.dimension.marginLeft+"px",
+				"margin-right": ""+this.dimension.marginRight+"px"
+			});
+		}
+	},
 
-        this.applicationContentNode = new Element("div", {
-            "styles": this.css.applicationContentNode
-        }).inject(this.applicationAreaNode);
-        this.createLoadding();
+	createCategoryExpandButton: function(){
+		//this.categoryExpandButtonArea = new Element("div.o2_process_AppExp_categoryExpandButtonArea").inject(this.categoryAreaNode);
+		this.categoryExpandButton = new Element("div.o2_process_AppExp_categoryExpandButton").inject(this.categoryAreaNode, "before");
+		this.categoryExpandButton.addEvent("click", this.expandOrCollapseCategory.bind(this));
+	},
+	expandOrCollapseCategory: function(e){
+		if (!this.categoryMorph) this.categoryMorph = new Fx.Morph(this.categoryAreaNode, {"duration": 100});
+		if (this.categoryAreaNode.hasClass("o2_process_AppExp_category_more")){
+			this.categoryAreaNode.removeClass("o2_process_AppExp_category_more");
+			this.categoryMorph.start({"height": ""+this.topNode.getSize().y+"px"});
+			if (this.expandOrCollapseCategoryFun) this.content.removeEvent("click", this.expandOrCollapseCategoryFun);
+		}else{
+			this.categoryAreaNode.addClass("o2_process_AppExp_category_more");
+			this.categoryMorph.start({"height": ""+this.categoryAreaNode.getScrollSize().y+"px"});
 
-        //MWF.require("MWF.widget.DragScroll", function(){
-        //    new MWF.widget.DragScroll(this.applicationAreaNode);
-        //}.bind(this));
-        //MWF.require("MWF.widget.ScrollBar", function(){
-        //    new MWF.widget.ScrollBar(this.applicationAreaNode);
-        //}.bind(this));
+			this.expandOrCollapseCategoryFun = this.expandOrCollapseCategory.bind(this);
+			this.content.addEvent("click", this.expandOrCollapseCategoryFun);
+		}
+		e.stopPropagation();
+	},
+	loadApplicationCategoryList: function(){
+		if (this.control.canCreate){
+			this.restActions.listApplicationCategory(function(json){
+				debugger;
+				var emptyCategory = null;
+				json.data.each(function(category){
+					var categoryName = category.applicationCategory || category.portalCategory || category.protalCategory || category.name;
+					if (categoryName){
+						this.createCategoryItemNode(categoryName, category.count);
+					}else{
+						emptyCategory = category;
+					}
+				}.bind(this));
 
-        this.loadApplicationByCategory();
+				if (this.categoryAreaNode.getScrollSize().y>this.categoryAreaNode.getSize().y) this.createCategoryExpandButton();
+			}.bind(this));
+		}
+	},
+	createCategoryItemNode: function(text, count){
+		debugger;
+		var categoryName = text;
 
-        this.setApplicationContentSize();
-    },
+		var itemNode = new Element("div.o2_process_AppExp_categoryItem", {
+			"text": (count) ? categoryName+" ("+count+") " : categoryName
+		}).inject(this.categoryAreaNode);
 
-    setApplicationAreaSize: function(){
-        var nodeSize = this.node.getSize();
-        var toolbarSize = this.toolbarAreaNode.getSize();
-        var categorySize = this.categoryAreaNode.getSize();
-        var y = nodeSize.y - toolbarSize.y - categorySize.y;
+		itemNode.store("categoryName", categoryName);
 
-        this.applicationAreaNode.setStyle("height", ""+y+"px");
+		var _self = this;
+		itemNode.addEvents({
+			"mouseover": function(){if (_self.category != this) this.addClass("o2_process_AppExp_categoryItem_over");},
+			"mouseout": function(){if (_self.category != this) this.removeClass("o2_process_AppExp_categoryItem_over");},
+			"click": function(){_self.clickCategoryNode(this)}
+		});
+	},
 
-        if (this.applicationContentNode){
-            var count = (nodeSize.x/282).toInt();
-            var x = 282 * count;
-            var m = (nodeSize.x-x)/2-10;
-            this.applicationContentNode.setStyles({
-                "width": ""+x+"px",
-                "margin-left": ""+m+"px"
-            });
-        }
-    },
-    setApplicationContentSize: function(){
-        var nodeSize = this.node.getSize();
-        if (this.applicationContentNode){
-            var count = (nodeSize.x/282).toInt();
-            var x = 282 * count;
-            var m = (nodeSize.x-x)/2-10;
-            this.applicationContentNode.setStyles({
-                "width": ""+x+"px",
-                "margin-left": ""+m+"px"
-            });
-        }
-    },
-    clearDeleteReady: function(){
-        this.deleteElements.each(function(app){
-            app.delAdctionNode.setStyles(this.css.applicationItemDelActionNode);
-            app.node.setStyles(this.css.applicationItemNode);
-            var bgcolor = app.topNode.retrieve("bgcolor");
-            app.topNode.setStyle("background-color", bgcolor);
-            app.readyDelete = false;
-        }.bind(this));
-        this.deleteElements = [];
-        this.checkDeleteApplication();
-    },
-    clickAllCategoryNode: function(){
-        var node = this.categoryListAreaNode.getFirst("div");
-        var items = this.categoryListAreaNode.getElements(".categoryItem");
-        node.setStyles(this.css.allCategoryItemNode_current);
-        this.category = node;
-        items.setStyles(this.css.categoryItemNode);
-        this.loadApplicationByCategory(node);
-        this.clearDeleteReady();
-    },
+	clickCategoryNode: function(item){
+		// var node = this.categoryListAreaNode.getFirst("div");
+		// node.setStyles(this.css.allCategoryItemNode);
+		if (this.category){
+			this.category.removeClass("o2_process_AppExp_categoryItem_current");
+			this.category.removeClass("o2_process_AppExp_All_current");
+			this.category.removeClass("o2_process_AppExp_categoryItem_over");
+			this.category.removeClass("o2_process_AppExp_All_over");
+		}
+		item.removeClass("o2_process_AppExp_categoryItem_over");
+		item.addClass("o2_process_AppExp_categoryItem_current");
 
-    clickCategoryNode: function(item){
-        var node = this.categoryListAreaNode.getFirst("div");
-        node.setStyles(this.css.allCategoryItemNode);
-        var items = this.categoryListAreaNode.getElements(".categoryItem");
-        items.setStyles(this.css.categoryItemNode);
-        item.setStyles(this.css.categoryItemNode_current);
-        this.category = item;
-        this.loadApplicationByCategory(item);
-    },
+		var p = item.getPosition(this.categoryAreaNode);
+		var size = this.topNode.getSize();
+		if (p.y>=size.y) item.inject(this.categoryAreaNode, "top");
 
+		this.category = item;
+		this.loadApplicationList(item);
+	},
 
-    loadApplicationByCategory: function(item){
-        var name = "";
-        if (item){name = item.retrieve("categoryName", "")};
-        this.restActions.listApplicationSummary(name, function(json){
-        //this.restActions.listApplication(name, function(json){
-            this.applicationContentNode.empty();
-            if (json.data.length){
-                //for (var i=0; i<15; i++){
-                json.data.each(function(appData){
-                    var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, appData);
-                    application.load();
-                    this.applications.push(application);
-                }.bind(this));
-                //}
-            }else {
-                if (this.hasCreatorRole()){
-                    var noApplicationNode = new Element("div", {
-                        "styles": this.css.noApplicationNode,
-                        "text": this.options.tooltip.noApplicationCreate
-                    }).inject(this.applicationContentNode);
-                    noApplicationNode.addEvent("click", function(){
-                        this.createApplication();
-                    }.bind(this));
-                }else{
-                    var noApplicationNode = new Element("div", {
-                        "styles": this.css.noApplicationNode,
-                        "text": this.options.tooltip.noApplication
-                    }).inject(this.applicationContentNode);
-                }
-            }
-        }.bind(this));
-    },
-    createApplication: function(){
-        this.createApplicationCreateMarkNode();
-        this.createApplicationCreateAreaNode();
-        this.createApplicationCreateNode();
+	getApplicationDimension: function(){
+		debugger;
+		if (!this.dimension) this.dimension = {};
+		this.dimension.count = 2;
+		this.dimension.width = this.options.maxWidth;
+		this.dimension.marginLeft = 40;
+		this.dimension.marginRight = 20;
 
-        this.applicationCreateAreaNode.inject(this.applicationCreateMarkNode, "after");
-        this.applicationCreateAreaNode.fade("in");
-        $("createApplicationName").focus();
+		//var size = this.contentNode.getSize();
+		var areaSize = this.contentArea.getSize();
+		var x = areaSize.x-60;
+		if (areaSize.y>=this.contentArea.getScrollSize().y) x = x-18;
 
-        this.setApplicationCreateNodeSize();
-        this.setApplicationCreateNodeSizeFun = this.setApplicationCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setApplicationCreateNodeSizeFun);
-    },
-    createApplicationCreateMarkNode: function(){
-        this.applicationCreateMarkNode = new Element("div", {
-            "styles": this.css.applicationCreateMarkNode,
-            "events": {
-                "mouseover": function(e){e.stopPropagation();},
-                "mouseout": function(e){e.stopPropagation();}
-            }
-        }).inject(this.node, "after");
-    },
-    createApplicationCreateAreaNode: function(){
-        this.applicationCreateAreaNode = new Element("div", {
-            "styles": this.css.applicationCreateAreaNode
-        });
-    },
-    createApplicationCreateNode: function(){
-        this.applicationCreateNode = new Element("div", {
-            "styles": this.css.applicationCreateNode
-        }).inject(this.applicationCreateAreaNode);
-        this.applicationCreateNewNode = new Element("div", {
-            "styles": this.css.applicationCreateNewNode
-        }).inject(this.applicationCreateNode);
+		var n = (x/this.dimension.count).toInt();
+		if (n<this.options.minWidth){
+			this.dimension.count = 1;
+			this.dimension.width = Math.min(x, this.options.maxWidth);
+		}else{
+			while(n>this.options.maxWidth){
+				this.dimension.count++;
+				n = (x/this.dimension.count).toInt();
+				if (n<this.options.minWidth){
+					this.dimension.count--;
+					n = this.options.maxWidth;
+					break;
+				}
+			}
+			this.dimension.width = n;
+		}
+		var margin = areaSize.x-(this.dimension.width*this.dimension.count);
 
-        this.applicationCreateFormNode = new Element("div", {
-            "styles": this.css.applicationCreateFormNode
-        }).inject(this.applicationCreateNode);
+		this.dimension.marginLeft = margin/2;
+		this.dimension.marginRight = margin/2-20;
+	},
+	loadApplicationList: function(item){
+		var name = "";
+		if (item){name = item.retrieve("categoryName", "")};
+		this.restActions.listApplicationSummary(name, function(json){
+			this.contentNode.empty();
+			if (json.data.length){
+				this.getApplicationDimension();
+				json.data.each(function(appData){
+					this.createApplicationItem(appData);
+					// var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, appData);
+					// application.load();
+					//this.applications.push(application);
+				}.bind(this));
+			}else {
+				if (this.control.canCreate){
+					var noApplicationNode = new Element("div.o2_process_AppExp_noApplicationNode", {
+						"html": this.lp.noApplicationCreate
+					}).inject(this.contentNode);
+					noApplicationNode.addEvent("click", function(){
+						this.createApplication();
+					}.bind(this));
+				}else{
+					var noApplicationNode = new Element("div.o2_process_AppExp_noApplicationNode", {
+						"text": this.lp.noApplication
+					}).inject(this.contentNode);
+				}
+			}
+		}.bind(this));
+	},
+	createApplicationItem: function(appData, where){
+		var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, appData, where);
+		application.load();
+	},
+	checkDeleteApplication: function(){
+		if (this.deleteElements.length){
+			if (!this.deleteElementsNode){
+				this.deleteElementsNode = new Element("div.o2_process_AppExp_deleteElements", {
+					"text": this.lp.application.deleteElements
+				}).inject(this.node);
+				this.deleteElementsNode.position({
+					relativeTo: this.contentArea,
+					position: "centerTop",
+					edge: "centerTop"
+				});
+				this.deleteElementsNode.addEvent("click", function(e){
+					this.deleteSelectedElements(e);
+				}.bind(this));
+			}
+		}else{
+			if (this.deleteElementsNode){
+				this.deleteElementsNode.destroy();
+				this.deleteElementsNode = null;
+				delete this.deleteElementsNode;
+			}
+		}
+	},
+	deleteSelectedElements: function(e){
+		var _self = this;
+		var applicationList = [];
+		this.deleteElements.each(function(app){
+			applicationList.push(app.data.name);
+		});
+		var confirmStr = this.lp.application.deleteElementsConfirm+" ("+applicationList.join("、")+") ";
+		var check = "<br/><br/><input type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm;
+		confirmStr += check;
 
-        var html = "<table width=\"100%\" height=\"80%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
-            "<tr><td style=\"height: 30px; line-height: 30px; text-align: left; min-width: 80px; width:25%\">" +
-            this.options.tooltip.nameLabel+":</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationName\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">"+this.options.tooltip.aliasLabel+":</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationAlias\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.descriptionLabel+":</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationDescription\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.typeLabel+":</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationType\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\"/></td></tr>" +
-            //"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.iconLabel+":</td>" +
-            //"<td style=\"; text-align: right;\"><input type=\"text\" id=\"createApplicationType\" " +
-            //"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            //"height: 26px;\"/></td></tr>" +
-            "</table>";
-        this.applicationCreateFormNode.set("html", html);
+		this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 530, 250, function(){
+			confirmStr = _self.lp.application.deleteElementsConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
+			var checkbox = this.content.getElement("#deleteApplicationAllCheckbox");
 
-        this.applicationCancelActionNode = new Element("div", {
-            "styles": this.css.applicationCreateCancelActionNode,
-            "text": this.options.tooltip.cancel
-        }).inject(this.applicationCreateFormNode);
-        this.applicationCreateOkActionNode = new Element("div", {
-            "styles": this.css.applicationCreateOkActionNode,
-            "text": this.options.tooltip.ok
-        }).inject(this.applicationCreateFormNode);
+			var onlyRemoveNotCompleted = true;
+			if (checkbox.checked){
+				onlyRemoveNotCompleted = false;
+				confirmStr = _self.lp.application.deleteElementsAllConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
+			}
 
-        this.applicationCancelActionNode.addEvent("click", function(e){
-            this.cancelCreateApplication(e);
-        }.bind(this));
-        this.applicationCreateOkActionNode.addEvent("click", function(e){
-            this.okCreateApplication(e);
-        }.bind(this));
-    },
+			this.close();
 
-    setApplicationCreateNodeSize: function(){
-        var size = this.node.getSize();
-        var allSize = this.content.getSize();
-        this.applicationCreateMarkNode.setStyles({
-            "width": ""+allSize.x+"px",
-            "height": ""+allSize.y+"px"
-        });
-        this.applicationCreateAreaNode.setStyles({
-            "width": ""+size.x+"px",
-            "height": ""+size.y+"px"
-        });
-        var hY = size.y*0.8;
-        var mY = size.y*0.2/2;
-        this.applicationCreateNode.setStyles({
-            "height": ""+hY+"px",
-            "margin-top": ""+mY+"px"
-        });
+			_self.confirm("infor", e, _self.lp.application.deleteElementsTitle, {"html":confirmStr}, 500, 200, function(){
+				var deleted = [];
+				var doCount = 0;
+				var readyCount = _self.deleteElements.length;
+				var errorText = "";
 
-        var iconSize = this.applicationCreateNewNode.getSize();
-        var formHeight = hY*0.7;
-        if (formHeight>250) formHeight = 250;
-        var formMargin = hY*0.3/2-iconSize.y;
-        this.applicationCreateFormNode.setStyles({
-            "height": ""+formHeight+"px",
-            "margin-top": ""+formMargin+"px"
-        });
-    },
-    cancelCreateApplication: function(e){
-        var _self = this;
-        if ($("createApplicationName").get("value") || $("createApplicationAlias").get("value") || $("createApplicationDescription").get("value")){
-            this.confirm("warn", e, this.options.tooltip.createApplication_cancel_title, this.options.tooltip.createApplication_cancel, 320, 100, function(){
-                _self.applicationCreateMarkNode.destroy();
-                _self.applicationCreateAreaNode.destroy();
-                this.close();
-            },function(){
-                this.close();
-            });
-        }else{
-            this.applicationCreateMarkNode.destroy();
-            this.applicationCreateAreaNode.destroy();
-        }
-    },
-    okCreateApplication: function(e){
-        var data = {
-            "name": $("createApplicationName").get("value"),
-            "alias": $("createApplicationAlias").get("value"),
-            "description": $("createApplicationDescription").get("value"),
-            "applicationCategory": $("createApplicationType").get("value")
-        };
-        if (data.name){
-            this.restActions.saveApplication(data, function(json){
-                this.applicationCreateMarkNode.destroy();
-                this.applicationCreateAreaNode.destroy();
+				var complete = function(){
+					if (doCount == readyCount){
+						if (errorText){
+							_self.app.notice(errorText, "error");
+						}
+					}
+				};
+				_self.deleteElements.each(function(application){
+					application["delete"](onlyRemoveNotCompleted, function(){
+						deleted.push(application);
+						doCount++;
+						if (_self.deleteElements.length==doCount){
+							_self.deleteElements = _self.deleteElements.filter(function(item, index){
+								return !deleted.contains(item);
+							});
+							_self.checkDeleteApplication();
+						}
+						complete();
+					}, function(error){
+						errorText = (errorText) ? errorText+"<br/><br/>"+error : error;
+						doCount++;
+						if (_self.deleteElements.length==doCount){
+							_self.deleteElements = _self.deleteElements.filter(function(item, index){
+								return !deleted.contains(item);
+							});
+							_self.checkDeleteApplication();
+						}
+						complete();
+					});
+				});
+				this.close();
+			}, function(){
+				this.close();
+			});
 
-                this.restActions.getApplication(json.data.id, function(json){
-                    json.data.processList = [];
-                    json.data.formList = [];
-                    var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, json.data, {"where": "top"});
-                    application.load();
-                    this.applications.push(application);
-                }.bind(this));
-
-                this.notice(this.options.tooltip.createApplicationSuccess, "success");
-            //    this.app.processConfig();
-            }.bind(this));
-        }else{
-            $("createApplicationName").setStyle("border-color", "red");
-            $("createApplicationName").focus();
-            this.notice(this.options.tooltip.inputApplicationName, "error");
-        }
-    },
-    checkDeleteApplication: function(){
-        if (this.deleteElements.length){
-            if (!this.deleteElementsNode){
-                this.deleteElementsNode = new Element("div", {
-                    "styles": this.css.deleteElementsNode,
-                    "text": this.lp.application.deleteElements
-                }).inject(this.node);
-                this.deleteElementsNode.position({
-                    relativeTo: this.applicationContentNode,
-                    position: "centerTop",
-                    edge: "centerbottom",
-                    "offset": {"y": this.applicationAreaNode.getScroll().y}
-                });
-                this.deleteElementsNode.addEvent("click", function(e){
-                    this.deleteSelectedElements(e);
-                }.bind(this));
-            }
-        }else{
-            if (this.deleteElementsNode){
-                this.deleteElementsNode.destroy();
-                this.deleteElementsNode = null;
-                delete this.deleteElementsNode;
-            }
-        }
-    },
-    deleteSelectedElements: function(e){
-        var _self = this;
-        var applicationList = [];
-        this.deleteElements.each(function(app){
-            applicationList.push(app.data.name);
-        });
-        var confirmStr = this.lp.application.deleteElementsConfirm+" ("+applicationList.join("、")+") ";
-        var check = "<br/><br/><input type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm;
-        confirmStr += check;
-
-        this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 530, 250, function(){
-            confirmStr = _self.lp.application.deleteElementsConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
-            var checkbox = this.content.getElement("#deleteApplicationAllCheckbox");
-
-            var onlyRemoveNotCompleted = true;
-            if (checkbox.checked){
-                onlyRemoveNotCompleted = false;
-                confirmStr = _self.lp.application.deleteElementsAllConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
-            }
-
-            this.close();
-
-            _self.confirm("infor", e, _self.lp.application.deleteElementsTitle, {"html":confirmStr}, 500, 200, function(){
-                var deleted = [];
-                var doCount = 0;
-                var readyCount = _self.deleteElements.length;
-                var errorText = "";
-
-                var complete = function(){
-                    if (doCount == readyCount){
-                        if (errorText){
-                            _self.app.notice(errorText, "error");
-                        }
-                    }
-                };
-                _self.deleteElements.each(function(application){
-                    application["delete"](onlyRemoveNotCompleted, function(){
-                        deleted.push(application);
-                        doCount++;
-                        if (_self.deleteElements.length==doCount){
-                            _self.deleteElements = _self.deleteElements.filter(function(item, index){
-                                return !deleted.contains(item);
-                            });
-                            _self.checkDeleteApplication();
-                        }
-                        complete();
-                    }, function(error){
-                        errorText = (errorText) ? errorText+"<br/><br/>"+error : error;
-                        doCount++;
-                        if (_self.deleteElements.length==doCount){
-                            _self.deleteElements = _self.deleteElements.filter(function(item, index){
-                                return !deleted.contains(item);
-                            });
-                            _self.checkDeleteApplication();
-                        }
-                        complete();
-                    });
-                });
-                this.close();
-            }, function(){
-                this.close();
-            });
-
-            this.close();
-        }, function(){
-            this.close();
-        });
-    }
+			this.close();
+		}, function(){
+			this.close();
+		});
+	}
 });
 
 MWF.xApplication.process.ApplicationExplorer.Application = new Class({
-	Implements: [Options, Events],
-    options: {
-        "where": "bottom",
-        "bgColor": ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"]
-    },
-	
-	initialize: function(app, data, options){
-		this.setOptions(options);
+	Implements: [Events],
+	initialize: function (app, data, where) {
 		this.app = app;
-		this.container = this.app.applicationContentNode;
-        this.css = this.app.css;
-        this.data = data;
+		this.lp = this.app.lp;
+		this.dimension = this.app.dimension;
+		this.container = this.app.contentNode;
+		this.data = data;
+		this.where = where || "bottom";
+		this.canManage = this.checkManage();
 	},
+
+	checkManage: function(){
+		if (this.app.control.canManage) return true;
+		if (this.app.control.canCreate && (this.data.creatorPerson==layout.desktop.session.user.name)) return true;
+		if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
+		return false;
+	},
+
 	load: function(){
-		this.node = new Element("div", {
-            "styles": this.css.applicationItemNode
-        });
+		this.node = new Element("div.o2_process_AppExp_item_node").inject(this.container, this.where);
+		var w = this.dimension.width-20;
+		this.node.setStyle("width", ""+w+"px");
+		this.node.loadHtml(this.app.path+this.app.options.style+"/application.html", {"bind": {"lp": this.lp, "data": this.data, "canManage": this.canManage}}, function(){
+			this.loadNodes();
+			this.loadElements();
+			this.loadNewNode();
+		}.bind(this));
 
-        this.loadTopNode();
-
-        this.loadIconNode();
-
-        this.loadDeleteAction();
-        this.loadExportAction();
-
-        this.loadTitleNode();
-
-        this.loadNewNode();
-
-        this.loadInforNode();
-        this.loadProcessNode();
-        this.loadFormNode();
-
-    //    this.loadDateNode();
-
-        this.node.inject(this.container, this.options.where);
+		this.resizeContentFun = this.resizeContent.bind(this);
+		this.app.addEvent("resize", this.resizeContentFun);
+	},
+	loadElements: function(){
+		this.loadElementList("formList", this.formListNode, this.openForm.bind(this), this.lp.noForm, this.createNewForm.bind(this));
+		this.loadElementList("processList", this.processListNode, this.openProcess.bind(this), this.lp.noProcess, this.createNewProcess.bind(this));
+	},
+	loadNewNode: function(){
+		this.newNode = this.node.getElement(".o2_process_AppExp_item_newNode");
+		if (this.data.updateTime){
+			var createDate = Date.parse(this.data.createTime);
+			var currentDate = new Date();
+			if (createDate.diff(currentDate, "hour")<12) {
+				this.newNode.show();
+			}else{
+				this.newNode.hide();
+			}
+		}
+	},
+	loadElementList: function(list, container, click, noElement, noElementClick){
+		if (this.data[list].length){
+			this.data[list].each(function(el){
+				var item = new Element("div.o2_process_AppExp_item_content_element").inject(container);
+				item.set("text", el.name);
+				//item.set("title", (el.description) ? el.name+"\n"+el.description : el.name);
+				item.store("elementId", el.id);
+				item.addEvents({
+					"mouseover": function(){this.addClass("o2_process_AppExp_item_content_element_over")},
+					"mouseout": function(){this.removeClass("o2_process_AppExp_item_content_element_over")},
+					"click": function(e){
+						var id = this.retrieve("elementId");
+						if (click) click(id, e);
+					}
+				});
+			}.bind(this));
+		}else{
+			var node = new Element("div.o2_process_AppExp_item_content_element", {
+				"text": noElement,
+				"styles": { "color": "#999999" }
+			}).inject(container);
+			node.addEvent("click", function(e){ if (noElementClick) noElementClick(e); }.bind(this));
+		}
+	},
+	createNewForm: function(e){
+		this.openApplication(e, 0);
+	},
+	createNewProcess: function(e){
+		this.openApplication(e, 1);
+	},
+	openApplication: function(e, navi){
+		var appId = "process.ProcessManager"+this.data.id;
+		if (this.app.desktop.apps[appId]){
+			this.app.desktop.apps[appId].setCurrent();
+		}else {
+			this.app.desktop.openApplication(e, "process.ProcessManager", {
+				"application": this.data,
+				"appId": appId,
+				"onQueryLoad": function(){
+					this.status = {"navi": navi || null};
+				}
+			});
+		}
+	},
+	openForm: function(id, e){
+		if (id){
+			layout.desktop.getFormDesignerStyle(function(){
+				var _self = this;
+				var options = {
+					"style": layout.desktop.formDesignerStyle,
+					"appId": "process.FormDesigner"+id,
+					"onQueryLoad": function(){
+						this.actions = _self.app.actions;
+						this.options.id = id;
+						this.application = _self.data;
+					}
+				};
+				this.app.desktop.openApplication(e, "process.FormDesigner", options);
+			}.bind(this));
+		}
+	},
+	openProcess: function(id, e){
+		if (id){
+			var _self = this;
+			var options = {
+				"appId": "process.ProcessDesigner"+id,
+				"onQueryLoad": function(){
+					this.actions = _self.app.actions;
+					this.options.id = id;
+					this.application = _self.data;
+				}
+			};
+			this.app.desktop.openApplication(e, "process.ProcessDesigner", options);
+		}
 	},
 
-    canManage: function(){
-        if (this.app.hasCreatorRole()){
-            if ((this.data.creatorPerson==layout.desktop.session.user.name) || MWF.AC.isAdministrator() || this.app.hasManagerRole()){
-                return true;
-            }
-        }else{
-           if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
-        }
-        return false;
-    },
-    loadTopNode: function(){
-        this.topNode = new Element("div", {
-            "styles": this.css.applicationItemTopNode
-        }).inject(this.node);
-        this.topNode.setStyle("background-color", this.options.bgColor[(Math.random()*10).toInt()]);
+	setIconNode: function(){
+		if (this.data.icon){
+			this.iconNode.setStyle("background-image", "url(data:image/png;base64,"+this.data.icon+")");
+		}else{
+			this.iconNode.setStyle("background-image", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)")
+		}
+		this.iconNode.makeLnk({
+			"par": this._getLnkPar()
+		});
+	},
+	_getLnkPar: function(){
+		var lnkIcon = "/x_component_process_ApplicationExplorer/$Main/default/lnk.png";
+		if (this.data.icon) lnkIcon = "data:image/png;base64,"+this.data.icon;
 
-        this.topNode.addEvent("click", function(e){
-            this.openApplication(e);
-        }.bind(this));
-    },
-    loadDeleteAction: function(){
-        if (this.canManage()){
-            //if ((this.data.creatorPerson==layout.desktop.session.user.name) || (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) || MWF.AC.isAdministrator()){
-                this.delAdctionNode = new Element("div", {
-                    "styles": this.css.applicationItemDelActionNode
-                }).inject(this.topNode);
+		var appId = "process.ProcessManager"+this.data.id;
+		return {
+			"icon": lnkIcon,
+			"title": this.data.name,
+			"par": "process.ProcessManager#{\"application\": \""+this.data.id+"\", \"appId\": \""+appId+"\"}"
+		};
+	},
+	loadNodes: function(){
+		this.iconNode = this.node.getElement(".o2_process_AppExp_item_icon");
+		this.setIconNode();
+		this.titleNode = this.node.getElement(".o2_process_AppExp_item_titleNode");
 
-                this.topNode.addEvents({
-                    "mouseover": function(){if (!this.readyDelete) this.delAdctionNode.fade("in"); }.bind(this),
-                    "mouseout": function(){if (!this.readyDelete) this.delAdctionNode.fade("out"); }.bind(this)
-                });
-                this.delAdctionNode.addEvent("click", function(e){
-                    this.checkDeleteApplication(e);
-                    e.stopPropagation();
-                }.bind(this));
-            //}
-        }
-    },
-    loadExportAction: function(){
-        if (this.canManage()) {
-            //if ((this.data.creatorPerson == layout.desktop.session.user.name) || MWF.AC.isAdministrator() || MWF.AC.isProcessManager()) {
-                this.exportAdctionNode = new Element("div", {
-                    "styles": this.css.applicationItemExportActionNode,
-                    "title": this.app.lp.application.export
-                }).inject(this.topNode);
+		this.formListNode = this.node.getElement(".o2_process_AppExp_item_contentFormList");
+		this.processListNode = this.node.getElement(".o2_process_AppExp_item_contentProcessList");
+		this.pageListNode = this.node.getElement(".o2_process_AppExp_item_contentPageList");
+		this.viewListNode = this.node.getElement(".o2_process_AppExp_item_contentViewList");
+		this.statListNode = this.node.getElement(".o2_process_AppExp_item_contentStatList");
 
-                this.topNode.addEvents({
-                    "mouseover": function () {
-                        if (!this.readyDelete) this.exportAdctionNode.fade("in");
-                    }.bind(this),
-                    "mouseout": function () {
-                        if (!this.readyDelete) this.exportAdctionNode.fade("out");
-                    }.bind(this)
-                });
-                this.exportAdctionNode.addEvent("click", function (e) {
-                    this.exportApplication(e);
-                    e.stopPropagation();
-                }.bind(this));
-            //}
-        }
-    },
-    exportApplication: function(){
-        //var applicationjson = {
-        //    "application": {},
-        //    "processList": [],
-        //    "formList": [],
-        //    "dictionaryList": [],
-        //    "scriptList": []
-        //};
-        //this.app.restActions.getApplication(this.data.name, function(json){
-        //
-        //}
-        MWF.xDesktop.requireApp("process.ApplicationExplorer", "Exporter", function(){
-            (new MWF.xApplication.process.ApplicationExplorer.Exporter(this.app, this.data)).load();
-        }.bind(this));
-    },
+		this.titleNode.addEvent("click", function(e){
+			this.openApplication(e);
+		}.bind(this));
+		this.categoryNode = this.node.getElement(".o2_process_AppExp_item_categoryNode");
+		this.categoryNode.set("text", this.data.applicationCategory || this.data.portalCategory || this.data.protalCategory || this.lp.unCategory);
+		if (this.data.applicationCategory || this.data.portalCategory || this.data.protalCategory){
+			this.categoryNode.set("title", this.data.applicationCategory);
+			this.categoryNode.addClass("o2_process_AppExp_item_categoryColorNode");
+		}
+		this.actionArea = this.node.getElement(".o2_process_AppExp_item_ActionArea");
+		this.actionDelete = this.node.getElement(".o2_process_AppExp_item_Action_delete");
+		this.actionExport = this.node.getElement(".o2_process_AppExp_item_Action_export");
 
-    checkDeleteApplication: function(e){
-        if (!this.readyDelete){
-            this.delAdctionNode.setStyles(this.css.applicationItemDelActionNode_select);
-            this.node.setStyles(this.css.applicationItemNode_select);
-            var bgcolor = this.topNode.getStyle("background-color");
-            this.topNode.store("bgcolor", bgcolor);
-            this.topNode.setStyles(this.css.applicationItemTopNode_select);
-            this.readyDelete = true;
-            this.app.deleteElements.push(this);
-        }else{
-            this.delAdctionNode.setStyles(this.css.applicationItemDelActionNode);
-            this.node.setStyles(this.css.applicationItemNode);
-            var bgcolor = this.topNode.retrieve("bgcolor");
-            this.topNode.setStyle("background-color", bgcolor);
-            this.readyDelete = false;
-            this.app.deleteElements.erase(this);
-        }
-        this.app.checkDeleteApplication();
-    },
-    "delete": function(onlyRemoveNotCompleted, success, failure){
-        this._deleteElement(this.data.id, onlyRemoveNotCompleted, function(){
-            this.destroy();
-            if (success) success();
-        }.bind(this), function(xhr, text, error){
-            var errorText = error;
-            if (xhr) errorText = xhr.responseText;
-            //	this.explorer.app.notice(errorText, "error", this.explorer.propertyContentNode, {x: "left", y:"top"});
+		if (this.actionArea) this.setActionEvent();
+	},
+	setActionEvent: function(){
+		this.node.addEvents({
+			"mouseover": function(){
+				if (!this.readyDelete) this.actionArea.fade("in");
+			}.bind(this),
+			"mouseout": function(){
+				if (!this.readyDelete) this.actionArea.fade("out");
+			}.bind(this)
+		});
+		this.actionDelete.addEvent("click", function(e){
+			this.checkDeleteApplication(e);
+			e.stopPropagation();
+		}.bind(this));
 
-            if (failure) failure(errorText);
-        }.bind(this));
-    },
-    _deleteElement: function(id, onlyRemoveNotCompleted, success, failure){
-        this.app.restActions.deleteApplication(id, onlyRemoveNotCompleted, success, failure);
-    },
-    destroy: function(){
-        this.node.destroy();
-        MWF.release(this);
-        delete this;
-    },
-    loadNewNode: function(){
-        if (this.data.updateTime){
-            var createDate = Date.parse(this.data.createTime);
-            var currentDate = new Date();
-            if (createDate.diff(currentDate, "hour")<12) {
-                this.newNode = new Element("div", {
-                    "styles": this.css.applicationItemNewNode
-                }).inject(this.topNode);
-            }
-        }
-    },
+		this.actionExport.addEvent("click", function(e){
+			this.exportApplication(e);
+			e.stopPropagation();
+		}.bind(this));
+	},
+	checkDeleteApplication: function(e){
+		if (!this.readyDelete){
+			this.actionDelete.addClass("o2_process_AppExp_item_Action_delete_select");
+			this.node.addClass("o2_process_AppExp_item_node_del");
+			this.readyDelete = true;
+			this.app.deleteElements.push(this);
+		}else{
+			this.actionDelete.removeClass("o2_process_AppExp_item_Action_delete_select");
+			this.node.removeClass("o2_process_AppExp_item_node_del");
+			this.readyDelete = false;
+			this.app.deleteElements.erase(this);
+		}
+		this.app.checkDeleteApplication();
+	},
 
-    loadIconNode: function(){
-        this.iconNode = new Element("div", {
-            "styles": this.css.applicationItemIconNode
-        }).inject(this.topNode);
-        if (this.data.icon){
-            this.iconNode.setStyle("background-image", "url(data:image/png;base64,"+this.data.icon+")");
-        }else{
-            this.iconNode.setStyle("background-image", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)")
-        }
-        this.iconNode.makeLnk({
-            "par": this._getLnkPar()
-        });
-    },
-    _getLnkPar: function(){
-        var lnkIcon = "/x_component_process_ApplicationExplorer/$Main/default/lnk.png";
-        if (this.data.icon) lnkIcon = "data:image/png;base64,"+this.data.icon;
+	exportApplication: function(){
+		MWF.xDesktop.requireApp("process.ApplicationExplorer", "Exporter", function(){
+			(new MWF.xApplication.process.ApplicationExplorer.Exporter(this.app, this.data)).load();
+		}.bind(this));
+	},
+	resizeContent: function(){
+		var w = this.dimension.width-20;
+		this.node.setStyle("width", ""+w+"px");
+	},
+	"delete": function(onlyRemoveNotCompleted, success, failure){
+		this._deleteElement(this.data.id, onlyRemoveNotCompleted, function(){
+			this.destroy();
+			if (success) success();
+		}.bind(this), function(xhr, text, error){
+			var errorText = error;
+			if (xhr) errorText = xhr.responseText;
+			//	this.explorer.app.notice(errorText, "error", this.explorer.propertyContentNode, {x: "left", y:"top"});
 
-        var appId = "process.ProcessManager"+this.data.id;
-        return {
-            "icon": lnkIcon,
-            "title": this.data.name,
-            "par": "process.ProcessManager#{\"application\": \""+this.data.id+"\", \"appId\": \""+appId+"\"}"
-        };
-    },
-    loadTitleNode: function(){
-        this.titleNode = new Element("div", {
-            "styles": this.css.applicationItemTitileNode
-        }).inject(this.topNode);
-        this.nameNode = new Element("div", {
-            "styles": this.css.applicationItemNameNode,
-            "text": this.data.name,
-            "title": this.data.name+"--"+((this.data.applicationCategory || this.data.portalCategory) || this.app.options.tooltip.unCategory)
-        }).inject(this.titleNode);
-        this.typeNode = new Element("div", {
-            "styles": this.css.applicationItemTypeNode,
-            "text": "--"+((this.data.applicationCategory || this.data.portalCategory) || this.app.options.tooltip.unCategory)
-        }).inject(this.titleNode);
-    },
-    loadInforNode: function(){
-        this.inforNode = new Element("div", {
-            "styles": this.css.applicationItemInforNode
-        }).inject(this.node);
-        this.descriptionNode = new Element("div", {
-            "styles": this.css.applicationItemDescriptionNode,
-            "text": this.data.description || this.app.options.tooltip.unDescription
-        }).inject(this.inforNode);
-    },
-    loadProcessNode: function(){
-        this.processNode =  new Element("div", {
-            "styles": this.css.applicationItemElNode
-        }).inject(this.inforNode);
-        this.processTitleNode =  new Element("div", {
-            "styles": this.css.applicationItemElTitleNode,
-            "text": "流程"
-        }).inject(this.inforNode);
-        this.processListNode =  new Element("div", {
-            "styles": this.css.applicationItemElListNode
-        }).inject(this.inforNode);
-
-        this.loadProcessList();
-    },
-    // loadProcessList: function(){
-    //     var _self = this;
-    //     this.app.restActions.listProcess(this.data.id, function(json){
-    //         var processList = json.data;
-    //
-    //         if (processList.length) {
-    //             for (var i=0; i<(4).min(processList.length); i++){
-    //                 var process = processList[i];
-    //                 var processNode = new Element("div", {
-    //                     "styles": this.css.listItemNode,
-    //                     "text": process.name
-    //                 }).inject(this.processListNode);
-    //                 processNode.store("processId", process.id);
-    //                 var _self = this;
-    //                 processNode.addEvents({
-    //                     "click": function(e){debugger;_self.openProcess(this, e)},
-    //                     "mouseover": function(){this.setStyle("color", "#3c5eed");},
-    //                     "mouseout": function(){this.setStyle("color", "#666");}
-    //                 });
-    //             }
-    //         }else{
-    //             var node = new Element("div", {
-    //                 "text": this.app.options.tooltip.noProcess,
-    //                 "styles": {"cursor": "pointer", "line-height": "30px"}
-    //             }).inject(this.processListNode);
-    //             node.addEvent("click", function(e){
-    //                 this.createNewProcess(e);
-    //             }.bind(this));
-    //         }
-    //     }.bind(this));
-    //     //    }.bind(this));
-    // },
-    loadProcessList: function(){
-    //    this.app.restActions.listProcess(this.data.id, function(json){
-            if (this.data.processList.length) {
-               // json.data.each(function(process){
-                for (var i=0; i<(4).min(this.data.processList.length); i++){
-                    var process = this.data.processList[i];
-                    var processNode = new Element("div", {
-                        "styles": this.css.listItemNode,
-                        "text": process.name
-                    }).inject(this.processListNode);
-                    processNode.store("processId", process.id);
-                    var _self = this;
-                    processNode.addEvents({
-                        "click": function(e){_self.openProcess(this, e)},
-                        "mouseover": function(){this.setStyle("color", "#3c5eed");},
-                        "mouseout": function(){this.setStyle("color", "#666");}
-                    });
-                }
-               //}.bind(this));
-            }else{
-                var node = new Element("div", {
-                    "text": this.app.options.tooltip.noProcess,
-                    "styles": {"cursor": "pointer", "line-height": "30px"}
-                }).inject(this.processListNode);
-                node.addEvent("click", function(e){
-                    this.createNewProcess(e);
-                }.bind(this));
-            }
-    //    }.bind(this));
-    },
-
-    createNewProcess: function(e){
-        this.openApplication(e, 1);
-    },
-    openProcess: function(node, e){
-        var id = node.retrieve("processId");
-        if (id){
-            var _self = this;
-            var options = {
-                "appId": "process.ProcessDesigner"+id,
-                "onQueryLoad": function(){
-                    this.actions = _self.app.actions;
-                    //this.category = _self;
-                    this.options.id = id;
-                    this.application = _self.data;
-                }
-            };
-            this.app.desktop.openApplication(e, "process.ProcessDesigner", options);
-        }
-    },
-    loadFormNode: function(){
-        this.formNode =  new Element("div", {
-            "styles": this.css.applicationItemElNode
-        }).inject(this.inforNode);
-        this.formTitleNode =  new Element("div", {
-            "styles": this.css.applicationItemElTitleNode,
-            "text": "表单"
-        }).inject(this.inforNode);
-        this.formListNode =  new Element("div", {
-            "styles": this.css.applicationItemElListNode
-        }).inject(this.inforNode);
-
-        this.loadFormList();
-    },
-    // loadFormList: function(){
-    //     var _self = this;
-    //     this.app.restActions.listForm(this.data.id, function(json){
-    //         var formList = json.data;
-    //         if (formList.length){
-    //             for (var i=0; i<(4).min(formList.length); i++){
-    //                 var form = formList[i];
-    //                 var formNode = new Element("div", {
-    //                     "styles": this.css.listItemNode,
-    //                     "text": form.name
-    //                 }).inject(this.formListNode);
-    //                 formNode.store("formId", form.id);
-    //                 var _self = this;
-    //                 formNode.addEvents({
-    //                     "click": function(e){_self.openForm(this, e)},
-    //                     "mouseover": function(){this.setStyle("color", "#3c5eed");},
-    //                     "mouseout": function(){this.setStyle("color", "#666");}
-    //                 });
-    //             }
-    //         }else{
-    //             var node = new Element("div", {
-    //                 "text": this.app.options.tooltip.noForm,
-    //                 "styles": {"cursor": "pointer"}
-    //             }).inject(this.formListNode);
-    //             node.addEvent("click", function(e){
-    //                 this.createNewForm(e);
-    //             }.bind(this));
-    //         }
-    //
-    //     }.bind(this));
-    // },
-    loadFormList: function(){
-        if (this.data.formList.length){
-            for (var i=0; i<(4).min(this.data.formList.length); i++){
-                var form = this.data.formList[i];
-                var formNode = new Element("div", {
-                    "styles": this.css.listItemNode,
-                    "text": form.name
-                }).inject(this.formListNode);
-                formNode.store("formId", form.id);
-                var _self = this;
-                formNode.addEvents({
-                    "click": function(e){_self.openForm(this, e)},
-                    "mouseover": function(){this.setStyle("color", "#3c5eed");},
-                    "mouseout": function(){this.setStyle("color", "#666");}
-                });
-            }
-        }else{
-            var node = new Element("div", {
-                "text": this.app.options.tooltip.noForm,
-                "styles": {"cursor": "pointer"}
-            }).inject(this.formListNode);
-            node.addEvent("click", function(e){
-                this.createNewForm(e);
-            }.bind(this));
-        }
-    },
-
-    createNewForm: function(e){
-        this.openApplication(e, 0);
-    },
-
-    openForm: function(node, e){
-        var id = node.retrieve("formId");
-        if (id){
-            layout.desktop.getFormDesignerStyle(function(){
-                var _self = this;
-                var options = {
-                    "style": layout.desktop.formDesignerStyle,
-                    "appId": "process.FormDesigner"+id,
-                    "onQueryLoad": function(){
-                        this.actions = _self.app.actions;
-                        //this.category = _self;
-                        this.options.id = id;
-                        this.application = _self.data;
-                    }
-                };
-                this.app.desktop.openApplication(e, "process.FormDesigner", options);
-            }.bind(this));
-        }
-    },
-
-    openApplication: function(e, navi){
-        var appId = "process.ProcessManager"+this.data.id;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(e, "process.ProcessManager", {
-                "application": this.data,
-                "appId": appId,
-                "onQueryLoad": function(){
-                    this.status = {"navi": navi || null};
-                }
-            });
-        }
-    },
-
-    loadDateNode: function(){
-        this.dateNode =  new Element("div", {
-            "styles": this.css.applicationItemDateNode,
-            "text": this.data.updateTime
-        }).inject(this.inforNode);
-    }
+			if (failure) failure(errorText);
+		}.bind(this));
+	},
+	_deleteElement: function(id, onlyRemoveNotCompleted, success, failure){
+		this.app.restActions.deleteApplication(id, onlyRemoveNotCompleted, success, failure);
+	},
+	destroy: function(){
+		if (this.resizeContentFun) this.app.removeEvent("resize", this.resizeContentFun);
+		this.node.destroy();
+		o2.release(this);
+	}
 });
+
+
+
+
+
+
+
+
+
+
+
+

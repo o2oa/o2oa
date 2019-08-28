@@ -186,6 +186,18 @@ debugger;
         // }
     },
     loadContent: function(callback){
+        this.subformCount = 0;
+        this.subformLoadedCount = 0;
+        this.subformLoaded = [ this.json.id ];
+
+        this.subpageCount = 0;
+        this.subpageLoadedCount = 0;
+        this.subpageLoaded = [];
+
+        this.widgetCount = 0;
+        this.widgetLoadedCount = 0;
+        this.widgetLoaded = [];
+
         this._loadHtml();
         this._loadForm();
         this.fireEvent("beforeModulesLoad");
@@ -202,15 +214,24 @@ debugger;
 
         this.fireEvent("postLoad");
         if (this.app && this.app.fireEvent)this.app.fireEvent("postLoad");
-        this.checkSubformLoaded();
+        this.checkSubformLoaded( true );
     },
-    checkSubformLoaded : function(){
-        if( !this.subformCount || this.subformCount === this.subformLoadedCount ){
+    checkSubformLoaded : function( isAllSubformLoaded ){
+        if( isAllSubformLoaded ){
+            this.isAllSubformLoaded = true;
+        }
+        if( !this.isAllSubformLoaded )return;
+        //console.log( "checkSubformLoaded this.subformCount="+ this.subformCount + " this.subformLoadedCount="+this.subformLoadedCount );
+        if( (!this.subformCount || this.subformCount === this.subformLoadedCount) &&
+            (!this.subpageCount || this.subpageCount === this.subpageLoadedCount) &&
+            (!this.widgetCount || this.widgetCount === this.widgetLoadedCount)
+        ){
             this.fireEvent("afterModulesLoad");
             if (this.app && this.app.fireEvent)this.app.fireEvent("afterModulesLoad");
 
             this.fireEvent("afterLoad");
             if (this.app && this.app.fireEvent)this.app.fireEvent("afterLoad");
+            this.isLoaded = true;
         }
     },
     _loadMobileDefaultTools: function(callback){
@@ -248,8 +269,8 @@ debugger;
         node.show();
 	    var count = tools.length;
 	    if (count<=2){
-            this.css.html5ActionButton.width = "100%"
-            if (count==2) this.css.html5ActionButton.width = "49%"
+            this.css.html5ActionButton.width = "100%";
+            if (count==2) this.css.html5ActionButton.width = "49%";
             tools.each(function(tool){
                 var action = new Element("div", {"styles": this.css.html5ActionButton, "text": tool.text}).inject(node);
                 action.store("tool", tool);
@@ -346,7 +367,7 @@ debugger;
             "touchstart": function(e){this.setStyles(_self.css.html5ActionButton_over)},
             "touchcancel": function(e){this.setStyles(_self.css.html5ActionButton_up)},
             "touchend": function(e){this.setStyles(_self.css.html5ActionButton_up)},
-            "touchmove": function(e){this.setStyles(_self.css.html5ActionButton_over)},
+            "touchmove": function(e){this.setStyles(_self.css.html5ActionButton_over)}
         });
     },
     _runCustomAction: function(actionScript){
@@ -509,7 +530,27 @@ debugger;
 			}
 		}.bind(this));
 	},
-
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            if (key==="load"){
+                this.addEvent("postLoad", function(event){
+                    return (fun) ? fun(this, event) : null;
+                }.bind(this));
+            }else if (key==="submit"){
+                this.addEvent("beforeProcess", function(event){
+                    return (fun) ? fun(this, event) : null;
+                }.bind(this));
+            }else{
+                this.node.addEvent(key, function(event){
+                    return (fun) ? fun(this, event) : null;
+                }.bind(this));
+            }
+        }
+    },
 
 	_getDomjson: function(dom){
 		var mwfType = dom.get("MWFtype") || dom.get("mwftype");
@@ -560,19 +601,25 @@ debugger;
         //    }
         //    subDom = subDom.getNext();
         //}
-        this.subformCount = 0;
-        this.subformLoadedCount = 0;
 		var moduleNodes = this._getModuleNodes(dom);
         //alert(moduleNodes.length);
 
 		moduleNodes.each(function(node){
 			var json = this._getDomjson(node);
-            if( json.moduleName === "subform" )this.subformCount++;
-			var module = this._loadModule(json, node);
-			this.modules.push(module);
+            //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
+            //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
+            var module = this._loadModule(json, node);
+            this.modules.push(module);
 		}.bind(this));
 	},
 	_loadModule: function(json, node, beforeLoad){
+        //console.log( json.id );
+        if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
+        //if( json.type === "Subform" || json.moduleName === "subform" ){
+        //    console.log( "add subformcount ， this.subformCount = " + this.subformCount );
+        //}
+        if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
+        if( json.type === "Widget" || json.moduleName === "widget" )this.widgetCount++;
 	    if (!MWF["APP"+json.type]){
             MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
         }
@@ -605,6 +652,7 @@ debugger;
         var data= Object.clone(this.businessData.data);
         Object.each(this.forms, function(module, id){
             if (module.json.type==="Opinion"){
+                debugger;
                 if (issubmit){
                     this.saveOpinion(module);
                     delete data[id];
@@ -1012,6 +1060,21 @@ debugger;
         }else{
             this.fireEvent("beforeProcessWork");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+
+            if (!this.formCustomValidation("", "")){
+                this.app.content.unmask();
+                //    if (callback) callback();
+                return false;
+            }
+            // MWF.require("MWF.widget.Mask", function() {
+            //     this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+            //     this.mask.loadNode(this.app.content);
+
+            if (!this.formValidation("", "")){
+                this.app.content.unmask();
+                //    if (callback) callback();
+                return false;
+            }
 
             //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
             var processNode = new Element("div", {"styles": this.app.css.processNode_Area}).inject(this.app.content);

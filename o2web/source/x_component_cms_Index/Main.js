@@ -42,13 +42,14 @@ MWF.xApplication.cms.Index.Main = new Class({
 	loadApplicationContent: function(){
 		this.loadTitle();
 		this.loadContent();
+		this.setCurrentAppType( "all", this.allTypeNode );
 	},
 	loadTitle : function(){
 		this.loadTitleBar();
+		this.loadAllTypeNode();
 		this.loadCreateDocumentActionNode();
-		//this.loadTitleTextNode();
-		//this.loadRefreshNode();
 		this.loadSearchNode();
+		this.loadAppType();
 	},
 	loadTitleBar: function(){
 		this.titleBarContainer = new Element("div", {
@@ -57,6 +58,23 @@ MWF.xApplication.cms.Index.Main = new Class({
 		this.titleBar = new Element("div", {
 			"styles": this.css.titleBar
 		}).inject(this.titleBarContainer);
+	},
+	loadAllTypeNode : function(){
+		this.allTypeNode =  new Element("div.columnTop_All",{
+			"styles" : this.css.columnTop_All,
+			"text" : "全部栏目"
+		}).inject( this.titleBar );
+		this.allTypeNode.addEvents({
+			"mouseover" : function(){
+				if( this.currentAppTypeNode !== this.allTypeNode )this.allTypeNode.setStyles( this.css.columnTop_All_over );
+			}.bind(this),
+			"mouseout" : function(){
+				if( this.currentAppTypeNode !== this.allTypeNode )this.allTypeNode.setStyles( this.css.columnTop_All );
+			}.bind(this),
+			"click": function () {
+				this.setCurrentAppType( "all", this.allTypeNode );
+			}.bind(this)
+		});
 	},
 	loadCreateDocumentActionNode: function() {
 		this.createDocumentAction = new Element("div", {
@@ -94,10 +112,12 @@ MWF.xApplication.cms.Index.Main = new Class({
 		}).inject(this.searchBarAreaNode);
 
 		this.searchBarActionNode = new Element("div", {
-			"styles": this.css.searchBarActionNode
+			"styles": this.css.searchBarActionNode,
+			"title" : "搜索"
 		}).inject(this.searchBarNode);
 		this.searchBarResetActionNode = new Element("div", {
-			"styles": this.css.searchBarResetActionNode
+			"styles": this.css.searchBarResetActionNode,
+			"title" : "重置"
 		}).inject(this.searchBarNode);
 		this.searchBarResetActionNode.setStyle("display","none");
 
@@ -133,6 +153,78 @@ MWF.xApplication.cms.Index.Main = new Class({
 			}
 		});
 	},
+
+	loadAppType : function(){
+		var _self = this;
+		this.typeListContainer = new Element("div.columnTop_category", {
+			"styles": this.css.columnTop_category
+		}).inject(this.titleBar);
+
+		this.restActions.listAllAppType( function( json ){
+			(json.data || []).each( function( typeObject ){
+				new Element( "div.columnTop_category", {
+					"styles" : this.css.columnTop_categoryItem,
+					"text" : typeObject.appType + "(" + typeObject.count + ")",
+					"events" : {
+						"mouseover" : function( ev ){
+							if( this.currentAppTypeNode !== ev.target )ev.target.setStyles( this.css.columnTop_categoryItem_over );
+						}.bind(this),
+						"mouseout" : function( ev ){
+							if( this.currentAppTypeNode !== ev.target )ev.target.setStyles( this.css.columnTop_categoryItem );
+						}.bind(this),
+						"click": function ( ev ) {
+							_self.setCurrentAppType( this, ev.target );
+						}.bind( typeObject.appType )
+					}
+				}).inject( this.typeListContainer )
+			}.bind(this))
+			if (this.typeListContainer.getScrollSize().y> Math.round(this.typeListContainer.getSize().y) && !this.columnTypeExpandNode ) this.createTypeExpandButton();
+		}.bind(this))
+	},
+	createTypeExpandButton : function(){
+		this.columnTypeExpandNode =  new Element("div.columnTop_categoryExpandButton",{
+			"styles" : this.css.columnTop_categoryExpandButton
+		}).inject( this.typeListContainer, "before" );
+		this.columnTypeExpandNode.addEvent("click", this.expandOrCollapseCategory.bind(this));
+	},
+	expandOrCollapseCategory : function(e){
+		if (!this.categoryMorph) this.categoryMorph = new Fx.Morph(this.typeListContainer, {"duration": 100});
+		if( !this.expand ){
+			this.typeListContainer.setStyle( "width", this.typeListContainer.getSize().x + "px" );
+			this.typeListContainer.setStyles( this.css.columnTop_category_more );
+			this.categoryMorph.start({"height": ""+this.typeListContainer.getScrollSize().y+"px"});
+
+			this.expandOrCollapseCategoryFun = this.expandOrCollapseCategory.bind(this);
+			this.content.addEvent("click", this.expandOrCollapseCategoryFun);
+			this.expand = true;
+		}else{
+			this.typeListContainer.setStyle( "width", "auto" );
+			this.typeListContainer.setStyles( this.css.columnTop_category );
+			this.categoryMorph.start({"height": ""+this.titleBar.getSize().y+"px"});
+			if (this.expandOrCollapseCategoryFun) this.content.removeEvent("click", this.expandOrCollapseCategoryFun);
+			this.expand = false;
+		}
+		e.stopPropagation();
+	},
+	setCurrentAppType : function( appType, target ){
+		if( this.currentAppType ){
+			if( this.currentAppType === "all" ){
+				this.currentAppTypeNode.setStyles( this.css.columnTop_All )
+			}else{
+				this.currentAppTypeNode.setStyles( this.css.columnTop_categoryItem )
+			}
+		}
+		if( appType === "all" ){
+			target.setStyles( this.css.columnTop_All_current )
+		}else{
+			target.setStyles( this.css.columnTop_categoryItem_current )
+		}
+		this.currentAppType = appType;
+		this.currentAppTypeNode = target;
+
+		this.createColumnNodes();
+	},
+
 	//loadRefreshNode : function(){
 	//	this.refreshAreaNode = new Element("div", {
 	//		"styles": this.css.refreshAreaNode
@@ -165,7 +257,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 			"styles": this.css.contentNode
 		}).inject(this.contentContainerNode);
 
-		this.createColumnNodes();
+		//this.createColumnNodes();
 
 		//MWF.require("MWF.widget.ScrollBar", function(){
 		//	new MWF.widget.ScrollBar(this.contentContainerNode, {
@@ -188,21 +280,30 @@ MWF.xApplication.cms.Index.Main = new Class({
 		}.bind(this));
 	},
 	createColumnNodes: function(){
-		this.restActions.listColumn(function(json){
-
-			if( typeOf(json.data)!="array" )return;
-			var tmpArray = json.data;
-			tmpArray.sort(function( a, b ){
-				return parseFloat(a.appInfoSeq) - parseFloat(b.appInfoSeq)
-			});
-			json.data = tmpArray;
-
-			var i = 0;
-			json.data.each(function(column){
-				var column = new MWF.xApplication.cms.Index.Column(this, column, {"index" : i++ });
-				column.load();
-				this.columns.push(column);
+		this.contentNode.empty();
+		if( this.currentAppType === "all" ){
+			this.restActions.listColumn( function(json){
+				this._createColumnNodes( json )
 			}.bind(this));
+		}else{
+			this.restActions.listWhatICanViewWithAppType(this.currentAppType, function(json){
+				this._createColumnNodes( json )
+			}.bind(this));
+		}
+	},
+	_createColumnNodes : function( json ){
+		if( typeOf(json.data)!="array" )return;
+		var tmpArray = json.data;
+		tmpArray.sort(function( a, b ){
+			return parseFloat(a.appInfoSeq) - parseFloat(b.appInfoSeq)
+		});
+		json.data = tmpArray;
+
+		var i = 0;
+		json.data.each(function(column){
+			var column = new MWF.xApplication.cms.Index.Column(this, column, {"index" : i++ });
+			column.load();
+			this.columns.push(column);
 		}.bind(this));
 	},
 	search : function( key ){
@@ -276,10 +377,21 @@ MWF.xApplication.cms.Index.Main = new Class({
 				"width": ""+x+"px",
 				"margin-left": ""+m+"px"
 			});
-			this.titleBar.setStyles({
-				"margin-left": ""+(m+10)+"px",
-				"margin-right": ""+(m+10)+"px"
-			})
+			//this.titleBar.setStyles({
+			//	"margin-left": ""+(m+10)+"px",
+			//	"margin-right": ""+(m+10)+"px"
+			//});
+			if( this.typeListContainer ){
+				if ( this.typeListContainer.getScrollSize().y> Math.round(this.typeListContainer.getSize().y)) {
+					if( !this.columnTypeExpandNode ){
+						this.createTypeExpandButton();
+					}else{
+						this.columnTypeExpandNode.setStyle("display","")
+					}
+				}else{
+					if(this.columnTypeExpandNode)this.columnTypeExpandNode.setStyle("display","none");
+				}
+			}
 		}
 	}
 });

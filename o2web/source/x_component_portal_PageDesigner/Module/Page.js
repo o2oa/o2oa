@@ -14,14 +14,14 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 				"styles" : "injectActionTop",
 				"event" : "click",
 				"action" : "injectTop",
-				"title": MWF.APPFD.LP.formAction["insertTop"]
+				"title": MWF.APPPD.LP.formAction["insertTop"]
 			},
 			{
 				"name" : "bottom",
 				"styles" : "injectActionBottom",
 				"event" : "click",
 				"action" : "injectBottom",
-				"title": MWF.APPFD.LP.formAction["insertBottom"]
+				"title": MWF.APPPD.LP.formAction["insertBottom"]
 			}
 		]
 	},
@@ -305,6 +305,22 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			this.selected();
 		}.bind(this));
 
+	},
+
+	createModuleImmediately: function( className, parentModule, relativeNode, position, selectDisabled, async ){
+		var module;
+		this.getTemplateData(className, function(data){
+			var moduleData = Object.clone(data);
+			module = new MWF["PC"+className](this);
+			if( parentModule ){
+				module.onDragModule = parentModule;
+				if (!parentModule.Component) module.inContainer = parentModule;
+				module.parentContainer = parentModule;
+				module.nextModule = null;
+			}
+			module.createImmediately(moduleData, relativeNode, position, selectDisabled);
+		}.bind(this), async);
+		return module;
 	},
 	
 	createModule: function(className, e){
@@ -591,6 +607,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		this._hideInjectAction();
 	},
 
+	_resetTreeNode: function(){},
+
     _clearNoId: function(node){
         var subNode = node.getFirst();
         while (subNode){
@@ -608,8 +626,10 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         }
     },
     _getPageData: function(){
+		this.fireEvent("queryGetPageData");
 		var copy = this.node.clone(true, true);
 		copy.clearStyles(true);
+		this.fireEvent("postGetPageData");
 
         this._clearNoId(copy);
 		var html = copy.outerHTML;

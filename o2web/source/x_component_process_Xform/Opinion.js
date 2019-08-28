@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.xDesktop.requireApp("process.Work", "lp."+o2.language, null, false);
 MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Input,
@@ -113,14 +114,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             }.bind(this));
         }
 
-        if (this.json.isAudio!=="no"){
-            if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
-                this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
-                this.audioRecordAction.addEvent("click", function(){
-                    this.audioRecord();
-                }.bind(this));
-            }
-        }
+        // if (this.json.isAudio!=="no"){
+        //     if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
+        //         this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
+        //         this.audioRecordAction.addEvent("click", function(){
+        //             this.audioRecord();
+        //         }.bind(this));
+        //     }
+        // }
 
         this.node.addEvent("change", function(){
             this._setBusinessData(this.getInputData());
@@ -414,6 +415,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         var leftStr = v.substr(0, v.length-t.length);
         this.input.set("value", leftStr+op);
         this.hideSelectOpinionNode();
+        this._setBusinessData(this.getInputData());
     },
 
 	_afterLoaded: function(){
