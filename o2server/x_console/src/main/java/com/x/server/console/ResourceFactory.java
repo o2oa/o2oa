@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.naming.NamingException;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -35,6 +38,7 @@ public class ResourceFactory {
 
 	public static void bind() throws Exception {
 		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().scan()) {
+			node();
 			containerEntities(sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
@@ -47,6 +51,11 @@ public class ResourceFactory {
 		} else {
 			internal();
 		}
+	}
+
+	private static void node() throws Exception {
+		ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+		new Resource(Config.RESOUCE_NODE, map);
 	}
 
 	private static void external() throws Exception {

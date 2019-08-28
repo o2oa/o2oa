@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 
 public class TestClient {
@@ -71,38 +75,29 @@ public class TestClient {
 	}
 
 	@Test
-	public void test3() throws Exception {
-		List<TaskCompleted> tcs = new ArrayList<>();
-		TaskCompleted tc1 = new TaskCompleted();
-		tc1.setId("tc1");
-		tc1.setTask("t11");
-		tcs.add(tc1);
-		TaskCompleted tc2 = new TaskCompleted();
-		tc2.setId("tc2");
-		tc2.setTask("t2");
-		tcs.add(tc2);
-		TaskCompleted tc3 = new TaskCompleted();
-		tc3.setId("tc3");
-		tc3.setTask("t3");
-		tcs.add(tc3);
-		List<Task> ts = new ArrayList<>();
-		Task t1 = new Task();
-		t1.setId("t1");
-		ts.add(t1);
-		Task t2 = new Task();
-		t2.setId("t2");
-		ts.add(t2);
-		Task t3 = new Task();
-		t3.setId("t3");
-		ts.add(t3);
-
-		Map<TaskCompleted, Task> map = ListTools.pairWithProperty(tcs, "task", ts, "id");
-		for (Entry<TaskCompleted, Task> en : map.entrySet()) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(en.getKey());
-			System.out.println(en.getValue());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-		}
+	public void test2() throws Exception {
+		List<Projection> os = new ArrayList<>();
+		Projection p1 = new Projection();
+		p1.setApplication("a111");
+		p1.setType("work");
+		p1.setProcess("p111");
+		Projection p2 = new Projection();
+		p2.setApplication("a111");
+		p2.setType("work");
+		p2.setProcess("");
+		Projection p3 = new Projection();
+		p2.setApplication("a111");
+		p2.setType("task");
+		p2.setProcess("");
+		os.add(p1);
+		os.add(p2);
+		os.add(p3);
+		final List<Projection> list = new ArrayList<>();
+		os.stream().collect(Collectors.groupingBy(o -> {
+			return o.getApplication() + o.getType();
+		})).forEach((k, v) -> {
+			list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
+		});
+		System.out.println(XGsonBuilder.toJson(list));
 	}
 }

@@ -51,6 +51,23 @@ public class UnitAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "批量获取组织.", action = ActionList.class)
+	@POST
+	@Path("list")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void list(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionList().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "根据身份获取递归上级组织中等级为指定登记的组织.", action = ActionGetWithIdentityWithLevel.class)
 	@GET
 	@Path("identity/{identityFlag}/level/{level}")

@@ -35,7 +35,7 @@ class ActionListSummaryWithPortalCategory extends BaseAction {
 			List<Wo> wos = Wo.copier.copy(emc.list(Portal.class, ids));
 			for (Wo wo : wos) {
 				List<String> os = business.page().listWithPortal(wo.getId());
-				wo.setPageList(WoPage.copier.copy(emc.list(Page.class, os)));
+				wo.setPageList(emc.fetch(os, WoPage.copier));
 			}
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());

@@ -7,6 +7,6 @@ class ExceptionPersonNotExist extends PromptException {
 	private static final long serialVersionUID = -6124481323896411121L;
 
 	ExceptionPersonNotExist(String name) {
-		super("用户不存在:" + name + ".");
+		super("用户 {} 不存在.");
 	}
 }

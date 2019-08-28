@@ -75,8 +75,7 @@ public class Calendar_EventService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Calendar_Event create( EntityManagerContainer emc, 
-			Calendar_Event calendar_record,
+	public Calendar_Event create( EntityManagerContainer emc,  Calendar_Event calendar_record,
 			Boolean autoTransaction ) throws Exception {
 		if( autoTransaction == null ) {
 			autoTransaction = true;
@@ -89,7 +88,7 @@ public class Calendar_EventService {
 			if( autoTransaction ) {
 				emc.beginTransaction( Calendar_Event.class );
 			}
-			emc.persist( calendar_record, CheckPersistType.all);			
+			emc.persist( calendar_record, CheckPersistType.all);	
 			if( autoTransaction ) {
 				emc.commit();
 			}
@@ -195,8 +194,6 @@ public class Calendar_EventService {
 					calendarEvents = eventRepeatMaster.getRecurringDatesInPeriod( startTime, endTime );
 				}
 				if( ListTools.isNotEmpty( calendarEvents )) {
-					emc.beginTransaction( Calendar_Event.class );
-					emc.beginTransaction( Calendar_EventRepeatMaster.class );
 					for( Calendar_Event calendar_Event : calendarEvents ) {
 						//判断该事件是否已经存在，如果不存在，则进行数据添加
 						if ( !business.calendar_EventFactory().eventExists( calendar_Event ) ) {							
@@ -228,9 +225,9 @@ public class Calendar_EventService {
 							}							
 							event_ids.add( calendar_Event.getId() );
 							
-							System.out.println(">>>>>>生成新事件开始时间：" + calendar_Event.getStartTime() );			
-							System.out.println(">>>>>>生成新事件结束时间：" + calendar_Event.getEndTime() );
+							emc.beginTransaction( Calendar_Event.class );
 							emc.persist( calendar_Event, CheckPersistType.all  );
+							emc.commit();
 						}
 					}
 					
@@ -240,6 +237,7 @@ public class Calendar_EventService {
 						}
 					}
 					
+					emc.beginTransaction( Calendar_EventRepeatMaster.class );
 					emc.check( eventRepeatMaster, CheckPersistType.all );
 					emc.commit();
 				}

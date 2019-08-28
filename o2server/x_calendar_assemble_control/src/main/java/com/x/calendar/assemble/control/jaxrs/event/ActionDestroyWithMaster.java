@@ -21,7 +21,7 @@ public class ActionDestroyWithMaster extends BaseAction {
 	private Logger logger = LoggerFactory.getLogger( ActionDestroyWithMaster.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String eventId ) throws Exception {
-		LogUtil.INFO( ">>>>>>ActionDestroyWithMaster.execute......" );
+		//LogUtil.INFO( ">>>>>>ActionDestroyWithMaster.execute......" );
 		ActionResult<Wo> result = new ActionResult<>();
 		Calendar calendar = null;
 		Calendar_Event calendar_event = null;

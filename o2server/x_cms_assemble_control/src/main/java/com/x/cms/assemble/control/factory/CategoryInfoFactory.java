@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -79,33 +80,37 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
-		cq.select(root.get( CategoryInfo_.id));
+		cq.select(root.get( CategoryInfo_.id));		
+		TypedQuery<String> query = null;
 		if( manager ) {
 			if( ListTools.isEmpty( appIds )) {
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType )) {
-					Predicate p = cb.equal( root.get( CategoryInfo_.documentType ), documentType );
-					return em.createQuery( cq.where( p ) ).setMaxResults(maxCount).getResultList();
+				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
+					Predicate p = cb.equal( root.get( CategoryInfo_.documentType ), documentType );					
+					query = em.createQuery( cq.where( p ) ).setMaxResults(maxCount);
 				}else {
-					return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+					query =  em.createQuery( cq ).setMaxResults(maxCount);
 				}
 			}else {
 				Predicate p = root.get( CategoryInfo_.appId ).in(appIds);
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType ) ) {
+				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType) ) {
 					p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
 				}
-				return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
+				query = em.createQuery( cq.where(p) ).setMaxResults(maxCount);
 			}
 		}else {
 			if( ListTools.isEmpty( appIds )) {
 				return new ArrayList<>();
 			}else {
 				Predicate p = root.get( CategoryInfo_.appId ).in(appIds);
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType )) {
+				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 					p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
 				}
-				return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
+				query = em.createQuery( cq.where(p) ).setMaxResults(maxCount);
 			}
 		}
+		
+		//System.out.println(">>>>>>>>>>>listByAppIds SQL:" +query.toString() );
+		return query.getResultList();
 	}
 	
 	public List<CategoryInfo> listCategoryByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
@@ -114,7 +119,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaQuery<CategoryInfo> cq = cb.createQuery( CategoryInfo.class );
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
 		Predicate p = cb.equal(root.get( CategoryInfo_.appId ), appId );
-		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType )) {
+		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
 		}
 		return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
@@ -127,7 +132,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
 		Predicate p = cb.equal( root.get(CategoryInfo_.appId), appId );
-		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType )) {
+		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
 		}
 		cq.select(cb.count(root));
@@ -156,15 +161,13 @@ public class CategoryInfoFactory extends AbstractFactory {
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class);
 		Predicate p = cb.like(root.get( CategoryInfo_.categoryName ), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get( CategoryInfo_.categoryAlias ), str + "%", '\\'));
-		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType )) {
+		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
 		}
 		cq.select(root.get( CategoryInfo_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(200).getResultList();
 	}
 	
-	
-
 	public List<String> listMyCategoryWithAppId( List<String> myCategoryIds, String documentType, String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -175,7 +178,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		if( myCategoryIds != null && !myCategoryIds.isEmpty() ){
 			p = cb.and( p, root.get( CategoryInfo_.id ).in( myCategoryIds ) );
 		}
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		return em.createQuery(cq.where( p )).getResultList();
@@ -239,7 +242,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 			}else {
 				p_filter = cb.and( p_filter, root.get( CategoryInfo_.id ).in( inCategoryIds ));
 			}
-		}		
+		}
 		//排除指定的ID列表
 		if( ListTools.isNotEmpty( excludCategoryIds )) {
 			if( p_filter == null ) {
@@ -247,8 +250,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 			}else {
 				p_filter = cb.and( p_filter, cb.not( root.get( CategoryInfo_.id ).in( excludCategoryIds )));
 			}
-		}
-		
+		}		
 		Predicate p_permission = null;
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
@@ -283,7 +285,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		cq.select(root.get( CategoryInfo_.id ));
@@ -371,7 +373,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 				p = p_permission;
 			}
 		}
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		cq.select(root.get( CategoryInfo_.id ));
@@ -403,7 +405,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		if( ListTools.isNotEmpty( excludCategoryIds )) {
 			p = cb.and( p, cb.not( root.get( CategoryInfo_.id ).in( excludCategoryIds )));
 		}
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		return em.createQuery(cq.where( p )).setMaxResults(maxCount).getResultList();
@@ -439,7 +441,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.not( root.get( CategoryInfo_.id ).in( excludCategoryIds )));
 		}
 		p = cb.and( p, p_all );
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		return em.createQuery(cq.where( p )).setMaxResults(maxCount).getResultList();
@@ -472,7 +474,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 			p = cb.or( p,  root.get( CategoryInfo_.manageableGroupList).in(groupNames));
 		}
 		cq.select(root.get( CategoryInfo_.id ));
-		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType)) {
+		if( StringUtils.isNotEmpty( documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType), documentType));
 		}
 		return em.createQuery( cq.where( p ) ).setMaxResults(maxCount).getResultList();

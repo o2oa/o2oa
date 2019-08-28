@@ -95,6 +95,16 @@ public class MessageConnector {
 	public static final String TYPE_CALENDAR_ALARM = "calendar_alarm";
 
 	public static final String TYPE_CUSTOM_CREATE = "custom_create";
+	
+	public static final String TYPE_TEAMWORK_TASKCREATE = "teamwork_taskCreate";
+	
+	public static final String TYPE_TEAMWORK_TASKUPDATE = "teamwork_taskUpdate";
+	
+	public static final String TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelelte";
+	
+	public static final String TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime";
+	
+	public static final String TYPE_TEAMWORK_CHAT = "teamwork_taskChat";
 
 	public static final String CONSUME_WS = "ws";
 

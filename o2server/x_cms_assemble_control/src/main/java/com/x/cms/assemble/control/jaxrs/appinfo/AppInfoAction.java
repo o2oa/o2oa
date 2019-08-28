@@ -138,16 +138,17 @@ public class AppInfoAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanView_Article.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
 	@GET
-	@Path("list/user/view")
+	@Path("list/user/view/article/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanView_Article(@Context HttpServletRequest request) {
+	public Response listWhatICanViewArticle_WithAppType(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionListWhatICanView_Article.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_Article().execute(request, effectivePerson);
+			result = new ActionListWhatICanViewArticle_WithAppType().execute(request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -158,16 +159,36 @@ public class AppInfoAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanView_Data.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
+	@GET
+	@Path("list/user/view")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWhatICanView_Article(@Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListWhatICanViewArticle().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"根据权限查询用户可以访问的信息栏目列表，person:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
 	@GET
 	@Path("list/user/view/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listWhatICanView_Data(@Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionListWhatICanView_Data.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_Data().execute(request, effectivePerson);
+			result = new ActionListWhatICanViewData().execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -178,16 +199,58 @@ public class AppInfoAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanView_AllType.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
+	@GET
+	@Path("list/user/view/data/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWhatICanViewData_WithAppType(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListWhatICanViewData_WithAppType().execute(request, effectivePerson, appType );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"根据权限查询用户可以访问的数据栏目列表，person:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
+	@GET
+	@Path("list/user/view/all/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWhatICanViewAllType_WithAppType(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListWhatICanViewAllDocType_WithAppType().execute( request, effectivePerson, appType );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"根据权限查询用户可以访问的数据栏目列表，person:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
 	@GET
 	@Path("list/user/view/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listWhatICanView_AllType(@Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionListWhatICanView_AllType.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_AllType().execute(request, effectivePerson);
+			result = new ActionListWhatICanViewAllDocType().execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -208,6 +271,27 @@ public class AppInfoAction extends StandardJaxrsAction {
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
 			result = new ActionListWhatICanPublish().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"系统在根据用户权限查询所有可见的栏目信息时发生异常。Name:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish.class)
+	@GET
+	@Path("list/user/publish/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWhatICanPublish_WithAppType(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListWhatICanPublish_WithAppType().execute(request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -279,17 +363,17 @@ public class AppInfoAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManageWithAppType.class)
+	@JaxrsMethodDescribe(value = "根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage_WithAppType.class)
 	@GET
 	@Path("list/manage/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanManageWithAppType(@Context HttpServletRequest request,
+	public Response listWhatICanManage_WithAppType(@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanManageWithAppType().execute(request, effectivePerson, appType);
+			result = new ActionListWhatICanManage_WithAppType().execute(request, effectivePerson, appType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,

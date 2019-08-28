@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -32,12 +34,29 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getUnit() + "," + wi.getName());
+			List<String> names = new ArrayList<>();
+			List<String> units = new ArrayList<>();
+			if (StringUtils.isNotEmpty(wi.getName())) {
+				names.add(wi.getName());
+			}
+			if (ListTools.isNotEmpty(wi.getNameList())) {
+				names.addAll(wi.getNameList());
+			}
+			if (StringUtils.isNotEmpty(wi.getUnit())) {
+				units.add(wi.getUnit());
+			}
+			if (ListTools.isNotEmpty(wi.getUnitList())) {
+				units.addAll(wi.getUnitList());
+			}
+			names = ListTools.trim(names, true, true);
+			units = ListTools.trim(units, true, true);
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), ListTools.toStringJoin(names, ","),
+					ListTools.toStringJoin(units, ","));
 			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((Wo) element.getObjectValue());
 			} else {
-				Wo wo = this.list(business, wi);
+				Wo wo = this.list(business, names, units);
 				cache.put(new Element(cacheKey, wo));
 				result.setData(wo);
 			}
@@ -51,6 +70,12 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 		private String name;
 		@FieldDescribe("组织")
 		private String unit;
+
+		@FieldDescribe("组织属性名称(多值)")
+		private List<String> nameList;
+
+		@FieldDescribe("组织(多值)")
+		private List<String> unitList;
 
 		public String getName() {
 			return name;
@@ -66,6 +91,22 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 
 		public void setUnit(String unit) {
 			this.unit = unit;
+		}
+
+		public List<String> getNameList() {
+			return nameList;
+		}
+
+		public void setNameList(List<String> nameList) {
+			this.nameList = nameList;
+		}
+
+		public List<String> getUnitList() {
+			return unitList;
+		}
+
+		public void setUnitList(List<String> unitList) {
+			this.unitList = unitList;
 		}
 
 	}
@@ -85,25 +126,29 @@ class ActionListIdentityWithUnitWithName extends BaseAction {
 
 	}
 
-	private Wo list(Business business, Wi wi) throws Exception {
+	private Wo list(Business business, List<String> names, List<String> units) throws Exception {
 		Wo wo = new Wo();
-		Unit unit = business.unit().pick(wi.getUnit());
-		if (null != unit) {
-			EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
-			Root<UnitDuty> root = cq.from(UnitDuty.class);
-			Predicate p = cb.equal(root.get(UnitDuty_.unit), unit.getId());
-			p = cb.and(p, cb.equal(root.get(UnitDuty_.name), wi.getName()));
-			List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
-			List<String> identityIds = new ArrayList<>();
-			if (!os.isEmpty()) {
-				identityIds.addAll(os.get(0).getIdentityList());
+		List<String> identityIds = new ArrayList<>();
+		for (String str : units) {
+			Unit unit = business.unit().pick(str);
+			if (null != unit) {
+				EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+				Root<UnitDuty> root = cq.from(UnitDuty.class);
+				Predicate p = cb.equal(root.get(UnitDuty_.unit), unit.getId());
+				p = cb.and(p, root.get(UnitDuty_.name).in(names));
+				List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
+				if (!os.isEmpty()) {
+					for (UnitDuty o : os) {
+						identityIds.addAll(o.getIdentityList());
+					}
+				}
 			}
-			identityIds = ListTools.trim(identityIds, true, true);
-			List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
-			wo.getIdentityList().addAll(list);
 		}
+		identityIds = ListTools.trim(identityIds, true, true);
+		List<String> list = business.identity().listIdentityDistinguishedNameSorted(identityIds);
+		wo.getIdentityList().addAll(list);
 		return wo;
 	}
 

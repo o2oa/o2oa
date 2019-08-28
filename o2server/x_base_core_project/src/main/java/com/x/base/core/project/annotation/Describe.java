@@ -337,7 +337,12 @@ public class Describe {
 						jaxrsField.setIsBaseType(true);
 					}
 				} else {
-					jaxrsField.setIsCollection(false);
+					//O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
+					if( StringUtils.equalsAnyIgnoreCase( "String[]", jaxrsField.getType() )) {
+						jaxrsField.setIsCollection(true);
+					}else {
+						jaxrsField.setIsCollection(false);
+					}
 					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
 							"Double", "Long", "Float")) {
 						jaxrsField.setIsBaseType(true);

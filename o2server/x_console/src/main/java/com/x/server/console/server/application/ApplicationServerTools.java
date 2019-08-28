@@ -92,6 +92,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setExtraClasspath(calculateExtraClassPath(clz));
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
+				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 				handlers.addHandler(webApp);
 			} else if (dir.exists()) {
 				FileUtils.forceDelete(dir);

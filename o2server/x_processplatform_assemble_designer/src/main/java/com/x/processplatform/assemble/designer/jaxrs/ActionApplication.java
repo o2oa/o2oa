@@ -13,6 +13,7 @@ import com.x.processplatform.assemble.designer.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.designer.jaxrs.form.FormAction;
 import com.x.processplatform.assemble.designer.jaxrs.id.IdAction;
 import com.x.processplatform.assemble.designer.jaxrs.input.InputAction;
+import com.x.processplatform.assemble.designer.jaxrs.mapping.MappingAction;
 import com.x.processplatform.assemble.designer.jaxrs.output.OutputAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.ProcessAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoParallelAction;
@@ -43,6 +44,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(InputAction.class);
 		classes.add(OutputAction.class);
 		classes.add(ProjectionAction.class);
+		classes.add(MappingAction.class);
 		classes.add(ElementToolAction.class);
 		return classes;
 	}

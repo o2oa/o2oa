@@ -14,11 +14,6 @@ class ActionTest4 extends BaseAction {
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String op, String data) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!test4");
-			System.out.println(op);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!test4");
-			System.out.println(data);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!test4");
 			return result;
 		}
 	}

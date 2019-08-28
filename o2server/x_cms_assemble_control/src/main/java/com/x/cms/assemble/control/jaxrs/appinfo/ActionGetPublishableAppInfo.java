@@ -46,7 +46,7 @@ public class ActionGetPublishableAppInfo extends BaseAction {
 			if (check) {
 				if ( isXAdmin ) { // 如果用户管理系统管理，则获取所有的栏目和分类信息
 					try {
-						wos = listPublishAbleAppInfoByPermission( personName, isAnonymous, null, "全部", isXAdmin, 1000 );
+						wos = listPublishAbleAppInfoByPermission( personName, isAnonymous, null, "all", "全部", isXAdmin, 1000 );
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionAppInfoProcess(e,
@@ -56,7 +56,7 @@ public class ActionGetPublishableAppInfo extends BaseAction {
 					}
 				} else {
 					try {
-						wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null, "全部", isXAdmin, 1000 );
+						wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,  "all", "全部", isXAdmin, 1000 );
 						for( Wo wo : wos_out ) {
 							if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
 								wos.add( wo );

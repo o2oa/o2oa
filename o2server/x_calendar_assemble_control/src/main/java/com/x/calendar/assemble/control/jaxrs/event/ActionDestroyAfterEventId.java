@@ -34,7 +34,7 @@ public class ActionDestroyAfterEventId extends BaseAction {
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		
-		LogUtil.INFO( ">>>>>>ActionDestroyAfterEventId.execute......" );
+		//LogUtil.INFO( ">>>>>>ActionDestroyAfterEventId.execute......" );
 		ActionResult<Wo> result = new ActionResult<>();
 		Integer count = 0;
 		Wo wo = new Wo();

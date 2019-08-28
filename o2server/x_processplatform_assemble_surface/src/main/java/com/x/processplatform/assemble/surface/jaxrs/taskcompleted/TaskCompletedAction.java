@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -108,7 +109,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户的WorkCompleted对象,下一页.", action = ActionListNext.class)
+	@JaxrsMethodDescribe(value = "列示当前用户的已办对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -127,7 +128,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户的WorkCompleted对象,上一页.", action = ActionListPrev.class)
+	@JaxrsMethodDescribe(value = "列示当前用户的已办对象,上一页.", action = ActionListPrev.class)
 	@GET
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -146,7 +147,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的TaskCompleted对象,下一页.", action = ActionListNextWithApplication.class)
+	@JaxrsMethodDescribe(value = "列示指定应用当前用户的已办对象,下一页.", action = ActionListNextWithApplication.class)
 	@GET
 	@Path("list/{id}/next/{count}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -166,7 +167,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定应用当前用户的TaskCompleted对象,上一页.", action = ActionListPrevWithApplication.class)
+	@JaxrsMethodDescribe(value = "列示指定应用当前用户的已办对象,上一页.", action = ActionListPrevWithApplication.class)
 	@GET
 	@Path("list/{id}/prev/{count}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -186,7 +187,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定流程当前用户的TaskCompleted对象,下一页.", action = ActionListNextWithProcess.class)
+	@JaxrsMethodDescribe(value = "列示指定流程当前用户的已办对象,下一页.", action = ActionListNextWithProcess.class)
 	@GET
 	@Path("list/{id}/next/{count}/process/{processFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -206,7 +207,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定流程当前用户的TaskCompleted对象,上一页.", action = ActionListPrevWithProcess.class)
+	@JaxrsMethodDescribe(value = "列示指定流程当前用户的已办对象,上一页.", action = ActionListPrevWithProcess.class)
 	@GET
 	@Path("list/{id}/prev/{count}/process/{processFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -244,7 +245,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "统计当前用户在指定应用下的已办，按流程分类.", action = ActionListCountWithProcess.class)
+	@JaxrsMethodDescribe(value = "统计当前用户在指定应用下的已办,按流程分类.", action = ActionListCountWithProcess.class)
 	@GET
 	@Path("list/count/application/{applicationFlag}/process")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -297,7 +298,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户对TaskCompleted的过滤信息,下一页.", action = ActionListNextFilter.class)
+	@JaxrsMethodDescribe(value = "获取用户对已办的过滤信息,下一页.", action = ActionListNextFilter.class)
 	@POST
 	@Path("list/{id}/next/{count}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -316,7 +317,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户对TaskCompleted的过滤信息,上一页.", action = ActionListPrevFilter.class)
+	@JaxrsMethodDescribe(value = "获取用户对已办的过滤信息,上一页.", action = ActionListPrevFilter.class)
 	@POST
 	@Path("list/{id}/prev/{count}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -407,6 +408,24 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理修改意见.", action = ActionManageOpinion.class)
+	@PUT
+	@Path("{id}/opinion/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageOpinion(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("已办标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionManageOpinion.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageOpinion().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "提醒.", action = ActionPress.class)
 	@GET
 	@Path("press/work/{work}")
@@ -476,6 +495,25 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 			result = new ActionListPrevManual().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "按条件对已办分页显示.", action = ActionManageListFilterPaging.class)
+	@POST
+	@Path("list/filter/{page}/size/{size}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListFilterPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+									   @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionManageListFilterPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListFilterPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

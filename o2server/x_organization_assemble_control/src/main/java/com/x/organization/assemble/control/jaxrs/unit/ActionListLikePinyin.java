@@ -23,6 +23,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Unit;
@@ -138,9 +139,7 @@ class ActionListLikePinyin extends BaseAction {
 		/** 去掉指定范围本身,仅包含下级 */
 		unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
 				String.class, true, true));
-		String str = wi.getKey().replaceAll("_", "\\\\_");
-		str = str.replaceAll("%", "\\\\%");
-		str = str.toLowerCase();
+		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);

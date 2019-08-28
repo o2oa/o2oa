@@ -128,6 +128,7 @@ public class TestAction extends BaseAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
 	@JaxrsMethodDescribe(value = "测试8.", action = ActionTest8.class)
 	@GET
 	@Path("8")
@@ -138,6 +139,23 @@ public class TestAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionTest8().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "测试9.", action = ActionTest9.class)
+	@GET
+	@Path("9")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void test9(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<Object> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTest9().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

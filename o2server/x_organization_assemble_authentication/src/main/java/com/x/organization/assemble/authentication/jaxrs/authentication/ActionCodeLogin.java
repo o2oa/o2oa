@@ -39,14 +39,14 @@ class ActionCodeLogin extends BaseAction {
 			}
 			if (Config.token().isInitialManager(credential)) {
 				if (!StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
-					throw new ExceptionInvalidPassword();
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				wo = this.manager(request, response, business, Wo.class);
 			} else {
 				/* 普通用户登录,也有可能拥有管理员角色 */
 				String id = business.person().getWithCredential(credential);
 				if (StringUtils.isEmpty(id)) {
-					throw new ExceptionPersonNotExist(credential);
+					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				Person o = emc.find(id, Person.class);
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())

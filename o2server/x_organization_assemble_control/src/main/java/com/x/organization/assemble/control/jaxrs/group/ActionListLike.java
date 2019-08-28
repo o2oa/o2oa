@@ -23,6 +23,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Group_;
@@ -100,9 +101,7 @@ class ActionListLike extends BaseAction {
 			return wos;
 		}
 		List<String> groupIds = business.expendGroupRoleToGroup(wi.getGroupList(), wi.getRoleList());
-		String str = wi.getKey().replaceAll("_", "\\\\_");
-		str = str.replaceAll("%", "\\\\%");
-		str = str.toLowerCase();
+		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Group.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Group> cq = cb.createQuery(Group.class);

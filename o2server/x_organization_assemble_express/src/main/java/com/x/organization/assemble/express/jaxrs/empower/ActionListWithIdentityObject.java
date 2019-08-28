@@ -114,19 +114,12 @@ class ActionListWithIdentityObject extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Empower> cq = cb.createQuery(Empower.class);
 		Root<Empower> root = cq.from(Empower.class);
-		Predicate p = cb.equal(root.get(Empower_.whole), true);
-		if (StringUtils.isNotEmpty(wi.getApplication())) {
-			p = cb.and(p,
-					cb.and(cb.notEqual(root.get(Empower_.whole), true),
-							cb.equal(root.get(Empower_.application), wi.getApplication()),
-							cb.or(cb.equal(root.get(Empower_.process), ""), cb.isNull(root.get(Empower_.process)))));
-		}
-		if (StringUtils.isNotEmpty(wi.getProcess())) {
-			p = cb.and(p, cb.and(cb.notEqual(root.get(Empower_.whole), true),
-					cb.equal(root.get(Empower_.process), wi.getProcess())));
-		}
+		Predicate p = cb.or(cb.equal(root.get(Empower_.type), Empower.TYPE_ALL),
+				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_APPLICATION),
+						cb.equal(root.get(Empower_.application), wi.getApplication())),
+				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS),
+						cb.equal(root.get(Empower_.process), wi.getProcess())));
 		cb.and(p, cb.isMember(root.get(Empower_.fromIdentity), cb.literal(ids)));
-
 		return em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
 	}
 
@@ -137,21 +130,21 @@ class ActionListWithIdentityObject extends BaseAction {
 				.forEach(o -> {
 					out: for (;;) {
 						for (Empower t : o.getValue()) {
-							if ((BooleanUtils.isNotTrue(t.getWhole())) && StringUtils.isNotEmpty(t.getProcess())) {
+							if (StringUtils.equals(t.getType(), Empower.TYPE_PROCESS)) {
 								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
 								wos.add(wo);
 								break out;
 							}
 						}
 						for (Empower t : o.getValue()) {
-							if ((BooleanUtils.isNotTrue(t.getWhole())) && StringUtils.isNotEmpty(t.getApplication())) {
+							if (StringUtils.equals(t.getType(), Empower.TYPE_APPLICATION)) {
 								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
 								wos.add(wo);
 								break out;
 							}
 						}
 						for (Empower t : o.getValue()) {
-							if (BooleanUtils.isTrue(t.getWhole())) {
+							if (StringUtils.equals(t.getType(), Empower.TYPE_ALL)) {
 								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
 								wos.add(wo);
 								break out;

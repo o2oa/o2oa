@@ -51,7 +51,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public void persist(JpaObject o) throws Exception {
-		//o.onPersist();
+		// o.onPersist();
 		this.get(o.getClass()).persist(o);
 	}
 
@@ -520,6 +520,20 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(cb.count(root)).where(cb.and(cb.equal(root.get(euqalAttribute), equalValue),
 				cb.equal(root.get(otherEqualAttribute), otherEqualValue)));
+		return em.createQuery(cq).getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countEqualAndEqualAndEqual(Class<T> cls, String oneEuqalAttribute,
+			Object oneEqualValue, String twoEqualAttribute, Object twoEqualValue, String threeEqualAttribute,
+			Object threeEqualValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		cq.select(cb.count(root))
+				.where(cb.and(cb.equal(root.get(oneEuqalAttribute), oneEqualValue),
+						cb.equal(root.get(twoEqualAttribute), twoEqualValue),
+						cb.equal(root.get(threeEqualAttribute), threeEqualValue)));
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -1336,6 +1350,24 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<T> cq = cb.createQuery(clz);
 		Root<T> root = cq.from(clz);
 		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		if (StringUtils.isNotEmpty(sequence)) {
+			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.sequence), sequence));
+		}
+		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
+		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject> List<T> listEqualAndEqualAndSequenceAfter(Class<T> clz, String oneEqualAttribute,
+			Object oneEqualValue, String twoEqualAttribute, Object twoEqualValue, Integer count, String sequence)
+			throws Exception {
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(clz);
+		Root<T> root = cq.from(clz);
+		Predicate p = cb.equal(root.get(oneEqualAttribute), oneEqualValue);
+		p = cb.and(p, cb.equal(root.get(twoEqualAttribute), twoEqualValue));
 		if (StringUtils.isNotEmpty(sequence)) {
 			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.sequence), sequence));
 		}

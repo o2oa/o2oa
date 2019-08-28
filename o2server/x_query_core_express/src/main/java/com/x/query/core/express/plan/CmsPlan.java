@@ -224,7 +224,7 @@ public class CmsPlan extends Plan {
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.cms);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
 						cq.select(root.get(Item_.bundle)).where(p);
-						System.out.println(">>>>>>>>listBundle_filterEntry SQL:" +  em.createQuery(cq) );
+						//System.out.println(">>>>>>>>listBundle_filterEntry SQL:" +  em.createQuery(cq) );
 						return em.createQuery(cq).getResultList();
 					} catch (Exception e) {
 						e.printStackTrace();

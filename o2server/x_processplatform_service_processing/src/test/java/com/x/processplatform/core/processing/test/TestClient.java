@@ -1,17 +1,15 @@
 package com.x.processplatform.core.processing.test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.processplatform.core.entity.element.Projection;
 
 public class TestClient {
 	@Test
@@ -21,7 +19,7 @@ public class TestClient {
 		System.out.println("aaa:" + aaa);
 		System.out.println(list.stream().allMatch(o -> StringUtils.isEmpty(o)));
 	}
-	
+
 	@Test
 	public void test1() throws Exception {
 		List<String> a = new ArrayList<>();
@@ -32,20 +30,9 @@ public class TestClient {
 		b.add("22");
 		b.add("33");
 		b.add("44");
-		System.out.println(ListUtils.sum(a,b));
+		System.out.println(ListUtils.sum(a, b));
 	}
-	
-	@Test
-	public void test2() throws Exception {
-		Map<String,String> a = new HashMap<>();
-		a.put("aaaa", "a1");
-		a.put("bbbb", "b1");
-		a.put("cccc", "c1");
-		JsonElement je = XGsonBuilder.instance().toJsonTree(a);
-		JsonObject jo = je.getAsJsonObject();
-		jo.addProperty("bbbb", "xxxxx");
-		jo.addProperty("ddddd", "xxxxx");
-		System.out.println(jo);
-	}
+
+
 
 }

@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -16,6 +15,7 @@ public class CenterServer extends ConfigObject {
 
 	private static final Integer default_port = 20030;
 	private static final Integer default_scanInterval = 0;
+	private static final Boolean default_configApiEnable = true;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -30,6 +30,7 @@ public class CenterServer extends ConfigObject {
 		this.proxyHost = "";
 		this.proxyPort = default_port;
 		this.scanInterval = default_scanInterval;
+		this.configApiEnable = default_configApiEnable;
 	}
 
 	@FieldDescribe("是否启用")
@@ -50,6 +51,12 @@ public class CenterServer extends ConfigObject {
 	private Integer scanInterval;
 	@FieldDescribe("其他参数")
 	private LinkedHashMap<String, Object> config;
+	@FieldDescribe("允许通过Api修改config")
+	private Boolean configApiEnable;
+
+	public Boolean getConfigApiEnable() {
+		return configApiEnable == null ? default_configApiEnable : this.configApiEnable;
+	}
 
 	public String getHttpProtocol() {
 		return StringUtils.equals("https", this.httpProtocol) ? "https" : "http";
@@ -123,10 +130,6 @@ public class CenterServer extends ConfigObject {
 		this.config = config;
 	}
 
-	// public void setHost(String host) {
-	// this.host = host;
-	// }
-
 	public void setHttpProtocol(String httpProtocol) {
 		this.httpProtocol = httpProtocol;
 	}
@@ -134,6 +137,10 @@ public class CenterServer extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_CENTERSERVER);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+	}
+
+	public void setConfigApiEnable(Boolean configApiEnable) {
+		this.configApiEnable = configApiEnable;
 	}
 
 }

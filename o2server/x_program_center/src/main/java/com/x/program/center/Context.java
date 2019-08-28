@@ -305,7 +305,7 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
 				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
 				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
-				OrganizationDefinition.SearchPrivilege);
+				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
 		for (String str : roles) {
 			EntityManager em = emc.get(Role.class);
@@ -318,8 +318,8 @@ public class Context extends AbstractContext {
 			if (list.isEmpty()) {
 				Role o = new Role();
 				o.setName(str);
-				o.setUnique(str + OrganizationDefinition.RoleDefinitionSuffix);				
-				o.setDescription( getDescriptionWithName( str ) );				
+				o.setUnique(str + OrganizationDefinition.RoleDefinitionSuffix);
+				o.setDescription(getDescriptionWithName(str));
 				emc.beginTransaction(Role.class);
 				emc.persist(o, CheckPersistType.all);
 				emc.commit();
@@ -328,56 +328,54 @@ public class Context extends AbstractContext {
 	}
 
 	/**
-	 * , OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition., OrganizationDefinition., .,
-				OrganizationDefinition., OrganizationDefinition.,
-				OrganizationDefinition.
+	 * , OrganizationDefinition., OrganizationDefinition., OrganizationDefinition.,
+	 * OrganizationDefinition., OrganizationDefinition., OrganizationDefinition.,
+	 * OrganizationDefinition., OrganizationDefinition., OrganizationDefinition.,
+	 * OrganizationDefinition., OrganizationDefinition., OrganizationDefinition.,
+	 * OrganizationDefinition., ., OrganizationDefinition., OrganizationDefinition.,
+	 * OrganizationDefinition.
+	 * 
 	 * @param str
 	 * @return
 	 */
 	private String getDescriptionWithName(String str) {
-		if( OrganizationDefinition.Manager.equalsIgnoreCase( str )) {
+		if (OrganizationDefinition.Manager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.Manager_discription;
-		}else if( OrganizationDefinition.AttendanceManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.AttendanceManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.AttendanceManager_discription;
-		}else if( OrganizationDefinition.OrganizationManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.OrganizationManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.OrganizationManager_discription;
-		}else if( OrganizationDefinition.PersonManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.PersonManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.PersonManager_discription;
-		}else if( OrganizationDefinition.GroupManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.GroupManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.GroupManager_discription;
-		}else if( OrganizationDefinition.UnitManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.UnitManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.UnitManager_discription;
-		}else if( OrganizationDefinition.RoleManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.RoleManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.RoleManager_discription;
-		}else if( OrganizationDefinition.ProcessPlatformManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.ProcessPlatformManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.ProcessPlatformManager_discription;
-		}else if( OrganizationDefinition.ProcessPlatformCreator.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.ProcessPlatformCreator.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.ProcessPlatformCreator_discription;
-		}else if( OrganizationDefinition.MeetingManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.MeetingManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MeetingManager_discription;
-		}else if( OrganizationDefinition.MeetingViewer.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.MeetingViewer.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MeetingViewer_discription;
-		}else if( OrganizationDefinition.PortalManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.PortalManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.PortalManager_discription;
-		}else if( OrganizationDefinition.BBSManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.BBSManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.BBSManager_discription;
-		}else if( OrganizationDefinition.CMSManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.CMSManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.CMSManager_discription;
-		}else if( OrganizationDefinition.OKRManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.OKRManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.OKRManager_discription;
-		}else if( OrganizationDefinition.CRMManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.CRMManager_discription;
-		}else if( OrganizationDefinition.QueryManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.QueryManager_discription;
-		}else if( OrganizationDefinition.MessageManager.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MessageManager_discription;
-		}else if( OrganizationDefinition.SearchPrivilege.equalsIgnoreCase( str )) {
+		} else if (OrganizationDefinition.SearchPrivilege.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.SearchPrivilege_discription;
 		}
 		return "";

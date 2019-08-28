@@ -9,6 +9,7 @@ import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.RunScript;
 import org.h2.tools.Script;
 
+import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.logger.Logger;
@@ -45,6 +46,7 @@ public class ActionCompactData {
 			logger.print("data server is running.");
 			return false;
 		}
+		//Class.forName(SlicePropertiesBuilder.driver_h2).newInstance();
 		logger.print("compact data start at {}.", DateTools.format(start));
 		String dir = StringUtils.replace(Config.base(), "\\", "/") + "/local/repository/data";
 		String url = "jdbc:h2:" + dir + "/X";

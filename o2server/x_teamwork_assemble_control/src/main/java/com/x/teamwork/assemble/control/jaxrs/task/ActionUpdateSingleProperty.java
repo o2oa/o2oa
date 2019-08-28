@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 import com.x.teamwork.core.entity.Review;
@@ -206,6 +207,14 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}	
+		}
+		
+		if (check) {
+			try {
+				MessageFactory.message_to_teamWorkUpdate( oldTask );
+			} catch (Exception e) {
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 		
 		if (check) {

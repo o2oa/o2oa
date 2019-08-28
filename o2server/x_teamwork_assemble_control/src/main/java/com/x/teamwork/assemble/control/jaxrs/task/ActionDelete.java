@@ -19,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskGroup;
@@ -96,6 +97,14 @@ public class ActionDelete extends BaseAction {
 						logger.error(e, effectivePerson, request, null);
 					}	
 				}
+			}
+		}
+		
+		if (check) {
+			try {
+				MessageFactory.message_to_teamWorkDelete(task);
+			} catch (Exception e) {
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		

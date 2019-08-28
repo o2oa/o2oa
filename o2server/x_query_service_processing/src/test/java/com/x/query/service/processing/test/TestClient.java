@@ -57,10 +57,8 @@ public class TestClient {
 		compressor.setLevel(Deflater.BEST_COMPRESSION);
 		String str = FileUtils.readFileToString(new File("d:/XNNET"));
 		byte[] input = Base64.decodeBase64(str);
-		System.out.println("!!!!!!");
 		try (ByteArrayInputStream in = new ByteArrayInputStream(input)) {
 			NeuralNetwork<MomentumBackpropagation> neuralNetwork = NeuralNetwork.load(in);
-			System.out.println("!!!!!!");
 			// MlpNN mlpNN = MlpNN.fromNeuralNetwork(neuralNetwork);
 			// String value = mlpNN.toString();
 			// System.out.println(value.getBytes().length);

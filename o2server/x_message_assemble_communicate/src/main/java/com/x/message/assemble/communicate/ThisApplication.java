@@ -1,9 +1,5 @@
 package com.x.message.assemble.communicate;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.websocket.Session;
-
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -27,8 +23,6 @@ public class ThisApplication {
 	public static ZhengwuDingdingConsumeQueue zhengwuDingdingConsumeQueue = new ZhengwuDingdingConsumeQueue();
 
 	public static DingdingConsumeQueue dingdingConsumeQueue = new DingdingConsumeQueue();
-
-	public static final ConcurrentHashMap<String, Session> connections = new ConcurrentHashMap<>();
 
 	public static Context context() {
 		return context;
@@ -55,7 +49,7 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.messages().clean().getEnable())) {
 				context().schedule(Clean.class, Config.messages().clean().getCron());
 			}
-			context().scheduleLocal(CleanConnections.class, 180, 900);
+			context().scheduleLocal(CleanConnections.class, 300, 300);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

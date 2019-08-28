@@ -1,8 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.read;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -10,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.common.base.Objects;
+import com.x.processplatform.core.entity.content.WorkLog;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -30,6 +31,7 @@ import com.x.processplatform.core.entity.content.Read_;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreateWithWorkCompleted extends BaseAction {
 
@@ -45,6 +47,17 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
 				throw new ExceptionWorkCompletedNotExist(workCompletedId);
+			}
+			/** 取workLog补充WorkCompleted不足字段 */
+			List<WorkLog> workLogs = emc.listEqual(WorkLog.class,WorkLog.job_FIELDNAME , workCompleted.getJob());
+			workLogs = workLogs.stream()
+					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
+							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
+			WorkLog workLog = new WorkLog();
+			workLog.setArrivedActivityToken(UUID.randomUUID().toString());
+			if(!workLogs.isEmpty()){
+				workLog = workLogs.get(workLogs.size()-1);
 			}
 			List<Read> adds = new ArrayList<>();
 			/** work已经存在的read 需要重新发送通知 */
@@ -72,6 +85,11 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 					updates.add(o);
 				} else {
 					Read read = new Read(workCompleted, identity, unit, person);
+					read.setActivity(workLog.getArrivedActivity());
+					read.setActivityName(workLog.getArrivedActivityName());
+					read.setActivityType(workLog.getArrivedActivityType());
+					read.setActivityAlias(workLog.getArrivedActivityAlias());
+					read.setActivityToken(workLog.getArrivedActivityToken());
 					adds.add(read);
 				}
 			}

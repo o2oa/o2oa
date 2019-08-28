@@ -63,13 +63,17 @@ public class Read extends SliceJpaObject {
 		if (StringUtils.isEmpty(this.startTimeMonth) && (null != this.startTime)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
 		}
-		if (StringTools.utf8Length(opinion) > length_255B) {
-			this.opinion = StringTools.utf8SubString(opinion, length_255B);
-			this.opinionLob = opinion;
+		if (StringTools.utf8Length(this.getOpinion()) > length_255B) {
+			this.opinionLob = this.getOpinion();
+			this.opinion = StringTools.utf8SubString(this.getOpinion(), length_255B);
 		} else {
-			this.opinion = Objects.toString(this.opinion, "");
+			this.opinion = Objects.toString(this.getOpinion(), "");
 			this.opinionLob = null;
 		}
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
 	}
 
 	public String getOpinion() {
@@ -78,10 +82,6 @@ public class Read extends SliceJpaObject {
 		} else {
 			return this.opinion;
 		}
-	}
-
-	public void setOpinion(String opinion) {
-		this.opinion = opinion;
 	}
 
 	public void setTitle(String title) {

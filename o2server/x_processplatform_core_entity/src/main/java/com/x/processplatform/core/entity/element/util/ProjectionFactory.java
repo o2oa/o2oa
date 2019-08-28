@@ -61,156 +61,81 @@ public class ProjectionFactory {
 		projection(projection, data, review);
 	}
 
-	public static void projectionTable(Projection projection, Data data, JpaObject jpaObject) throws Exception {
+	private static void projection(Projection projection, Data data, JpaObject jpaObject) throws Exception {
 
 		List<Projection.Item> items = XGsonBuilder.instance().fromJson(projection.getData(),
 				new TypeToken<List<Projection.Item>>() {
 				}.getType());
 
+ 
+
+		FieldIndex fieldIndex = new FieldIndex();
+
 		for (Projection.Item item : items) {
 			switch (item.getType()) {
 			case JpaObject.TYPE_STRING:
-				stringValue(data, item.getPath(), jpaObject, item.getColumn());
+				stringValue(data, item.getPath(), jpaObject, fieldIndex.nextStringFieldName());
 				break;
 
 			case JpaObject.TYPE_INTEGER:
-				integerValue(data, item.getPath(), jpaObject, item.getColumn());
+				integerValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerFieldName());
 				break;
 
 			case JpaObject.TYPE_LONG:
-				longValue(data, item.getPath(), jpaObject, item.getColumn());
+				longValue(data, item.getPath(), jpaObject, fieldIndex.nextLongFieldName());
 				break;
 
 			case JpaObject.TYPE_DOUBLE:
-				doubleValue(data, item.getPath(), jpaObject, item.getColumn());
+				doubleValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleFieldName());
 				break;
 
 			case JpaObject.TYPE_BOOLEAN:
-				booleanValue(data, item.getPath(), jpaObject, item.getColumn());
+				booleanValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanFieldName());
 				break;
 
 			case JpaObject.TYPE_DATE:
-				dateValue(data, item.getPath(), jpaObject, item.getColumn());
+				dateValue(data, item.getPath(), jpaObject, fieldIndex.nextDateFieldName());
 				break;
 
 			case JpaObject.TYPE_TIME:
-				timeValue(data, item.getPath(), jpaObject, item.getColumn());
+				timeValue(data, item.getPath(), jpaObject, fieldIndex.nextTimeFieldName());
 				break;
 
 			case JpaObject.TYPE_DATETIME:
-				dateTimeValue(data, item.getPath(), jpaObject, item.getColumn());
+				dateTimeValue(data, item.getPath(), jpaObject, fieldIndex.nextDateTimeFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGLIST:
-				stringListValue(data, item.getPath(), jpaObject, item.getColumn());
+				stringListValue(data, item.getPath(), jpaObject, fieldIndex.nextStringListFieldName());
 				break;
 
 			case JpaObject.TYPE_INTEGERLIST:
-				integerListValue(data, item.getPath(), jpaObject, item.getColumn());
+				integerListValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerListFieldName());
 				break;
 
 			case JpaObject.TYPE_LONGLIST:
-				longListValue(data, item.getPath(), jpaObject, item.getColumn());
+				longListValue(data, item.getPath(), jpaObject, fieldIndex.nextLongListFieldName());
 				break;
 
 			case JpaObject.TYPE_DOUBLELIST:
-				doubleListValue(data, item.getPath(), jpaObject, item.getColumn());
+				doubleListValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleListFieldName());
 				break;
 
 			case JpaObject.TYPE_BOOLEANLIST:
-				booleanListValue(data, item.getPath(), jpaObject, item.getColumn());
+				booleanListValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanListFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGLOB:
-				stringLobValue(data, item.getPath(), jpaObject, item.getColumn());
+				stringLobValue(data, item.getPath(), jpaObject, fieldIndex.nextStringLobFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGMAP:
-				stringMapValue(data, item.getPath(), jpaObject, item.getColumn());
+				stringMapValue(data, item.getPath(), jpaObject, fieldIndex.nextStringMapFieldName());
 				break;
 
 			default:
 				break;
 			}
-		}
-	}
-
-	private static void projection(Projection projection, Data data, JpaObject jpaObject) {
-		try {
-			List<Projection.Item> items = XGsonBuilder.instance().fromJson(projection.getData(),
-					new TypeToken<List<Projection.Item>>() {
-					}.getType());
-
-			FieldIndex fieldIndex = new FieldIndex();
-
-			for (Projection.Item item : items) {
-				switch (item.getType()) {
-				case JpaObject.TYPE_STRING:
-					stringValue(data, item.getPath(), jpaObject, fieldIndex.nextStringFieldName());
-					break;
-
-				case JpaObject.TYPE_INTEGER:
-					integerValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerFieldName());
-					break;
-
-				case JpaObject.TYPE_LONG:
-					longValue(data, item.getPath(), jpaObject, fieldIndex.nextLongFieldName());
-					break;
-
-				case JpaObject.TYPE_DOUBLE:
-					doubleValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleFieldName());
-					break;
-
-				case JpaObject.TYPE_BOOLEAN:
-					booleanValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanFieldName());
-					break;
-
-				case JpaObject.TYPE_DATE:
-					dateValue(data, item.getPath(), jpaObject, fieldIndex.nextDateFieldName());
-					break;
-
-				case JpaObject.TYPE_TIME:
-					timeValue(data, item.getPath(), jpaObject, fieldIndex.nextTimeFieldName());
-					break;
-
-				case JpaObject.TYPE_DATETIME:
-					dateTimeValue(data, item.getPath(), jpaObject, fieldIndex.nextDateTimeFieldName());
-					break;
-
-				case JpaObject.TYPE_STRINGLIST:
-					stringListValue(data, item.getPath(), jpaObject, fieldIndex.nextStringListFieldName());
-					break;
-
-				case JpaObject.TYPE_INTEGERLIST:
-					integerListValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerListFieldName());
-					break;
-
-				case JpaObject.TYPE_LONGLIST:
-					longListValue(data, item.getPath(), jpaObject, fieldIndex.nextLongListFieldName());
-					break;
-
-				case JpaObject.TYPE_DOUBLELIST:
-					doubleListValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleListFieldName());
-					break;
-
-				case JpaObject.TYPE_BOOLEANLIST:
-					booleanListValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanListFieldName());
-					break;
-
-				case JpaObject.TYPE_STRINGLOB:
-					stringLobValue(data, item.getPath(), jpaObject, fieldIndex.nextStringLobFieldName());
-					break;
-
-				case JpaObject.TYPE_STRINGMAP:
-					stringMapValue(data, item.getPath(), jpaObject, fieldIndex.nextStringMapFieldName());
-					break;
-
-				default:
-					break;
-				}
-			}
-		} catch (Exception e) {
-
 		}
 	}
 

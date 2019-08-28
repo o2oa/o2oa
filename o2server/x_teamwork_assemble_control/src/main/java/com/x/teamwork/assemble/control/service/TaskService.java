@@ -174,7 +174,7 @@ class TaskService {
 			object.copyTo( task );
 			if( StringUtils.isNotEmpty( object.getId() ) ){
 				task.setId( object.getId() );
-			}			
+			}
 			emc.persist( task, CheckPersistType.all);
 		}else{ //对象已经存在，更新对象信息
 			if( StringUtils.isNotEmpty( task.getCreatorPerson() )) {

@@ -46,6 +46,7 @@ public class CenterServerTools extends JettySeverTools {
 			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
+			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 			handlers.addHandler(webApp);
 		} else {
 			throw new Exception("centerServer war not exist.");

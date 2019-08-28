@@ -5,6 +5,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.teamwork.assemble.control.service.DynamicPersistService;
 import com.x.teamwork.assemble.control.service.ProjectExtFieldRelePersistService;
 import com.x.teamwork.assemble.control.service.ProjectExtFieldReleQueryService;
+import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 
@@ -17,6 +18,8 @@ public class BaseAction extends StandardJaxrsAction {
 	protected 	ProjectExtFieldReleQueryService projectExtFieldReleQueryService = new ProjectExtFieldReleQueryService();
 	
 	protected 	ProjectExtFieldRelePersistService projectExtFieldRelePersistService = new ProjectExtFieldRelePersistService();
+	
+	protected 	ProjectQueryService projectQueryService = new ProjectQueryService();
 	
 	protected 	DynamicPersistService dynamicPersistService = new DynamicPersistService();
 	

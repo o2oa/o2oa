@@ -200,20 +200,20 @@ Describe.prototype = {
 											switch (p.name) {
 											case 'flag':
 											case 'id':
-												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid" value="(0)"/></td><td>' + p.name
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; " value="(0)"/></td><td>' + p.name
 														+ ':' + p.description + '</td></tr>';
 												break;
 											case 'count':
-												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid" value="20"/></td><td>' + p.name + ':'
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; " value="20"/></td><td>' + p.name + ':'
 														+ p.description + '</td></tr>';
 												break;
 											default:
-												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; "/></td><td>' + p.name + ':'
 														+ p.description + '</td></tr>';
 												break
 											}
 										} else {
-											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; "/></td><td>' + p.name + ':'
 													+ p.description + '</td></tr>';
 										}
 									});
@@ -225,10 +225,10 @@ Describe.prototype = {
 									txt += '<table >';
 									$.each(m.formParameters, function(pi, p) {
 										if (p.type == "File") {
-											txt += '<tr><td><input type="file" name="' + p.name + '" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>'
+											txt += '<tr><td><input type="file" name="' + p.name + '" id="' + p.name + '" style="width:600px; padding:1px; "/></td><td>'
 													+ p.name + ':' + p.description + '</td></tr>';
 										} else {
-											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; "/></td><td>' + p.name + ':'
 													+ p.description + '</td></tr>';
 										}
 									});
@@ -239,7 +239,7 @@ Describe.prototype = {
 									txt += '<fieldset id="queryParameters"><legend>Query Parameter</legend>';
 									txt += '<table >';
 									$.each(m.queryParameters, function(pi, p) {
-										txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':' + p.description
+										txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; "/></td><td>' + p.name + ':' + p.description
 												+ '</td></tr>';
 									});
 									txt += '</table>';
@@ -250,10 +250,10 @@ Describe.prototype = {
 									txt += '<table>';
 									$.each(m.ins, function(ii, i) {
 										if (i.isCollection) {
-											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description
+											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; "/></td><td>' + i.name + ':' + i.description
 											'</td></tr>';
 										} else {
-											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
+											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; "/></td><td>' + i.name + ':'
 													+ i.description
 											'</td></tr>';
 										}
@@ -264,7 +264,7 @@ Describe.prototype = {
 								if (m.useJsonElementParameter) {
 									txt += '<fieldset><legend>JsonElement</legend>';
 									txt += '<table><tr><td>';
-									txt += '<textarea id="jsonElement" style="height:300px; width:600px; padding:1px; border:1px #000000 solid"/>';
+									txt += '<textarea id="jsonElement" style="height:300px; width:600px; padding:1px; "/>';
 									txt += '</td><td>json</td></tr>';
 									txt += '</table>';
 									txt += '</fieldset>';
@@ -272,7 +272,7 @@ Describe.prototype = {
 								if (m.useStringParameter) {
 									txt += '<fieldset><legend>String</legend>';
 									txt += '<table><tr><td>';
-									txt += '<textarea id="string" style="height:300px; width:600px; padding:1px; border:1px #000000 solid"/>';
+									txt += '<textarea id="string" style="height:300px; width:600px; padding:1px; "/>';
 									txt += '</td><td>string</td></tr>';
 									txt += '</table>';
 									txt += '</fieldset>';
@@ -320,11 +320,18 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															if (i.isCollection) {
+																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															} else {
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
 														}
 													}
 												});
 											} else if (m.useJsonElementParameter) {
+												if( $('#jsonElement').val() == null || $('#jsonElement').val().val() == undefind || $('#jsonElement').val() == "" ){
+													$('#jsonElement').val("{}");
+												}
 												data = $.parseJSON($('#jsonElement').val());
 											} else if (m.useStringParameter) {
 												data = $('#string').val();
@@ -344,11 +351,18 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															if (i.isCollection) {
+																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															} else {
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
 														}
 													}
 												});
 											} else if (m.useJsonElementParameter) {
+												if( $('#jsonElement').val() == null || $('#jsonElement').val().val() == undefind || $('#jsonElement').val() == "" ){
+													$('#jsonElement').val("{}");
+												}
 												data = $.parseJSON($('#jsonElement').val());
 											} else if (m.useStringParameter) {
 												data = $('#string').val();

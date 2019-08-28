@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.designer.jaxrs.projection;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,12 +10,10 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityFieldEmpty;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -60,40 +57,9 @@ class ActionEdit extends BaseAction {
 
 			Wi.copier.copy(wi, projection);
 
-			if (this.duplicateWorkCompleted(business, projection)) {
-				throw new ExceptionDuplicateWorkCompleted();
-			}
+			this.empty(projection);
 
-			if (this.duplicateTaskCompleted(business, projection)) {
-				throw new ExceptionDuplicateTaskCompleted();
-			}
-
-			if (this.duplicateRead(business, projection)) {
-				throw new ExceptionDuplicateRead();
-			}
-
-			if (this.duplicateReadCompleted(business, projection)) {
-				throw new ExceptionDuplicateReadCompleted();
-			}
-
-			if (this.duplicateReview(business, projection)) {
-				throw new ExceptionDuplicateReview();
-			}
-
-			if (this.duplicateTable(business, projection)) {
-				throw new ExceptionDuplicateTable();
-			}
-
-			if (StringUtils.equals(Projection.TYPE_TABLE, projection.getType())
-					&& StringUtils.isEmpty(projection.getDynamicName())) {
-				throw new ExceptionEntityFieldEmpty(Projection.class, Projection.dynamicName_FIELDNAME);
-			}
-
-			try {
-				Class.forName(DynamicEntity.CLASS_PACKAGE + "." + projection.getDynamicName());
-			} catch (Exception e) {
-				throw new ExceptionDynamicClassNotExist(projection.getDynamicName());
-			}
+			this.duplicate(business, projection);
 
 			try {
 				gson.fromJson(projection.getData(), new TypeToken<List<Projection.Item>>() {
@@ -122,9 +88,7 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = 6624639107781167248L;
 
 		static WrapCopier<Wi, Projection> copier = WrapCopierFactory.wi(Wi.class, Projection.class, null,
-				Arrays.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
-						JpaObject.sequence_FIELDNAME, JpaObject.distributeFactor_FIELDNAME,
-						Projection.application_FIELDNAME));
+				JpaObject.FieldsUnmodify);
 
 	}
 

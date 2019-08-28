@@ -26,11 +26,6 @@ class ActionTest7 extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
 			List<String> os = emc.idsLessThan(Work.class, Work.id_FIELDNAME, "9");
-			System.out.println("!!!!!!!");
-			System.out.println(gson.toJson(os));
-			System.out.println("!!!!!!!");
-			System.out.println(gson.toJson(emc.idsGreaterThan(Work.class, Work.id_FIELDNAME, "9")));
-			System.out.println("!!!!!!!");
 
 			List<String> ids = new ArrayList<>();
 			ids.add("03a4e4e9-23af-44ac-8915-2486f1623d49");

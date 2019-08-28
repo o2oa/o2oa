@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -44,18 +46,22 @@ public class BaseAction extends StandardJaxrsAction {
 	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
 	
 	/**
-	 * 	  * 当前登录者访问栏目分类列表查询<br/>
+	 * 当前登录者访问栏目分类列表查询<br/>
 	  * 1、根据人员的访问权限获取可以访问的栏目信息ID列表<br/>
 	  * 2、根据人员的访问权限获取可以访问的分类信息ID列表<br/>
 	  * 3、将栏目信息和分类信息查询出来组织在一起，如果只有分类，那么也要把栏目信息加上
 	  * 4、如果栏目信息下没有分类，则删除栏目信息的输出
 	 * @param personName
+	 * @param isAnonymous
 	 * @param inAppInfoIds
+	 * @param appType
+	 * @param documentType
 	 * @param manager
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Wo> listViewAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String documentType, 
+	protected List<Wo> listViewAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String appType, String documentType, 
 			Boolean manager, Integer maxCount ) throws Exception {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
@@ -78,31 +84,34 @@ public class BaseAction extends StandardJaxrsAction {
 					null, null, documentType, maxCount, manager );
 			
 		}
-		return composeCategoriesIntoAppInfo( viewableAppInfoIds, viewableCategoryIds );
+		return composeCategoriesIntoAppInfo( viewableAppInfoIds, viewableCategoryIds, appType );
 	}
 	
 	/**
-	 * 	  * 当前登录者文档发布栏目分类列表查询<br/>
+	 * 当前登录者文档发布栏目分类列表查询<br/>
 	  * 1、根据人员的发布权限获取可以发布文档的栏目信息ID列表<br/>
 	  * 2、根据人员的发布权限获取可以发布文档的分类信息ID列表<br/>
 	  * 3、将栏目信息和分类信息查询出来组织在一起，如果只有分类，那么也要把栏目信息加上
 	  * 4、如果栏目信息下没有分类，则删除栏目信息的输出
 	 * @param personName
+	 * @param isAnonymous
 	 * @param inAppInfoIds
+	 * @param documentType
+	 * @param appType
 	 * @param manager
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Wo> listPublishAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String documentType, Boolean manager, Integer maxCount ) throws Exception {
+	protected List<Wo> listPublishAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String documentType, String appType, Boolean manager, Integer maxCount ) throws Exception {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		List<String> publishableAppInfoIds = null;
 		List<String> publishableCategoryIds = new ArrayList<>();
-		
 		if( manager ) {
 			if( ListTools.isNotEmpty( inAppInfoIds )) {
 				publishableAppInfoIds = inAppInfoIds; //可发布栏目就限制为inAppInfoIds
-			}else {
+			}else {				
 				publishableAppInfoIds = appInfoServiceAdv.listAllIds(documentType); //所有栏目均可发布
 			}
 			publishableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( publishableAppInfoIds, documentType, manager, maxCount );
@@ -115,7 +124,12 @@ public class BaseAction extends StandardJaxrsAction {
 			publishableCategoryIds = permissionQueryService.listPublishableCategoryIdByPerson(
 					personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, maxCount, manager );		
 		}
-		return composeCategoriesIntoAppInfo( publishableAppInfoIds, publishableCategoryIds );
+//		if( ListTools.isNotEmpty(publishableCategoryIds  )) {
+//			System.out.println(">>>>>>>>>publishableCategoryIds.size=" + publishableCategoryIds.size() );
+//		}else {
+//			System.out.println(">>>>>>>>>publishableCategoryIds is empty!"  );
+//		}		
+		return composeCategoriesIntoAppInfo( publishableAppInfoIds, publishableCategoryIds, appType );
 	}
 	
 	/**
@@ -125,7 +139,7 @@ public class BaseAction extends StandardJaxrsAction {
 	 * @return
 	 * @throws Exception 
 	 */
-	private List<Wo> composeCategoriesIntoAppInfo(List<String> appInfoIds, List<String> categoryInfoIds ) throws Exception {
+	private List<Wo> composeCategoriesIntoAppInfo(List<String> appInfoIds, List<String> categoryInfoIds, String appType ) throws Exception {
 		List<Wo> wraps = null;
 		List<WoCategory> wrapCategories = null;
 		Map<String, Wo> app_map = new HashMap<>();
@@ -170,7 +184,7 @@ public class BaseAction extends StandardJaxrsAction {
 			if( wo_app.getWrapOutCategoryList() == null ) {
 				wo_app.setWrapOutCategoryList( new ArrayList<>() );
 			}
-			wo_app.getWrapOutCategoryList().add( woCategory );				
+			wo_app.getWrapOutCategoryList().add( woCategory );
 			app_map.put( wo_app.getId(), wo_app );
 			
 		}
@@ -185,7 +199,12 @@ public class BaseAction extends StandardJaxrsAction {
 		while( app_iterator.hasNext() ) {
 			app_key = app_iterator.next().toString();
 			wo_app = app_map.get( app_key );
-			wraps.add( wo_app );
+			if( StringUtils.isEmpty( wo_app.getAppType() )) {
+				wo_app.setAppType("未分类");
+			}
+			if( "全部".equalsIgnoreCase( appType )||  "all".equalsIgnoreCase( appType ) || (StringUtils.isNotEmpty(  wo_app.getAppType() ) && wo_app.getAppType().equalsIgnoreCase( appType ))) {
+				wraps.add( wo_app );
+			}
 		}
 		return wraps;
 	}

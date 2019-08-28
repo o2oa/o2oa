@@ -69,6 +69,7 @@ class ActionExecute extends BaseAction {
 				scriptingEngine.bindingData(data);
 				data = scriptingEngine.eval(statement.getAfterScriptText());
 			}
+			result.setData(data);
 			return result;
 		}
 	}

@@ -67,7 +67,7 @@ public class Attachment extends StorageObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		this.lastUpdateTime = this.getUpdateTime();
+		this.lastUpdateTime = new Date();
 		/* 如果为顶层，那么将目录设置为空 */
 		this.folder = StringUtils.trimToEmpty(this.folder);
 		/* 如果扩展名为空去掉null */

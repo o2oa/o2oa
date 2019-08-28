@@ -145,6 +145,9 @@ public class AppInfoService {
 			if( StringUtils.isEmpty( appInfo.getAppAlias() )) {
 				appInfo.setAppAlias( appInfo.getAppName() );
 			}
+			if( StringUtils.isEmpty( appInfo.getAppType() )) {
+				appInfo.setAppType( "未分类" );
+			}
 			emc.persist( appInfo, CheckPersistType.all);
 			emc.commit();
 		}else{
@@ -154,6 +157,9 @@ public class AppInfoService {
 				appInfo.setAppAlias( appInfo.getAppName() );
 			}
 			emc.beginTransaction( AppInfo.class );
+			if( StringUtils.isEmpty( appInfo.getAppType() )) {
+				appInfo.setAppType( "未分类" );
+			}
 			emc.check( appInfo, CheckPersistType.all );	
 			emc.commit();
 		}		

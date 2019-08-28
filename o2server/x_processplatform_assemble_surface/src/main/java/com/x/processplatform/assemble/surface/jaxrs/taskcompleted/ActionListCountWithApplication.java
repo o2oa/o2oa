@@ -44,7 +44,8 @@ class ActionListCountWithApplication extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.notEqual(root.get(TaskCompleted_.latest), false));
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
 		cq.select(root.get(TaskCompleted_.application)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
 		for (String str : os) {

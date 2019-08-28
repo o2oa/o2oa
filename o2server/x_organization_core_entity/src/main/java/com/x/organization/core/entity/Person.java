@@ -87,7 +87,6 @@ public class Person extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	@SuppressWarnings("deprecation")
 	public void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
@@ -106,7 +105,8 @@ public class Person extends SliceJpaObject {
 		if (null == this.orderNumber) {
 			this.orderNumber = DateTools.timeOrderNumber();
 		}
-		this.signature = StringEscapeUtils.escapeHtml4(Objects.toString(this.signature, ""));
+		// this.signature =
+		// StringEscapeUtils.escapeHtml4(Objects.toString(this.signature, ""));
 	}
 
 	/* 更新运行方法 */

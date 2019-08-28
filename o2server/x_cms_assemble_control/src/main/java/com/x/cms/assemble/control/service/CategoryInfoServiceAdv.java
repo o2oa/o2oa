@@ -53,6 +53,7 @@ public class CategoryInfoServiceAdv {
     
     public List<String> listCategoryIdsWithAppIds(List<String> viewAbleAppIds, String documentType, Boolean manager, Integer maxCount ) throws Exception {
     	if (ListTools.isEmpty( viewAbleAppIds )) {
+//    		System.out.println(">>>>>>>>listCategoryIdsWithAppIds viewAbleAppIds is empty!");
            return new ArrayList<>();
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

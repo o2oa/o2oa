@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -17,6 +19,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.teamwork.core.entity.Dynamic;
+import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 
 public class ActionSave extends BaseAction {
@@ -27,12 +30,15 @@ public class ActionSave extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		ProjectExtFieldRele projectExtFieldRele = null;
 		ProjectExtFieldRele projectExtFieldRele_old = null;
+		Project project = null;
 		Wi wi = null;
 		Wo wo = new Wo();
+		String fieldName = null;
 		Boolean check = true;
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
+			projectExtFieldRele = Wi.copier.copy( wi );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ProjectExtFieldRelePersistException(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
@@ -41,12 +47,72 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
-			projectExtFieldRele_old = projectExtFieldReleQueryService.get( wi.getId() );
+			if( StringUtils.isEmpty( projectExtFieldRele.getProjectId() )) {
+				check = false;
+				Exception exception = new ProjectFlagForQueryEmptyException();
+				result.error( exception );
+			}
 		}
 		
 		if (check) {
-			try {					
-				projectExtFieldRele = projectExtFieldRelePersistService.save( Wi.copier.copy( wi ), effectivePerson );
+			try {
+				project = projectQueryService.get( projectExtFieldRele.getProjectId() );
+				if ( project == null) {
+					check = false;
+					Exception exception = new ProjectNotExistsException( projectExtFieldRele.getProjectId() );
+					result.error( exception );
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ProjectExtFieldRelePersistException(e, "根据指定flag查询应用项目信息对象时发生异常。flag:" +  projectExtFieldRele.getProjectId() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
+			if( StringUtils.isNotEmpty( projectExtFieldRele.getId() )) {
+				try {
+					projectExtFieldRele_old = projectExtFieldReleQueryService.get( projectExtFieldRele.getId() );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ProjectExtFieldReleQueryException(e, "系统在根据ID查询指定的扩展属性关联信息时发生异常。ID:" +  projectExtFieldRele.getId() );
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
+			if( projectExtFieldRele_old == null ) { //新建
+				fieldName = projectExtFieldReleQueryService.getNextUseableExtFieldName( projectExtFieldRele.getProjectId(), projectExtFieldRele.getDisplayType() );
+			}else {
+				//判断是否属性在富文本和普通 文本之间发生了变换
+				if( ("RICHTEXT".equals( wi.getDisplayType() ) && !"RICHTEXT".equals( projectExtFieldRele_old.getDisplayType() ))
+						|| !"RICHTEXT".equals( wi.getDisplayType() ) && "RICHTEXT".equals( projectExtFieldRele_old.getDisplayType() ) ) {
+					//判断当前所需要的类型的备用属性是否足够
+					fieldName = projectExtFieldReleQueryService.getNextUseableExtFieldName( projectExtFieldRele.getProjectId(), projectExtFieldRele.getDisplayType() );
+				}else {
+					fieldName = projectExtFieldRele_old.getExtFieldName();
+				}
+			}
+		}
+		
+		if( check ) {
+			if( StringUtils.isEmpty(  fieldName )) {
+				//备用属性已经用完了，无法再添加新的属性
+				check = false;
+				Exception exception = new ProjectExtFieldRelePersistException( "扩展属性不足，系统无法为该项目分配["+ projectExtFieldRele.getDisplayType() +"]。"  );
+				result.error(exception);
+			}else {
+				projectExtFieldRele.setExtFieldName( fieldName );
+			}
+		}
+
+		if (check) {
+			try {
+				
+				projectExtFieldRele = projectExtFieldRelePersistService.save( projectExtFieldRele, effectivePerson );
 				
 				// 更新缓存
 				ApplicationCache.notify( ProjectExtFieldRele.class );
@@ -80,20 +146,20 @@ public class ActionSave extends BaseAction {
 
 	public static class Wi {
 		
-		@FieldDescribe("ID.")
+		@FieldDescribe("ID，为空时为新建")
 		private String id;
 		
 		@FieldDescribe("项目ID（必填）")
 		private String projectId;
-
-		@FieldDescribe("备用列名称（必填）")
-		private String extFieldName;
 
 		@FieldDescribe("显示属性名称（必填）")
 		private String displayName;
 
 		@FieldDescribe("显示方式：TEXT|RADIO|CHECKBOX|SELECT|MUTISELECT|RICHTEXT（必填）")
 		private String displayType="TEXT";
+
+		@FieldDescribe("说明信息（非必填）")
+		private String description;
 
 		@FieldDescribe("选择荐的备选数据，数据Json， displayType=RADIO|CHECKBOX|SELECT|MUTISELECT时必须填写，否则无选择项")
 		private String optionsData;
@@ -132,20 +198,20 @@ public class ActionSave extends BaseAction {
 			this.projectId = projectId;
 		}
 
-		public String getExtFieldName() {
-			return extFieldName;
-		}
-
-		public void setExtFieldName(String extFieldName) {
-			this.extFieldName = extFieldName;
-		}
-
 		public String getDisplayName() {
 			return displayName;
 		}
 
 		public void setDisplayName(String displayName) {
 			this.displayName = displayName;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
 		}
 	}
 

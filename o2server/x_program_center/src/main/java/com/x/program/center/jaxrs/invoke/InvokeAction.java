@@ -150,12 +150,11 @@ public class InvokeAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void execute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@Context HttpServletResponse response, @JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
-			JsonElement jsonElement) {
-		ActionResult<ActionExecute.Wo> result = new ActionResult<>();
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<Object> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionExecute().execute(request, response, effectivePerson, flag, jsonElement);
+			result = new ActionExecute().execute(request, effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

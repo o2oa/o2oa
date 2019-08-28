@@ -66,4 +66,22 @@ public class ReviewAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "根据workId创建一个review.", action = ActionCreateWithWork.class)
+	@POST
+	@Path("create/work")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createWithWork(@Suspended final AsyncResponse asyncResponse,
+										@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionCreateWithWork.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreateWithWork().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 }

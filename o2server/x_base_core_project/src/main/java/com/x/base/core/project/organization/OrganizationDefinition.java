@@ -64,6 +64,9 @@ public class OrganizationDefinition {
 	public final static String MessageManager = "MessageManager";
 	public final static String MessageManager_discription = "消息管理员(系统角色)，可以对系统中产生的消息进行管理。";
 
+	public final static String HotPictureManager = "HotPictureManager";
+	public final static String HotPictureManager_discription = "热点图片控制权限(系统角色)，可以对系统中产生的系统图片进行管理。";
+
 	public final static String SearchPrivilege = "SearchPrivilege";
 	public final static String SearchPrivilege_discription = "搜索管理员(系统角色)，可以跨权限对系统内容进行搜索。";
 

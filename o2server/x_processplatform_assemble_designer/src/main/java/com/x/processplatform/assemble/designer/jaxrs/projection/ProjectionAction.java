@@ -179,22 +179,4 @@ public class ProjectionAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据流程获取数据映射.", action = ActionListWithProcess.class)
-	@GET
-	@Path("list/process/{processFlag}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithProcess(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag) {
-		ActionResult<List<ActionListWithProcess.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionListWithProcess().execute(effectivePerson, processFlag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	}
-
 }

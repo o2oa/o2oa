@@ -29,17 +29,6 @@ class ActionTest5 extends BaseAction {
 			Predicate p2 = cb.disjunction();
 			Predicate p3 = cb.conjunction();
 			Predicate p4 = cb.conjunction();
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(p1.equals(p1));
-			System.out.println(p1.equals(p2));
-			System.out.println(p1.equals(p3));
-			System.out.println(p3.equals(p4));
-			System.out.println(p3.equals(p3));
-			System.out.println(p3.equals(p2));
-			System.out.println(p1.toString());
-			System.out.println(p1.toString().equals(p2.toString()));
-			System.out.println(p1.toString().equals(p3.toString()));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return result;
 		}
 	}

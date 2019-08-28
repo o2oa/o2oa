@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -97,7 +98,7 @@ class ActionRollback extends BaseAction {
 			emc.beginTransaction(ReadCompleted.class);
 			emc.beginTransaction(Review.class);
 
-			this.rollbackWork(work, workLog, activity);
+			this.rollbackWork(business, work, workLog, activity);
 
 			this.disconnectWorkLog(work, workLog);
 
@@ -127,7 +128,7 @@ class ActionRollback extends BaseAction {
 		}
 	}
 
-	private void rollbackWork(Work work, WorkLog workLog, Activity activity) throws Exception {
+	private void rollbackWork(Business business, Work work, WorkLog workLog, Activity activity) throws Exception {
 		work.setSplitting(false);
 		work.setActivityName(workLog.getFromActivityName());
 		work.setActivity(workLog.getFromActivity());
@@ -140,7 +141,11 @@ class ActionRollback extends BaseAction {
 		work.getManualTaskIdentityList().clear();
 		String formId = PropertyTools.getOrElse(activity, Manual.form_FIELDNAME, String.class, "");
 		if (StringUtils.isNotEmpty(formId)) {
-			work.setForm(formId);
+			/* 默认流程导入的时候表单字段里面填写了不存在的值,所以这里要进行校验是否存在 */
+			Form form = business.element().get(formId, Form.class);
+			if (null != form) {
+				work.setForm(formId);
+			}
 		}
 		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);

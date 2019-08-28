@@ -44,7 +44,9 @@ public class ActionListAllAppType extends BaseAction {
 			if( check ){
 				if( appTypes != null && !appTypes.isEmpty() ){
 					for( String type : appTypes ) {
-						wos.add( new Wo( type, appInfoServiceAdv.countAppInfoWithAppType( type )));
+						if( !"未分类".equals( type )) {
+							wos.add( new Wo( type, appInfoServiceAdv.countAppInfoWithAppType( type )));
+						}
 					}
 				}
 				
