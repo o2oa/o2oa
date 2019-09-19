@@ -17,7 +17,7 @@ public class CheckAssemble {
 
 	public static void main(String... args) throws Exception {
 		List<ClassInfo> list = new ArrayList<>();
-		try (ScanResult scanResult = new ClassGraph().enableAllInfo().whitelistPackages("com.x").scan()) {
+		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAllInfo().scan()) {
 			ClassInfoList classInfoList = scanResult.getAllClasses();
 			for (ClassInfo info : classInfoList) {
 				if (StringUtils.endsWith(info.getSimpleName(), "$Wi")) {

@@ -553,28 +553,28 @@ public class ListTools {
 		return map;
 	}
 
-	public static List<String> addStringToList( String source, List<String> targetList ){
-		if( targetList == null ) {
+	public static List<String> addStringToList(String source, List<String> targetList) {
+		if (targetList == null) {
 			targetList = new ArrayList<>();
 		}
-		if( StringUtils.isEmpty( source )) {
+		if (StringUtils.isEmpty(source)) {
 			return targetList;
 		}
-		if( !targetList.contains( source )) {
-			targetList.add( source );
+		if (!targetList.contains(source)) {
+			targetList.add(source);
 		}
 		return targetList;
 	}
 
-	public static List<String> removeStringFromList( String source, List<String> targetList ){
-		if( targetList == null ) {
+	public static List<String> removeStringFromList(String source, List<String> targetList) {
+		if (targetList == null) {
 			targetList = new ArrayList<>();
 		}
-		if( StringUtils.isEmpty( source )) {
+		if (StringUtils.isEmpty(source)) {
 			return targetList;
 		}
-		if( targetList.contains( source )) {
-			targetList.remove( source );
+		if (targetList.contains(source)) {
+			targetList.remove(source);
 		}
 		return targetList;
 	}

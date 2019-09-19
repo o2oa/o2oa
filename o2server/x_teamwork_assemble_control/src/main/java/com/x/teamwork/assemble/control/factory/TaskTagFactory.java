@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.teamwork.assemble.control.AbstractFactory;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.TaskTag;
@@ -49,7 +51,9 @@ public class TaskTagFactory extends AbstractFactory {
 		Root<TaskTag> root = cq.from(TaskTag.class);
 		Predicate p = cb.equal( root.get( TaskTag_.tag ), tagName );
 		p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( TaskTag_.owner ), personName ) );
-		p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( TaskTag_.project ), project ) );
+		if( StringUtils.isNotEmpty( project )) {
+			p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( TaskTag_.project ), project ) );
+		}
 		cq.select( root.get(TaskTag_.id) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
@@ -104,6 +108,16 @@ public class TaskTagFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( TaskTagRele_.taskId ), taskId );
 		p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal( root.get( TaskTagRele_.owner ), person ) );
 		cq.orderBy( cb.asc( root.get( TaskTagRele_.createTime ) )  );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<String> listTaskIdsWithReleTagIds(List<String> tagIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( TaskTagRele.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<TaskTagRele> root = cq.from(TaskTagRele.class);
+		Predicate p = root.get( TaskTagRele_.tagId ).in( tagIds );
+		cq.select( root.get(TaskTagRele_.taskId) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	

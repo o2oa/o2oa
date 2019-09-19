@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -43,6 +45,9 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 					&& (!effectivePerson.isPerson(workCompleted.getCreatorPerson()))) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
+			}
+			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
 			this.updateData(business, workCompleted, jsonElement);
 			/** 在方法内进行了commit不需要再次进行commit */

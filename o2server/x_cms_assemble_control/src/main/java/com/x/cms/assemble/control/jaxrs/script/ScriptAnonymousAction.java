@@ -8,9 +8,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -30,7 +31,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -40,7 +41,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中的所有脚本.", action = ActionListWithApplication.class)
@@ -48,7 +49,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWithApplication(@Context HttpServletRequest request, 
+	public void listWithApplication( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -58,7 +59,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据栏目ID和脚本名称获取脚本.", action = ActionGetWithAppAndName.class)
@@ -66,7 +67,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getWithAppWithName(@Context HttpServletRequest request, 
+	public void getWithAppWithName( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			@JaxrsParameterDescribe("脚本名称") @PathParam("name") String name) {
 		ActionResult<ActionGetWithAppAndName.Wo> result = new ActionResult<>();
@@ -77,7 +78,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，下一页.", action = ActionListNext.class)
@@ -85,7 +86,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListNext( @Context HttpServletRequest request, 
+	public void standardListNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
 			) {
@@ -97,7 +98,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，上一页.", action = ActionListPrev.class)
@@ -105,7 +106,7 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListPrev(@Context HttpServletRequest request, 
+	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
 			) {
@@ -117,6 +118,6 @@ public class ScriptAnonymousAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

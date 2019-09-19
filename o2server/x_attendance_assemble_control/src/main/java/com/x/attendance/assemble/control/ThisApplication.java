@@ -19,7 +19,7 @@ public class ThisApplication {
 		try {
 			new AttendanceSettingService().initAllSystemConfig();
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
-			context.schedule(MobileRecordAnalyseTask.class, "0 0 1/4 * * ?");
+			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
 
 		} catch (Exception e) {
 			e.printStackTrace();

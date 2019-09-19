@@ -17,9 +17,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class AttendanceStatisticTask implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceStatisticTask.class);
-
-
-
  
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		AttendanceStatisticServiceAdv attendanceStatisticServiceAdv = new AttendanceStatisticServiceAdv();

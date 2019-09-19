@@ -79,58 +79,10 @@ public class TaskView extends SliceJpaObject {
 	private String project;
 	
 	public static final String name_FIELDNAME = "name";
-	@FieldDescribe("任务列表名称")
+	@FieldDescribe("任务视图名称")
 	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
-	
-	public static final String workCompleted_FIELDNAME = "workCompleted";
-	@FieldDescribe("是否已完成：-1-全部， 1-是，0-否.")
-	@Column( name = ColumnNamePrefix + workCompleted_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + workCompleted_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private Integer workCompleted = -1;
-	
-	public static final String workOverTime_FIELDNAME = "workOverTime";
-	@FieldDescribe("是否已超时：-1-全部， 1-是，0-否.")
-	@Column( name = ColumnNamePrefix + workOverTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + workOverTime_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private Integer workOverTime = -1;
-	
-	public static final String isExcutor_FIELDNAME = "isExcutor";
-	@FieldDescribe("查询负责的项目，如果为false，则为所有参与的项目范围")
-	@Column( name = ColumnNamePrefix + isExcutor_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isExcutor_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private Boolean isExcutor = false;
-	
-	public static final String choosePriority_FIELDNAME = "choosePriority";
-	@FieldDescribe("筛选优先级：普通、紧急、特急")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + choosePriority_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + choosePriority_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_32B, name = ColumnNamePrefix + choosePriority_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + choosePriority_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> choosePriority;
-	
-	public static final String chooseWorkTag_FIELDNAME = "chooseWorkTag";
-	@FieldDescribe("筛选标签：自定义标签名")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + chooseWorkTag_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + chooseWorkTag_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_32B, name = ColumnNamePrefix + chooseWorkTag_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + chooseWorkTag_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> chooseWorkTag;
-	
-	public static final String order_FIELDNAME = "order";
-	@FieldDescribe("排序号")
-	@Column( name = ColumnNamePrefix + order_FIELDNAME )
-	private Integer order;
 	
 	public static final String memo_FIELDNAME = "memo";
 	@FieldDescribe("列表描述")
@@ -153,6 +105,82 @@ public class TaskView extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String owner;
 	
+	public static final String order_FIELDNAME = "order";
+	@FieldDescribe("排序号")
+	@Column( name = ColumnNamePrefix + order_FIELDNAME )
+	private Integer order;
+	
+	public static final String workCompleted_FIELDNAME = "workCompleted";
+	@FieldDescribe("筛选条件_是否已完成：-1-全部， 1-是，0-否.")
+	@Column( name = ColumnNamePrefix + workCompleted_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workCompleted_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private Integer workCompleted = -1;
+	
+	public static final String workOverTime_FIELDNAME = "workOverTime";
+	@FieldDescribe("筛选条件_是否已超时：-1-全部， 1-是，0-否.")
+	@Column( name = ColumnNamePrefix + workOverTime_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workOverTime_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private Integer workOverTime = -1;
+	
+	public static final String isExcutor_FIELDNAME = "isExcutor";
+	@FieldDescribe("筛选条件_查询负责的项目，如果为false，则为所有参与的项目范围")
+	@Column( name = ColumnNamePrefix + isExcutor_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + isExcutor_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private Boolean isExcutor = true;
+	
+	public static final String choosePriority_FIELDNAME = "choosePriority";
+	@FieldDescribe("筛选条件_筛选优先级：普通、紧急、特急")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + choosePriority_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + choosePriority_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_32B, name = ColumnNamePrefix + choosePriority_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + choosePriority_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> choosePriority;
+	
+	public static final String chooseWorkTag_FIELDNAME = "chooseWorkTag";
+	@FieldDescribe("筛选条件_筛选标签：自定义标签名")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + chooseWorkTag_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + chooseWorkTag_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_32B, name = ColumnNamePrefix + chooseWorkTag_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + chooseWorkTag_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> chooseWorkTag;	
+	
+	public static final String orderField_FIELDNAME = "orderField";
+	@FieldDescribe("筛选条件_用于排列的属性，非必填，默认为createTime.")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + orderField_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String orderField = "createTime";
+
+	public static final String orderType_FIELDNAME = "orderType";
+	@FieldDescribe("筛选条件_排序方式：DESC | ASC，非必填，默认为DESC.")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + orderType_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String orderType = "DESC";
+	
+	public String getOrderField() {
+		return orderField;
+	}
+
+	public void setOrderField(String orderField) {
+		this.orderField = orderField;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
 	public String getProject() {
 		return project;
 	}

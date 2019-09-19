@@ -15,7 +15,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -33,16 +32,16 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("appinfo")
-@JaxrsDescribe("信息发布内容栏目管理")
+@JaxrsDescribe("信息发布(CMS)-栏目(APPINFO)管理服务")
 public class AppInfoAction extends StandardJaxrsAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(AppInfoAction.class);
 
-	@JaxrsMethodDescribe(value = "创建或者更新信息栏目信息对象.", action = ActionSave.class)
+	@JaxrsMethodDescribe(value = "创建新的栏目信息或者更新已存在的栏目信息。", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -51,21 +50,20 @@ public class AppInfoAction extends StandardJaxrsAction {
 				result = new ActionSave().execute( request, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAppInfoProcess(e, "应用栏目信息保存时发生异常。");
+				Exception exception = new ExceptionAppInfoProcess(e, "栏目信息保存时发生异常。");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据ID删除信息栏目信息对象.", action = ActionDelete.class)
+	@JaxrsMethodDescribe(value = "根据ID删除指定的栏目信息（如果栏目下仍存在分类信息，则不可删除）。", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
@@ -77,15 +75,15 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "根据栏目ID删除所有的信息文档.", action = ActionEraseDocumentWithAppInfo.class)
+	@JaxrsMethodDescribe(value = "根据栏目ID删除指定栏目内所有的信息文档。", action = ActionEraseDocumentWithAppInfo.class)
 	@DELETE
 	@Path("erase/app/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response eraseWithAppId(@Context HttpServletRequest request, 
+	public void eraseWithAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionEraseDocumentWithAppInfo.Wo> result = new ActionResult<>();
@@ -97,7 +95,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据标识获取信息栏目信息对象.", action = ActionGet.class)
@@ -105,7 +103,8 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @JaxrsParameterDescribe("栏目ID") @PathParam("flag") String flag) {
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("栏目ID") @PathParam("flag") String flag) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
@@ -116,7 +115,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据别名获取信息栏目信息对象.", action = ActionGetByAlias.class)
@@ -124,7 +123,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("alias/{alias}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getByAlias(@Context HttpServletRequest request, @JaxrsParameterDescribe("栏目别名") @PathParam("alias") String alias) {
+	public void getByAlias( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("栏目别名") @PathParam("alias") String alias) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
@@ -135,7 +134,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
@@ -143,7 +142,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view/article/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanViewArticle_WithAppType(@Context HttpServletRequest request,
+	public void listWhatICanViewArticle_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
@@ -156,7 +155,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
@@ -164,7 +163,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanView_Article(@Context HttpServletRequest request) {
+	public void listWhatICanView_Article( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
 		try {
@@ -176,7 +175,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
@@ -184,7 +183,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanView_Data(@Context HttpServletRequest request) {
+	public void listWhatICanView_Data( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
 		try {
@@ -196,7 +195,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
@@ -204,7 +203,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view/data/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanViewData_WithAppType(@Context HttpServletRequest request,
+	public void listWhatICanViewData_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
@@ -217,7 +216,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
@@ -225,7 +224,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view/all/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanViewAllType_WithAppType(@Context HttpServletRequest request,
+	public void listWhatICanViewAllType_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
@@ -238,7 +237,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
@@ -246,7 +245,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/view/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanView_AllType(@Context HttpServletRequest request) {
+	public void listWhatICanView_AllType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
 		try {
@@ -258,7 +257,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish.class)
@@ -266,7 +265,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/publish")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanPublish(@Context HttpServletRequest request) {
+	public void listWhatICanPublish( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
@@ -278,7 +277,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish.class)
@@ -286,7 +285,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/user/publish/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanPublish_WithAppType(@Context HttpServletRequest request,
+	public void listWhatICanPublish_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
@@ -299,7 +298,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionGetPublishableAppInfo.class)
@@ -307,7 +306,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("get/user/publish/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getPublishableAppInfo(@Context HttpServletRequest request,
+	public void getPublishableAppInfo( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
@@ -320,7 +319,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取所有的栏目分类信息列表.", action = ActionListAllAppType.class)
@@ -328,7 +327,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/appType")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllAppType(@Context HttpServletRequest request ) {
+	public void listAllAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListAllAppType.Wo>> result = new ActionResult<>();
 		try {
@@ -340,7 +339,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage.class)
@@ -348,7 +347,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanManage(@Context HttpServletRequest request) {
+	public void listWhatICanManage( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
@@ -360,7 +359,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage_WithAppType.class)
@@ -368,7 +367,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/manage/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWhatICanManage_WithAppType(@Context HttpServletRequest request,
+	public void listWhatICanManage_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
@@ -381,7 +380,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限访问到的所有信息栏目信息列表.", action = ActionListAll.class)
@@ -389,7 +388,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllAppInfo(@Context HttpServletRequest request) {
+	public void listAllAppInfo( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
@@ -400,7 +399,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,下一页.", action = ActionListNextWithFilter.class)
@@ -408,7 +407,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNextWithFilter(@Context HttpServletRequest request, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement) {
@@ -422,7 +421,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,上一页.", action = ActionListPrevWithFilter.class)
@@ -430,7 +429,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listPrevWithFilter(@Context HttpServletRequest request, 
+	public void listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement) {
@@ -444,7 +443,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "上传或者替换栏目的图标内容，可以指定压缩大小	.", action = ActionAppIconUpload.class)

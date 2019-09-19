@@ -1,22 +1,17 @@
 package com.x.program.center.jaxrs.collect;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
+import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.wx.pwd.CheckStrength;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.schedule.CollectPerson;
 
@@ -35,7 +30,7 @@ class ActionRegist extends BaseAction {
 		if (this.exist(name)) {
 			throw new ExceptionNameExist(name);
 		}
-		if (CheckStrength.checkPasswordStrength(password) < 4) {
+		if (PasswordTools.checkPasswordStrength(password) < 4) {
 			throw new ExceptionInvalidPassword();
 		}
 		if (!Config.person().isMobile(mobile)) {

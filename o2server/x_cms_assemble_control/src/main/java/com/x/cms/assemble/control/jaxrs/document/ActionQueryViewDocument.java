@@ -22,7 +22,6 @@ import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.content.Data;
 import com.x.cms.core.entity.element.Form;
@@ -61,12 +60,13 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey(id, "view", isAnonymous, isManager );
+		String cacheKey = ApplicationCache.concreteCacheKey( id, "view", isAnonymous, isManager, effectivePerson.getDistinguishedName() );
 		Element element = cache.get(cacheKey);
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			result = (ActionResult<Wo>) element.getObjectValue();
 		} else {
+			logger.debug(">>>>>>>>>>>>>view document '"+id+"' in database!" );
 			//继续进行数据查询
 			result = getDocumentQueryResult( id, request, effectivePerson, isManager );
 			cache.put(new Element(cacheKey, result ));
@@ -94,6 +94,14 @@ public class ActionQueryViewDocument extends BaseAction {
 		return result;			
 	}
 
+	/**
+	 * 获取需要返回的文档信息对象
+	 * @param id
+	 * @param request
+	 * @param effectivePerson
+	 * @param isManager 当前用户是否是系统管理或者CMS管理员
+	 * @return
+	 */
 	private ActionResult<Wo> getDocumentQueryResult( String id, HttpServletRequest request, EffectivePerson effectivePerson, Boolean isManager ) {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -101,14 +109,27 @@ public class ActionQueryViewDocument extends BaseAction {
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
 		Document document = null;
-		List<FileInfo> attachmentList = null;
 		Boolean isAppAdmin = false;
 		Boolean isCategoryAdmin = false;
 		Boolean isEditor = false;
 		Boolean isCreator = false;
 		Boolean check = true;
+		List<String> unitNames = null;
+		List<String> groupNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
+		
+		if( !isAnonymous ) {
+			try {
+				unitNames = userManagerService.listUnitNamesWithPerson( personName );
+				groupNames = userManagerService.listGroupNamesByPerson( personName );									
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess(e, "查询用户所有的组织和群组信息时发生异常！user:" + personName);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
 		
 		if (check) {
 			try {
@@ -117,15 +138,6 @@ public class ActionQueryViewDocument extends BaseAction {
 					check = false;
 					Exception exception = new ExceptionDocumentNotExists(id);
 					result.error(exception);
-				} else {
-					try {
-						woOutDocument = WoDocument.copier.copy( document );
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new ExceptionDocumentInfoProcess(e, "将查询出来的文档信息对象转换为可输出的数据信息时发生异常。");
-						result.error(exception);
-						logger.error(e, effectivePerson, request, null);
-					}
 				}
 			} catch (Exception e) {
 				check = false;
@@ -136,35 +148,12 @@ public class ActionQueryViewDocument extends BaseAction {
 		}
 		
 		if (check) {
-			if( isAnonymous ) {
-				//检查这个文档所在的栏目和分类是否都是全员可见
-				if( ( ListTools.isNotEmpty( document.getReadPersonList() ) && !document.getReadPersonList().contains( "所有人" ) )
-						|| ListTools.isNotEmpty( document.getReadUnitList() )
-						|| ListTools.isNotEmpty( document.getReadGroupList() )
-						) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess( "该文档不允许匿名访问。ID:" + id );
-					result.error(exception);
-				}
-			}
-		}
-		
-		if (check) {
 			try {
 				appInfo = appInfoServiceAdv.get( document.getAppId() );
 				if( appInfo == null ) {
 					check = false;
 					Exception exception = new ExceptionAppInfoNotExists( document.getAppId()  );
 					result.error(exception);
-				}					
-				if( isAnonymous ) {
-					//检查这个文档所在的栏目和分类是否都是全员可见
-					if( !appInfo.getAllPeopleView() ) {
-						//栏目不可见
-						check = false;
-						Exception exception = new ExceptionDocumentInfoProcess( "栏目["+appInfo.getAppName()+"]不允许匿名访问。ID:" + document.getAppId());
-						result.error(exception);
-					}
 				}
 			} catch (Exception e) {
 				check = false;
@@ -180,15 +169,6 @@ public class ActionQueryViewDocument extends BaseAction {
 					check = false;
 					Exception exception = new ExceptionCategoryInfoNotExists( document.getCategoryId() );
 					result.error(exception);
-				}					
-				if( isAnonymous ) {
-					//检查这个文档所在的栏目和分类是否都是全员可见
-					if( !categoryInfo.getAllPeopleView() ) {
-						//分类不可见
-						check = false;
-						Exception exception = new ExceptionDocumentInfoProcess( "分类["+categoryInfo.getCategoryName()+"]不允许匿名访问。ID:" + document.getCategoryId());
-						result.error(exception);
-					}
 				}
 			} catch (Exception e) {
 				check = false;
@@ -197,74 +177,95 @@ public class ActionQueryViewDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		
 		if (check) {
-			if ( woOutDocument != null && categoryInfo != null ) {
-				try {
-					woOutDocument.setForm(categoryInfo.getFormId());
-					woOutDocument.setFormName(categoryInfo.getFormName());
-					woOutDocument.setReadFormId(categoryInfo.getReadFormId());
-					woOutDocument.setReadFormName(categoryInfo.getReadFormName());
-					woOutDocument.setCategoryName(categoryInfo.getCategoryName());
-					woOutDocument.setCategoryAlias(categoryInfo.getCategoryAlias());
-					
-					if( woOutDocument.getCreatorPerson() != null && !woOutDocument.getCreatorPerson().isEmpty() ) {
-						woOutDocument.setCreatorPersonShort( woOutDocument.getCreatorPerson().split( "@" )[0]);
-					}
-					if( woOutDocument.getCreatorUnitName() != null && !woOutDocument.getCreatorUnitName().isEmpty() ) {
-						woOutDocument.setCreatorUnitNameShort( woOutDocument.getCreatorUnitName().split( "@" )[0]);
-					}
-					if( woOutDocument.getCreatorTopUnitName() != null && !woOutDocument.getCreatorTopUnitName().isEmpty() ) {
-						woOutDocument.setCreatorTopUnitNameShort( woOutDocument.getCreatorTopUnitName().split( "@" )[0]);
-					}
-					wo.setDocument(woOutDocument);
-				} catch (Exception e) {
+			if( isAnonymous ) {
+				//检查这个文档所在的栏目和分类是否都是全员可见
+				if( ( ListTools.isNotEmpty( document.getReadPersonList() ) && !document.getReadPersonList().contains( "所有人" ) )
+						|| ListTools.isNotEmpty( document.getReadUnitList() ) || ListTools.isNotEmpty( document.getReadGroupList() ) ) {
 					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess(e, "根据ID查询分类信息对象时发生异常。ID:" + document.getCategoryId());
+					Exception exception = new ExceptionDocumentInfoProcess( "该文档不允许匿名访问。ID:" + id );
 					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
+				}
+				//检查这个文档所在的栏目和分类是否都是全员可见
+				if( !appInfo.getAllPeopleView() ) {
+					//栏目不可见
+					check = false;
+					Exception exception = new ExceptionDocumentInfoProcess( "栏目["+appInfo.getAppName()+"]不允许匿名访问。ID:" + document.getAppId());
+					result.error(exception);
+				}
+				//检查这个文档所在的栏目和分类是否都是全员可见
+				if( !categoryInfo.getAllPeopleView() ) {
+					//分类不可见
+					check = false;
+					Exception exception = new ExceptionDocumentInfoProcess( "分类["+categoryInfo.getCategoryName()+"]不允许匿名访问。ID:" + document.getCategoryId());
+					result.error(exception);
 				}
 			}
 		}
-
-		if (check) {
-			if (woOutDocument != null) {
-				try {						
-					wo.setData( documentQueryService.getDocumentData( document ) );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档数据内容信息时发生异常。Id:" + document.getCategoryId());
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
-		}
-
+		
+		
 		if (check) {
 			try {
-				attachmentList = fileInfoServiceAdv.getAttachmentList(document.getId());
-				if (attachmentList != null && !attachmentList.isEmpty()) {
-					wo.setAttachmentList( WoFileInfo.copier.copy(attachmentList));
+				woOutDocument = WoDocument.copier.copy( document );
+				
+				if ( woOutDocument != null && categoryInfo != null ) {
+					try {
+						woOutDocument.setForm(categoryInfo.getFormId());
+						woOutDocument.setFormName(categoryInfo.getFormName());
+						woOutDocument.setReadFormId(categoryInfo.getReadFormId());
+						woOutDocument.setReadFormName(categoryInfo.getReadFormName());
+						woOutDocument.setCategoryName(categoryInfo.getCategoryName());
+						woOutDocument.setCategoryAlias(categoryInfo.getCategoryAlias());
+						
+						if( woOutDocument.getCreatorPerson() != null && !woOutDocument.getCreatorPerson().isEmpty() ) {
+							woOutDocument.setCreatorPersonShort( woOutDocument.getCreatorPerson().split( "@" )[0]);
+						}
+						if( woOutDocument.getCreatorUnitName() != null && !woOutDocument.getCreatorUnitName().isEmpty() ) {
+							woOutDocument.setCreatorUnitNameShort( woOutDocument.getCreatorUnitName().split( "@" )[0]);
+						}
+						if( woOutDocument.getCreatorTopUnitName() != null && !woOutDocument.getCreatorTopUnitName().isEmpty() ) {
+							woOutDocument.setCreatorTopUnitNameShort( woOutDocument.getCreatorTopUnitName().split( "@" )[0]);
+						}
+						wo.setDocument(woOutDocument);
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionDocumentInfoProcess(e, "根据ID查询分类信息对象时发生异常。ID:" + document.getCategoryId());
+						result.error(exception);
+						logger.error(e, effectivePerson, request, null);
+					}
+				}
+				
+				if ( woOutDocument != null ) {
+					try {						
+						wo.setData( documentQueryService.getDocumentData( document ) );
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档数据内容信息时发生异常。Id:" + document.getCategoryId());
+						result.error(exception);
+						logger.error(e, effectivePerson, request, null);
+					}
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档附件内容列表时发生异常。Id:" + document.getCategoryId());
+				Exception exception = new ExceptionDocumentInfoProcess(e, "将查询出来的文档信息对象转换为可输出的数据信息时发生异常。");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
+		//判断用户是否是文档的创建者，创建者是有权限编辑文档的
 		if (check) {
-			if( wo.getDocument() != null &&
-					wo.getDocument().getCreatorPerson() != null &&
-					wo.getDocument().getCreatorPerson().equals( personName )) {
+			if( wo.getDocument() != null && wo.getDocument().getCreatorPerson() != null && wo.getDocument().getCreatorPerson().equals( personName )) {
 					isCreator = true;
 					wo.setIsCreator( isCreator );
 			}
 		}
 	
+		//判断用户是否是分类的管理者，分类管理者是有权限编辑文档的
 		if (check) {
 			try {
-				if ( categoryInfoServiceAdv.isCategoryInfoManager(woOutDocument.getCategoryId(), personName)) {
+				if ( categoryInfoServiceAdv.isCategoryInfoManager( categoryInfo, personName, unitNames, groupNames )) {
 					isCategoryAdmin = true;
 				}
 			} catch (Exception e) {
@@ -275,9 +276,10 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 		
+		//判断用户是否是栏目的管理者，栏目管理者是有权限编辑文档的
 		if (check) {
 			try {
-				if (appInfoServiceAdv.isAppInfoManager(woOutDocument.getAppId(), personName)) {
+				if (appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames )) {
 					isAppAdmin = true;
 				}
 			} catch (Exception e) {
@@ -294,25 +296,17 @@ public class ActionQueryViewDocument extends BaseAction {
 			} else {
 				// 判断当前登录者是不是该文档的可编辑者
 				try {
-					List<String> unitNames = null;
-					List<String> groupNames = null;
 					if( !isAnonymous ) {
-						unitNames = userManagerService.listUnitNamesWithPerson( personName );
-						groupNames = userManagerService.listGroupNamesByPerson( personName );
-						
 						if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
 							if( document.getAuthorPersonList().contains( personName ) ) {
 								isEditor = true;
 							}
-						}
-						
-						unitNames.retainAll( document.getAuthorUnitList() );
-						if( ListTools.isNotEmpty( unitNames )) {
-							isEditor = true;
-						}
-						groupNames.retainAll( document.getAuthorGroupList() );
-						if( ListTools.isNotEmpty( groupNames )) {
-							isEditor = true;
+							if( ListTools.containsAny( unitNames, document.getAuthorUnitList())) {
+								isEditor = true;
+							}
+							if( ListTools.containsAny( groupNames, document.getAuthorGroupList())) {
+								isEditor = true;
+							}
 						}
 					}					
 				} catch (Exception e) {
@@ -338,8 +332,8 @@ public class ActionQueryViewDocument extends BaseAction {
 		@FieldDescribe( "作为输出的CMS文档数据对象." )
 		private WoDocument document;
 
-		@FieldDescribe( "作为输出的CMS文档附件文件信息数据对象." )
-		private List<WoFileInfo> attachmentList;
+//		@FieldDescribe( "作为输出的CMS文档附件文件信息数据对象." )
+//		private List<WoFileInfo> attachmentList;
 
 		@FieldDescribe( "作为输出的CMS文档操作日志." )
 		private List<WoLog> documentLogList;
@@ -367,13 +361,13 @@ public class ActionQueryViewDocument extends BaseAction {
 			this.document = document;
 		}
 
-		public List<WoFileInfo> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<WoFileInfo> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
+//		public List<WoFileInfo> getAttachmentList() {
+//			return attachmentList;
+//		}
+//
+//		public void setAttachmentList(List<WoFileInfo> attachmentList) {
+//			this.attachmentList = attachmentList;
+//		}
 
 		public List<WoLog> getDocumentLogList() {
 			return documentLogList;
@@ -490,25 +484,35 @@ public class ActionQueryViewDocument extends BaseAction {
 			this.creatorTopUnitNameShort = creatorTopUnitNameShort;
 		}
 	}
-	
-	public static class WoFileInfo extends FileInfo {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<FileInfo, WoFileInfo> copier = WrapCopierFactory.wo( FileInfo.class, WoFileInfo.class, null, JpaObject.FieldsInvisible);
-		
-		private Long referencedCount;
-		
-		public Long getReferencedCount() {
-			return referencedCount;
-		}
-		
-		public void setReferencedCount(Long referencedCount) {
-			this.referencedCount = referencedCount;
-		}
-	}
+//	
+//	public static class WoFileInfo extends FileInfo {
+//		
+//		private static final long serialVersionUID = -5076990764713538973L;
+//		
+//		public static List<String> Excludes = new ArrayList<String>();
+//		
+//		private WoControl control = new WoControl();
+//
+//		public WoControl getControl() {
+//			return control;
+//		}
+//
+//		public void setControl(WoControl control) {
+//			this.control = control;
+//		}
+//		
+//		public static WrapCopier<FileInfo, WoFileInfo> copier = WrapCopierFactory.wo( FileInfo.class, WoFileInfo.class, null, JpaObject.FieldsInvisible);
+//		
+//		private Long referencedCount;
+//		
+//		public Long getReferencedCount() {
+//			return referencedCount;
+//		}
+//		
+//		public void setReferencedCount(Long referencedCount) {
+//			this.referencedCount = referencedCount;
+//		}
+//	}
 	
 	public static class WoLog extends Log {
 		
@@ -523,4 +527,81 @@ public class ActionQueryViewDocument extends BaseAction {
 		
 		public static List<String> Excludes = new ArrayList<String>();
 	}
+	
+//	public static class WoControl extends GsonPropertyObject {
+//
+//		private Boolean allowRead = false;
+//		private Boolean allowEdit = false;
+//		private Boolean allowControl = false;
+//
+//		public Boolean getAllowRead() {
+//			return allowRead;
+//		}
+//
+//		public void setAllowRead(Boolean allowRead) {
+//			this.allowRead = allowRead;
+//		}
+//
+//		public Boolean getAllowEdit() {
+//			return allowEdit;
+//		}
+//
+//		public void setAllowEdit(Boolean allowEdit) {
+//			this.allowEdit = allowEdit;
+//		}
+//
+//		public Boolean getAllowControl() {
+//			return allowControl;
+//		}
+//
+//		public void setAllowControl(Boolean allowControl) {
+//			this.allowControl = allowControl;
+//		}
+//	}
+//	
+//	private boolean read( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units) throws Exception {
+//		boolean value = false;
+//		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
+//			value = true;
+//		} else if (ListTools.isEmpty(woFileInfo.getReadIdentityList()) && ListTools.isEmpty(woFileInfo.getReadUnitList())) {
+//			value = true;
+//		} else {
+//			if (ListTools.containsAny(identities, woFileInfo.getReadIdentityList()) || ListTools.containsAny(units, woFileInfo.getReadUnitList())) {
+//				value = true;
+//			}
+//		}
+//		return value;
+//	}
+//
+//	private boolean edit( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+//			throws Exception {
+//		boolean value = false;
+//		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
+//			value = true;
+//		} else if (ListTools.isEmpty(woFileInfo.getEditIdentityList()) && ListTools.isEmpty(woFileInfo.getEditUnitList())) {
+//			value = true;
+//		} else {
+//			if (ListTools.containsAny(identities, woFileInfo.getEditIdentityList())
+//					|| ListTools.containsAny(units, woFileInfo.getEditUnitList())) {
+//				value = true;
+//			}
+//		}
+//		return value;
+//	}
+//
+//	private boolean control( WoFileInfo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+//			throws Exception {
+//		boolean value = false;
+//		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
+//			value = true;
+//		} else if (ListTools.isEmpty(woFileInfo.getControllerUnitList()) && ListTools.isEmpty(woFileInfo.getControllerIdentityList())) {
+//			value = true;
+//		} else {
+//			if (ListTools.containsAny(identities, woFileInfo.getControllerIdentityList())
+//					|| ListTools.containsAny(units, woFileInfo.getControllerUnitList())) {
+//				value = true;
+//			}
+//		}
+//		return value;
+//	}
 }

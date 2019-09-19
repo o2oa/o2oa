@@ -152,4 +152,14 @@ class TaskTagService {
 		Business business = new Business( emc );
 		return business.taskTagFactory().listReleWithTaskAndPerson( taskId, person);
 	}
+
+	public List<String> listTagIdsWithContent(EntityManagerContainer emc, String tagName, String project, String personName ) throws Exception {
+		Business business = new Business( emc );
+		return business.taskTagFactory().listTagIdsWithTagNameAndProjectAndPerson( tagName, project, personName);
+	}
+
+	public List<String> listTaskIdsWithReleTagIds(EntityManagerContainer emc, List<String> tagIds) throws Exception {
+		Business business = new Business( emc );
+		return business.taskTagFactory().listTaskIdsWithReleTagIds( tagIds );
+	}
 }

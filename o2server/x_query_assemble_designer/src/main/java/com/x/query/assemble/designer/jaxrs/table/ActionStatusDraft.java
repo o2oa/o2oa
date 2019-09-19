@@ -3,7 +3,6 @@ package com.x.query.assemble.designer.jaxrs.table;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,6 +23,7 @@ class ActionStatusDraft extends BaseAction {
 			this.check(effectivePerson, business, table);
 			emc.beginTransaction(Table.class);
 			table.setStatus(Table.STATUS_draft);
+			table.setData("");
 			emc.commit();
 			ApplicationCache.notify(Table.class);
 			ApplicationCache.notify(Statement.class);

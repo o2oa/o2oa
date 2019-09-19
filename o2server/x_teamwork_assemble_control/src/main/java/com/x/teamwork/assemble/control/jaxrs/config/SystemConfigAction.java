@@ -9,9 +9,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -38,7 +39,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllSystemConfig(@Context HttpServletRequest request ) {
+	public void listAllSystemConfig( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -53,7 +54,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe( value = "根据ID获取系统配置信息", action = ActionGet.class )
@@ -61,7 +62,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @JaxrsParameterDescribe("系统配置信息ID") @PathParam("id") String id) {
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("系统配置信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -76,7 +77,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe( value = "根据Code获取系统配置信息", action = ActionGetWithCode.class )
@@ -84,7 +85,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 	@Path("code/{code}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getWithCode(@Context HttpServletRequest request, @JaxrsParameterDescribe("系统配置信息编码") @PathParam("code") String code) {
+	public void getWithCode( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("系统配置信息编码") @PathParam("code") String code) {
 		ActionResult<ActionGetWithCode.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -99,7 +100,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe( value = "判断当前用户是否有管理员权限", action = ActionIsManager.class )
@@ -107,7 +108,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 	@Path("ismanager")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response isManager(@Context HttpServletRequest request) {
+	public void isManager( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -122,14 +123,14 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe( value = "新建或者更新系统配置信息", action = ActionSave.class )
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save( @Context HttpServletRequest request, @JaxrsParameterDescribe("配置信息") JsonElement jsonElement) {
+	public void save( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("配置信息") JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -144,7 +145,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 }

@@ -1,7 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

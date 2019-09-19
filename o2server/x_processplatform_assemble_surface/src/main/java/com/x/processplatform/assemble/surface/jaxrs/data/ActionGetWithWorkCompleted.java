@@ -10,7 +10,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
-import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionGetWithWorkCompleted extends BaseAction {
@@ -28,7 +27,11 @@ class ActionGetWithWorkCompleted extends BaseAction {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
-			result.setData(this.getData(business, workCompleted.getJob()));
+			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+				result.setData(gson.fromJson(workCompleted.getData(), JsonElement.class));
+			} else {
+				result.setData(this.getData(business, workCompleted.getJob()));
+			}
 			return result;
 		}
 	}

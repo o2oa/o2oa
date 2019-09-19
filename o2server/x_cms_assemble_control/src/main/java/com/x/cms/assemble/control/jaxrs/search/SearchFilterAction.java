@@ -6,9 +6,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -28,12 +29,12 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Path("list/publish/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listPublishAppSearchFilter(@Context HttpServletRequest request,
+	public void listPublishAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result = 
 				new ActionListAppSearchFilterForDocStatus().execute(request, currentPerson, "published", categoryId);
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限访问的所有草稿文档分类列表.", action = ActionListAppSearchFilterForDocStatus.class)
@@ -41,12 +42,12 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Path("list/draft/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listDraftAppSearchFilter(@Context HttpServletRequest request,
+	public void listDraftAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result = 
 				new ActionListAppSearchFilterForDocStatus().execute(request, currentPerson, "draft", categoryId);
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限访问的所有已归档文档分类列表.", action = ActionListAppSearchFilterForDocStatus.class)
@@ -54,11 +55,11 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Path("list/archive/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listArchivedAppSearchFilter(@Context HttpServletRequest request,
+	public void listArchivedAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result = 
 				new ActionListAppSearchFilterForDocStatus().execute(request, currentPerson, "archived", categoryId);
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}	
 }

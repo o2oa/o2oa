@@ -1,7 +1,6 @@
 package com.x.base.core.project.logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.helpers.MessageFormatter;
 
 import com.x.base.core.project.tools.DateTools;
 

@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameIdPair;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -276,24 +277,34 @@ public class ActionExecute extends BaseAction {
 	
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("查询数据时间范围.")
 		private DateRangeEntry date;
 
+		@FieldDescribe("过滤条件内容.")
 		private JsonElement filter;
 
+		@FieldDescribe("展现的列信息.")
 		private JsonElement column;
-
+		
+		@FieldDescribe("用于过滤条件的栏目ID.")
 		private JsonElement application;
 		
+		@FieldDescribe("用于过滤条件的栏目ID列表.")
 		private JsonElement appIdList;
 
+		@FieldDescribe("用于过滤条件的分类ID.")
 		private JsonElement category;
 
+		@FieldDescribe("用于过滤条件的顶层组织名.")
 		private JsonElement topUnitName;
 
+		@FieldDescribe("用于过滤条件的拟稿者所属组织.")
 		private JsonElement unitName;
 
+		@FieldDescribe("用于过滤条件的拟稿人.")
 		private JsonElement person;
 
+		@FieldDescribe("用于过滤条件的拟稿人身份.")
 		private JsonElement identity;
 
 		public DateRangeEntry getDate() {

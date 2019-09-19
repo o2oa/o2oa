@@ -32,7 +32,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class OkrWorkReportDetailInfo extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
-	//private static final String TABLE = PersistenceProperties.OkrWorkReportDetailInfo.table;
+	private static final String TABLE = PersistenceProperties.OkrWorkReportDetailInfo.table;
 
 	public String getId() {
 		return id;

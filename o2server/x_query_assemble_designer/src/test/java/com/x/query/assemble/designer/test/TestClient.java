@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import com.google.gson.JsonElement;
@@ -38,21 +39,12 @@ public class TestClient {
 	}
 
 	@Test
-	public void insert1() throws Exception {
+	public void test() throws Exception {
 
-		String address = "http://127.0.0.1:20020/x_query_assemble_designer/jaxrs/table/dd/row";
-		for (int i = 0; i < 200; i++) {
-			String value = Objects.toString(i);
-			Map<String, Object> map = new HashMap<>();
-			map.put("sf1", "sf1" + value);
-			List<String> os = new ArrayList<>();
-			os.add("lsf1" + value);
-			map.put("lsf1", os);
-			map.put("slf1", "slf1"
-					+ "你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好");
-		Thread.sleep(1000);
-			JsonElement jsonElement = HttpConnection.postAsObject(address, null, XGsonBuilder.toJson(map),
-					JsonElement.class);
-		}
+		String name1 = "d:/aaa/bbb";
+		String name2 = "d:\\aaa\\bbb";
+
+		System.out.println(FilenameUtils.equalsNormalized(name1, name2));
+
 	}
 }

@@ -14,7 +14,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.query.core.entity.neural.Model", "com.x.query.core.entity.schema.Table",
 		"com.x.query.core.entity.schema.Statement", "com.x.processplatform.core.entity.content.Review",
 		"com.x.processplatform.core.entity.content.Work", "com.x.processplatform.core.entity.content.WorkCompleted",
-		"com.x.processplatform.core.entity.content.Attachment", "com.x.cms.core.entity.Document",
+		"com.x.processplatform.core.entity.content.Attachment", "com.x.cms.core.entity.Document","com.x.cms.core.entity.Review",
 		"com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.CategoryInfo",
 		"com.x.query.dynamic.entity.*" }, storageTypes = { StorageType.processPlatform, StorageType.cms }, storeJars = {
 				"x_query_core_entity", "x_organization_core_entity", "x_organization_core_express",

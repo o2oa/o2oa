@@ -7,7 +7,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.CmsPermissionService;
+import com.x.cms.core.express.permission.CmsPermissionService;
+
 
 public class PermissionQueryService {
 	

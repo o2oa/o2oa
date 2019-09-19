@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionEntityFieldEmpty;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.assemble.personal.Business;
@@ -19,7 +19,11 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.accredit.Empower;
 import com.x.organization.core.entity.accredit.Empower_;
 
+import net.sf.ehcache.Ehcache;
+
 abstract class BaseAction extends StandardJaxrsAction {
+
+	protected static Ehcache cache = ApplicationCache.instance().getCache(Empower.class);
 
 	protected void check(Business business, Empower empower) throws Exception {
 		if (StringUtils.isEmpty(empower.getFromIdentity())) {
@@ -96,9 +100,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		p = cb.and(p, cb.notEqual(root.get(Empower_.id), empower.getId()));
 		Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 		if (count > 0) {
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
 		}
 	}
 

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.SystemUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -78,7 +79,8 @@ class ActionGetScriptNested extends BaseAction {
 	}
 	
 	public class Wi extends GsonPropertyObject {
-
+		
+		@FieldDescribe("导入的脚本ID.")
 		private List<String> importedList;
 
 		public List<String> getImportedList() {

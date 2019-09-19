@@ -188,7 +188,8 @@ public class Learn {
 					if (!validationSet.isEmpty()) {
 						Evaluation evaluation = new Evaluation();
 						evaluation.addEvaluator(new ClassifierEvaluator.MultiClass(validationSet.getColumnNames()));
-						EvaluationResult evaluationResult = evaluation.evaluateDataSet(neuralNetwork, validationSet);
+						//modify 2.94->2.96 evaluation.evaluateDataSet -> evaluation.evaluate
+						EvaluationResult evaluationResult = evaluation.evaluate(neuralNetwork, validationSet);
 						model = refreshmodel(business, modelId);
 						emc.beginTransaction(Model.class);
 						model.setValidationMeanSquareError(evaluationResult.getMeanSquareError());
@@ -265,7 +266,8 @@ public class Learn {
 				for (Integer i : entry.getOutValueLabelList()) {
 					outs[i] = 1.0d;
 				}
-				data.addRow(ins, outs);
+				//modify 2.94->2.96 data.addRow -> data.add
+				data.add(ins, outs);
 			}
 		}
 		return data;
@@ -307,7 +309,7 @@ public class Learn {
 		}
 		return count;
 	}
-	
+
 	private void saveDataSet(DataSet dataSet, Model model, String surffix) throws Exception {
 		File file = new File(Config.base(), "local/temp/" + model.getName() + "_" + surffix + ".txt");
 		dataSet.save(file.getAbsolutePath());

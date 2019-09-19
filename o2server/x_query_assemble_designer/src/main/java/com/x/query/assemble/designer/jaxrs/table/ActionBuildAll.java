@@ -1,11 +1,14 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -13,6 +16,7 @@ import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +37,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Table;
@@ -46,83 +51,102 @@ class ActionBuildAll extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
 			Business business = new Business(emc);
 			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			File src = Config.dir_local_temp_dynamic_src(true);
-			File target = Config.dir_local_temp_dynamic_target(true);
-			FileUtils.cleanDirectory(src);
-			FileUtils.cleanDirectory(target);
+			File dir = new File(Config.dir_local_temp_dynamic(true), StringTools.uniqueToken());
+			FileUtils.forceMkdir(dir);
+			File src = new File(dir, "src");
+			FileUtils.forceMkdir(src);
+			File target = new File(dir, "target");
+			FileUtils.forceMkdir(target);
+			File resources = new File(dir, "resources");
+			FileUtils.forceMkdir(resources);
 			List<Table> tables = emc.listAll(Table.class);
-			boolean empty = true;
 			/* 产生用于创建persistence.xml */
 			List<String> classNames = new ArrayList<>();
 			for (Table table : tables) {
-				emc.beginTransaction(Table.class);
-				table.setBuildSuccess(false);
 				try {
-					if (StringUtils.equals(table.getStatus(), Table.STATUS_build)) {
+					emc.beginTransaction(Table.class);
+					table.setBuildSuccess(false);
+					if (StringUtils.isNotEmpty(table.getData())) {
 						DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getData(),
 								DynamicEntity.class);
 						dynamicEntity.setName(table.getName());
 						DynamicEntityBuilder builder = new DynamicEntityBuilder(dynamicEntity, src);
 						builder.build();
-						table.setBuildSuccess(true);
 						classNames.add(dynamicEntity.className());
-						empty = false;
 					}
-				} catch (Exception e) {
-					throw e;
-				} finally {
+					table.setBuildSuccess(true);
 					emc.commit();
+				} catch (Exception e) {
+					logger.error(e);
 				}
 			}
 
-			if (!empty) {
+			if (!classNames.isEmpty()) {
 
-				PersistenceXmlHelper.directWrite(new File(target, "META-INF/persistence.xml").getAbsolutePath(),
+				PersistenceXmlHelper.directWrite(new File(resources, "META-INF/persistence.xml").getAbsolutePath(),
 						classNames);
+
 				List<File> classPath = new ArrayList<>();
 				classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(),
 						FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
 				classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
 						DirectoryFileFilter.INSTANCE));
 
-				// JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
 						DefaultCharset.charset_utf_8);
+
 				fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(target));
-				fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(src));
+				fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(src, resources));
 				fileManager.setLocation(StandardLocation.CLASS_PATH, classPath);
 
 				Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH,
 						DynamicEntity.CLASS_PACKAGE, EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 
-				compiler.getTask(null, fileManager, null, null, null, res).call();
+				DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+
+				StringWriter out = new StringWriter();
+
+				if (!compiler.getTask(out, fileManager, diagnostics, null, null, res).call()) {
+					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+						out.append("Error on line " + diagnostic.getLineNumber() + " in " + diagnostic).append('\n');
+					}
+					throw new ExceptionCompileError(out.toString());
+				}
+
+				wo.setValue(true);
 
 				fileManager.close();
 
-				this.enhance();
+				this.enhance(target, resources);
 
 				File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
+
 				JarTools.jar(target, jar);
 			}
-			Wo wo = new Wo();
-			wo.setValue(true);
+
 			result.setData(wo);
+
 			return result;
 		}
 	}
 
-	private void enhance() throws Exception {
+	private void enhance(File target, File resources) throws Exception {
 
 		File commandJavaFile = null;
 		if (SystemUtils.IS_OS_AIX) {
 			commandJavaFile = new File(Config.dir_jvm_aix(), "bin/java");
 		} else if (SystemUtils.IS_OS_LINUX) {
-			commandJavaFile = new File(Config.dir_jvm_linux(), "bin/java");
+			if (Config.dir_jvm_neokylin_loongson().exists()) {
+				commandJavaFile = new File(Config.dir_jvm_neokylin_loongson(), "bin/java");
+			} else {
+				commandJavaFile = new File(Config.dir_jvm_linux(), "bin/java");
+			}
 		} else if (SystemUtils.IS_OS_MAC) {
 			commandJavaFile = new File(Config.dir_jvm_macos(), "bin/java");
 		} else {
@@ -133,11 +157,12 @@ class ActionBuildAll extends BaseAction {
 
 		paths.add(Config.dir_store_jars().getAbsolutePath() + File.separator + "*");
 		paths.add(Config.dir_commons_ext().getAbsolutePath() + File.separator + "*");
-		paths.add(Config.dir_local_temp_dynamic_target().getAbsolutePath());
+		paths.add(target.getAbsolutePath());
+		paths.add(resources.getAbsolutePath());
 
 		String command = commandJavaFile.getAbsolutePath() + " -classpath \""
 				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
-				+ Config.dir_local_temp_dynamic_target() + "\"";
+				+ target.getAbsolutePath() + "\"";
 
 		logger.debug("enhance command:{}.", command);
 
@@ -155,7 +180,13 @@ class ActionBuildAll extends BaseAction {
 
 		Process process = processBuilder.start();
 
-		process.waitFor();
+		// process.waitFor();
+
+		String resp = IOUtils.toString(process.getErrorStream(), DefaultCharset.charset_utf_8);
+
+		process.destroy();
+
+		logger.info("enhance result:{}.", resp);
 
 	}
 

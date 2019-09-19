@@ -9,9 +9,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -37,7 +38,7 @@ public class UUIDAction extends StandardJaxrsAction {
 	@Path("random")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getUUID(@Context HttpServletRequest request) {
+	public void getUUID( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<List<String>> result = new ActionResult<>();
 		List<String> data = new ArrayList<String>();
 		String uuid = null;
@@ -49,6 +50,6 @@ public class UUIDAction extends StandardJaxrsAction {
 		} catch (Exception e) {
 			logger.warn("user[" + currentPerson.getDistinguishedName() + "] get a new UUID error！", e);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

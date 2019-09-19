@@ -9,9 +9,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -36,7 +37,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	@Path("{id}/view")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response view(@Context HttpServletRequest request, 
+	public void view( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryViewDocument.Wo> result = new ActionResult<>();
@@ -47,7 +48,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListNextWithFilter.class)
@@ -55,7 +56,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNextWithFilter( @Context HttpServletRequest request, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement ) {
@@ -72,7 +73,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionQueryGetFirstPicture.class)
@@ -80,7 +81,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	@Path("pictures/{id}/first")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listFirstPictures( @Context HttpServletRequest request, 
+	public void listFirstPictures( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionQueryGetFirstPicture.Wo> result = new ActionResult<>();
@@ -94,7 +95,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionQueryListAllPictures.class)
@@ -102,7 +103,7 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 	@Path("pictures/{id}/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllPictures( @Context HttpServletRequest request, 
+	public void listAllPictures( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionQueryListAllPictures.Wo>> result = new ActionResult<>();
@@ -116,6 +117,6 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

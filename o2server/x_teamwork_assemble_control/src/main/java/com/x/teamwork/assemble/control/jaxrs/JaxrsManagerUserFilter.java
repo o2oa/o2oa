@@ -9,6 +9,7 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/chat/*",
 		"/jaxrs/task/*",
 		"/jaxrs/task_tag/*",
+		"/jaxrs/task_view/*",
 		"/jaxrs/attachment/*",
 		"/jaxrs/project_group/*",
 		"/jaxrs/task_group/*",

@@ -11,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -40,7 +41,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllView(@Context HttpServletRequest request ) {		
+	public void listAllView( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
@@ -50,7 +51,7 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取指定栏目ID的全部信息列表.", action = ActionListByApp.class)
@@ -58,7 +59,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("list/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewByAppId(@Context HttpServletRequest request, 
+	public void listViewByAppId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId")String appId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByApp.Wo>> result = new ActionResult<>();
@@ -69,7 +70,7 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取指定表单ID的全部信息列表.", action = ActionListByForm.class)
@@ -77,7 +78,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("list/form/{formId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewByFormId(@Context HttpServletRequest request, 
+	public void listViewByFormId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("表单ID") @PathParam("formId")String formId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByForm.Wo>> result = new ActionResult<>();
@@ -88,7 +89,7 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取指定分类的全部视图信息列表.", action = ActionListByCategory.class)
@@ -96,7 +97,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("list/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewByCategoryId(@Context HttpServletRequest request, 
+	public void listViewByCategoryId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId")String categoryId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByCategory.Wo>> result = new ActionResult<>();
@@ -107,7 +108,7 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID获取信息列表对象.", action = ActionGet.class)
@@ -115,7 +116,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("列表ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -126,14 +127,14 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "创建列表信息.", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public void post( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -146,7 +147,7 @@ public class ViewAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "更新信息列表.", action = ActionSave.class)
@@ -154,7 +155,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response put( @Context HttpServletRequest request, 
+	public void put( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("列表ID") @PathParam("id") String id, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
@@ -168,7 +169,7 @@ public class ViewAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID删除信息对象.", action = ActionDelete.class)
@@ -176,7 +177,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("列表ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
@@ -187,7 +188,7 @@ public class ViewAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示符合条件的视图数据列表,下一页.", action = ActionListNextPageViewData.class)
@@ -195,7 +196,7 @@ public class ViewAction extends StandardJaxrsAction{
 	@Path("viewdata/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nextPageViewDataList( @Context HttpServletRequest request, 
+	public void nextPageViewDataList( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("上一页最后一条ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement) {
@@ -211,6 +212,6 @@ public class ViewAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

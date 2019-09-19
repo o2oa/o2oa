@@ -14,6 +14,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -134,6 +135,20 @@ public class JarTools {
 			e.printStackTrace();
 		}
 	}
+
+//	public static void jar(File source, File dist, String[] excludes) {
+//		try (FileOutputStream fos = new FileOutputStream(dist); JarOutputStream jos = new JarOutputStream(fos)) {
+//			jos.setMethod(JarOutputStream.DEFLATED);
+//			jos.setLevel(5);
+//			for (File o : source.listFiles()) {
+//				System.out.println(FilenameUtils.equals(filename1, filename2));
+//				write(o, "", jos);
+//			}
+//			jos.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	public static void jar(String source, String dist) {
 		jar(new File(source), new File(dist));

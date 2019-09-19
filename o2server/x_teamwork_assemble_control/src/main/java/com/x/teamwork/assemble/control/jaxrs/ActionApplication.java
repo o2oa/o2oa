@@ -16,6 +16,7 @@ import com.x.teamwork.assemble.control.jaxrs.projectgroup.ProjectGroupAction;
 import com.x.teamwork.assemble.control.jaxrs.task.TaskAction;
 import com.x.teamwork.assemble.control.jaxrs.taskgroup.TaskGroupAction;
 import com.x.teamwork.assemble.control.jaxrs.tasktag.TaskTagAction;
+import com.x.teamwork.assemble.control.jaxrs.taskview.TaskViewAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -25,6 +26,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add( ProjectAction.class );
 		this.classes.add( TaskAction.class );
 		this.classes.add( TaskTagAction.class );
+		this.classes.add( TaskViewAction.class );
 		this.classes.add( AttachmentAction.class );
 		this.classes.add( ProjectGroupAction.class );
 		this.classes.add( TaskGroupAction.class );

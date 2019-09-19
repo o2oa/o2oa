@@ -12,7 +12,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -36,7 +35,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("list/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listFileInfoByDocumentId(@Context HttpServletRequest request, 
+	public void listFileInfoByDocumentId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId")String documentId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByDocId.Wo>> result = new ActionResult<>();
@@ -47,7 +46,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID获取fileInfo对象.", action = ActionGet.class)
@@ -55,7 +54,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("{id}/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId") String documentId ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -67,7 +66,7 @@ public class FileInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID下载指定附件", action = ActionFileDownload.class)

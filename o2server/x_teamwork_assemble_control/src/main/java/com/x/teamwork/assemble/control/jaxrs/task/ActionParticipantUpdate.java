@@ -24,6 +24,7 @@ import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskView;
 
 public class ActionParticipantUpdate extends BaseAction {
 
@@ -70,6 +71,7 @@ public class ActionParticipantUpdate extends BaseAction {
 					task = taskPersistService.addParticipants( id, new_participants );
 					// 更新缓存
 					ApplicationCache.notify( Task.class );					
+					ApplicationCache.notify( TaskView.class );
 					
 					wo.setId( task.getId() );			
 					

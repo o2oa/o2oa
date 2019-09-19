@@ -13,6 +13,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 
 public class AttendanceDetailService {
@@ -293,5 +294,15 @@ public class AttendanceDetailService {
 	public List<String> getAllAnalysenessPersonNames(EntityManagerContainer emc, String startDate, String endDate) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().getAllAnalysenessPersonNames( startDate, endDate );
+	}
+
+	public AttendanceDetail listDetailWithEmployee(EntityManagerContainer emc, String employeeName, String recordDateString) throws Exception {
+		Business business =  new Business( emc );
+		List<AttendanceDetail> details =  business.getAttendanceDetailFactory().listDetailByEmployeeNameAndDate(employeeName, recordDateString);
+		if( ListTools.isNotEmpty( details )) {
+			return  details.get(0);
+		}else {
+			return null;
+		}
 	}	
 }

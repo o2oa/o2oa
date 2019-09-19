@@ -11,5 +11,11 @@ public class TestClient {
 	public void test() throws Exception {
 		System.out.println(Crypto.encrypt("张学良#" + (new Date()).getTime(), "12345678"));
 	}
+	
+	@Test
+	public void test1() throws Exception {
+		System.out.println(String.class.getTypeName());
+	}
+
 
 }

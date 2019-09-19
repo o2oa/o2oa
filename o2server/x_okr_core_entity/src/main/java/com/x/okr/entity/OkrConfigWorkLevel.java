@@ -29,7 +29,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class OkrConfigWorkLevel extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
-	//private static final String TABLE = PersistenceProperties.OkrConfigWorkLevel.table;
+	private static final String TABLE = PersistenceProperties.OkrConfigWorkLevel.table;
 
 	public String getId() {
 		return id;
@@ -61,19 +61,19 @@ public class OkrConfigWorkLevel extends SliceJpaObject {
 	 */
 	public static final String workLevelName_FIELDNAME = "workLevelName";
 	@FieldDescribe("工作级别名称")
-	@Column(length =  JpaObject.length_32B, name = ColumnNamePrefix + workLevelName_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + workLevelName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String workLevelName = null;
 
 	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号")
-	@Column( name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Integer orderNumber = 1;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("备注说明")
-	@Column(length =  JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description = null;
 

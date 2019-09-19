@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -182,6 +183,55 @@ public class FileInfoServiceAdv {
 			return attachment;
 		}
 
+		public FileInfo updateAttachmentInfo( String id, FileInfo fileInfo ) throws Exception {
+			FileInfo fileInfo_old = null;
+			
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				fileInfo_old = emc.find( id, FileInfo.class);
+				if (null == fileInfo_old) {
+					throw new Exception("file info not exists.ID=" + id );
+				}				
+				if( fileInfo == null ) {
+					return fileInfo_old;
+				}else {
+					if( ListTools.isNotEmpty( fileInfo.getReadIdentityList() )) {
+						fileInfo_old.setReadIdentityList( fileInfo.getReadIdentityList() );
+					}else {
+						fileInfo_old.setReadIdentityList( new ArrayList<>() );
+					}
+					if( ListTools.isNotEmpty( fileInfo.getReadUnitList() )) {
+						fileInfo_old.setReadUnitList( fileInfo.getReadUnitList() );
+					}else {
+						fileInfo_old.setReadUnitList( new ArrayList<>() );
+					}
+					if( ListTools.isNotEmpty( fileInfo.getEditIdentityList() )) {
+						fileInfo_old.setEditIdentityList( fileInfo.getEditIdentityList() );
+					}else {
+						fileInfo_old.setEditIdentityList( new ArrayList<>() );
+					}
+					if( ListTools.isNotEmpty( fileInfo.getEditUnitList() )) {
+						fileInfo_old.setEditUnitList( fileInfo.getEditUnitList() );
+					}else {
+						fileInfo_old.setEditUnitList( new ArrayList<>() );
+					}
+					if( ListTools.isNotEmpty( fileInfo.getControllerIdentityList() )) {
+						fileInfo_old.setControllerIdentityList( fileInfo.getControllerIdentityList() );
+					}else {
+						fileInfo_old.setControllerIdentityList( new ArrayList<>() );
+					}
+					if( ListTools.isNotEmpty( fileInfo.getControllerUnitList() )) {
+						fileInfo_old.setControllerUnitList( fileInfo.getControllerUnitList() );
+					}else {
+						fileInfo_old.setControllerUnitList( new ArrayList<>() );
+					}
+					emc.beginTransaction( FileInfo.class );
+					emc.check( fileInfo_old, CheckPersistType.all);
+					emc.commit();
+				}
+			}			
+			return fileInfo_old;
+		}
+		
 		public FileInfo updateAttachment(String docId, String old_attId, FileInfo attachment, StorageMapping mapping) throws Exception {
 			if( StringUtils.isEmpty( docId ) ){
 				throw new Exception("docId is null!");
@@ -207,7 +257,9 @@ public class FileInfoServiceAdv {
 					old_fileInfo.setFileHost( attachment.getFileHost() );
 					old_fileInfo.setFileType("ATTACHMENT");
 					old_fileInfo.setFileExtType( attachment.getFileExtType()  );
-					old_fileInfo.setFilePath( attachment.getFilePath() );					
+					old_fileInfo.setFilePath( attachment.getFilePath() );
+					old_fileInfo.setType( attachment.getType() );
+					old_fileInfo.setText( attachment.getText() );
 					emc.check( old_fileInfo, CheckPersistType.all );
 					emc.commit();
 				}
@@ -227,5 +279,7 @@ public class FileInfoServiceAdv {
 			} catch ( Exception e ) {
 				throw e;
 			}
-		}	
+		}
+
+		
 }

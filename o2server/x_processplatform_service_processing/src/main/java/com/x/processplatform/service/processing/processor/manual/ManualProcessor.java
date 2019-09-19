@@ -182,17 +182,15 @@ public class ManualProcessor extends AbstractManualProcessor {
 							manual.getName(), manual.getId());
 				}
 			}
-			// identities.add(effectiveCreatorIdentity);
 			aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
 		}
 
 		aeiObjects.getWork().setManualTaskIdentityList(taskIdentities.identities());
 
-		List<Empower> trusts = aeiObjects.business().organization().empower().listWithIdentityObject(
+		/* 更新授权 */
+		taskIdentities.update(aeiObjects.business().organization().empower().listWithIdentityObject(
 				aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
-				aeiObjects.getWork().getManualTaskIdentityList());
-
-		taskIdentities.update(trusts);
+				aeiObjects.getWork().getManualTaskIdentityList()));
 
 		switch (manual.getManualMode()) {
 		case single:
@@ -218,11 +216,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
-//		for (Task o : aeiObjects.getCreateTasks()) {
-//			TaskMessage message = new TaskMessage(o.getPerson(), o.getWork(), o.getId());
-//			logger.debug("concrete task message:{}.", XGsonBuilder.toText(message));
-//			Collaboration.send(message);
-//		}
+
 	}
 
 	@Override
@@ -269,13 +263,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 			/* 进行默认的策略,选择占比多的 */
 			result = ListTools.maxCountElement(os);
 		}
-//		for (TaskCompleted o : ListTools.trim(list, false, false)) {
-//			if ((!o.getProcessingType().equals(ProcessingType.reset))
-//					&& (!o.getProcessingType().equals(ProcessingType.retract))) {
-//				/** 跳过重置处理人的路由 */
-//				os.add(o.getRouteName());
-//			}
-//		}
 		if (StringUtils.isEmpty(result)) {
 			throw new ExceptionChoiceRouteNameError(
 					ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, false, false));

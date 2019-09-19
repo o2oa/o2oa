@@ -49,6 +49,9 @@ class ActionListPrevFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			ins.put(TaskCompleted.activityName_FIELDNAME, wi.getActivityNameList());
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			ins.put(TaskCompleted.completed_FIELDNAME, wi.getCompletedList());
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -66,17 +69,26 @@ class ActionListPrevFilter extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("应用")
 		private List<String> applicationList;
 
+		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("活动名称")
+		private List<String> activityNameList;
+
+		@FieldDescribe("创建组织")
 		private List<String> creatorUnitList;
 
+		@FieldDescribe("开始时间(月)")
 		private List<String> startTimeMonthList;
 
+		@FieldDescribe("结束时间(月)")
 		private List<String> completedTimeMonthList;
 
-		private List<String> activityNameList;
+		@FieldDescribe("可选择的完成状态")
+		private List<Boolean> completedList;
 
 		private String key;
 
@@ -134,6 +146,14 @@ class ActionListPrevFilter extends BaseAction {
 
 		public void setStartTimeMonthList(List<String> startTimeMonthList) {
 			this.startTimeMonthList = startTimeMonthList;
+		}
+
+		public List<Boolean> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<Boolean> completedList) {
+			this.completedList = completedList;
 		}
 
 	}

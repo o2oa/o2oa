@@ -7,10 +7,8 @@ import java.util.Objects;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.ScriptingEngine;

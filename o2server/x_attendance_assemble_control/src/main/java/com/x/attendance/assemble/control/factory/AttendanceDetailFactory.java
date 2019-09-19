@@ -79,6 +79,21 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		return em.createQuery(cq.where( p )).getResultList();
 	}
 	
+	//@MethodDescribe("根据员工姓名和打卡日期列示AttendanceDetail信息列表")
+	public List<AttendanceDetail> listDetailByEmployeeNameAndDate( String employeeName, String recordDateString ) throws Exception {
+		
+		if( employeeName == null || recordDateString == null ){
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get(AttendanceDetail.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceDetail> cq = cb.createQuery(AttendanceDetail.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		Predicate p = cb.equal( root.get(AttendanceDetail_.empName),  employeeName );
+		p = cb.and( p, cb.equal( root.get(AttendanceDetail_.recordDateString ),  recordDateString ) );
+		return em.createQuery(cq.where( p )).getResultList();
+	}
+	
 	//@MethodDescribe("列示指定Id的AttendanceDetail信息列表")
 	public List<AttendanceDetail> list(List<String> ids) throws Exception {
 		List<AttendanceDetail> resultList = null;

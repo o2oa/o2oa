@@ -56,6 +56,14 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 			wi.setDocumentType( "信息" );
 		}
 		
+		if( StringUtils.isNotEmpty( wi.getOrderField() )) {
+			wi.setOrderField( "createTime" );
+		}
+		
+		if( StringUtils.isNotEmpty( wi.getOrderType() )) {
+			wi.setOrderField( "DESC" );
+		}
+		
 		if( ListTools.isNotEmpty( wi.getStatusList() )) {
 			List<String> status = new ArrayList<>();
 			status.add( "published" );

@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -93,8 +94,7 @@ public class WorkCompleted extends SliceJpaObject {
 	/**
 	 * 通过Work创建WorkCompleted
 	 */
-	public WorkCompleted(Work work, Date completedTime, Long duration, String data, String formData,
-			String formMobileData) {
+	public WorkCompleted(Work work, Date completedTime, Long duration, String formData, String formMobileData) {
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
 		this.startTime = work.getStartTime();
@@ -111,7 +111,6 @@ public class WorkCompleted extends SliceJpaObject {
 		this.processName = work.getProcessName();
 		this.processAlias = work.getProcessAlias();
 		this.serial = work.getSerial();
-		this.data = data;
 		this.form = work.getForm();
 		this.formData = formData;
 		this.formMobileData = formMobileData;
@@ -135,6 +134,10 @@ public class WorkCompleted extends SliceJpaObject {
 		} else {
 			return this.title;
 		}
+	}
+
+	public Boolean getDataMerged() {
+		return BooleanUtils.isTrue(dataMerged);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -332,6 +335,13 @@ public class WorkCompleted extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
+
+	public static final String dataMerged_FIELDNAME = "dataMerged";
+	@FieldDescribe("业务数据是否从item表中合并至data字段")
+	@Column(name = ColumnNamePrefix + dataMerged_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dataMerged_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean dataMerged;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -830,6 +840,10 @@ public class WorkCompleted extends SliceJpaObject {
 
 	public void setTitleLob(String titleLob) {
 		this.titleLob = titleLob;
+	}
+
+	public void setDataMerged(Boolean dataMerged) {
+		this.dataMerged = dataMerged;
 	}
 
 }

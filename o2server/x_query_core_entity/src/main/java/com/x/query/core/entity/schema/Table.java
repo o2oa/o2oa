@@ -86,8 +86,8 @@ public class Table extends SliceJpaObject {
 
 	public static final String name_FIELDNAME = "name";
 	@Flag
-	@FieldDescribe("表名,最大32个字符.")
-	@Column(length = length_32B, name = ColumnNamePrefix + name_FIELDNAME)
+	@FieldDescribe("表名,最大64个字符.")
+	@Column(length = length_64B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = true)
 	private String name;
@@ -95,7 +95,7 @@ public class Table extends SliceJpaObject {
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
 	@FieldDescribe("别名.")
-	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = length_64B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String alias;
@@ -195,6 +195,14 @@ public class Table extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	@Column(name = ColumnNamePrefix + buildSuccess_FIELDNAME)
 	private Boolean buildSuccess;
+
+	public Boolean getBuildSuccess() {
+		return buildSuccess;
+	}
+
+	public void setBuildSuccess(Boolean buildSuccess) {
+		this.buildSuccess = buildSuccess;
+	}
 
 	public String getName() {
 		return name;
@@ -306,14 +314,6 @@ public class Table extends SliceJpaObject {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public Boolean getBuildSuccess() {
-		return buildSuccess;
-	}
-
-	public void setBuildSuccess(Boolean buildSuccess) {
-		this.buildSuccess = buildSuccess;
 	}
 
 }

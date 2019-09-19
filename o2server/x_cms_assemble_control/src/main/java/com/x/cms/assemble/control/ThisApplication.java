@@ -53,6 +53,7 @@ public class ThisApplication {
 		context.schedule( Timertask_LogRecordCheckTask.class, "0 0 2 * * ?" );
 		context.schedule( Timertask_BatchOperationTask.class, "0 */5 * * * ?" );
 		cmsBatchOperationPersistService.initOperationRunning();
+		cmsBatchOperationPersistService.checkDocumentReviewStatus();
 	}
 
 	public static void destroy() {

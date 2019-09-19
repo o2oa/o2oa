@@ -49,6 +49,9 @@ class ActionListNextFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			ins.put(TaskCompleted.activityName_FIELDNAME, wi.getActivityNameList());
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			ins.put(TaskCompleted.completed_FIELDNAME, wi.getCompletedList());
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -85,8 +88,19 @@ class ActionListNextFilter extends BaseAction {
 		@FieldDescribe("结束时间(月)")
 		private List<String> completedTimeMonthList;
 
+		@FieldDescribe("可选择的完成状态")
+		private List<Boolean> completedList;
+
 		@FieldDescribe("关键字")
 		private String key;
+
+		public List<Boolean> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<Boolean> completedList) {
+			this.completedList = completedList;
+		}
 
 		public List<String> getApplicationList() {
 			return applicationList;

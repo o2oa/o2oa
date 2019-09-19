@@ -9,9 +9,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -33,7 +34,7 @@ public class QueryViewAction extends BaseAction {
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAll( @Context HttpServletRequest request ) {
+	public void listAll( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -42,7 +43,7 @@ public class QueryViewAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示指定栏目中所有当前用户可见的数据视图信息.", action = ActionList.class)
@@ -50,7 +51,7 @@ public class QueryViewAction extends BaseAction {
 	@Path("list/application/flag/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response list( @Context HttpServletRequest request ) {
+	public void list( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
 		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -59,7 +60,7 @@ public class QueryViewAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中所有当前用户可见的数据视图信息.", action = ActionFlag.class)
@@ -67,7 +68,7 @@ public class QueryViewAction extends BaseAction {
 	@Path("flag/{flag}/application/flag/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response flag(@Context HttpServletRequest request, 
+	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag ) {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
@@ -77,7 +78,7 @@ public class QueryViewAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "执行指定栏目中指定数据视图查询.", action = ActionExecute.class)
@@ -85,7 +86,7 @@ public class QueryViewAction extends BaseAction {
 	@Path("flag/{flag}/application/flag/{appId}/execute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response execute(@Context HttpServletRequest request, 
+	public void execute( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("数据视图信息标识") @PathParam("flag") String flag, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId, 
 			JsonElement jsonElement) {
@@ -101,7 +102,7 @@ public class QueryViewAction extends BaseAction {
 				result.error(th);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 }

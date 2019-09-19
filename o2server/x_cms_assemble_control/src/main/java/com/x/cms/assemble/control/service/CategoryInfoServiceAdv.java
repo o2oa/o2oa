@@ -319,23 +319,20 @@ public class CategoryInfoServiceAdv {
 	 * 判断用户是否为指定分类的管理员
 	 * @param categoryId
 	 * @param personName
+	 * @param units
+	 * @param groups
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public Boolean isCategoryInfoManager(String categoryId, String personName) throws Exception {
+	public Boolean isCategoryInfoManager(String categoryId, String personName,  List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			CategoryInfo categoryInfo = emc.find( categoryId, CategoryInfo.class );
-			if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList() )){
-				if( categoryInfo.getManageablePersonList().contains( personName )) {
-					return true;
-				}
-			}
+			return isCategoryInfoManager(categoryInfo, personName, unitNames, groupNames );
 		} catch (Exception e) {
 			throw e;
 		}
-		return false;
 	}
-
+	
 	/**
 	 * 判断用户是否拥有指定分类的发布者权限
 	 * @param categoryId
@@ -348,28 +345,12 @@ public class CategoryInfoServiceAdv {
 	public Boolean isCategoryInfoPublisher(String categoryId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			CategoryInfo categoryInfo = emc.find( categoryId, CategoryInfo.class );
-			if( ListTools.isNotEmpty( categoryInfo.getPublishablePersonList() )){
-				if( categoryInfo.getManageablePersonList().contains( personName )) {
-					return true;
-				}				
-				if( categoryInfo.getPublishablePersonList().contains( personName )) {
-					return true;
-				}
-				categoryInfo.getPublishableUnitList().retainAll( unitNames );
-				if( ListTools.isNotEmpty( categoryInfo.getPublishableUnitList() )) {
-					return true;
-				}
-				categoryInfo.getPublishableGroupList().retainAll( groupNames );
-				if( ListTools.isNotEmpty( categoryInfo.getPublishableGroupList() )) {
-					return true;
-				}
-			}
+			return  isCategoryInfoPublisher(categoryInfo, personName, unitNames, groupNames);
 		} catch (Exception e) {
 			throw e;
 		}
-		return false;
 	}
-
+	
 	/**
 	 *  判断用户是否拥有指定分类的访问权限
 	 * @param categoryId
@@ -382,35 +363,147 @@ public class CategoryInfoServiceAdv {
 	public Boolean isCategoryInfoViewer(String categoryId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			CategoryInfo categoryInfo = emc.find( categoryId, CategoryInfo.class );
-			if( ListTools.isNotEmpty( categoryInfo.getPublishablePersonList() )){
+			return isCategoryInfoViewer(categoryInfo, personName, unitNames, groupNames);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 判断用户是否为指定分类的管理员
+	 * @param categoryInfo
+	 * @param personName
+	 * @param units
+	 * @param groups
+	 * @return
+	 * @throws Exception
+	 */
+	public Boolean isCategoryInfoManager( CategoryInfo categoryInfo, String personName,  List<String> unitNames, List<String> groupNames) throws Exception {
+		if( categoryInfo != null ){
+			if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList() )){
 				if( categoryInfo.getManageablePersonList().contains( personName )) {
-					return true;
-				}				
-				if( categoryInfo.getPublishablePersonList().contains( personName )) {
-					return true;
-				}
-				categoryInfo.getPublishableUnitList().retainAll( unitNames );
-				if( ListTools.isNotEmpty( categoryInfo.getPublishableUnitList() )) {
-					return true;
-				}
-				categoryInfo.getPublishableGroupList().retainAll( groupNames );
-				if( ListTools.isNotEmpty( categoryInfo.getPublishableGroupList() )) {
-					return true;
-				}
-				if( categoryInfo.getViewablePersonList().contains( personName )) {
-					return true;
-				}
-				categoryInfo.getViewableUnitList().retainAll( unitNames );
-				if( ListTools.isNotEmpty( categoryInfo.getViewableUnitList() )) {
-					return true;
-				}
-				categoryInfo.getViewableGroupList().retainAll( groupNames );
-				if( ListTools.isNotEmpty( categoryInfo.getViewableGroupList() )) {
 					return true;
 				}
 			}
-		} catch (Exception e) {
-			throw e;
+			if( ListTools.isNotEmpty( categoryInfo.getManageableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getManageableUnitList()) ) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getManageableGroupList()) ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断用户是否拥有指定分类的发布者权限
+	 * @param categoryInfo
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @return
+	 * @throws Exception
+	 */
+	public Boolean isCategoryInfoPublisher( CategoryInfo categoryInfo, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
+		if( categoryInfo != null ) {
+			if( ListTools.isNotEmpty( categoryInfo.getPublishablePersonList() )){
+				if( categoryInfo.getPublishablePersonList().contains( personName )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList() )){
+				if( categoryInfo.getManageablePersonList().contains( personName )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getPublishableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getPublishableUnitList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getManageableUnitList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getPublishableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getPublishableGroupList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getManageableGroupList() )) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 *  判断用户是否拥有指定分类的访问权限
+	 * @param categoryInfo
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @return
+	 * @throws Exception
+	 */
+	public Boolean isCategoryInfoViewer( CategoryInfo categoryInfo, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
+		if( unitNames == null ) { unitNames = new ArrayList<>(); }
+		if( groupNames == null ) { groupNames = new ArrayList<>(); }
+		
+		if( categoryInfo != null ) {
+			if( ListTools.isNotEmpty( categoryInfo.getViewablePersonList() )){
+				if( categoryInfo.getViewablePersonList().contains( personName )) {
+					return true;
+				}				
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getPublishablePersonList() )){
+				if( categoryInfo.getPublishablePersonList().contains( personName )) {
+					return true;
+				}
+			}			
+			if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList() )){
+				if( categoryInfo.getManageablePersonList().contains( personName )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getViewableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getViewableUnitList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getPublishableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getPublishableUnitList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageableUnitList() )){
+				if( ListTools.containsAny( unitNames, categoryInfo.getManageableUnitList() )) {
+					return true;
+				}
+			}
+			
+			if( ListTools.isNotEmpty( categoryInfo.getViewableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getViewableGroupList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getPublishableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getPublishableGroupList() )) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList() )){
+				if( ListTools.containsAny( groupNames, categoryInfo.getManageableGroupList() )) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

@@ -15,7 +15,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -40,7 +39,7 @@ public class ChatAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @JaxrsParameterDescribe("评论信息ID") @PathParam("id") String id) {
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("评论信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -54,7 +53,7 @@ public class ChatAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe( value = "根据ID获取评论信息文字内容", action = ActionGetContent.class )
@@ -62,7 +61,7 @@ public class ChatAction extends StandardJaxrsAction {
 	@Path("{id}/content")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getContent(@Context HttpServletRequest request, @JaxrsParameterDescribe("评论信息ID") @PathParam("id") String id) {
+	public void getContent( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("评论信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGetContent.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -76,7 +75,7 @@ public class ChatAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示评论信息,下一页.", action = ActionListNextWithFilter.class)

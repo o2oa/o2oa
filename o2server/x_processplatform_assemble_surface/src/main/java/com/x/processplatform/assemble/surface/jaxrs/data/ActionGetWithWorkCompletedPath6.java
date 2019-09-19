@@ -10,6 +10,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionGetWithWorkCompletedPath6 extends BaseAction {
@@ -28,8 +29,14 @@ class ActionGetWithWorkCompletedPath6 extends BaseAction {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
-			result.setData(
-					this.getData(business, workCompleted.getJob(), path0, path1, path2, path3, path4, path5, path6));
+			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+				Data data = gson.fromJson(workCompleted.getData(), Data.class);
+				Object o = data.find(new String[] { path0, path1, path2, path3, path4, path5, path6 });
+				result.setData(gson.toJsonTree(o));
+			} else {
+				result.setData(this.getData(business, workCompleted.getJob(), path0, path1, path2, path3, path4, path5,
+						path6));
+			}
 			return result;
 		}
 	}

@@ -15,7 +15,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -40,7 +39,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @JaxrsParameterDescribe("评论ID") @PathParam("id") String id) {
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("评论ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
@@ -51,7 +50,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示评论信息,按页码分页.", action = ActionListPageWithFilter.class)
@@ -156,7 +155,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 	@Path("{id}/commend")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response persist_commend( @Context HttpServletRequest request, 
+	public void persist_commend( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("评论ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistCommend.Wo> result = new ActionResult<>();
@@ -170,7 +169,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "取消文档评论点赞.", action = ActionPersistUnCommend.class)
@@ -178,7 +177,7 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 	@Path("{id}/uncommend")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response persist_unCommend( @Context HttpServletRequest request, 
+	public void persist_unCommend( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("评论ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistUnCommend.Wo> result = new ActionResult<>();
@@ -192,6 +191,6 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

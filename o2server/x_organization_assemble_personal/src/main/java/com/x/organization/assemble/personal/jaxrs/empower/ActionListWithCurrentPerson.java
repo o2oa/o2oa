@@ -23,12 +23,12 @@ class ActionListWithCurrentPerson extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
 					effectivePerson.getDistinguishedName());
-			Element element = business.cache().get(cacheKey);
+			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
 				List<Wo> wos = this.list(business, effectivePerson);
-				business.cache().put(new Element(cacheKey, wos));
+				cache.put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
 			return result;
@@ -46,7 +46,7 @@ class ActionListWithCurrentPerson extends BaseAction {
 		private static final long serialVersionUID = 4279205128463146835L;
 
 		static WrapCopier<Empower, Wo> copier = WrapCopierFactory.wi(Empower.class, Wo.class, null,
-				JpaObject.FieldsUnmodify);
+				JpaObject.FieldsInvisible);
 
 	}
 

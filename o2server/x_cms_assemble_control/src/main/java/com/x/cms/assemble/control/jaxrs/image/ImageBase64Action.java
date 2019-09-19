@@ -12,9 +12,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
@@ -40,7 +41,7 @@ public class ImageBase64Action extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response convert(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void convert( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<String> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapInImage wrapIn = null;
@@ -116,6 +117,6 @@ public class ImageBase64Action extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

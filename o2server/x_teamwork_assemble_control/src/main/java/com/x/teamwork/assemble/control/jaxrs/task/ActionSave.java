@@ -33,6 +33,7 @@ import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
 import com.x.teamwork.core.entity.TaskStatuType;
 import com.x.teamwork.core.entity.TaskTag;
+import com.x.teamwork.core.entity.TaskView;
 
 public class ActionSave extends BaseAction {
 
@@ -217,6 +218,7 @@ public class ActionSave extends BaseAction {
 				
 				// 更新缓存
 				ApplicationCache.notify( Task.class );
+				ApplicationCache.notify( TaskView.class );
 				ApplicationCache.notify( Review.class );	
 				ApplicationCache.notify( TaskGroup.class );	
 				ApplicationCache.notify( TaskList.class );

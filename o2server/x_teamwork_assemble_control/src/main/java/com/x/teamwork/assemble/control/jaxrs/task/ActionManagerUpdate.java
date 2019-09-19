@@ -24,6 +24,7 @@ import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskView;
 
 public class ActionManagerUpdate extends BaseAction {
 
@@ -70,7 +71,8 @@ public class ActionManagerUpdate extends BaseAction {
 					task = taskPersistService.addManager( id, new_managers, effectivePerson );
 					
 					// 更新缓存
-					ApplicationCache.notify( Task.class );					
+					ApplicationCache.notify( Task.class );	
+					ApplicationCache.notify( TaskView.class );
 					
 					wo.setId( task.getId() );			
 					

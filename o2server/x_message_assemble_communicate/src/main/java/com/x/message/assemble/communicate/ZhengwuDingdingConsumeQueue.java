@@ -25,6 +25,7 @@ public class ZhengwuDingdingConsumeQueue extends AbstractQueue<Message> {
 				m.getMsg().getText().setContent(message.getTitle());
 				String address = Config.zhengwuDingding().getOapiAddress() + "/ent_message/send?access_token="
 						+ Config.zhengwuDingding().appAccessToken();
+				logger.debug("send zhengwuDingDing to address:{}, body:{}.", address, m.toString());
 				ZhengwuDingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
 						ZhengwuDingdingMessageResp.class);
 				if (resp.getRetCode() != 0) {

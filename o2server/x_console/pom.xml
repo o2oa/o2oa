@@ -36,13 +36,20 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_query_core_entity</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_query_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -55,7 +62,6 @@
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
-				<version>1.0</version>
 				<executions>
 					<execution>
 						<phase>verify</phase>

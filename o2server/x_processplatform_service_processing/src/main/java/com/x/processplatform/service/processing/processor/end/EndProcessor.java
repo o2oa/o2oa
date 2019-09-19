@@ -11,11 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -54,7 +52,7 @@ public class EndProcessor extends AbstractEndProcessor {
 		Work oldest = aeiObjects.getWorks().stream()
 				.sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Date::compareTo))).findFirst()
 				.get();
-		WorkCompleted workCompleted = this.createWorkCompleted(oldest, aeiObjects.getData());
+		WorkCompleted workCompleted = this.createWorkCompleted(oldest);
 
 		workCompleted.setAllowRollback(end.getAllowRollback());
 		aeiObjects.getCreateWorkCompleteds().add(workCompleted);
@@ -113,7 +111,6 @@ public class EndProcessor extends AbstractEndProcessor {
 		aeiObjects.getData().setWork(workCompleted);
 		aeiObjects.getData().setAttachmentList(aeiObjects.getAttachments());
 		aeiObjects.getDeleteWorks().addAll(aeiObjects.getWorks());
-	//	this.projection(aeiObjects);
 		return results;
 	}
 
@@ -138,17 +135,11 @@ public class EndProcessor extends AbstractEndProcessor {
 	}
 
 	/* 根据work和data创建最终保存的workCompleted */
-	private WorkCompleted createWorkCompleted(Work work, Data data) throws Exception {
+	private WorkCompleted createWorkCompleted(Work work) throws Exception {
 		Date completedTime = new Date();
 		Long duration = Config.workTime().betweenMinutes(work.getStartTime(), completedTime);
 		String formString = "";
 		String formMobileString = "";
-		String dataString = "";
-		if (null != data) {
-			Data d = XGsonBuilder.convert(data, Data.class);
-			d.removeWork().removeAttachmentList();
-			dataString = XGsonBuilder.toJson(d);
-		}
 		if (StringUtils.isNotEmpty(work.getForm())) {
 			Form form = this.entityManagerContainer().fetch(work.getForm(), Form.class,
 					ListTools.toList(Form.data_FIELDNAME, Form.mobileData_FIELDNAME));
@@ -157,75 +148,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				formMobileString = form.getMobileData();
 			}
 		}
-		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, dataString, formString,
-				formMobileString);
+		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, formString, formMobileString);
 		return workCompleted;
 	}
-
-//	private void projection(AeiObjects aeiObjects) {
-//		try {
-//			List<Projection> projections = aeiObjects.getProjections();
-//			if (ListTools.isNotEmpty(projections)) {
-//				for (Projection projection : projections) {
-//					switch (Objects.toString(projection.getType(), "")) {
-//					case Projection.TYPE_WORKCOMPLETED:
-//						for (WorkCompleted workCompleted : aeiObjects.getCreateWorkCompleteds()) {
-//							try {
-//								ProjectionFactory.projectionWorkCompleted(projection, aeiObjects.getData(),
-//										workCompleted);
-//							} catch (Exception e) {
-//								logger.error(e);
-//							}
-//						}
-//						break;
-//					case Projection.TYPE_TASKCOMPLETED:
-//						for (TaskCompleted taskCompleted : aeiObjects.getUpdateTaskCompleteds()) {
-//							try {
-//								ProjectionFactory.projectionTaskCompleted(projection, aeiObjects.getData(),
-//										taskCompleted);
-//							} catch (Exception e) {
-//								logger.error(e);
-//							}
-//						}
-//						break;
-//					case Projection.TYPE_READ:
-//						for (Read read : aeiObjects.getUpdateReads()) {
-//							try {
-//								ProjectionFactory.projectionRead(projection, aeiObjects.getData(), read);
-//							} catch (Exception e) {
-//								logger.error(e);
-//							}
-//						}
-//						break;
-//					case Projection.TYPE_REVIEW:
-//						for (Review review : aeiObjects.getUpdateReviews()) {
-//							try {
-//								ProjectionFactory.projectionReview(projection, aeiObjects.getData(), review);
-//							} catch (Exception e) {
-//								logger.error(e);
-//							}
-//						}
-//						break;
-//					case Projection.TYPE_TABLE:
-//						if (StringUtils.isNotEmpty(projection.getDynamicClassName())) {
-//							try {
-//								JpaObject jpaObject = (JpaObject) Class.forName(projection.getDynamicClassName())
-//										.newInstance();
-//								ProjectionFactory.projectionTable(projection, aeiObjects.getData(), jpaObject);
-//								aeiObjects.getCreateDynamicEntities().add(jpaObject);
-//							} catch (Exception e) {
-//								logger.error(e);
-//							}
-//						}
-//						break;
-//					default:
-//						break;
-//					}
-//
-//				}
-//			}
-//		} catch (Exception e) {
-//			logger.error(e);
-//		}
-//	}
 }

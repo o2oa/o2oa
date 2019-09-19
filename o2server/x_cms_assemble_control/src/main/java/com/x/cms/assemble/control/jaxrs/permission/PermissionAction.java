@@ -7,9 +7,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -34,7 +35,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("appInfo/{id}/manageable")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response isAppInfoManager( @Context HttpServletRequest request, 
+	public void isAppInfoManager( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionIsAppInfoManager.Wo> result = new ActionResult<>();
@@ -49,7 +50,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询登录用户是否指定分类的管理员.", action = ActionIsCategoryInfoManager.class)
@@ -57,7 +58,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("categoryInfo/{id}/manageable")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response isCategoryInfoManagers( @Context HttpServletRequest request, 
+	public void isCategoryInfoManagers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionIsCategoryInfoManager.Wo> result = new ActionResult<>();
@@ -72,7 +73,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目管理员信息列表.", action = ActionListAppInfoManagers.class)
@@ -80,7 +81,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("appInfo/{id}/managers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAppInfoManagers( @Context HttpServletRequest request, 
+	public void listAppInfoManagers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListAppInfoManagers.Wo> result = new ActionResult<>();
@@ -95,7 +96,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目发布者信息列表.", action = ActionListAppInfoPublishers.class)
@@ -103,7 +104,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("appInfo/{id}/publishers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAppInfoPublishers( @Context HttpServletRequest request, 
+	public void listAppInfoPublishers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListAppInfoPublishers.Wo> result = new ActionResult<>();
@@ -118,7 +119,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目可见范围信息.", action = ActionListAppInfoViewers.class)
@@ -126,7 +127,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("appInfo/{id}/viewers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAppInfoViewers( @Context HttpServletRequest request, 
+	public void listAppInfoViewers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListAppInfoViewers.Wo> result = new ActionResult<>();
@@ -141,7 +142,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类管理员信息列表.", action = ActionListCategoryInfoManagers.class)
@@ -149,7 +150,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("category/{id}/managers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listCategoryInfoManagers( @Context HttpServletRequest request, 
+	public void listCategoryInfoManagers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListCategoryInfoManagers.Wo> result = new ActionResult<>();
@@ -164,7 +165,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类发布者信息列表.", action = ActionListCategoryInfoPublishers.class)
@@ -172,7 +173,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("category/{id}/publishers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listCategoryInfoPublishers( @Context HttpServletRequest request, 
+	public void listCategoryInfoPublishers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListCategoryInfoPublishers.Wo> result = new ActionResult<>();
@@ -187,7 +188,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类发布范围信息.", action = ActionListCategoryInfoViewers.class)
@@ -195,7 +196,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("category/{id}/viewers")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listCategoryInfoViewers( @Context HttpServletRequest request, 
+	public void listCategoryInfoViewers( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionListCategoryInfoViewers.Wo> result = new ActionResult<>();
@@ -210,7 +211,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目管理员信息.", action = ActionAppInfoManagerSave.class)
@@ -218,7 +219,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("manager/appInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveAppInfoManager( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveAppInfoManager( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionAppInfoManagerSave.Wo> result = new ActionResult<>();
@@ -233,7 +234,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目发布者信息.", action = ActionAppInfoPublisherSave.class)
@@ -241,7 +242,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("publisher/appInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveAppInfoPublisher( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveAppInfoPublisher( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionAppInfoPublisherSave.Wo> result = new ActionResult<>();
@@ -256,7 +257,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目可见范围信息.", action = ActionAppInfoViewerSave.class)
@@ -264,7 +265,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("viewer/appInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveAppInfoViewer( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveAppInfoViewer( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionAppInfoViewerSave.Wo> result = new ActionResult<>();
@@ -279,7 +280,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类管理员信息.", action = ActionCategoryInfoManagerSave.class)
@@ -287,7 +288,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("manager/categoryInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveCategoryInfoManager( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveCategoryInfoManager( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionCategoryInfoManagerSave.Wo> result = new ActionResult<>();
@@ -302,7 +303,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类发布者信息.", action = ActionCategoryInfoPublisherSave.class)
@@ -310,7 +311,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("publisher/categoryInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveCategoryInfoPublisher( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveCategoryInfoPublisher( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionCategoryInfoPublisherSave.Wo> result = new ActionResult<>();
@@ -325,7 +326,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类可见范围信息.", action = ActionCategoryInfoViewerSave.class)
@@ -333,7 +334,7 @@ public class PermissionAction extends StandardJaxrsAction {
 	@Path("viewer/categoryInfo/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveCategoryInfoViewer( @Context HttpServletRequest request, JsonElement jsonElement, 
+	public void saveCategoryInfoViewer( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement, 
 			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionCategoryInfoViewerSave.Wo> result = new ActionResult<>();
@@ -348,6 +349,6 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}	
 }

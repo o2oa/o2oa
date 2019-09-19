@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -43,6 +44,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, effectivePerson, wi));
 			wo.getCompletedTimeMonthList().addAll(this.listCompletedTimeMonthPair(business, effectivePerson, wi));
 			wo.getActivityNameList().addAll(this.listActivityNamePair(business, effectivePerson, wi));
+			wo.getCompletedList().addAll(this.listCompletedPair(business, effectivePerson, wi));
 			result.setData(wo);
 			return result;
 		}
@@ -68,8 +70,19 @@ class ActionFilterAttributeFilter extends BaseAction {
 		@FieldDescribe("限制活动名称范围")
 		private List<String> activityNameList = new ArrayList<>();
 
+		@FieldDescribe("可选择的完成状态")
+		private List<Boolean> completedList = new ArrayList<>();
+
 		public List<String> getApplicationList() {
 			return applicationList;
+		}
+
+		public List<Boolean> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<Boolean> completedList) {
+			this.completedList = completedList;
 		}
 
 		public void setApplicationList(List<String> applicationList) {
@@ -137,6 +150,17 @@ class ActionFilterAttributeFilter extends BaseAction {
 
 		@FieldDescribe("可选择的活动节点")
 		private List<NameValueCountPair> activityNameList = new ArrayList<>();
+
+		@FieldDescribe("可选择的完成状态")
+		private List<NameValueCountPair> completedList = new ArrayList<>();
+
+		public List<NameValueCountPair> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<NameValueCountPair> completedList) {
+			this.completedList = completedList;
+		}
 
 		public List<NameValueCountPair> getApplicationList() {
 			return applicationList;
@@ -215,6 +239,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(TaskCompleted_.application)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -264,6 +291,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		}
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
 		cq.select(root.get(TaskCompleted_.process)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
@@ -315,6 +345,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(TaskCompleted_.creatorUnit)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -358,6 +391,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		}
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
 		cq.select(root.get(TaskCompleted_.activityName)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
@@ -403,6 +439,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(TaskCompleted_.startTimeMonth)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -447,6 +486,9 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
+		}
 		cq.select(root.get(TaskCompleted_.completedTimeMonth)).where(p).distinct(true);
 		List<String> os = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> wos = new ArrayList<>();
@@ -461,6 +503,53 @@ class ActionFilterAttributeFilter extends BaseAction {
 		wos = wos.stream().sorted(Comparator.comparing(NameValueCountPair::getName, (s1, s2) -> {
 			return Objects.toString(s1, "").compareTo(Objects.toString(s2, ""));
 		})).collect(Collectors.toList());
+		return wos;
+	}
+
+	private List<NameValueCountPair> listCompletedPair(Business business, EffectivePerson effectivePerson, Wi wi)
+			throws Exception {
+		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
+		if (ListTools.isNotEmpty(wi.getApplicationList())) {
+			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
+		}
+		if (ListTools.isNotEmpty(wi.getProcessList())) {
+			p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			p = cb.and(p, root.get(TaskCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
+		}
+		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
+			p = cb.and(p, root.get(TaskCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
+		}
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
+		}
+		if (ListTools.isNotEmpty(wi.getCompletedList())) {
+			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
+		}
+		cq.select(root.get(TaskCompleted_.completed)).where(p).distinct(true);
+		List<Boolean> os = em.createQuery(cq).getResultList();
+		List<NameValueCountPair> wos = new ArrayList<>();
+		for (Boolean value : os) {
+			NameValueCountPair o = new NameValueCountPair();
+			if (BooleanUtils.isTrue(value)) {
+				o.setValue(Boolean.TRUE);
+				o.setName("not completed");
+			} else {
+				o.setValue(Boolean.FALSE);
+				o.setName("completed");
+			}
+			wos.add(o);
+		}
 		return wos;
 	}
 }

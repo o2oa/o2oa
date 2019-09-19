@@ -2,22 +2,33 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
+import com.x.attendance.entity.AttendanceStatisticalCycle;
+import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class AttendanceDetailServiceAdv {
-	
+	private DateOperation dateOperation = new DateOperation();
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceDetailServiceAdv.class );
 	private AttendanceDetailService attendanceDetailService = new AttendanceDetailService();
 	private AttendanceDetailMobileService attendanceDetailMobileService = new AttendanceDetailMobileService();
+	protected AttendanceDetailAnalyseServiceAdv attendanceDetailAnalyseServiceAdv = new AttendanceDetailAnalyseServiceAdv();
+	protected AttendanceWorkDayConfigServiceAdv attendanceWorkDayConfigServiceAdv = new AttendanceWorkDayConfigServiceAdv();
+	protected AttendanceStatisticalCycleServiceAdv attendanceStatisticCycleServiceAdv = new AttendanceStatisticalCycleServiceAdv();
 	
 	public AttendanceDetail get( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
@@ -213,4 +224,110 @@ public class AttendanceDetailServiceAdv {
 			throw e;
 		}
 	}
+
+	public void pushToDetail(String distinguishedName, String recordDateString ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<AttendanceDetailMobile> mobileDetails = attendanceDetailMobileService.listAttendanceDetailMobileWithEmployee( emc, distinguishedName, recordDateString );
+			if( ListTools.isNotEmpty( mobileDetails )) {
+				AttendanceDetailMobile mobileDetail = mobileDetails.get( 0 );
+				String onDutyTime = getOnDutyTime( mobileDetails );
+				String offDutyTime = getOffDutyTime( mobileDetails );
+				
+				AttendanceDetail detail = attendanceDetailService.listDetailWithEmployee( emc, distinguishedName, recordDateString );
+				if( detail == null ) {
+					detail = new AttendanceDetail();
+					detail.setEmpNo( mobileDetail.getEmpNo() );
+					detail.setEmpName( mobileDetail.getEmpName() );
+					if( mobileDetail.getRecordDate() != null ) {
+						detail.setYearString( dateOperation.getYear( mobileDetail.getRecordDate() ) );
+						detail.setMonthString( dateOperation.getMonth( mobileDetail.getRecordDate() ) );
+					}
+					detail.setRecordDateString( mobileDetail.getRecordDateString() );
+					detail.setOnDutyTime( onDutyTime );
+					detail.setOffDutyTime( offDutyTime );
+					detail.setRecordStatus( 0 );
+					detail.setBatchName( "FromMobile_" + dateOperation.getNowTimeChar() );	
+					
+					emc.beginTransaction( AttendanceDetail.class );
+					emc.persist( detail , CheckPersistType.all );
+					emc.commit();
+				}else {
+					detail.setEmpNo( mobileDetail.getEmpNo() );
+					detail.setEmpName( mobileDetail.getEmpName() );
+					if( mobileDetail.getRecordDate() != null ) {
+						detail.setYearString( dateOperation.getYear( mobileDetail.getRecordDate() ) );
+						detail.setMonthString( dateOperation.getMonth( mobileDetail.getRecordDate() ) );
+					}
+					detail.setRecordDateString( mobileDetail.getRecordDateString() );
+					detail.setOnDutyTime( onDutyTime );
+					detail.setOffDutyTime( offDutyTime );
+					detail.setRecordStatus( 0 );
+					detail.setBatchName( "FromMobile_" + dateOperation.getNowTimeChar() );	
+					
+					emc.beginTransaction( AttendanceDetail.class );
+					emc.check( detail , CheckPersistType.all );
+					emc.commit();
+				}
+
+				emc.beginTransaction( AttendanceDetailMobile.class );
+				for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+					detailMobile.setRecordStatus(1);
+					emc.check( detailMobile , CheckPersistType.all );
+				}
+				emc.commit();
+				
+				List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = null;
+				Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
+				try {
+					attendanceWorkDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
+					topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( false );
+					
+					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( detail, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, false );
+					logger.info( ">>>>>>>>>>attendance detail analyse completed.person:" + detail.getEmpName() + ", date:" + detail.getRecordDateString());
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	private String getOffDutyTime( List<AttendanceDetailMobile> mobileDetails ) throws Exception {
+		Date offDutyTime = null;
+		Date signTime = null;
+		String offDutyTimeString = null;
+		if( ListTools.isNotEmpty( mobileDetails ) && mobileDetails.size() >=2 ) {
+			for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+				signTime = dateOperation.getDateFromString(detailMobile.getSignTime() );
+				if( offDutyTime != null && signTime != null && offDutyTime.before( signTime )) {
+					offDutyTime = signTime;
+					offDutyTimeString = detailMobile.getSignTime();
+				}else if( offDutyTime == null ){
+					offDutyTime = signTime;
+					offDutyTimeString = detailMobile.getSignTime();
+				}
+			}
+		}
+		return offDutyTimeString;
+	}
+
+	private String getOnDutyTime(List<AttendanceDetailMobile> mobileDetails) throws Exception {
+		Date onDutyTime = null;
+		Date signTime = null;
+		String onDutyTimeString = null;
+		for( AttendanceDetailMobile detailMobile : mobileDetails ) {
+			signTime = dateOperation.getDateFromString(detailMobile.getSignTime() );
+			if( onDutyTime != null && signTime != null && onDutyTime.after( signTime )) {
+				onDutyTime = signTime;
+				onDutyTimeString = detailMobile.getSignTime();
+			}else if( onDutyTime == null ){
+				onDutyTime = signTime;
+				onDutyTimeString = detailMobile.getSignTime();
+			}
+		}
+		return onDutyTimeString;
+	}
+	
 }

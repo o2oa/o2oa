@@ -16,6 +16,7 @@ import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
+import com.x.teamwork.core.entity.TaskView;
 
 public class ActionArchive extends BaseAction {
 
@@ -63,6 +64,7 @@ public class ActionArchive extends BaseAction {
 				taskPersistService.archiveTask( taskId );
 				// 更新缓存
 				ApplicationCache.notify( Task.class );
+				ApplicationCache.notify( TaskView.class );
 				ApplicationCache.notify( TaskGroup.class );	
 				ApplicationCache.notify( TaskList.class );
 				

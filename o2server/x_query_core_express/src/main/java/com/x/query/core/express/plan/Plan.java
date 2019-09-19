@@ -32,7 +32,6 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;

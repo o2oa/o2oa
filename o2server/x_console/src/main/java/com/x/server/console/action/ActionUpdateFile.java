@@ -41,6 +41,7 @@ public class ActionUpdateFile extends ActionUpdate {
 			if (backup) {
 				this.backup();
 			}
+			logger.print("update form file:{}.", file.getAbsolutePath());
 			this.unzip(file);
 			logger.print("update completed in {} seconds, restart server to continue update.",
 					((new Date()).getTime() - start.getTime()) / 1000);

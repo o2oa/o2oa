@@ -45,6 +45,29 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		return em.createQuery(cq.where( p )).getResultList();
 	}
 	
+	/**
+	 * 列示指定人员指定日期的所有移动打卡信息
+	 * @param empName
+	 * @param recordDateString
+	 * @return
+	 * @throws Exception
+	 */
+	public List<AttendanceDetailMobile> listAttendanceDetailMobileWithEmployee( String empName, String recordDateString) throws Exception {
+		if( empName == null || empName.isEmpty() ){
+			throw new Exception("empName is null!");
+		}
+		if( recordDateString == null || recordDateString.isEmpty() ){
+			throw new Exception("recordDateString is null!");
+		}
+		EntityManager em = this.entityManagerContainer().get(AttendanceDetailMobile.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceDetailMobile> cq = cb.createQuery(AttendanceDetailMobile.class);
+		Root<AttendanceDetailMobile> root = cq.from( AttendanceDetailMobile.class);
+		Predicate p = cb.equal( root.get(AttendanceDetailMobile_.empName),  empName );
+		p = cb.and( p, cb.equal( root.get(AttendanceDetailMobile_.recordDateString ),  recordDateString ) );
+		return em.createQuery(cq.where( p )).getResultList();
+	}
+	
 	//@MethodDescribe("列示指定Id的AttendanceDetailMobile信息列表")
 	public List<AttendanceDetailMobile> list(List<String> ids) throws Exception {
 		List<AttendanceDetailMobile> resultList = null;
@@ -131,5 +154,7 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetailMobile_.recordStatus), status );
 		return em.createQuery(cq.where( p )).getResultList();
 	}
+
+	
 
 }

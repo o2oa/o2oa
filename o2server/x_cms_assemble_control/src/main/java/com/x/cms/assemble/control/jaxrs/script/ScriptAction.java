@@ -11,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -34,7 +35,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -44,14 +45,14 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建新的脚本信息.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void post( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -60,7 +61,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新脚本信息.", action = ActionUpdate.class)
@@ -68,7 +69,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response put(@Context HttpServletRequest request, 
+	public void put( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -78,7 +79,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除脚本信息.", action = ActionDelete.class)
@@ -86,7 +87,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -96,7 +97,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中的所有脚本.", action = ActionListWithApplication.class)
@@ -104,7 +105,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWithApplication(@Context HttpServletRequest request, 
+	public void listWithApplication( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -114,7 +115,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据栏目ID和脚本名称获取脚本.", action = ActionGetWithAppAndName.class)
@@ -122,7 +123,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getWithAppWithName(@Context HttpServletRequest request, 
+	public void getWithAppWithName( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			@JaxrsParameterDescribe("脚本名称") @PathParam("name") String name) {
 		ActionResult<ActionGetWithAppAndName.Wo> result = new ActionResult<>();
@@ -133,7 +134,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，下一页.", action = ActionListNext.class)
@@ -141,7 +142,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListNext( @Context HttpServletRequest request, 
+	public void standardListNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
 			) {
@@ -153,7 +154,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，上一页.", action = ActionListPrev.class)
@@ -161,7 +162,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListPrev(@Context HttpServletRequest request, 
+	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
 			) {
@@ -173,7 +174,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取脚本信息以及依赖脚本内容.", action = ActionGetScriptNested.class)
@@ -181,7 +182,7 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{uniqueName}/app/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getScriptNested(@Context HttpServletRequest request, 
+	public void getScriptNested( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("脚本唯一标识") @PathParam("uniqueName") String uniqueName,
 			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag, 
 			JsonElement jsonElement) {
@@ -193,6 +194,6 @@ public class ScriptAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

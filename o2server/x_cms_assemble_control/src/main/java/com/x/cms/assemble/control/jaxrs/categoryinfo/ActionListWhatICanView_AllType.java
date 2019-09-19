@@ -59,7 +59,7 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 		
 		if (check) {// 判断用户是否该栏目的管理者
 			try {
-				if ( appInfoServiceAdv.isAppInfoManager( appId, personName )) {
+				if ( appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames )) {
 					appManager = true;
 				}
 			} catch (Exception e) {

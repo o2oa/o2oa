@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -37,6 +38,7 @@ class ActionFilterAttribute extends BaseAction {
 			wo.getStartTimeMonthList().addAll(this.listStartTimeMonthPair(business, effectivePerson));
 			wo.getCompletedTimeMonthList().addAll(this.listCompletedTimeMonthPair(business, effectivePerson));
 			wo.getActivityNameList().addAll(this.listActivityNamePair(business, effectivePerson));
+			wo.getCompletedList().addAll(this.listCompletedPair(business, effectivePerson));
 			result.setData(wo);
 			return result;
 		}
@@ -61,6 +63,17 @@ class ActionFilterAttribute extends BaseAction {
 
 		@FieldDescribe("可选择的活动节点")
 		private List<NameValueCountPair> activityNameList = new ArrayList<>();
+
+		@FieldDescribe("可选择的完成状态")
+		private List<NameValueCountPair> completedList = new ArrayList<>();
+
+		public List<NameValueCountPair> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<NameValueCountPair> completedList) {
+			this.completedList = completedList;
+		}
 
 		public List<NameValueCountPair> getApplicationList() {
 			return applicationList;
@@ -266,6 +279,34 @@ class ActionFilterAttribute extends BaseAction {
 			}
 		}
 		SortTools.desc(wos, "name");
+		return wos;
+	}
+
+	private List<NameValueCountPair> listCompletedPair(Business business, EffectivePerson effectivePerson)
+			throws Exception {
+
+		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p,
+				cb.or(cb.equal(root.get(TaskCompleted_.latest), true), cb.isNull(root.get(TaskCompleted_.latest))));
+		cq.select(root.get(TaskCompleted_.completed)).where(p).distinct(true);
+		List<Boolean> os = em.createQuery(cq).getResultList();
+		List<NameValueCountPair> wos = new ArrayList<>();
+		for (Boolean value : os) {
+			NameValueCountPair o = new NameValueCountPair();
+			if (BooleanUtils.isTrue(value)) {
+				o.setValue(Boolean.TRUE);
+				o.setName("not completed");
+			} else {
+				o.setValue(Boolean.FALSE);
+				o.setName("completed");
+			}
+			wos.add(o);
+		}
+		SortTools.asc(wos, "name");
 		return wos;
 	}
 }

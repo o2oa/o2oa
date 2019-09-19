@@ -50,8 +50,7 @@ class ActionExecuteWithQuery extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount());
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount());
 			runtime.bundleList = wi.getBundleList();
 			Plan plan = this.accessPlan(business, view, runtime);
 			result.setData(plan);

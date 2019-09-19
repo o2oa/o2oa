@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -14,11 +15,11 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -42,7 +43,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Path( "list/all" )
 	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
 	@Consumes( MediaType.APPLICATION_JSON )
-	public Response listAllFileInfo( @Context HttpServletRequest request ) {		
+	public void listAllFileInfo( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
@@ -52,7 +53,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取指定文档的全部附件信息列表.", action = ActionListByDocId.class)
@@ -60,7 +61,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Path("list/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listFileInfoByDocumentId(@Context HttpServletRequest request, 
+	public void listFileInfoByDocumentId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId")String documentId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByDocId.Wo>> result = new ActionResult<>();
@@ -71,7 +72,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID获取fileInfo对象.", action = ActionGet.class)
@@ -79,7 +80,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Path("{id}/document/{documentId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("documentId") String documentId ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -91,7 +92,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID删除FileInfo应用信息对象.", action = ActionDelete.class)
@@ -99,7 +100,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件信ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
@@ -110,7 +111,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "将图片附件转为base64编码.", action = ActionImageToBase64.class)
@@ -118,7 +119,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 	@Path("{id}/binary/base64/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response imageToBase64(@Context HttpServletRequest request, 
+	public void imageToBase64( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("最大宽高") @PathParam("size") String size ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
@@ -130,7 +131,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID下载指定附件", action = ActionFileDownload.class)
@@ -169,6 +170,25 @@ public class FileInfoAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
+	@JaxrsMethodDescribe(value = "更新附件访问权限.", action = ActionFileEdit.class)
+	@PUT
+	@Path("edit/{id}/doc/{docId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void editPermission(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("附件ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, JsonElement jsonElement) {
+		ActionResult<ActionFileEdit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionFileEdit().execute( request, effectivePerson, id, docId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
 	@JaxrsMethodDescribe(value = "为文档信息上传附件.", action = ActionFileUpload.class)
 	@POST
 	@Path("upload/document/{docId}")
@@ -179,7 +199,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, 
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
-			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -202,7 +222,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("附件ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
-			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -224,7 +244,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("回调函数名") @PathParam("callback") String callback,
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
-			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUploadCallback.Wo<ActionFileUploadCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -248,7 +268,7 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("回调函数名") @PathParam("callback") String callback,
 			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
-			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpdateCallback.Wo<ActionFileUpdateCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

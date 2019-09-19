@@ -16,7 +16,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;

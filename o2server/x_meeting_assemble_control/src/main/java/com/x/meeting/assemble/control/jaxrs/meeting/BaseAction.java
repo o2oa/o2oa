@@ -89,6 +89,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		os.addAll(business.organization().person().list(category.getPersonList()));
 		os.addAll(business.organization().person().listWithIdentity(category.getIdentityList()));
 		os.addAll(business.organization().person().listWithUnitSubDirect(category.getUnitList()));
+		os.addAll(business.organization().person().list( category.getUnknownList()) );
 		os = ListTools.trim(os, true, true);
 		return os;
 	}

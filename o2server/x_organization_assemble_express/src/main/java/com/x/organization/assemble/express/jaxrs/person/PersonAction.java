@@ -550,4 +550,76 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "批量组织的直接成员对应的个人,按关键字进行搜索.", action = ActionListWithUnitSubDirectLike.class)
+	@POST
+	@Path("list/unit/sub/direct/like")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithUnitSubDirectLike(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionListWithUnitSubDirectLike.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithUnitSubDirectLike().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量组织的直接成员对应的个人对象,按关键字进行搜索.", action = ActionListWithUnitSubDirectLikeObject.class)
+	@POST
+	@Path("list/unit/sub/direct/like/object")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithUnitSubDirectLikeObject(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<List<ActionListWithUnitSubDirectLikeObject.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithUnitSubDirectLikeObject().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量组织的嵌套成员对应的个人,按关键字进行搜索.", action = ActionListWithUnitSubNestedLike.class)
+	@POST
+	@Path("list/unit/sub/nested/like")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithUnitSubNestedLike(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionListWithUnitSubNestedLike.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithUnitSubNestedLike().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量组织的嵌套成员对应的个人对象,按关键字进行搜索.", action = ActionListWithUnitSubNestedLikeObject.class)
+	@POST
+	@Path("list/unit/sub/nested/like/object")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithUnitSubNestedLikeObject(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<List<ActionListWithUnitSubNestedLikeObject.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithUnitSubNestedLikeObject().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

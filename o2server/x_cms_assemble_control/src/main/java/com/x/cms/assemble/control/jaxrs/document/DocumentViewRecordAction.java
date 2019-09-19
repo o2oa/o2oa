@@ -9,9 +9,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -36,7 +37,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	@Path("document/{docId}/filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByDocumentFilterNext( @Context HttpServletRequest request, 
+	public void listByDocumentFilterNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("docId") String docId, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id ) {
@@ -50,7 +51,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据人员姓名，获取该用户访问的文档记录，按时间倒序，前50条.", action = ActionQueryListViewRecordByPerson.class)
@@ -58,7 +59,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	@Path( "person/{name}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByPerson( @Context HttpServletRequest request, 
+	public void listByPerson( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("用户姓名") @PathParam("name") String name ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionQueryListViewRecordByPerson.Wo>> result = null;
@@ -70,7 +71,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "从指定的文档ID列表中判断未读过的文档ID列表.", action = ActionQueryListUnReadDocIds.class)
@@ -78,7 +79,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 	@Path( "unread" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listUnReadIds( @Context HttpServletRequest request, 
+	public void listUnReadIds( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult< ActionQueryListUnReadDocIds.Wo> result = null;
@@ -90,7 +91,7 @@ public class DocumentViewRecordAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 }

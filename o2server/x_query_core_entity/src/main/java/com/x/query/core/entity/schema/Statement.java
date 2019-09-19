@@ -49,8 +49,8 @@ public class Statement extends SliceJpaObject {
 	public static final String TYPE_UPDATE = "update";
 	public static final String TYPE_INSERT = "insert";
 
-	public static final String TABLETYPE_OFFICIAL = "official";
-	public static final String TABLETYPE_DYNAMIC = "dynamic";
+//	public static final String TABLETYPE_OFFICIAL = "official";
+//	public static final String TABLETYPE_DYNAMIC = "dynamic";
 
 	public String getId() {
 		return id;
@@ -181,11 +181,11 @@ public class Statement extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Table.class) })
 	private String table;
 
-	public static final String tableType_FIELDNAME = "tableType";
-	@FieldDescribe("表类型,official,dynamic")
-	@Column(length = length_16B, name = ColumnNamePrefix + tableType_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private String tableType;
+//	public static final String tableType_FIELDNAME = "tableType";
+//	@FieldDescribe("表类型,official,dynamic")
+//	@Column(length = length_16B, name = ColumnNamePrefix + tableType_FIELDNAME)
+//	@CheckPersist(allowEmpty = false)
+//	private String tableType;
 
 	public String getName() {
 		return name;
@@ -291,12 +291,12 @@ public class Statement extends SliceJpaObject {
 		this.query = query;
 	}
 
-	public String getTableType() {
-		return tableType;
-	}
-
-	public void setTableType(String tableType) {
-		this.tableType = tableType;
-	}
+//	public String getTableType() {
+//		return tableType;
+//	}
+//
+//	public void setTableType(String tableType) {
+//		this.tableType = tableType;
+//	}
 
 }

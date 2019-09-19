@@ -24,6 +24,7 @@ import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
+import com.x.teamwork.core.entity.TaskView;
 
 public class ActionDelete extends BaseAction {
 
@@ -64,6 +65,7 @@ public class ActionDelete extends BaseAction {
 				
 				// 更新缓存
 				ApplicationCache.notify( Task.class );
+				ApplicationCache.notify( TaskView.class );
 				ApplicationCache.notify( TaskGroup.class );	
 				ApplicationCache.notify( TaskList.class );
 				

@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -68,24 +69,34 @@ class ActionCreate extends BaseAction {
 	
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("创建时间.")
 		private Date createTime;
 		
+		@FieldDescribe("更新时间.")
 		private Date updateTime;
 		
+		@FieldDescribe("ID.")
 		private String id;
 		
+		@FieldDescribe("脚本名称.")
 		private String name;
 		
+		@FieldDescribe("脚本别名.")
 		private String alias;
 		
+		@FieldDescribe("脚本说明.")
 		private String description;
 		
+		@FieldDescribe("是否验证成功.")
 		private Boolean validated;
 		
+		@FieldDescribe("所属栏目ID.")
 		private String appId;
 		
+		@FieldDescribe("脚本内容.")
 		private String text;
 		
+		@FieldDescribe("依赖的脚本ID列表.")
 		private List<String> dependScriptList;
 
 		public Date getCreateTime() {
