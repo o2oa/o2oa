@@ -11,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -35,7 +36,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNext(@Context HttpServletRequest request, 
+	public void listNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count
 			) {
@@ -46,7 +47,7 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示数据视图设计信息对象,上一页.", action = ActionListPrev.class)
@@ -54,7 +55,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListPrev(@Context HttpServletRequest request, 
+	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count
 			) {
@@ -65,7 +66,7 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据标识获取数据视图设计信息内容.", action = ActionFlag.class)
@@ -73,7 +74,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("flag/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response flag(@Context HttpServletRequest request, 
+	public void flag( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("视图信息标识")  @PathParam("flag") String flag) {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
@@ -83,7 +84,7 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取数据视图设计信息内容.", action = ActionGet.class)
@@ -91,7 +92,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
@@ -101,14 +102,14 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe( value = "创建数据视图设计信息.", action = ActionCreate.class )
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void create( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -122,7 +123,7 @@ public class QueryViewDesignAction extends BaseAction {
 			}
 		}
 		
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe( value = "更新数据视图设计信息.", action = ActionUpdate.class )
@@ -130,7 +131,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@Context HttpServletRequest request, 
+	public void update( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id, 
 			JsonElement jsonElement) {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
@@ -145,7 +146,7 @@ public class QueryViewDesignAction extends BaseAction {
 				result.error(th);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe( value = "删除数据视图设计信息.", action = ActionDelete.class )
@@ -153,7 +154,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("视图信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
@@ -163,7 +164,7 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe( value = "根据应用列示视图设计信息.", action = ActionListWithApplication.class )
@@ -171,7 +172,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("list/application/{applicationId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWithApplication( @Context HttpServletRequest request,
+	public void listWithApplication( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目信息ID") @PathParam("applicationId") String applicationId ) {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		try {
@@ -181,7 +182,7 @@ public class QueryViewDesignAction extends BaseAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe( value = "模拟执行视图设计信息.", action = ActionSimulate.class )
@@ -189,7 +190,7 @@ public class QueryViewDesignAction extends BaseAction {
 	@Path("flag/{flag}/simulate")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response simulate( @Context HttpServletRequest request, 
+	public void simulate( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("视图信息标识")@PathParam("flag") String flag, JsonElement jsonElement ) {
 		ActionResult<Query> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -212,6 +213,6 @@ public class QueryViewDesignAction extends BaseAction {
 				result.error(th);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 }

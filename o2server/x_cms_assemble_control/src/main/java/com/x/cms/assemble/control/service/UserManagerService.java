@@ -14,7 +14,6 @@ import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.core.entity.tools.LogUtil;
 
 /**
  * 组织人员角色相关信息的服务类
@@ -362,10 +361,10 @@ public class UserManagerService {
 		String identityName = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			identityNames = listIdentitiesWithPerson( personName );
-			LogUtil.INFO("identityNames:", identityNames );
+//			LogUtil.INFO("identityNames:", identityNames );
 			if( StringUtils.isEmpty( identity ) ) {
 				if ( identityNames.size() == 0 ) {
-					throw new Exception("perons has no identity.");
+					throw new Exception("perons has no identity. personName:" + personName );
 				} else if ( identityNames.size() > 0 ) {
 					identityName = identityNames.get(0);
 				}

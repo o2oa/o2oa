@@ -1,6 +1,7 @@
 package com.x.organization.assemble.personal;
 
 import com.x.base.core.project.Context;
+import com.x.organization.assemble.personal.schedule.DisableExpiredEmpower;
 
 public class ThisApplication {
 
@@ -13,6 +14,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			context.schedule(DisableExpiredEmpower.class, "0 */20 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

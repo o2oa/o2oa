@@ -144,6 +144,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "更新委托", action = ActionEdit.class)
 	@PUT
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -161,6 +162,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "删除委托", action = ActionDelete.class)
 	@DELETE
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

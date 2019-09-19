@@ -19,6 +19,10 @@ public class ExternalDataSource extends ConfigObject {
 		this.password = "";
 		this.includes = new ArrayList<>();
 		this.excludes = new ArrayList<>();
+		this.driverClassName = "";
+		this.dictionary = "";
+		this.maxTotal = DEFAULT_MAXTOTAL;
+		this.logLevel = LogLevel.WARN;
 	}
 
 	public static ExternalDataSource defaultInstance() {
@@ -135,5 +139,4 @@ public class ExternalDataSource extends ConfigObject {
 		this.logLevel = logLevel;
 	}
 
- 
 }

@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceAdv;
+import com.x.attendance.assemble.control.service.AttendanceDetailMobileAnalyseServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceScheduleSettingServiceAdv;
@@ -20,4 +21,5 @@ public class BaseAction extends StandardJaxrsAction{
 	protected AttendanceEmployeeConfigServiceAdv attendanceEmployeeConfigServiceAdv = new AttendanceEmployeeConfigServiceAdv();
 	protected AttendanceSelfHolidayServiceAdv attendanceSelfHolidayServiceAdv = new AttendanceSelfHolidayServiceAdv();
 	protected AttendanceScheduleSettingServiceAdv attendanceScheduleSettingServiceAdv = new AttendanceScheduleSettingServiceAdv();
+	protected AttendanceDetailMobileAnalyseServiceAdv attendanceDetailMobileAnalyseServiceAdv = new AttendanceDetailMobileAnalyseServiceAdv();
 }

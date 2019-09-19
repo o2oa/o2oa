@@ -171,8 +171,9 @@ public class BaseAction extends StandardJaxrsAction {
 	 * @param groupNames
 	 * @param appInfo
 	 * @return
+	 * @throws Exception 
 	 */
-	private boolean appInfoViewable(String personName, Boolean isAnonymous, List<String> unitNames, List<String> groupNames, AppInfo appInfo, Boolean manager) {
+	private boolean appInfoViewable(String personName, Boolean isAnonymous, List<String> unitNames, List<String> groupNames, AppInfo appInfo, Boolean manager) throws Exception {
 		
 		if( appInfo.getAllPeopleView() || appInfo.getAllPeoplePublish() ) {
 			return true;
@@ -181,28 +182,31 @@ public class BaseAction extends StandardJaxrsAction {
 			if( manager ) {
 				return true;
 			}
-			if( appInfo.getManageablePersonList().contains( personName )) {
-				return true;
-			}
 			
-			appInfo.getViewableUnitList().retainAll( unitNames );
+			if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )) {
+				if( appInfo.getManageablePersonList().contains( personName )) {
+					return true;
+				}
+			}			
 			if( ListTools.isNotEmpty( appInfo.getViewableUnitList() )) {
-				return true;
-			}
-			
-			appInfo.getPublishableUnitList().retainAll( unitNames );
-			if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
-				return true;
-			}
-			
-			appInfo.getViewableGroupList().retainAll( groupNames );
+				if( ListTools.containsAny( unitNames, appInfo.getViewableUnitList())) {
+					return true;
+				}
+			}			
 			if( ListTools.isNotEmpty( appInfo.getViewableGroupList() )) {
-				return true;
-			}
-			
-			appInfo.getPublishableGroupList().retainAll( groupNames );
+				if( ListTools.containsAny( groupNames, appInfo.getViewableGroupList())) {
+					return true;
+				}
+			}			
+			if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
+				if( ListTools.containsAny( unitNames, appInfo.getPublishableUnitList())) {
+					return true;
+				}
+			}			
 			if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
-				return true;
+				if( ListTools.containsAny( groupNames, appInfo.getPublishableGroupList())) {
+					return true;
+				}
 			}
 		}		
 		return false;

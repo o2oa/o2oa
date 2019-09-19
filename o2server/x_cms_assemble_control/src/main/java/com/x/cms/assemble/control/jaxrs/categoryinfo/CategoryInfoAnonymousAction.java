@@ -9,9 +9,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -37,7 +38,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGetAnonymous.Wo> result = null;
@@ -49,7 +50,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息分类,下一页.", action = ActionListNextWithFilterAnonymous.class)
@@ -57,7 +58,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("filter/list/{id}/next/{count}/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNextWithFilter(@Context HttpServletRequest request, 
+	public void listNextWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, 
 			@JaxrsParameterDescribe("栏目ID")  @PathParam("appId") String appId, 
@@ -72,7 +73,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问文章信息的所有分类列表.", action = ActionListWhatICanView_Article.class)
@@ -80,7 +81,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("list/view/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewableCategoryInfo_Article( @Context HttpServletRequest request, 
+	public void listViewableCategoryInfo_Article( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId")String appId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_Article.Wo>> result = new ActionResult<>();
@@ -92,7 +93,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问数据信息的所有分类列表.", action = ActionListWhatICanView_Data.class)
@@ -100,7 +101,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("list/view/app/{appId}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewableCategoryInfo_Data( @Context HttpServletRequest request, 
+	public void listViewableCategoryInfo_Data( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId")String appId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_Data.Wo>> result = new ActionResult<>();
@@ -112,7 +113,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问信息的所有分类列表.", action = ActionListWhatICanView_AllType.class)
@@ -120,7 +121,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("list/view/app/{appId}/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listViewableCategoryInfo_AllType( @Context HttpServletRequest request, 
+	public void listViewableCategoryInfo_AllType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId")String appId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_AllType.Wo>> result = new ActionResult<>();
@@ -132,7 +133,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限发布信息的所有分类列表.", action = ActionListWhatICanPublish.class)
@@ -140,7 +141,7 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 	@Path("list/publish/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listPublishableCategoryInfo( @Context HttpServletRequest request, 
+	public void listPublishableCategoryInfo( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId")String appId ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanPublish.Wo>> result = new ActionResult<>();
@@ -152,6 +153,6 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}	
 }

@@ -130,4 +130,27 @@ public class TaskTagQueryService {
 			throw e;
 		}
 	}
+
+	public List<String> listTaskIdsWithTagContent(  String tagName, String project, String personName ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<String> tagIds =  taskTagService.listTagIdsWithContent( emc, tagName, project, personName );
+			if( ListTools.isNotEmpty( tagIds )) {
+				return taskTagService.listTaskIdsWithReleTagIds( emc, tagIds );
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return null;
+	}
+	
+	public List<String> listTaskIdsWithTagIds(  List<String> tagIds ) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if( ListTools.isNotEmpty( tagIds )) {
+				return taskTagService.listTaskIdsWithReleTagIds( emc, tagIds );
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return null;
+	}
 }

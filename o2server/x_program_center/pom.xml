@@ -48,19 +48,63 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_organization_core_express</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.captcha</groupId>
+			<artifactId>simplecaptcha</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>describe</id>
+						<id>describeBuilder</id>
 						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.project.annotation.DescribeBuilder</mainClass>
+							<arguments>
+								<argument>${basedir}</argument>
+								<argument>${project.build.sourceDirectory}</argument>
+							</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>checkAssemble</id>
 						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.project.build.CheckAssemble</mainClass>
+						</configuration>
+					</execution>
+					<execution>
+						<id>createWebXml</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.project.build.CreateWebXml</mainClass>
+							<arguments>
+								<argument>${basedir}</argument>
+								<argument>${project.artifactId}</argument>
+							</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -70,6 +114,20 @@
 					<execution>
 						<id>copy-war</id>
 						<phase>verify</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../store</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>${project.artifactId}.war</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

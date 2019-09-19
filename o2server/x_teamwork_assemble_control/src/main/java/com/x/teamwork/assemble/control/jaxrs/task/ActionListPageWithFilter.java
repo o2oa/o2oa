@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -19,6 +21,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskTag;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
+import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
 import net.sf.ehcache.Element;
 
@@ -63,6 +66,16 @@ public class ActionListPageWithFilter extends BaseAction {
 				result.setData( resultObject.getWos() );
 			} else {				
 				try {
+					List<String> taskIds = null;
+					if( StringUtils.isNotEmpty(  wrapIn.getTag() )) {
+						//查询该拥有该Tag的TaskId列表
+						taskIds = taskTagQueryService.listTaskIdsWithTagContent( wrapIn.getTag(), null,  effectivePerson.getDistinguishedName() );
+						if( ListTools.isEmpty( taskIds )) {
+							taskIds = new ArrayList<>();
+							taskIds.add( "NoOne" );
+						}
+						queryFilter.addInTerm( new InTerm("id", new ArrayList<>(taskIds)) );
+					}
 					Long total = taskQueryService.countWithFilter( effectivePerson, queryFilter );
 					List<Task> taskList = taskQueryService.listWithFilter( effectivePerson, pageSize, pageNum, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter );
 					

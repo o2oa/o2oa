@@ -1,10 +1,10 @@
 package com.x.organization.assemble.personal.jaxrs.regist;
 
+import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.wx.pwd.CheckStrength;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -13,7 +13,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -53,7 +52,7 @@ class ActionCreate extends BaseAction {
 			if (this.mobileExisted(emc, mobile)) {
 				throw new ExceptionMobileExist(mobile);
 			}
-			if (CheckStrength.checkPasswordStrength(password) < 4) {
+			if (PasswordTools.checkPasswordStrength(password) < 4) {
 				throw new ExceptionInvalidPassword();
 			}
 			if (null == genderType) {

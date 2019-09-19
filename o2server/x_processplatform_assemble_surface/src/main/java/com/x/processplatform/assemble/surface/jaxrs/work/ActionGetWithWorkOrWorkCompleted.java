@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -29,7 +31,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.jaxrs.work.ActionAddSplit.Wo;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
@@ -90,7 +91,12 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		Wo wo = new Wo();
 		wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
 		CompletableFuture<Data> future_data = CompletableFuture.supplyAsync(() -> {
-			return this.data(business, workCompleted.getJob());
+			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+				/* 如果data已经merged */
+				return gson.fromJson(workCompleted.getData(), Data.class);
+			} else {
+				return this.data(business, workCompleted.getJob());
+			}
 		});
 		CompletableFuture<List<WoRead>> future_read = CompletableFuture.supplyAsync(() -> {
 			return this.reads(business, workCompleted.getJob());

@@ -16,34 +16,34 @@ public class WrapInQueryTask {
 	@FieldDescribe("排序方式：DESC | ASC，非必填，默认为DESC.")
 	private String orderType = "DESC";
 	
-	@FieldDescribe("用于搜索的标题，非必填.")
+	@FieldDescribe("用于搜索的标题，单值，非必填.")
 	private String title = null;
 	
-	@FieldDescribe("用于搜索的项目ID，非必填.")
+	@FieldDescribe("用于搜索的项目ID，单值，非必填.")
 	private String project = null;
 	
-	@FieldDescribe("用于搜索的上级工作任务ID，非必填.")
+	@FieldDescribe("用于搜索的上级工作任务ID，单值，非必填.")
 	private String parentId = null;
 	
-	@FieldDescribe("用于搜索的工作标签：自定义标签，非必填.")
+	@FieldDescribe("用于搜索的工作标签：自定义标签，单值，非必填.")
 	private String tag = null;
 	
-	@FieldDescribe("工作等级：普通-normal | 紧急-urgent | 特急-extraurgent，非必填")
+	@FieldDescribe("工作等级：普通-normal | 紧急-urgent | 特急-extraurgent，单值，非必填")
 	private String priority = null;		
 	
-	@FieldDescribe("用于搜索的工作状态：草稿- draft  | 执行中- processing | 已完成- completed | 已归档- archived，非必填")
+	@FieldDescribe("用于搜索的工作状态：草稿- draft  | 执行中- processing | 已完成- completed | 已归档- archived，单值，非必填")
 	private String workStatus = null;
 	
-	@FieldDescribe("是否已完成，非必填")
+	@FieldDescribe("是否已完成，true|false，非必填")
 	private String completed = null;		
 
-	@FieldDescribe("是否已超时，非必填")
+	@FieldDescribe("是否已超时，true|false，非必填")
 	private String overtime = null;		
 	
-	@FieldDescribe("是否已经删除，非必填")
+	@FieldDescribe("是否已经删除，true|false，非必填")
 	private String deleted = null;		
 	
-	@FieldDescribe("执行者和负责人，非必填")
+	@FieldDescribe("执行者或者负责人，单值，非必填")
 	private String executor = null;		
 
 	private Long rank = 0L;
@@ -160,16 +160,13 @@ public class WrapInQueryTask {
 		QueryFilter queryFilter = new QueryFilter();
 		//组织查询条件对象
 		if( StringUtils.isNotEmpty( this.getTitle() )) {
-			queryFilter.addLikeTerm( new LikeTerm( "title", this.getTitle() ) );
+			queryFilter.addLikeTerm( new LikeTerm( "name", "%" + this.getTitle() + "%" ) );
 		}
 		if( StringUtils.isNotEmpty( this.getProject() )) {
 			queryFilter.addEqualsTerm( new EqualsTerm( "project", this.getProject() ) );
 		}
 		if( StringUtils.isNotEmpty( this.getParentId() )) {
-			queryFilter.addEqualsTerm( new EqualsTerm( "parentId", this.getParentId() ) );
-		}
-		if( StringUtils.isNotEmpty( this.getTag() )) {
-			queryFilter.addLikeTerm(  new LikeTerm( "tagContent", this.getTag() ) );
+			queryFilter.addEqualsTerm( new EqualsTerm( "parent", this.getParentId() ) );
 		}
 		if( StringUtils.isNotEmpty( this.getPriority())) {
 			queryFilter.addEqualsTerm( new EqualsTerm( "priority", this.getPriority() ) );

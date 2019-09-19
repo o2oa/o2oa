@@ -13,7 +13,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -40,7 +39,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	@Path( "list/project/{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByProjectId(@Context HttpServletRequest request, 
+	public void listByProjectId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("项目ID") @PathParam( "id" ) String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWithProject.Wo>> result = new ActionResult<>();
@@ -51,7 +50,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据项目ID获取项目所有附件信息过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据工作ID获取工作附件信息列表", action = ActionListWithTask.class)
@@ -59,7 +58,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	@Path( "list/task/{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByTaskId(@Context HttpServletRequest request, 
+	public void listByTaskId( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("工作ID") @PathParam( "id" ) String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWithTask.Wo>> result = new ActionResult<>();
@@ -70,7 +69,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据工作ID获取工作所有附件信息过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID删除附件信息对象", action = ActionDelete.class)
@@ -78,7 +77,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件ID") @PathParam( "id" ) String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
@@ -89,7 +88,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据ID删除附件信息对象过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取附件信息对象", action = ActionGet.class)
@@ -97,7 +96,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("附件信息ID") @PathParam( "id" ) String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -108,7 +107,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据ID获取附件信息对象过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID下载指定附件", action = ActionDownload.class)

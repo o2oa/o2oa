@@ -31,9 +31,7 @@ import io.github.classgraph.ScanResult;
 public class CheckCore {
 
 	public static void main(String... args) throws Exception {
-		Argument arg = MainTools.parseArgument(args[0], Argument.class);
-		String packageName = packageName(arg.getProject());
-		try (ScanResult sr = new ClassGraph().whitelistPackages(packageName).enableAnnotationInfo().scan()) {
+		try (ScanResult sr = new ClassGraph().disableJarScanning().enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = sr.getClassesWithAnnotation(ContainerEntity.class.getName());
 			List<Class<?>> classes = new ArrayList<>();
 			for (ClassInfo info : classInfos) {
@@ -234,27 +232,6 @@ public class CheckCore {
 					}
 				}
 			}
-		}
-	}
-
-	public class Argument {
-		private String path;
-		private String project;
-
-		public String getPath() {
-			return path;
-		}
-
-		public void setPath(String path) {
-			this.path = path;
-		}
-
-		public String getProject() {
-			return project;
-		}
-
-		public void setProject(String project) {
-			this.project = project;
 		}
 	}
 }

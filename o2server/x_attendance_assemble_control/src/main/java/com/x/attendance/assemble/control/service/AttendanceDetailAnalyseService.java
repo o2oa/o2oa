@@ -1024,25 +1024,32 @@ public class AttendanceDetailAnalyseService {
 						}
 					}
 				}else{
-					logger.debug( debugger, ">>>>>>>>>>员工下午未打卡，属于异常状态......" );
-					//员工未签退，算缺勤了半天，出勤率: - 0.5
-					if( detail.getIsGetSelfHolidays()  && ("下午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))){
-						logger.debug( debugger, ">>>>>>>>>>请幸运，请假不计考勤，不需要打卡，不算异常状态" );
-						detail.setLeaveEarlierTimeDuration( 0L );
-						detail.setIsLeaveEarlier( false );
-						//detail.setAttendance( detail.getAttendance() - 0.5 );
-					}else{
-						if( ( detail.getIsWeekend() && !detail.getIsWorkday()) //周末，并且未调休为工作日
-								|| detail.getIsHoliday() //或者是节假日
-							){
-							logger.debug( debugger, ">>>>>>>>>>休息天，不算异常" );
-							detail.setAbnormalDutyDayTime("无");
-							detail.setIsAbnormalDuty(false);
+					//如果打卡是今天，但是还没有到下班打卡时间
+					if(  detail.getRecordDateString().equals( dateOperation.getNowDate() )  && dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getOffWorkTime()).after( new Date() ) ) {
+						detail.setAbnormalDutyDayTime("无");
+						detail.setIsAbnormalDuty(false);
+						logger.debug( debugger, ">>>>>>>>>>还没有到下班打卡时间，先不分析结果。" );
+					}else {
+						logger.debug( debugger, ">>>>>>>>>>员工下午未打卡，属于异常状态......" );
+						//员工未签退，算缺勤了半天，出勤率: - 0.5
+						if( detail.getIsGetSelfHolidays()  && ("下午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))){
+							logger.debug( debugger, ">>>>>>>>>>请幸运，请假不计考勤，不需要打卡，不算异常状态" );
+							detail.setLeaveEarlierTimeDuration( 0L );
+							detail.setIsLeaveEarlier( false );
+							//detail.setAttendance( detail.getAttendance() - 0.5 );
 						}else{
-							detail.setAbnormalDutyDayTime("下午");
-							detail.setIsAbnormalDuty(true);
-							logger.debug( debugger, ">>>>>>>>>>呵呵，没请假，未打卡，算异常状态。" );
-						}
+							if( ( detail.getIsWeekend() && !detail.getIsWorkday()) //周末，并且未调休为工作日
+									|| detail.getIsHoliday() //或者是节假日
+								){
+								logger.debug( debugger, ">>>>>>>>>>休息天，不算异常" );
+								detail.setAbnormalDutyDayTime("无");
+								detail.setIsAbnormalDuty(false);
+							}else{
+								detail.setAbnormalDutyDayTime("下午");
+								detail.setIsAbnormalDuty(true);
+								logger.debug( debugger, ">>>>>>>>>>呵呵，没请假，未打卡，算异常状态。" );
+							}
+						}						
 					}
 					logger.debug( debugger, ">>>>>>>>>>全天工作时长,[下午未打卡，只算上午的工作时长] ：minutes=" + detail.getWorkTimeDuration() + "分钟。" );
 				}
@@ -1070,6 +1077,7 @@ public class AttendanceDetailAnalyseService {
 					}
 				}
 			}
+			
 			detail.setRecordStatus( 1 );
 		}
 	}
@@ -1085,5 +1093,4 @@ public class AttendanceDetailAnalyseService {
 		emc.check( detail, CheckPersistType.all );
 		emc.commit();
 	}
-
 }

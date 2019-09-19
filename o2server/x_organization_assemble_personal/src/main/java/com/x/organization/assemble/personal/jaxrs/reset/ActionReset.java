@@ -2,10 +2,10 @@ package com.x.organization.assemble.personal.jaxrs.reset;
 
 import java.util.Date;
 
+import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.wx.pwd.CheckStrength;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -49,7 +49,7 @@ class ActionReset extends BaseAction {
 					&& StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
 				logger.info("user:{} use superPermission.", credential);
 			} else {
-				if (CheckStrength.checkPasswordStrength(password) < ThisApplication.passwordStrengthLevel) {
+				if (PasswordTools.checkPasswordStrength(password) < ThisApplication.passwordStrengthLevel) {
 					throw new ExceptionInvalidPassword();
 				}
 				if (!business.instrument().code().validate(person.getMobile(), codeAnswer)) {

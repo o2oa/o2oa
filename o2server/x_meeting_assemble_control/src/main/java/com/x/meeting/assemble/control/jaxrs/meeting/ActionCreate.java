@@ -13,6 +13,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.core.entity.ConfirmStatus;
@@ -50,7 +51,17 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionPersonNotExist(applicant);
 			}
 			meeting.setApplicant(applicant);
+			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
+				for( String str : meeting.getInvitePersonList() ) {
+					System.out.println(">>>>>>>> before convert invitePersonList:" + str );
+				}
+			}
 			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInvitePersonList()));
+			if( ListTools.isNotEmpty( meeting.getInvitePersonList() )) {
+				for( String str : meeting.getInvitePersonList() ) {
+					System.out.println(">>>>>>>> after convert invitePersonList:" + str );
+				}
+			}
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
 			meeting.setRejectPersonList(this.convertToPerson(business, meeting.getRejectPersonList()));
 			meeting.getInvitePersonList().remove(meeting.getApplicant());

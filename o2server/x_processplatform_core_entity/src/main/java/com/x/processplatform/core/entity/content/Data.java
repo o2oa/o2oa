@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,7 +17,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 
 public class Data extends ListOrderedMap<String, Object> {
@@ -114,11 +115,42 @@ public class Data extends ListOrderedMap<String, Object> {
 	}
 
 	public Object find(String path) throws Exception {
-		return PropertyUtils.getProperty(this, path);
+		return this.find(StringUtils.split(path, "."));
 	}
 
 	public <T> T find(String path, Class<T> cls, T defaultValue) throws Exception {
-		Object o = PropertyUtils.getProperty(this, path);
+		return this.find(StringUtils.split(path, "."), cls, defaultValue);
+	}
+
+	public Object find(String[] paths) throws Exception {
+		Object o = this;
+		for (String path : paths) {
+			if (StringUtils.isEmpty(path) || (null == o)) {
+				o = null;
+				break;
+			}
+			if (StringUtils.isNumeric(path)) {
+				if (o instanceof List) {
+					int idx = NumberUtils.toInt(path);
+					List<?> c = (List<?>) o;
+					if ((idx >= c.size()) || (idx < 0)) {
+						o = null;
+						break;
+					}
+					o = c.get(idx);
+				} else {
+					o = null;
+					break;
+				}
+			} else {
+				o = PropertyUtils.getProperty(o, path);
+			}
+		}
+		return o;
+	}
+
+	public <T> T find(String[] paths, Class<T> cls, T defaultValue) throws Exception {
+		Object o = this.find(paths);
 		if (null == o) {
 			return defaultValue;
 		}
@@ -407,5 +439,5 @@ public class Data extends ListOrderedMap<String, Object> {
 				o -> (!StringUtils.equals(WORK_PROPERTY, o)) && (!StringUtils.equals(ATTACHMENTLIST_PROPERTY, o)))
 				.count() == 0;
 	}
-	
+
 }

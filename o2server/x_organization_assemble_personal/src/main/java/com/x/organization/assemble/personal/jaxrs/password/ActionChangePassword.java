@@ -2,11 +2,11 @@ package com.x.organization.assemble.personal.jaxrs.password;
 
 import java.util.Date;
 
+import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.wx.pwd.CheckStrength;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -61,7 +61,7 @@ class ActionChangePassword extends ActionBase {
 						person.getPassword())) {
 					throw new ExceptionOldPasswordNotMatch();
 				}
-				if (CheckStrength.checkPasswordStrength(wi.getNewPassword()) < 4) {
+				if (PasswordTools.checkPasswordStrength(wi.getNewPassword()) < 4) {
 					throw new ExceptionInvalidPassword();
 				}
 			}

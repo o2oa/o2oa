@@ -9,6 +9,7 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.processplatform.service.processing.processor.embed.SyncEmbedQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
+import com.x.processplatform.service.processing.schedule.DataMerge;
 import com.x.processplatform.service.processing.schedule.Delay;
 import com.x.processplatform.service.processing.schedule.Expire;
 import com.x.processplatform.service.processing.schedule.Reorganize;
@@ -47,6 +48,9 @@ public class ThisApplication {
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getReorganize().getEnable())) {
 				context.schedule(Reorganize.class, Config.processPlatform().getReorganize().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getDataMerge().getEnable())) {
+				context.schedule(DataMerge.class, Config.processPlatform().getDataMerge().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

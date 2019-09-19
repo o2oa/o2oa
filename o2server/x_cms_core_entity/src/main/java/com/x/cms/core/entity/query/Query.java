@@ -26,7 +26,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.Document_;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -200,7 +199,7 @@ public class Query extends GsonPropertyObject {
 	}
 
 	private void adjustScopeType() throws Exception {
-		if ( this.scopeType == null ) {
+		if (this.scopeType == null) {
 			this.scopeType = ScopeType.published;
 		}
 	}
@@ -415,9 +414,9 @@ public class Query extends GsonPropertyObject {
 
 	private List<String> listDocIds(EntityManagerContainer emc) throws Exception {
 		List<String> jobs = new ArrayList<>();
-		
-		jobs.addAll( this.listDocIdsWithCondition(emc) );
-		
+
+		jobs.addAll(this.listDocIdsWithCondition(emc));
+
 		/** 针对DataItem进行判断 */
 		if (ListTools.isNotEmpty(this.getRestrictFilterEntryList())
 				|| ListTools.isNotEmpty(this.getFilterEntryList())) {
@@ -485,7 +484,7 @@ public class Query extends GsonPropertyObject {
 		return jobs;
 	}
 
-	private List<String> listDocIdsWithCondition(EntityManagerContainer emc ) throws Exception {
+	private List<String> listDocIdsWithCondition(EntityManagerContainer emc) throws Exception {
 		EntityManager em = emc.get(Document.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -494,7 +493,7 @@ public class Query extends GsonPropertyObject {
 				DateRangeEntryTools.toDocumentPredicate(cb, root, this.getDateRangeEntry()));
 		Predicate pw = cb.and(WhereEntryTools.toDocumentPredicate(cb, root, this.getRestrictWhereEntry()),
 				WhereEntryTools.toDocumentPredicate(cb, root, this.getWhereEntry()));
-		cq.select(root.get(Document_.id)).distinct(true).where(cb.and(pd, pw));
+		cq.select(root.get(Document.id_FIELDNAME)).distinct(true).where(cb.and(pd, pw));
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -532,11 +531,11 @@ public class Query extends GsonPropertyObject {
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Document> root = cq.from(Document.class);
 		List<Selection<?>> selections = new ArrayList<>();
-		Selection<String> selectionDoc = null;
+		Selection<Object> selectionDoc = null;
 		for (SelectEntry en : selectEntries) {
 			if (en.available()) {
 				if (StringUtils.equals(Document.id_FIELDNAME, en.getAttribute())) {
-					selectionDoc = root.get(Document_.id).alias(en.getColumn());
+					selectionDoc = root.get(Document.id_FIELDNAME).alias(en.getColumn());
 					selections.add(selectionDoc);
 				} else {
 					selections.add(root.get(en.getAttribute()).alias(en.getColumn()));
@@ -544,16 +543,16 @@ public class Query extends GsonPropertyObject {
 			}
 		}
 		if (selectionDoc == null) {
-			selectionDoc = root.get(Document_.id);
+			selectionDoc = root.get(Document.id_FIELDNAME);
 			cq.multiselect(ListTools.add(selections, true, false, selectionDoc));
 		} else {
 			cq.multiselect(selections);
 		}
-		cq.where(root.get(Document_.id).in(docIds));
+		cq.where(root.get(Document.id_FIELDNAME).in(docIds));
 		List<Tuple> tuples = em.createQuery(cq).getResultList();
 		for (Tuple tuple : tuples) {
-			String job = tuple.get(selectionDoc);
-			Row row = table.get(job);
+			Object job = tuple.get(selectionDoc);
+			Row row = table.get(job.toString());
 			for (Selection<?> selection : selections) {
 				/* 前面已经填充了默认值,如果是null那么跳过这个值 */
 				if (null != tuple.get(selection)) {

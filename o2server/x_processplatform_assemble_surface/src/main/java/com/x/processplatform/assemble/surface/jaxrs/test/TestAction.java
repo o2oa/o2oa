@@ -2,10 +2,9 @@ package com.x.processplatform.assemble.surface.jaxrs.test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -14,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -131,14 +131,15 @@ public class TestAction extends BaseAction {
 
 	@JaxrsMethodDescribe(value = "测试8.", action = ActionTest8.class)
 	@GET
-	@Path("8")
+	@Path("8/{page}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void test8(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<Object> result = new ActionResult<>();
+	public void test8(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("页码") @PathParam("page") Integer page) {
+		ActionResult<ActionTest8.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionTest8().execute(effectivePerson);
+			result = new ActionTest8().execute(effectivePerson,page);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -152,7 +153,7 @@ public class TestAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void test9(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<Object> result = new ActionResult<>();
+		ActionResult<ActionTest9.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionTest9().execute(effectivePerson);

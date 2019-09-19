@@ -1,10 +1,10 @@
 package com.x.program.center.jaxrs.collect;
 
+import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.wx.pwd.CheckStrength;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Collect;
@@ -28,7 +28,7 @@ class ActionResetPassword extends BaseAction {
 		if (!this.exist(name)) {
 			throw new ExceptionNameNotExist(name);
 		}
-		if (CheckStrength.checkPasswordStrength(password) < 4) {
+		if (PasswordTools.checkPasswordStrength(password) < 4) {
 			throw new ExceptionInvalidPassword();
 		}
 		if (!Config.person().isMobile(mobile)) {

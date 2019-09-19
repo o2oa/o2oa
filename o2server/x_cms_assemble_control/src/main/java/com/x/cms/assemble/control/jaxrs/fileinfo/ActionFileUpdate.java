@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -17,7 +19,10 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
@@ -30,9 +35,11 @@ public class ActionFileUpdate extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		FileInfo attachment = null;
 		Document document = null;
+		AppInfo appInfo = null;
+		CategoryInfo categoryInfo = null;
 		StorageMapping mapping = null;
 		String fileName = null;
-		Boolean check = true;		
+		Boolean check = true;	
 		
 		if( check ){
 			if( StringUtils.isEmpty(docId) ){
@@ -50,9 +57,24 @@ public class ActionFileUpdate extends BaseAction {
 			}
 		}
 		
+		Boolean isAnonymous = effectivePerson.isAnonymous();
+		Boolean isManager = false;
+		if (check) {
+			try {
+				if ( effectivePerson.isManager() ) {
+					isManager = true;
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
 		if( check ){//判断文档信息是否已经存在
 			try {
-				document = documentInfoServiceAdv.get( docId );
+				document = documentQueryService.get( docId );
 				if (null == document) {
 					check = false;
 					Exception exception = new ExceptionDocumentNotExists( docId );
@@ -62,6 +84,54 @@ public class ActionFileUpdate extends BaseAction {
 				check = false;
 				result.error( e );
 				logger.error( e, effectivePerson, request, null );
+			}
+		}
+		
+		if (check) {
+			try {
+				categoryInfo = categoryInfoServiceAdv.get( document.getCategoryId() );
+				if (categoryInfo == null) {
+					check = false;
+					Exception exception = new ExceptionCategoryInfoNotExists(document.getCategoryId());
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e,
+						"系统在根据ID查询分类信息时发生异常！ID：" + document.getCategoryId());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
+			try {
+				appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
+				if (appInfo == null) {
+					check = false;
+					Exception exception = new ExceptionAppInfoNotExists(categoryInfo.getAppId());
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
+		if (check) {
+			try {
+				if ( documentQueryService.getFileInfoManagerAssess( effectivePerson, document, categoryInfo, appInfo ) ) {
+					check = false;
+					Exception exception = new ExceptionDocumentAccessDenied(effectivePerson.getDistinguishedName(), document.getTitle(), document.getId());
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e, "系统在文档附件操作权限时发生异常！ID：" + document.getId() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
@@ -109,12 +179,33 @@ public class ActionFileUpdate extends BaseAction {
 		if( check ){
 			try {
 				attachment = this.concreteAttachment( mapping, attachment, document, fileName, effectivePerson, site );
-				//文件存储
+				
+				attachment.setType((new Tika()).detect(bytes, fileName));
+				logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+				if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
+					attachment.setText(ExtractTextTools.image(bytes));
+					logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+							attachment.getText());
+				}
+				
+				//文件存储				
 				attachment.saveContent( mapping, bytes, fileName );
 				//完成替换逻辑
 				attachment = fileInfoServiceAdv.updateAttachment( docId, old_attId, attachment, mapping );
+//				
+//				List<String> keys = new ArrayList<>();
+//				keys.add( "file.all" ); //清除文档的附件列表缓存
+//				keys.add( "file." + old_attId  ); //清除指定ID的附件信息缓存
+//				keys.add( ApplicationCache.concreteCacheKey( "document", document.getId(), isAnonymous, isManager ) ); //清除文档的附件列表缓存
+//				ApplicationCache.notify( FileInfo.class, keys );
+//
+//				keys.clear();
+//				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
+//				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
+//				ApplicationCache.notify( Document.class, keys );
 				
-				ApplicationCache.notify( Document.class );
+				ApplicationCache.notify( FileInfo.class );
+				ApplicationCache.notify( Document.class );	
 				
 				Wo wo = new Wo();
 				wo.setId( attachment.getId() );

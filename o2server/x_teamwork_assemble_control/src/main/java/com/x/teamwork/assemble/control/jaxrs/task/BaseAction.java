@@ -15,12 +15,15 @@ import com.x.teamwork.assemble.control.service.TaskTagPersistService;
 import com.x.teamwork.assemble.control.service.TaskTagQueryService;
 import com.x.teamwork.assemble.control.service.TaskViewQueryService;
 import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskView;
 
 import net.sf.ehcache.Ehcache;
 
 public class BaseAction extends StandardJaxrsAction {
 	
 	protected Ehcache taskCache = ApplicationCache.instance().getCache( Task.class );
+	
+	protected Ehcache taskViewCache = ApplicationCache.instance().getCache( TaskView.class );
 	
 	protected 	TaskQueryService taskQueryService = new TaskQueryService();
 	

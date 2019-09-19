@@ -16,29 +16,43 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>metamodel</id>
+						<id>metaModelBuilder</id>
 						<phase>generate-sources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.entity.tools.MetaModelBuilder</mainClass>
+							<arguments>
+								<argument>${basedir}</argument>
+								<argument>${project.build.sourceDirectory}</argument>
+								<argument>${project.build.outputDirectory}</argument>
+							</arguments>
+						</configuration>
 					</execution>
 					<execution>
-						<id>createEnhancePersistenceXml</id>
+						<id>enhanceBaseBuilder</id>
 						<phase>process-classes</phase>
-					</execution>
-					<execution>
-						<id>checkCore</id>
-						<phase>prepare-package</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.openjpa</groupId>
-				<artifactId>openjpa-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>enhancer</id>
-						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.entity.tools.EnhanceBaseBuilder</mainClass>
+							<arguments>
+								<argument>${project.build.directory}</argument>
+								<argument>${project.build.outputDirectory}</argument>
+							</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -48,6 +62,31 @@
 					<execution>
 						<id>copy-jar</id>
 						<phase>verify</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../store/jars</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>${project.artifactId}.jar</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

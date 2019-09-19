@@ -34,7 +34,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistSaveDocument.class);
 
-	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
+	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<FileInfo> cloudPictures = null;
 		String identity = null;
@@ -59,13 +59,15 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 		
 		if (check) {
-			try {
-				identity = userManagerService.getPersonIdentity( effectivePerson.getDistinguishedName(), identity );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询用户身份信息时发生异常。Name:" + identity);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+			if( !"xadmin".equals( effectivePerson.getDistinguishedName() )) {
+				try {
+					identity = userManagerService.getPersonIdentity( effectivePerson.getDistinguishedName(), identity );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询用户身份信息时发生异常。Name:" + identity);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
 			}
 		}
 

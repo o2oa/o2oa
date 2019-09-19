@@ -71,6 +71,7 @@ public class Config {
 	public static final String DIR_JVM_LINUX = "jvm/linux";
 	public static final String DIR_JVM_MACOS = "jvm/macos";
 	public static final String DIR_JVM_WINDOWS = "jvm/windows";
+	public static final String DIR_JVM_NEOKYLIN_LOONGSON = "jvm/neokylin_loongson";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
@@ -79,6 +80,7 @@ public class Config {
 	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_TARGET = "local/temp/dynamic/target";
+	public static final String DIR_LOCAL_TEMP_DYNAMIC_RESOURCES = "local/temp/dynamic/resources";
 	public static final String DIR_LOCALSAMPLE = "localSample";
 	public static final String DIR_LOGS = "logs";
 	public static final String DIR_SERVERS = "servers";
@@ -228,6 +230,10 @@ public class Config {
 	public static File dir_jvm_linux() throws Exception {
 		return new File(base(), DIR_JVM_LINUX);
 	}
+	
+	public static File dir_jvm_neokylin_loongson() throws Exception {
+		return new File(base(), DIR_JVM_NEOKYLIN_LOONGSON);
+	}
 
 	public static File dir_jvm_macos() throws Exception {
 		return new File(base(), DIR_JVM_MACOS);
@@ -285,12 +291,8 @@ public class Config {
 		return new File(base(), DIR_LOCAL_TEMP_DYNAMIC);
 	}
 
-	public static File dir_local_temp_dynamic_src() throws Exception {
-		return dir_local_temp_dynamic_src(false);
-	}
-
-	public static File dir_local_temp_dynamic_src(Boolean force) throws Exception {
-		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_SRC);
+	public static File dir_local_temp_dynamic(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC);
 		if (force) {
 			if ((!dir.exists()) || dir.isFile()) {
 				FileUtils.forceMkdir(dir);
@@ -299,19 +301,47 @@ public class Config {
 		return dir;
 	}
 
-	public static File dir_local_temp_dynamic_target() throws Exception {
-		return dir_local_temp_dynamic_target(false);
-	}
+//	public static File dir_local_temp_dynamic_src() throws Exception {
+//		return dir_local_temp_dynamic_src(false);
+//	}
+//
+//	public static File dir_local_temp_dynamic_src(Boolean force) throws Exception {
+//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_SRC);
+//		if (force) {
+//			if ((!dir.exists()) || dir.isFile()) {
+//				FileUtils.forceMkdir(dir);
+//			}
+//		}
+//		return dir;
+//	}
 
-	public static File dir_local_temp_dynamic_target(Boolean force) throws Exception {
-		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_TARGET);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
-		}
-		return dir;
-	}
+//	public static File dir_local_temp_dynamic_target() throws Exception {
+//		return dir_local_temp_dynamic_target(false);
+//	}
+//
+//	public static File dir_local_temp_dynamic_target(Boolean force) throws Exception {
+//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_TARGET);
+//		if (force) {
+//			if ((!dir.exists()) || dir.isFile()) {
+//				FileUtils.forceMkdir(dir);
+//			}
+//		}
+//		return dir;
+//	}
+
+//	public static File dir_local_temp_dynamic_resources() throws Exception {
+//		return dir_local_temp_dynamic_resources(false);
+//	}
+//
+//	public static File dir_local_temp_dynamic_resources(Boolean force) throws Exception {
+//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_RESOURCES);
+//		if (force) {
+//			if ((!dir.exists()) || dir.isFile()) {
+//				FileUtils.forceMkdir(dir);
+//			}
+//		}
+//		return dir;
+//	}
 
 	public static File dir_logs() throws Exception {
 		return new File(base(), DIR_LOGS);

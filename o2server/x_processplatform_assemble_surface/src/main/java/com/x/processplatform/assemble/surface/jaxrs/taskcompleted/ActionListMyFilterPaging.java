@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -151,11 +153,22 @@ class ActionListMyFilterPaging extends BaseAction {
 		@FieldDescribe("结束时间(月)")
 		private List<String> completedTimeMonthList;
 
+		@FieldDescribe("可选择的完成状态")
+		private List<Boolean> completedList;
+
 		@FieldDescribe("匹配关键字")
 		private String key;
 
 		public List<String> getApplicationList() {
 			return applicationList;
+		}
+
+		public List<Boolean> getCompletedList() {
+			return completedList;
+		}
+
+		public void setCompletedList(List<Boolean> completedList) {
+			this.completedList = completedList;
 		}
 
 		public void setApplicationList(List<String> applicationList) {

@@ -1,5 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,6 +28,23 @@ public class ActionDelete extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		FileInfo fileInfo = null;
 		Document document = null;
+		
+		Boolean isAnonymous = effectivePerson.isAnonymous();
+		Boolean isManager = false;
+		Boolean check = false;
+		if (check) {
+			try {
+				if ( effectivePerson.isManager() ) {
+					isManager = true;
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
@@ -39,8 +59,7 @@ public class ActionDelete extends BaseAction {
 			}
 			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
 			if (!business.fileInfoEditAvailable(request, effectivePerson)) {
-				throw new Exception(
-						"fileInfo{name:" + effectivePerson.getDistinguishedName() + "} ，用户没有内容管理应用信息操作的权限！");
+				throw new Exception( "fileInfo{name:" + effectivePerson.getDistinguishedName() + "} ，用户没有内容管理应用信息操作的权限！");
 			}
 			// 删除文件，并且删除记录及文档的关联信息
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, fileInfo.getStorage());
@@ -51,8 +70,18 @@ public class ActionDelete extends BaseAction {
 			emc.beginTransaction(Document.class);
 			emc.remove(fileInfo, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(FileInfo.class);
-			ApplicationCache.notify(Document.class);
+			
+			List<String> keys = new ArrayList<>();
+			keys.add( "file.all" ); //清除文档的附件列表缓存
+			keys.add( "file." + id  ); //清除指定ID的附件信息缓存
+			keys.add( ApplicationCache.concreteCacheKey( "document", document.getId(), isAnonymous, isManager ) ); //清除文档的附件列表缓存
+			ApplicationCache.notify( FileInfo.class, keys );
+			
+			keys.clear();
+			keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
+			keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
+			ApplicationCache.notify( Document.class, keys );
+			
 			// 成功删除一个附件信息
 			logService.log(emc, effectivePerson.getDistinguishedName(), fileInfo.getName(), fileInfo.getAppId(),
 					fileInfo.getId(), fileInfo.getDocumentId(), fileInfo.getId(), "FILE", "删除");

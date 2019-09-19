@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -65,16 +66,19 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("用于过滤条件的栏目ID列表.")
 		private List<String> appIdList;
 
+		@FieldDescribe("用于过滤条件的分类ID列表.")
 		private List<String> categoryIdList;
 
+		@FieldDescribe("用于过滤条件的创建者列表.")
 		private List<String> creatorList;
 
+		@FieldDescribe("用于过滤条件的文档状态列表.")
 		private List<String> statusList;
 
-		private List<String> titleList;
-
+		@FieldDescribe("用于标题搜索的关键字.")
 		private String key;
 
 		public List<String> getAppIdList() {
@@ -107,14 +111,6 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 		public void setStatusList(List<String> statusList) {
 			this.statusList = statusList;
-		}
-
-		public List<String> getTitleList() {
-			return titleList;
-		}
-
-		public void setTitleList(List<String> titleList) {
-			this.titleList = titleList;
 		}
 
 		public String getKey() {

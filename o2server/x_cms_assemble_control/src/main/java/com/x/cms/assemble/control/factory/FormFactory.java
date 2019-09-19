@@ -11,10 +11,12 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Form_;
+import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 
 /**
  * 分类表单模板信息管理表基础功能服务类
@@ -100,5 +102,31 @@ public class FormFactory extends AbstractFactory {
 		Root<Form> root = cq.from( Form.class );
 		Predicate p = cb.equal(root.get( Form_.appId ), appId);
 		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	/**
+	 * 根据栏目ID以及表单的标识 获取一个表单对象
+	 * @param appId 栏目ID
+	 * @param formFlag 表单标识
+	 * @return
+	 * @throws Exception
+	 */
+	public Form getWithAppInfo(String appId, String formFlag) throws Exception {
+		if( StringUtils.isEmpty(appId) ){
+			throw new Exception("appId can not empty！");
+		}
+		if( StringUtils.isEmpty(formFlag) ){
+			throw new Exception("formFlag can not empty！");
+		}
+		EntityManager em = this.entityManagerContainer().get( Form.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
+		Root<Form> root = cq.from( Form.class );
+		Predicate appPre = cb.equal( root.get( Form_.appId ), appId );
+		Predicate p = CriteriaBuilderTools.predicate_or( cb, cb.equal( root.get( Form_.id ), formFlag ), cb.equal( root.get( Form_.name ), formFlag ) );
+//		p = CriteriaBuilderTools.predicate_or( cb, cb.equal( root.get( Form_.alias ), formFlag ), p );				
+		p = CriteriaBuilderTools.predicate_and( cb, appPre, p );
+		List<Form> list = em.createQuery(cq.where(p)).getResultList();		
+		return ListTools.isEmpty( list ) ? null : list.get( 0 );
 	}
 }

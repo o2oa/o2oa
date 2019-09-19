@@ -99,6 +99,24 @@ class BaseAction extends StandardJaxrsAction {
 		return resp.getData(ReturnWoBoolean.class).getValue();
 	}
 
+	Boolean update(String name, String newName, String mobile, String codeAnswer, String key, String secret) throws Exception {
+		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/name/"+ URLEncoder.encode(name, DefaultCharset.name)
+				+ "/mobile/" + URLEncoder.encode(mobile, DefaultCharset.name) + "/code/" + URLEncoder.encode(codeAnswer, DefaultCharset.name));
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("name", newName);
+		parameters.put("key", key);
+		parameters.put("secret", secret);
+		ActionResponse resp = ConnectionAction.put(url, null, parameters);
+		return resp.getData(ReturnWoBoolean.class).getValue();
+	}
+
+	Boolean delete(String name, String mobile, String codeAnswer) throws Exception {
+		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/name/"+ URLEncoder.encode(name, DefaultCharset.name)
+				+ "/mobile/" + URLEncoder.encode(mobile, DefaultCharset.name) + "/code/" + URLEncoder.encode(codeAnswer, DefaultCharset.name));
+		ActionResponse resp = ConnectionAction.delete(url, null);
+		return resp.getData(ReturnWoBoolean.class).getValue();
+	}
+
 	Boolean code(String mobile) throws Exception {
 		String url = Config.collect()
 				.url("/o2_collect_assemble/jaxrs/unit/code/mobile/" + URLEncoder.encode(mobile, DefaultCharset.name));

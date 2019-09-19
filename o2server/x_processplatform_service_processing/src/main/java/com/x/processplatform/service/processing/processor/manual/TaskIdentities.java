@@ -7,11 +7,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.organization.Empower;
+import com.x.base.core.project.tools.ListTools;
 
 public class TaskIdentities extends ArrayList<TaskIdentity> {
 
 	public TaskIdentities(List<String> list) {
-		for (String str : list) {
+		for (String str : ListTools.trim(list, true, true)) {
 			TaskIdentity taskIdentity = new TaskIdentity();
 			taskIdentity.setIdentity(str);
 			this.add(taskIdentity);
@@ -19,8 +20,10 @@ public class TaskIdentities extends ArrayList<TaskIdentity> {
 	}
 
 	public void update(List<Empower> list) {
+
 		for (Empower empower : list) {
-			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
+			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())
+					&& (!StringUtils.equals(empower.getFromIdentity(), empower.getToIdentity()))) {
 				for (TaskIdentity taskIdentity : this) {
 					if (StringUtils.equals(taskIdentity.getIdentity(), empower.getFromIdentity())) {
 						taskIdentity.setIdentity(empower.getToIdentity());

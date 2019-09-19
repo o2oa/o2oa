@@ -44,6 +44,7 @@ public class PermissionOperateService {
 	 * @throws Exception
 	 */
 	public List<PermissionInfo> composeDocmentAllPermissions( List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
+		
 		List<PermissionInfo> permissionList = new ArrayList<>();
 		PermissionInfo new_permissionInfo = null;
 		//添加读者信息，如果没有限定读者，那么所有可访问分类的用户可读
@@ -51,6 +52,7 @@ public class PermissionOperateService {
 			permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
 		} else {
 			for( PermissionInfo p : readerList ) {
+				System.out.println(">>>>>readerList:" + p.getPermissionObjectCode());
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
 					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
@@ -62,6 +64,7 @@ public class PermissionOperateService {
 		//将所有的作者都添加到阅读者里去
 		if ( authorList != null && !authorList.isEmpty() ) {
 			for( PermissionInfo p : authorList ) {
+				System.out.println(">>>>>authorList:" + p.getPermissionObjectCode());
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
 					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );

@@ -14,7 +14,10 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.view.SimpleItemObj;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.content.Data;
@@ -25,7 +28,7 @@ import com.x.query.core.entity.Item;
  * 对文档信息进行查询的服务类
  */
 public class DocumentQueryService {
-	
+	private UserManagerService userManagerService = new UserManagerService();
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
 	
 	private ReviewService reviewService = new ReviewService();
@@ -444,5 +447,72 @@ public class DocumentQueryService {
 			throw e;
 		}
 		return list;
+	}
+
+	/**
+	 * 判断用户是否有权限进行附件文档的操作
+	 * 0、管理员允许操作
+	 * 1、文档创建者允许操作
+	 * 2、分类和栏目的管理者允许操作
+	 * 3、拥有文档作者权限的用户允许操作
+	 * @param effectivePerson
+	 * @param doc
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean getFileInfoManagerAssess(EffectivePerson effectivePerson, Document doc, CategoryInfo category, AppInfo appInfo ) throws Exception {
+		List<String> setting_permissonNames = new ArrayList<>();
+		List<String> own_permissonNames = new ArrayList<>();
+		own_permissonNames.addAll(userManagerService.listIdentitiesWithPerson( effectivePerson.getDistinguishedName()));
+		own_permissonNames.addAll(userManagerService.listUnitNamesWithPerson( effectivePerson.getDistinguishedName()));
+		own_permissonNames.addAll(userManagerService.listGroupNamesByPerson( effectivePerson.getDistinguishedName()));
+//		LogUtil.INFO( ">>>>>>>>my_own_permissonNames" , own_permissonNames );
+		//管理员允许操作
+		if( effectivePerson.isManager() || effectivePerson.isCipher() ) {
+			return true;
+		}
+		//管理员允许操作
+		if( userManagerService.isHasPlatformRole( effectivePerson.getDistinguishedName(), ThisApplication.ROLE_CMSManager )) {
+			return true;
+		}
+		//文档创建者允许操作(发布者就是创建者)
+		if( doc.getCreatorPerson().equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
+			return true;
+		}
+		//栏目的管理者允许操作
+		setting_permissonNames.clear();
+		setting_permissonNames.addAll( appInfo.getManageablePersonList() );
+		setting_permissonNames.addAll( appInfo.getManageableUnitList() );
+		setting_permissonNames.addAll( appInfo.getManageableGroupList() );
+//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//		LogUtil.INFO( ">>>>>>>>1my_own_permissonNames" , own_permissonNames );
+//		LogUtil.INFO( ">>>>>>>>1setting_permissonNames" , setting_permissonNames );
+		setting_permissonNames.retainAll( own_permissonNames );
+		if( ListTools.isNotEmpty( setting_permissonNames )) {
+			return true;
+		}
+		//分类的管理者允许操作
+		setting_permissonNames.clear();
+		setting_permissonNames.addAll( category.getManageablePersonList() );
+		setting_permissonNames.addAll( category.getManageableUnitList() );
+		setting_permissonNames.addAll( category.getManageableGroupList() );
+//		LogUtil.INFO( ">>>>>>>>2my_own_permissonNames" , own_permissonNames );
+//		LogUtil.INFO( ">>>>>>>>2setting_permissonNames" , setting_permissonNames );
+		setting_permissonNames.retainAll( own_permissonNames );
+		if( ListTools.isNotEmpty( setting_permissonNames )) {
+			return true;
+		}		
+		//拥有文档作者权限的用户允许操作
+		setting_permissonNames.clear();
+		setting_permissonNames.addAll( doc.getAuthorPersonList()  );
+		setting_permissonNames.addAll( doc.getAuthorUnitList() );
+		setting_permissonNames.addAll( doc.getAuthorGroupList() );
+//		LogUtil.INFO( ">>>>>>>>3my_own_permissonNames" , own_permissonNames );
+//		LogUtil.INFO( ">>>>>>>>3setting_permissonNames" , setting_permissonNames );
+		setting_permissonNames.retainAll( own_permissonNames );
+		if( ListTools.isNotEmpty( setting_permissonNames )) {
+			return true;
+		}
+		return false;
 	}
 }

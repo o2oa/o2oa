@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.Except
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionLatitudeEmpty;
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionLongitudeEmpty;
+import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -95,11 +97,11 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isNotEmpty( wrapIn.getRecordDateString() ) ){
 				try{
 					datetime = dateOperation.getDateFromString( wrapIn.getRecordDateString() );
+					attendanceDetailMobile.setRecordDate( datetime );
 					attendanceDetailMobile.setRecordDateString( dateOperation.getDateStringFromDate( datetime, "yyyy-MM-dd") ); //打卡时间
 				}catch( Exception e ){
 					check = false;
-					Exception exception = new ExceptionAttendanceDetailProcess( e, 
-							"员工手机打卡信息中打卡日期格式异常，格式: yyyy-mm-dd. 日期：" + wrapIn.getRecordDateString() );
+					Exception exception = new ExceptionAttendanceDetailProcess( e,  "员工手机打卡信息中打卡日期格式异常，格式: yyyy-mm-dd. 日期：" + wrapIn.getRecordDateString() );
 					result.error( exception );
 					logger.error( e, currentPerson, request, null);
 				}				
@@ -111,6 +113,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isNotEmpty( wrapIn.getId() )){
 				attendanceDetailMobile.setId( wrapIn.getId() );
 			}
+			
 			attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );
 			try {
 				attendanceDetailMobile = attendanceDetailServiceAdv.save( attendanceDetailMobile );
@@ -121,6 +124,15 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				result.error( exception );
 				logger.error( e, currentPerson, request, null);
 			}
+		}
+		
+		if( check ){
+			//对该员工的所有移动考勤数据进行一个整合
+			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString() );
+			
+			
+			
+			  
 		}
 		return result;
 	}

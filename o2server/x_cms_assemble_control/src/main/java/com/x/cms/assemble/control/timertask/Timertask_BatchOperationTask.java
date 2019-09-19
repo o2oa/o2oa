@@ -65,12 +65,10 @@ public class Timertask_BatchOperationTask implements Job {
 					}else {
 						logger.info("Timertask_BatchOperationTask -> not found any unreview document in database.");
 						//也没有需要review的文档了，那么检查一下最近变更过的身份，组织，群组，人员等信息
-						
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
 			}
 		}else {
 			logger.info("Timertask_BatchOperationTask -> queueBatchOperation is processing, wait to next excute.");

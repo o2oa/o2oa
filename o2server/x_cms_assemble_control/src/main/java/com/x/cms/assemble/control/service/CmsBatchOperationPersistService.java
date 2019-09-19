@@ -131,5 +131,26 @@ public class CmsBatchOperationPersistService {
 			throw e;
 		}
 	}
+
+	/**
+	 * 检查是否存在未review的Document
+	 * 比如因为更新导致文档Review未生成，文档无法被看到的情况
+	 */
+	public void checkDocumentReviewStatus() {
+		DocumentInfoService documentInfoService = new DocumentInfoService();				
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<String> ids = documentInfoService.listUnReviewIds(emc, 5000);
+			if( ListTools.isNotEmpty( ids )) {
+				CmsBatchOperationPersistService cmsBatchOperationPersistService = new CmsBatchOperationPersistService();
+				for( String docId : ids ) {
+					cmsBatchOperationPersistService.addOperation( 
+							CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
+							CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "刷新文档权限：ID=" +  docId );
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

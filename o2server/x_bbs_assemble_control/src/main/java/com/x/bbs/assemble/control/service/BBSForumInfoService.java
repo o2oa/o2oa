@@ -166,6 +166,7 @@ public class BBSForumInfoService {
 				}
 				if( !exists ){
 					userRole_new = new BBSUserRole();
+					userRole_new.setForumId( forumInfo.getId() );
 					userRole_new.setObjectName( name );
 					userRole_new.setUniqueId( name );
 					userRole_new.setObjectType( "人员" ); //人员|组织|群组

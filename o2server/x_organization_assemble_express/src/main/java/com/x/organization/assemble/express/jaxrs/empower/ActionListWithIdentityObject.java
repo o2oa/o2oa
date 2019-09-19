@@ -1,7 +1,10 @@
 package com.x.organization.assemble.express.jaxrs.empower;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -10,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -47,7 +49,7 @@ class ActionListWithIdentityObject extends BaseAction {
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
-				List<Wo> wos = this.execute(business, wi);
+				List<Wo> wos = this.convert(business, wi);
 				cache.put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
@@ -94,6 +96,8 @@ class ActionListWithIdentityObject extends BaseAction {
 
 	public static class Wo extends Empower {
 
+		private static final long serialVersionUID = 1559687446726204650L;
+
 		public Wo() {
 
 		}
@@ -105,55 +109,65 @@ class ActionListWithIdentityObject extends BaseAction {
 
 	}
 
+	private List<Wo> convert(Business business, Wi wi) throws Exception {
+
+		List<Wo> wos = new ArrayList<>();
+
+		Map<String, List<Empower>> map = this.list(business, wi).stream()
+				.collect(Collectors.groupingBy(o -> o.getFromIdentity()));
+
+		for (String str : wi.getIdentityList()) {
+
+			Wo wo = new Wo(str, str);
+
+			wos.add(wo);
+
+			List<Empower> list = map.get(str);
+
+			if (ListTools.isNotEmpty(list)) {
+				list.sort(new Comparator<Empower>() {
+					public int compare(Empower o1, Empower o2) {
+						if (StringUtils.equals(Empower.TYPE_PROCESS, o1.getType())) {
+							return -1;
+						} else if (StringUtils.equals(Empower.TYPE_PROCESS, o2.getType())) {
+							return 1;
+						} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o1.getType())) {
+							return -1;
+						} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o2.getType())) {
+							return 1;
+						} else {
+							return 0;
+						}
+					}
+				});
+				wo.setToIdentity(list.get(0).getToIdentity());
+			}
+		}
+		return wos;
+	}
+
 	private List<Empower> list(Business business, Wi wi) throws Exception {
 
 		List<Identity> identities = business.identity().pick(wi.getIdentityList());
+
 		List<String> ids = ListTools.extractProperty(identities, JpaObject.id_FIELDNAME, String.class, true, true);
 
 		EntityManager em = business.entityManagerContainer().get(Empower.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Empower> cq = cb.createQuery(Empower.class);
 		Root<Empower> root = cq.from(Empower.class);
+
 		Predicate p = cb.or(cb.equal(root.get(Empower_.type), Empower.TYPE_ALL),
 				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_APPLICATION),
 						cb.equal(root.get(Empower_.application), wi.getApplication())),
 				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS),
 						cb.equal(root.get(Empower_.process), wi.getProcess())));
 		cb.and(p, cb.isMember(root.get(Empower_.fromIdentity), cb.literal(ids)));
+		cb.and(p, cb.equal(root.get(Empower_.enable), true));
+		cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
+				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
 		return em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-	}
 
-	private List<Wo> execute(Business business, Wi wi) throws Exception {
-
-		List<Wo> wos = new ArrayList<>();
-		this.list(business, wi).stream().collect(Collectors.groupingBy(o -> o.getFromIdentity())).entrySet().stream()
-				.forEach(o -> {
-					out: for (;;) {
-						for (Empower t : o.getValue()) {
-							if (StringUtils.equals(t.getType(), Empower.TYPE_PROCESS)) {
-								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
-								wos.add(wo);
-								break out;
-							}
-						}
-						for (Empower t : o.getValue()) {
-							if (StringUtils.equals(t.getType(), Empower.TYPE_APPLICATION)) {
-								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
-								wos.add(wo);
-								break out;
-							}
-						}
-						for (Empower t : o.getValue()) {
-							if (StringUtils.equals(t.getType(), Empower.TYPE_ALL)) {
-								Wo wo = new Wo(t.getFromIdentity(), t.getToIdentity());
-								wos.add(wo);
-								break out;
-							}
-						}
-						break;
-					}
-				});
-		return wos;
 	}
 
 }

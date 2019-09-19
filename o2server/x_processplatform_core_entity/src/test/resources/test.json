@@ -1,0 +1,100 @@
+  {
+	"$attachmentList": [],
+	"$work": {
+		"activityName": "部门审核",
+		"application": "690f3614-5fb8-464e-a4c6-64972c46c6c8",
+		"applicationAlias": "",
+		"applicationName": "公文管理",
+		"creatorIdentity": "李义@50747cd3-141e-48a2-b2d6-b06853cae667@I",
+		"creatorPerson": "李义@liyi@P",
+		"creatorUnit": "开发部@22@U",
+		"creatorUnitLevelName": "兰德纵横/开发部",
+		"job": "614679ae-0564-48a2-a1ba-6a3bda66858c",
+		"manualTaskIdentityText": "周睿",
+		"process": "2f4530a6-c199-4915-84c9-cb1675cbd444",
+		"processAlias": "发文",
+		"processName": "发文管理",
+		"serial": "",
+		"startTime": "2019-09-03 16:33:40",
+		"startTimeMonth": "2019-09",
+		"title": "李义测试一下附件的阅读权限问题",
+		"workId": "19f56ec0-40df-4e27-b987-ee667d67b4ff"
+	},
+	"arrays": [
+		"aaa",
+		"bbb",
+		"ccc",
+		"ddd"
+	],
+	"attachment": [
+		"工作流需求文档v3.pdf",
+		"前端调用写法.docx",
+		"表单管理需求说明v1.pdf"
+	],
+	"copies": "",
+	"copySend": [],
+	"fileno": "2019",
+	"mainSend": [
+		{
+			"control": {
+				"allowDelete": false,
+				"allowEdit": false
+			},
+			"controllerList": [],
+			"createTime": "2018-10-26 08:50:16",
+			"description": "",
+			"distinguishedName": "开发部@22@U",
+			"id": "d5356fd4-6675-45ad-9a00-5eff20b83dfa",
+			"inheritedControllerList": [],
+			"level": 2.0,
+			"levelName": "兰德纵横/开发部",
+			"name": "开发部",
+			"orderNumber": 2.147483247E9,
+			"pinyin": "kaifabu",
+			"pinyinInitial": "kfb",
+			"qiyeweixinHash": "4eecf48995e828b63235ea6556ae368d51220b13f677568da837688676d4017b",
+			"qiyeweixinId": "22",
+			"shortName": "",
+			"subDirectIdentityCount": 27.0,
+			"subDirectUnitCount": 0.0,
+			"superior": "f3264577-136f-43af-b9f7-5b739d17f2e0",
+			"typeList": [
+				"一级部门"
+			],
+			"unique": "22",
+			"updateTime": "2019-08-08 14:48:15",
+			"woSupNestedUnitList": [
+				{
+					"control": {
+						"allowDelete": false,
+						"allowEdit": false
+					},
+					"controllerList": [],
+					"createTime": "2018-10-26 08:50:12",
+					"description": "",
+					"distinguishedName": "兰德纵横@1@U",
+					"id": "f3264577-136f-43af-b9f7-5b739d17f2e0",
+					"inheritedControllerList": [],
+					"level": 1.0,
+					"levelName": "兰德纵横",
+					"name": "兰德纵横",
+					"orderNumber": 2.0,
+					"pinyin": "landezongheng",
+					"pinyinInitial": "ldzh",
+					"qiyeweixinHash": "6e4879547dae8ea033f679bbc2d76c1212ef5219f6f41c956082c92ac9707e84",
+					"qiyeweixinId": "1",
+					"shortName": "",
+					"subDirectIdentityCount": 0.0,
+					"subDirectUnitCount": 0.0,
+					"superior": "",
+					"typeList": [],
+					"unique": "1",
+					"updateTime": "2018-11-30 15:32:18"
+				}
+			]
+		}
+	],
+	"office": "",
+	"subject": "李义测试一下附件的阅读权限问题",
+	"urgency": "一般"
+} 

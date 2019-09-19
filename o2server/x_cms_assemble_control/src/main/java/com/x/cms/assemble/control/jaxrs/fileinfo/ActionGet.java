@@ -24,7 +24,7 @@ public class ActionGet extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
 		List<String> attachmentIds = null;
-		String cacheKey = ApplicationCache.concreteCacheKey( id );
+		String cacheKey = ApplicationCache.concreteCacheKey( "file."+id );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {

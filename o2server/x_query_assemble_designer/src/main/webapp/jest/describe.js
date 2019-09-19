@@ -329,7 +329,7 @@ Describe.prototype = {
 													}
 												});
 											} else if (m.useJsonElementParameter) {
-												if( $('#jsonElement').val() == null || $('#jsonElement').val().val() == undefind || $('#jsonElement').val() == "" ){
+												if( $('#jsonElement').val() == null || $('#jsonElement').val() == "undefind" || $('#jsonElement').val() == "" ){
 													$('#jsonElement').val("{}");
 												}
 												data = $.parseJSON($('#jsonElement').val());
@@ -360,7 +360,7 @@ Describe.prototype = {
 													}
 												});
 											} else if (m.useJsonElementParameter) {
-												if( $('#jsonElement').val() == null || $('#jsonElement').val().val() == undefind || $('#jsonElement').val() == "" ){
+												if( $('#jsonElement').val() == null || $('#jsonElement').val() == "undefind" || $('#jsonElement').val() == "" ){
 													$('#jsonElement').val("{}");
 												}
 												data = $.parseJSON($('#jsonElement').val());

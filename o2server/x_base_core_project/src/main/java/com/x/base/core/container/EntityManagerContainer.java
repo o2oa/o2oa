@@ -28,7 +28,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemove;
@@ -440,6 +439,17 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				+ otherAttribute + " >= ?2))");
 		query.setParameter(1, value);
 		query.setParameter(2, otherValue);
+		return new ArrayList<T>(query.getResultList());
+	}
+
+	public <T extends JpaObject, W extends Object> List<T> listBetweenAndEqual(Class<T> cls, String attribute,
+			Object start, Object end, String equalAttribute, Object equalValue) throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select o from " + cls.getName() + " o where ((o." + attribute
+				+ " between ?1 and ?2) and (o." + equalAttribute + " = ?3))");
+		query.setParameter(1, start);
+		query.setParameter(2, end);
+		query.setParameter(3, equalValue);
 		return new ArrayList<T>(query.getResultList());
 	}
 
@@ -1351,9 +1361,9 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(clz);
 		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.sequence), sequence));
+			p = cb.and(p, cb.greaterThan(root.get(JpaObject.sequence_FIELDNAME), sequence));
 		}
-		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
+		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.sequence_FIELDNAME)));
 		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();
 		List<T> list = new ArrayList<>(os);
 		return list;
@@ -1369,9 +1379,9 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(oneEqualAttribute), oneEqualValue);
 		p = cb.and(p, cb.equal(root.get(twoEqualAttribute), twoEqualValue));
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.sequence), sequence));
+			p = cb.and(p, cb.greaterThan(root.get(JpaObject.sequence_FIELDNAME), sequence));
 		}
-		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
+		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.sequence_FIELDNAME)));
 		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();
 		List<T> list = new ArrayList<>(os);
 		return list;

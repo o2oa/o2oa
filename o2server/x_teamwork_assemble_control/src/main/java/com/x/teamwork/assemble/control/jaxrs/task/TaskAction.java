@@ -186,26 +186,6 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "列示工作任务信息,上一页.", action = ActionListPrevWithFilter.class)
-	@PUT
-	@Path("list/{id}/prev/{count}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPrevWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
-		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionListPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	}
-	
 	@JaxrsMethodDescribe(value = "列示工作任务信息,下一页.", action = ActionListNextWithFilter.class)
 	@PUT
 	@Path("list/{id}/next/{count}")

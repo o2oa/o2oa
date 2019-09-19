@@ -36,7 +36,7 @@ public class ActionStatisticMyTasks extends BaseAction {
 		Boolean check = true;
 
 		String cacheKey = ApplicationCache.concreteCacheKey( "ActionStatisticMyTasks", projectId, effectivePerson.getDistinguishedName() );
-		Element element = taskCache.get( cacheKey );
+		Element element = taskViewCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = ( Wo ) element.getObjectValue();

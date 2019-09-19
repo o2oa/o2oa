@@ -85,8 +85,8 @@ public class ActionListSubTaskWithTaskId extends BaseAction {
 				Exception exception = new TaskQueryException(e, "将查询出来的工作任务信息对象转换为可输出的数据信息时发生异常。");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
-			}
-		}
+			} 
+		} 
 		
 		return result;
 	}

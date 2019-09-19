@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -17,6 +20,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
@@ -41,9 +45,24 @@ public class ActionFileUploadCallback extends BaseAction {
 			}
 		}
 		
+		Boolean isAnonymous = effectivePerson.isAnonymous();
+		Boolean isManager = false;
+		if (check) {
+			try {
+				if ( effectivePerson.isManager() ) {
+					isManager = true;
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
 		if( check ){//判断文档信息是否已经存在
 			try {
-				document = documentInfoServiceAdv.get( docId );
+				document = documentQueryService.get( docId );
 				if (null == document) {
 					check = false;
 					Exception exception = new ExceptionDocumentNotExistsCallback( callback, docId );
@@ -85,8 +104,31 @@ public class ActionFileUploadCallback extends BaseAction {
 		if( check ){
 			try {
 				attachment = this.concreteAttachment( mapping, document, fileName, effectivePerson, site );
+				
+				attachment.setType((new Tika()).detect(bytes, fileName));
+				logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+				if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
+					attachment.setText(ExtractTextTools.image(bytes));
+					logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+							attachment.getText());
+				}
+				
 				attachment.saveContent(mapping, bytes, fileName);
 				attachment = fileInfoServiceAdv.saveAttachment( docId, attachment );
+				
+//				List<String> keys = new ArrayList<>();
+//				keys.add( "file.all" ); //清除文档的附件列表缓存
+//				keys.add( ApplicationCache.concreteCacheKey( "document", document.getId(), isAnonymous, isManager ) ); //清除文档的附件列表缓存
+//				ApplicationCache.notify( FileInfo.class, keys );
+//				
+//				keys.clear();
+//				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
+//				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
+//				ApplicationCache.notify( Document.class, keys );
+				
+				ApplicationCache.notify( FileInfo.class );
+				ApplicationCache.notify( Document.class );	
+				
 				WoObject woObject = new WoObject();
 				woObject.setId(attachment.getId());
 				Wo<WoObject> wo = new Wo<>(callback, woObject);

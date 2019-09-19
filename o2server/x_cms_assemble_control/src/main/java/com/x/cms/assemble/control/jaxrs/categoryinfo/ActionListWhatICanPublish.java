@@ -64,7 +64,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 			
 			if (check) {// 判断用户是否该栏目的管理者
 				try {
-					appManager = appInfoServiceAdv.isAppInfoManager( appId, personName );
+					appManager = appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionCategoryInfoProcess(e,

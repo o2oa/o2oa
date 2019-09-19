@@ -26,7 +26,7 @@ public class ActionListAll extends BaseAction {
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
-		String cacheKey = ApplicationCache.concreteCacheKey( "all" );
+		String cacheKey = ApplicationCache.concreteCacheKey( "file.all" );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
@@ -43,7 +43,6 @@ public class ActionListAll extends BaseAction {
 				FileInfoFactory fileInfoFactory  = business.getFileInfoFactory();
 				List<String> ids = fileInfoFactory.listAll();//获取所有文件或者附件列表
 				List<FileInfo> fileInfoList = emc.list( FileInfo.class, ids );//查询ID IN ids 的所有文件或者附件信息列表
-//						fileInfoFactory.list( ids );
 				wraps = Wo.copier.copy( fileInfoList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				SortTools.asc( wraps, "sequence" );
 				cache.put(new Element( cacheKey, wraps ));

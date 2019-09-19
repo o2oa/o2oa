@@ -1,7 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
 import java.util.Map;
-import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -21,13 +20,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.scripting.ScriptingEngine;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
@@ -59,11 +51,14 @@ class ActionExecute extends BaseAction {
 
 			Object data = null;
 
-			if (StringUtils.equalsIgnoreCase(statement.getTableType(), Statement.TABLETYPE_OFFICIAL)) {
-				data = official(effectivePerson, business, statement, runtime);
-			} else {
-				data = dynamic(effectivePerson, business, statement, runtime);
-			}
+//			if (StringUtils.equalsIgnoreCase(statement.getTableType(), Statement.TABLETYPE_OFFICIAL)) {
+//				data = official(effectivePerson, business, statement, runtime);
+//			} else {
+//				data = dynamic(effectivePerson, business, statement, runtime);
+//			}
+
+			data = dynamic(effectivePerson, business, statement, runtime);
+
 			if (StringUtils.isNotBlank(statement.getAfterScriptText())) {
 				this.initScriptingEngine(business, effectivePerson);
 				scriptingEngine.bindingData(data);
@@ -74,52 +69,52 @@ class ActionExecute extends BaseAction {
 		}
 	}
 
-	private Object official(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
-			throws Exception {
-		Object data = null;
-		Class<? extends JpaObject> cls = null;
-		switch (Objects.toString(statement.getTable())) {
-		case "Work":
-			cls = Work.class;
-			break;
-		case "WorkCompleted":
-			cls = WorkCompleted.class;
-			break;
-		case "Task":
-			cls = Task.class;
-			break;
-		case "TaskCompleted":
-			cls = TaskCompleted.class;
-			break;
-		case "Read":
-			cls = Read.class;
-			break;
-		case "ReadCompleted":
-			cls = ReadCompleted.class;
-			break;
-		case "Review":
-			cls = Review.class;
-			break;
-		default:
-			cls = (Class<JpaObject>) Class.forName(statement.getTable());
-			break;
-		}
-		EntityManager em = business.entityManagerContainer().get(cls);
-		Query query = em.createQuery(statement.getData());
-		for (Parameter<?> p : query.getParameters()) {
-			if (runtime.hasParameter(p.getName())) {
-				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
-			}
-		}
-		query.setFirstResult((runtime.page - 1) * runtime.size);
-		query.setMaxResults(runtime.size);
-		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			data = query.getResultList();
-		} else {
-			throw new ExceptionModifyOfficialTable();
-		}
-		return data;
-	}
+//	private Object official(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
+//			throws Exception {
+//		Object data = null;
+//		Class<? extends JpaObject> cls = null;
+//		switch (Objects.toString(statement.getTable())) {
+//		case "Work":
+//			cls = Work.class;
+//			break;
+//		case "WorkCompleted":
+//			cls = WorkCompleted.class;
+//			break;
+//		case "Task":
+//			cls = Task.class;
+//			break;
+//		case "TaskCompleted":
+//			cls = TaskCompleted.class;
+//			break;
+//		case "Read":
+//			cls = Read.class;
+//			break;
+//		case "ReadCompleted":
+//			cls = ReadCompleted.class;
+//			break;
+//		case "Review":
+//			cls = Review.class;
+//			break;
+//		default:
+//			cls = (Class<JpaObject>) Class.forName(statement.getTable());
+//			break;
+//		}
+//		EntityManager em = business.entityManagerContainer().get(cls);
+//		Query query = em.createQuery(statement.getData());
+//		for (Parameter<?> p : query.getParameters()) {
+//			if (runtime.hasParameter(p.getName())) {
+//				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+//			}
+//		}
+//		query.setFirstResult((runtime.page - 1) * runtime.size);
+//		query.setMaxResults(runtime.size);
+//		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+//			data = query.getResultList();
+//		} else {
+//			throw new ExceptionModifyOfficialTable();
+//		}
+//		return data;
+//	}
 
 	private Object dynamic(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
 			throws Exception {

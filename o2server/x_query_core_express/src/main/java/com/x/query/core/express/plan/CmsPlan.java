@@ -89,15 +89,13 @@ public class CmsPlan extends Plan {
 		//根据where条件查询符合条件的所有文档ID列表
 		docIds = listBundle_document(emc);
 		
-		if ( StringUtils.equals( this.where.scope, SCOPE_CMS_INFO )) {
-			if (BooleanUtils.isTrue(this.where.accessible)) {
-				if (StringUtils.isNotEmpty(runtime.person)) {
-					//过滤可见范围
-					docIds = this.listBundle_accessible(emc, docIds, runtime.person );
-				}
+		if (BooleanUtils.isTrue(this.where.accessible)) {
+			if (StringUtils.isNotEmpty(runtime.person)) {
+				//过滤可见范围
+				docIds = this.listBundle_accessible(emc, docIds, runtime.person );
 			}
 		}
-		
+
 		/** 针对DataItem进行判断和条件过滤 */
 		List<FilterEntry> filterEntries = new TreeList<>();
 		for (FilterEntry _o : ListTools.trim(this.filterList, true, true)) {
@@ -133,77 +131,46 @@ public class CmsPlan extends Plan {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Document> root = cq.from(Document.class);
 		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root));
-//		System.out.println(">>>>>listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
+//		System.out.println(">>>>>1-listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
 		List<String> docIds = em.createQuery(cq).getResultList();
 		return docIds;
 	}
 
 	private List<String> listBundle_accessible( EntityManagerContainer emc, List<String> docIds, String person )
 			throws Exception {
-//		String documentType = getDocumentType(this.where.scope );
-//		
-//		List<String> accessibleCategoryIds = null;
-//		final List<String> viewableDocIds = new TreeList<>();
-//
-//		this.cmsPermissionService = new CmsPermissionService();
-//		if (!StringUtils.equals(this.where.scope, SCOPE_CMS_DATA)) {
-//			accessibleCategoryIds = cmsPermissionService.listViewableCategoryIdByPerson(emc, person, false,
-//					this.runtime.unitList, this.runtime.groupList, null, null, null, documentType, 2000, false);
-//			//组织查询条件，从review表里查询可访问的文档ID列表
-//			QueryFilter queryFilter = new QueryFilter();
-//			if( ListTools.isNotEmpty( accessibleCategoryIds )) {
-//				queryFilter.addEqualsTerm( new EqualsTerm( "permissionObj", person ));
-//			}
-//			if( ListTools.isNotEmpty( accessibleCategoryIds )) {
-//				queryFilter.addInTerm( new InTerm( "catetoryId", new ArrayList<>(accessibleCategoryIds) ));
-//			}
-//			if( ListTools.isNotEmpty( docIds )) {
-//				queryFilter.addInTerm( new InTerm( "docId", new ArrayList<>(docIds) ));
-//			}
-//			viewableDocIds.addAll( cmsPermissionService.lisViewableDocIdsWithFilter( emc, queryFilter, 100000 ));
-//		}
-		if ( StringUtils.equals( this.where.scope, SCOPE_CMS_INFO )) {
-			List<String> list = new TreeList<>();
-			List<CompletableFuture<List<String>>> futures = new TreeList<>();
-			for (List<String> documentId : ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH)) {
-				CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
-					try {
-						EntityManager em = emc.get( Review.class );
-						CriteriaBuilder cb = em.getCriteriaBuilder();
-						CriteriaQuery<String> cq = cb.createQuery(String.class);
-						Root<Review> root = cq.from( Review.class );
-						final HashMap<String, String> map = new HashMap<>();
-						documentId.stream().forEach( o -> {
-							map.put(o, o);
-						});
-						Expression<Set<String>> expression = cb.keys(map);
-						Predicate p = cb.isMember(root.get(Review_.docId), expression);
-						p = cb.and(p, cb.or( 
-								cb.equal( root.get(Review_.permissionObj), person),  
-								cb.equal( root.get(Review_.permissionObj), "*")
-								));
-						final HashMap<String, String> mapIds = new HashMap<>();
-						docIds.stream().forEach(o -> {
-							mapIds.put(o, o);
-						});
-						p = cb.and(p, cb.isMember(root.get(Review_.docId), cb.keys(mapIds)));
-//						System.out.println(">>>>>listBundle_accessible>>>>>>SQL:" + em.createQuery(cq).toString() );
-						cq.select(root.get(Review_.docId)).distinct(true).where(p);
-						return em.createQuery(cq).getResultList();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return new TreeList<String>();
-				});
-				futures.add(future);
-			}
-			for (CompletableFuture<List<String>> future : futures) {
-				list.addAll(future.get(300, TimeUnit.SECONDS));
-			}
-			return list;
-		}else {
-			return docIds;
+		List<String> list = new TreeList<>();
+		List<CompletableFuture<List<String>>> futures = new TreeList<>();
+		for (List<String> documentId : ListTools.batch(docIds, SQL_STATEMENT_IN_BATCH)) {
+			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
+				try {
+					EntityManager em = emc.get( Review.class );
+					CriteriaBuilder cb = em.getCriteriaBuilder();
+					CriteriaQuery<String> cq = cb.createQuery(String.class);
+					Root<Review> root = cq.from( Review.class );
+					final HashMap<String, String> map = new HashMap<>();
+					documentId.stream().forEach( o -> {
+						map.put(o, o);
+					});
+					Expression<Set<String>> expression = cb.keys(map);
+					Predicate p = cb.isMember(root.get(Review_.docId), expression);
+					p = cb.and(p, cb.or( 
+							cb.equal( root.get(Review_.permissionObj), person),  
+							cb.equal( root.get(Review_.permissionObj), "*")
+							));
+					cq.select(root.get(Review_.docId)).distinct(true).where(p);
+//					System.out.println(">>>>>2-listBundle_accessible>>>>>>SQL:" + em.createQuery(cq).toString() );
+					return em.createQuery(cq).getResultList();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return new TreeList<String>();
+			});
+			futures.add(future);
 		}
+		for (CompletableFuture<List<String>> future : futures) {
+			list.addAll(future.get(300, TimeUnit.SECONDS));
+		}
+		return list;
 	}
 
 	private List<String> listBundle_filterEntry(EntityManagerContainer emc, List<String> docIds, List<FilterEntry> filterEntries) throws Exception {
@@ -224,7 +191,7 @@ public class CmsPlan extends Plan {
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.cms);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
 						cq.select(root.get(Item_.bundle)).where(p);
-						//System.out.println(">>>>>>>>listBundle_filterEntry SQL:" +  em.createQuery(cq) );
+//						System.out.println(">>>>>>>>3 - listBundle_filterEntry SQL:" +  em.createQuery(cq) );
 						return em.createQuery(cq).getResultList();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -301,7 +268,12 @@ public class CmsPlan extends Plan {
 			ps.add(this.documentPredicate_creator(cb, root));
 			ps.add(this.documentPredicate_appInfo(cb, root));
 			ps.add(this.documentPredicate_date(cb, root));
-			ps.add(this.documentPredicate_typeScope(cb, root));
+			
+			Predicate predicate = this.documentPredicate_typeScope(cb, root);
+			if( predicate != null  ) {
+				ps.add( predicate );
+			}
+			
 			ps = ListTools.trim( ps, true, false);
 			if (ps.isEmpty()) {
 				throw new Exception("where is empty.");
@@ -388,9 +360,10 @@ public class CmsPlan extends Plan {
 		private Predicate documentPredicate_typeScope(CriteriaBuilder cb, Root<Document> root) {
 			if (StringUtils.equals( this.scope, SCOPE_CMS_DATA )) {
 				return cb.equal(root.get(Document_.documentType), "数据");
-			}else {
+			}else if (StringUtils.equals( this.scope, SCOPE_CMS_INFO )) {
 				return cb.equal(root.get(Document_.documentType), "信息");
-			} 
+			}
+			return null;
 		}
 	}
 }

@@ -47,8 +47,6 @@ public class ActionCollaboration {
 			return;
 		} else {
 			clients.put(session, effectivePerson.getDistinguishedName());
-			// ThisApplication.connections.put(effectivePerson.getDistinguishedName(),
-			// session);
 			try {
 				List<Message> messages = this.load(effectivePerson);
 				WsMessage ws = null;
@@ -69,13 +67,6 @@ public class ActionCollaboration {
 
 	@OnClose
 	public void close(Session session, CloseReason reason) throws IOException {
-//		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
-//		logger.debug("@OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson.getTokenType(),
-//				effectivePerson.getDistinguishedName());
-//		if (TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-//			return;
-//		}
-//		ThisApplication.connections.remove(effectivePerson.getDistinguishedName());
 		clients.remove(session);
 	}
 

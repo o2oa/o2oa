@@ -21,6 +21,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskTag;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
+import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
 import net.sf.ehcache.Element;
 
@@ -58,7 +59,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		
 		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNext", effectivePerson.getDistinguishedName(),  
-					flag, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
+					flag, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = taskCache.get( cacheKey );
 			
 			if ((null != element) && (null != element.getObjectValue())) {
@@ -67,6 +68,17 @@ public class ActionListNextWithFilter extends BaseAction {
 				result.setData( resultObject.getWos() );
 			} else {
 				try {
+					List<String> taskIds = null;
+					if( StringUtils.isNotEmpty(  wrapIn.getTag() )) {
+						//查询该拥有该Tag的TaskId列表
+						taskIds = taskTagQueryService.listTaskIdsWithTagContent( wrapIn.getTag(), null,  effectivePerson.getDistinguishedName() );
+						if( ListTools.isEmpty( taskIds )) {
+							taskIds = new ArrayList<>();
+							taskIds.add( "NoOne" );
+						}
+						queryFilter.addInTerm( new InTerm("id", new ArrayList<>(taskIds)) );
+					}
+					
 					Long total = taskQueryService.countWithFilter( effectivePerson, queryFilter );
 					List<Task>  taskList = taskQueryService.listWithFilter( effectivePerson, count, flag, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter );
 					

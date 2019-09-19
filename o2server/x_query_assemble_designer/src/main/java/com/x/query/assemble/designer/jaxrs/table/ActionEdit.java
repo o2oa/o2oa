@@ -49,6 +49,7 @@ class ActionEdit extends BaseAction {
 			XGsonBuilder.instance().fromJson(table.getData(), DynamicEntity.class);
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
+			table.setData("");
 			table.setStatus(Table.STATUS_draft);
 			emc.check(table, CheckPersistType.all);
 			emc.commit();

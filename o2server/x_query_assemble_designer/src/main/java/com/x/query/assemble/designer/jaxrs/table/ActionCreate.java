@@ -51,9 +51,9 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(Table.class);
 			XGsonBuilder.instance().fromJson(table.getData(), DynamicEntity.class);
 			table.setCreatorPerson(effectivePerson.getDistinguishedName());
-			table.setBuildSuccess(false);
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
+			table.setData("");
 			table.setStatus(Table.STATUS_draft);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();

@@ -29,8 +29,7 @@ public class Timertask_LogRecordCheckTask implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
 			logService.clean(stay_yearnum_operationLog, stay_count_operationLog);
-			logger.info("Timertask_LogRecordCheckTask -> clean operation logs excute success. stay_yearnum:"
-					+ stay_yearnum_operationLog + ",stay_count:" + stay_count_operationLog);
+			logger.info("Timertask_LogRecordCheckTask -> clean operation logs excute success. stay_yearnum:" + stay_yearnum_operationLog + ",stay_count:" + stay_count_operationLog);
 		} catch (Exception e) {
 			logger.warn("Timertask_LogRecordCheckTask -> clean operation logs excute got an exception.");
 			logger.error(e);

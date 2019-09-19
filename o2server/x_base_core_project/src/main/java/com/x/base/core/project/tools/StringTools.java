@@ -385,4 +385,46 @@ public class StringTools {
 			return StringUtils.trim(StringUtils.replaceEach(str, SQL_LIKE, SQL_LIKE_SHIFT));
 		}
 	}
+
+	private static final int[] SIZE_TABLE = new int[]{9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, 2147483647};
+
+	public static int sizeOfInt(int x) {
+		int i;
+		for(i = 0; x > SIZE_TABLE[i]; ++i) {
+		}
+
+		return i + 1;
+	}
+
+	public static boolean isCharEqual(String str) {
+		return str.replace(str.charAt(0), ' ').trim().length() == 0;
+	}
+
+	public static boolean isNumeric(String str) {
+		int i = str.length();
+
+		do {
+			--i;
+			if (i < 0) {
+				return true;
+			}
+		} while(Character.isDigit(str.charAt(i)));
+
+		return false;
+	}
+
+	public static boolean equalsNull(String str) {
+		int strLen;
+		if (str != null && (strLen = str.length()) != 0 && !str.equalsIgnoreCase("null")) {
+			for(int i = 0; i < strLen; ++i) {
+				if (!Character.isWhitespace(str.charAt(i))) {
+					return false;
+				}
+			}
+
+			return true;
+		} else {
+			return true;
+		}
+	}
 }

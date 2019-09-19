@@ -11,6 +11,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.TaskView;
+import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 
 class TaskViewService {
 
@@ -169,5 +170,26 @@ class TaskViewService {
 		viewList.add(view);
 		
 		return viewList;
+	}
+	
+	protected Long countWithFilter(EntityManagerContainer emc, QueryFilter queryFilter) throws Exception {
+		Business business = new Business(emc);
+		return business.taskViewFactory().countWithFilter( queryFilter);
+	}
+	
+	/**
+	 * 根据条件查询符合条件的工作任务信息ID，根据上一条的sequnce查询指定数量的信息
+	 * @param emc
+	 * @param maxCount
+	 * @param orderField
+	 * @param orderType
+	 * @param personName
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<TaskView> listWithFilter( EntityManagerContainer emc, Integer maxCount, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+		Business business = new Business( emc );
+		return  business.taskViewFactory().listWithFilter( maxCount, orderField, orderType, queryFilter);		
 	}
 }

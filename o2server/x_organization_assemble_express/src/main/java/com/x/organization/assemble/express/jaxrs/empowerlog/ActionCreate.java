@@ -18,6 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.accredit.EmpowerLog;
 
 class ActionCreate extends BaseAction {
@@ -44,13 +45,21 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionEmptyFromIdentity();
 			}
 
+			Person fromPerson = business.person().pick(fromIdentity.getPerson());
+
 			Identity toIdentity = business.identity().pick(wi.getToIdentity());
 
 			if (null == toIdentity) {
 				throw new ExceptionEmptyToIdentity();
 			}
 
+			Person toPerson = business.person().pick(toIdentity.getPerson());
+
 			EmpowerLog empowerLog = Wi.copier.copy(wi);
+
+			empowerLog.setFromPerson(fromPerson.getDistinguishedName());
+
+			empowerLog.setToPerson(toPerson.getDistinguishedName());
 
 			empowerLog.setTitle(StringTools.utf8SubString(wi.getTitle(),
 					JpaObjectTools.definedLength(EmpowerLog.class, EmpowerLog.title_FIELDNAME)));
