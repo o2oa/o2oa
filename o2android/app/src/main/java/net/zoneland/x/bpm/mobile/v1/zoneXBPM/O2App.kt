@@ -130,7 +130,12 @@ class O2App : MultiDexApplication() {
 //  获取Application下的meta值
     fun getAppMeta(metaName: String, default: String = "") : String {
         return try {
-            packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData.getString(metaName, default)
+            if ("com.baidu.speech.APP_ID" == metaName) {
+                val appid = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData.getInt("com.baidu.speech.APP_ID")
+                ""+appid
+            }else {
+                packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData.getString(metaName, default)
+            }
         }catch (e: Exception) {
             Log.e("O2app", "", e)
             default

@@ -79,7 +79,7 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
                     }
                 }
                 else -> {
-                    if (personList[position] != O2SDKManager.instance().cId) {
+                    if (personList[position] != O2SDKManager.instance().distinguishedName) {
                         personList.removeAt(position)
                         personAdapter.notifyDataSetChanged()
                     }
@@ -181,7 +181,7 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
                         avatar.setImageResource(R.mipmap.icon_add_people)
                         delete?.visibility = View.GONE
                     } else {
-                        if (t == O2SDKManager.instance().cId) {
+                        if (t == O2SDKManager.instance().distinguishedName) {
                             delete?.visibility = View.GONE
                         }
                         val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(t!!)
@@ -193,8 +193,12 @@ class IMTribeCreateActivity : BaseMVPActivity<IMTribeCreateContract.View, IMTrib
                     if (invitePersonAdd == t) {
                         nameTv.text = t
                     } else {
-                        nameTv.tag = t
-                        mPresenter.asyncLoadPersonName(nameTv, t!!)
+                        if (t != null && t.contains("@")) {
+                            nameTv.text = t.split("@").first()
+                        }else {
+                            nameTv.text = t
+                        }
+//                        mPresenter.asyncLoadPersonName(nameTv, t!!)
                     }
                 }
             }

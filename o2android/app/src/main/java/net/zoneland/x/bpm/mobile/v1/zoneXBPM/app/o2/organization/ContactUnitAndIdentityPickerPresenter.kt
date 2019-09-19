@@ -5,9 +5,11 @@ import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service.OrganizationAssembleControlAlphaService
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.UnitDutyIdentityForm
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonList
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.unit.UnitListForm
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.NewContactListVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -77,9 +79,30 @@ class ContactUnitAndIdentityPickerPresenter: BasePresenterImpl<ContactUnitAndIde
                     val identityObservable = if (dutyList.isEmpty()){
                         service.identityListWithUnit(parent).map { response ->
                             val retList = ArrayList<NewContactListVO>()
+                            val idList = ArrayList<String>()
                             val list = response.data
                             if (list != null && list.isNotEmpty()) {
-                                list.map { retList.add(it.copyToOrgVO()) }
+                                list.map {
+                                    idList.add(it.person)
+                                    retList.add(it.copyToOrgVO())
+                                }
+                            }
+                            //这里需要把person的dn查询出来
+                            if (idList.isNotEmpty()) {
+                                assService.searchPersonDNList(PersonList(idList)).observeOn(Schedulers.immediate()).o2Subscribe {
+                                    onNext { assRes ->
+                                        val dnList = assRes.data.personList
+                                        if (dnList.isNotEmpty()) {
+                                            retList.forEachIndexed { index, identity ->
+                                                (identity as NewContactListVO.Identity).person = dnList[index]
+                                            }
+                                        }
+                                    }
+                                    onError { e, isNetworkError ->
+                                        XLog.error("$isNetworkError", e)
+                                    }
+                                }
+//                                XLog.debug("查询personDN完成。。。。$retList")
                             }
                             retList
                         }
@@ -89,9 +112,27 @@ class ContactUnitAndIdentityPickerPresenter: BasePresenterImpl<ContactUnitAndIde
                         form.nameList = dutyList
                         assService.identityListByUnitAndDuty(form).map { response ->
                             val retList = ArrayList<NewContactListVO>()
+                            val idList = ArrayList<String>()
                             val list = response.data
                             if (list != null && list.isNotEmpty()) {
                                 list.map { retList.add(it.copyToOrgVO()) }
+                            }
+                            //这里需要把person的dn查询出来
+                            if (idList.isNotEmpty()) {
+                                assService.searchPersonDNList(PersonList(idList)).observeOn(Schedulers.immediate()).o2Subscribe {
+                                    onNext { assRes ->
+                                        val dnList = assRes.data.personList
+                                        if (dnList.isNotEmpty()) {
+                                            retList.forEachIndexed { index, identity ->
+                                                (identity as NewContactListVO.Identity).person = dnList[index]
+                                            }
+                                        }
+                                    }
+                                    onError { e, isNetworkError ->
+                                        XLog.error("$isNetworkError", e)
+                                    }
+                                }
+//                                XLog.debug("查询personDN完成。。。。$retList")
                             }
                             retList
                         }
@@ -136,7 +177,8 @@ class ContactUnitAndIdentityPickerPresenter: BasePresenterImpl<ContactUnitAndIde
             val retList = ArrayList<NewContactListVO>()
             val list = response.data
             if (list != null && list.isNotEmpty()) {
-                list.map { retList.add(NewContactListVO.Department(it.id, it.name, it.distinguishedName, it.woSubDirectUnitList.size, 0)) }
+                list.map { retList.add(NewContactListVO.Department(it.id, it.name, it.unique, it.distinguishedName,
+                        it.typeList, it.shortName, it.level, it.levelName, it.woSubDirectUnitList.size, 0)) }
             }
             Observable.just(retList)
         }.subscribeOn(Schedulers.io())

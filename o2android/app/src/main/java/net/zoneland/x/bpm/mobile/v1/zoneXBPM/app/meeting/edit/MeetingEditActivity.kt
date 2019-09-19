@@ -252,8 +252,12 @@ class MeetingEditActivity : BaseMVPActivity<MeetingEditContract.View, MeetingEdi
                     if(invitePersonAdd==t){
                         nameTv.text = t
                     }else{
-                        nameTv.tag = t
-                        mPresenter.asyncLoadPersonName(nameTv, t!!)
+                        if (t != null && t.contains("@")) {
+                            nameTv.text = t.split("@").first()
+                        }else {
+                            nameTv.text = t
+                        }
+//                        mPresenter.asyncLoadPersonName(nameTv, t!!)
                     }
                 }
             }

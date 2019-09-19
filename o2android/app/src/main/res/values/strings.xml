@@ -92,6 +92,7 @@
     <string name="tab_contact">通讯录</string>
     <string name="tab_my">我的</string>
     <string name="tab_settings">设置</string>
+    <string name="tab_app">应用</string>
 
     <!-- font awesome -->
     <string name="fa_angle_right">&#xf105;</string>

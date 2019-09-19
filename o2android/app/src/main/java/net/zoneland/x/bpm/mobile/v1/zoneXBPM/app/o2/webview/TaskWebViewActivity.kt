@@ -348,8 +348,11 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         runOnUiThread {
             showLoadingDialog()
         }
-
-        mPresenter.downloadAttachment(attachmentId, workId)
+        if (isWorkCompleted) {
+            mPresenter.downloadWorkCompletedAttachment(attachmentId, workCompletedId)
+        }else {
+            mPresenter.downloadAttachment(attachmentId, workId)
+        }
     }
 
     /**

@@ -48,7 +48,7 @@ class IMPersonConfigActivity : BaseMVPActivity<IMPersonConfigContract.View, IMPe
             goThenKill<PersonActivity>(PersonActivity.startBundleData(distinguishedName))
         }
         rl_im_person_tribe_create_btn.setOnClickListener {
-            val personList = arrayListOf(O2SDKManager.instance().cId, personId)
+            val personList = arrayListOf(O2SDKManager.instance().distinguishedName, personId)
             val bundle = ContactPickerActivity.startPickerBundle(
                     arrayListOf("personPicker"),
                     multiple = true,

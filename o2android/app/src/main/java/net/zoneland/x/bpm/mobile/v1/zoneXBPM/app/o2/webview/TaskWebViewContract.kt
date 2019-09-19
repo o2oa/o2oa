@@ -30,6 +30,7 @@ object TaskWebViewContract {
         fun uploadAttachment(attachmentFilePath: String, site: String, workId: String)
         fun replaceAttachment(attachmentFilePath: String, site: String, attachmentId: String, workId: String)
         fun downloadAttachment(attachmentId: String, workId: String)
+        fun downloadWorkCompletedAttachment(attachmentId: String, workCompleted: String)
         fun save(workId: String, formData: String)
         fun submit(data: TaskData?, workId: String, formData: String?)
         fun delete(workId: String)

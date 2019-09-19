@@ -135,7 +135,7 @@ android {
                                     BAIDU_MAP_APPKEY   : project.baiduMapAppKey,
                                     BUGLY_APPID        : project.buglyAppId]
             zipAlignEnabled true
-            minifyEnabled true     //混淆
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             //apk包重命名
@@ -216,7 +216,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-common:$anko_version"
 
-    //support
     implementation('com.android.support:support-v4:26.1.0') {
         force = true
     }
@@ -250,7 +249,6 @@ dependencies {
     implementation 'io.reactivex:rxjava:1.1.6'
     implementation 'io.reactivex:rxandroid:1.2.1'
 
-    //bugly
     implementation 'com.tencent.bugly:crashreport:2.6.6'
 
     //极光推送

@@ -10,9 +10,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.snippet_appbarlayout_tablayout_toolbar.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResultItem
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.NewContactListVO
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
@@ -20,6 +19,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.replaceFragmentSafe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 
 class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View, ContactPickerActivityContract.Presenter>(), ContactPickerActivityContract.View {
+
     override var mPresenter: ContactPickerActivityContract.Presenter = ContactPickerActivityPresenter()
 
 
@@ -73,10 +73,10 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
     private var duty: ArrayList<String> = ArrayList()//人员职责
 
 
-    private val mSelectDepartments: ArrayList<ContactPickerResultItem> = arrayListOf()
-    private val mSelectIdentities: ArrayList<ContactPickerResultItem> = arrayListOf()
-    private val mSelectGroups: ArrayList<ContactPickerResultItem> = arrayListOf()
-    private val mSelectUsers: ArrayList<ContactPickerResultItem> = arrayListOf()
+    private val mSelectDepartments: ArrayList<O2UnitPickerResultItem> = arrayListOf()
+    private val mSelectIdentities: ArrayList<O2IdentityPickerResultItem> = arrayListOf()
+    private val mSelectGroups: ArrayList<O2GroupPickerResultItem> = arrayListOf()
+    private val mSelectUsers: ArrayList<O2PersonPickerResultItem> = arrayListOf()
 
     private val fragments = ArrayList<Fragment>()
     private var currentSelect = 0
@@ -109,7 +109,8 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
             }else {
                 it
             }
-            mSelectDepartments.add(ContactPickerResultItem(name, it))
+            val unit = O2UnitPickerResultItem(name = name, distinguishedName = it)
+            mSelectDepartments.add(unit)
         }
         val initIdList: ArrayList<String> = intent.extras?.getStringArrayList(PICKED_ID_ARRAY_KEY) ?: ArrayList()
         initIdList.forEach {
@@ -118,7 +119,8 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
             }else {
                 it
             }
-            mSelectIdentities.add(ContactPickerResultItem(name, it))
+            val identity = O2IdentityPickerResultItem(name = name, distinguishedName = it)
+            mSelectIdentities.add(identity)
         }
         val initGroupList: ArrayList<String> = intent.extras?.getStringArrayList(PICKED_GROUP_ARRAY_KEY) ?: ArrayList()
         initGroupList.forEach {
@@ -127,7 +129,8 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
             }else {
                 it
             }
-            mSelectGroups.add(ContactPickerResultItem(name, it))
+            val group = O2GroupPickerResultItem(name = name, distinguishedName = it)
+            mSelectGroups.add(group)
         }
         val initUserList: ArrayList<String> = intent.extras?.getStringArrayList(PICKED_USER_ARRAY_KEY) ?: ArrayList()
         initUserList.forEach {
@@ -136,7 +139,8 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
             }else {
                 it
             }
-            mSelectUsers.add(ContactPickerResultItem(name, it))
+            val user = O2PersonPickerResultItem(name = name, distinguishedName = it)
+            mSelectUsers.add(user)
         }
 
         initView()
@@ -191,6 +195,36 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
         return super.onKeyDown(keyCode, event)
     }
 
+    override fun setPersonInfo(info: PersonJson, type: String) {
+        if (type == "0") { //identity
+            mSelectIdentities.filter {
+                it.person == info.distinguishedName
+            }.forEach {
+                it.person = info.id
+                it.personDn = info.distinguishedName
+                it.personName = info.name
+                it.personUnique = info.unique
+            }
+        } else {
+            mSelectUsers.filter {
+                it.distinguishedName == info.distinguishedName
+            }.forEach {
+                it.id = info.id
+                it.name = info.name
+                it.unique = info.unique
+                it.distinguishedName = info.distinguishedName
+                it.employee = info.employee
+                it.genderType = info.genderType
+                it.mail = info.mail
+                it.mobile = info.mobile
+                it.officePhone = ""
+                it.qq = info.qq
+                it.weixin = info.weixin
+            }
+        }
+    }
+
+
 
     // 检查值是否已经包含在选中的列表中
     fun isSelectedValue(value: NewContactListVO) : Boolean {
@@ -213,10 +247,30 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
     // 删除一个选中的值
     fun removeSelectedValue(value: NewContactListVO) {
         when(value) {
-            is NewContactListVO.Department -> mSelectDepartments.remove(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Identity -> mSelectIdentities.remove(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Group -> mSelectGroups.remove(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Person -> mSelectUsers.remove(ContactPickerResultItem(value.name, value.distinguishedName))
+            is NewContactListVO.Department -> {
+                val item = mSelectDepartments.firstOrNull { it.distinguishedName == value.distinguishedName }
+                if (item != null) {
+                    mSelectDepartments.remove(item)
+                }
+            }
+            is NewContactListVO.Identity -> {
+                val item = mSelectIdentities.firstOrNull { it.distinguishedName == value.distinguishedName }
+                if (item != null) {
+                    mSelectIdentities.remove(item)
+                }
+            }
+            is NewContactListVO.Group -> {
+                val item = mSelectGroups.firstOrNull { it.distinguishedName == value.distinguishedName }
+                if (item != null) {
+                    mSelectGroups.remove(item)
+                }
+            }
+            is NewContactListVO.Person -> {
+                val item = mSelectUsers.firstOrNull { it.distinguishedName == value.distinguishedName }
+                if (item != null) {
+                    mSelectUsers.remove(item)
+                }
+            }
         }
         refreshMenu()
     }
@@ -228,10 +282,30 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
             return
         }
         when(value) {
-            is NewContactListVO.Department -> mSelectDepartments.add(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Identity -> mSelectIdentities.add(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Group -> mSelectGroups.add(ContactPickerResultItem(value.name, value.distinguishedName))
-            is NewContactListVO.Person -> mSelectUsers.add(ContactPickerResultItem(value.name, value.distinguishedName))
+            is NewContactListVO.Department -> {
+                val o2Unit = O2UnitPickerResultItem(value.id, value.name, value.unique,
+                        value.distinguishedName, value.typeList, value.shortName,
+                        value.level, value.levelName)
+                mSelectDepartments.add(o2Unit)
+            }
+            is NewContactListVO.Identity -> {
+                val o2Identity = O2IdentityPickerResultItem(value.id, value.name, value.unique,
+                        value.distinguishedName, value.person, value.unit, value.unitName, "", "", "",
+                        value.unitLevel, value.unitLevelName)
+                mSelectIdentities.add(o2Identity)
+                //todo 查询person信息填充进去
+                mPresenter.getPerson(value.person, "0")
+            }
+            is NewContactListVO.Group -> {
+                val o2group = O2GroupPickerResultItem(value.id, value.name, value.unique, value.distinguishedName)
+                mSelectGroups.add(o2group)
+            }
+            is NewContactListVO.Person -> {
+                val o2person = O2PersonPickerResultItem(name = value.name, distinguishedName = value.distinguishedName)
+                mSelectUsers.add(o2person)
+                //todo 查询person信息填充进去
+                mPresenter.getPerson(value.distinguishedName, "1")
+            }
         }
         refreshMenu()
     }

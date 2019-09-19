@@ -261,6 +261,74 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
     }
 
 
+    override fun downloadWorkCompletedAttachment(attachmentId: String, workCompleted: String) {
+        if (TextUtils.isEmpty(attachmentId) || TextUtils.isEmpty(workCompleted)) {
+            mView?.invalidateArgs()
+            XLog.error("arguments is null att:$attachmentId, workCompleted:$workCompleted")
+            mView?.finishLoading()
+            return
+        }
+        getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service->
+            service.getWorkCompletedAttachmentInfo(attachmentId, workCompleted)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap { response ->
+                        val info: AttachmentInfo? = response.data
+                        if (info != null) {
+                            val path = FileExtensionHelper.getXBPMWORKAttachmentFileByName(info.name)
+                            val file = File(path)
+                            if (!file.exists()) { //下载
+                                try {
+                                    SDCardHelper.generateNewFile(path)
+                                    val call = service.downloadWorkCompletedAttachment(attachmentId, workCompleted)
+                                    val downloadRes = call.execute()
+                                    val headerDisposition = downloadRes.headers().get("Content-Disposition")
+                                    XLog.debug("header disposition: $headerDisposition")
+                                    val dataInput = DataInputStream(downloadRes.body()?.byteStream())
+                                    val fileOut = DataOutputStream(FileOutputStream(file))
+                                    val buffer = ByteArray(4096)
+                                    var count = 0
+                                    do {
+                                        count = dataInput.read(buffer)
+                                        if (count > 0) {
+                                            fileOut.write(buffer, 0, count)
+                                        }
+                                    } while (count > 0)
+                                    fileOut.close()
+                                    dataInput.close()
+                                } catch (e: Exception) {
+                                    XLog.error("下载附件失败！", e)
+                                    if (file.exists()) {
+                                        file.delete()
+                                    }
+                                }
+                            }
+                            Observable.create { t ->
+                                val thisfile = File(path)
+                                if (file.exists()) {
+                                    t?.onNext(thisfile)
+                                } else {
+                                    t?.onError(Exception("附件下载异常，找不到文件！"))
+                                }
+                                t?.onCompleted()
+                            }
+                        } else {
+                            Observable.create(object : Observable.OnSubscribe<File> {
+                                override fun call(t: Subscriber<in File>?) {
+                                    t?.onError(Exception("没有获取到附件信息，无法下载附件！"))
+                                    t?.onCompleted()
+                                }
+                            })
+                        }
+
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ file -> mView?.downloadAttachmentSuccess(file) }, { e ->
+                        mView?.downloadFail( "下载附件失败，${e.message}")
+                    })
+        }
+    }
+
+
     override fun upload2FileStorage(filePath: String, referenceType: String, reference: String, scale: Int) {
         XLog.debug("上传图片，filePath:$filePath, referenceType:$referenceType, reference:$reference, scale:$scale")
         if (filePath.isEmpty() || reference.isEmpty() || referenceType.isEmpty()) {

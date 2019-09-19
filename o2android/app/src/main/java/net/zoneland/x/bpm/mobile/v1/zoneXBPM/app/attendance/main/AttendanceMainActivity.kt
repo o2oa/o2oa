@@ -12,6 +12,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_attendance_main.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.approval.AttendanceAppealApprovalActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.list.AttendanceListActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.setting.AttendanceLocationSettingActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonFragmentPagerAdapter
@@ -81,16 +83,16 @@ class AttendanceMainActivity : BaseMVPActivity<AttendanceMainContract.View, Atte
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId) {
-//            R.id.menu_attendance_list -> {
-//                XLog.debug("click menu attendance list")
-//                go<AttendanceListActivity>()
-//                true
-//            }
-//            R.id.menu_attendance_appeal_approval -> {
-//                XLog.debug("click menu attendance approval list")
-//                go<AttendanceAppealApprovalActivity>()
-//                true
-//            }
+            R.id.menu_attendance_list -> {
+                XLog.debug("click menu attendance list")
+                go<AttendanceListActivity>()
+                true
+            }
+            R.id.menu_attendance_appeal_approval -> {
+                XLog.debug("click menu attendance approval list")
+                go<AttendanceAppealApprovalActivity>()
+                true
+            }
             R.id.menu_attendance_location_setting -> {
                 XLog.debug("click menu attendance location setting")
                 go<AttendanceLocationSettingActivity>()

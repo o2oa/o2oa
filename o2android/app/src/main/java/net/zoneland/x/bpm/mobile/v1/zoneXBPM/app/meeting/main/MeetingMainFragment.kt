@@ -180,9 +180,10 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
         if (list.size == 1) {
             val identifyId = list[0].distinguishedName
             val processId = meetingConfig?.process?.id
-            if (TextUtils.isEmpty(processId)) {
+            if (!TextUtils.isEmpty(processId)) {
                 mPresenter.startProcess("", identifyId, processId!!)
             }else {
+                hideLoadingDialog()
                 XToast.toastShort(context, "流程id缺失")
             }
 
@@ -195,9 +196,9 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
 
     override fun positiveCallback(identifyId: String) {
         identifyDialog?.dismiss()
-        showLoadingDialog()
         val processId = meetingConfig?.process?.id
-        if (TextUtils.isEmpty(processId)) {
+        if (!TextUtils.isEmpty(processId)) {
+            showLoadingDialog()
             mPresenter.startProcess("", identifyId, processId!!)
         }else {
             XToast.toastShort(context, "流程id缺失")
@@ -226,6 +227,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
         if (TextUtils.isEmpty(processId)) {
             activity.go<MeetingApplyActivity>()
         }else {
+            showLoadingDialog()
             mPresenter.loadCurrentPersonIdentityWithProcess(processId!!)
         }
     }
@@ -272,9 +274,22 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
             override fun convert(holder: CommonRecyclerViewHolder?, t: MeetingInfoJson?) {
                 val time = (t?.startTime)?.substring(11, 16) + "-" + (t?.completedTime)?.substring(11, 16)
 
+                val isOld = if (t?.completedTime != null) {
+                    if (DateHelper.isLessNow(t.completedTime, "yyyy-MM-dd HH:mm:ss") ) {
+                        R.mipmap.pic_jieshu
+                    }else {
+                        R.mipmap.pic_deal
+                    }
+                }else {
+                    R.mipmap.pic_deal
+                }
+
                 holder?.setText(R.id.tv_meeting_list_item_time, time)
                         ?.setText(R.id.tv_meeting_list_item_title, t?.subject)
                         ?.setText(R.id.tv_meeting_list_item_meeting_participants, "参加人: ")
+                        ?.setImageViewResource(R.id.iv_meeting_list_item_deal, isOld)
+
+
 
 
                 holder?.getView<TextView>(R.id.tv_meeting_list_item_meeting_room)!!.tag = t?.id

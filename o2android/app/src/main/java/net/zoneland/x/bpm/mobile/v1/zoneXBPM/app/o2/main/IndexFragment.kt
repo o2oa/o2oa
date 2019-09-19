@@ -83,7 +83,6 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                 ApplicationEnum.ATTENDANCE.key -> activity.go<AttendanceMainActivity>()
                 ApplicationEnum.CALENDAR.key -> activity.go<CalendarMainActivity>()
                 ApplicationEnum.MindMap.key -> {
-                    XLog.info("脑图")
                     activity.go<FlutterConnectActivity>(FlutterConnectActivity.startFlutterAppWithRoute(ApplicationEnum.MindMap.key))
                 }
                 ApplicationEnum.O2AI.key -> {
@@ -105,7 +104,12 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                             }
 
                 }
-                ALL_APP_ID -> activity.go<MyAppActivity>()
+                ALL_APP_ID -> {
+//                    activity.go<MyAppActivity>()
+                    if (activity is MainActivity) {
+                        activity.gotoApp()
+                    }
+                }
                 else -> {
                     //portal 打开
                     activity.go<PortalWebViewActivity>(PortalWebViewActivity.startPortal(id, title))

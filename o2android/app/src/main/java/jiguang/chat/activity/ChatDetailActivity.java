@@ -17,7 +17,7 @@ import com.wugang.activityresult.library.ActivityResult;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult;
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResultItem;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2PersonPickerResultItem;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -237,7 +237,7 @@ public class ChatDetailActivity extends BaseActivity {
                     if (data != null) {
                         ContactPickerResult result = data.getParcelableExtra(ContactPickerActivity.CONTACT_PICKED_RESULT);
                         if (result != null) {
-                            ArrayList<ContactPickerResultItem> users = result.getUsers();
+                            ArrayList<O2PersonPickerResultItem> users = result.getUsers();
                             if (users.size() != 0) {
                                 ArrayList<String> list = new ArrayList<>();
                                 for (int i = 0; i < users.size(); i++) {

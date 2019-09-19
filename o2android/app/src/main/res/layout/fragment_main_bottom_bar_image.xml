@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/z_color_split_line"
-        android:padding="0dp"></LinearLayout>
+        android:padding="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,38 +16,8 @@
         android:background="@color/z_color_bottom_bar_background"
         android:orientation="horizontal"
         android:padding="0dp">
-        <ImageView
-            android:id="@+id/icon_main_bottom_index"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_margin="3dp"
-            android:src="@mipmap/index_bottom_menu_logo_focus"
-            android:scaleType="fitCenter"
-            />
-        <!--<RelativeLayout-->
-            <!--android:id="@+id/icon_main_bottom_index_blur"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:padding="2dp"-->
-            <!--android:visibility="gone">-->
-            <!--<ImageView-->
-                <!--android:id="@+id/image_icon_main_bottom_index_blur"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_width="35dp"-->
-                <!--android:layout_height="35dp"-->
-                <!--android:src="@mipmap/icon_main_index_blur"/>-->
-            <!--<TextView-->
-                <!--android:id="@+id/tv_icon_main_bottom_index_blur"-->
-                <!--android:layout_below="@id/image_icon_main_bottom_index_blur"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="12sp"-->
-                <!--android:textColor="@color/z_color_text_primary"-->
-                <!--android:text="@string/tab_todo"/>-->
-        <!--</RelativeLayout>-->
+
+
         <RelativeLayout
             android:id="@+id/icon_main_bottom_news"
             android:layout_width="0dp"
@@ -69,16 +39,6 @@
                 android:textSize="12sp"
                 android:textColor="@color/z_color_text_primary"
                 android:text="@string/tab_message"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/icon_main_bottom_center_gap"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="2dp"
-            android:visibility="gone">
-
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/icon_main_bottom_contact"
@@ -102,6 +62,49 @@
                 android:textColor="@color/z_color_text_primary"
                 android:text="@string/tab_contact"/>
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/icon_main_bottom_index"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:src="@mipmap/index_bottom_menu_logo_focus"
+            android:scaleType="fitCenter"
+            />
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/icon_main_bottom_center_gap"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:padding="2dp"-->
+            <!--android:visibility="gone">-->
+
+        <!--</RelativeLayout>-->
+        <RelativeLayout
+            android:id="@+id/icon_main_bottom_app"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="2dp">
+            <ImageView
+                android:id="@+id/image_icon_main_bottom_app"
+                android:layout_centerHorizontal="true"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="2dp"
+                android:src="@mipmap/icon_main_app"/>
+            <TextView
+                android:id="@+id/tv_icon_main_bottom_app"
+                android:layout_below="@id/image_icon_main_bottom_app"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/z_color_text_primary"
+                android:text="@string/tab_app"/>
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/icon_main_bottom_setting"

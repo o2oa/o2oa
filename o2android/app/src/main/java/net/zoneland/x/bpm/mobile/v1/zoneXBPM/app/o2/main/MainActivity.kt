@@ -56,11 +56,11 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
     override var mPresenter: MainContract.Presenter = MainPresenter()
 
-    private val fragmentList: ArrayList<Fragment> = ArrayList(4)
-    private val fragmentTitles: ArrayList<String> = ArrayList(4)
+    private val fragmentList: ArrayList<Fragment> = ArrayList(5)
+    private val fragmentTitles: ArrayList<String> = ArrayList(5)
     private val mCurrentSelectIndexKey = "mCurrentSelectIndexKey"
-    private var mCurrentSelectIndex = 0
-    lateinit var cameraImageUri: Uri
+    private var mCurrentSelectIndex = 2
+    private lateinit var cameraImageUri: Uri
 
 
     var pictureLoaderService: PictureLoaderService? = null
@@ -76,24 +76,13 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         setTheme(R.style.XBPMTheme_NoActionBar)
     }
     override fun afterSetContentView(savedInstanceState: Bundle?) {
-        mCurrentSelectIndex = savedInstanceState?.getInt(mCurrentSelectIndexKey, 0) ?: 0
+        mCurrentSelectIndex = savedInstanceState?.getInt(mCurrentSelectIndexKey, 2) ?: 2
         setupToolBar(getString(R.string.app_name))
 
         XLog.info("main activity init..............")
         val indexType = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_TYPE_PREF_KEY, O2CustomStyle.INDEX_TYPE_DEFAULT)
         val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "")
         XLog.info("main activity isIndex $indexType..............")
-        var indexName = getString(R.string.tab_todo)
-        if (indexType == O2CustomStyle.INDEX_TYPE_DEFAULT || TextUtils.isEmpty(indexId)) {
-            val indexFragment = IndexFragment()
-            fragmentList.add(indexFragment)
-            fragmentTitles.add(indexName)
-        } else {
-            val indexFragment = IndexPortalFragment.instance(indexId)
-            fragmentList.add(indexFragment)
-            fragmentTitles.add(indexName)
-        }
-        mPresenter.checkO2AIEnable()
 
         val newsFragment = NewsFragment()
         fragmentList.add(newsFragment)
@@ -103,12 +92,27 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         fragmentList.add(contactFragment)
         fragmentTitles.add(getString(R.string.tab_contact))
 
+        val indexName = getString(R.string.tab_todo)
+        if (indexType == O2CustomStyle.INDEX_TYPE_DEFAULT || TextUtils.isEmpty(indexId)) {
+            val indexFragment = IndexFragment()
+            fragmentList.add(indexFragment)
+            fragmentTitles.add(indexName)
+        } else {
+            val indexFragment = IndexPortalFragment.instance(indexId)
+            fragmentList.add(indexFragment)
+            fragmentTitles.add(indexName)
+        }
+
+        val appFragment = AppFragment()
+        fragmentList.add(appFragment)
+        fragmentTitles.add(getString(R.string.tab_app))
+
         val settingFragment = SettingsFragment()
         fragmentList.add(settingFragment)
         fragmentTitles.add(getString(R.string.tab_settings))
 
         content_fragmentView_id.adapter = adapter
-        content_fragmentView_id.offscreenPageLimit = 4
+        content_fragmentView_id.offscreenPageLimit = 5
         content_fragmentView_id.addOnPageChangeListener {
             onPageSelected { position ->
                 selectTab(position)
@@ -117,6 +121,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
         fab_main_start_ai.setOnClickListener(this)
         icon_main_bottom_news.setOnClickListener(this)
+        icon_main_bottom_app.setOnClickListener(this)
 //        icon_main_bottom_index_blur.setOnClickListener(this)
         icon_main_bottom_index.setOnClickListener(this)
         icon_main_bottom_contact.setOnClickListener(this)
@@ -131,13 +136,13 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
     override fun o2AIEnable(enable: Boolean) {
         XLog.info("O2AI enable: $enable")
-        if (enable) {
-            icon_main_bottom_center_gap.visible()
-            fab_main_start_ai.visible()
-        }else {
-            icon_main_bottom_center_gap.gone()
-            fab_main_start_ai.gone()
-        }
+//        if (enable) {
+//            icon_main_bottom_center_gap.visible()
+//            fab_main_start_ai.visible()
+//        }else {
+//            icon_main_bottom_center_gap.gone()
+//            fab_main_start_ai.gone()
+//        }
     }
 
     override fun onResume() {
@@ -188,8 +193,8 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return if (mCurrentSelectIndex == 0 && fragmentList[0] is IndexPortalFragment) {
-                if ((fragmentList[0] as IndexPortalFragment).previousPage()) {
+            return if (mCurrentSelectIndex == 2 && fragmentList[2] is IndexPortalFragment) {
+                if ((fragmentList[2] as IndexPortalFragment).previousPage()) {
                     true
                 } else {
                     doubleClickExitHelper.onKeyDown(keyCode, event)
@@ -223,7 +228,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                     data?.let {
                         val url = it.extras.getString("clipAvatarFilePath")
                         XLog.debug("back Myinfo avatar uri : $url ")
-                        if (content_fragmentView_id.currentItem == 3) {
+                        if (content_fragmentView_id.currentItem == 3 && fragmentList[3] is MyFragment) {
                             (fragmentList[3] as MyFragment).modifyAvatar2Remote(url)
                         }
 
@@ -235,18 +240,28 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.icon_main_bottom_index -> {
-                if (fragmentList[0] is IndexPortalFragment) {
-                    (fragmentList[0] as IndexPortalFragment).loadWebview()
-                }
-                selectTab(0)
-            }
 //            R.id.icon_main_bottom_index_blur -> selectTab(0)
-            R.id.icon_main_bottom_news -> selectTab(1)
-            R.id.icon_main_bottom_contact -> selectTab(2)
-            R.id.icon_main_bottom_setting -> selectTab(3)
+            R.id.icon_main_bottom_news -> selectTab(0)
+            R.id.icon_main_bottom_contact -> selectTab(1)
+            R.id.icon_main_bottom_index -> {
+                if (fragmentList[2] is IndexPortalFragment) {
+                    (fragmentList[2] as IndexPortalFragment).loadWebview()
+                }
+                selectTab(2)
+            }
+            R.id.icon_main_bottom_app -> selectTab(3)
+            R.id.icon_main_bottom_setting -> selectTab(4)
             R.id.fab_main_start_ai -> startAi()
         }
+    }
+
+    //刷新ActionBar的菜单按钮 应用页面使用
+    fun refreshMenu() {
+        invalidateOptionsMenu()
+    }
+    //跳转到应用页面 首页使用
+    fun gotoApp() {
+        selectTab(3)
     }
 
     private fun startAi() {
@@ -306,7 +321,16 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     private fun changeBottomIcon(i: Int) {
         resetBottomBtnAlpha()
         when (i) {
+
             0 -> {
+                image_icon_main_bottom_news.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_news_red))
+                tv_icon_main_bottom_news.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
+            }
+            1 -> {
+                image_icon_main_bottom_contact.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_contact_red))
+                tv_icon_main_bottom_contact.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
+            }
+            2 -> {
                 val path = O2CustomStyle.indexMenuLogoFocusImagePath(this)
                 if (!TextUtils.isEmpty(path)) {
                     BitmapUtil.setImageFromFile(path!!, icon_main_bottom_index)
@@ -314,20 +338,11 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                     icon_main_bottom_index.setImageResource(R.mipmap.index_bottom_menu_logo_focus)
                 }
             }
-            1 -> {
-                image_icon_main_bottom_news.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_news_red))
-                tv_icon_main_bottom_news.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
-            }
-            2 -> {
-                image_icon_main_bottom_contact.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_contact_red))
-                tv_icon_main_bottom_contact.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
-            }
-//
-//            3 -> {
-//                image_icon_main_bottom_my.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_my_red))
-//                tv_icon_main_bottom_my.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
-//            }
             3 -> {
+                image_icon_main_bottom_app.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_app_red))
+                tv_icon_main_bottom_app.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
+            }
+            4 -> {
                 image_icon_main_bottom_setting.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_setting_red))
                 tv_icon_main_bottom_setting.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_primary))
             }
@@ -338,12 +353,11 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     private fun changePageView(position: Int) {
         content_fragmentView_id.setCurrentItem(position, false)
         when (position) {
-            0 -> setIndexToolBar()
-            1 -> resetToolBar(getString(R.string.tab_message))
-            2 -> resetToolBar(getString(R.string.tab_contact))
-
-//            3 -> setIndexToolBar()
-            3 -> resetToolBar(getString(R.string.tab_settings))
+            0 -> resetToolBar(getString(R.string.tab_message))
+            1 -> resetToolBar(getString(R.string.tab_contact))
+            2 -> setIndexToolBar()
+            3 -> resetToolBar(getString(R.string.tab_contact))
+            4 -> resetToolBar(getString(R.string.tab_settings))
         }
 
     }
@@ -359,31 +373,18 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     }
 
     private fun resetBottomBtnAlpha() {
+        image_icon_main_bottom_news.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_news))
+        tv_icon_main_bottom_news.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
+        image_icon_main_bottom_contact.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_contact))
+        tv_icon_main_bottom_contact.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
         val path = O2CustomStyle.indexMenuLogoBlurImagePath(this)
         if (!TextUtils.isEmpty(path)) {
             BitmapUtil.setImageFromFile(path!!, icon_main_bottom_index)
         }else {
             icon_main_bottom_index.setImageResource(R.mipmap.index_bottom_menu_logo_blur)
         }
-//        icon_main_bottom_index_blur.visible()
-//        image_icon_main_bottom_index_blur.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_index_blur))
-//        tv_icon_main_bottom_index_blur.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
-        image_icon_main_bottom_news.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_news))
-        tv_icon_main_bottom_news.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
-        image_icon_main_bottom_contact.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_contact))
-        tv_icon_main_bottom_contact.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
-//        if (TextUtils.isEmpty(FancySkinManager.instance().currentSkinPath()) && TextUtils.isEmpty(FancySkinManager.instance().currentSkinSuffix())) { //没有皮肤资源
-//            val bitmap = BitmapFactory.decodeFile(O2CustomStyle.indexMenuLogoBlurImagePath(this))
-//            if (bitmap==null) {
-//                icon_main_bottom_index.setImageResource(R.mipmap.index_bottom_menu_logo_blur)
-//            }else {
-//                icon_main_bottom_index.setImageBitmap(bitmap)
-//            }
-//        }else {
-//            icon_main_bottom_index.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_index_logo))
-//        }
-//        image_icon_main_bottom_my.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_my))
-//        tv_icon_main_bottom_my.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
+        image_icon_main_bottom_app.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_app))
+        tv_icon_main_bottom_app.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
         image_icon_main_bottom_setting.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_setting))
         tv_icon_main_bottom_setting.setTextColor(FancySkinManager.instance().getColor(this, R.color.z_color_text_primary))
     }

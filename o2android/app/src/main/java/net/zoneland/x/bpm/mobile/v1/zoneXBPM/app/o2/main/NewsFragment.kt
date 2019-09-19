@@ -27,6 +27,7 @@ import cn.jpush.im.android.eventbus.EventBus
 import jiguang.chat.activity.ChatActivity
 import kotlinx.android.synthetic.main.fragment_main_news.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim.IMTribeCreateActivity
@@ -217,7 +218,7 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
                         val bundle = ContactPickerActivity.startPickerBundle(
                                 arrayListOf("personPicker"),
                                 multiple = true,
-                                initUserList = arrayListOf(JMessageClient.getMyInfo().userName)
+                                initUserList = arrayListOf(O2SDKManager.instance().distinguishedName)
                         )
                         (activity as MainActivity).contactPicker(bundle) { result ->
                             if (result != null) {

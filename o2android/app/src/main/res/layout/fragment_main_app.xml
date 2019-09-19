@@ -1,15 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/z_color_background">
+    android:layout_height="match_parent">
 
-    <GridView
-        android:id="@+id/app_list_id"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:numColumns="5"
-        android:stretchMode="columnWidth"/>
-</LinearLayout>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/my_app_top_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@mipmap/my_app_top"/>
+
+        <LinearLayout
+            android:id="@+id/my_app_list_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="@dimen/meeting_padding">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/my_app_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text="我的应用"/>
+
+                <TextView
+                    android:id="@+id/my_app_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_hint"
+                    app:layout_constraintStart_toEndOf="@id/my_app_text"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/spacing_tiny"
+                    android:visibility="gone"
+                    android:text="(按住拖动调整顺序)"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/my_app_rv"
+                    app:layout_constraintStart_toEndOf="@id/my_app_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/spacing_tiny"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/edit_ll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_meeting">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/split_line"
+                    android:background="@color/z_color_split_meeting_line"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/my_app_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/meeting_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/meeting_padding"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_meeting_time"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:text="全部应用"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_meeting_line"
+                android:layout_marginTop="@dimen/spacing_meeting"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/all_app_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
