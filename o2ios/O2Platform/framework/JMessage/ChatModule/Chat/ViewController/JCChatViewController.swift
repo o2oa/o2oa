@@ -671,10 +671,56 @@ extension JCChatViewController: SAIToolboxInputViewDataSource, SAIToolboxInputVi
         return true
     }
     private func _pushToSelectPhotos() {
-        let vc = YHPhotoPickerViewController()
-        vc.maxPhotosCount = 9;
-        vc.pickerDelegate = self
-        present(vc, animated: true)
+//        let vc = YHPhotoPickerViewController()
+//        vc.maxPhotosCount = 9;
+//        vc.pickerDelegate = self
+//        present(vc, animated: true)
+        
+        
+        let vc = FileBSImagePickerViewController()
+        vc.defaultmaxNumberOfSelections = 9
+        vc.defaultTakePhotos = false
+        bs_presentImagePickerController(vc, animated: true,
+                                        select: { (asset: PHAsset) -> Void in
+                                            // User selected an asset.
+                                            // Do something with it, start upload perhaps?
+        }, deselect: { (asset: PHAsset) -> Void in
+            // User deselected an assets.
+            // Do something, cancel upload?
+        }, cancel: { (assets: [PHAsset]) -> Void in
+            // User cancelled. And this where the assets currently selected.
+        }, finish: { (assets: [PHAsset]) -> Void in
+//            for item in photos {
+//                guard let photo = item as? UIImage else {
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    self.send(forImage: photo)
+//                }
+//            }
+            
+            for asset in assets {
+                if asset.mediaType == .image {
+                    let options = PHImageRequestOptions()
+                    options.isSynchronous = true
+                    options.deliveryMode = .fastFormat
+                    options.resizeMode = .none
+                    PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: options, resultHandler: { (image, array) in
+                        guard let uiimage = image else {
+                            return
+                        }
+                        DispatchQueue.main.async {
+                            self.send(forImage: uiimage)
+                        }
+                    })
+                }
+            }
+        }, completion: nil)
+        
+        
+        
+        
+        
     }
     open func toolbox(_ toolbox: SAIToolboxInputView, didSelectFor item: SAIToolboxItem) {
         toolbar.resignFirstResponder()
@@ -684,14 +730,14 @@ extension JCChatViewController: SAIToolboxInputViewDataSource, SAIToolboxInputVi
                 PHPhotoLibrary.requestAuthorization({ (status) in
                     DispatchQueue.main.sync {
                         if status != .authorized {
-                            JCAlertView.bulid().setTitle("无权限访问照片").setMessage("请在设备的设置-极光 IM中允许访问照片。").setDelegate(self).addCancelButton("好的").addButton("去设置").setTag(10001).show()
+                            self.gotoApplicationSettings(alertMessage: "无权限访问照片，请在设备的设置中允许访问照片？")
                         } else {
                             self._pushToSelectPhotos()
                         }
                     }
                 })
             } else {
-                _pushToSelectPhotos()
+                self._pushToSelectPhotos()
             }
         case "page:camera":
             present(imagePicker, animated: true, completion: nil)
@@ -838,8 +884,34 @@ extension JCChatViewController: JCMessageDelegate {
     
     func clickTips(message: JCMessageType) {
         currentMessage = message
-        let alertView = UIAlertView(title: "重新发送", message: "是否重新发送该消息？", delegate: self, cancelButtonTitle: "取消", otherButtonTitles: "发送")
-        alertView.show()
+//        let alertView = UIAlertView(title: "重新发送", message: "是否重新发送该消息？", delegate: self, cancelButtonTitle: "取消", otherButtonTitles: "发送")
+        let okAction = UIAlertAction(title: "发送", style: .default) { (action) in
+            if let index = self.messages.index(self.currentMessage) {
+                self.messages.remove(at: index)
+                self.chatView.remove(at: index)
+                let msg = self.conversation.message(withMessageId: self.currentMessage.msgId)
+                self.currentMessage.options.state = .sending
+                
+                if let msg = msg {
+                    if let content = self.currentMessage.content as? JCMessageImageContent,
+                        let imageContent = msg.content as? JMSGImageContent
+                    {
+                        imageContent.uploadHandler = {  (percent:Float, msgId:(String?)) -> Void in
+                            content.upload?(percent)
+                        }
+                    }
+                }
+                self.messages.append(self.currentMessage as! JCMessage)
+                self.chatView.append(self.currentMessage)
+                self.conversation.send(msg!, optionalContent: JMSGOptionalContent.ex.default)
+                self.chatView.scrollToLast(animated: true)
+            }
+        }
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel) { (action) in
+            //
+        }
+        self.showDefaultConfirm(title: "重新发送", message: "是否重新发送该消息？", okAction: okAction, cancelAction: cancelAction)
+//        alertView.show()
     }
     
     func tapAvatarView(message: JCMessageType) {
@@ -964,42 +1036,42 @@ extension JCChatViewController: JCChatViewDelegate {
     }
 }
 
-extension JCChatViewController: UIAlertViewDelegate {
-
-    func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
-        if alertView.tag == 10001 {
-            if buttonIndex == 1 {
-                JCAppManager.openAppSetter()
-            }
-            return
-        }
-        switch buttonIndex {
-        case 1:
-            if let index = messages.index(currentMessage) {
-                messages.remove(at: index)
-                chatView.remove(at: index)
-                let msg = conversation.message(withMessageId: currentMessage.msgId)
-                currentMessage.options.state = .sending
-
-                if let msg = msg {
-                    if let content = currentMessage.content as? JCMessageImageContent,
-                        let imageContent = msg.content as? JMSGImageContent
-                    {
-                        imageContent.uploadHandler = {  (percent:Float, msgId:(String?)) -> Void in
-                            content.upload?(percent)
-                        }
-                    }
-                }
-                messages.append(currentMessage as! JCMessage)
-                chatView.append(currentMessage)
-                conversation.send(msg!, optionalContent: JMSGOptionalContent.ex.default)
-                chatView.scrollToLast(animated: true)
-            }
-        default:
-            break
-        }
-    }
-}
+//extension JCChatViewController: UIAlertViewDelegate {
+//
+//    func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+//        if alertView.tag == 10001 {
+//            if buttonIndex == 1 {
+//                JCAppManager.openAppSetter()
+//            }
+//            return
+//        }
+//        switch buttonIndex {
+//        case 1:
+//            if let index = messages.index(currentMessage) {
+//                messages.remove(at: index)
+//                chatView.remove(at: index)
+//                let msg = conversation.message(withMessageId: currentMessage.msgId)
+//                currentMessage.options.state = .sending
+//
+//                if let msg = msg {
+//                    if let content = currentMessage.content as? JCMessageImageContent,
+//                        let imageContent = msg.content as? JMSGImageContent
+//                    {
+//                        imageContent.uploadHandler = {  (percent:Float, msgId:(String?)) -> Void in
+//                            content.upload?(percent)
+//                        }
+//                    }
+//                }
+//                messages.append(currentMessage as! JCMessage)
+//                chatView.append(currentMessage)
+//                conversation.send(msg!, optionalContent: JMSGOptionalContent.ex.default)
+//                chatView.scrollToLast(animated: true)
+//            }
+//        default:
+//            break
+//        }
+//    }
+//}
 
 // MARK: - SAIInputBarDelegate & SAIInputBarDisplayable
 extension JCChatViewController: SAIInputBarDelegate, SAIInputBarDisplayable {

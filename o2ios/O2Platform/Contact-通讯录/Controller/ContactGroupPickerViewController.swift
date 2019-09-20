@@ -59,11 +59,10 @@ class ContactGroupPickerViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let value = self.groupDataList[indexPath.row].distinguishedName!
-        let name = self.groupDataList[indexPath.row].name!
         if self.isSelected(value: value) {
             self.removeSelected(value: value)
         }else {
-            self.addSelected(value: value, name: name)
+            self.addSelected(group: self.groupDataList[indexPath.row])
         }
         self.tableView.reloadRows(at: [indexPath], with: .automatic)
         
@@ -141,9 +140,9 @@ class ContactGroupPickerViewController: UITableViewController {
         }
     }
     
-    private func addSelected(value: String, name: String) {
+    private func addSelected(group: OOGroupModel) {
         if let vc = self.parent as? ContactPickerViewController {
-            vc.addSelectedValue(type: .group, name: name, value: value)
+            vc.addSelectedGroup(group: group)
         }
     }
 

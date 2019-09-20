@@ -14,6 +14,9 @@ import Promises
 class OOMeetingMainViewModel: NSObject {
     //HTTP API
     private let o2MeetingAPI = OOMoyaProvider<O2MeetingAPI>()
+    private let o2PersonalAPI = OOMoyaProvider<PersonalAPI>()
+    private let o2ProcessAPI = OOMoyaProvider<OOApplicationAPI>()
+    
     //所有本月所有会议
     private var meetingsByMonth:[OOMeetingInfo] = [] {
         didSet {
@@ -50,6 +53,73 @@ class OOMeetingMainViewModel: NSObject {
 
 extension OOMeetingMainViewModel {
     
+    //获取会议配置信息
+    func loadMeetingConfig() -> Promise<OOMeetingConfigInfo> {
+        return Promise { fulfill, reject in
+            self.o2PersonalAPI.request(.meetingConfig, completion: { (result) in
+                let config = OOResult<BaseModelClass<String>>(result)
+                if config.isResultSuccess() {
+                    if let jsonString = config.model?.data {
+                        if let info = OOMeetingConfigInfo.deserialize(from: jsonString) {
+                            fulfill(info)
+                        }else {
+                            reject(OOAppError.jsonMapping(message: "json解析异常", statusCode: 1024, data: nil))
+                        }
+                    } else {
+                        reject(OOAppError.apiResponseError("返回数据是空"))
+                    }
+                }else {
+                    reject(config.error!)
+                }
+            })
+            
+        }
+    }
+    
+    //会议流程对应的身份信息
+    func loadMeetingProcess(processId: String) -> Promise<[OOMeetingProcessIdentity]> {
+        return Promise { fulfill, reject in
+            self.o2ProcessAPI.request(.availableIdentityWithProcess(processId), completion: { (result) in
+                let myResult = OOResult<BaseModelClass<[OOMeetingProcessIdentity]>>(result)
+                if myResult.isResultSuccess() {
+                    if let item = myResult.model?.data {
+                        fulfill(item)
+                    }else{
+                        let customError = OOAppError.common(type: "会议异常", message: "会议流程身份读取错误", statusCode: 7001)
+                        reject(customError)
+                    }
+                }else{
+                    reject(myResult.error!)
+                }
+            })
+        }
+    }
+    
+    //启动会议流程
+    func startProcess(processId: String, identity: String) -> Promise<[TodoTaskData]> {
+        return Promise { fulfill, reject in
+            self.o2ProcessAPI.request(.startProcess(processId, identity, ""), completion: { (result) in
+                let myResult = OOResult<BaseModelClass<[StartProcessData]>>(result)
+                if myResult.isResultSuccess() {
+                     if let item = myResult.model?.data {
+                        if let taskList = item[0].taskList {
+                            fulfill(taskList)
+                        }else {
+                            let customError = OOAppError.common(type: "启动会议流程异常", message: "启动会议流程异常", statusCode: 7001)
+                            reject(customError)
+                        }
+                     }else {
+                        let customError = OOAppError.common(type: "启动会议流程异常", message: "启动会议流程异常", statusCode: 7001)
+                        reject(customError)
+                    }
+                } else {
+                     reject(myResult.error!)
+                }
+            })
+        }
+    }
+    
+
     // MARK:- 读取会议室信息
     func loadMeetingRoomById(_ roomId:String) -> Promise<OOMeetingRoomInfo> {
         return Promise { fulfill,reject in
@@ -69,6 +139,7 @@ extension OOMeetingMainViewModel {
             }
         }
     }
+    
     
     func loadMeetingRoomById(_ roomId:String,completed:@escaping (_ room:OOMeetingRoomInfo?) -> Void){
         o2MeetingAPI.request(.roomItemById(roomId)) { (result) in

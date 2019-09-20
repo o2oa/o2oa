@@ -77,7 +77,7 @@ class FriendsBusinessCardViewController: UIViewController {
         navigationItem.leftBarButtonItem =  navLeftButton
     }
 
-    func _clickNavLeftButton() {
+    @objc func _clickNavLeftButton() {
         dismiss(animated: true, completion: nil)
     }
 

@@ -30,11 +30,11 @@ class OOMeetingPersonCell: UICollectionViewCell,Configurable {
     }
     
     
-    @IBAction func delectPersonAction(_ sender: UIButton) {
-        print("delectPersonAction")
-        //发送需要删除的p
-        
-    }
+//    @IBAction func delectPersonAction(_ sender: UIButton) {
+//        print("delectPersonAction")
+//        //发送需要删除的p
+//
+//    }
     
     func config(withItem item: Any?) {
         guard let p = item as? OOPersonModel else {

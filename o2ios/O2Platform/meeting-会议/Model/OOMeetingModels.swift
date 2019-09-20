@@ -9,6 +9,47 @@
 import Foundation
 import HandyJSON
 
+class OOMeetingConfigProcess: NSObject, DataModel {
+    @objc var name: String?
+    @objc var id: String?
+    @objc var application: String?
+    @objc var applicationName: String?
+    @objc var alias: String?
+    
+    required override init() {
+        
+    }
+}
+
+class OOMeetingConfigInfo: NSObject, DataModel {
+    var process: OOMeetingConfigProcess?
+    var mobileCreateEnable:  Bool?
+    var weekBegin: Int?
+    
+    required override init() {
+        
+    }
+}
+
+class OOMeetingProcessIdentity: NSObject, DataModel {
+    @objc var name: String?
+    @objc var unique: String?
+    @objc var desc:String?
+    @objc var distinguishedName: String?
+    @objc var person: String?
+    @objc var unit: String?
+    @objc var unitName: String?
+    var unitLevel: Int?
+    @objc var unitLevelName: String?
+    
+    required override init() {
+        
+    }
+    func mapping(mapper: HelpingMapper) {
+        mapper <<< self.desc <-- "description"
+    }
+}
+
 class OOMeetingBuildInfo: NSObject,DataModel {
     
     @objc var address : String?
@@ -19,7 +60,6 @@ class OOMeetingBuildInfo: NSObject,DataModel {
     @objc var pinyinInitial : String?
     @objc var roomList : [OOMeetingRoomInfo]?
     @objc var updateTime : String?
-    
     
     required override init() {
         

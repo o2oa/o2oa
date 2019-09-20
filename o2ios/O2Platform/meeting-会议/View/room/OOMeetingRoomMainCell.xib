@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -88,15 +87,25 @@
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unselected" translatesAutoresizingMaskIntoConstraints="NO" id="0il-aQ-oBf">
+                        <rect key="frame" x="335" y="86" width="24" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="ADg-sa-OLo"/>
+                            <constraint firstAttribute="width" constant="24" id="yJj-5x-kM0"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="0il-aQ-oBf" firstAttribute="leading" secondItem="7uJ-Fe-h0m" secondAttribute="trailing" constant="2" id="5X8-tn-LKH"/>
                     <constraint firstItem="VTr-24-uWu" firstAttribute="top" secondItem="hpM-v8-Ei0" secondAttribute="bottom" constant="3" id="6E7-ow-gAC"/>
                     <constraint firstItem="gsY-ZN-LnF" firstAttribute="top" secondItem="VTr-24-uWu" secondAttribute="bottom" constant="4" id="87G-Lf-XZX"/>
                     <constraint firstItem="gsY-ZN-LnF" firstAttribute="leading" secondItem="K2w-aA-daS" secondAttribute="trailing" id="AbA-NM-YoN"/>
                     <constraint firstItem="7uJ-Fe-h0m" firstAttribute="top" secondItem="VTr-24-uWu" secondAttribute="bottom" constant="4" id="FWB-a0-1Ld"/>
                     <constraint firstItem="1Jv-Dd-BZU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="KEc-b0-LBZ"/>
                     <constraint firstItem="VTr-24-uWu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="RIw-1E-Vny"/>
+                    <constraint firstItem="0il-aQ-oBf" firstAttribute="top" secondItem="VTr-24-uWu" secondAttribute="bottom" constant="4" id="bgX-Gg-KqU"/>
                     <constraint firstItem="HnR-dL-ggq" firstAttribute="top" secondItem="VTr-24-uWu" secondAttribute="bottom" constant="4" id="bwD-1w-6A8"/>
+                    <constraint firstAttribute="trailing" secondItem="0il-aQ-oBf" secondAttribute="trailing" constant="16" id="bzK-1A-v33"/>
                     <constraint firstItem="K2w-aA-daS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="dbk-17-n0u"/>
                     <constraint firstItem="1Jv-Dd-BZU" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="dli-FK-2S1"/>
                     <constraint firstItem="hpM-v8-Ei0" firstAttribute="top" secondItem="dQd-5f-rxY" secondAttribute="bottom" constant="5" id="fSH-o0-hEb"/>
@@ -120,7 +129,9 @@
                 <outlet property="locationLabel" destination="hpM-v8-Ei0" id="6SS-ps-yNM"/>
                 <outlet property="meetingCountLabel" destination="7uJ-Fe-h0m" id="9W9-T7-5mj"/>
                 <outlet property="meetingStatusImageView" destination="1Jv-Dd-BZU" id="Qji-zY-Jvx"/>
+                <outlet property="rightArrowImageView" destination="HnR-dL-ggq" id="0Oz-Bv-eVG"/>
                 <outlet property="roomNameLabel" destination="dQd-5f-rxY" id="X1C-7S-Ese"/>
+                <outlet property="selectImageView" destination="0il-aQ-oBf" id="sHm-Lc-ndG"/>
             </connections>
             <point key="canvasLocation" x="5.5" y="13"/>
         </tableViewCell>
@@ -128,5 +139,6 @@
     <resources>
         <image name="icon_arrow" width="22" height="22"/>
         <image name="pic_yuyue" width="50" height="18"/>
+        <image name="unselected" width="30" height="30"/>
     </resources>
 </document>

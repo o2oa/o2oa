@@ -71,11 +71,10 @@ class ContactUnitPickerViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let value = dataList[indexPath.row].distinguishedName!
-            let name = dataList[indexPath.row].name!
             if self.isSelected(value: value) {
                 self.removeSelected(value: value)
             }else {
-                self.addSelected(value: value, name: name)
+                self.addSelected(dept: dataList[indexPath.row])
             }
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }
@@ -149,9 +148,9 @@ class ContactUnitPickerViewController: UITableViewController {
         }
     }
     
-    private func addSelected(value: String, name: String) {
+    private func addSelected(dept: OOUnitModel) {
         if let vc = self.parent as? ContactPickerViewController {
-            vc.addSelectedValue(type: .unit, name: name, value: value)
+            vc.addSelectedDept(dept: dept)
         }
     }
     

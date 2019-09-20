@@ -149,12 +149,9 @@ struct O2BizComplexPickerResults: HandyJSON {
     var results: [String]?
 }
 struct O2BizContactPickerResult: HandyJSON {
-    var departments: [O2BizContactPickerResultItem]?
-    var identities: [O2BizContactPickerResultItem]?
-    var groups: [O2BizContactPickerResultItem]?
-    var users: [O2BizContactPickerResultItem]?
+    var departments: [O2UnitPickerItem]?
+    var identities: [O2IdentityPickerItem]?
+    var groups: [O2GroupPickerItem]?
+    var users: [O2PersonPickerItem]?
 }
-struct O2BizContactPickerResultItem: HandyJSON {
-    var distinguishedName: String?
-    var name: String?
-}
+

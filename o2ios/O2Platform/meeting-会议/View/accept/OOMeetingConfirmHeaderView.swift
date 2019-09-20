@@ -22,7 +22,7 @@ class OOMeetingConfirmHeaderView: UIView {
     override func awakeFromNib() {
         control1.bounds  = CGRect(x: 0, y: 0, width: kScreenW, height: 40)
         control1.titles = ["收到的邀请","发出的邀请"]
-        control1.autoresizingMask = [.flexibleWidth,.flexibleHeight]
+//        control1.autoresizingMask = [.flexibleWidth,.flexibleHeight]
         control1.titleFont = UIFont(name: "PingFangSC-Regular", size: 16.0)!
         control1.selectedTitleFont = UIFont(name: "PingFangSC-Regular", size: 16.0)!
     }

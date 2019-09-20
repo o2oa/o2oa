@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 private let headerIdentifier = "OOMeetingPersonSelectHeaderView"
 private let footerIdentifier = "OOMeetingPersonFooterView"
@@ -48,6 +49,8 @@ class OOMeetingCreateViewController: UIViewController {
         }
         let mBean = OOMeetingFormBean(meetingForm: mForm)
         if mBean.checkFormValues() {
+            let jsno = mBean.toJSONString() ?? "default "
+            DDLogDebug(jsno)
             viewModel.createMeetingAction(mBean, completedBlock: { (resultMessage) in
                 if let message = resultMessage {
                     //error fail
@@ -73,6 +76,11 @@ class OOMeetingCreateViewController: UIViewController {
             destVC.delegate = self
             destVC.currentMode = 2
             destVC.title = "选择人员"
+        }else if segue.identifier == "showPickerRoom" {
+            if let dest = segue.destination as? OOMeetingMeetingRoomManageController {
+                dest.currentMode = 1 //单选
+                dest.delegate = self
+            }
         }
     }
     
@@ -116,6 +124,15 @@ extension OOMeetingCreateViewController:UICollectionViewDataSource,UICollectionV
         return reusableView
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        DDLogDebug("click item")
+        if let model = viewModel.collectionViewNodeForIndexPath(indexPath) {
+            self.viewModel.removeSelectPerson(model)
+            self.ooPersonCollectionView.reloadData()
+        }
+    }
+    
+    
 }
 
 extension OOMeetingCreateViewController:UICollectionViewDelegateFlowLayout {
@@ -132,7 +149,31 @@ extension OOMeetingCreateViewController:OOMeetingPersonActionCellDelegate{
     
     func addPersonActionClick(_ sender: UIButton) {
         //执行segue
-        self.performSegue(withIdentifier: "showPersonSelectedSegue", sender: nil)
+//        self.performSegue(withIdentifier: "showPersonSelectedSegue", sender: nil)
+    
+        if let v = ContactPickerViewController.providePickerVC(
+            pickerModes: [ContactPickerType.person],
+            multiple: true,
+            pickedDelegate: { (result: O2BizContactPickerResult) in
+                if let users = result.users {
+                    var persons :[OOPersonModel] = []
+                    users.forEach({ (item) in
+                        let pm = OOPersonModel()
+                        pm.id = item.id
+                        pm.name = item.name
+                        pm.genderType = item.genderType
+                        pm.distinguishedName = item.distinguishedName
+                        persons.append(pm)
+                    })
+                    if !persons.isEmpty {
+                        self.viewModel.selectedPersons = persons
+                        self.ooPersonCollectionView.reloadData()
+                    }
+                }
+                
+        }) {
+            self.navigationController?.pushViewController(v, animated: true)
+        }
     }
 }
 
@@ -169,11 +210,13 @@ extension OOMeetingCreateViewController:OOMeetingCreateFormViewDelegate{
     
     // MARK:- 会议室选择
     func performRoomSelected() {
-        let destVC = self.storyboard?.instantiateViewController(withIdentifier: "OOMeetingMeetingRoomManageController") as! OOMeetingMeetingRoomManageController
-        destVC.currentMode = 1 //单选
-        destVC.delegate = self
-        let navVC = ZLNavigationController(rootViewController: destVC)
-        self.present(navVC, animated: true, completion: nil)
+         self.performSegue(withIdentifier: "showPickerRoom", sender: nil)
+//        let destVC = self.storyboard?.instantiateViewController(withIdentifier: "OOMeetingMeetingRoomManageController") as! OOMeetingMeetingRoomManageController
+//        destVC.currentMode = 1 //单选
+//        destVC.delegate = self
+//        let navVC = ZLNavigationController(rootViewController: destVC)
+//        self.pushVC(navVC)
+//        self.present(navVC, animated: true, completion: nil)
     }
 }
 

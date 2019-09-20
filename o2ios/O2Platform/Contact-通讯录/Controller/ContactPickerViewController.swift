@@ -94,12 +94,16 @@ class ContactPickerViewController: UIViewController {
     var pickedDelegate: DidPickedContact?
     
     //已经选中的值
-    private var selectedDeptSet:[O2BizContactPickerResultItem] = []
-    private var selectedIdSet:[O2BizContactPickerResultItem] = []
-    private var selectedGroupSet:[O2BizContactPickerResultItem] = []
-    private var selectedUserSet:[O2BizContactPickerResultItem] = []
+    private var selectedDeptSet:[O2UnitPickerItem] = []
+    private var selectedIdSet:[O2IdentityPickerItem] = []
+    private var selectedGroupSet:[O2GroupPickerItem] = []
+    private var selectedUserSet:[O2PersonPickerItem] = []
     //选择按钮文字
     private var pickBtnTitle = ""
+    
+    private let viewModel: ContactPickerViewModel = {
+        return ContactPickerViewModel()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,7 +115,10 @@ class ContactPickerViewController: UIViewController {
                 }else {
                     name = s
                 }
-                selectedDeptSet.append(O2BizContactPickerResultItem(distinguishedName: s, name: name))
+                let unit = O2UnitPickerItem()
+                unit.distinguishedName = s
+                unit.name = name
+                selectedDeptSet.append(unit)
             }
         }
         if initIdPickedArray.count > 0 {
@@ -122,7 +129,10 @@ class ContactPickerViewController: UIViewController {
                 }else {
                     name = s
                 }
-                selectedIdSet.append(O2BizContactPickerResultItem(distinguishedName: s, name: name))
+                let id = O2IdentityPickerItem()
+                id.distinguishedName = s
+                id.name = name
+                selectedIdSet.append(id)
             }
         }
         if initGroupPickedArray.count > 0 {
@@ -133,7 +143,10 @@ class ContactPickerViewController: UIViewController {
                 }else {
                     name = s
                 }
-                selectedGroupSet.append(O2BizContactPickerResultItem(distinguishedName: s, name: name))
+                let group = O2GroupPickerItem()
+                group.distinguishedName = s
+                group.name = name
+                selectedGroupSet.append(group)
             }
         }
         if initUserPickedArray.count > 0 {
@@ -144,7 +157,10 @@ class ContactPickerViewController: UIViewController {
                 }else {
                     name = s
                 }
-                selectedUserSet.append(O2BizContactPickerResultItem(distinguishedName: s, name: name))
+                let person = O2PersonPickerItem()
+                person.distinguishedName = s
+                person.name = name
+                selectedUserSet.append(person)
             }
         }
         let c = selectedDeptSet.count + selectedIdSet.count + selectedGroupSet.count + selectedUserSet.count
@@ -257,33 +273,57 @@ class ContactPickerViewController: UIViewController {
         }
         self.refreshPickButton()
     }
-    // 添加一个选中的值
-    func addSelectedValue(type: ContactPickerType, name: String, value: String) {
+    // 选择一个组织
+    func addSelectedDept(dept: OOUnitModel) {
         let c = selectedDeptSet.count + selectedIdSet.count + selectedGroupSet.count + selectedUserSet.count
         if maxNumber > 0 && c >= maxNumber {
             self.showError(title: "不能添加更多了！")
             return
         }
-        switch type {
-        case .unit:
-            self.selectedDeptSet.append(O2BizContactPickerResultItem(distinguishedName: value, name: name))
-            break
-        case .identity:
-            self.selectedIdSet.append(O2BizContactPickerResultItem(distinguishedName: value, name: name))
-            break
-        case .group:
-            self.selectedGroupSet.append(O2BizContactPickerResultItem(distinguishedName: value, name: name))
-            break
-        case .person:
-            self.selectedUserSet.append(O2BizContactPickerResultItem(distinguishedName: value, name: name))
-            break
-        }
+        let item = O2UnitPickerItem()
+        item.copyFromUnitModel(dept: dept)
+        self.selectedDeptSet.append(item)
         self.refreshPickButton()
     }
-    
-    
-    
-    
+    // 选择一个身份
+    func addSelectedIdentity(id: OOIdentityModel) {
+        let c = selectedDeptSet.count + selectedIdSet.count + selectedGroupSet.count + selectedUserSet.count
+        if maxNumber > 0 && c >= maxNumber {
+            self.showError(title: "不能添加更多了！")
+            return
+        }
+        let item = O2IdentityPickerItem()
+        item.copyFromIdentityModel(identity: id)
+        self.selectedIdSet.append(item)
+        //异步获取用户信息 然后填充进去
+        self.getPersonInfoFor(forType: "0", dn: id.person!)//这里的person是人员的id
+        self.refreshPickButton()
+    }
+    // 选择一个群组
+    func addSelectedGroup(group: OOGroupModel) {
+        let c = selectedDeptSet.count + selectedIdSet.count + selectedGroupSet.count + selectedUserSet.count
+        if maxNumber > 0 && c >= maxNumber {
+            self.showError(title: "不能添加更多了！")
+            return
+        }
+        let item = O2GroupPickerItem()
+        item.copyFromGroupModel(group: group)
+        self.selectedGroupSet.append(item)
+        self.refreshPickButton()
+    }
+    func addSelectedPerson(id: OOIdentityModel) {
+        let c = selectedDeptSet.count + selectedIdSet.count + selectedGroupSet.count + selectedUserSet.count
+        if maxNumber > 0 && c >= maxNumber {
+            self.showError(title: "不能添加更多了！")
+            return
+        }
+        let item = O2PersonPickerItem()
+        item.distinguishedName = id.person
+        self.selectedUserSet.append(item)
+        //异步获取用户信息 然后填充进去
+        self.getPersonInfoFor(forType: "1", dn: id.person!)//这里的person是人员的dn
+        self.refreshPickButton()
+    }
     
     // MARK: - private method 当前类私有方法
 
@@ -309,7 +349,6 @@ class ContactPickerViewController: UIViewController {
         pickBtnTitle = "选择(\(c))"
         if maxNumber > 0 {
             pickBtnTitle = "选择(\(c) / \(maxNumber))"
-            
         }
         navigationItem.rightBarButtonItem?.title = pickBtnTitle
     }
@@ -413,6 +452,17 @@ class ContactPickerViewController: UIViewController {
             break
         default:
             DDLogDebug("click unkown")
+        }
+    }
+    
+    // forType 0:身份填充 1:用户填充
+    private func getPersonInfoFor(forType: String, dn: String) {
+        viewModel.getPersonInfo(dn: dn).then { (person) in
+            if (forType == "0") {
+                self.selectedIdSet.first(where: { $0.person == person.distinguishedName })?.updatePersonInfo(person: person)
+            }else {
+                self.selectedUserSet.first(where: { $0.distinguishedName == person.distinguishedName })?.copyFromPersonModel(person: person)
+            }
         }
     }
     /*

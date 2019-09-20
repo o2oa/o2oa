@@ -118,9 +118,7 @@ class ContactPersonPickerViewController: UITableViewController {
     }
     
     private func addSelected(value: String, name: String) {
-        if let vc = self.parent as? ContactPickerViewController {
-            vc.addSelectedValue(type: .person, name: name, value: value)
-        }
+        
     }
     
     private func searchBarInit(_ searchBar:UISearchBar){

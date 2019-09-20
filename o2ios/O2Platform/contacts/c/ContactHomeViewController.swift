@@ -317,7 +317,7 @@ class ContactHomeViewController: UITableViewController {
                                 case .success(let val):
                                     let objects = JSON(val)["data"]
                                     print(objects.description)
-                                    
+                                    self.contacts[order]?.removeAll()
                                     if let unit = Mapper<OrgUnit>().map(JSONString:objects.description) {
                                         unit.subDirectUnitCount = 1 //这个接口查询出来的组织没有下级组织的数量，假设是有下级组织的
                                         let tile = HeadTitle(name: "组织架构", icon: O2ThemeManager.string(for: "Icon.icon_bumen")!)

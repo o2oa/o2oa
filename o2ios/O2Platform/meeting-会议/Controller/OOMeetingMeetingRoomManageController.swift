@@ -77,7 +77,7 @@ class OOMeetingMeetingRoomManageController: UIViewController {
         if currentMode != 0 {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(title:"确认", style: .plain, target: self, action: #selector(selectSubmit(_:)))
         }
-        if currentMode == 1{
+        if currentMode == 1 {
             self.tableView.allowsSelection = true
         }else if currentMode == 2 {
             self.tableView.allowsMultipleSelection = true
@@ -113,7 +113,7 @@ class OOMeetingMeetingRoomManageController: UIViewController {
             return
         }
         block.backResult("OOMeetingMeetingRoomManageController", selectedMeetingRooms)
-        self.dismiss(animated: true, completion: nil)
+        self.popVC()
     }
     
     @objc func closeWindow() {
@@ -174,17 +174,15 @@ extension OOMeetingMeetingRoomManageController:UITableViewDataSource,UITableView
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         let uCell = cell as! OOMeetingRoomMainCell
         let item = viewModel.nodeForIndexPath(indexPath)
-        uCell.config(withItem: item)
+        uCell.newConfig(withItem: item, showSelected: self.currentMode == 1)
         return cell
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        print("viewForHeaderInSection section=\(section)")
         return viewModel.headerViewOfSection(section)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        print("viewForFooterInSection section=\(section)")
         return viewModel.footerViewOfSection(section)
     }
     
@@ -195,19 +193,19 @@ extension OOMeetingMeetingRoomManageController:UITableViewDataSource,UITableView
         }else{
             self.selectedMeetingRooms.append(item!)
             self.selectedCellIndexPaths.append(indexPath)
-            let cell = tableView.cellForRow(at: indexPath)
-            cell?.selectedBackgroundView = cellBackView
+            let cell = tableView.cellForRow(at: indexPath) as? OOMeetingRoomMainCell
+            cell?.selectRoom(isSelected: true)
         }
     }
     
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let item = viewModel.nodeForIndexPath(indexPath)
-        if let index = self.selectedMeetingRooms.index(of: item!) {
+        if let index = self.selectedMeetingRooms.firstIndex(of: item!) {
             self.selectedMeetingRooms.remove(at: index)
-            self.selectedCellIndexPaths.remove(at: selectedCellIndexPaths.index(of: indexPath)!)
+            self.selectedCellIndexPaths.remove(at: selectedCellIndexPaths.firstIndex(of: indexPath)!)
         }
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.selectedBackgroundView = nil
+        let cell = tableView.cellForRow(at: indexPath) as? OOMeetingRoomMainCell
+        cell?.selectRoom(isSelected: false)
     }
 }

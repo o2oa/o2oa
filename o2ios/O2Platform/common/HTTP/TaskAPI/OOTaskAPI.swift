@@ -97,20 +97,18 @@ extension OOTaskAPI:TargetType{
             return "/jaxrs/attachment/upload/work/\(workId)"
         case .taskCreateAvaiableIdentityById(let processId):
             return "/jaxrs/process/list/available/identity/process/\(processId)"
-            
         case .readList(let id, let count):
             return "/jaxrs/read/list/\(id)/next/\(count)"
         case .readListFilter(let id, let count):
             return "/jaxrs/read/list/\(id)/next/\(count)/filter"
-            
         case .taskedList(let id, let count):
             return "/jaxrs/taskcompleted/list/\(id)/next/\(count)"
         case .taskedListFilter(let id, let count):
             return "/jaxrs/taskcompleted/list/\(id)/next/\(count)/filter"
         case .taskedDataById(let id):
-            return "jaxrs/taskcompleted/\(id)/reference"
+            return "/jaxrs/taskcompleted/\(id)/reference"
         case .taskedGetAttachmentInfo(let attachId,let workCompletedId):
-            return "jaxrs/attachment/\(attachId)/work/\(workCompletedId)"
+            return "/jaxrs/attachment/\(attachId)/work/\(workCompletedId)"
         case .taskedDownloadAttachment(let attachId, let workCompletedId):
             return "/jaxrs/attachment/download/\(attachId)/workcompleted/\(workCompletedId)"
         

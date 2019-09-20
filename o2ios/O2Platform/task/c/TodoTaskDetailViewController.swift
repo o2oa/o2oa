@@ -899,6 +899,7 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
     }
     private func showAttachViewInController(_ infoURL:String,_ downURL:String){
         self.showMessage(title: "下载中...")
+        DDLogDebug("infoUrl:\(infoURL) ,down url:\(downURL)")
         Alamofire.request(infoURL).responseJSON { (response) in
             switch response.result {
             case .success(let val):

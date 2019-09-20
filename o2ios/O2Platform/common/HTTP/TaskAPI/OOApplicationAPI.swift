@@ -15,6 +15,8 @@ enum OOApplicationAPI {
     case applicationList
     case applicationOnlyList
     case applicationItem(String)
+    case availableIdentityWithProcess(String)
+    case startProcess(String, String, String) // processId identity title
 }
 
 // MARK:- 上下文实现
@@ -47,11 +49,20 @@ extension OOApplicationAPI:TargetType {
             return "/jaxrs/application/list"
         case .applicationItem(let appId):
             return "/jaxrs/process/list/application/\(appId)"
+        case .availableIdentityWithProcess(let processId):
+            return "/jaxrs/process/list/available/identity/process/\(processId)"
+        case .startProcess(let processId, _, _):
+            return "/jaxrs/work/process/\(processId)"
         }
     }
     
     var method: Moya.Method {
-        return .get
+        switch self {
+        case .startProcess(_, _, _):
+            return .post
+        default:
+            return .get
+        }
     }
     
     var sampleData: Data {
@@ -59,7 +70,13 @@ extension OOApplicationAPI:TargetType {
     }
     
     var task: Task {
-        return .requestPlain
+        switch self {
+        case .startProcess(_, let identity, let title):
+            return .requestParameters(parameters: ["identity": identity, "title": title], encoding: JSONEncoding.default)
+        default:
+            return .requestPlain
+        }
+        
     }
     
     var headers: [String : String]? {

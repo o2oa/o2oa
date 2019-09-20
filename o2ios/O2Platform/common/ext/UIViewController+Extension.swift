@@ -220,10 +220,10 @@ extension UIViewController {
     func gotoApplicationSettings(alertMessage:String? = nil) {
         if alertMessage != nil {
             showDefaultConfirm(title: "提示", message: alertMessage!, okHandler: { (okAction) in
-                UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
+                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
             })
         }else {
-            UIApplication.shared.openURL(URL(string: UIApplication.openSettingsURLString)!)
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
         }
     }
 }

@@ -109,7 +109,7 @@ open class JCMessageVideoContentView: UIImageView, JCMessageContentViewType {
         addGestureRecognizer(tap)
     }
     
-    func _clickCell() {
+    @objc func _clickCell() {
         _delegate?.message?(message: _message, videoData: _data)
     }
 }

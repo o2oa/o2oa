@@ -14,6 +14,8 @@ import O2OA_Auth_SDK
 enum OOContactExpressAPI {
     //根据职务列表和组织查询 组织下对应的身份列表
     case identityListByUnitAndDuty([String], String)
+    //查询人员person的dn
+    case personListDN([String])
 }
 
 
@@ -40,12 +42,14 @@ extension OOContactExpressAPI: TargetType {
         switch self {
         case .identityListByUnitAndDuty(_, _):
             return "/jaxrs/unitduty/list/identity/unit/name/object"
+        case .personListDN(_):
+            return "/jaxrs/person/list"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .identityListByUnitAndDuty(_, _):
+        case .identityListByUnitAndDuty(_, _), .personListDN(_):
             return .post
         }
     }
@@ -58,6 +62,8 @@ extension OOContactExpressAPI: TargetType {
         switch self {
         case .identityListByUnitAndDuty(let dutyList, let unit):
             return .requestParameters(parameters: ["nameList": dutyList, "unit": unit], encoding: JSONEncoding.default)
+        case .personListDN(let idList):
+            return.requestParameters(parameters: ["personList": idList], encoding: JSONEncoding.default)
         }
     }
     

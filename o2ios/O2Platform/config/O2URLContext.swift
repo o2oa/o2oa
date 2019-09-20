@@ -156,8 +156,8 @@ struct TaskedContext {
     static let taskedListByPageSizeFilterQuery = "jaxrs/taskcompleted/list/##id##/next/##count##/filter"
     static let taskedDataByIdQuery = "jaxrs/taskcompleted/##id##/reference"
     static let taskedRetractQuery = "jaxrs/work/##work##/retract"
-    static let taskedGetAttachmentInfoQuery = "jaxrs/attachment/##attachmentId##/work/##workcompletedId##"
-    static let taskedGetAttachmentQuery = "/jaxrs/attachment/download/##attachmentId##/workcompleted/##workcompletedId##"
+    static let taskedGetAttachmentInfoQuery = "jaxrs/attachment/##attachmentId##/workcompleted/##workcompletedId##"
+    static let taskedGetAttachmentQuery = "jaxrs/attachment/download/##attachmentId##/workcompleted/##workcompletedId##"
 }
 
 

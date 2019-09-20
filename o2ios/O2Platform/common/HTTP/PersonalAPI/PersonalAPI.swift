@@ -14,6 +14,7 @@ enum PersonalAPI {
     case personInfo
     case updatePersonInfo(O2PersonInfo)
     case updatePersonIcon(UIImage)
+    case meetingConfig
 }
 
 extension PersonalAPI: OOAPIContextCapable {
@@ -43,16 +44,16 @@ extension PersonalAPI: TargetType {
             return "jaxrs/person"
         case .updatePersonIcon(_):
             return "jaxrs/person/icon"
+        case .meetingConfig:
+            return "jaxrs/definition/meetingConfig"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .personInfo:
+        case .personInfo, .meetingConfig:
             return .get
-        case .updatePersonInfo(_):
-            return .put
-        case .updatePersonIcon(_):
+        case .updatePersonInfo(_), .updatePersonIcon(_):
             return .put
         }
     }
@@ -63,7 +64,7 @@ extension PersonalAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .personInfo:
+        case .personInfo, .meetingConfig:
             return .requestPlain
         case .updatePersonInfo(let person):
             return .requestParameters(parameters: person.toJSON() ?? [:], encoding: JSONEncoding.default)

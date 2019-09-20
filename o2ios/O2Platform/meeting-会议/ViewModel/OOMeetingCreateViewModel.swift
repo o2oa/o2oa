@@ -128,7 +128,7 @@ extension OOMeetingCreateViewModel{
     }
     
     func removeSelectPerson(_ p:OOPersonModel){
-        if let i = self.selectedPersons.index(of: p) {
+        if let i = self.selectedPersons.firstIndex(of: p) {
              self.selectedPersons.remove(at:i)
         }
     }

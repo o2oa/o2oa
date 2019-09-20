@@ -87,20 +87,19 @@ class ContactIdentityPickerViewController: UITableViewController {
         if indexPath.section == 2 {
             let value = self.identityDataList[indexPath.row].distinguishedName!
             let person = self.identityDataList[indexPath.row].person!
-            let name = self.identityDataList[indexPath.row].name!
             if backResultIsUser {
                 let isSelected = self.isSelected(value: person)
                 if isSelected {
                     self.removeSelected(value: person)
                 }else {
-                    self.addSelected(value: person, name: name)
+                    self.addSelected(self.identityDataList[indexPath.row])
                 }
             }else {
                 let isSelected = self.isSelected(value: value)
                 if isSelected {
                     self.removeSelected(value: value)
                 }else {
-                    self.addSelected(value: value, name: name)
+                    self.addSelected(self.identityDataList[indexPath.row])
                 }
             }
            
@@ -174,12 +173,12 @@ class ContactIdentityPickerViewController: UITableViewController {
         }
     }
     
-    private func addSelected(value: String, name: String) {
+    private func addSelected(_ identity: OOIdentityModel) {
         if let vc = self.parent as? ContactPickerViewController {
             if backResultIsUser {
-                vc.addSelectedValue(type: .person, name: name, value: value)
+                vc.addSelectedPerson(id: identity)
             }else {
-                vc.addSelectedValue(type: .identity, name: name, value: value)
+                vc.addSelectedIdentity(id: identity)
             }
             
         }

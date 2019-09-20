@@ -58,6 +58,72 @@ class WorkControl: NSObject, Mappable {
     }
 }
 
+class StartProcessData: NSObject,DataModel {
+    var currentTaskIndex: Int?
+    @objc var createTime:String?
+    @objc var updateTime:String?
+    @objc var id:String?
+    var completed:Bool?
+    @objc var fromActivity:String?
+    @objc var fromActivityType:String?
+    @objc var fromActivityName:String?
+    @objc var fromActivityToken:String?
+    @objc var fromTime:String?
+    var connected:Bool?
+    var splitting:Bool?
+    @objc var splitTokenList:[String]?
+    @objc var taskList: [TodoTaskData]?
+    
+    required override init() {
+        
+    }
+}
+
+
+class TodoTaskData: NSObject,DataModel {
+    
+    @objc var id:String?
+    @objc var updateTime:String?
+    @objc var job:String?
+    @objc var title:String?
+    @objc var startTime:String?
+    @objc var work:String?
+    @objc var application:String?
+    @objc var applicationName:String?
+    @objc var process:String?
+    @objc var processName:String?
+    @objc var person:String?
+    @objc var identity:String?
+    @objc var department:String?
+    var completed:Bool?
+    @objc var workCompleted:String?
+    @objc var company:String?
+    @objc var activity:String?
+    @objc var activityName:String?
+    @objc var activityType:String?
+    @objc var activityToken:String?
+    @objc var routeList:String?
+    @objc var routeNameList:String?
+    
+   
+    override var description: String {
+        return "task:[\(id),\(title),\(job),\(work)]"
+    }
+    
+    required override init() {
+        
+    }
+    
+    func copyToTodoTask() -> TodoTask? {
+        if let json = self.toJSON() {
+            return TodoTask.init(JSON: json)
+        }else {
+            return nil
+        }
+    }
+    
+}
+
 class TodoTask:NSObject,Mappable {
     
     var id:String?

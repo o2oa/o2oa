@@ -39,6 +39,7 @@ enum OOContactAPI {
     case groupListNext(String, Int)
     //根据组织查询身份列表
     case identityListByUnit(String)
+   
     
 }
 
@@ -93,7 +94,7 @@ extension OOContactAPI:TargetType {
             return "/jaxrs/group/list/\(flag)/next/\(count)"
         case .identityListByUnit(let unit):
             return "/jaxrs/identity/list/unit/\(unit)"
-            
+       
         }
     }
     
@@ -128,6 +129,7 @@ extension OOContactAPI:TargetType {
             return .requestParameters(parameters: ["unitList": idList], encoding: JSONEncoding.default)
         case .personLike(let searchText):
             return .requestParameters(parameters: ["key":searchText], encoding: JSONEncoding.default)
+       
         }
     }
     

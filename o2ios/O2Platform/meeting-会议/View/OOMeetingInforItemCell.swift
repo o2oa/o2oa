@@ -63,13 +63,13 @@ class OOMeetingInforItemCell: UITableViewCell,Configurable {
         
         titleLabel.text = model.subject
         
-//        viewModel?.loadMeetingRoomById(model.room!, completed: { (roomResult) in
-//            guard let itemRoom = roomResult else{
-//                self.meetingroomLabel.text = "未知会议室"
-//                return
-//            }
-//            self.meetingroomLabel.text = itemRoom.name
-//        })
+        viewModel?.loadMeetingRoomById(model.room!, completed: { (roomResult) in
+            guard let itemRoom = roomResult else{
+                self.meetingroomLabel.text = "未知会议室"
+                return
+            }
+            self.meetingroomLabel.text = itemRoom.name
+        })
         
        let persons = model.invitePersonList?.map({ (p) -> String in
            return String(p.split(separator: "@")[0])

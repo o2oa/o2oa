@@ -55,6 +55,124 @@ struct ContactBreadcrumbBean {
     var level: Int = 0
 }
 
+
+// 选择器使用的对象
+//组织对象
+class O2UnitPickerItem: NSObject, DataModel {
+    
+    @objc open var id : String?
+    @objc open  var name : String?
+    @objc open var unique : String?
+    @objc open var distinguishedName : String?
+    @objc open  var typeList : [String]?
+    @objc open var shortName : String?
+    var level : Int?
+    @objc open var levelName : String?
+    
+    override required init(){}
+    
+    func copyFromUnitModel(dept: OOUnitModel) {
+        self.id = dept.id
+        self.name = dept.name
+        self.unique = dept.unique
+        self.distinguishedName = dept.distinguishedName
+        self.typeList = dept.typeList
+        self.shortName = dept.shortName
+        self.level = dept.level
+        self.levelName = dept.levelName
+    }
+    
+}
+//身份对象
+class O2IdentityPickerItem: NSObject, DataModel {
+    
+    @objc open var id : String?
+    @objc open var name : String?
+    @objc open var unique : String?
+    @objc open var distinguishedName : String?
+    @objc open var person : String?
+    @objc open var unit : String?
+    @objc open var unitName : String?
+    @objc open var personName : String?
+    @objc open var personUnique : String?
+    @objc open var personDn : String?
+    var unitLevel : Int?
+    @objc open var unitLevelName : String?
+    
+    override required init(){}
+    
+    func copyFromIdentityModel(identity: OOIdentityModel) {
+        self.id = identity.id
+        self.name = identity.name
+        self.unique = identity.unique
+        self.distinguishedName = identity.distinguishedName
+        self.unit = identity.unit
+        self.unitName = identity.unitName
+        self.unitLevel = identity.unitLevel
+        self.unitLevelName = identity.unitLevelName
+        self.person = identity.person
+        //person相关信息等获取用户信息后再填充
+    }
+    //更新用户相关的信息
+    func updatePersonInfo(person: OOPersonModel) {
+        self.person = person.id
+        self.personUnique = person.unique
+        self.personName = person.name
+        self.personDn = person.distinguishedName
+    }
+    
+}
+//群组对象
+class O2GroupPickerItem: NSObject, DataModel {
+    
+    @objc open var id : String?
+    @objc open var name : String?
+    @objc open var unique : String?
+    @objc open var distinguishedName : String?
+   
+    override required init(){}
+    
+    func copyFromGroupModel(group: OOGroupModel) {
+        self.id = group.id
+        self.name = group.name
+        self.unique = group.unique
+        self.distinguishedName = group.distinguishedName
+    }
+    
+}
+//人员对象
+class O2PersonPickerItem: NSObject, DataModel {
+    
+    @objc open var id : String?
+    @objc open var name : String?
+    @objc open var unique : String?
+    @objc open var distinguishedName : String?
+    @objc open var genderType : String?
+    @objc open var employee : String?
+    @objc open var mail : String?
+    @objc open var weixin : String?
+    @objc open var qq : String?
+    @objc open var mobile : String?
+    @objc open var officePhone : String?
+    
+    override required init(){}
+    
+    func copyFromPersonModel(person: OOPersonModel) {
+        self.id = person.id
+        self.distinguishedName = person.distinguishedName
+        self.name = person.name
+        self.unique = person.unique
+        self.genderType = person.genderType
+        self.employee = person.employee
+        self.mail = person.mail
+        self.weixin = person.weixin
+        self.qq = person.qq
+        self.mobile = person.mobile
+        self.officePhone = person.officePhone
+    }
+}
+
+
 // MARK: - Unit Model
 
 class OOUnitModel : NSObject, NSCoding, DataModel{
@@ -191,6 +309,27 @@ class OOUnitModel : NSObject, NSCoding, DataModel{
     
 }
 
+
+class OOPersonDNModel: NSObject, NSCoding, DataModel {
+    public override required init() {
+    }
+    
+    @objc var personList:[String]?
+    
+    
+    func encode(with aCoder: NSCoder) {
+        if personList != nil{
+            aCoder.encode(personList, forKey: "personList")
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+         personList = aDecoder.decodeObject(forKey: "personList") as? [String]
+    }
+    
+    
+    
+}
 
 
 // MARK: - OO Person Model

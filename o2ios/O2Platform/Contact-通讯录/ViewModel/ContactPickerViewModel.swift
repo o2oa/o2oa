@@ -22,6 +22,23 @@ class ContactPickerViewModel: NSObject {
 
 extension ContactPickerViewModel {
     
+    func getPersonInfo(dn: String) -> Promise<OOPersonModel> {
+        return Promise { fulfill, reject in
+            self.orgControlAPI.request(.getPerson(dn)) { (result) in
+                let myResult = OOResult<BaseModelClass<OOPersonModel>>(result)
+                if myResult.isResultSuccess() {
+                    if let data = myResult.model?.data {
+                        fulfill(data)
+                    }else {
+                       reject(OOAppError.jsonMapping(message: "返回数据为空！！", statusCode: 1024, data: nil))
+                    }
+                } else {
+                    reject(myResult.error!)
+                }
+            }
+        }
+    }
+    
     //
     // 组织查询
     // @param parent 上级组织id -1就是顶层
@@ -190,7 +207,33 @@ extension ContactPickerViewModel {
                 let response = OOResult<BaseModelClass<[OOIdentityModel]>>(result)
                 if response.isResultSuccess() {
                     if let data = response.model?.data {
-                        fulfill(data)
+                        //person id 换 DN 人员选择的时候需要
+                        let idList = data.map({ (oo) -> String in
+                            return oo.person ?? ""
+                        })
+                        if idList.isEmpty {
+                            fulfill(data)
+                        }else {
+                            self.orgExpressAPI.request(.personListDN(idList), completion: { (dnResult) in
+                                let dnResponse = OOResult<BaseModelClass<OOPersonDNModel>>(dnResult)
+                                if dnResponse.isResultSuccess() {
+                                    if let dnList = dnResponse.model?.data?.personList {
+                                        var index = 0
+                                        let newData = data.map({ (ooId) -> OOIdentityModel in
+                                            ooId.person = dnList[index]
+                                            index += 1
+                                            return ooId
+                                        })
+                                        fulfill(newData)
+                                    }else {
+                                        fulfill(data)
+                                    }
+                                }else {
+                                    fulfill(data)
+                                }
+                            })
+                        }
+                        
                     }else {
                         reject(OOAppError.jsonMapping(message: "返回数据为空！！", statusCode: 1024, data: nil))
                     }
@@ -207,7 +250,32 @@ extension ContactPickerViewModel {
                 let response = OOResult<BaseModelClass<[OOIdentityModel]>>(result)
                 if response.isResultSuccess() {
                     if let data = response.model?.data {
-                        fulfill(data)
+                        //person id 换 DN 人员选择的时候需要
+                        let idList = data.map({ (oo) -> String in
+                            return oo.person ?? ""
+                        })
+                        if idList.isEmpty {
+                            fulfill(data)
+                        }else {
+                            self.orgExpressAPI.request(.personListDN(idList), completion: { (dnResult) in
+                                let dnResponse = OOResult<BaseModelClass<OOPersonDNModel>>(dnResult)
+                                if dnResponse.isResultSuccess() {
+                                    if let dnList = dnResponse.model?.data?.personList {
+                                        var index = 0
+                                        let newData = data.map({ (ooId) -> OOIdentityModel in
+                                            ooId.person = dnList[index]
+                                            index += 1
+                                            return ooId
+                                        })
+                                        fulfill(newData)
+                                    }else {
+                                        fulfill(data)
+                                    }
+                                }else {
+                                    fulfill(data)
+                                }
+                            })
+                        }
                     }else {
                         reject(OOAppError.jsonMapping(message: "返回数据为空！！", statusCode: 1024, data: nil))
                     }
