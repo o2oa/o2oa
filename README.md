@@ -1,3 +1,15 @@
+# O2OA相关教程
+
+[安装管理及配置](https://o2oa.gitbook.io/course/ping-tai-shi-shi)
+
+[业务开发与设计](https://o2oa.gitbook.io/course/liu-cheng-guan-li)
+
+[平台内置应用介绍](https://o2oa.gitbook.io/course/xi-tong-ying-yong-jie-shao)
+
+[源码的编译及管理](https://o2oa.gitbook.io/course/yuan-ma-de-bian-yi-ji-guan-li)
+
+***
+
 # O2OA : Java企业信息化系统
 
 O2OA是基于J2EE架构，集成移动办公、智能办公，支持私有化部署，自适应负载能力的，能够很大程度上节约企业软件开发成本的基于AGPL协议开放源代码的企业信息化系统需求定制开发解决方案，对外提供专业的开发运维等技术服务。
