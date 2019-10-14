@@ -2,7 +2,7 @@
 //  JMSGLocationContent.h
 //  JMessage
 //
-//  Created by 邓永豪 on 16/7/26.
+//  Created by dyh on 16/7/26.
 //  Copyright © 2016年 HXHG. All rights reserved.
 //
 

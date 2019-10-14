@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <JMessage/JMSGConstants.h>
 #import <JMessage/JMSGUser.h>
+#import <JMessage/JMSGGroup.h>
+#import <JMessage/JMSGChatRoom.h>
 
 @class JMSGMessage;
 @class JMSGAbstractContent;
@@ -190,7 +192,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 /*!
  * @abstract 获取当前所有会话的未读消息的总数
  *
- * @discussion 获取所有会话未读消息总数
+ * @discussion 获取所有会话未读消息总数，开启免打扰的会话未读数不会加入计数；此接口有可能会阻塞线程，请在子线程使用。
  */
 + (NSNumber *)getAllUnreadCount;
 
@@ -272,6 +274,17 @@ JMSG_ASSUME_NONNULL_BEGIN
  * 注意: 这里的 msgId 概念同 [JMSGMessage msgId], 是本地生成的消息ID, 而非 [JMSGMessage serverMessageId]
  */
 - (JMSGMessage * JMSG_NULLABLE)messageWithMessageId:(NSString *)msgId;
+
+/*!
+ * @abstract 获取某条消息
+ *
+ * @param serverMessageId 服务器下发的消息ID
+ *
+ * @discussion 这个接口在正常场景下不需要单独使用到. 获取消息一般应使用 [JSMGConversation messageArrayFromNewestWithOffset::]
+ *
+ * 注意: 这里的 serverMessageId 概念同 [JMSGMessage serverMessageId], 是服务端生成的消息ID
+ */
+- (JMSGMessage * JMSG_NULLABLE)messageWithServerMessageId:(NSString *)serverMessageId;
 
 /*!
  * @abstract 同步分页获取最新的消息
@@ -395,7 +408,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @abstract 发送@人消息（已经创建好对象的）
  *
  * @param message 通过消息创建类接口，创建好的消息对象
- * @param at_list @对象的数组
+ * @param userList @对象的数组
  *
  * @discussion 发送消息的多个接口，都未在方法上直接提供回调。你应通过 JMSGMessageDelegate中的onReceiveMessage: error:方法来注册消息发送结果
  */
@@ -434,8 +447,23 @@ JMSG_ASSUME_NONNULL_BEGIN
                 duration:(NSNumber *)duration;
 
 /*!
+ * @abstract 发送视频消息
+ *
+ * @param videoData 视频消息数据
+ * @param thumbData 视频封面图片
+ * @param videoFormat 视频格式，如：mp4、mov
+ * @param duration  视频消息时长（秒）. 长度必须大于 0.
+ *
+ * @discussion 快捷发送消息接口。如果发送语音消息不需要附加 extra，则使用此接口更方便。
+ */
+- (void)sendVideoMessage:(NSData *)videoData
+               thumbData:(NSData *JMSG_NULLABLE)thumbData
+             videoFormat:(NSString *JMSG_NULLABLE)videoFormat
+                duration:(NSNumber *)duration;
+
+/*!
  * @abstract 发送文件消息
- * @param voiceData 文件消息数据
+ * @param fileData 文件消息数据
  * @param fileName 文件名
  * @discussion 快捷发送消息接口。如果发送文件消息不需要附加 extra，则使用此接口更方便。
  */
@@ -504,7 +532,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (void)avatarData:(JMSGAsyncDataHandler)handler;
 
 /*!
- * @abstract 获取会话头像的本地路径(仅限单聊)
+ * @abstract 获取会话头像的本地路径
  *
  * @return 返回本地路，返回值只有在下载完成之后才有意义
  */

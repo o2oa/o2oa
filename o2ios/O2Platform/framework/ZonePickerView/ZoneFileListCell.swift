@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import EZSwiftExtensions
 
 protocol ZoneFileListCellDelegate {
     func cellClick(_ model:ZonePickerModel)

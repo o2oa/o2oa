@@ -14,6 +14,81 @@
 
 @class JMSGUser,JMSGApplyJoinGroupEvent;
 
+
+/*!
+ * 群成员信息类
+ *
+ * #### 可通过 [JMSGGroup memberInfoList:]和 [JMSGGroup memberInfoWithUsername:appkey:] 两个接口获取群成员信息
+ */
+@interface JMSGGroupMemberInfo : NSObject
+
+/// 成员用户信息
+@property(nonatomic, strong, readonly) JMSGUser *JMSG_NULLABLE user;
+/// 入群时间
+@property(nonatomic, assign, readonly) UInt64 ctime;
+/// 群昵称
+@property(nonatomic, strong, readonly) NSString *JMSG_NULLABLE groupNickname;
+/// 群组成员的身份
+@property(nonatomic, assign, readonly) JMSGGroupMemberType memberType;
+
+/*!
+ * @abstract 获取群成员的展示名
+ *
+ * @discussion 展示优先级：群昵称 > 好友备注(user.noteName) > 用户昵称(user.nickname) > 用户名(user.username)
+ *
+ * #### 同接口 [JMSGGroup memberDisplayName:] 相同效果
+ */
+- (NSString *JMSG_NULLABLE)displayName;
+@end
+
+/*!
+ * 成员禁言信息类
+ *
+ * @discussion 如果是群组成员禁言，则可通过 [JMSGGroup getGroupMemberSilenceList:]和 [JMSGGroup getGroupMemberSilence:appKey:handler:] 两个接口获取禁言信息；如果是聊天室成员禁言，则可通过 [JMSGChatRoom getChatRoomSilencesWithStart:count:handler:] 和 [JMSGChatRoom getChatRoomMemberSilenceWithUsername:appKey:handler:] 两个接口获取禁言信息
+ */
+@interface JMSGMemberSilenceInfo : NSObject
+/// 成员用户信息
+@property(nonatomic, strong, readonly) JMSGUser *JMSG_NULLABLE user;
+/// 群成员禁言开始时间
+@property(nonatomic, assign, readonly) UInt64 silenceStartTime;
+/// 群成员禁言结束时间
+@property(nonatomic, assign, readonly) UInt64 silenceEndTime;
+@end
+
+/*!
+ * 群公告类
+ */
+@interface JMSGGroupAnnouncement : NSObject
+/// 公告 id
+@property(nonatomic, assign, readonly) UInt32 announcementId;
+/// 群组 id
+@property(nonatomic, strong, readonly) NSString *JMSG_NONNULL gid;
+/// 公告内容
+@property(nonatomic, strong, readonly) NSString *JMSG_NULLABLE text;
+/// 发布者
+@property(nonatomic, strong, readonly) JMSGUser *JMSG_NULLABLE publisher;
+/// 发布时间
+@property(nonatomic, assign, readonly) UInt64 publishTime;
+/// 是否置顶
+@property(nonatomic, assign, readonly) BOOL isTop;
+/// 置顶时间
+@property(nonatomic, assign, readonly) UInt64 topTime;
+
+/*!
+ * @abstract 公告对象转换为 JSON 字符串的表示。
+ */
+- (NSString *JMSG_NULLABLE)toJsonString;
+
+
+/*!
+ * @abstract JSON 字符串 转换为 公告对象。
+ *
+ * @discussion 失败时返回 nil
+ */
++ (JMSGGroupAnnouncement *JMSG_NULLABLE)fromJson:(NSString *JMSG_NONNULL)json;
+
+@end
+
 /*!
  * 群信息类（此类仅用于修改群信息、创建群、群信息展示）
  *
@@ -37,8 +112,10 @@
 @property(nonatomic, strong, readonly) NSString *JMSG_NONNULL avatar;
 /** 群组类型，私有、公开，注意：仅限于创建群组时设置，创建成功之后不允许修改群类型*/
 @property(nonatomic, assign, readwrite) JMSGGroupType groupType;
-/** 群组人数上限*/
-@property(nonatomic, strong, readonly) NSString *JMSG_NONNULL maxMemberCount;
+/** 群组人数上限，注意：仅限于创建群组时可以设置，必须大于 2 */
+@property(nonatomic, strong, readwrite) NSString *JMSG_NONNULL maxMemberCount;
+/** 群组创建时间*/
+@property(nonatomic, assign, readonly) SInt64  ctime;
 
 @end
 
@@ -136,8 +213,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @param groupId 待获取详情的群组ID
  * @param handler 结果回调. 正常返回时 resultObject 类型是 JMSGGroup.
  *
- * @discussion 该接口总是向服务器端发起请求, 即使本地已经存在.
- * 如果考虑性能损耗, 在群聊时获取群组信息, 可以获取 JMSGConversation -> target 属性.
+ * @discussion 如果考虑性能损耗, 在群聊时获取群组信息, 可以获取 JMSGConversation -> target 属性.
  */
 + (void)groupInfoWithGroupId:(NSString *)groupId
            completionHandler:(JMSGCompletionHandler)handler;
@@ -145,7 +221,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 /*!
  * @abstract 获取我的群组列表
  *
- * @param handler 结果回调。正常返回时 resultObject 的类型是 NSArray，数组里的成员类型是JMSGGroup的gid
+ * @param handler 结果回调。正常返回时 resultObject 的类型是 NSArray(NSNumber)，数组里的成员类型是JMSGGroup的gid
  *
  * @discussion 该接口总是向服务器端发起请求。
  */
@@ -216,6 +292,24 @@ JMSG_ASSUME_NONNULL_BEGIN
                              isAgree:(BOOL)isAgree
                               reason:(NSString *JMSG_NULLABLE)reason
                              handler:(JMSGCompletionHandler)handler;
+
+/*!
+ * @abstract 管理员审批入群申请（批量接口）
+ *
+ * @patam events      入取申请事件的 eventId 数组，详情请查看 JMSGApplyJoinGroupEvent 类
+ * @param isAgree     是否同意申请，YES : 同意， NO: 不同意
+ * @param reason      拒绝申请的理由，选填
+ * @param isSendInviter 是否将结果通知给邀请方，默认是 NO
+ * @param handler     结果回调
+ *
+ * @discussion 批量处理接口，event 下包含的所有被邀请者会被一起审批处理。只有管理员才有权限审批入群申请。
+ */
++ (void)processApplyJoinGroupEvents:(NSArray <__kindof NSString *>*)events
+                            isAgree:(BOOL)isAgree
+                             reason:(NSString *JMSG_NULLABLE)reason
+                        sendInviter:(BOOL)isSendInviter
+                            handler:(JMSGCompletionHandler)handler;
+
 /*!
  * @abstract 解散群组
  *
@@ -316,8 +410,6 @@ JMSG_ASSUME_NONNULL_BEGIN
 ///----------------------------------------------------
 /// @name Group members maintenance 群组成员维护
 ///----------------------------------------------------
-
-
 /*!
  * @abstract 获取群组成员列表（同步接口，建议使用异步接口）
  *
@@ -326,10 +418,10 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @discussion 一般在群组详情界面调用此接口，展示群组的所有成员列表。
  * 本接口只是在本地请求成员列表，不会发起服务器端请求。
  */
-- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)memberArray;
+- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)memberArray __attribute__((deprecated("Use - memberInfoList:")));
 
 /*!
- * @abstract 获取群组成员列表（异步接口）
+ * @abstract 获取群组成员列表（建议使用 [JMSGGroup memberInfoList:] 接口）
  *
  * @handler 成员列表. NSArray 里成员类型是 JMSGUser.
  *
@@ -337,6 +429,37 @@ JMSG_ASSUME_NONNULL_BEGIN
  * 本接口只是在本地请求成员列表，不会发起服务器端请求。
  */
 - (void)memberArrayWithCompletionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 获取所有群成员信息列表
+ *
+ * @handler 成员列表. 类型为 NSArray，里面元素为 JMSGGroupMemberInfo.
+ *
+ * @discussion 返回数据中的 JMSGGroupMemberInfo 包含了成员 user 信息、入群时间、群昵称等
+ */
+- (void)memberInfoList:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 获取单个群成员信息
+ *
+ * @param  username 目标用户 username
+ * @param  appkey   目标用户 appkey，不传则默认本应用 appkey
+ * @return 群成员信息对象
+ *
+ * @discussion JMSGGroupMemberInfo 包含了成员 user 信息、入群时间、群昵称等
+ */
+- (JMSGGroupMemberInfo *JMSG_NULLABLE)memberInfoWithUsername:(NSString *JMSG_NONNULL)username
+                                                      appkey:(NSString *JMSG_NULLABLE)appkey;
+
+/*!
+ * @abstract 修改群组类型
+ *
+ * @param type    群类型，公开群、私有群
+ * @param handler 结果回调。error = nil 表示成功
+ *
+ * @discussion 对于已经创建的群组，可以通过此接口来修改群组的类型
+ */
+- (void)changeGroupType:(JMSGGroupType)type handler:(JMSGCompletionHandler)handler;
 
 /*!
  * @abstract 设置群组消息免打扰（支持跨应用设置）
@@ -366,37 +489,232 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (void)setIsShield:(BOOL)isShield handler:(JMSGCompletionHandler)handler;
 
 /*!
- * @abstract 群成员禁言设置
+ * @abstract 设置成员群昵称
+ *
+ * @param nickname 群昵称
+ * @param username 目标用户的 username
+ * @param appKey   目标用户的 appKey,若传入空则默认使用本应用appKey
+ */
+- (void)setGroupNickname:(NSString *JMSG_NULLABLE)nickname
+                username:(NSString *JMSG_NONNULL)username
+                  appKey:(NSString *JMSG_NULLABLE)appKey
+                 handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 获取成员的群昵称
+ *
+ * @param  username 群成员 username
+ * @patam  appKey   群成员 appKey，不传则默认是本应用 appkey
+ * @return 群昵称
+ *
+ * @discussion 还可以通过获取群成员信息 JMSGGroupMemberInfo 来获取群昵称
+ */
+- (NSString *JMSG_NULLABLE)groupNicknameWithUsername:(NSString *)username
+                                              appKey:(NSString *JMSG_NULLABLE)appKey;
+
+/*!
+ * @abstract 群成员禁言设置(接口已过期)
  *
  * @param isSilence 是否禁言， YES:是 NO: 否
- * @param username  带设置的用户的 username
- * @param username  带设置的用户的 appKey,若传入空则默认使用本应用appKey
- * @param handler   结果回调
+ * @param username  待设置的用户的 username
+ * @param appKey    带待设置的用户的 appKey,若传入空则默认使用本应用appKey
+ * @param handler   结果回调，error=nil,则表示成功
  *
- * @discussion 注意: 目前 SDK 只支持群主设置群里某个用户禁言
+ * @discussion 接口已过期，请使用 [JMSGGroup addGroupSilenceWithTime:usernames:appKey:handler] 接口。新老接口请不要混用。
  */
 - (void)setGroupMemberSilence:(BOOL)isSilence
                      username:(NSString *JMSG_NONNULL)username
                        appKey:(NSString *JMSG_NULLABLE)appKey
-                      handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+                      handler:(JMSGCompletionHandler JMSG_NULLABLE)handler __attribute__((deprecated("Use - addGroupSilenceWithTime:")));
+/*!
+ * @abstract 设置群成员禁言（可设置禁言时间）
+ *
+ * @param silenceTime 禁言时间戳，单位：毫秒，必须不小于5分钟，不大于1年
+ * @param usernames   用户的 username 数组，一次最多500人
+ * @param appkey      用户的 appkey，若传入空则默认使用本应用appKey，同一次设置的 usernames 必须在同一个 AppKey 下
+ * @param handler     结果回调，error = nil 时，表示成功
+ *
+ * @discussion 只有群主和管理员可设置；设置成功的话上层会收到相应下发事件。
+ *
+ * @since 3.8.1
+ */
+- (void)addGroupSilenceWithTime:(SInt64)silenceTime
+                      usernames:(NSArray *JMSG_NONNULL)usernames
+                         appKey:(NSString *JMSG_NULLABLE)appkey
+                        handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
- * @abstract 判断用户在该群内是否被禁言
+ * @abstract 取消群成员禁言
+ *
+ * @param usernames  用户的 username 数组，一次最多500人
+ * @param appkey     用户的 appkey，若传入空则默认使用本应用appKey，同一次设置的 usernames 必须在同一个 AppKey 下
+ * @param handler   结果回调，error = nil 时，表示成功
+ *
+ * @discussion 只有群主和管理员可设置；取消成功的话上层会收到相应下发事件。
+ *
+ * @since 3.8.1
+ */
+- (void)deleteGroupSilenceWithUsernames:(NSArray *JMSG_NONNULL)usernames
+                                appKey:(NSString *JMSG_NULLABLE)appkey
+                               handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 判断用户在该群内是否被禁言（已过期，请使用 [JMSGGroup getGroupMemberSilenceWithUsername:] 方法）
  *
  * @param username  待判断用户的用户名
  * @param appKey    待判断用户的appKey，若传入空则默认使用本应用appKey
  */
 - (BOOL)isSilenceMemberWithUsername:(NSString *JMSG_NONNULL)username
-                             appKey:(NSString *JMSG_NULLABLE)appKey;
+                             appKey:(NSString *JMSG_NULLABLE)appKey __attribute__((deprecated("已过期,请使用 - getGroupMemberSilenceWithUsername:appKey:")));
+/*!
+ * @abstract 获取禁言状态
+ *
+ * @param username 用户名
+ * @param appKey   用户所在应用 AppKey，不填这默认本应用
+ * @param handler  结果回调，resultObject 是 JMSGMemberSilenceInfo 类型；
+ *                 若 error == nil && resultObject != nil,该成员已被禁言；
+ *                 若 error == nil && resultObject == nil,该成员未被禁言；
+ *                 若 error != nil ,请求失败。
+ *
+ * @discussion 返回的 JMSGMemberSilenceInfo 对象有 user 信息，通过 [JMSGGroup memberInfoWithUsername:appkey:] 可再次获取到 JMSGGroupMemberInfo 信息
+ *
+ * @since 3.8.1
+ */
+- (void)getGroupMemberSilenceWithUsername:(NSString *JMSG_NONNULL)username
+                                   appKey:(NSString *JMSG_NULLABLE)appKey
+                                  handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 禁言列表（已过期，请使用 [JMSGGroup getGroupSilenceList:] 方法）
+ *
+ * @return 禁言的成员列表. NSArray 里成员类型是 JMSGGroupMemberInfo
+ *
+ * @discussion 返回的是 JMSGUser 对象，无法直接查看禁言时间
+ */
+- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)groupSilenceMembers __attribute__((deprecated("已过期,请使用 - getGroupMemberSilenceList:")));
 
 /*!
  * @abstract 禁言列表
  *
- * @return 禁言的成员列表. NSArray 里成员类型是 JMSGUser
+ * @param handler 结果回调，resultObject 是 NSArray 类型，元素是 JMSGMemberSilenceInfo
  *
- * @discussion 仅在获取群成员成功后此接口才有效
+ * @discussion 返回的 JMSGMemberSilenceInfo 对象有 user 信息，通过 [JMSGGroup memberInfoWithUsername:appkey:] 可再次获取到 JMSGGroupMemberInfo 信息
+ *
+ * @since 3.8.1
  */
-- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)groupSilenceMembers;
+- (void)getGroupMemberSilenceList:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 获取群公告列表
+ *
+ * @param handler 结果回调。resultObject 是 NSArray 类型，元素是 JMSGGroupAnnouncement
+ *
+ * @since 3.8.0
+ */
+- (void)groupAnnouncementList:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 发布群公告
+ *
+ * @param announcement 公告内容，大小必须在 1KB 以内
+ * @param sendMessage 发布成功后是否需要发一条消息通知群成员，默认：YES
+ * @param handler 结果回调。resultObject 为 JMSGGroupAnnouncement对象， error 为 nil 表示成功.
+ *
+ * @discussion
+ * #### 注意：
+ *
+ * 如果 sendMessage = NO，则 SDK 不会自动发送消息，上层可以在回调或者收到事件后，自己发送消息；
+ * 如果 sendMessage = YES，则在发布公告成功后 SDK 会自动在群里发布一条文本消息，文本内容就是公告内容，另外消息的 extras 里会附带公告的相关数据，上层可根据此数据将 message 对应到相应的公告， extras 里的 key-value 如下，
+ *
+ *    ```
+ *    key(String)       = "jmessage_group_announcement"
+ *    value(JsonString) = {
+ *                        "id" : 公告 id,
+ *                        "text" : 公告内容 text,
+ *                        "publisher_uid" : 发布者 uid,
+ *                        "ctime" : 公告发布时间,
+ *                        "isTop" : 是否置顶,
+ *                        "topTime" : 置顶时间,
+ *                        "gid" : 群 gid
+ *                      }
+ *    ```
+ * 群公告最多100条，发布公告后会有对应事件下发，上层通过 [JMSGGroupDelegate onReceiveGroupAnnouncementEvents:] 监听
+ *
+ * @since 3.8.0
+ */
+- (void)publishGroupAnnouncement:(NSString *JMSG_NONNULL)announcement
+                     sendMessage:(BOOL)sendMessage
+                         handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 删除群公告
+ *
+ * @param announcementID 公告id
+ * @param handler 结果回调。error 为 nil 表示成功.
+ *
+ * @discussion 删除公告后会有对应事件下发，上层通过 [JMSGGroupDelegate onReceiveGroupAnnouncementEvents:] 监听
+ * @since 3.8.0
+ */
+- (void)deleteGroupAnnouncement:(NSString *JMSG_NONNULL)announcementID
+                        handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 置顶/取消置顶 群公告
+ *
+ * @param isTop 置顶参数，YES:置顶，NO:取消置顶
+ * @param ID    公告 id
+ * @param handler 结果回调。error 为 nil 表示成功.
+ *
+ * @discussion 置顶公告后会有对应事件下发，上层通过 [JMSGGroupDelegate onReceiveGroupAnnouncementEvents:] 监听
+ * @since 3.8.0
+ */
+- (void)setGroupAnnouncementTop:(BOOL)isTop
+                 announcementID:(NSString *JMSG_NONNULL)ID
+                        handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 群黑名单列表
+ *
+ * @handler 结果回调. resultObject 是 NSArray 类型，元素是 JMSGUser
+ *
+ * @since 3.8.0
+ */
+- (void)groupBlacklistHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 添加群黑名单
+ *
+ * @param usernames 用户名列表
+ * @param appKey   用户 appKey，usernames 中的所有用户必须在同一个 AppKey 下，不填则默认为本应用 appKey
+ * @param handler 结果回调。error 为 nil 表示成功.
+ *
+ * @discussion 黑名单上限100个，超出将无法设置成功，被拉入黑名单用户会被主动踢出群组，且无法再次加入.
+ * @since 3.8.0
+ */
+- (void)addGroupBlacklistWithUsernames:(NSArray <__kindof NSString *>*)usernames
+                                appKey:(NSString *JMSG_NULLABLE)appKey
+                               handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+/*!
+ * @abstract 删除群黑名单
+ *
+ * @param usernames 用户名列表
+ * @param appKey   用户 appKey，usernames 中的所有用户必须在同一个 AppKey 下，不填则默认为本应用 appKey
+ * @param handler 结果回调。error 为 nil 表示成功.
+ *
+ * @since 3.8.0
+ */
+- (void)deleteGroupBlacklistWithUsernames:(NSArray <__kindof NSString *>*)usernames
+                                   appKey:(NSString *JMSG_NULLABLE)appKey
+                                  handler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 管理员列表
+ *
+ * @return 管理员列表. NSArray 里成员类型是 JMSGUser
+ *
+ * @discussion 注意：返回列表中不包含群主；仅在获取群成员成功后此接口才有效
+ */
+- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)groupAdminMembers;
 
 /*!
  * @abstract 判断用户是否是管理员
@@ -407,25 +725,6 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (BOOL)isAdminMemberWithUsername:(NSString *JMSG_NONNULL)username
                            appKey:(NSString *JMSG_NULLABLE)appKey;
 
-/*!
- * @abstract 管理员列表
- *
- * @return 管理员列表. NSArray 里成员类型是 JMSGUser
- *
- * @discussion 注意：返回列表中包含群主；仅在获取群成员成功后此接口才有效
- */
-- (NSArray JMSG_GENERIC(__kindof JMSGUser *)*)groupAdminMembers;
-
-/*!
- * @abstract 移交群主
- *
- * @param username 新群主用户名
- * @param appkey   新群主用户 AppKey，不填则默认为本应用 AppKey
- * @param handler 结果回调。error 为 nil 表示成功.
- */
-- (void)transferGroupOwnerWithUsername:(NSString *JMSG_NONNULL)username
-                                appKey:(NSString *JMSG_NULLABLE)appkey
-                     completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 /*!
  * @abstract 添加管理员
  *
@@ -439,6 +738,11 @@ JMSG_ASSUME_NONNULL_BEGIN
                            appKey:(NSString *JMSG_NULLABLE)appkey
                 completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
+/** @abstract 批量添加管理员*/
+- (void)addGroupAdminWithUsernames:(NSArray <__kindof NSString *>*)usernames
+                            appKey:(NSString *JMSG_NULLABLE)appkey
+                 completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
 /*!
  * @abstract 删除管理员
  *
@@ -449,6 +753,11 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (void)deleteGroupAdminWithUsername:(NSString *)username
                               appKey:(NSString *JMSG_NULLABLE)appkey
                    completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/** @abstract 批量删除管理员*/
+- (void)deleteGroupAdminWithUsernames:(NSArray <__kindof NSString *>*)usernames
+                               appKey:(NSString *JMSG_NULLABLE)appkey
+                    completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
  * @abstract 添加群组成员
@@ -463,10 +772,26 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @abstract 添加群组跨应用成员
  *
  * @param usernameArray 用户名数组。数组里的成员类型是 NSString
+ * @param userAppKey    用户的 AppKey，这批添加的成员必须在同一个 AppKey 下的用户
+ *
  * @param handler 结果回调。正常返回时 resultObject 为 nil.
  */
 - (void)addMembersWithUsernameArray:(NSArray JMSG_GENERIC(__kindof NSString *) *)usernameArray
                              appKey:(NSString *)userAppKey
+                  completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 添加群组成员
+ *
+ * @param usernameArray 用户名数组。数组里的成员类型是 NSString
+ * @param userAppKey    用户的 AppKey，这批添加的成员必须在同一个 AppKey 下的用户
+ * @param reason        邀请原因，可选
+ *
+ * @param handler 结果回调。正常返回时 resultObject 为 nil.
+ */
+- (void)addMembersWithUsernameArray:(NSArray JMSG_GENERIC(__kindof NSString *) *)usernameArray
+                             appKey:(NSString *JMSG_NULLABLE)userAppKey
+                             reason:(NSString *JMSG_NULLABLE)reason
                   completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
@@ -486,6 +811,17 @@ JMSG_ASSUME_NONNULL_BEGIN
  */
 - (void)removeMembersWithUsernameArray:(NSArray JMSG_GENERIC(__kindof NSString *) *)usernameArray
                                 appKey:(NSString *)userAppKey
+                     completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
+
+/*!
+ * @abstract 移交群主
+ *
+ * @param username 新群主用户名
+ * @param appkey   新群主用户 AppKey，不填则默认为本应用 AppKey
+ * @param handler 结果回调。error 为 nil 表示成功.
+ */
+- (void)transferGroupOwnerWithUsername:(NSString *JMSG_NONNULL)username
+                                appKey:(NSString *JMSG_NULLABLE)appkey
                      completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
@@ -540,6 +876,15 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @return 返回本地路，返回值只有在下载完成之后才有意义
  */
 - (NSString *JMSG_NULLABLE)largeAvatarLocalPath;
+
+/*!
+ * @abstract 获取群成员的展示名
+ *
+ * @param memberUid 群成员的 uid（即：[JMSGUser uid]）
+ *
+ * @discussion 展示优先级：群昵称 > 好友备注(user.noteName) > 用户昵称(user.nickname) > 用户名(user.username)
+ */
+- (NSString *)memberDisplayName:(UInt64)memberUid;
 
 /*!
  * @abstract 获取群组的展示名

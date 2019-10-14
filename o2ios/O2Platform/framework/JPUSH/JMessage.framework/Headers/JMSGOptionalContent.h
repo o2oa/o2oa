@@ -35,7 +35,10 @@
  */
 @property(nonatomic, assign) BOOL needReadReceipt;
 
-
+/*!
+ * @abstract 设置消息发送时的未读数，默认为 1
+ */
+@property(nonatomic, assign) SInt32 messageCount;
 /*!
  * @abstract 自定义消息通知栏的内容
  *
@@ -73,5 +76,12 @@
  * @discussion 此字段仅对@消息设置有效
  */
 @property(nonatomic, strong) NSString *atPrefix;
+
+/*!
+ * @abstract 支持 iOS10 的 UNNotificationServiceExtension 字段
+ *
+ * @discussion 消息携带 ”mutable-content":true 说明是支持 iOS10 的 UNNotificationServiceExtension，如果不携带此字段则是普通的 Remote Notification。详情参考：UNNotificationServiceExtension(https://docs.jiguang.cn/jpush/client/iOS/ios_new_fetures/#ios-10-service-extension)
+ */
+@property(nonatomic,assign) BOOL mutableContent;
 
 @end

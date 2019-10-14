@@ -145,7 +145,7 @@ class JCConversationCell: JCTableViewCell {
             let url = URL(string: urlstr!)
             let bound = self.avatorView.bounds
             if bound.width <= 0 || bound.height <= 0 {
-                self.avatorView.bounds = CGRect(x: 15, y: 7.5, w: 50, h: 50)
+                self.avatorView.bounds = CGRect(x: 15, y: 7.5, width: 50, height: 50)
             }
             self.avatorView.hnk_setImageFromURL(url!)
 

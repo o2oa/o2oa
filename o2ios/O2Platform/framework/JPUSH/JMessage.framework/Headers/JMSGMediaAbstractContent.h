@@ -56,6 +56,15 @@ JMSG_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic, strong, readonly) NSString * JMSG_NULLABLE originMediaLocalPath;
 
+/*!
+ * @abstract 取消正在下载的多媒体文件
+ *
+ * @discussion 对于正在下载的多媒体源文件，可以调用此接口取消下载，现只能取消下载：大图、文件、视频等；下载接口的回调里会返回对应的错误码和错误信息。
+ *
+ * @since 3.8.1
+ */
+- (void)cancelDownloadOriginMedia;
+
 // 不支持使用的初始化方法
 - (nullable instancetype)init NS_UNAVAILABLE;
 

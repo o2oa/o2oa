@@ -395,23 +395,23 @@ internal class SAIInputAccessoryView: UIView {
     }
     
     // click event
-    open func _touchDown() {
+    @objc open func _touchDown() {
         delegate?.inputAccessoryView(touchDown: _recordButton)
     }
     
-    open func _touchUpInside() {
+    @objc open func _touchUpInside() {
         delegate?.inputAccessoryView(touchUpInside: _recordButton)
     }
     
-    open func _touchUpOutside() {
+    @objc open func _touchUpOutside() {
         delegate?.inputAccessoryView(touchUpOutside: _recordButton)
     }
     
-    open func _dragOutside() {
+    @objc open func _dragOutside() {
        delegate?.inputAccessoryView(dragOutside: _recordButton)
     }
     
-    open func _dragInside() {
+    @objc open func _dragInside() {
         delegate?.inputAccessoryView(dragInside: _recordButton)
     }
     

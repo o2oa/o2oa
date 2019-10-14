@@ -22,7 +22,7 @@
  * #### 通知事件
  *
  * 通知事件就是除群事件之外的，如：当前登录登录状态变更、好友相关、消息撤回、消息透传、入群申请、管理员审批等事件.
- * 上层通过 JMSGEventDelegate 类里的相对应的代理方法接收事件，具体细分请查看 JMSGEventDelegate 类.
+ * 上层通过对应类里的相对应的代理方法接收事件，如：JMSGEventDelegate 、JMSGGroupDelegate 等类.
  *
  * #### 消息事件
  *
@@ -44,8 +44,12 @@
 
 @end
 
+
+#pragma mark - 用户登录状态改变事件
+
+
 /*!
- * @abstract 当前登录用户状态改变事件
+ * @abstract 当前用户登录状态改变事件
  *
  * @discussion 当前登录用户被踢、非客户端修改密码强制登出、登录状态异常、被删除、被禁用、信息变更等通知
  *
@@ -53,6 +57,9 @@
  */
 @interface JMSGUserLoginStatusChangeEvent: JMSGNotificationEvent
 @end
+
+
+#pragma mark - 消息撤回事件
 
 
 /*!
@@ -71,6 +78,9 @@
 @end
 
 
+#pragma mark - 消息已读回执状态变更事件
+
+
 /*!
  * @abstract 消息已读回执状态变更事件
  *
@@ -84,6 +94,9 @@
 @property(nonatomic, strong, readonly) NSArray <__kindof JMSGMessage *>*messages;
 
 @end
+
+
+#pragma mark - 消息透传事件
 
 
 /*!
@@ -112,6 +125,9 @@
 @end
 
 
+#pragma mark - 申请入群事件
+
+
 /*!
  * @abstract 申请入群事件
  *
@@ -134,6 +150,10 @@
 
 @end
 
+
+#pragma mark - 管理员拒绝入群申请事件
+
+
 /*!
  * @abstract 管理员拒绝入群申请事件
  *
@@ -150,10 +170,14 @@
 
 @end
 
+
+#pragma mark - 管理员审批事件
+
+
 /*!
  * @abstract 管理员审批事件
  *
- * @discussion 管理员同意或者拒绝了某个入群申请，其他管理员会收到该通知，上层通过 JMSGGroupDelegate 类中的 [JMSGGroupDelegate onReceiveGroupAdminApprovalEvent:] 代理方法监听该事件
+ * @discussion 管理员同意或者拒绝了某个入群申请，其他管理员会收到该通知，上层通过 [JMSGGroupDelegate onReceiveGroupAdminApprovalEvent:] 代理方法监听该事件
  */
 @interface JMSGGroupAdminApprovalEvent : JMSGNotificationEvent
 
@@ -170,3 +194,116 @@
 
 @end
 
+
+#pragma mark - 群成员群昵称修改事件
+
+
+/*!
+ * @abstract 群成员群昵称修改事件
+ *
+ * @discussion 如果是离线事件， memberInfoList 里会包含群成员每一次的修改记录，上层通过 [JMSGGroupDelegate onReceiveGroupNicknameChangeEvents:] 监听。
+ */
+@interface JMSGGroupNicknameChangeEvent : NSObject
+
+/// 群组
+@property(nonatomic, strong, readonly) JMSGGroup *group;
+/// 修改昵称的群成员
+@property(nonatomic, strong, readonly) JMSGGroupMemberInfo *fromMemberInfo;
+/// 被修改昵称的群成员
+@property(nonatomic, strong, readonly) JMSGGroupMemberInfo *toMemberInfo;
+/// 事件时间
+@property(nonatomic, assign, readonly) UInt64 ctime;
+
+@end
+
+
+#pragma mark - 群公告事件
+
+
+/*!
+ * @abstract 群公告事件
+ *
+ * @discussion 收到事件后根据 eventType 判断类型，取相应的数据，上层通过 [JMSGGroupDelegate onReceiveGroupAnnouncementEvents:] 监听。
+ */
+@interface JMSGGroupAnnouncementEvent : JMSGNotificationEvent
+
+/// 群公告
+@property(nonatomic, strong, readonly) JMSGGroupAnnouncement *announcement;
+/// 事件操作者
+@property(nonatomic, strong, readonly) JMSGUser *fromUser;
+/// 群组
+@property(nonatomic, strong, readonly) JMSGGroup *group;
+/// 事件时间
+@property(nonatomic, assign, readonly) UInt64 ctime;
+
+@end
+
+
+#pragma mark - 群黑名单变更事件
+
+
+/*!
+ * @abstract 群黑名单变更事件
+ *
+ * @discussion 收到事件后根据 eventType 判断类型，取相应的数据，上层通过 [JMSGGroupDelegate onReceiveGroupBlacklistChangeEvents:] 监听。
+ */
+@interface JMSGGroupBlacklistChangeEvent : JMSGNotificationEvent
+
+/// 群组
+@property(nonatomic, strong, readonly) JMSGGroup *group;
+/// 事件操作者
+@property(nonatomic, strong, readonly) JMSGUser *fromUser;
+/// 被加入/被删除 群组黑名单的用户列表
+@property(nonatomic, strong, readonly) NSArray <__kindof JMSGUser *>*targetList;
+
+@end
+
+
+#pragma mark - 聊天室事件
+
+@interface JMSGChatRoomEvent : JMSGNotificationEvent
+
+/// 聊天室
+@property(nonatomic, strong, readonly) JMSGChatRoom *chatRoom;
+/// 事件操作者
+@property(nonatomic, strong, readonly) JMSGUser *fromUser;
+/// 事件作用的用户列表
+@property(nonatomic, strong, readonly) NSArray <__kindof JMSGUser *>*targetList;
+
+@end
+
+#pragma mark - 聊天室管理员变更事件
+
+
+/*!
+ * @abstract 聊天室管理员变更事件
+ *
+ * @discussion 收到事件后根据 eventType 判断类型，取相应的数据，上层通过 [JMSGEventDelegate onReceiveChatRoomAdminChangeEvents:] 监听。
+ */
+@interface JMSGChatRoomAdminChangeEvent : JMSGChatRoomEvent
+
+@end
+
+
+#pragma mark - 聊天室黑名单变更事件
+
+
+/*!
+ * @abstract 聊天室黑名单变更事件
+ *
+ * @discussion 收到事件后根据 eventType 判断类型，取相应的数据，上层通过 [JMSGEventDelegate onReceiveChatRoomBlacklistChangeEvents:] 监听。
+ */
+@interface JMSGChatRoomBlacklisChangetEvent : JMSGChatRoomEvent
+
+@end
+
+#pragma mark - 聊天室禁言事件
+
+/*!
+ * @abstract 聊天室禁言事件
+ *
+ * @discussion 收到事件后根据 eventType 判断类型，取相应的数据，上层通过 [JMSGEventDelegate onReceiveChatRoomSilenceEvents:] 监听。
+ */
+@interface JMSGChatRoomSilenceEvent : JMSGChatRoomEvent
+
+@end

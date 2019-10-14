@@ -84,11 +84,11 @@ public class JCAreaPickerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func _areaPickerCancel(_ sender: UIButton) {
+    @objc func _areaPickerCancel(_ sender: UIButton) {
         delegate?.areaPickerView?(self, cancleSelect: sender)
     }
     
-    func _areaPickerSure(_ sender: UIButton) {
+    @objc func _areaPickerSure(_ sender: UIButton) {
         delegate?.areaPickerView?(self, didSelect: sender, selectLocate: locate)
     }
 

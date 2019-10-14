@@ -12,8 +12,6 @@
 #import <Foundation/Foundation.h>
 #import <JMessage/JMSGAbstractContent.h>
 
-
-
 /*!
  * 事件类型的消息内容
  *
@@ -41,6 +39,11 @@
 - (NSString *JMSG_NULLABLE)getEventFromUsername;
 
 /*!
+ * @abstract 获取事件发起者
+ */
+- (JMSGUser *JMSG_NULLABLE)getEventFromUser;
+
+/*!
  * @abstract 获取事件作用对象用户名列表
  * @return 返回类型为 NSArray，数组成员为事件作用对象的用户名
  *
@@ -48,6 +51,16 @@
  * 可以用于定制 event message，拼接成完整的事件描述信息。
  */
 - (NSArray *JMSG_NULLABLE)getEventToUsernameList;
+
+/*!
+ * @abstract 获取事件作用对象列表。
+ */
+- (NSArray <__kindof JMSGUser *>*JMSG_NULLABLE)getEventToUserList;
+
+/*!
+ * @abstract 获取事件自定义字段
+ */
+- (NSString *JMSG_NULLABLE)getEventCustom;
 
 /*!
  @abstract 展示此事件的文本描述

@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2FW-oB-Z7W">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--登录主界面-->
+        <scene sceneID="Ccx-qs-7MS">
+            <objects>
+                <viewController storyboardIdentifier="startFlowVC" title="登录主界面" useStoryboardIdentifierAsRestorationIdentifier="YES" id="2FW-oB-Z7W" customClass="LoginViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="rYa-3c-wad"/>
+                        <viewControllerLayoutGuide type="bottom" id="3KN-iG-hyg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleAspectFill" id="rdd-Fo-hEI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="startImage" translatesAutoresizingMaskIntoConstraints="NO" id="K38-8L-qgc">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="vcW-1Q-9FH" appends="YES" id="mx9-2V-B3N"/>
+                                </connections>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1bI-e6-ANg">
+                                <rect key="frame" x="147.5" y="90" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="2zO-EG-G0T"/>
+                                    <constraint firstAttribute="width" constant="80" id="uey-R9-gFc"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="K38-8L-qgc" firstAttribute="leading" secondItem="rdd-Fo-hEI" secondAttribute="leading" id="PGA-dd-l8v"/>
+                            <constraint firstItem="1bI-e6-ANg" firstAttribute="top" secondItem="rYa-3c-wad" secondAttribute="bottom" constant="70" id="VgF-wY-Pgd"/>
+                            <constraint firstItem="3KN-iG-hyg" firstAttribute="top" secondItem="K38-8L-qgc" secondAttribute="bottom" id="W2e-zb-vXZ"/>
+                            <constraint firstAttribute="trailing" secondItem="K38-8L-qgc" secondAttribute="trailing" id="ZIp-e6-I6R"/>
+                            <constraint firstItem="K38-8L-qgc" firstAttribute="top" secondItem="rdd-Fo-hEI" secondAttribute="top" id="o31-Xt-L3f"/>
+                            <constraint firstItem="1bI-e6-ANg" firstAttribute="centerX" secondItem="rdd-Fo-hEI" secondAttribute="centerX" id="wWa-nd-mNP"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="aRC-sT-tD2"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="iconImageView" destination="1bI-e6-ANg" id="KGZ-HC-FaY"/>
+                        <outlet property="startImage" destination="K38-8L-qgc" id="crH-6k-I7C"/>
+                        <segue destination="Yh7-G2-VLg" kind="show" identifier="bindPhoneSegue" id="tfs-d0-XfH"/>
+                        <segue destination="a0S-mR-qpd" kind="showDetail" identifier="loginSystemSegue" id="JJL-NL-6qL"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c32-Ay-Pfc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="vcW-1Q-9FH">
+                    <connections>
+                        <action selector="show:" destination="2FW-oB-Z7W" id="sPU-Ec-Vmk"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="21.600000000000001" y="226.23688155922042"/>
+        </scene>
+        <!--Bind Register Controller-->
+        <scene sceneID="vPW-Kt-T9L">
+            <objects>
+                <viewController storyboardIdentifier="bindVC" id="Yh7-G2-VLg" customClass="OOBindRegisterController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6T5-Oe-E63"/>
+                        <viewControllerLayoutGuide type="bottom" id="7gm-wr-Vo0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ABT-PI-PrG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_yzsj_bj" translatesAutoresizingMaskIntoConstraints="NO" id="4ge-aX-o7i">
+                                <rect key="frame" x="0.0" y="64" width="375" height="147"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="147" id="QCY-1s-PDy"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="HIL-F0-SqA">
+                                <rect key="frame" x="16" y="243" width="343" height="180"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入手机号" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ObS-rR-SV6" customClass="OOUITextField" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="41I-dW-fmr"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="icon_phone_nor"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftLightImage" value="icon_phone_sel"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="0.39894584760000001" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineLightColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入验证码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f1x-qE-7k6" customClass="OOUIDownButtonTextField" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="70" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="xvt-De-9D4"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonTitle" value="发送验证码"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="icon_verification_code_nor"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftLightImage" value="icon_verification_code_sel"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="0.39894584760000001" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineLightColor">
+                                                <color key="value" red="0.85262101889999997" green="0.42218321559999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RFi-UF-mda" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="140" width="343" height="40"/>
+                                        <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="COC-uY-wDR"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                        <state key="normal" title="下一步">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layerCornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="nextAction:" destination="Yh7-G2-VLg" eventType="touchUpInside" id="KL0-p5-GTp"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="AHz-Nh-462"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="HIL-F0-SqA" firstAttribute="leading" secondItem="ABT-PI-PrG" secondAttribute="leadingMargin" id="2Cx-SG-Ix9"/>
+                            <constraint firstItem="4ge-aX-o7i" firstAttribute="leading" secondItem="ABT-PI-PrG" secondAttribute="leading" id="dvU-ra-Fmg"/>
+                            <constraint firstItem="HIL-F0-SqA" firstAttribute="top" secondItem="4ge-aX-o7i" secondAttribute="bottom" constant="32" id="nVb-Ei-Dvp"/>
+                            <constraint firstItem="4ge-aX-o7i" firstAttribute="top" secondItem="ABT-PI-PrG" secondAttribute="top" constant="64" id="oNl-Mu-3pl"/>
+                            <constraint firstAttribute="trailing" secondItem="4ge-aX-o7i" secondAttribute="trailing" id="piY-o5-Bov"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HIL-F0-SqA" secondAttribute="trailing" id="rdA-er-aLr"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="codeTextField" destination="f1x-qE-7k6" id="Chu-HT-XON"/>
+                        <outlet property="navBackgroundImg" destination="4ge-aX-o7i" id="F1R-01-g9q"/>
+                        <outlet property="nextButton" destination="RFi-UF-mda" id="88V-wJ-QQy"/>
+                        <outlet property="phoneNumberTextField" destination="ObS-rR-SV6" id="Qqu-Lw-bal"/>
+                        <segue destination="ijN-Lx-ufq" kind="show" identifier="nextSelectNodeSegue" id="auB-XD-Zao"/>
+                        <segue destination="vZ4-uk-11h" kind="unwind" identifier="backStartSegue" unwindAction="unBindComplete:" id="uEu-Bh-AwH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t9c-bh-cYL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="vZ4-uk-11h" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1015" y="-795"/>
+        </scene>
+        <!--Bind Node View Controller-->
+        <scene sceneID="8NX-J9-U8P">
+            <objects>
+                <viewController id="ijN-Lx-ufq" customClass="OOBindNodeViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ezg-YY-sz7"/>
+                        <viewControllerLayoutGuide type="bottom" id="r53-28-RdP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xoM-4c-VPc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dnx-pt-seb">
+                                <rect key="frame" x="0.0" y="66" width="375" height="601"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="OONodeUnitTableViewCell" id="sh0-GF-gvO" customClass="OONodeUnitTableViewCell" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sh0-GF-gvO" id="EcZ-57-FOC">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_liebiao1" highlightedImage="icon_liebiao1" translatesAutoresizingMaskIntoConstraints="NO" id="eSE-rC-sdC">
+                                                    <rect key="frame" x="15" y="11" width="22" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="22" id="lbS-6x-LVf"/>
+                                                        <constraint firstAttribute="height" constant="22" id="rwO-Dc-TVx"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ANNA组织" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="86p-zE-rWI">
+                                                    <rect key="frame" x="48" y="12.5" width="279" height="18.5"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="18.5" id="utf-Qz-Nga"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="13"/>
+                                                    <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_circle" highlightedImage="icon__ok2_click" translatesAutoresizingMaskIntoConstraints="NO" id="6pg-2l-8AO">
+                                                    <rect key="frame" x="338" y="11" width="22" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="22" id="Kh2-7z-vhD"/>
+                                                        <constraint firstAttribute="height" constant="22" id="eDN-ft-sSR"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="eSE-rC-sdC" firstAttribute="centerY" secondItem="EcZ-57-FOC" secondAttribute="centerY" id="BAk-g8-8YH"/>
+                                                <constraint firstItem="6pg-2l-8AO" firstAttribute="centerY" secondItem="EcZ-57-FOC" secondAttribute="centerY" id="DA7-Um-pHk"/>
+                                                <constraint firstItem="6pg-2l-8AO" firstAttribute="trailing" secondItem="EcZ-57-FOC" secondAttribute="trailingMargin" id="MNS-qv-LKH"/>
+                                                <constraint firstItem="86p-zE-rWI" firstAttribute="leading" secondItem="eSE-rC-sdC" secondAttribute="trailing" constant="11" id="YwS-yB-Uuf"/>
+                                                <constraint firstItem="eSE-rC-sdC" firstAttribute="leading" secondItem="EcZ-57-FOC" secondAttribute="leadingMargin" id="krt-Pt-mbX"/>
+                                                <constraint firstItem="86p-zE-rWI" firstAttribute="centerY" secondItem="EcZ-57-FOC" secondAttribute="centerY" id="oVs-Dk-aLE"/>
+                                                <constraint firstItem="6pg-2l-8AO" firstAttribute="leading" secondItem="86p-zE-rWI" secondAttribute="trailing" constant="11" id="u4n-CO-A4X"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="iconImageView" destination="eSE-rC-sdC" id="YT1-79-hnH"/>
+                                            <outlet property="nodeNameLabel" destination="86p-zE-rWI" id="hbH-Wn-ppv"/>
+                                            <outlet property="selectImageView" destination="6pg-2l-8AO" id="TMY-0O-imu"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="dnx-pt-seb" firstAttribute="leading" secondItem="xoM-4c-VPc" secondAttribute="leading" id="1dK-o5-Mxg"/>
+                            <constraint firstItem="r53-28-RdP" firstAttribute="top" secondItem="dnx-pt-seb" secondAttribute="bottom" id="4j3-Ja-xbw"/>
+                            <constraint firstAttribute="trailing" secondItem="dnx-pt-seb" secondAttribute="trailing" id="7lf-X7-E8I"/>
+                            <constraint firstItem="dnx-pt-seb" firstAttribute="top" secondItem="xoM-4c-VPc" secondAttribute="top" constant="66" id="nU3-HT-gYj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="dnx-pt-seb" id="V2c-6e-l1z"/>
+                        <segue destination="UjQ-yB-fOD" kind="unwind" identifier="backBindComplete" unwindAction="unBindComplete:" id="Xzk-St-buE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SY4-sf-leY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="UjQ-yB-fOD" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1879" y="-796"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="uwt-1a-0iu">
+            <objects>
+                <viewController storyboardIdentifier="loginVC" hidesBottomBarWhenPushed="YES" id="a0S-mR-qpd" customClass="OOLoginViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gLp-Ql-ZqA"/>
+                        <viewControllerLayoutGuide type="bottom" id="T98-3m-c1C"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="5mI-Py-vbm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_o2_moren1" highlightedImage="pic_o2_moren1" translatesAutoresizingMaskIntoConstraints="NO" id="wxO-Qg-4fw">
+                                <rect key="frame" x="140" y="80" width="95" height="95"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="95" id="AFL-pU-hnM"/>
+                                    <constraint firstAttribute="height" constant="95" id="ef6-XN-IYs"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="VlL-pa-xtW">
+                                <rect key="frame" x="16" y="195" width="343" height="180"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入用户名" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lEi-tc-UYF" customClass="OOUITextField" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="PAM-WB-VG7"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="icon_user_nor"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftLightImage" value="icon_user_sel"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="0.39894584760000001" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineLightColor">
+                                                <color key="value" red="0.85262101889999997" green="0.42218321559999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入动态密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uXf-3e-9Bs" customClass="OOUIDownButtonTextField" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="70" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="YG6-dA-cc6"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="icon_verification_code_nor"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftLightImage" value="icon_verification_code_sel"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="0.39894584760000001" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineLightColor">
+                                                <color key="value" red="0.85262101889999997" green="0.42218321559999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="buttonTitleColor">
+                                                <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="labelTextColor">
+                                                <color key="value" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nr9-8F-s20" customClass="OOUITextField" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="130" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="jfy-Ns-KfD"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" textContentType="password"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="icon_verification_code_nor"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="leftLightImage" value="icon_verification_code_sel"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                                                <color key="value" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="0.39894584760000001" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="lineLightColor">
+                                                <color key="value" red="0.85262101889999997" green="0.42218321559999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="buttonTitleColor">
+                                                <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="labelTextColor">
+                                                <color key="value" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bkV-iJ-Vkd" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="140" width="343" height="40"/>
+                                        <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="43O-2Q-T3O"/>
+                                        </constraints>
+                                        <state key="normal" title="登录">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layerCornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="btnLogin:" destination="a0S-mR-qpd" eventType="touchUpInside" id="jDa-A9-zCD"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017  All Rights Reserved" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A52-E8-znd">
+                                <rect key="frame" x="16" y="617" width="343" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Ak2-v8-JaT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="13"/>
+                                <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdH-Rd-Uu5">
+                                <rect key="frame" x="243" y="383" width="100" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="McM-ZF-FyV"/>
+                                    <constraint firstAttribute="width" constant="100" id="kFw-P8-2nn"/>
+                                </constraints>
+                                <state key="normal" title="重新绑定">
+                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnReBindNodeAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="qQA-3H-Xcv"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VU6-Hu-1I4">
+                                <rect key="frame" x="32" y="383" width="100" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="DyV-tz-NyM"/>
+                                    <constraint firstAttribute="width" constant="100" id="xav-tr-QlL"/>
+                                </constraints>
+                                <state key="normal" title="其他登录方式">
+                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="bioAuthLoginBtnAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="Ul1-Ln-gkh"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="A52-E8-znd" firstAttribute="trailing" secondItem="5mI-Py-vbm" secondAttribute="trailingMargin" id="8Dk-wa-Ccx"/>
+                            <constraint firstItem="VU6-Hu-1I4" firstAttribute="leading" secondItem="5mI-Py-vbm" secondAttribute="leadingMargin" constant="16" id="Hv5-AB-8oh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sdH-Rd-Uu5" secondAttribute="trailing" constant="16" id="TtL-jY-jKL"/>
+                            <constraint firstItem="wxO-Qg-4fw" firstAttribute="top" secondItem="gLp-Ql-ZqA" secondAttribute="bottom" constant="60" id="fPU-OV-aGc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="VlL-pa-xtW" secondAttribute="trailing" id="gvX-Ce-MAk"/>
+                            <constraint firstItem="VlL-pa-xtW" firstAttribute="leading" secondItem="5mI-Py-vbm" secondAttribute="leadingMargin" id="j3r-BR-mFm"/>
+                            <constraint firstItem="T98-3m-c1C" firstAttribute="top" secondItem="A52-E8-znd" secondAttribute="bottom" constant="20" id="jBT-eo-ZAy"/>
+                            <constraint firstItem="VlL-pa-xtW" firstAttribute="top" secondItem="wxO-Qg-4fw" secondAttribute="bottom" constant="20" id="pHo-lO-tQj"/>
+                            <constraint firstItem="sdH-Rd-Uu5" firstAttribute="top" secondItem="VlL-pa-xtW" secondAttribute="bottom" constant="8" id="ucf-wv-zlC"/>
+                            <constraint firstItem="A52-E8-znd" firstAttribute="leading" secondItem="5mI-Py-vbm" secondAttribute="leadingMargin" id="vLr-qE-9gX"/>
+                            <constraint firstItem="wxO-Qg-4fw" firstAttribute="centerX" secondItem="5mI-Py-vbm" secondAttribute="centerX" id="vca-jj-UD9"/>
+                            <constraint firstItem="VU6-Hu-1I4" firstAttribute="top" secondItem="VlL-pa-xtW" secondAttribute="bottom" constant="8" id="wx3-AY-MMm"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="bioAuthLoginBtn" destination="VU6-Hu-1I4" id="RDQ-Zu-A9j"/>
+                        <outlet property="copyrightLabel" destination="A52-E8-znd" id="Ybu-EC-cUV"/>
+                        <outlet property="logoImageView" destination="wxO-Qg-4fw" id="Hh7-Oe-gAu"/>
+                        <outlet property="passwordField" destination="Nr9-8F-s20" id="nwD-fE-rjt"/>
+                        <outlet property="passwordTextField" destination="uXf-3e-9Bs" id="iZX-5X-X5f"/>
+                        <outlet property="rebindBtn" destination="sdH-Rd-Uu5" id="iHL-Bh-Y5K"/>
+                        <outlet property="submitButton" destination="bkV-iJ-Vkd" id="QRH-jn-yYN"/>
+                        <outlet property="userNameTextField" destination="lEi-tc-UYF" id="wwi-lw-TMN"/>
+                        <segue destination="2FW-oB-Z7W" kind="showDetail" identifier="reBindSegue" id="6gx-hN-LjT"/>
+                        <segue destination="cft-aF-Yb3" kind="show" identifier="showBioAuthLogin" id="0Bc-Vx-3oE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rsu-MQ-dYI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1878" y="102"/>
+        </scene>
+        <!--Bio Auth Login View Controller-->
+        <scene sceneID="PUp-Gl-0uU">
+            <objects>
+                <viewController id="cft-aF-Yb3" customClass="BioAuthLoginViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qcn-vc-kbg"/>
+                        <viewControllerLayoutGuide type="bottom" id="YUC-Nx-JYU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bhD-dv-JgS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_o2_moren1" translatesAutoresizingMaskIntoConstraints="NO" id="8xt-gj-zyd">
+                                <rect key="frame" x="127.5" y="140" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="7sa-Bj-Y2n"/>
+                                    <constraint firstAttribute="height" constant="120" id="bqd-au-JQf"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Q-4z-Rfe" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                <rect key="frame" x="26" y="290" width="323" height="40"/>
+                                <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="m5T-Za-xxO"/>
+                                </constraints>
+                                <state key="normal" title="生物识别登录">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layerCornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="btnLogin:" destination="a0S-mR-qpd" eventType="touchUpInside" id="z11-fO-vqQ"/>
+                                    <action selector="tapBioAuthLogin:" destination="cft-aF-Yb3" eventType="touchUpInside" id="hAV-fd-WqM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLj-hW-IW3">
+                                <rect key="frame" x="257" y="350" width="92" height="30"/>
+                                <state key="normal" title="其它方式登录"/>
+                                <connections>
+                                    <segue destination="0kn-3s-0PH" kind="unwind" identifier="goBack2Login" unwindAction="unwindFromBioAuthLogin:" id="Yuv-L0-JEi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Q9Q-4z-Rfe" firstAttribute="leading" secondItem="bhD-dv-JgS" secondAttribute="leadingMargin" constant="10" id="3Um-bM-pd8"/>
+                            <constraint firstItem="8xt-gj-zyd" firstAttribute="centerX" secondItem="bhD-dv-JgS" secondAttribute="centerX" id="3uH-rZ-hwr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Q9Q-4z-Rfe" secondAttribute="trailing" constant="10" id="7pM-qJ-kQX"/>
+                            <constraint firstItem="kLj-hW-IW3" firstAttribute="top" secondItem="Q9Q-4z-Rfe" secondAttribute="bottom" constant="20" id="Fyq-YY-5jR"/>
+                            <constraint firstItem="8xt-gj-zyd" firstAttribute="top" secondItem="Qcn-vc-kbg" secondAttribute="bottom" constant="120" id="Svv-8y-quC"/>
+                            <constraint firstItem="Q9Q-4z-Rfe" firstAttribute="top" secondItem="8xt-gj-zyd" secondAttribute="bottom" constant="30" id="T1j-ya-25e"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kLj-hW-IW3" secondAttribute="trailing" constant="10" id="WmX-Ob-3xi"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bioAuthBtn" destination="Q9Q-4z-Rfe" id="kXh-cv-anT"/>
+                        <outlet property="bioImageView" destination="8xt-gj-zyd" id="2fS-b2-cza"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XCI-nI-b3M" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="0kn-3s-0PH" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="2825" y="101"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="icon__ok2_click" width="22" height="22"/>
+        <image name="icon_circle" width="22" height="22"/>
+        <image name="icon_liebiao1" width="20" height="20"/>
+        <image name="icon_phone_nor" width="20" height="20"/>
+        <image name="icon_phone_sel" width="20" height="20"/>
+        <image name="icon_user_nor" width="20" height="20"/>
+        <image name="icon_user_sel" width="20" height="20"/>
+        <image name="icon_verification_code_nor" width="20" height="20"/>
+        <image name="icon_verification_code_sel" width="20" height="20"/>
+        <image name="pic_o2_moren1" width="87" height="87"/>
+        <image name="pic_yzsj_bj" width="375" height="147"/>
+        <image name="startImage" width="375" height="667"/>
+    </resources>
+</document>

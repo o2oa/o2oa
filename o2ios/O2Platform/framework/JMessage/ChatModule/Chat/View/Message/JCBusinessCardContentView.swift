@@ -118,7 +118,7 @@ class JCBusinessCardContentView: UIView, JCMessageContentViewType {
         addGestureRecognizer(tap)
     }
     
-    func _clickCell() {
+    @objc func _clickCell() {
         _delegate?.message?(message: _message, user: _user, businessCardName: _userName!, businessCardAppKey: _appKey!)
     }
 

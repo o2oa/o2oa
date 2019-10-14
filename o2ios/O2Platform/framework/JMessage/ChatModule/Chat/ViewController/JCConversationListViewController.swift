@@ -9,6 +9,11 @@
 import UIKit
 import JMessage
 import YHPopupView
+import Alamofire
+import AlamofireObjectMapper
+import SwiftyJSON
+import ObjectMapper
+import CocoaLumberjack
 
 class JCConversationListViewController: UIViewController {
     
@@ -306,13 +311,88 @@ extension JCConversationListViewController: UITableViewDelegate, UITableViewData
 
 
 extension JCConversationListViewController: MorePopupViewDelegate {
+    
+    
+    
+    //查询当前用户身份的顶级组织
+    private func findCurrentIdentityTopUnit(callback: @escaping (String?)-> Void) {
+        var myPersonURL:String? {
+            let url = AppDelegate.o2Collect.generateURLWithAppContextKey(PersonContext.personContextKey, query: PersonContext.personInfoQuery, parameter: nil)
+            return url
+        }
+        var topUnitByIdentityURL: String? {
+            let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKey, query: ContactContext.topLevelUnitByIdentity, parameter: nil)
+            return url
+        }
+        Alamofire.request(myPersonURL!, method: .get, parameters: nil, encoding:URLEncoding.default, headers: nil).validate().responseJSON {
+            response in
+            switch response.result {
+            case .success(let val):
+                let objects = JSON(val)["data"]
+                var identity = ""
+                if let person = Mapper<PersonV2>().map(JSONString:objects.description) {
+                    if let identities = person.woIdentityList, identities.count > 0 {
+                        identity = identities[0].distinguishedName ?? ""
+                    }
+                }
+                if !identity.isEmpty {
+                    Alamofire.request(topUnitByIdentityURL!, method: .post, parameters: ["identity": identity as AnyObject, "level": 1 as AnyObject], encoding: JSONEncoding.default, headers: nil).responseJSON(completionHandler: { (res) in
+                        switch res.result {
+                        case .success(let val):
+                            let objects = JSON(val)["data"]
+                            if let unit = Mapper<OrgUnit>().map(JSONString:objects.description) {
+                               callback(unit.distinguishedName)
+                            }else {
+                                callback(nil)
+                            }
+                            break
+                        case .failure(let err):
+                            DDLogError(err.localizedDescription)
+                            callback(nil)
+                        }
+                    })
+                }else {
+                    callback(nil)
+                }
+            case .failure(let err):
+                DDLogError(err.localizedDescription)
+                callback(nil)
+            }
+        }
+    }
+    
+    
     //群聊
     func popupView(view: MorePopupView, addGroup addButton: UIButton) {
         dismissPopupView()
-        let vc = OOPersonsViewController(nibName: "OOPersonsViewController", bundle: nil)
-        vc.title = "发起群聊"
-        vc.isSingleSelected = false
-        navigationController?.pushViewController(vc, animated: true)
+        self.findCurrentIdentityTopUnit { (topOrg) in
+            self.chooseGroupUsers(topOrg: topOrg)
+        }
+    }
+    private func chooseGroupUsers(topOrg: String?) {
+        var topList:[String] = []
+        if topOrg != nil {
+            topList.append(topOrg!)
+        }
+        if let v = ContactPickerViewController.providePickerVC(
+            pickerModes: [ContactPickerType.person],
+            topUnitList: topList,
+            unitType: "",
+            maxNumber: 0,
+            multiple: true,
+            dutyList: [],
+            initDeptPickedArray: [],
+            initIdPickedArray: [],
+            initGroupPickedArray: [],
+            initUserPickedArray: [],
+            pickedDelegate: { (result: O2BizContactPickerResult) in
+                if let users = result.users, !users.isEmpty {
+                    self.groupChat(selectedPersons: users)
+                }
+        }
+            ) {
+            self.navigationController?.pushViewController(v, animated: true)
+        }
     }
     
     func popupView(view: MorePopupView, addFriend addButton: UIButton) {
@@ -323,13 +403,83 @@ extension JCConversationListViewController: MorePopupViewDelegate {
     //单聊
     func popupView(view: MorePopupView, addSingle addButton: UIButton) {
         dismissPopupView()
-        let vc = OOPersonsViewController(nibName: "OOPersonsViewController", bundle: nil) as! OOPersonsViewController
-        vc.title = "发起单聊"
-        navigationController?.pushViewController(vc, animated: true)
-//        let vc = JCSearchFriendViewController()
-//        vc.isSearchUser = true
-//        navigationController?.pushViewController(vc, animated: true)
+        //添加当前用户顶级组织的限制
+        self.findCurrentIdentityTopUnit { (topOrg) in
+            self.chooseSingleUser(topOrg: topOrg)
+        }
     }
+    private func chooseSingleUser(topOrg: String?) {
+        var topList:[String] = []
+        if topOrg != nil {
+            topList.append(topOrg!)
+        }
+        if let v = ContactPickerViewController.providePickerVC(
+            pickerModes: [ContactPickerType.person],
+            topUnitList: topList,
+            unitType: "",
+            maxNumber: 1,
+            multiple: false,
+            dutyList: [],
+            initDeptPickedArray: [],
+            initIdPickedArray: [],
+            initGroupPickedArray: [],
+            initUserPickedArray: [],
+            pickedDelegate: { (result: O2BizContactPickerResult) in
+                if let users = result.users, !users.isEmpty {
+                    if let selectedPerson = users[0].id {
+                        self.singleChat(selectedPerson: selectedPerson)
+                    }
+                }
+        }
+            ) {
+            self.navigationController?.pushViewController(v, animated: true)
+        }
+    }
+    
+    private func singleChat(selectedPerson: String) {
+        let username = selectedPerson
+        MBProgressHUD_JChat.showMessage(message: "创建中...", toView: view)
+        JMSGConversation.createSingleConversation(withUsername: username) { (result, error) in
+            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            if error == nil {
+                let conv = result as! JMSGConversation
+                let vc = JCChatViewController(conversation: conv)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kUpdateConversation), object: nil, userInfo: nil)
+                self.navigationController?.pushViewController(vc, animated: true)
+            }else{
+                O2Logger.error(error.debugDescription)
+                MBProgressHUD_JChat.show(text: "创建会话失败，请重试", view: self.view)
+            }
+        }
+    }
+    
+    private func groupChat(selectedPersons: [O2PersonPickerItem]) {
+        MBProgressHUD_JChat.showMessage(message: "创建中...", toView: view)
+        let userNames = selectedPersons.map { (p) -> String in
+            return p.id!
+        }
+        JMSGGroup.createGroup(withName: nil, desc: nil, memberArray: userNames, completionHandler: { (result, error) in
+            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            if error == nil {
+                for vc in (self.navigationController?.viewControllers)! {
+                    if vc is JCConversationListViewController {
+                        self.navigationController?.popToViewController(vc, animated: true)
+                        let group = result as! JMSGGroup
+                        JMSGConversation.createGroupConversation(withGroupId: group.gid, completionHandler: { (result, error) in
+                            let conv = JMSGConversation.groupConversation(withGroupId: group.gid)
+                            let chatVC = JCChatViewController(conversation: conv!)
+                            vc.navigationController?.pushViewController(chatVC, animated: true)
+                        })
+                    }
+                }
+                
+            } else {
+                O2Logger.error(error.debugDescription)
+                MBProgressHUD_JChat.show(text: "创建会话失败，请确保添加的群聊成员都使用过O2移动端应用", view: self.view)
+            }
+        })
+    }
+    
     
     func popupView(view: MorePopupView, scanQRCode addButton: UIButton) {
         dismissPopupView()

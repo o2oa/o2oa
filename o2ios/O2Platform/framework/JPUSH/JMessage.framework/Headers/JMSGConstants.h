@@ -141,6 +141,8 @@ typedef NS_ENUM(NSInteger, JMSGContentType) {
   kJMSGContentTypeLocation = 7,
   /// 提示性消息
   kJMSGContentTypePrompt = 8,
+  /// 视频消息
+  kJMSGContentTypeVideo = 9,
 };
 
 /*!
@@ -175,6 +177,8 @@ typedef NS_ENUM(NSInteger, JMSGMessageStatus) {
   kJMSGMessageStatusReceiveDownloadFailed = 7,
   /// 接收消息成功
   kJMSGMessageStatusReceiveSucceed = 8,
+  /// 消息已被取消发送
+  kJMSGMessageStatusCanceledSend = 9,
 };
 
 
@@ -190,6 +194,8 @@ typedef NS_ENUM(NSInteger, JMSGFileType) {
   kJMSGFileTypeVoice,
   /// 文件类型
   kJMSGFileTypeFile,
+  /// 视频类型
+  kJMSGFileTypeVideo,
 };
 
 /*!
@@ -209,6 +215,18 @@ typedef NS_ENUM(NSInteger, JMSGPlatformType) {
 };
 
 /*!
+ * 群成员类型
+ */
+typedef NS_ENUM(NSInteger, JMSGGroupMemberType) {
+  /// 普通成员
+  kJMSGGroupMemberTypeOrdinary = 0,
+  /// 群主
+  kJMSGGroupMemberTypeOwner    = 1,
+  /// 管理员
+  kJMSGGroupMemberTypeAdmin    = 2,
+};
+
+/*!
  * 发送消息透传的的类型
  */
 typedef NS_ENUM(NSInteger,JMSGTransMessageType) {
@@ -221,7 +239,7 @@ typedef NS_ENUM(NSInteger,JMSGTransMessageType) {
 };
 
 /*!
- * 通知事件类型
+ * 消息事件类型
  *
  * 本类 JMSGEventNotificationType 是 SDK 下发的通知事件类型,主要分为：消息事件、非消息事件
  *
@@ -231,30 +249,9 @@ typedef NS_ENUM(NSInteger,JMSGTransMessageType) {
  *
  * #### 非消息事件
  *
- * 如：被踢、登录状态异常、加好友等，SDK 会作为通知事件下发,上层通过 JMSGEventDelegate 类的代理方法可监听此类事件.
- *
- * #### 注意:
- *
- * 1、事件分类详细说明 和 事件对应监听方法请查看 JMSGNotificationEvent 类
- *
- * 2、不要直接使用数字来判断事件类型
+ * 如：被踢、加好友等，SDK 会作为通知事件下发,上层通过 JMSGEventDelegate、JMSGGroupDelegate 这些对应类的代理方法可监听此类事件.
  */
 typedef NS_ENUM(NSInteger, JMSGEventNotificationType) {
-  
-  // 用户登录状态变更事件
-  /// 事件类型: 登录被踢
-  kJMSGEventNotificationLoginKicked = 1,
-  /// 事件类型: 非客户端修改密码强制登出事件
-  kJMSGEventNotificationServerAlterPassword = 2,
-  /// 事件类型：用户登录状态异常事件（需要重新登录）
-  kJMSGEventNotificationUserLoginStatusUnexpected = 70,
-  /// 事件类型：当前登录用户信息变更通知事件(非客户端修改)
-  kJMSGEventNotificationCurrentUserInfoChange = 40,
-  /// 事件类型：当前登录用户被删除事件（本地用户信息会被清空）
-  kJMSGEventNotificationCurrentUserDeleted = 10001,
-  /// 事件类型：当前登录用户被禁用事件（本地用户信息会被清空）
-  kJMSGEventNotificationCurrentUserDisabled = 10002,
-  
   // 消息事件
   /// 事件类型: 群组被创建
   kJMSGEventNotificationCreateGroup = 8,
@@ -272,10 +269,55 @@ typedef NS_ENUM(NSInteger, JMSGEventNotificationType) {
   kJMSGEventNotificationGroupAdminChange = 80,
   /// 事件类型: 群主变更通知事件
   kJMSGEventNotificationGroupOwnerChange = 82,
+  /// 事件类型: 群类型变更通知事件
+  kJMSGEventNotificationGroupTypeChange = 83,
   /// 事件类型: 解散群组
   kJMSGEventNotificationDissolveGroup = 11001,
-  
-  
+  /// 事件类型: 群组成员上限变更
+  kJMSGEventNotificationGroupMaxMemberCountChange = 11002,
+};
+
+/*!
+ * 通知事件类型
+ *
+ * #### 上层通过 JMSGEventDelegate 类里的方法来监听此类事件
+ */
+typedef NS_ENUM(NSInteger, JMSGCommonEventType){
+  /// 事件类型: 消息撤回
+  kJMSGEventNotificationMessageRetract = 55,
+  /// 事件类型: 消息透传
+  kJMSGEventNotificationMessageTransparent = 12001,
+  /// 事件类型: 消息回执变更
+  kJMSGEventNotificationMessageReceiptStatusChange = 12002,
+};
+
+/*!
+ * 用户登录状态变更事件类型
+ *
+ * #### 上层通过 JMSGUserDelegate 类里的方法来监听此类事件
+ */
+typedef NS_ENUM(NSInteger, JMSGLoginStatusChangeEventType) {
+  // 用户登录状态变更事件
+  /// 事件类型: 登录被踢
+  kJMSGEventNotificationLoginKicked = 1,
+  /// 事件类型: 非客户端修改密码强制登出事件
+  kJMSGEventNotificationServerAlterPassword = 2,
+  /// 事件类型：用户登录状态异常事件（需要重新登录）
+  kJMSGEventNotificationUserLoginStatusUnexpected = 70,
+  /// 事件类型：当前登录用户信息变更通知事件(非客户端修改)
+  kJMSGEventNotificationCurrentUserInfoChange = 40,
+  /// 事件类型：当前登录用户被删除事件（本地用户信息会被清空）
+  kJMSGEventNotificationCurrentUserDeleted = 10001,
+  /// 事件类型：当前登录用户被禁用事件（本地用户信息会被清空）
+  kJMSGEventNotificationCurrentUserDisabled = 10002,
+};
+
+/*!
+ * 好友事件类型
+ *
+ * #### 上层通过 JMSGEventDelegate 类里的方法来监听此类事件
+ */
+typedef NS_ENUM(NSInteger, JMSGFriendEventType) {
   // 好友相关事件
   /// 事件类型: 收到好友邀请
   kJMSGEventNotificationReceiveFriendInvitation   = 51,
@@ -287,13 +329,44 @@ typedef NS_ENUM(NSInteger, JMSGEventNotificationType) {
   kJMSGEventNotificationDeletedFriend             = 6,
   /// 事件类型：非客户端修改好友关系收到好友更新事件
   kJMSGEventNotificationReceiveServerFriendUpdate = 7,
-  
-  /// 事件类型: 消息撤回
-  kJMSGEventNotificationMessageRetract = 55,
-  /// 事件类型: 消息透传
-  kJMSGEventNotificationMessageTransparent = 12001,
-  /// 事件类型: 消息回执变更
-  kJMSGEventNotificationMessageReceiptStatusChange = 12002,
+};
+
+/*!
+ * 群组事件类型
+ *
+ * #### 上层通过 JMSGGroupDelegate 类里的方法来监听此类事件
+ */
+typedef NS_ENUM(NSInteger, JMSGGroupEventType) {
+  /// 事件类型：发布群公告
+  kJMSGEventNotificationPublishGroupAnnouncement  = 86,
+  /// 事件类型：删除群公告
+  kJMSGEventNotificationDeleteGroupAnnouncement = 87,
+  /// 事件类型：置顶/取消置顶 群公告
+  kJMSGEventNotificationTopGroupAnnouncement = 88,
+  /// 事件类型：添加群组黑名单
+  kJMSGEventNotificationAddGroupBlacklist = 89,
+  /// 事件类型：删除群组黑名单
+  kJMSGEventNotificationDelGroupBlacklist = 90,
+};
+
+/*!
+ * 聊天室事件类型
+ *
+ * #### 上层通过 JMSGEventDelegate 类里的方法来监听此类事件
+ */
+typedef NS_ENUM(NSInteger, JMSGChatRoomEventType) {
+  /// 事件类型：添加管理员
+  kJMSGEventNotificationChatRoomAddAdmin = 130,
+  /// 事件类型：删除管理员
+  kJMSGEventNotificationChatRoomDelAdmin = 131,
+  /// 事件类型：添加黑名单
+  kJMSGEventNotificationChatRoomAddBlacklist = 132,
+  /// 事件类型：删除黑名单
+  kJMSGEventNotificationChatRoomDelBlacklist = 133,
+  /// 事件类型：添加禁言通知
+  kJMSGEventNotificationChatRoomAddSilence = 135,
+  /// 事件类型：解除禁言通知
+  kJMSGEventNotificationChatRoomDelSilence = 136,
 };
 
 ///----------------------------------------------------
@@ -407,6 +480,12 @@ typedef NS_ENUM(NSInteger, JMSGSDKErrorCode) {
   kJMSGErrorSDKMessageProtocolUpgradeNeeded = 865008,
   /// 收到不支持消息内容类型(建议升级)
   kJMSGErrorSDKMessageProtocolContentTypeNotSupport = 865009,
+  /// 消息状态不合法
+  kJMSGErrorSDKMessageStatusNotLegal = 865010,
+  /// 取消发送消息
+  kJMSGErrorSDKMessageCancelSend = 865011,
+  /// 取消下载消息多媒体文件
+  kJMSGErrorSDKMessageCancelDownload = 865012,
 
 
   // ------------------------ Conversation (866xxx)
@@ -492,6 +571,8 @@ typedef NS_ENUM(NSUInteger, JMSGTcpErrorCode) {
   kJMSGErrorTcpUserNotRegistered = 801003,
   /// 用户密码错误
   kJMSGErrorTcpUserPasswordError = 801004,
+  /// 用户被禁用
+  kJMSGErrorTcpUserDisabled = 801006,
   /// 多通道同时登录错误，登录失败
   kJMSGErrorTcpLoginMultiChannelError = 801007,
   /// 目标用户不存在
@@ -510,6 +591,20 @@ typedef NS_ENUM(NSUInteger, JMSGTcpErrorCode) {
   kJMSGErrorTcpGroupMembersEmpty = 810002,
   /// 群组成员重复
   kJMSGErrorTcpGroupMembersDuplicated = 810007,
+  /// 重复申请入群或重复邀请成员入群
+  kJMSGErrorTcpGroupApplyRepeat  = 856003,
+  /// 用户在聊天室中被禁言
+  kJMSGErrorTcpUserBannedInChatRoom = 847002,
+  /// 用户已经在聊天室黑名单中
+  kJMSGErrorTcpUserHasInChatRoomBlacklist = 7132006,
+  /// 目标用户不在聊天室黑名单里
+  kJMSGErrorTcpUserNotInChatRoomBlacklist = 7133001,
+  /// 用户已经在聊天室管理员列表中
+  kJMSGErrorTcpUserHasInChatRoomAdminList = 7130002,
+  /// 目标用户不在聊天室管理员列表里
+  kJMSGErrorTcpUserNotInChatRoomAdminList = 7131002,
+  /// 禁言时间不在允许范围内
+  kJMSGErrorTcpMemberSilenceTimesOverLimit = 765003,
 };
 
 

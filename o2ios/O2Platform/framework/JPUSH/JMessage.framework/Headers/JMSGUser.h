@@ -103,7 +103,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 /*!
  * @abstract 新用户注册(支持携带用户信息字段)
  *
- * @param userInfo  用户名. 长度 4~128 位.
+ * @param username  用户名. 长度 4~128 位.
  *                  支持的字符: 字母,数字,下划线,英文减号,英文点,@邮件符号. 首字母只允许是字母或者数字.
  * @param password  用户密码. 长度 4~128 位.
  * @param userInfo  用户信息类，注册时携带用户信息字段，除用户头像字段
@@ -133,20 +133,22 @@ JMSG_ASSUME_NONNULL_BEGIN
         completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
- * @abstract 用户登录
+ * @abstract 用户登录，返回登录设备信息
  *
- * @param username 登录用户名. 规则与注册接口相同.
- * @param password 登录密码. 规则与注册接口相同.
- * @param handler 结果回调
+ * @param username    登录用户名. 规则与注册接口相同.
+ * @param password    登录密码. 规则与注册接口相同.
+ * @param devicesInfo 登录设备回调，返回数据为 NSArray<JMSGDeviceInfo>
+ * @param handler     结果回调
  *
- * - devices 用户登录设备信息，NSArray<JMSGDeviceInfo>
- * - error   错误信息,为 nil 时表示成功
+ * - resultObject 简单封装的user对象，上层不要直接使用 resultObject 对象做操作, 因为它只是一个简单封装的user对象
+ * - error 错误信息
  *
  * @discussion 回调中 devices 返回的是设备信息，具体属性请查看 JMSGDeviceInfo 类
  */
 + (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password
-                  handler:(void(^)(NSArray <__kindof JMSGDeviceInfo *>*devices,NSError *error))handler;
+              devicesInfo:(nullable void(^)(NSArray <__kindof JMSGDeviceInfo *>*devices))devicesInfo
+        completionHandler:(JMSGCompletionHandler JMSG_NULLABLE)handler;
 
 /*!
  * @abstract 当前用户退出登录
@@ -173,6 +175,17 @@ JMSG_ASSUME_NONNULL_BEGIN
 + (void)userInfoArrayWithUsernameArray:(NSArray JMSG_GENERIC(__kindof NSString *)*)usernameArray
                                 appKey:( NSString *JMSG_NULLABLE)userAppKey
                      completionHandler:(JMSGCompletionHandler)handler;
+
+/*!
+ * @abstract 获取用户信息
+ *
+ * @param uid 用户的 uid
+ *
+ * @return 该 uid 用户信息
+ *
+ * @discussion 注意：返回值有可能为空，仅仅是本地查询
+ */
++ (JMSGUser *JMSG_NULLABLE)userWithUid:(SInt64)uid;
 
 /*!
  * @abstract 获取用户本身个人信息接口
@@ -254,7 +267,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 /*!
  * @abstract 跨应用添加黑名单
  * @param usernameArray 作用对象的username数组
- * @param appKey 应用的appKey
+ * @param userAppKey 应用的appKey
  * @param handler 结果回调。回调参数：error 为 nil, 表示设置成功
  *
  * @discussion 可以一次添加多个用户
@@ -266,7 +279,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 /*!
  * @abstract 跨应用删除黑名单
  * @param usernameArray 作用对象的username数组
- * @param appKey 应用的appKey
+ * @param userAppKey 应用的appKey
  * @param handler 结果回调。回调参数：error 为 nil, 表示设置成功
  *
  * @discussion 可以一次删除多个黑名单用户
@@ -279,6 +292,11 @@ JMSG_ASSUME_NONNULL_BEGIN
 ///----------------------------------------------------
 /// @name Basic Fields 基本属性
 ///----------------------------------------------------
+
+/*!
+ * @abstract 用户uid
+ */
+@property(nonatomic, assign, readonly) SInt64 uid;
 
 /*!
  * @abstract 用户名
@@ -443,6 +461,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (NSString *)displayName;
 
 - (BOOL)isEqualToUser:(JMSGUser * JMSG_NULLABLE)user;
+
 
 JMSG_ASSUME_NONNULL_END
 

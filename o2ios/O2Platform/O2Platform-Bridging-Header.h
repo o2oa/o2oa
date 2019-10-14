@@ -11,7 +11,12 @@
 #import <PgyUpdate/PgyUpdateManager.h>
 #import "SZKCleanCache.h"
 #import "ZSSRichTextEditor.h"
+//jPush
 #import "JPUSHService.h"
+#import "JPushNotificationExtensionService.h"
+#ifdef NSFoundationVersionNumber_iOS_9_x_Max
+#import <UserNotifications/UserNotifications.h>
+#endif
 #import <JMessage/JMessage.h>
 #import "KILabel.h"
 #import "DLSlideView.h"

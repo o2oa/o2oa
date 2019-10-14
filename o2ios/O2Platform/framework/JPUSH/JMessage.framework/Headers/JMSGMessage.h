@@ -167,6 +167,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  *
  * @param text 文本内容
  * @param username 单聊对象 username
+ * @param userAppKey 单聊对象 appkey
  *
  * @discussion 快捷方法，不需要先创建消息而直接发送。
  */
@@ -190,6 +191,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  *
  * @param imageData 图片数据
  * @param username 单聊对象 username
+ * @param userAppKey 单聊对象 appkey
  *
  * @discussion 快捷方法，不需要先创建消息而直接发送。
  */
@@ -216,6 +218,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @param voiceData 语音数据
  * @param duration 语音时长
  * @param username 单聊对象 username
+ * @param userAppKey 单聊对象 appkey
  *
  * @discussion 快捷方法，不需要先创建消息而直接发送。
  */
@@ -243,6 +246,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @param fileData 文件数据数据
  * @param fileName 文件名
  * @param username 单聊对象 username
+ * @param userAppKey 单聊对象 appkey
  *
  * @discussion 快捷方法，不需要先创建消息而直接发送。
  */
@@ -328,8 +332,8 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @discussion 快捷方法，不需要先创建消息而直接发送。
  */
 + (void)sendGroupFileMessage:(NSData *)fileData
-                fileName:(NSString *)fileName
-                      toGroup:(NSString *)groupId;
+                    fileName:(NSString *)fileName
+                     toGroup:(NSString *)groupId;
 
 /*!
  * @abstract 发送群聊地理位置消息
@@ -337,7 +341,7 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @param longitude 经度
  * @param scale 缩放比例
  * @param address 详细地址
-* @param groupId 群聊目标群组ID
+ * @param groupId 群聊目标群组ID
  */
 + (void)sendGroupLocationMessage:(NSNumber *)latitude
                         longitude:(NSNumber *)longitude
@@ -377,7 +381,7 @@ JMSG_ASSUME_NONNULL_BEGIN
 
 
 /*!
- * 消息ID：这个ID是本地存数据库生成的ID，不是服务器端下发时的ID。
+ * 消息ID：这个 ID 是本地生成的ID，不是服务器端下发时的ID。
  */
 @property(nonatomic, strong, readonly) NSString *msgId;
 
@@ -607,6 +611,15 @@ JMSG_ASSUME_NONNULL_BEGIN
 - (void)messageReadDetailHandler:(void(^)(NSArray *JMSG_NULLABLE readUsers, NSArray *JMSG_NULLABLE unreadUsers, NSError *JMSG_NULLABLE error))handler;
 
 /*!
+ * @abstract 取消正在发送的消息
+ *
+ * @discussion 在消息发送结果监听 [JMSGMessageDelegate onSendMessageResponse:error:] 里会返回对应的错误信息和错误码。
+ *
+ * @since 3.8.1
+ */
+- (void)cancelSendingMessage;
+
+/*!
  * @abstract 设置消息的 fromName(即:通知栏的展示名称)
  *
  * @param fromName 本条消息在接收方通知栏的展示名称
@@ -641,6 +654,15 @@ JMSG_ASSUME_NONNULL_BEGIN
  * @discussion 遵循 Message JSON 协议的定义。
  */
 - (NSString *)toJsonString;
+
+/*!
+ * @abstract JSON 字符串 转换为 消息对象。
+ *
+ * @discussion 遵循 Message JSON 协议的定义。失败时返回 nil
+ *
+ * #### 注意：尽量不要自己随意拼接 json 字符串去转换，容易导致创建的 message 无法正常发送
+ */
++ (JMSGMessage *JMSG_NULLABLE)fromJson:(NSString *JMSG_NONNULL)json;
 
 /*!
  * @abstract 对象比较

@@ -19,8 +19,9 @@ let PGY_APP_ID = "84492f465f8f4fb11b8486dc50bf4a38"
 let BUGLY_ID = "0bc87f457b"
 //极光
 let JPUSH_APP_KEY = "9aca7cc20fe0cc987cd913ca"
-let BAIDU_MAP_KEY = "cL9Y2GLhUxgqmKTIcyxv28Y2S7O2DfYj"
 let JPUSH_channel = "Publish channel"
+//百度
+let BAIDU_MAP_KEY = "ONb5sPKBzluXBq3c8ZSQ5ULlWauwZeZ3"
 
 
 

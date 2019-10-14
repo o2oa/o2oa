@@ -92,6 +92,6 @@
  * @param newCount 变更后的数量
  */
 @optional
-- (void)onUnreadChanged:(NSUInteger)newCount;
+- (void)onUnreadChanged:(NSUInteger)newCount __attribute__((deprecated("deprecated")));
 @end
 

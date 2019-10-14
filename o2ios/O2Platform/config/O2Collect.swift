@@ -9,8 +9,6 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
-
-import EZSwiftExtensions
 import CocoaLumberjack
 import O2OA_Auth_SDK
 

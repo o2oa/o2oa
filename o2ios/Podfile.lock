@@ -7,24 +7,22 @@ PODS:
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.3)
-  - BetterSegmentedControl (0.9)
+  - BetterSegmentedControl (1.2.1)
   - BSGridCollectionViewLayout (1.2.2)
   - BSImagePicker (2.9.0):
     - BSGridCollectionViewLayout (= 1.2.2)
     - BSImageView (= 1.0.2)
   - BSImageView (1.0.2)
   - Bugly (2.5.0)
-  - BWSwipeRevealCell (2.0.2)
   - Charts (3.2.1):
     - Charts/Core (= 3.2.1)
   - Charts/Core (3.2.1)
-  - CocoaLumberjack/Default (3.4.2)
-  - CocoaLumberjack/Swift (3.4.2):
-    - CocoaLumberjack/Default
-  - CYLTabBarController (1.17.17)
-  - EmptyDataSet-Swift (4.0.5)
+  - Chrysan (1.5.0)
+  - CocoaLumberjack/Core (3.5.3)
+  - CocoaLumberjack/Swift (3.5.3):
+    - CocoaLumberjack/Core
+  - EmptyDataSet-Swift (5.0.0)
   - Eureka (4.3.0)
-  - EZSwiftExtensions (1.11)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -37,11 +35,10 @@ PODS:
     - ImageSlideshow/Core
   - ImageSlideshow/Core (1.7.0)
   - IQKeyboardManagerSwift (6.2.0)
-  - JGProgressHUD (2.0.3)
   - JTCalendar (2.2.3)
   - JZCalendarWeekView (0.5.4)
   - MBProgressHUD (1.0.0)
-  - MIBlurPopup (0.1.3)
+  - MJRefresh (3.2.0)
   - Moya (13.0.1):
     - Moya/Core (= 13.0.1)
   - Moya/Core (13.0.1):
@@ -51,18 +48,6 @@ PODS:
     - Moya/Core
     - RxSwift (~> 4.0)
   - ObjectMapper (3.3.0)
-  - ProgressHUDSwift (0.2.0)
-  - PromiseKit (4.5.2):
-    - PromiseKit/Foundation (= 4.5.2)
-    - PromiseKit/QuartzCore (= 4.5.2)
-    - PromiseKit/UIKit (= 4.5.2)
-  - PromiseKit/CorePromise (4.5.2)
-  - PromiseKit/Foundation (4.5.2):
-    - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.5.2):
-    - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.5.2):
-    - PromiseKit/CorePromise
   - PromisesObjC (1.2.3)
   - PromisesSwift (1.2.3):
     - PromisesObjC (= 1.2.3)
@@ -92,32 +77,27 @@ DEPENDENCIES:
   - AlamofireImage (~> 3.3)
   - AlamofireNetworkActivityIndicator (~> 2.0)
   - AlamofireObjectMapper (~> 5.1)
-  - BetterSegmentedControl (~> 0.9)
+  - BetterSegmentedControl (~> 1.2)
   - BSImagePicker
   - Bugly
-  - BWSwipeRevealCell (~> 2.0)
   - Charts
-  - CocoaLumberjack/Swift
-  - CYLTabBarController (~> 1.17.4)
-  - EmptyDataSet-Swift (~> 4.0.2)
+  - Chrysan
+  - CocoaLumberjack/Swift (~> 3.5)
+  - EmptyDataSet-Swift (~> 5.0.0)
   - Eureka
-  - EZSwiftExtensions (from `/Users/fancy/ios/dependence/EZSwiftExtensions`)
   - FMDB (~> 2.6.2)
   - FSCalendar
   - HandyJSON (~> 5.0.0)
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
-  - JGProgressHUD
   - JTCalendar (~> 2.0)
   - JZCalendarWeekView (~> 0.4)
   - MBProgressHUD (~> 1.0.0)
-  - MIBlurPopup
+  - MJRefresh
   - Moya (~> 13.0)
   - Moya/RxSwift (~> 13.0)
-  - ProgressHUDSwift (~> 0.2)
-  - PromiseKit (~> 4.4)
-  - PromisesSwift (~> 1.0)
+  - PromisesSwift (~> 1.2)
   - ReactiveCocoa (~> 9.0)
   - ReactiveSwift (~> 5.0)
   - RxCocoa (~> 4.0)
@@ -141,10 +121,9 @@ SPEC REPOS:
     - BSImagePicker
     - BSImageView
     - Bugly
-    - BWSwipeRevealCell
     - Charts
+    - Chrysan
     - CocoaLumberjack
-    - CYLTabBarController
     - EmptyDataSet-Swift
     - Eureka
     - FMDB
@@ -152,15 +131,12 @@ SPEC REPOS:
     - HandyJSON
     - ImageSlideshow
     - IQKeyboardManagerSwift
-    - JGProgressHUD
     - JTCalendar
     - JZCalendarWeekView
     - MBProgressHUD
-    - MIBlurPopup
+    - MJRefresh
     - Moya
     - ObjectMapper
-    - ProgressHUDSwift
-    - PromiseKit
     - PromisesObjC
     - PromisesSwift
     - ReactiveCocoa
@@ -178,8 +154,6 @@ SPEC REPOS:
     - YHPopupView
 
 EXTERNAL SOURCES:
-  EZSwiftExtensions:
-    :path: "/Users/fancy/ios/dependence/EZSwiftExtensions"
   SwiftValidator:
     :branch: master
     :git: https://github.com/jpotts18/SwiftValidator.git
@@ -194,32 +168,27 @@ SPEC CHECKSUMS:
   AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
-  BetterSegmentedControl: 40b2b6a08bbc59663149624d1b5235efa8d43a3c
+  BetterSegmentedControl: b27bddbdff29b6cae988678d6cd106858986cd03
   BSGridCollectionViewLayout: 3e6f23b3a2b4f0ca9afae09ca01389d1057f7b32
   BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
   BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
   Bugly: 3ca9f255c01025582df26f9222893b383c7e4b4e
-  BWSwipeRevealCell: 42504c963b67bf57ec6955bd435f6904f4bffa88
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
-  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  CYLTabBarController: ed3184222048f6e7a57f9b175934580ff6e8d6fb
-  EmptyDataSet-Swift: a25810f50c3adfaa3840aa33ae8b5ba12ac29279
+  Chrysan: 6bf6682adb2db76f7f5c103930a8c6670f54eebe
+  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
   Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
-  EZSwiftExtensions: d83b4719cd665c7a1556c95a02fcf29e877ced34
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
   HandyJSON: 992f2d661716d6a91de82d0056927bc7813b5770
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
-  JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
   JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
   JZCalendarWeekView: 6a2e05ce2ae77d98c719d4236385edcef3da28e0
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  MIBlurPopup: e0834e469074cabf65a0ca6e6d900c84d48f8a4f
+  MJRefresh: ed450d6eb9d3346a2cb033ab7eb6de090aeef437
   Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
-  ProgressHUDSwift: 7cf2ea84a0fc10fbcc12e545ea84b0899b34d239
-  PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
   PromisesObjC: a3a4263d8a9260214267e0b3788d0f83466ad449
   PromisesSwift: f7f45c21986419e85f7c5b645ed8c6a2c10c04b4
   ReactiveCocoa: 29709cf0cc7502ddd04a51220e10ee0336d8bec8
@@ -237,6 +206,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: fee8f269d0505613b56902a7c1d5226a515c6bbc
+PODFILE CHECKSUM: 5c693709a94fd1b732b9b1f3e27732c673d2c11b
 
 COCOAPODS: 1.5.0

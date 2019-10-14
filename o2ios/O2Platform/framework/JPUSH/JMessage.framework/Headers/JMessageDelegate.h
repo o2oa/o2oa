@@ -73,7 +73,7 @@
  *
  *    ```
  *    // 实现 JMSGEventDelegate 里的接收事件代理方法
- *    - (void)onReceiveLoginUserStatusChangeEvent:(JMSGUserLoginStatusChangeEvent *)event {
+ *    - (void)onReceiveUserLoginStatusChangeEvent:(JMSGUserLoginStatusChangeEvent *)event {
  *      if (event.eventType == kJMSGEventNotificationLoginKicked) {
  *          // 这里做用户被踢处理. 一般的作法应该是: 弹出提示信息,告诉用户在其他设备登录了;
  *          // 弹窗关闭后界面切换到用户登录界面

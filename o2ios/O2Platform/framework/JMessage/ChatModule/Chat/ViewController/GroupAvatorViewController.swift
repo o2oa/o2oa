@@ -71,7 +71,7 @@ class GroupAvatorViewController: UIViewController {
         navigationItem.rightBarButtonItems =  [item]
     }
 
-    func _more() {
+    @objc func _more() {
         let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "取消", destructiveButtonTitle: nil, otherButtonTitles: "从相册中选择", "拍照")
         actionSheet.show(in: self.view)
     }

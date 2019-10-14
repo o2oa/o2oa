@@ -2,75 +2,86 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '10.0'
 
 # swift50里面的库已经支持swift5了 其他暂时先用4.1版本
-swift50 = ['BSImagePicker','Charts','Eureka', 'GradientCircularProgress', 'HandyJSON', 'SwiftyTimer', 'ReactiveSwift', 'ReactiveCocoa']
-
-post_install do |installer|
-    installer.pods_project.targets.each do |target|
-        swift_version = '4.1'
-        if swift50.include?(target.name)
-            print "set pod #{target.name} swift version to 5.0\n"
-            swift_version = '5.0'
-        end
-        target.build_configurations.each do |config|
-            config.build_settings['SWIFT_VERSION'] = swift_version
-            config.build_settings['ENABLE_BITCODE'] = 'NO'
-        end
-    end
-end
+#swift50 = ['BSImagePicker','Charts','Eureka', 'GradientCircularProgress', 'HandyJSON', 'SwiftyTimer', 'ReactiveSwift', 'ReactiveCocoa']
+#
+#post_install do |installer|
+#    installer.pods_project.targets.each do |target|
+#        swift_version = '4.1'
+#        if swift50.include?(target.name)
+#            print "set pod #{target.name} swift version to 5.0\n"
+#            swift_version = '5.0'
+#        end
+#        target.build_configurations.each do |config|
+#            config.build_settings['SWIFT_VERSION'] = swift_version
+#            config.build_settings['ENABLE_BITCODE'] = 'NO'
+#        end
+#    end
+#end
 
  
 target 'O2Platform' do
     use_frameworks!
 
+    # Pods for O2OA
+    pod 'FMDB', '~> 2.6.2'
+    # 日志框架
+    pod 'CocoaLumberjack/Swift', '~> 3.5'
+    # 国人写的 HUD https://github.com/Harley-xk/Chrysan
+    pod 'Chrysan'
+    # Promise
+    pod 'PromisesSwift', '~> 1.2'
+    # 下拉刷新
+    pod 'MJRefresh'
+    # 键盘管理
+    pod 'IQKeyboardManagerSwift'
+    #网络请求
     pod 'Alamofire', '~> 4.8'
     pod 'AlamofireImage', '~> 3.3'
     pod 'AlamofireNetworkActivityIndicator', '~> 2.0'
     pod 'AlamofireObjectMapper', '~> 5.1'
+    pod 'Moya', '~> 13.0'
+    pod 'Moya/RxSwift', '~> 13.0'
+    # UserDefaults加强
     pod 'SwiftyUserDefaults', '~>3.0'
+    # json
+    pod 'HandyJSON', '~> 5.0.0'
     pod 'SwiftyJSON', '~>3.1'
+    # reactive
+    pod 'ReactiveSwift', '~> 5.0'
+    pod 'ReactiveCocoa', '~> 9.0'
+    # Bugly 异常上报管理
+    pod 'Bugly'
+    
+    
     pod 'SDWebImage', '~>4.0'
-    pod 'BWSwipeRevealCell', '~> 2.0'
+    
     pod 'BSImagePicker'
     pod 'Eureka'
     pod 'SwiftyTimer'
-    pod 'EZSwiftExtensions', :path => '/Users/fancy/ios/dependence/EZSwiftExtensions'
-    #pod 'DZNEmptyDataSet'
+
     pod 'Charts'
     pod 'ImageSlideshow', '~> 1.5'
     pod 'ImageSlideshow/Alamofire'
-#    pod 'swiftScan', '~> 1.1.2'
-    pod 'JGProgressHUD'
-    pod 'CocoaLumberjack/Swift'
+    
     pod 'MBProgressHUD', '~> 1.0.0'
     pod 'SnapKit', '~> 4.0.0'
-    pod 'PromisesSwift', '~> 1.0'
-    pod 'Moya', '~> 13.0'
-    pod 'Moya/RxSwift', '~> 13.0'
-    pod 'ProgressHUDSwift', '~> 0.2'
+    
     pod 'SwiftValidator', :git => 'https://github.com/jpotts18/SwiftValidator.git', :branch => 'master'
-    pod 'HandyJSON', '~> 5.0.0'
-    pod 'ReactiveSwift', '~> 5.0'
-    pod 'ReactiveCocoa', '~> 9.0'
-    pod 'CYLTabBarController', '~> 1.17.4'
     pod 'YHPopupView'
     pod 'YHPhotoKit'
-    pod 'FMDB', '~> 2.6.2'
     pod 'RxCocoa', '~> 4.0'
-    pod 'PromiseKit', '~> 4.4'
     #表格数据源为空时显示
-    pod 'EmptyDataSet-Swift', '~> 4.0.2'
+    pod 'EmptyDataSet-Swift', '~> 5.0.0'
     #segmentedControl
-    pod 'BetterSegmentedControl', '~> 0.9'
+    pod 'BetterSegmentedControl', '~> 1.2'
     pod 'FSCalendar'
     pod 'JZCalendarWeekView', '~> 0.4'
-    # 高斯模糊UIViewController
-    pod 'MIBlurPopup'
+    
+    
     # 日历控件
     pod 'JTCalendar', '~> 2.0'
-    # Bugly 异常上报管理
-    pod 'Bugly'
-    # 键盘管理
-    pod 'IQKeyboardManagerSwift'
+    
+    
     
     
 end

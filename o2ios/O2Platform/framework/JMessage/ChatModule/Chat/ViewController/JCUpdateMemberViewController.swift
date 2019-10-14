@@ -230,7 +230,7 @@ class JCUpdateMemberViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    func _clickNavRightButton(_ sender: UIButton) {
+    @objc func _clickNavRightButton(_ sender: UIButton) {
         if selectUsers.count == 0 {
             return
         }

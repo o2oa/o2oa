@@ -121,7 +121,7 @@ class JCMessageFileContentView: UIView, JCMessageContentViewType {
         addGestureRecognizer(tap)
     }
     
-    func _clickCell() {
+    @objc func _clickCell() {
         _delegate?.message?(message: _message, fileData: _fileData, fileName: _fileName, fileType: _fileType)
     }
 }

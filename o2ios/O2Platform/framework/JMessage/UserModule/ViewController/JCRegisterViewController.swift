@@ -162,16 +162,16 @@ class JCRegisterViewController: UIViewController {
         bgView.addGestureRecognizer(tap)
     }
     
-    func textFieldDidChanged(_ textField: UITextField) {
+    @objc func textFieldDidChanged(_ textField: UITextField) {
         _updateRegisterButton()
     }
     
-    func _tapView() {
+    @objc func _tapView() {
         view.endEditing(true)
     }
     
     //MARK: - click event
-    func _userRegister() {
+    @objc func _userRegister() {
         userNameTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         let username = userNameTextField.text ?? ""
@@ -206,11 +206,11 @@ class JCRegisterViewController: UIViewController {
         }
     }
     
-    func _clickLoginButton() {
+    @objc func _clickLoginButton() {
         navigationController?.popViewController(animated: true)
     }
     
-    func _updateRegisterButton() {
+    @objc func _updateRegisterButton() {
         if (userNameTextField.text?.isEmpty)! || (passwordTextField.text?.isEmpty)! {
             registerButton.isEnabled = false
             registerButton.alpha = 0.7

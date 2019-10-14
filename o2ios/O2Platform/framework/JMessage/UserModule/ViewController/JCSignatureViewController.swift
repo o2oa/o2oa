@@ -83,7 +83,7 @@ class JCSignatureViewController: UIViewController {
     }
     
     //MARK: - click func
-    func _saveSignature() {
+    @objc func _saveSignature() {
         signatureTextView.resignFirstResponder()
         JMSGUser.updateMyInfo(withParameter: signatureTextView.text!, userFieldType: .fieldsSignature) { (resultObject, error) -> Void in
             if error == nil {

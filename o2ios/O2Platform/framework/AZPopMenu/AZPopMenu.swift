@@ -194,7 +194,7 @@ class AZPopMenu: UIView,UITableViewDelegate,UITableViewDataSource,UIGestureRecog
     }
     
     
-    func tabAction(_ sender: UITapGestureRecognizer){
+    @objc func tabAction(_ sender: UITapGestureRecognizer){
         //关闭本身
         self.removeGestureRecognizer(tabGuesture)
         self.removeFromSuperview()

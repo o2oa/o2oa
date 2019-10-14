@@ -68,7 +68,7 @@ class JCMyInfoViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(_updateUserInfo), name: NSNotification.Name(rawValue: kUpdateUserInfo), object: nil)
     }
     
-    func _updateUserInfo() {
+    @objc func _updateUserInfo() {
         user = JMSGUser.myInfo()
         tableview.reloadData()
     }

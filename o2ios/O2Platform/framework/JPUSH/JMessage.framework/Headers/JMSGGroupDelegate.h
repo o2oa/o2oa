@@ -21,7 +21,7 @@
 @protocol JMSGGroupDelegate <NSObject>
 
 /*!
- * @abstract 群组信息 (GroupInfo) 信息通知
+ * @abstract 群组信息 (GroupInfo) 变更通知
  *
  * @param group 变更后的群组对象
  *
@@ -66,4 +66,38 @@
 @optional
 - (void)onReceiveGroupAdminApprovalEvent:(JMSGGroupAdminApprovalEvent *)event;
 
+/*!
+ * @abstract 群成员群昵称变更通知
+ *
+ * @param events 群成员昵称变更事件列表
+ *
+ * @discussion 如果是离线事件，SDK 会将所有的修改记录加入数组上抛。事件具体相关属性请查看 JMSGGroupNicknameChangeEvent 类
+ *
+ * @since 3.7.0
+ */
+@optional
+- (void)onReceiveGroupNicknameChangeEvents:(NSArray<__kindof JMSGGroupNicknameChangeEvent*>*)events;
+
+/*!
+ * @abstract 群公告变更通知
+ *
+ * @param events 群公告事件列表
+ *
+ * @discussion 事件具体相关属性请查看 JMSGGroupAnnouncementEvent 类
+ *
+ * @since 3.8.0
+ */
+@optional
+- (void)onReceiveGroupAnnouncementEvents:(NSArray<__kindof JMSGGroupAnnouncementEvent*>*)events;
+
+/*!
+ * @abstract 群组黑名单变更通知
+ *
+ * @param events 群组黑名单事件列表
+ *
+ * @discussion 事件具体相关属性请查看 JMSGGroupBlacklistChangeEvent 类
+ *
+ * @since 3.8.0
+ */
+- (void)onReceiveGroupBlacklistChangeEvents:(NSArray<__kindof JMSGGroupBlacklistChangeEvent*>*)events;
 @end

@@ -39,7 +39,7 @@ class JCAddFriendViewController: UIViewController {
     }
     
     //MARK: - click func
-    func _addFriend() {
+    @objc func _addFriend() {
         guard let user = user else {
             return
         }
