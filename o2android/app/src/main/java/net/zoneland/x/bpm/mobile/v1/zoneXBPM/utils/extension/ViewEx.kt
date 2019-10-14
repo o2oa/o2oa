@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -13,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.Base64ImageUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import org.jetbrains.anko.ctx
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -20,6 +23,19 @@ import rx.schedulers.Schedulers
 /**
  * Created by fancy on 2017/4/10.
  */
+inline fun Activity.makeCallDial(number: String): Boolean = ctx.makeCallDial(number)
+inline fun Fragment.makeCallDial(number: String): Boolean = activity.makeCallDial(number)
+
+fun Context.makeCallDial(number: String): Boolean {
+    return try {
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))
+        startActivity(intent)
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
 
 inline fun <reified T : Activity> Activity.go(bundle: Bundle? = null) {
     val intent = Intent(this, T::class.java)

@@ -24,6 +24,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.ZoneUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.makeCallDial
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderOptions
@@ -159,7 +160,7 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
         mobileClickMenu.onMenuItemClickListener = object : CommonMenuPopupWindow.OnMenuItemClickListener {
             override fun itemClick(position: Int) {
                 when (position) {
-                    0 -> makeCall(phone)
+                    0 -> makeCallDial(phone)
                     1 -> sendSMS(phone)
                     2 -> {
                         AndroidUtils.copyTextToClipboard(phone, this@PersonActivity)

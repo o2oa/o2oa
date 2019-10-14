@@ -188,7 +188,7 @@
                             android:id="@+id/tv_bioauth_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/activity_login_fingerprint"
+                            android:text="@string/activity_login_other"
                             android:textColor="@color/z_color_text_hint"
                             android:textSize="13sp"
                             android:layout_alignParentStart="true"

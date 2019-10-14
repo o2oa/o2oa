@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.InputType
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -27,9 +28,11 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric.OnBiometryAuthCallb
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CountDownButtonHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import java.io.IOException
+import kotlin.math.log
 
 
 /**
@@ -80,11 +83,13 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
     private var mediaPlayer: MediaPlayer? = null
     private var playBeep: Boolean = false
 
+    private var loginType = 0 // 0默认的用户名验证码登录 1用户名密码登录
+    private var canBioAuth = false //是否有指纹认证
+
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
         receivePhone = intent.extras?.getString(REQUEST_PHONE_KEY) ?: ""
-        //是否开启了指纹识别登录
-        checkBioAuthLogin()
+
 
         setDefaultLogo()
         login_edit_username_id.setText(receivePhone)
@@ -118,13 +123,16 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         tv_user_fallback_btn.setOnClickListener(this)
         tv_bioauth_btn.setOnClickListener(this)
 
-
+        //是否开启了指纹识别登录
+        checkBioAuthLogin()
         if (BuildConfig.InnerServer) {
             login_edit_password_id.setHint(R.string.activity_login_password)
             login_edit_password_id.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             button_login_phone_code.gone()
             tv_rebind_btn.gone()
+            tv_bioauth_btn.gone()
         }else {
+            tv_bioauth_btn.visible()
             login_edit_password_id.setHint(R.string.login_code)
             login_edit_password_id.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL
             button_login_phone_code.visible()
@@ -178,7 +186,7 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
                 userFallback()
             }
             R.id.tv_bioauth_btn -> {
-                showBiometryAuthUI()
+                showChangeLoginTypeMenu()
             }
             R.id.btn_bio_auth_login ->{
                 bioAuthLogin()
@@ -194,6 +202,42 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
                     reBindService()
                 })
             }
+        }
+    }
+
+    //切换登录方式
+    private fun showChangeLoginTypeMenu() {
+        val listItems = ArrayList<String>()
+        val title = if(loginType == 0) "密码登录" else "验证码登录"
+        listItems.add(title)
+        if (canBioAuth) {
+            listItems.add("指纹识别登录")
+        }
+        BottomSheetMenu(this)
+                .setTitle("切换登录方式")
+                .setItems(listItems, ContextCompat.getColor(this, R.color.z_color_text_primary)) { index ->
+                    if (index == 0) {
+                        changeLoginType()
+                    }else if (index == 1) {
+                        showBiometryAuthUI()
+                    }
+                }
+                .show()
+
+
+    }
+    private  fun changeLoginType() {
+        if (loginType == 0) {
+            login_edit_password_id.setHint(R.string.activity_login_password)
+            login_edit_password_id.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            button_login_phone_code.gone()
+            loginType = 1
+        }else {
+            login_edit_password_id.setHint(R.string.login_code)
+            login_edit_password_id.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL
+            button_login_phone_code.visible()
+            button_login_phone_code.setOnClickListener(this)
+            loginType = 0
         }
     }
 
@@ -226,9 +270,13 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         }
         if (TextUtils.isEmpty(code)) {
             val label = if(BuildConfig.InnerServer){
-                getString(R.string.login_code)
-            }else {
                 getString(R.string.activity_login_password)
+            }else {
+                if (loginType == 0) {
+                    getString(R.string.login_code)
+                }else {
+                    getString(R.string.activity_login_password)
+                }
             }
             XToast.toastShort(this, "$label 不能为空！")
             return
@@ -237,7 +285,11 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         if (BuildConfig.InnerServer) {
             mPresenter.loginByPassword(credential, code)
         }else {
-            mPresenter.login(credential, code)
+            if (loginType == 0) {
+                mPresenter.login(credential, code)
+            }else {
+                mPresenter.loginByPassword(credential, code)
+            }
         }
     }
 
@@ -268,11 +320,21 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
      * 是否开启了指纹识别登录
      */
     private fun checkBioAuthLogin() {
-        val userId = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+        val bioAuthUser = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+        var userId = ""
+        //判断是否当前绑定的服务器的
+        if (bioAuthUser.isNotBlank()) {
+            val array = bioAuthUser.split("^^")
+            if (array.isNotEmpty() && array.size == 2) {
+                val unitId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "") ?: ""
+                if (array[0] == unitId) {
+                    userId = array[1]
+                }
+            }
+        }
         if (userId.isNotEmpty()) {
-            tv_bioauth_btn.visible()
-            login_form_scroll_id.gone()
-            login_main_biometry.visible()
+            canBioAuth = true
+            showBiometryAuthUI()
         }else {
             login_form_scroll_id.visible()
             login_main_biometry.gone()
@@ -303,7 +365,8 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         if(!bioManager.isBiometricPromptEnable()){
             XToast.toastShort(this, "指纹识别模块未启用，请检查手机是否开启")
         }else {
-            val userId = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+
+
             bioManager.authenticate(object : OnBiometryAuthCallback{
                 override fun onUseFallBack() {
                     XLog.error("点击了《其他方式》按钮。。。。。")
@@ -312,7 +375,24 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
 
                 override fun onSucceeded() {
                     showLoadingDialog()
-                    mPresenter.ssoLogin(userId)
+                    val bioAuthUser = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+                    var userId = ""
+                    //判断是否当前绑定的服务器的
+                    if (bioAuthUser.isNotBlank()) {
+                        val array = bioAuthUser.split("^^")
+                        if (array.isNotEmpty() && array.size == 2) {
+                            val unitId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "") ?: ""
+                            if (array[0] == unitId) {
+                                userId = array[1]
+                            }
+                        }
+                    }
+                    if (userId.isBlank()) {
+                        XLog.error("用户名为空 无法登录。。。。")
+                        XToast.toastShort(this@LoginActivity, "服务器验证登录失败，请尝试使用其它方式登录")
+                    }else {
+                        mPresenter.ssoLogin(userId)
+                    }
                 }
 
                 override fun onFailed() {

@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".app.o2.main.MainActivity">
 
+    <item android:id="@+id/menu_single_create"
+        android:orderInCategory="90"
+        android:title="@string/menu_single_create"/>
     <item android:id="@+id/menu_tribe_create"
-        app:showAsAction="always"
         android:orderInCategory="90"
         android:title="@string/menu_tribe_create"/>
 

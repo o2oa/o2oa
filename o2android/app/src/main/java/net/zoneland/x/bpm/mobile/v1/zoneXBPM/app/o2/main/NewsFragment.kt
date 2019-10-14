@@ -17,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import cn.jpush.im.android.api.JMessageClient
+import cn.jpush.im.android.api.callback.CreateGroupCallback
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback
 import cn.jpush.im.android.api.enums.ConversationType
 import cn.jpush.im.android.api.event.*
@@ -24,24 +25,25 @@ import cn.jpush.im.android.api.model.Conversation
 import cn.jpush.im.android.api.model.GroupInfo
 import cn.jpush.im.android.api.model.UserInfo
 import cn.jpush.im.android.eventbus.EventBus
+import cn.jpush.im.api.BasicCallback
 import jiguang.chat.activity.ChatActivity
+import jiguang.chat.application.JGApplication
 import kotlinx.android.synthetic.main.fragment_main_news.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim.IMTribeCreateActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.im.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2PersonPickerResultItem
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by fancylou on 10/9/17.
@@ -211,25 +213,22 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
+            R.id.menu_single_create -> {
+                XLog.info("创建单聊。。。。。。。。。。。。。。。。。。。。。。。。。。。")
+                if (isLogin) {
+                    (activity as MainActivity).getCurrentIdentityUnit { topOrg ->
+                        chooseSinglePerson(topOrg)
+                    }
+                } else {
+                    XToast.toastShort(activity, "聊天服务器未登录成功，无法发起聊天！")
+                }
+                return true
+            }
             R.id.menu_tribe_create -> {
                 XLog.info("创建群聊。。。。。。。。。。。。。。。。。。。。。。。。。。。")
                 if (isLogin) {
-                    try {
-                        val bundle = ContactPickerActivity.startPickerBundle(
-                                arrayListOf("personPicker"),
-                                multiple = true,
-                                initUserList = arrayListOf(O2SDKManager.instance().distinguishedName)
-                        )
-                        (activity as MainActivity).contactPicker(bundle) { result ->
-                            if (result != null) {
-                                val list = ArrayList<String>()
-                                val users = result.users
-                                users.map { list.add(it.distinguishedName) }
-                                activity.go<IMTribeCreateActivity>(IMTribeCreateActivity.startCreate(list))
-                            }
-                        }
-
-                    } catch (e: Exception) {
+                    (activity as MainActivity).getCurrentIdentityUnit { topOrg ->
+                        chooseMultiPerson(topOrg)
                     }
                 } else {
                     XToast.toastShort(activity, "聊天服务器未登录成功，无法发起聊天！")
@@ -238,6 +237,53 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun chooseSinglePerson(topOrg: String?) {
+        try {
+            val topList = ArrayList<String>()
+            if (!TextUtils.isEmpty(topOrg)) {
+                topList.add(topOrg!!)
+            }
+            val bundle = ContactPickerActivity.startPickerBundle(
+                    arrayListOf("personPicker"),
+                    topUnitList =  topList,
+                    multiple = false,
+                    maxNumber = 1
+            )
+            (activity as MainActivity).contactPicker(bundle) { result ->
+                if (result != null) {
+                    val users = result.users
+                    if (users.isNotEmpty()) {
+                        createSingleChat(users)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun chooseMultiPerson(topOrg: String?) {
+        try {
+            val topList = ArrayList<String>()
+            if (!TextUtils.isEmpty(topOrg)) {
+                topList.add(topOrg!!)
+            }
+            val bundle = ContactPickerActivity.startPickerBundle(
+                    arrayListOf("personPicker"),
+                    topUnitList =  topList,
+                    multiple = true
+            )
+            (activity as MainActivity).contactPicker(bundle) { result ->
+                if (result != null) {
+                    val users = result.users
+                    if (users.isNotEmpty()) {
+                        createGroupChat(users)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+        }
     }
 
     override fun onDestroy() {
@@ -519,4 +565,85 @@ class NewsFragment : BaseMVPViewPagerFragment<NewsContract.View, NewsContract.Pr
             }
         }
     }
+
+    private fun createSingleChat(chooseUserList: List<O2PersonPickerResultItem>) {
+        val lastPersonIdList = chooseUserList.filter { it.id != JMessageClient.getMyInfo().userName }
+        if (lastPersonIdList.isEmpty()) {
+            XToast.toastShort(activity, "没有选择用户！")
+            return
+        }else {
+            if (O2App.instance._JMIsLogin()) {
+                val targetId = lastPersonIdList[0].id
+                val targetName = lastPersonIdList[0].name
+                var conv: Conversation? = JMessageClient.getSingleConversation(targetId)
+                //如果会话为空，使用EventBus通知会话列表添加新会话
+                if (conv == null) {
+                    conv = Conversation.createSingleConversation(targetId)
+                    EventBus.getDefault().post(jiguang.chat.entity.Event.Builder()
+                            .setType(jiguang.chat.entity.EventType.createConversation)
+                            .setConversation(conv)
+                            .build())
+                }
+                val intent = Intent(activity, ChatActivity::class.java)
+                //设置跳转标志
+                intent.putExtra(JGApplication.CONV_TITLE, conv!!.title)
+                intent.putExtra(JIMConstant.CONV_TITLE, targetName)
+                intent.putExtra(JIMConstant.TARGET_ID, targetId)
+                intent.putExtra(JIMConstant.TARGET_APP_KEY, O2App.instance.JM_IM_APP_KEY)
+                startActivity(intent)
+            }else {
+                XToast.toastShort(activity, "无法聊天，没有连接到IM服务器！！")
+            }
+        }
+    }
+
+    //创建群聊 服务端
+    private fun createGroupChat(chooseUserList: List<O2PersonPickerResultItem>) {
+        val lastPersonIdList = chooseUserList.filter { it.id != JMessageClient.getMyInfo().userName }.map { it.id }
+        if (lastPersonIdList.size < 2) {
+            XToast.toastShort(activity, "创建群里需要3位及以上成员！")
+            return
+        }else {
+            JMessageClient.createGroup(null, null, object : CreateGroupCallback() {
+                override fun gotResult(resCode: Int, resMessage: String?, groupId: Long) {
+                    if (resCode == 0) {
+                        JMessageClient.addGroupMembers(groupId, lastPersonIdList, object : BasicCallback() {
+                            override fun gotResult(code: Int, message: String?) {
+                                if (code == 0) {
+                                    //如果创建群组时添加了人,那么就在size基础上加上自己
+                                    createGroup(groupId, lastPersonIdList.size+1)
+                                } else {
+                                    XToast.toastShort(activity, "添加群聊失败，添加的成员中有从未登录过我们O2应用的用户！")
+                                }
+                            }
+                        })
+                    } else {
+                        XLog.error("code:$resCode, message:$resMessage")
+                        XToast.toastShort(activity, "创建群聊失败，IM服务器返回错误！")
+                    }
+                }
+            })
+        }
+    }
+
+
+    //创建群聊 本地
+    private fun createGroup(groupId: Long, size: Int) {
+        var groupConversation: Conversation? = JMessageClient.getGroupConversation(groupId)
+        if (groupConversation == null) {
+            groupConversation = Conversation.createGroupConversation(groupId)
+            EventBus.getDefault().post(jiguang.chat.entity.Event.Builder()
+                    .setType(jiguang.chat.entity.EventType.createConversation)
+                    .setConversation(groupConversation)
+                    .build())
+        }
+        val intent = Intent(activity, ChatActivity::class.java)
+        //设置跳转标志
+        intent.putExtra("fromGroup", true)
+        intent.putExtra(JGApplication.CONV_TITLE, groupConversation!!.title)
+        intent.putExtra(JGApplication.MEMBERS_COUNT, size)
+        intent.putExtra(JGApplication.GROUP_ID, groupId)
+        startActivity(intent)
+    }
+
 }

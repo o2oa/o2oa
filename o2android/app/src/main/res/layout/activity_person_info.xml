@@ -4,7 +4,6 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/z_color_primary"
     tools:context=".app.o2.person.PersonActivity">
 
 

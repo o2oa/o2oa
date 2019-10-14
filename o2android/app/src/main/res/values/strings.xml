@@ -114,7 +114,7 @@
     <string name="login_code">验证码</string>
     <string name="activity_login_password">密码</string>
     <string name="activity_login_submit">登    录</string>
-    <string name="activity_login_fingerprint">指纹识别登录</string>
+    <string name="activity_login_other">其他登录方式</string>
     <string name="activity_login_fingerprint_click">点击开始认证</string>
     <string name="activity_login_face">人脸识别</string>
     <string name="activity_logout">退出登录</string>
@@ -191,6 +191,7 @@
     <string name="title_activity_chat">实时消息</string>
     <string name="activity_chat_send_btn_label">发送</string>
     <string name="chat_please_enter">请输入...</string>
+    <string name="menu_single_create">发起单聊</string>
     <string name="menu_tribe_create">发起群聊</string>
     <string name="activity_im_person_config_label">聊天设置</string>
     <string name="activity_im_tribe_create_label">创建群聊</string>

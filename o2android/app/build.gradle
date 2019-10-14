@@ -107,7 +107,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "Boolean", "InnerServer", "true"
+            buildConfigField "Boolean", "InnerServer", "false"
             buildConfigField "Boolean", "LOG_ENABLE", "true"
             buildConfigField "Boolean", "LOG_FILE", "true"
             manifestPlaceholders = [JPUSH_PKGNAME      : defaultConfig.applicationId,

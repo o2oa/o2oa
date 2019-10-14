@@ -59,6 +59,26 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
     private val bioManager: BiometryManager by lazy { BiometryManager(this) }
     private fun initBiometryAuthView() {
 
+        tv_account_security_biometry_name.text = "指纹识别登录"
+        val bioAuthUser = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+        var isAuthed = false
+        //判断是否当前绑定的服务器的
+        if (bioAuthUser.isNotBlank()) {
+            val array = bioAuthUser.split("^^")
+            if (array.isNotEmpty() && array.size == 2) {
+                val unitId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "") ?: ""
+                if (array[0] == unitId) {
+                    isAuthed = true
+                }
+            }
+        }
+
+        if (isAuthed) {
+            image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_on_29dp)
+        }else {
+            image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_off_29dp)
+        }
+
         if (bioManager.isBiometricPromptEnable()) {
             image_btn_account_security_biometry_enable.setOnClickListener {
                 bioManager.authenticate(object : OnBiometryAuthCallback{
@@ -68,13 +88,8 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
 
                     override fun onSucceeded() {
                         XLog.debug("指纹识别验证成功")
-                        val userId = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
                         XToast.toastShort(this@AccountSecurityActivity, "验证成功")
-                        if (userId.isNotEmpty()) {
-                            setBioAuthResult("")
-                        }else {
-                            setBioAuthResult(O2SDKManager.instance().cId)
-                        }
+                        setBioAuthResult()
                     }
 
                     override fun onFailed() {
@@ -93,13 +108,7 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
 
                 })
             }
-            tv_account_security_biometry_name.text = "指纹识别登录"
-            val userId = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
-            if (userId.isNotEmpty()) {
-                image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_on_29dp)
-            }else {
-                image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_off_29dp)
-            }
+
         }else {
             tv_account_security_biometry_name.text = "指纹识别登录不可用"
             image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_off_29dp)
@@ -109,11 +118,26 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
         }
     }
 
-    private fun setBioAuthResult(userId: String) {
+    //如果识别成功 设置结果
+    private fun setBioAuthResult() {
+        val bioAuthUser = O2SDKManager.instance().prefs().getString(BioConstants.O2_bio_auth_user_id_prefs_key, "") ?: ""
+        var isAuthed = false
+        val unitId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "") ?: ""
+        //判断是否当前绑定的服务器的
+        if (bioAuthUser.isNotBlank()) {
+            val array = bioAuthUser.split("^^")
+            if (array.isNotEmpty() && array.size == 2) {
+                if (array[0] == unitId) {
+                    isAuthed = true
+                }
+            }
+        }
+        val userId = if(isAuthed)  "" else unitId+"^^"+O2SDKManager.instance().cId
+
         O2SDKManager.instance().prefs().edit{
             putString(BioConstants.O2_bio_auth_user_id_prefs_key, userId)
         }
-        if (userId.isNotEmpty()) {
+        if (isAuthed) {
             image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_on_29dp)
         }else {
             image_btn_account_security_biometry_enable.setImageResource(R.mipmap.icon_toggle_off_29dp)

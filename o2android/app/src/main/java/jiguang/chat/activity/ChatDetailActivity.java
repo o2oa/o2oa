@@ -16,8 +16,15 @@ import com.wugang.activityresult.library.ActivityResult;
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service.OrgAssembleExpressService;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.IdentityLevelForm;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.unit.UnitJson;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2PersonPickerResultItem;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.StringUtil;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -36,6 +43,11 @@ import jiguang.chat.application.JGApplication;
 import jiguang.chat.controller.ChatDetailController;
 import jiguang.chat.utils.ToastUtil;
 import jiguang.chat.view.ChatDetailView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ${chenyn} on 2017/4/21.
@@ -218,10 +230,41 @@ public class ChatDetailActivity extends BaseActivity {
      * 从ContactsActivity中选择朋友加入到群组中
      */
     public void showContacts(Long group) {
+        OrgAssembleExpressService service = RetrofitClient.Companion.instance().assembleExpressApi();
+        RetrofitClient.Companion.instance().assemblePersonalApi().getCurrentPersonInfo()
+                .subscribeOn(Schedulers.io())
+                .flatMap((Func1<ApiResponse<PersonJson>, Observable<ApiResponse<UnitJson>>>) personJsonApiResponse -> {
+                    PersonJson personJson = personJsonApiResponse.getData();
+                    if (personJson!=null && !personJson.getWoIdentityList().isEmpty()) {
+                        String identity = personJson.getWoIdentityList().get(0).getDistinguishedName();
+                        IdentityLevelForm form = new IdentityLevelForm(identity, 1);
+                        return service.unitByIdentityAndLevel(form);
+                    }else  {
+                        return  Observable.just(new ApiResponse<UnitJson>());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(unitJsonApiResponse -> {
+                        if (unitJsonApiResponse.getData() != null) {
+                            openChooseUser(unitJsonApiResponse.getData().getDistinguishedName());
+                        }else {
+                            openChooseUser(null);
+                        }
+                }, error -> openChooseUser(null));
+
+
+
+    }
+
+    private void openChooseUser(String topOrg) {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("personPicker");
+        ArrayList<String> topList = new ArrayList<>();
+        if (!TextUtils.isEmpty(topOrg)) {
+            topList.add(topOrg);
+        }
         Bundle bundle1 = ContactPickerActivity.Companion.startPickerBundle(modes,
-                new ArrayList<>(),
+                topList,
                 "",
                 0,
                 true,
@@ -234,21 +277,20 @@ public class ChatDetailActivity extends BaseActivity {
                 .className(ContactPickerActivity.class)
                 .params(bundle1)
                 .greenChannel().forResult((resultCode, data) -> {
-                    if (data != null) {
-                        ContactPickerResult result = data.getParcelableExtra(ContactPickerActivity.CONTACT_PICKED_RESULT);
-                        if (result != null) {
-                            ArrayList<O2PersonPickerResultItem> users = result.getUsers();
-                            if (users.size() != 0) {
-                                ArrayList<String> list = new ArrayList<>();
-                                for (int i = 0; i < users.size(); i++) {
-                                    list.add(users.get(i).getDistinguishedName());
-                                }
-                                mChatDetailController.addMembersToGroup(list);
-                            }
+            if (data != null) {
+                ContactPickerResult result = data.getParcelableExtra(ContactPickerActivity.CONTACT_PICKED_RESULT);
+                if (result != null) {
+                    ArrayList<O2PersonPickerResultItem> users = result.getUsers();
+                    if (users.size() != 0) {
+                        ArrayList<String> list = new ArrayList<>();
+                        for (int i = 0; i < users.size(); i++) {
+                            list.add(users.get(i).getId());
                         }
+                        mChatDetailController.addMembersToGroup(list);
                     }
-                });
-
+                }
+            }
+        });
     }
 
 

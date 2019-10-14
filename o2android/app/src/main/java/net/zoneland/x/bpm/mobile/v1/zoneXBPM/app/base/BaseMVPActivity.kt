@@ -8,9 +8,18 @@ import android.widget.TextView
 import com.wugang.activityresult.library.ActivityResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.IdentityLevelForm
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.unit.UnitJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.ImmersedStatusBarUtils
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.LoadingDialog
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 
 /**
@@ -109,6 +118,41 @@ abstract class BaseMVPActivity<in V: BaseView, T: BasePresenter<V>>: AppCompatAc
                     if (result != null) {
                         callback(result)
                     }else {
+                        callback(null)
+                    }
+                }
+    }
+
+    fun getCurrentIdentityUnit(callback:(String?)-> Unit) {
+        val expressService = RetrofitClient.instance().assembleExpressApi()
+        val personalService = RetrofitClient.instance().assemblePersonalApi()
+        personalService.getCurrentPersonInfo()
+                .subscribeOn(Schedulers.io())
+                .flatMap { unitResponse ->
+                    val person = unitResponse.data
+                    if (person != null) {
+                        val identityList = person.woIdentityList
+                        if (identityList.isNotEmpty()) {
+                            val identity = identityList[0]
+                            val form = IdentityLevelForm(identity = identity.distinguishedName, level = 1)
+                            expressService.unitByIdentityAndLevel(form)
+                        } else {
+                            Observable.just(ApiResponse<UnitJson>())
+                        }
+                    } else {
+                        Observable.just(ApiResponse<UnitJson>())
+                    }
+                }.observeOn(AndroidSchedulers.mainThread())
+                .o2Subscribe {
+                    onNext { unitJsonApiResponse ->
+                        if (unitJsonApiResponse.data != null) {
+                            callback(unitJsonApiResponse.data.distinguishedName)
+                        }else {
+                            callback(null)
+                        }
+                    }
+                    onError{ e, _ ->
+                        XLog.error("", e)
                         callback(null)
                     }
                 }
