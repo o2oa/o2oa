@@ -14,8 +14,6 @@ import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
 import com.x.processplatform.assemble.surface.jaxrs.job.JobAction;
 import com.x.processplatform.assemble.surface.jaxrs.process.ProcessAction;
-import com.x.processplatform.assemble.surface.jaxrs.querystat.QueryStatAction;
-import com.x.processplatform.assemble.surface.jaxrs.queryview.QueryViewAction;
 import com.x.processplatform.assemble.surface.jaxrs.read.ReadAction;
 import com.x.processplatform.assemble.surface.jaxrs.readcompleted.ReadCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.review.ReviewAction;
@@ -51,8 +49,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(WorkAction.class);
 		classes.add(WorkCompletedAction.class);
 		classes.add(JobAction.class);
-		classes.add(QueryViewAction.class);
-		classes.add(QueryStatAction.class);
 		classes.add(ToolAction.class);
 		classes.add(TestAction.class);
 		classes.add(FileAction.class);
