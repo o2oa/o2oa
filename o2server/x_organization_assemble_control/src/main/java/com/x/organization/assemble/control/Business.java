@@ -3,8 +3,11 @@ package com.x.organization.assemble.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -33,6 +36,7 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.Person_;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
 import com.x.organization.core.entity.Unit;
@@ -144,18 +148,20 @@ public class Business {
 			return true;
 		}
 		Person person = this.person().pick(effectivePerson.getDistinguishedName());
-		List<String> groupIds = this.group().listSupNestedWithPerson(person.getId());
 		if (null != person) {
-			List<Role> roles = this.role().pick(Arrays.asList(roleFlags));
-			for (Role o : roles) {
-				if (o.getPersonList().contains(person.getId())) {
-					return true;
+			List<String> groupIds = this.group().listSupNestedWithPerson(person.getId());
+			if (null != person) {
+				List<Role> roles = this.role().pick(Arrays.asList(roleFlags));
+				for (Role o : roles) {
+					if (o.getPersonList().contains(person.getId())) {
+						return true;
+					}
+					if (CollectionUtils.containsAny(o.getGroupList(), groupIds)) {
+						return true;
+					}
 				}
-				if (CollectionUtils.containsAny(o.getGroupList(), groupIds)) {
-					return true;
-				}
-			}
 
+			}
 		}
 		return false;
 	}
@@ -459,6 +465,44 @@ public class Business {
 		Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
 		List<String> os = em.createQuery(cq.select(root.get(Identity_.person)).where(p)).getResultList();
 		return this.person().pick(os);
+	}
+
+	public List<Unit> listTopUnitWithPerson(String personFlag) throws Exception {
+		List<Unit> os = new ArrayList<>();
+		Person person = this.person().pick(personFlag);
+		List<Identity> identities = emc.listEqual(Identity.class, Identity.person_FIELDNAME, person.getId());
+		List<String> unitIds = new ArrayList<>();
+		for (String id : ListTools.extractField(identities, Identity.unit_FIELDNAME, String.class, true, true)) {
+			unitIds.addAll(unit().listSupNested(id));
+		}
+		unitIds = ListTools.trim(unitIds, true, true);
+		for (Unit unit : this.unit().pick(unitIds)) {
+			if (Objects.deepEquals(Unit.TOP_LEVEL, unit.getLevel())) {
+				os.add(unit);
+			}
+		}
+		return os;
+	}
+
+	public boolean sameTopUnit(EffectivePerson effectivePerson, String person) throws Exception {
+		List<Unit> o = this.listTopUnitWithPerson(effectivePerson.getDistinguishedName());
+		List<Unit> t = this.listTopUnitWithPerson(person);
+		return ListTools.containsAny(o, t);
+	}
+
+	public Predicate personPredicateWithTopUnit(EffectivePerson effectivePerson) throws Exception {
+		EntityManager em = emc.get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		if (effectivePerson.isManager() || this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.OrganizationManager)) {
+			return cb.conjunction();
+		} else {
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+			Root<Person> root = cq.from(Person.class);
+			List<Unit> units = listTopUnitWithPerson(effectivePerson.getDistinguishedName());
+			List<String> ids = ListTools.extractField(units, Unit.id_FIELDNAME, String.class, true, true);
+			return cb.or(root.get(Person_.topUnitList).in(ids), cb.isEmpty(root.get(Person_.topUnitList)));
+		}
 	}
 
 }

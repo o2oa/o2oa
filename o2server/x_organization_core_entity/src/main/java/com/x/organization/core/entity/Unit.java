@@ -47,6 +47,8 @@ public class Unit extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Unit.table;
 
+	public static final Integer TOP_LEVEL = 1;
+
 	public String getId() {
 		return id;
 	}

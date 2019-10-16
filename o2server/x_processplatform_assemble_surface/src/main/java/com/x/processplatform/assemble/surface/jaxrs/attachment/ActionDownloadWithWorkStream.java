@@ -5,6 +5,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
@@ -22,7 +24,7 @@ class ActionDownloadWithWorkStream extends BaseAction {
 			Work work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			/** 判断attachment是否存在 */
 			Attachment o = emc.find(id, Attachment.class);
@@ -32,12 +34,8 @@ class ActionDownloadWithWorkStream extends BaseAction {
 			/** 生成当前用户针对work的权限控制,并判断是否可以访问 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-//			if (!work.getAttachmentList().contains(id)) {
-//				throw new ExceptionWorkNotContainsAttachment(work.getTitle(), work.getId(), o.getName(), o.getId());
-//			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, o.getStorage());
 			Wo wo = new Wo(o.readContent(mapping), this.contentType(true, o.getName()),
 					this.contentDisposition(true, o.getName()));

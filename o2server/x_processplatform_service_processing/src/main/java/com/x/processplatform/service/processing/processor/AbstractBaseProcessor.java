@@ -203,25 +203,6 @@ public abstract class AbstractBaseProcessor {
 
 	protected void createFromWorkLog(AeiObjects aeiObjects, String token, Date date) throws Exception {
 		WorkLog workLog = WorkLog.createFromWork(aeiObjects.getWork(), aeiObjects.getActivity(), token, date);
-//		workLog.setJob(aeiObjects.getWork().getJob());
-//		workLog.setWork(aeiObjects.getWork().getId());
-//		workLog.setProcess(aeiObjects.getWork().getProcess());
-//		workLog.setProcessName(aeiObjects.getWork().getProcessName());
-//		workLog.setApplication(aeiObjects.getWork().getApplication());
-//		workLog.setApplicationName(aeiObjects.getWork().getApplicationName());
-//		workLog.setFromActivity(aeiObjects.getActivity().getId());
-//		workLog.setFromActivityName(aeiObjects.getActivity().getName());
-//		workLog.setFromActivityAlias(aeiObjects.getActivity().getAlias());
-//		workLog.setFromActivityToken(token);
-//		workLog.setFromActivityType(aeiObjects.getActivity().getActivityType());
-//		workLog.setFromGroup(aeiObjects.getActivity().getGroup());
-//		workLog.setSplitting(aeiObjects.getWork().getSplitting());
-//		workLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-//		workLog.setSplitValue(aeiObjects.getWork().getSplitValue());
-//		workLog.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-//		workLog.setFromTime(date);
-//		workLog.setCompleted(false);
-//		workLog.setConnected(false);
 		aeiObjects.getCreateWorkLogs().add(workLog);
 	}
 

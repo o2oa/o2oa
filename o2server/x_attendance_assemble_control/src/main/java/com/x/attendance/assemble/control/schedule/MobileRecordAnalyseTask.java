@@ -2,9 +2,7 @@ package com.x.attendance.assemble.control.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.attendance.assemble.control.service.AttendanceDetailMobileAnalyseServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailMobileService;
@@ -12,11 +10,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 
 /**
  * 定期对用户手机打卡记录进行分析
  */
-public class MobileRecordAnalyseTask implements Job {
+public class MobileRecordAnalyseTask extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(MobileRecordAnalyseTask.class);
 
@@ -25,7 +24,7 @@ public class MobileRecordAnalyseTask implements Job {
 	private AttendanceDetailMobileAnalyseServiceAdv attendanceDetailMobileAnalyseServiceAdv = new AttendanceDetailMobileAnalyseServiceAdv();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		List<String> ids = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ids = attendanceDetailMobileService.listAllAnalyseWithStatus(emc, 0);

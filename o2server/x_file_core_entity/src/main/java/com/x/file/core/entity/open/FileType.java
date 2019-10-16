@@ -27,8 +27,6 @@ public enum FileType {
 		} else if("ppt".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
 		} else if("pptx".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
 		} else if("pdf".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
-		} else if("zip".equalsIgnoreCase( ext ) ){ type = FileType.other.name();
-		} else if("rar".equalsIgnoreCase( ext ) ){ type = FileType.other.name();
 		} else if("txt".equalsIgnoreCase( ext ) ){ type = FileType.office.name();
 		} else if("mp3".equalsIgnoreCase( ext ) ){ type = FileType.music.name();
 		} else if("mp4".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
@@ -38,7 +36,15 @@ public enum FileType {
 		} else if("avi".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
 		} else if("3gp".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
 		} else if("flv".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("mov".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("mpv".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("mpeg".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("mpg".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("mts".equalsIgnoreCase( ext ) ){ type = FileType.movie.name();
+		} else if("zip".equalsIgnoreCase( ext ) ){ type = FileType.other.name();
+		} else if("rar".equalsIgnoreCase( ext ) ){ type = FileType.other.name();
 		}
+
 		return type;
 	}
 }

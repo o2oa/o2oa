@@ -22,7 +22,7 @@ public class ThisApplication {
 			LoggerFactory.setLevel(Config.logLevel().x_organization_assemble_authentication());
 			queueLoginRecord = new QueueLoginRecord();
 			context.startQueue(queueLoginRecord);
-			context.schedule(CleanupBind.class, "0 */30 * * * ?");
+			context.schedule(CleanupBind.class, "0 */15 * * * ?");
 			context.schedule(CleanupOauthCode.class, "0 */15 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();

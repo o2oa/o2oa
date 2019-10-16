@@ -1,11 +1,10 @@
 package com.x.cms.assemble.control.timertask;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.cms.assemble.control.service.DocumentViewRecordServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
 
@@ -15,7 +14,7 @@ import com.x.cms.assemble.control.service.LogService;
  * @author O2LEE
  *
  */
-public class Timertask_LogRecordCheckTask implements Job {
+public class Timertask_LogRecordCheckTask extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Timertask_LogRecordCheckTask.class);
 	private LogService logService = new LogService();
@@ -26,7 +25,7 @@ public class Timertask_LogRecordCheckTask implements Job {
 	private Integer stay_count_viewRecord = 100000; // 保留100,000条
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try {
 			logService.clean(stay_yearnum_operationLog, stay_count_operationLog);
 			logger.info("Timertask_LogRecordCheckTask -> clean operation logs excute success. stay_yearnum:" + stay_yearnum_operationLog + ",stay_count:" + stay_count_operationLog);

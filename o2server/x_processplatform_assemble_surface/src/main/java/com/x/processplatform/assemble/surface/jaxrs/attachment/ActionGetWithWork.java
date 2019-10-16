@@ -25,7 +25,7 @@ class ActionGetWithWork extends BaseAction {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {

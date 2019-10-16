@@ -10,6 +10,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -25,12 +27,11 @@ class ActionListWithWork extends BaseAction {
 			Work work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			List<Attachment> os = business.attachment().listWithJobObject(work.getJob());
 			List<Wo> wos = Wo.copier.copy(os);

@@ -124,6 +124,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_E_SCRIPT";
 		}
 
+		public static class ScriptVersion {
+			public static final String table = "PP_E_SCRIPTVERSION";
+		}
+
 		public static class Service {
 			public static final String table = "PP_E_SERVICE";
 		}
@@ -140,6 +144,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_E_FORMFIELD";
 		}
 
+		public static class FormVersion {
+			public static final String table = "PP_E_FORMVERSION";
+		}
+
 		public static class File {
 			public static final String table = "PP_E_FILE";
 		}
@@ -150,6 +158,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		public static class Process {
 			public static final String table = "PP_E_PROCESS";
+		}
+
+		public static class ProcessVersion {
+			public static final String table = "PP_E_PROCESSVERSION";
 		}
 
 		public static class ApplicationDict {

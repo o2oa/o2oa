@@ -85,7 +85,7 @@ public class ActionRestoreStorage {
 
 	public boolean execute() throws Exception {
 		List<String> storageContainerEntityNames = new ArrayList<>();
-		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_STORAGECONTAINERENTITYNAMES));
+		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES));
 		List<String> classNames = new ArrayList<>();
 		classNames.addAll(this.catalog.keySet());
 		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreStorage().getIncludes(),

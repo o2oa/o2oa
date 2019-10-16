@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -72,7 +73,7 @@ public class FileInfo extends StorageObject {
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastUpdateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date lastUpdateTime;
@@ -111,17 +112,27 @@ public class FileInfo extends StorageObject {
 	}
 
 	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
+	}
+
+	@Override
 	public String path() throws Exception {
-		if ( StringUtils.isEmpty(  this.appId )) {
+		if (StringUtils.isEmpty(this.appId)) {
 			throw new Exception("appId can not be null.");
 		}
-		if ( StringUtils.isEmpty( this.categoryId )) {
+		if (StringUtils.isEmpty(this.categoryId)) {
 			throw new Exception("categoryId can not be null.");
 		}
-		if (StringUtils.isEmpty( documentId)) {
+		if (StringUtils.isEmpty(documentId)) {
 			throw new Exception("documentId can not be null.");
 		}
-		if (StringUtils.isEmpty( id )) {
+		if (StringUtils.isEmpty(id)) {
 			throw new Exception("id can not be empty.");
 		}
 		String str = DateTools.format(this.getCreateTime(), DateTools.formatCompact_yyyyMMdd);
@@ -151,7 +162,8 @@ public class FileInfo extends StorageObject {
 	 */
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("文件真实名称")
-	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String name;
 
@@ -163,7 +175,8 @@ public class FileInfo extends StorageObject {
 
 	public static final String fileName_FIELDNAME = "fileName";
 	@FieldDescribe("服务器上编码后的文件名,为了方便辨识带扩展名")
-	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + fileName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ fileName_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String fileName;
 
@@ -197,7 +210,7 @@ public class FileInfo extends StorageObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + fileExtType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fileExtType;
-	
+
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("根据流文件判断的文件类型.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + type_FIELDNAME)
@@ -223,7 +236,8 @@ public class FileInfo extends StorageObject {
 
 	public static final String creatorUid_FIELDNAME = "creatorUid";
 	@FieldDescribe("创建者UID")
-	@Column(length =AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + creatorUid_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ creatorUid_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUid;
 
@@ -235,17 +249,17 @@ public class FileInfo extends StorageObject {
 
 	public static final String seqNumber_FIELDNAME = "seqNumber";
 	@FieldDescribe("排序号")
-	@Column( name = ColumnNamePrefix + seqNumber_FIELDNAME)
+	@Column(name = ColumnNamePrefix + seqNumber_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private Integer seqNumber = 1000;
 
 	public static final String length_FIELDNAME = "length";
 	@FieldDescribe("文件大小.")
-	@Column( name = ColumnNamePrefix + length_FIELDNAME)
+	@Column(name = ColumnNamePrefix + length_FIELDNAME)
 	@Index(name = TABLE + "_length")
 	@CheckPersist(allowEmpty = true)
 	private Long length;
-	
+
 	public static final String text_FIELDNAME = "text";
 	@FieldDescribe("文本.")
 	@Lob
@@ -253,7 +267,7 @@ public class FileInfo extends StorageObject {
 	@Column(length = JpaObject.length_100M, name = ColumnNamePrefix + text_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String text;
-	
+
 	public static final String readIdentityList_FIELDNAME = "readIdentityList";
 	@FieldDescribe("可以访问的身份.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -323,6 +337,13 @@ public class FileInfo extends StorageObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> controllerUnitList;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	/**
 	 * 获取文件所属应用ID

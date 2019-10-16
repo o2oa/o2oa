@@ -56,9 +56,10 @@ class ActionListWithPerson extends BaseAction {
 				.setMaxResults(count).getResultList();
 		return Wo.copier.copy(os);
 	}
-
+	
+    /*
 	public static class Wi extends WsMessage {
-	}
+	}*/
 
 	public static class Wo extends Message {
 

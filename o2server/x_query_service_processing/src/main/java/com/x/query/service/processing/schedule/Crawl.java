@@ -2,20 +2,19 @@ package com.x.query.service.processing.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
-
 import com.x.base.core.entity.StorageObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper.Item;
 
-public abstract class Crawl implements Job {
+public abstract class Crawl extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Crawl.class);
 

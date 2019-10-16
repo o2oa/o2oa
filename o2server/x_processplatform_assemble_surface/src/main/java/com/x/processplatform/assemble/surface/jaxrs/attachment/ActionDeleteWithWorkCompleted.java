@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -27,25 +29,20 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
-				throw new ExceptionWorkCompletedNotExist(workCompletedId);
+				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionAttachmentNotExist(id);
 			}
-//			if (!work.getAttachmentList().contains(id)) {
-//				throw new ExceptionWorkNotContainsAttachment(work.getTitle(), work.getId(), attachment.getName(),
-//						attachment.getId());
-//			}
-			/*WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), workCompleted.getTitle(),
-						workCompleted.getId());
-			}*/
+			if (business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
+					attachment.getProcess())) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			Wo wo = ThisApplication.context().applications()
 					.deleteQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							"attachment/" + URLEncoder.encode(attachment.getId(), DefaultCharset.name) + "/workcompleted/"
-									+ URLEncoder.encode(workCompleted.getId(), DefaultCharset.name))
+							"attachment/" + URLEncoder.encode(attachment.getId(), DefaultCharset.name)
+									+ "/workcompleted/" + URLEncoder.encode(workCompleted.getId(), DefaultCharset.name))
 					.getData(Wo.class);
 			wo.setId(attachment.getId());
 			result.setData(wo);

@@ -10,52 +10,66 @@ public class StorageMapping extends GsonPropertyObject {
 	private String password;
 	private String host;
 	private Integer port;
-
-	private Boolean enable;
+	private String prefix;
 	private Integer weight;
-	/* 关联到storageServer的name */
 	private String name;
+	private Boolean deepPath;
 
-	public String getPassword() {
-		// return StringUtils.isEmpty(this.password) ? "" :
-		// UriParser.encode(this.password);
-		return this.password;
+	public StorageMapping() {
+
 	}
 
-	public Boolean getEnable() {
-		return enable;
-	}
+	public StorageMapping(ExternalStorageSource source) {
+		this.protocol = source.getProtocol();
+		this.username = source.getUsername();
+		this.password = source.getPassword();
+		this.host = source.getHost();
+		this.port = source.getPort();
+		this.prefix = source.getPrefix();
+		this.weight = source.getWeight();
+		this.name = source.getName();
+		this.deepPath = source.getDeepPath();
 
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
-
-	public Integer getWeight() {
-		return weight;
-	}
-
-	public void setWeight(Integer weight) {
-		this.weight = weight;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public StorageProtocol getProtocol() {
 		return protocol;
 	}
 
-	public void setProtocol(StorageProtocol protocol) {
-		this.protocol = protocol;
-	}
-
 	public String getUsername() {
 		return username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public Integer getPort() {
+		return port;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Boolean getDeepPath() {
+		return deepPath;
+	}
+
+	public void setProtocol(StorageProtocol protocol) {
+		this.protocol = protocol;
 	}
 
 	public void setUsername(String username) {
@@ -66,20 +80,28 @@ public class StorageMapping extends GsonPropertyObject {
 		this.password = password;
 	}
 
-	public String getHost() {
-		return host;
-	}
-
 	public void setHost(String host) {
 		this.host = host;
 	}
 
-	public Integer getPort() {
-		return port;
-	}
-
 	public void setPort(Integer port) {
 		this.port = port;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
 	}
 
 }

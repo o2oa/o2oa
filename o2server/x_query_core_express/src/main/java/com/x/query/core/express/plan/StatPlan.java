@@ -221,7 +221,7 @@ public class StatPlan extends GsonPropertyObject {
 				en.getValue().selectList.stream().forEach(o -> {
 					/* 分类统计只能统计分类视图 */
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
-						CalculateEntry calculateEntry = calculate.get(en.getKey());
+						CalculateEntry calculateEntry = calculate.find(en.getKey());
 						if (null != calculateEntry) {
 							NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
 							en.getValue().groupGrid.stream().forEach(r -> {
@@ -288,7 +288,7 @@ public class StatPlan extends GsonPropertyObject {
 				en.getValue().selectList.stream().forEach(o -> {
 					// if (!StringUtils.equals(o.column, en.getValue().group.column)) {
 					List<Double> values = new ArrayList<>();
-					CalculateEntry calculateEntry = calculate.get(en.getKey());
+					CalculateEntry calculateEntry = calculate.find(en.getKey());
 					NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
 					if ((null != calculateEntry) && (null != en.getValue().groupGrid)) {
 						en.getValue().groupGrid.stream().forEach(r -> {
@@ -314,7 +314,7 @@ public class StatPlan extends GsonPropertyObject {
 				/* 非分类视图非分类统计 */
 				en.getValue().selectList.stream().forEach(o -> {
 					List<Double> values = new ArrayList<>();
-					CalculateEntry calculateEntry = calculate.get(en.getKey());
+					CalculateEntry calculateEntry = calculate.find(en.getKey());
 					NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
 					if (null != calculateEntry) {
 						en.getValue().grid.stream().forEach(r -> {

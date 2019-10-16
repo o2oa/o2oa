@@ -107,122 +107,122 @@ public class LogLevel extends ConfigObject {
 	}
 
 	public String x_attendance_assemble_control() {
-		return this.get(this.x_attendance_assemble_control);
+		return this.getLevel(this.x_attendance_assemble_control);
 	}
 
 	public String x_collaboration_core_message() {
-		return this.get(this.x_collaboration_core_message);
+		return this.getLevel(this.x_collaboration_core_message);
 	}
 
 	public String x_organization_core_express() {
-		return this.get(this.x_organization_core_express);
+		return this.getLevel(this.x_organization_core_express);
 	}
 
 	public String x_query_core_express() {
-		return this.get(this.x_query_core_express);
+		return this.getLevel(this.x_query_core_express);
 	}
 
 	public String x_bbs_assemble_control() {
-		return this.get(this.x_bbs_assemble_control);
+		return this.getLevel(this.x_bbs_assemble_control);
 	}
 
 	public String x_calendar_assemble_control() {
-		return this.get(this.x_calendar_assemble_control);
+		return this.getLevel(this.x_calendar_assemble_control);
 	}
 
 	public String x_cms_assemble_control() {
-		return this.get(this.x_cms_assemble_control);
+		return this.getLevel(this.x_cms_assemble_control);
 	}
 
 	public String x_component_assemble_control() {
-		return this.get(this.x_component_assemble_control);
+		return this.getLevel(this.x_component_assemble_control);
 	}
 
 	public String x_hotpic_assemble_control() {
-		return this.get(this.x_hotpic_assemble_control);
+		return this.getLevel(this.x_hotpic_assemble_control);
 	}
 
 	public String x_message_assemble_communicate() {
-		return this.get(this.x_message_assemble_communicate);
+		return this.getLevel(this.x_message_assemble_communicate);
 	}
 
 	public String x_mind_assemble_control() {
-		return this.get(this.x_mind_assemble_control);
+		return this.getLevel(this.x_mind_assemble_control);
 	}
 
 	public String x_okr_assemble_control() {
-		return this.get(this.x_okr_assemble_control);
+		return this.getLevel(this.x_okr_assemble_control);
 	}
 
 	public String x_organization_assemble_express() {
-		return this.get(this.x_organization_assemble_express);
+		return this.getLevel(this.x_organization_assemble_express);
 	}
 
 	public String x_organization_assemble_personal() {
-		return this.get(this.x_organization_assemble_personal);
+		return this.getLevel(this.x_organization_assemble_personal);
 	}
 
 	public String x_portal_assemble_designer() {
-		return this.get(this.x_portal_assemble_designer);
+		return this.getLevel(this.x_portal_assemble_designer);
 	}
 
 	public String x_portal_assemble_surface() {
-		return this.get(this.x_portal_assemble_surface);
+		return this.getLevel(this.x_portal_assemble_surface);
 	}
 
 	public String x_processplatform_assemble_bam() {
-		return this.get(this.x_processplatform_assemble_bam);
+		return this.getLevel(this.x_processplatform_assemble_bam);
 	}
 
 	public String x_program_center() {
-		return this.get(this.x_program_center);
+		return this.getLevel(this.x_program_center);
 	}
 
 	public String x_processplatform_service_processing() {
-		return this.get(this.x_processplatform_service_processing);
+		return this.getLevel(this.x_processplatform_service_processing);
 	}
 
 	public String x_processplatform_assemble_surface() {
-		return this.get(this.x_processplatform_assemble_surface);
+		return this.getLevel(this.x_processplatform_assemble_surface);
 	}
 
 	public String x_processplatform_assemble_designer() {
-		return this.get(this.x_processplatform_assemble_designer);
+		return this.getLevel(this.x_processplatform_assemble_designer);
 	}
 
 	public String x_query_assemble_surface() {
-		return this.get(this.x_query_assemble_surface);
+		return this.getLevel(this.x_query_assemble_surface);
 	}
 
 	public String x_query_assemble_designer() {
-		return this.get(this.x_query_assemble_designer);
+		return this.getLevel(this.x_query_assemble_designer);
 	}
 
 	public String x_query_service_processing() {
-		return this.get(this.x_query_service_processing);
+		return this.getLevel(this.x_query_service_processing);
 	}
 
 	public String x_meeting_assemble_control() {
-		return this.get(this.x_meeting_assemble_control);
+		return this.getLevel(this.x_meeting_assemble_control);
 	}
 
 	public String x_organization_assemble_authentication() {
-		return this.get(this.x_organization_assemble_authentication);
+		return this.getLevel(this.x_organization_assemble_authentication);
 	}
 
 	public String x_organization_assemble_control() {
-		return this.get(this.x_organization_assemble_control);
+		return this.getLevel(this.x_organization_assemble_control);
 	}
 
 	public String x_general_assemble_control() {
-		return this.get(this.x_general_assemble_control);
+		return this.getLevel(this.x_general_assemble_control);
 	}
 
 	public String x_file_assemble_control() {
-		return this.get(this.x_general_assemble_control);
+		return this.getLevel(this.x_general_assemble_control);
 	}
 
-	private String get(String str) {
+	private String getLevel(String str) {
 		if (StringUtils.equalsIgnoreCase(str, Logger.ERROR)) {
 			return Logger.ERROR;
 		}

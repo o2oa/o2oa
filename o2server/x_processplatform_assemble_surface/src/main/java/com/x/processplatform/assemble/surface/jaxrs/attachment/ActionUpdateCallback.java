@@ -8,6 +8,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoCallback;
@@ -34,11 +35,6 @@ class ActionUpdateCallback extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionAttachmentNotExistCallback(callback, id);
 			}
-			// if (!work.getAttachmentList().contains(id)) {
-			// throw new ExceptionWorkNotContainsAttachmentCallback(callback,
-			// work.getTitle(), work.getId(),
-			// attachment.getName(), attachment.getId());
-			// }
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
@@ -55,8 +51,7 @@ class ActionUpdateCallback extends BaseAction {
 			/** 统计待办数量判断用户是否可以上传附件 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			// if (business.attachment().multiReferenced(attachment)) {
 			// throw new ExceptionMultiReferenced(attachment.getName(),

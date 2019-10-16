@@ -2,7 +2,6 @@ package com.x.query.service.processing.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.zip.Deflater;
 
 import org.apache.commons.io.FileUtils;

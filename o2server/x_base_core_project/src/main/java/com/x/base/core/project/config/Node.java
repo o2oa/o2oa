@@ -4,6 +4,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DateTools;
 
 public class Node extends ConfigObject {
@@ -16,6 +17,7 @@ public class Node extends ConfigObject {
 		Node o = new Node();
 		o.enable = true;
 		o.isPrimaryCenter = true;
+		o.center = CenterServer.defaultInstance();
 		o.application = ApplicationServer.defaultInstance();
 		o.web = WebServer.defaultInstance();
 		o.data = DataServer.defaultInstance();
@@ -36,6 +38,8 @@ public class Node extends ConfigObject {
 	private Boolean enable;
 	@FieldDescribe("是否是center节点,仅允许存在一个center节点")
 	private Boolean isPrimaryCenter;
+	@FieldDescribe("Center服务器配置")
+	private CenterServer center;
 	@FieldDescribe("Application服务器配置")
 	private ApplicationServer application;
 	@FieldDescribe("Web服务器配置")
@@ -71,8 +75,38 @@ public class Node extends ConfigObject {
 	@FieldDescribe("是否自动启动")
 	private Boolean autoStart;
 
+	/* 20191009兼容centerServer */
+	protected void setCenter(CenterServer centerServer) {
+		this.center = centerServer;
+	}
+	/* 20191009兼容centerServer end */
+
 	public Boolean autoStart() {
 		return BooleanUtils.isTrue(autoStart);
+	}
+
+	public Boolean getEnable() {
+		return BooleanUtils.isTrue(this.enable);
+	}
+
+	public CenterServer getCenter() {
+		return (center == null) ? CenterServer.defaultInstance() : this.center;
+	}
+
+	public ApplicationServer getApplication() {
+		return (application == null) ? ApplicationServer.defaultInstance() : this.application;
+	}
+
+	public WebServer getWeb() {
+		return (web == null) ? WebServer.defaultInstance() : this.web;
+	}
+
+	public DataServer getData() {
+		return (data == null) ? DataServer.defaultInstance() : this.data;
+	}
+
+	public StorageServer getStorage() {
+		return (storage == null) ? StorageServer.defaultInstance() : this.storage;
 	}
 
 	public String getLogLevel() {
@@ -142,54 +176,6 @@ public class Node extends ConfigObject {
 
 	public ScheduleRestoreStorage restoreStorage() {
 		return (restoreStorage == null) ? new ScheduleRestoreStorage() : this.restoreStorage;
-	}
-
-	public void setIsPrimaryCenter(Boolean isPrimaryCenter) {
-		this.isPrimaryCenter = isPrimaryCenter;
-	}
-
-	public Boolean getEnable() {
-		return enable;
-	}
-
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
-
-	public ApplicationServer getApplication() {
-		return application;
-	}
-
-	public void setApplication(ApplicationServer application) {
-		this.application = application;
-	}
-
-	public WebServer getWeb() {
-		return web;
-	}
-
-	public void setWeb(WebServer web) {
-		this.web = web;
-	}
-
-	public DataServer getData() {
-		return data;
-	}
-
-	public void setData(DataServer data) {
-		this.data = data;
-	}
-
-	public StorageServer getStorage() {
-		return storage;
-	}
-
-	public void setStorage(StorageServer storage) {
-		this.storage = storage;
-	}
-
-	public void setLogLevel(String logLevel) {
-		this.logLevel = logLevel;
 	}
 
 	public static class ScheduleDumpData extends ConfigObject {

@@ -3,7 +3,6 @@ package com.x.organization.core.entity;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -23,7 +22,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -54,6 +52,8 @@ import com.x.base.core.project.tools.StringTools;
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Person extends SliceJpaObject {
+
+	public static final String HIDDENMOBILESYMBOL = "***********";
 
 	private static final long serialVersionUID = 5733185578089403629L;
 
@@ -284,6 +284,12 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = mobile_FIELDNAME, type = Person.class))
 	private String mobile;
 
+	public static final String hiddenMobile_FIELDNAME = "hiddenMobile";
+	@FieldDescribe("是否隐藏手机号.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + hiddenMobile_FIELDNAME)
+	private Boolean hiddenMobile;
+
 	public static final String officePhone_FIELDNAME = "officePhone";
 	@FieldDescribe("办公电话.")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + officePhone_FIELDNAME)
@@ -407,8 +413,27 @@ public class Person extends SliceJpaObject {
 	private Integer failureCount;
 	/* flag标志位 */
 
+	public static final String topUnitList_FIELDNAME = "topUnitList";
+	@FieldDescribe("所属顶层组织.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + topUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + topUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + topUnitList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + topUnitList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Unit.class))
+	private List<String> topUnitList;
+
 	public void setLastLoginAddress(String lastLoginAddress) {
 		this.lastLoginAddress = StringTools.utf8SubString(this.lastLoginAddress, Person.length_64B);
+	}
+
+	public List<String> getTopUnitList() {
+		return topUnitList;
+	}
+
+	public void setTopUnitList(List<String> topUnitList) {
+		this.topUnitList = topUnitList;
 	}
 
 	public String getName() {
@@ -725,6 +750,14 @@ public class Person extends SliceJpaObject {
 
 	public void setFailureCount(Integer failureCount) {
 		this.failureCount = failureCount;
+	}
+
+	public Boolean getHiddenMobile() {
+		return hiddenMobile;
+	}
+
+	public void setHiddenMobile(Boolean hiddenMobile) {
+		this.hiddenMobile = hiddenMobile;
 	}
 
 }

@@ -2,14 +2,13 @@ package com.x.bbs.assemble.control.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.google.gson.Gson;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
@@ -25,7 +24,7 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
  * @author LIYI
  *
  */
-public class UserSubjectReplyPermissionStatisticTask implements Job {
+public class UserSubjectReplyPermissionStatisticTask extends AbstractJob {
 
 	private Logger logger = LoggerFactory.getLogger(UserSubjectReplyPermissionStatisticTask.class);
 
@@ -37,7 +36,7 @@ public class UserSubjectReplyPermissionStatisticTask implements Job {
 	private BBSRoleInfoService roleInfoService = new BBSRoleInfoService();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		process();
 		logger.info("Timertask[UserSubjectReplyStatisticTask] completed and excute success.");
 	}

@@ -165,7 +165,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					i = 0;
 					for (SelectEntry o : plan.selectList) {
 						c = r.createCell(i);
-						c.setCellValue(Objects.toString(row.get(o.column)));
+						c.setCellValue(Objects.toString(row.find(o.column)));
 						i++;
 					}
 				}

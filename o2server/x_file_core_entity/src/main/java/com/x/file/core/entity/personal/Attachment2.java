@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.file.core.entity.open.FileType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -88,6 +89,7 @@ public class Attachment2 extends SliceJpaObject {
 		if (null == this.extension) {
 			throw new Exception("extension can not be null.");
 		}
+		this.type = FileType.getExtType(this.extension);
 	}
 
 	public static final String person_FIELDNAME = "person";
@@ -102,9 +104,10 @@ public class Attachment2 extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
-	/* 同一个用户同一个目录下不能有重名 */
+	/* 同一个用户同一个目录正常状态下不能有重名 */
 	@CitationNotExist(fields = { "name", "id" }, type = Attachment2.class, equals = {
-			@Equal(property = "person", field = "person"), @Equal(property = "folder", field = "folder") }))
+			@Equal(property = "person", field = "person"), @Equal(property = "folder", field = "folder"),
+			@Equal(property = "status", field = "status") }))
 	private String name;
 
 	public static final String extension_FIELDNAME = "extension";

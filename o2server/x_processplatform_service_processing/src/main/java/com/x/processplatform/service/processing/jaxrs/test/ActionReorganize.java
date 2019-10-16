@@ -13,7 +13,7 @@ class ActionReorganize extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			ThisApplication.context().scheduleLocal(Reorganize.class);
+			ThisApplication.context().scheduleLocal(Reorganize.class, 1);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

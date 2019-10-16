@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -17,6 +16,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
@@ -45,12 +45,12 @@ import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 
-public class Reorganize implements Job {
+public class Reorganize extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Reorganize.class);
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);

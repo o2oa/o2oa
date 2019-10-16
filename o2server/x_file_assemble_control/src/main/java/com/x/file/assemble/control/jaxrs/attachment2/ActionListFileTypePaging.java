@@ -50,6 +50,7 @@ class ActionListFileTypePaging extends BaseAction {
 		CriteriaQuery<Attachment2> cq = cb.createQuery(Attachment2.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
 		if(StringUtils.isNotEmpty(wi.getFileType())){
 			p = cb.and(p, cb.equal(root.get(Attachment2_.type), wi.getFileType()));
 		}
@@ -64,6 +65,7 @@ class ActionListFileTypePaging extends BaseAction {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
 		if(StringUtils.isNotEmpty(wi.getFileType())){
 			p = cb.and(p, cb.equal(root.get(Attachment2_.type), wi.getFileType()));
 		}

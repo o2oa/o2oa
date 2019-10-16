@@ -8,6 +8,12 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
@@ -20,6 +26,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.tools.ListTools;
 
 public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
@@ -1013,6 +1020,227 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		return (pageSize == null || pageSize < 1 || pageSize > EntityManagerContainer.MAX_PAGESIZE)
 				? EntityManagerContainer.DEFAULT_PAGESIZE.intValue()
 				: pageSize;
+	}
+
+	public <T extends JpaObject, W> ActionResult<List<W>> standardListNext(WrapCopier<T, W> copier, String id,
+			Integer count, String sequenceField, String order, Predicate predicate) throws Exception {
+		Class<T> tClass = (Class<T>) copier.getOrigClass();
+		Class<W> wClass = (Class<W>) copier.getDestClass();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			// 先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+			Object sequence = null;
+			if (!StringUtils.equalsIgnoreCase(id, EMPTY_SYMBOL)) {
+				T t = emc.fetch(id, tClass, ListTools.toList(sequenceField));
+				if (null != t) {
+					sequence = PropertyUtils.getProperty(t, sequenceField);
+				}
+			}
+			EntityManager em = emc.get(tClass);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+			Root<T> root = cq.from(tClass);
+
+			if (null == predicate) {
+				predicate = cb.conjunction();
+			}
+
+			if (StringUtils.equalsIgnoreCase(order, DESC)) {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
+			} else {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
+			}
+
+			List<Selection<?>> selections = new ArrayList<>();
+
+			List<String> fields = copier.getCopyFields();
+
+			for (String field : fields) {
+				selections.add(root.get(field));
+			}
+
+			List<Tuple> os = em.createQuery(cq.multiselect(selections))
+					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
+
+			List<W> ws = new ArrayList<W>();
+
+			for (Tuple tuple : os) {
+				W w = wClass.newInstance();
+				for (int i = 0; i < selections.size(); i++) {
+					PropertyUtils.setProperty(w, fields.get(i), tuple.get(selections.get(i)));
+				}
+				ws.add(w);
+			}
+			ActionResult<List<W>> result = new ActionResult<>();
+			result.setData(ws);
+			// 设置查询结果的总条目数
+			result.setCount(this.count(emc, tClass, predicate));
+			return result;
+		}
+	}
+
+	public <T extends JpaObject, W> ActionResult<List<W>> standardListPrev(WrapCopier<T, W> copier, String id,
+			Integer count, String sequenceField, String order, Predicate predicate) throws Exception {
+		Class<T> tClass = (Class<T>) copier.getOrigClass();
+		Class<W> wClass = (Class<W>) copier.getDestClass();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			// 先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+			Object sequence = null;
+			if (!StringUtils.equalsIgnoreCase(id, EMPTY_SYMBOL)) {
+				T t = emc.fetch(id, tClass, ListTools.toList(sequenceField));
+				if (null != t) {
+					sequence = PropertyUtils.getProperty(t, sequenceField);
+				}
+			}
+			EntityManager em = emc.get(tClass);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+			Root<T> root = cq.from(tClass);
+
+			if (null == predicate) {
+				predicate = cb.conjunction();
+			}
+
+			if (StringUtils.equalsIgnoreCase(order, DESC)) {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
+			} else {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
+			}
+
+			List<Selection<?>> selections = new ArrayList<>();
+
+			List<String> fields = copier.getCopyFields();
+
+			for (String field : fields) {
+				selections.add(root.get(field));
+			}
+
+			List<Tuple> os = em.createQuery(cq.multiselect(selections))
+					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
+
+			List<W> ws = new ArrayList<W>();
+
+			Tuple tuple = null;
+
+			for (int i = os.size() - 1; i >= 0; i--) {
+				tuple = os.get(i);
+				W w = wClass.newInstance();
+				for (int j = 0; j < selections.size(); j++) {
+					PropertyUtils.setProperty(w, fields.get(j), tuple.get(selections.get(j)));
+				}
+				ws.add(w);
+			}
+
+			ActionResult<List<W>> result = new ActionResult<>();
+			result.setData(ws);
+			// 设置查询结果的总条目数
+			result.setCount(this.count(emc, tClass, predicate));
+			return result;
+		}
+	}
+
+	public <T extends JpaObject> ActionResult<List<T>> standardListNext(Class<T> cls, String id, Integer count,
+			String sequenceField, String order, Predicate predicate) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			// 先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+			Object sequence = null;
+			if (!StringUtils.equalsIgnoreCase(id, EMPTY_SYMBOL)) {
+				T t = emc.fetch(id, cls, ListTools.toList(sequenceField));
+				if (null != t) {
+					sequence = PropertyUtils.getProperty(t, sequenceField);
+				}
+			}
+			EntityManager em = emc.get(cls);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(cls);
+			Root<T> root = cq.from(cls);
+
+			if (null == predicate) {
+				predicate = cb.conjunction();
+			}
+
+			if (StringUtils.equalsIgnoreCase(order, DESC)) {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
+			} else {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
+			}
+
+			List<T> os = em.createQuery(cq.select(root)).setMaxResults(Math.max(Math.min(count, list_max), list_min))
+					.getResultList();
+
+			ActionResult<List<T>> result = new ActionResult<>();
+			result.setData(new ArrayList<T>(os));
+			// 设置查询结果的总条目数
+			result.setCount(this.count(emc, cls, predicate));
+			return result;
+		}
+	}
+
+	public <T extends JpaObject> ActionResult<List<T>> standardListPrev(Class<T> cls, String id, Integer count,
+			String sequenceField, String order, Predicate predicate) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			// 先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
+			Object sequence = null;
+			if (!StringUtils.equalsIgnoreCase(id, EMPTY_SYMBOL)) {
+				T t = emc.fetch(id, cls, ListTools.toList(sequenceField));
+				if (null != t) {
+					sequence = PropertyUtils.getProperty(t, sequenceField);
+				}
+			}
+			EntityManager em = emc.get(cls);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(cls);
+			Root<T> root = cq.from(cls);
+
+			if (null == predicate) {
+				predicate = cb.conjunction();
+			}
+
+			if (StringUtils.equalsIgnoreCase(order, DESC)) {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
+			} else {
+				cq.where(null == sequence ? predicate
+						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
+			}
+
+			List<T> os = em.createQuery(cq.select(root)).setMaxResults(Math.max(Math.min(count, list_max), list_min))
+					.getResultList();
+
+			List<T> wos = new ArrayList<>();
+
+			for (int i = os.size() - 1; i >= 0; i--) {
+				wos.add(os.get(i));
+			}
+
+			ActionResult<List<T>> result = new ActionResult<>();
+			result.setData(wos);
+			// 设置查询结果的总条目数
+			result.setCount(this.count(emc, cls, predicate));
+			return result;
+		}
+	}
+
+	private <T extends JpaObject> Long count(EntityManagerContainer emc, Class<T> cls, Predicate predicate)
+			throws Exception {
+		EntityManager em = emc.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		return em.createQuery(cq.select(cb.count(root)).where(predicate)).getSingleResult();
 	}
 
 }

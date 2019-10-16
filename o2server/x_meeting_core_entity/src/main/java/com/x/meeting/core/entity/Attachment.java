@@ -10,6 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -121,6 +122,16 @@ public class Attachment extends StorageObject {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
+	}
+
 	public static final String meeting_FIELDNAME = "meeting";
 	@FieldDescribe("关联的会议.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + meeting_FIELDNAME)
@@ -176,6 +187,13 @@ public class Attachment extends StorageObject {
 	@Index(name = TABLE + IndexNameMiddle + lastUpdatePerson_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String lastUpdatePerson;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	public String getMeeting() {
 		return meeting;

@@ -62,6 +62,36 @@
 	-->
 </style>
 <script>
+var appMap = new Map();
+	appMap.set("com.x.base.core.project.x_attendance_assemble_control", "考勤相关服务");
+	appMap.set("com.x.base.core.project.x_bbs_assemble_control", "论坛相关服务");
+	appMap.set("com.x.base.core.project.x_calendar_assemble_control", "日程管理相关服务");
+	appMap.set("com.x.base.core.project.x_cms_assemble_control", "内容管理平台相关服务");
+	appMap.set("com.x.base.core.project.x_component_assemble_control","组件管理");
+	appMap.set("com.x.base.core.project.x_file_assemble_control", "云文件相关服务");
+	appMap.set("com.x.base.core.project.x_general_assemble_control", "常用功能");
+	appMap.set("com.x.base.core.project.x_hotpic_assemble_control", "热点信息相关服务");
+	appMap.set("com.x.base.core.project.x_meeting_assemble_control", "会议管理相关服务");
+	appMap.set("com.x.base.core.project.x_message_assemble_communicate", "消息通信相关服务");
+	appMap.set("com.x.base.core.project.x_mind_assemble_control", "脑图模块相关服务");
+	appMap.set("com.x.base.core.project.x_okr_assemble_control", "执行力相关服务");
+	appMap.set("com.x.base.core.project.x_organization_assemble_authentication", "组织认证服务");
+	appMap.set("com.x.base.core.project.x_organization_assemble_control", "组织增加修改");
+	appMap.set("com.x.base.core.project.x_organization_assemble_express", "组织查询");
+	appMap.set("com.x.base.core.project.x_organization_assemble_personal", "个人设置相关服务");
+	appMap.set("com.x.base.core.project.x_portal_assemble_designer", "门户元素设计");
+	appMap.set("com.x.base.core.project.x_portal_assemble_surface", "门户手机服务");
+	appMap.set("com.x.base.core.project.x_processplatform_assemble_bam", "流程平台统计服务");
+	appMap.set("com.x.base.core.project.x_processplatform_assemble_designer", "流程元素设计");
+	appMap.set("com.x.base.core.project.x_processplatform_assemble_surface", "流程数据查询");
+	appMap.set("com.x.base.core.project.x_processplatform_service_processing", "流程过程服务");
+	appMap.set("com.x.base.core.project.x_query_assemble_designer", "数据平台元素设计");
+	appMap.set("com.x.base.core.project.x_query_assemble_surface", "数据平台查询");
+	appMap.set("com.x.base.core.project.x_query_service_processing", "数据平台全文检索");
+	appMap.set("com.x.base.core.project.x_teamwork_assemble_control", "团队");
+	appMap.set("com.x.wcrm.assemble.control.x_wcrm_assemble_control", "WCRM管理");
+	appMap.set("zoneland.unicom.bj.assemble.control.zoneland_unicom_bj_assemble_control", "北京联通单点");
+
     $(function() {
 	$.ajax({
 	    type : 'get',
@@ -73,11 +103,18 @@
 	    },
 	    crossDomain : true
 	}).done(function(json) {
+	     
 	    if (json.type == 'success') {
 		if (json.data) {
 		    var str = '<table border="1">';
 		    $.each(json.data, function(index, o) {
-			str += '<tr>';
+			str += '<tr>';  
+			debugger;
+             if(typeof(appMap.get(o.name)) == "undefined"){
+			   str += '<td>' + '</td>';
+              }else{
+				str += '<td>' + appMap.get(o.name) + '</td>';
+              }			  
 			str += '<td>' + o.name + '</td>';
 			str += '<td>';
 			$.each(o.urlList, function(i, url) {

@@ -34,7 +34,7 @@ public class ScheduleLogRequest extends GsonPropertyObject {
 		this.node = jobDetail.getDescription();
 		this.type = jobExecutionContext.getTrigger().getDescription();
 		this.elapsed = jobExecutionContext.getJobRunTime();
-		this.fireTime = jobExecutionContext.getFireTime();
+		this.fireTime = jobExecutionContext.getNextFireTime();
 		if (null != jobExecutionException) {
 			this.stackTrace = ExceptionUtils.getStackTrace(jobExecutionException);
 			this.success = false;

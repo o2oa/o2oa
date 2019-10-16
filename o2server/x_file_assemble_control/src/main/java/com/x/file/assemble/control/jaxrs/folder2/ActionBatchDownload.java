@@ -55,7 +55,7 @@ class ActionBatchDownload extends BaseAction {
 			String zipName = effectivePerson.getName() + DateTools.format(new Date(),DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 			logger.info("down to {}，att size {}, folder size {}",zipName,attList.size(),folderList.size());
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				this.downToZip(emc, business, attList, folderList, os);
+				this.fileCommonService.downToZip(emc, attList, folderList, os);
 				byte[] bs = os.toByteArray();
 				Wo wo = new Wo(bs, this.contentType(false,zipName),
 						this.contentDisposition(false, zipName));

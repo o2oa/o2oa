@@ -24,7 +24,7 @@ public class Audit {
 		this.start = new Date();
 		this.person = Objects.toString(person, "");
 		this.remoteAddress = Objects.toString(remoteAddress, "");
-		this.uri = Objects.toString(uri,"");
+		this.uri = Objects.toString(uri, "");
 		this.userAgent = Objects.toString(userAgent, "");
 		this.className = Objects.toString(className, "");
 	}
@@ -37,7 +37,7 @@ public class Audit {
 		if (Config.logLevel().audit().enable()) {
 			Date end = new Date();
 			long elapsed = end.getTime() - start.getTime();
-			PrintStream stream = (PrintStream) Config.resource(Config.RESOUCE_AUDITLOGPRINTSTREAM);
+			PrintStream stream = (PrintStream) Config.resource(Config.RESOURCE_AUDITLOGPRINTSTREAM);
 			stream.printf("%tF %tT,,,%d,,,%s,,,%s,,,%s,,,%s,,,%s,,,%s%n", end, end, elapsed, this.person,
 					this.remoteAddress, this.uri, this.userAgent, this.className,
 					MessageFormatter.arrayFormat(Objects.toString(message, ""), os).getMessage());

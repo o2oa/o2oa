@@ -54,12 +54,20 @@ public class SchedulerBuilder {
 					.build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
-//		JobDetail jobDetail = JobBuilder.newJob(CleanLogTask.class)
-//				.withIdentity(CleanLogTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
-//		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(CleanLogTask.class.getName(), scheduleGroup)
-//				.withSchedule(CronScheduleBuilder.cronSchedule("18 18 18 * * ?")).build();
-//		scheduler.scheduleJob(jobDetail, trigger);
+		this.registApplicationsAndVoteCenterTask(scheduler, scheduleGroup);
 		return scheduler;
+
+	}
+
+	/* 更新node节点applications 和 选择center主节点 */
+	private void registApplicationsAndVoteCenterTask(Scheduler scheduler, String scheduleGroup) throws Exception {
+		JobDetail jobDetail = JobBuilder.newJob(RegistApplicationsAndVoteCenterTask.class)
+				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup).withDescription(Config.node())
+				.build();
+		Trigger trigger = TriggerBuilder.newTrigger()
+				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
+				.withSchedule(CronScheduleBuilder.cronSchedule("*/30 * * * * ?")).build();
+		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
 	private Properties properties() {

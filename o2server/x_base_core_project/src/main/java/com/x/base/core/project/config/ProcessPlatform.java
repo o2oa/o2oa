@@ -13,6 +13,21 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class ProcessPlatform extends ConfigObject {
 
+	public final static Integer DEFAULT_FORMVERSIONPERIOD = 45;
+	public final static Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
+	public final static Integer DEFAULT_SCRIPTVERSIONPERIOD = 45;
+
+	public final static String DEFAULT_DOCTOWORDTYPE = "local";
+
+	public final static String DOCTOWORDTYPE_LOCAL = "local";
+	public final static String DOCTOWORDTYPE_CLOUD = "cloud";
+
+	public final static String DEFAULT_DOCTOWORDDEFAULTFILENAME = "正文.docx";
+
+	public final static String DEFAULT_DOCTOWORDDEFAULTSITE = "$doc";
+
+	public final static Boolean DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY = true;
+
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -24,6 +39,13 @@ public class ProcessPlatform extends ConfigObject {
 		this.reorganize = new Reorganize();
 		this.dataMerge = new DataMerge();
 		this.maintenanceIdentity = "";
+		this.formVersionPeriod = DEFAULT_FORMVERSIONPERIOD;
+		this.processVersionPeriod = DEFAULT_PROCESSVERSIONPERIOD;
+		this.scriptVersionPeriod = DEFAULT_SCRIPTVERSIONPERIOD;
+		this.docToWordType = DEFAULT_DOCTOWORDTYPE;
+		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
+		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
+		this.processingTaskSameJobActivityIdentity = DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY;
 	}
 
 	@FieldDescribe("提醒设置,设置提醒间隔.")
@@ -46,6 +68,60 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
 	private String maintenanceIdentity;
+
+	@FieldDescribe("表单历史版本保留天数.")
+	private Integer formVersionPeriod;
+
+	@FieldDescribe("流程历史版本保留天数.")
+	private Integer processVersionPeriod;
+
+	@FieldDescribe("脚本历史版本保留天数.")
+	private Integer scriptVersionPeriod;
+
+	@FieldDescribe("HTML版式公文转换成Word文件方式,local,cloud.")
+	private String docToWordType;
+
+	@FieldDescribe("HTML版式公文转换成Word文件缺省文件名.")
+	private String docToWordDefaultFileName;
+
+	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
+	private String docToWordDefaultSite;
+
+	@FieldDescribe("同步处理同一工作在同一环节同一处理身份.")
+	private Boolean processingTaskSameJobActivityIdentity;
+
+	public Boolean getProcessingTaskSameJobActivityIdentity() {
+		return processingTaskSameJobActivityIdentity == null ? DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY
+				: BooleanUtils.isTrue(this.processingTaskSameJobActivityIdentity);
+	}
+
+	public Integer getFormVersionPeriod() {
+		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD
+				: this.formVersionPeriod;
+	}
+
+	public Integer getProcessVersionPeriod() {
+		return (processVersionPeriod == null || processVersionPeriod < 1) ? DEFAULT_PROCESSVERSIONPERIOD
+				: this.processVersionPeriod;
+	}
+
+	public Integer getScriptVersionPeriod() {
+		return (scriptVersionPeriod == null || scriptVersionPeriod < 1) ? DEFAULT_SCRIPTVERSIONPERIOD
+				: this.scriptVersionPeriod;
+	}
+
+	public String getDocToWordType() {
+		return StringUtils.isEmpty(docToWordType) ? DEFAULT_DOCTOWORDTYPE : docToWordType;
+	}
+
+	public String getDocToWordDefaultFileName() {
+		return StringUtils.isEmpty(docToWordDefaultFileName) ? DEFAULT_DOCTOWORDDEFAULTFILENAME
+				: docToWordDefaultFileName;
+	}
+
+	public String getDocToWordDefaultSite() {
+		return StringUtils.isEmpty(docToWordDefaultSite) ? DEFAULT_DOCTOWORDDEFAULTSITE : docToWordDefaultSite;
+	}
 
 	public Press getPress() {
 		return this.press == null ? new Press() : this.press;

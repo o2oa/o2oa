@@ -27,6 +27,7 @@ import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.ProcessVersion;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
@@ -88,6 +89,13 @@ class ActionEdit extends BaseAction {
 			update_split(business, wrap.getSplitList(), process);
 			emc.commit();
 			cacheNotify();
+			/* 保存历史版本 */
+			emc.beginTransaction(ProcessVersion.class);
+			ProcessVersion processVersion = new ProcessVersion();
+			processVersion.setData(gson.toJson(jsonElement));
+			processVersion.setProcess(process.getId());
+			emc.persist(processVersion, CheckPersistType.all);
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(process.getId());
 			result.setData(wo);

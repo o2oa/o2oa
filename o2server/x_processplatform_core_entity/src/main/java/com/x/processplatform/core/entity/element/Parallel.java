@@ -1,7 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -22,7 +21,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -83,13 +81,13 @@ public class Parallel extends Activity {
 
 	@FieldDescribe("节点名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String name;
 
 	@Flag
 	@FieldDescribe("节点别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
 	@FieldDescribe("描述.")

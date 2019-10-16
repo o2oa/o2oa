@@ -21,7 +21,7 @@ class ActionGet extends BaseAction {
 				throw new ExceptionAttachmentNotExist(id);
 			}
 			/* 判断文件的所有者是否是当前用户 */
-			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), attachment.getPerson())) {
+			if (!effectivePerson.isManager() && !StringUtils.equals(effectivePerson.getDistinguishedName(), attachment.getPerson())) {
 				throw new ExceptionAttachmentAccessDenied(effectivePerson, attachment);
 			}
 			Wo wo = Wo.copier.copy(attachment);

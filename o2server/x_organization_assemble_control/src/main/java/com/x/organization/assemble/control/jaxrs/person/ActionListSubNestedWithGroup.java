@@ -34,6 +34,7 @@ class ActionListSubNestedWithGroup extends BaseAction {
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}

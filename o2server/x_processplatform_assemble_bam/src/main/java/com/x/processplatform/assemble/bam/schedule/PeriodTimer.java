@@ -1,14 +1,13 @@
 package com.x.processplatform.assemble.bam.schedule;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.Context;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.processplatform.assemble.bam.ThisApplication;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerCompletedTaskApplicationStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerCompletedTaskUnitStubs;
@@ -23,12 +22,12 @@ import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartTaskUnitStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkApplicationStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkUnitStubs;
 
-public class PeriodTimer implements Job {
+public class PeriodTimer extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(PeriodTimer.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/* 每月产生工作所需要的ApplicationStub和CompanyStub */
 			ThisApplication.period.setStartTaskApplicationStubs(new TimerStartTaskApplicationStubs().execute(emc));

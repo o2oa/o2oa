@@ -17,7 +17,7 @@ class ActionCrawlWork extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			ThisApplication.context().scheduleLocal(CrawlWork.class);
+			ThisApplication.context().scheduleLocal(CrawlWork.class, 1);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

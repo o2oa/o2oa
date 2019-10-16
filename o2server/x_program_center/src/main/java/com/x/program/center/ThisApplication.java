@@ -8,7 +8,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.schedule.Area;
 import com.x.program.center.schedule.CleanupCode;
 import com.x.program.center.schedule.CleanupPromptErrorLog;
-import com.x.program.center.schedule.CleanupSchedule;
+import com.x.program.center.schedule.CleanupScheduleLog;
 import com.x.program.center.schedule.CleanupUnexpectedErrorLog;
 import com.x.program.center.schedule.CleanupWarnLog;
 import com.x.program.center.schedule.CollectLog;
@@ -18,6 +18,7 @@ import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
 import com.x.program.center.schedule.FireSchedule;
 import com.x.program.center.schedule.QiyeweixinSyncOrganization;
 import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
+import com.x.program.center.schedule.RefreshApplications;
 import com.x.program.center.schedule.TriggerAgent;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
 import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
@@ -30,7 +31,7 @@ public class ThisApplication {
 		return context;
 	}
 
-	public static ReportQueue reportQueue;
+	public static CenterQueue centerQueue = new CenterQueue();
 
 	public static LogQueue logQueue;
 
@@ -45,10 +46,8 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_program_center());
-			/* 启动报告队列 */
-			reportQueue = new ReportQueue();
-			context().startQueue(reportQueue);
-			/* 启动日志队列 */
+			/* 20190927新报告机制 */
+			context().startQueue(centerQueue);
 			logQueue = new LogQueue();
 			context().startQueue(logQueue);
 
@@ -75,9 +74,10 @@ public class ThisApplication {
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
 			}
-			context().scheduleLocal(com.x.program.center.schedule.CleanupApplications.class, 0, 5);
+			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
+					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
 			context().scheduleLocal(FireSchedule.class, 180, 300);
-			context().scheduleLocal(CleanupSchedule.class, 10, 80);
+			context().scheduleLocal(CleanupScheduleLog.class, 10, 80);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
 			context().scheduleLocal(CleanupPromptErrorLog.class, 10, 60 * 30);
 			context().scheduleLocal(CleanupUnexpectedErrorLog.class, 10, 60 * 30);
@@ -93,7 +93,13 @@ public class ThisApplication {
 	}
 
 	public static void destroy() {
-
+		try {
+			centerQueue.stop();
+			logQueue.stop();
+			codeTransferQueue.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

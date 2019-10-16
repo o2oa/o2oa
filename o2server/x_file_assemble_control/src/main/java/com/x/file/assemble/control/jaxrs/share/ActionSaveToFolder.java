@@ -26,13 +26,17 @@ class ActionSaveToFolder extends BaseAction {
 			if (null == share) {
 				throw new ExceptionAttachmentNotExist(shareId);
 			}
-			Folder2 folder = emc.find(folderId, Folder2.class);
-			if(folder==null){
-				throw new ExceptionFolderNotExist(folderId);
-			}
-			/* 判断目录的所有者是否是当前用户 */
-			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), folder.getPerson())) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(),folderId);
+			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))) {
+				Folder2 folder = emc.find(folderId, Folder2.class);
+				if (folder == null) {
+					throw new ExceptionFolderNotExist(folderId);
+				}
+				/* 判断目录的所有者是否是当前用户 */
+				if (!StringUtils.equals(effectivePerson.getDistinguishedName(), folder.getPerson())) {
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), folderId);
+				}
+			}else{
+				folderId = null;
 			}
 			/* 判断文件的分享用户是否包含当前用户 */
 			if(!"password".equals(share.getShareType())) {
@@ -43,29 +47,15 @@ class ActionSaveToFolder extends BaseAction {
 				if(StringUtils.isEmpty(password)){
 					throw new Exception("password can not be empty.");
 				}
-				if(!password.equals(share.getPassword())){
+				if(!password.equalsIgnoreCase(share.getPassword())){
 					throw new Exception("invalid password.");
 				}
 			}
 			if(StringUtils.isEmpty(fileId)){
 				throw new Exception("fileId can not be empty.");
 			}
-			String fileType = share.getFileType();
-			if(!fileId.equals(share.getFileId())){
-				Attachment2 attachment = emc.find(fileId, Attachment2.class);
-				if(attachment == null) {
-					folder = emc.find(fileId, Folder2.class);
-					if(folder==null){
-						throw new ExceptionShareNotExist(fileId);
-					}else{
-						fileType = "folder";
-					}
-				}else{
-					fileType = "attachment";
-				}
-			}
 			/* 转存文件或目录到指定的目录下 */
-			if("attachment".equals(fileType)){
+			if("attachment".equals(share.getFileType())){
 				Attachment2 att = emc.find(fileId, Attachment2.class);
 				Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
 						folderId, att.getOriginFile(), att.getLength(), att.getType());
@@ -74,13 +64,13 @@ class ActionSaveToFolder extends BaseAction {
 				emc.persist(newAtt);
 				emc.commit();
 			}else{
-				folder = emc.find(fileId, Folder2.class);
+				Folder2 folder = emc.find(fileId, Folder2.class);
 				Folder2 newFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
 				EntityManager em = emc.beginTransaction(Folder2.class);
 				emc.check(newFolder, CheckPersistType.all);
 				em.persist(newFolder);
 				em.getTransaction().commit();
-				List<String> subIds = business.folder2().listSubNested(folder.getId());
+				List<String> subIds = business.folder2().listSubNested(folder.getId(),"正常");
 				for(String subFold : subIds){
 					folder = emc.find(subFold, Folder2.class);
 					Folder2 newSubFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());

@@ -117,21 +117,21 @@ public class CalculateEntryTools {
 		Map<Object, Long> map = new LinkedHashMap<Object, Long>();
 		if ((null != groupEntry) && (groupEntry.available())) {
 			map = table.stream()
-					.collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()), Collectors.counting()));
+					.collect(Collectors.groupingBy(row -> row.find(groupEntry.getColumn()), Collectors.counting()));
 		}
 		return map;
 	}
 
 	private static Map<Object, Double> groupSum(Table table, CalculateEntry calculateEntry, GroupEntry groupEntry)
 			throws Exception {
-		Map<Object, Double> map = table.stream().collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
+		Map<Object, Double> map = table.stream().collect(Collectors.groupingBy(row -> row.find(groupEntry.getColumn()),
 				Collectors.summingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
 		return map;
 	}
 
 	private static Map<Object, Double> groupAverage(List<Row> rows, CalculateEntry calculateEntry,
 			GroupEntry groupEntry) throws Exception {
-		Map<Object, Double> map = rows.stream().collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
+		Map<Object, Double> map = rows.stream().collect(Collectors.groupingBy(row -> row.find(groupEntry.getColumn()),
 				Collectors.averagingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
 		return map;
 	}

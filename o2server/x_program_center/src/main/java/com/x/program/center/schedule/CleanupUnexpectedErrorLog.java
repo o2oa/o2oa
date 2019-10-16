@@ -9,7 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -20,40 +19,43 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.core.entity.UnexpectedErrorLog;
 import com.x.program.center.core.entity.UnexpectedErrorLog_;
 
-public class CleanupUnexpectedErrorLog implements Job {
+public class CleanupUnexpectedErrorLog extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CleanupUnexpectedErrorLog.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			this.removeExpired(emc);
+	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		try {
+			if (pirmaryCenter()) {
+				cleanupUnexpectedErrorLog();
+			}
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
 
-	private void removeExpired(EntityManagerContainer emc) throws Exception {
-		EntityManager em = emc.get(UnexpectedErrorLog.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<UnexpectedErrorLog> root = cq.from(UnexpectedErrorLog.class);
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, -7);
-		Predicate p = cb.not(cb.greaterThan(root.get(UnexpectedErrorLog_.createTime), cal.getTime()));
-		cq.select(root.get(UnexpectedErrorLog_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
-		for (int i = 0; i < list.size(); i++) {
-			if (i % 100 == 0) {
-				emc.beginTransaction(UnexpectedErrorLog.class);
-			}
-			UnexpectedErrorLog o = emc.find(list.get(i), UnexpectedErrorLog.class);
-			emc.remove(o);
-			if ((i % 100 == 99) || (i == (list.size() - 1))) {
-				emc.commit();
+	private void cleanupUnexpectedErrorLog() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(UnexpectedErrorLog.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<UnexpectedErrorLog> root = cq.from(UnexpectedErrorLog.class);
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, -7);
+			Predicate p = cb.not(cb.greaterThan(root.get(UnexpectedErrorLog_.createTime), cal.getTime()));
+			cq.select(root.get(UnexpectedErrorLog_.id)).where(p);
+			List<String> list = em.createQuery(cq).getResultList();
+			for (int i = 0; i < list.size(); i++) {
+				if (i % 100 == 0) {
+					emc.beginTransaction(UnexpectedErrorLog.class);
+				}
+				UnexpectedErrorLog o = emc.find(list.get(i), UnexpectedErrorLog.class);
+				emc.remove(o);
+				if ((i % 100 == 99) || (i == (list.size() - 1))) {
+					emc.commit();
+				}
 			}
 		}
 	}
-
 }

@@ -11,12 +11,15 @@ import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
+import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionDownload extends BaseAction {
 
@@ -42,40 +45,57 @@ class ActionDownload extends BaseAction {
 					if (StringUtils.isEmpty(password)) {
 						throw new Exception("password can not be empty.");
 					}
-					if (!password.equals(share.getPassword())) {
+					if (!password.equalsIgnoreCase(share.getPassword())) {
 						throw new Exception("invalid password.");
 					}
 				}
 			}
-			Attachment2 attachment = emc.find(fileId, Attachment2.class);
-			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(fileId);
-			}
-			OriginFile originFile = emc.find(attachment.getOriginFile(),OriginFile.class);
-			if (null == originFile) {
-				throw new ExceptionAttachmentNotExist(fileId,attachment.getOriginFile());
-			}
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), fileId);
-			Element element = cache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
-			} else {
-				StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
-						originFile.getStorage());
-				if (null == mapping) {
-					throw new ExceptionStorageNotExist(originFile.getStorage());
+			if("attachment".equals(share.getFileType())) {
+				Attachment2 attachment = emc.find(fileId, Attachment2.class);
+				if (null == attachment) {
+					throw new ExceptionAttachmentNotExist(fileId);
 				}
-				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-					originFile.readContent(mapping, os);
-					byte[] bs = os.toByteArray();
-					wo = new Wo(bs, this.contentType(false, attachment.getName()),
-							this.contentDisposition(false, attachment.getName()));
-					/**
-					 * 对10M以下的文件进行缓存
-					 */
-					if (bs.length < (1024 * 1024 * 10)) {
-						cache.put(new Element(cacheKey, wo));
+				OriginFile originFile = emc.find(attachment.getOriginFile(), OriginFile.class);
+				if (null == originFile) {
+					throw new ExceptionAttachmentNotExist(fileId, attachment.getOriginFile());
+				}
+				String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), fileId);
+				Element element = cache.get(cacheKey);
+				if ((null != element) && (null != element.getObjectValue())) {
+					wo = (Wo) element.getObjectValue();
+				} else {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
+							originFile.getStorage());
+					if (null == mapping) {
+						throw new ExceptionStorageNotExist(originFile.getStorage());
 					}
+					try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+						originFile.readContent(mapping, os);
+						byte[] bs = os.toByteArray();
+						wo = new Wo(bs, this.contentType(false, attachment.getName()),
+								this.contentDisposition(false, attachment.getName()));
+						/**
+						 * 对10M以下的文件进行缓存
+						 */
+						if (bs.length < (1024 * 1024 * 10)) {
+							cache.put(new Element(cacheKey, wo));
+						}
+					}
+				}
+			}else{
+				Folder2 folder = emc.find(fileId, Folder2.class);
+				if (null == folder) {
+					throw new ExceptionFolderNotExist(fileId);
+				}
+				String zipName = folder.getName() + ".zip";
+				List<Folder2> folderList = new ArrayList<>();
+				folderList.add(folder);
+				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+					this.fileCommonService.downToZip(emc, null, folderList, os);
+					byte[] bs = os.toByteArray();
+					wo = new Wo(bs, this.contentType(false,zipName),
+							this.contentDisposition(false, zipName));
+					result.setData(wo);
 				}
 			}
 			result.setData(wo);

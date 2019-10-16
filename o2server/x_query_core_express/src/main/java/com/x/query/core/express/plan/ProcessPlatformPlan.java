@@ -250,9 +250,9 @@ public class ProcessPlatformPlan extends Plan {
 		public List<ApplicationEntry> applicationList = new TreeList<>();
 		public List<ProcessEntry> processList = new TreeList<>();
 		public DateRangeEntry dateRange;
-		public List<String> creatorPersonList;
-		public List<String> creatorUnitList;
-		public List<String> creatorIdentityList;
+		public List<CreatorPersonEntry> creatorPersonList;
+		public List<CreatorUnitEntry> creatorUnitList;
+		public List<CreatorIdentityEntry> creatorIdentityList;
 
 		Boolean available() {
 			if ((!StringUtils.equals(this.scope, SCOPE_WORK)) && (!StringUtils.equals(this.scope, SCOPE_WORKCOMPLETED))
@@ -277,6 +277,30 @@ public class ProcessPlatformPlan extends Plan {
 			public String name;
 
 			public String alias;
+
+			public String id;
+
+		}
+
+		public static class CreatorUnitEntry {
+
+			public String name;
+
+			public String id;
+
+		}
+
+		public static class CreatorIdentityEntry {
+
+			public String name;
+
+			public String id;
+
+		}
+
+		public static class CreatorPersonEntry {
+
+			public String name;
 
 			public String id;
 
@@ -331,9 +355,11 @@ public class ProcessPlatformPlan extends Plan {
 		}
 
 		private Predicate workPredicate_creator(CriteriaBuilder cb, Root<Work> root) throws Exception {
-			List<String> _creatorUnits = ListTools.trim(this.creatorUnitList, true, true);
-			List<String> _creatorPersons = ListTools.trim(this.creatorPersonList, true, true);
-			List<String> _creatorIdentitys = ListTools.trim(this.creatorIdentityList, true, true);
+			List<String> _creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
+			List<String> _creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
+					true);
+			List<String> _creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class,
+					true, true);
 			if (_creatorUnits.isEmpty() && _creatorPersons.isEmpty() && _creatorIdentitys.isEmpty()) {
 				return null;
 			}
@@ -423,9 +449,11 @@ public class ProcessPlatformPlan extends Plan {
 
 		private Predicate workCompletedPredicate_creator(CriteriaBuilder cb, Root<WorkCompleted> root)
 				throws Exception {
-			List<String> _creatorUnits = ListTools.trim(this.creatorUnitList, true, true);
-			List<String> _creatorPersons = ListTools.trim(this.creatorPersonList, true, true);
-			List<String> _creatorIdentitys = ListTools.trim(this.creatorIdentityList, true, true);
+			List<String> _creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
+			List<String> _creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
+					true);
+			List<String> _creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class,
+					true, true);
 			if (_creatorUnits.isEmpty() && _creatorPersons.isEmpty() && _creatorIdentitys.isEmpty()) {
 				return null;
 			}

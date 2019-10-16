@@ -14,6 +14,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -32,8 +33,8 @@ class ActionEdit extends BaseAction {
 			if (null == person) {
 				throw new ExceptionPersonNotExist(flag);
 			}
-			if (!business.editable(effectivePerson, person)) {
-				throw new ExceptionDenyEditPerson(effectivePerson, person.getName());
+			if (!this.editable(business, effectivePerson, person)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wi.copier.copy(wi, person);
 			this.checkName(business, person.getName(), person.getId());
@@ -52,7 +53,10 @@ class ActionEdit extends BaseAction {
 			}
 			this.convertControllerList(effectivePerson, business, person);
 			emc.beginTransaction(Person.class);
-			/* 从内存中pick出来的无法作为实体保存,不能在前面执行,以为后面的convertControllerList也有一个pick,会导致一当前这个对象再次被detech */
+			/*
+			 * 从内存中pick出来的无法作为实体保存,不能在前面执行,以为后面的convertControllerList也有一个pick,
+			 * 会导致一当前这个对象再次被detech
+			 */
 			Person entityPerson = emc.find(person.getId(), Person.class);
 			person.copyTo(entityPerson);
 			emc.check(entityPerson, CheckPersistType.all);
@@ -80,7 +84,7 @@ class ActionEdit extends BaseAction {
 				ListTools.toList(JpaObject.FieldsUnmodify, Person.icon_FIELDNAME, Person.pinyin_FIELDNAME,
 						Person.pinyinInitial_FIELDNAME, Person.password_FIELDNAME, Person.passwordExpiredTime_FIELDNAME,
 						Person.lastLoginTime_FIELDNAME, Person.lastLoginAddress_FIELDNAME,
-						Person.lastLoginClient_FIELDNAME));
+						Person.lastLoginClient_FIELDNAME, Person.topUnitList_FIELDNAME));
 	}
 
 	private void convertControllerList(EffectivePerson effectivePerson, Business business, Person person)

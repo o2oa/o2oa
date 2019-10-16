@@ -107,8 +107,9 @@ public class Servers {
 		if (centerServerIsRunning()) {
 			throw new Exception("center server is running.");
 		} else {
-			if (BooleanUtils.isTrue(Config.currentNode().getIsPrimaryCenter())) {
-				centerServer = CenterServerTools.start(Config.centerServer());
+			com.x.base.core.project.config.CenterServer config = Config.nodes().centerServers().get(Config.node());
+			if (BooleanUtils.isTrue(config.getEnable())) {
+				centerServer = CenterServerTools.start(config);
 			}
 		}
 	}

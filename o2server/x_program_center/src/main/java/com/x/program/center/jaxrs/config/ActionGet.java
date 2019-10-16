@@ -13,7 +13,7 @@ class ActionGet extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		wo.setCenterServer(WoCenterServer.copier.copy(Config.centerServer()));
+		wo.setCenterServer(WoCenterServer.copier.copy(Config.nodes().centerServers().first()));
 
 		result.setData(wo);
 		return result;

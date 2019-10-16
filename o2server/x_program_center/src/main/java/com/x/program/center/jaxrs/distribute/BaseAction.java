@@ -12,6 +12,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.Application;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.WebServer;
@@ -35,7 +36,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (StringUtils.isEmpty(source)) {
 			return false;
 		}
-		if (StringUtils.equals(Config.centerServer().getProxyHost(), source)) {
+		CenterServer centerServer = Config.nodes().centerServers().get(Config.node());
+		if (StringUtils.equals(centerServer.getProxyHost(), source)) {
 			return true;
 		}
 		for (Node o : Config.nodes().values()) {

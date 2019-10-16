@@ -13,18 +13,21 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class CenterServer extends ConfigObject {
 
+	private static final Boolean default_enable = true;
 	private static final Integer default_port = 20030;
 	private static final Integer default_scanInterval = 0;
 	private static final Boolean default_configApiEnable = true;
+	private static final Integer default_order = 0;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
 	}
 
 	public CenterServer() {
+		this.enable = default_enable;
 		this.sslEnable = false;
 		this.redeploy = true;
-		// this.host = "";
+		this.order = default_order;
 		this.port = default_port;
 		this.httpProtocol = "";
 		this.proxyHost = "";
@@ -35,17 +38,20 @@ public class CenterServer extends ConfigObject {
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
+	@FieldDescribe("center节点顺序,顺序排列0,1,2...")
+	private Integer order;
 	@FieldDescribe("是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.")
 	private Boolean sslEnable;
 	@FieldDescribe("每次启动是否重新部署所有应用.")
 	private Boolean redeploy;
 	@FieldDescribe("端口,center服务器端口,默认20030")
 	private Integer port;
+
 	@FieldDescribe("对外http访问协议,http/https")
 	private String httpProtocol;
-	@FieldDescribe("代理主机,当服务器是通过apache/eginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问地址.")
+	@FieldDescribe("代理主机,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问地址.")
 	private String proxyHost;
-	@FieldDescribe("代理端口,当服务器是通过apache/eginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
+	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
 	@FieldDescribe("重新扫描war包时间间隔(秒)")
 	private Integer scanInterval;
@@ -56,6 +62,10 @@ public class CenterServer extends ConfigObject {
 
 	public Boolean getConfigApiEnable() {
 		return configApiEnable == null ? default_configApiEnable : this.configApiEnable;
+	}
+
+	public Boolean getEnable() {
+		return enable == null ? default_enable : this.enable;
 	}
 
 	public String getHttpProtocol() {
@@ -102,6 +112,15 @@ public class CenterServer extends ConfigObject {
 		return this.config;
 	}
 
+	public Integer getOrder() {
+		return order == null ? default_order : this.order;
+	}
+
+	public void save() throws Exception {
+		File file = new File(Config.base(), Config.PATH_CONFIG_CENTERSERVER);
+		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+	}
+
 	public void setSslEnable(Boolean sslEnable) {
 		this.sslEnable = sslEnable;
 	}
@@ -132,15 +151,6 @@ public class CenterServer extends ConfigObject {
 
 	public void setHttpProtocol(String httpProtocol) {
 		this.httpProtocol = httpProtocol;
-	}
-
-	public void save() throws Exception {
-		File file = new File(Config.base(), Config.PATH_CONFIG_CENTERSERVER);
-		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
-	}
-
-	public void setConfigApiEnable(Boolean configApiEnable) {
-		this.configApiEnable = configApiEnable;
 	}
 
 }

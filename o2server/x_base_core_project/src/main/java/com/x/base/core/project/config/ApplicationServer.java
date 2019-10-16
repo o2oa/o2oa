@@ -6,8 +6,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.tools.Host;
 
 public class ApplicationServer extends ConfigObject {
 
@@ -26,12 +24,14 @@ public class ApplicationServer extends ConfigObject {
 		this.includes = new CopyOnWriteArrayList<String>();
 		this.excludes = new CopyOnWriteArrayList<String>();
 		this.weights = new CopyOnWriteArrayList<NameWeightPair>();
+		this.scheduleWeights = new CopyOnWriteArrayList<NameWeightPair>();
 
 	}
 
 	private static final Integer default_port = 20020;
 	private static final Integer default_scanInterval = 0;
 	public static final Integer default_weight = 100;
+	public static final Integer default_scheduleWeight = 100;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -39,9 +39,9 @@ public class ApplicationServer extends ConfigObject {
 	private Integer port;
 	@FieldDescribe("是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.")
 	private Boolean sslEnable;
-	@FieldDescribe("代理主机,当服务器是通过apache/eginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问地址.")
+	@FieldDescribe("代理主机,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问地址.")
 	private String proxyHost;
-	@FieldDescribe("代理端口,当服务器是通过apache/eginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
+	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
 	@FieldDescribe("每次启动是否重载全部应用.")
 	private Boolean redeploy;
@@ -51,14 +51,43 @@ public class ApplicationServer extends ConfigObject {
 	private CopyOnWriteArrayList<String> includes;
 	@FieldDescribe("选择不承载的应用,和includes的值配合使用可以选择或者排除承载的应用,可以使用*作为通配符.")
 	private CopyOnWriteArrayList<String> excludes;
-	@FieldDescribe("设置应用的权重,在集群环境中,一个应用可以部署多个实例提供负载均衡.通过合计占比来分配应用占比.")
+	@FieldDescribe("设置应用的Web访问权重,在集群环境中,一个应用可以部署多个实例提供负载均衡.通过合计占比来分配应用占比.")
 	private CopyOnWriteArrayList<NameWeightPair> weights;
+	@FieldDescribe("设置应用的定时任务权重,在集群环境中,一个应用可以部署多个实例提供负载均衡.通过合计占比来分配应用占比.")
+	private CopyOnWriteArrayList<NameWeightPair> scheduleWeights;
 
 	public Integer getScanInterval() {
 		if (null != this.scanInterval && this.scanInterval > 0) {
 			return this.scanInterval;
 		}
 		return default_scanInterval;
+	}
+
+	public CopyOnWriteArrayList<NameWeightPair> getWeights() {
+		if (null == this.weights) {
+			this.weights = new CopyOnWriteArrayList<NameWeightPair>();
+		}
+		return this.weights;
+	}
+
+	public CopyOnWriteArrayList<NameWeightPair> getScheduleWeights() {
+		if (null == this.scheduleWeights) {
+			this.scheduleWeights = new CopyOnWriteArrayList<NameWeightPair>();
+		}
+		return this.scheduleWeights;
+	}
+
+	public Integer weight(Class<?> clazz) {
+		NameWeightPair pair = this.weights.stream().filter(p -> StringUtils.equals(p.getName(), clazz.getName()))
+				.findFirst().orElse(new NameWeightPair(clazz.getName(), default_weight));
+		return pair.getWeight();
+	}
+
+	public Integer scheduleWeight(Class<?> clazz) {
+		NameWeightPair pair = this.scheduleWeights.stream()
+				.filter(p -> StringUtils.equals(p.getName(), clazz.getName())).findFirst()
+				.orElse(new NameWeightPair(clazz.getName(), default_scheduleWeight));
+		return pair.getWeight();
 	}
 
 	public class NameWeightPair {
@@ -168,20 +197,6 @@ public class ApplicationServer extends ConfigObject {
 
 	public void setExcludes(CopyOnWriteArrayList<String> excludes) {
 		this.excludes = excludes;
-	}
-
-	public CopyOnWriteArrayList<NameWeightPair> getWeights() {
-		return weights;
-	}
-
-	public void setWeights(CopyOnWriteArrayList<NameWeightPair> weights) {
-		this.weights = weights;
-	}
-
-	public Integer weight(Class<?> clazz) {
-		NameWeightPair pair = this.weights.stream().filter(p -> StringUtils.equals(p.getName(), clazz.getName()))
-				.findFirst().orElse(new NameWeightPair(clazz.getName(), default_weight));
-		return pair.getWeight();
 	}
 
 }

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -21,6 +22,8 @@ import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
+import org.apache.commons.vfs2.provider.http.HttpFileSystemConfigBuilder;
+import org.apache.commons.vfs2.provider.webdav.WebdavFileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
@@ -71,6 +74,10 @@ public abstract class StorageObject extends SliceJpaObject {
 	abstract public Date getLastUpdateTime();
 
 	abstract public void setLastUpdateTime(Date lastUpdateTime);
+
+	abstract public Boolean getDeepPath();
+
+	abstract public void setDeepPath(Boolean deepPath);
 
 	@Transient
 	private byte[] bytes;
@@ -155,7 +162,10 @@ public abstract class StorageObject extends SliceJpaObject {
 					OutputStream output = fo.getContent().getOutputStream()) {
 				length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()), output);
 				this.setLength(length);
-				manager.closeFileSystem(fo.getFileSystem());
+				if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+					/* webdav关闭会试图去关闭commons.httpClient */
+					manager.closeFileSystem(fo.getFileSystem());
+				}
 			}
 		}
 		this.setStorage(mapping.getName());
@@ -238,20 +248,25 @@ public abstract class StorageObject extends SliceJpaObject {
 		// tar, temp, webdav, zip, cifs, mime;
 		case ftp:
 			// ftp://[ username[: password]@] hostname[: port][ relative-path]
-			prefix = "ftp://" + mapping.getUsername() + ":"
+			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
 		case cifs:
 			// smb://[ username[: password]@] hostname[: port][ absolute-path]
-			prefix = "smb://" + mapping.getUsername() + ":"
+			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
+		case webdav:
+			// webdav://[ username[: password]@] hostname[: port][ absolute-path]
+			prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
 		default:
 			break;
 		}
-		return prefix;
+		return prefix + (StringUtils.isEmpty(mapping.getPrefix()) ? "" : ("/" + mapping.getPrefix()));
 	}
 
 	private FileSystemOptions getOptions(StorageMapping mapping) throws Exception {
@@ -263,7 +278,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
 		// tar, temp, webdav, zip, cifs, mime;
 		case ftp:
-			FtpFileSystemConfigBuilder builder = FtpFileSystemConfigBuilder.getInstance();
+			FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
 			/*
 			 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
 			 * Connection timed out (Connection timed out) at
@@ -275,18 +290,25 @@ public abstract class StorageObject extends SliceJpaObject {
 			 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
 			 * java.net.Socket.connect(Socket.java:589)
 			 */
-			builder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
 			// builder.setPassiveMode(opts, false);
 			// builder.setPassiveMode(opts, true);
 			/** 强制不校验IP */
-			builder.setRemoteVerification(opts, false);
+			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
-			builder.setFileType(opts, FtpFileType.BINARY);
-			builder.setConnectTimeout(opts, 10000);
-			builder.setSoTimeout(opts, 10000);
-			builder.setControlEncoding(opts, DefaultCharset.name);
+			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
+			ftpBuilder.setConnectTimeout(opts, 10000);
+			ftpBuilder.setSoTimeout(opts, 10000);
+			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
 		case cifs:
+			break;
+		case webdav:
+			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder)WebdavFileSystemConfigBuilder.getInstance();
+			webdavBuilder.setConnectionTimeout(opts, 10000);
+			webdavBuilder.setSoTimeout(opts, 10000);
+			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
+			//webdavBuilder.setVersioning(opts, true);
 			break;
 		default:
 			break;

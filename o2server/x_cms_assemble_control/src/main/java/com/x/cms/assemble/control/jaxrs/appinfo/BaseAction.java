@@ -71,7 +71,7 @@ public class BaseAction extends StandardJaxrsAction {
 			if( ListTools.isNotEmpty( inAppInfoIds )) {
 				viewableAppInfoIds = inAppInfoIds; //可发布栏目就限制为inAppInfoIds
 			}else {
-				viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType); //所有栏目均可发布
+				viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType); //所有栏目均可见
 			}
 			viewableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( viewableAppInfoIds, documentType, manager, maxCount );
 		}else {
@@ -79,10 +79,15 @@ public class BaseAction extends StandardJaxrsAction {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
 				groupNames = userManagerService.listGroupNamesByPerson( personName );
 			}
-			//根据人员的发布权限获取可以发布文档的分类信息ID列表
-			viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson( personName, isAnonymous, unitNames, groupNames, inAppInfoIds, 
-					null, null, documentType, maxCount, manager );
+			//查询用户可以访问到的栏目
+			viewableAppInfoIds = permissionQueryService.listViewableAppIdByPerson(personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, documentType, maxCount );
+			if( ListTools.isNotEmpty( viewableAppInfoIds )) {
+				viewableAppInfoIds.add("NO_APPINFO");
+			}
 			
+			//根据人员的发布权限获取可以发布文档的分类信息ID列表
+			viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson( personName, isAnonymous, unitNames, groupNames, viewableAppInfoIds, 
+					null, null, documentType, maxCount, manager );
 		}
 		return composeCategoriesIntoAppInfo( viewableAppInfoIds, viewableCategoryIds, appType );
 	}
@@ -122,7 +127,7 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 			//2、根据人员的发布权限获取可以发布文档的分类信息ID列表
 			publishableCategoryIds = permissionQueryService.listPublishableCategoryIdByPerson(
-					personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, maxCount, manager );		
+					personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, maxCount, manager );
 		}
 //		if( ListTools.isNotEmpty(publishableCategoryIds  )) {
 //			System.out.println(">>>>>>>>>publishableCategoryIds.size=" + publishableCategoryIds.size() );

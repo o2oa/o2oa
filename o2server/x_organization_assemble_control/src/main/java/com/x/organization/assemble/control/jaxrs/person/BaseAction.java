@@ -9,9 +9,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -34,8 +33,69 @@ import com.x.organization.core.entity.Unit_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	protected boolean editable(Business business, EffectivePerson effectivePerson, String personFlag) throws Exception {
+		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.OrganizationManager)) {
+			return true;
+		}
+		if (StringUtils.isEmpty(personFlag)) {
+			return false;
+		}
+		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.PersonManager)) {
+			if (business.sameTopUnit(effectivePerson, personFlag)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected boolean editable(Business business, EffectivePerson effectivePerson, Person person) throws Exception {
+		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.OrganizationManager)) {
+			return true;
+		}
+		if (null == person) {
+			return false;
+		}
+		if (business.hasAnyRole(effectivePerson, OrganizationDefinition.PersonManager)) {
+			List<String> ids = ListTools.extractProperty(
+					business.listTopUnitWithPerson(effectivePerson.getDistinguishedName()), Unit.id_FIELDNAME,
+					String.class, true, true);
+			return ListTools.containsAny(ids, person.getTopUnitList());
+		}
+		return false;
+	}
+
 	protected static List<String> person_fieldsInvisible = ListTools.toList(JpaObject.FieldsInvisible,
 			Person.password_FIELDNAME, Person.icon_FIELDNAME);
+
+	protected <T extends WoPersonAbstract> void hide(EffectivePerson effectivePerson, Business business, List<T> list)
+			throws Exception {
+		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
+			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.Manager)) {
+				for (WoPersonAbstract o : list) {
+					if (BooleanUtils.isTrue(o.getHiddenMobile()) && (!StringUtils
+							.equals(effectivePerson.getDistinguishedName(), o.getDistinguishedName()))) {
+						o.setMobile(Person.HIDDENMOBILESYMBOL);
+					}
+				}
+			}
+		}
+	}
+
+	protected <T extends WoPersonAbstract> void hide(EffectivePerson effectivePerson, Business business, T t)
+			throws Exception {
+		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
+			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.Manager)) {
+				if (BooleanUtils.isTrue(t.getHiddenMobile())
+						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), t.getDistinguishedName()))) {
+					t.setMobile(Person.HIDDENMOBILESYMBOL);
+				}
+			}
+		}
+	}
 
 	public static class WoPersonAbstract extends Person {
 		private static final long serialVersionUID = -8698017750369215370L;

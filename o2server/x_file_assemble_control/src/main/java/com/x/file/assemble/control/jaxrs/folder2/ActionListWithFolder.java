@@ -28,7 +28,7 @@ class ActionListWithFolder extends BaseAction {
 			if (!StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson.getName());
 			}
-			List<String> ids = business.folder2().listSubDirect(folder.getId());
+			List<String> ids = business.folder2().listSubDirect(folder.getId(),"正常");
 			List<Wo> wos = emc.fetch(ids, Wo.copier);
 			wos.stream().forEach(o -> {
 				try {

@@ -8,11 +8,13 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
+import com.x.file.core.entity.personal.Recycle;
 import com.x.file.core.entity.personal.Share;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 class ActionDelete extends BaseAction {
@@ -25,35 +27,32 @@ class ActionDelete extends BaseAction {
 			if (null == folder) {
 				throw new ExceptionFolderNotExist(id);
 			}
-			if (!StringUtils.equalsIgnoreCase(effectivePerson.getDistinguishedName(), folder.getPerson())) {
+			if (!effectivePerson.isManager() && !StringUtils.equalsIgnoreCase(effectivePerson.getDistinguishedName(), folder.getPerson())) {
 				throw new ExceptionAccessDenied(effectivePerson.getName());
 			}
-			List<String> ids = new ArrayList<>();
-			ids.add(folder.getId());
-			ids.addAll(business.folder2().listSubNested(folder.getId()));
-			for (int i = ids.size() - 1; i >= 0; i--) {
-				List<Attachment2> attachments = business.attachment2().listWithFolder2(ids.get(i),null);
-				for (Attachment2 att : attachments) {
-					Share share = business.share().getShareByFileId(att.getId(),effectivePerson.getDistinguishedName());
-					if(share!=null){
-						EntityManager sem = emc.beginTransaction(Share.class);
-						sem.remove(share);
-						sem.getTransaction().commit();
+			if("正常".equals(folder.getStatus())){
+				List<Folder2> folderList = new ArrayList<>();
+				folderList.add(folder);
+				folderList.addAll(business.folder2().listSubNested1(folder.getId(), null));
+				for(Folder2 fo : folderList){
+					EntityManager fem = emc.beginTransaction(Folder2.class);
+					fo.setStatus("已删除");
+					fem.getTransaction().commit();
+					List<Attachment2> attachments = business.attachment2().listWithFolder2(fo.getId(),null);
+					for (Attachment2 att : attachments) {
+						EntityManager aem = emc.beginTransaction(Attachment2.class);
+						att.setStatus("已删除");
+						aem.getTransaction().commit();
 					}
-					EntityManager em = emc.beginTransaction(Attachment2.class);
-					em.remove(att);
-					em.getTransaction().commit();
 				}
-				Share share = business.share().getShareByFileId(ids.get(i),effectivePerson.getDistinguishedName());
-				if(share!=null){
-					EntityManager sem = emc.beginTransaction(Share.class);
-					sem.remove(share);
-					sem.getTransaction().commit();
-				}
-				EntityManager m = emc.beginTransaction(Folder2.class);
-				emc.delete(Folder2.class, ids.get(i));
-				m.getTransaction().commit();
+
+				Recycle recycle = new Recycle(folder.getPerson(), folder.getName(), folder.getId(), "folder");
+				EntityManager rem = emc.beginTransaction(Recycle.class);
+				rem.persist(recycle);
+				rem.getTransaction().commit();
+				emc.commit();
 			}
+
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

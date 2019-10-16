@@ -123,11 +123,12 @@ public class ShareAction extends StandardJaxrsAction {
 	@Path("list/my")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listMyShare(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void listMyShare(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("分享类型:密码分享(password)|指定分享(member)") @QueryParam("shareType") String shareType) {
 		ActionResult<List<ActionListMyShare.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListMyShare().execute(effectivePerson);
+			result = new ActionListMyShare().execute(effectivePerson, shareType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -223,6 +224,24 @@ public class ShareAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDownload().execute(effectivePerson, shareId, fileId, password);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "屏蔽共享给我的文件", action = ActionShield.class)
+	@GET
+	@Path("shield/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void shield(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("共享文件ID") @PathParam("id") String id) {
+		ActionResult<ActionShield.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionShield().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

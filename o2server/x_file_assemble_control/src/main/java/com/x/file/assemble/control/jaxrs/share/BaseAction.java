@@ -4,6 +4,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.Unit;
 import com.x.file.assemble.control.Business;
+import com.x.file.assemble.control.service.FileCommonService;
 import com.x.file.core.entity.personal.Share;
 import com.x.file.core.entity.personal.Share_;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+    protected FileCommonService fileCommonService = new FileCommonService();
 
     protected boolean exist(Business business, EffectivePerson effectivePerson, String name,
                             String excludeId) throws Exception {

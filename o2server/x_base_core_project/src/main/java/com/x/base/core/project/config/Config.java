@@ -2,7 +2,12 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
@@ -14,8 +19,10 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.NumberTools;
 
@@ -30,6 +37,7 @@ public class Config {
 	public static final String PATH_LOCAL_NODE = "local/node.cfg";
 	public static final String PATH_CONFIG_TOKEN = "config/token.json";
 	public static final String PATH_CONFIG_EXTERNALDATASOURCES = "config/externalDataSources.json";
+	public static final String PATH_CONFIG_EXTERNALSTORAGESOURCES = "config/externalStorageSources.json";
 	public static final String PATH_CONFIG_ADMINISTRATOR = "config/administrator.json";
 	public static final String PATH_CONFIG_PERSON = "config/person.json";
 	public static final String PATH_CONFIG_MEETING = "config/meeting.json";
@@ -94,19 +102,26 @@ public class Config {
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
 
-	public static final String RESOUCE_CONTAINERENTITIES = "containerEntities";
+	public static final String RESOURCE_CONTAINERENTITIES = "containerEntities";
 
-	public static final String RESOUCE_CONTAINERENTITYNAMES = "containerEntityNames";
+	public static final String RESOURCE_CONTAINERENTITYNAMES = "containerEntityNames";
 
-	public static final String RESOUCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
+	public static final String RESOURCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
 
-	public static final String RESOUCE_JDBC_PREFIX = "jdbc/";
+	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
 
-	public static final String RESOUCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
+	public static final String RESOURCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
 
 	// public static final String RESOUCE_CONFIG = "config";
 
-	public static final String RESOUCE_NODE = "node";
+	public static final String RESOURCE_NODE_PREFIX = "node/";
+	public static final String RESOURCE_NODE_EVENTQUEUE = RESOURCE_NODE_PREFIX + "eventQueue";
+	public static final String RESOURCE_NODE_EVENTQUEUEEXECUTOR = RESOURCE_NODE_PREFIX + "eventQueueExecutor";
+	public static final String RESOURCE_NODE_APPLICATIONS = RESOURCE_NODE_PREFIX + "applications";
+	public static final String RESOURCE_NODE_APPLICATIONSTIMESTAMP = RESOURCE_NODE_PREFIX + "applicationsTimestamp";
+	public static final String RESOURCE_NODE_CENTERSPRIMARYNODE = RESOURCE_NODE_PREFIX + "centersPrimaryNode";
+	public static final String RESOURCE_NODE_CENTERSPRIMARYPORT = RESOURCE_NODE_PREFIX + "centersPrimaryPort";
+	public static final String RESOURCE_NODE_CENTERSPRIMARYSSLENABLE = RESOURCE_NODE_PREFIX + "centersPrimarySslEnable";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
@@ -230,7 +245,7 @@ public class Config {
 	public static File dir_jvm_linux() throws Exception {
 		return new File(base(), DIR_JVM_LINUX);
 	}
-	
+
 	public static File dir_jvm_neokylin_loongson() throws Exception {
 		return new File(base(), DIR_JVM_NEOKYLIN_LOONGSON);
 	}
@@ -300,48 +315,6 @@ public class Config {
 		}
 		return dir;
 	}
-
-//	public static File dir_local_temp_dynamic_src() throws Exception {
-//		return dir_local_temp_dynamic_src(false);
-//	}
-//
-//	public static File dir_local_temp_dynamic_src(Boolean force) throws Exception {
-//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_SRC);
-//		if (force) {
-//			if ((!dir.exists()) || dir.isFile()) {
-//				FileUtils.forceMkdir(dir);
-//			}
-//		}
-//		return dir;
-//	}
-
-//	public static File dir_local_temp_dynamic_target() throws Exception {
-//		return dir_local_temp_dynamic_target(false);
-//	}
-//
-//	public static File dir_local_temp_dynamic_target(Boolean force) throws Exception {
-//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_TARGET);
-//		if (force) {
-//			if ((!dir.exists()) || dir.isFile()) {
-//				FileUtils.forceMkdir(dir);
-//			}
-//		}
-//		return dir;
-//	}
-
-//	public static File dir_local_temp_dynamic_resources() throws Exception {
-//		return dir_local_temp_dynamic_resources(false);
-//	}
-//
-//	public static File dir_local_temp_dynamic_resources(Boolean force) throws Exception {
-//		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_RESOURCES);
-//		if (force) {
-//			if ((!dir.exists()) || dir.isFile()) {
-//				FileUtils.forceMkdir(dir);
-//			}
-//		}
-//		return dir;
-//	}
 
 	public static File dir_logs() throws Exception {
 		return new File(base(), DIR_LOGS);
@@ -518,6 +491,14 @@ public class Config {
 						Node o = Node.defaultInstance();
 						nodes.put(node(), o);
 					}
+					/* 20191009兼容centerServer */
+					CenterServer c = BaseTools.readObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
+					if (null != c) {
+						for (Node n : nodes.values()) {
+							n.setCenter(c);
+						}
+					}
+					/* 20191009兼容centerServer end */
 					instance().nodes = nodes;
 				}
 			}
@@ -558,6 +539,24 @@ public class Config {
 			}
 		}
 		return instance().externalDataSources;
+	}
+
+	private ExternalStorageSources externalStorageSources;
+
+	public static ExternalStorageSources externalStorageSources() throws Exception {
+		if (null == instance().externalStorageSources) {
+			synchronized (Config.class) {
+				if (null == instance().externalStorageSources) {
+					ExternalStorageSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+							ExternalStorageSources.class);
+					if (null == obj) {
+						obj = ExternalStorageSources.defaultInstance();
+					}
+					instance().externalStorageSources = obj;
+				}
+			}
+		}
+		return instance().externalStorageSources;
 	}
 
 	private String publicKey;
@@ -648,23 +647,6 @@ public class Config {
 			}
 		}
 		return instance().workTime;
-	}
-
-	public CenterServer centerServer;
-
-	public static CenterServer centerServer() throws Exception {
-		if (null == instance().centerServer) {
-			synchronized (Config.class) {
-				if (null == instance().centerServer) {
-					CenterServer obj = BaseTools.readObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
-					if (null == obj) {
-						obj = CenterServer.defaultInstance();
-					}
-					instance().centerServer = obj;
-				}
-			}
-		}
-		return instance().centerServer;
 	}
 
 	public Collect collect;
@@ -787,7 +769,13 @@ public class Config {
 		if (null == instance().storageMappings) {
 			synchronized (Config.class) {
 				if (null == instance().storageMappings) {
-					instance().storageMappings = new StorageMappings(nodes());
+					ExternalStorageSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+							ExternalStorageSources.class);
+					if ((obj != null)) {
+						instance().storageMappings = new StorageMappings(obj);
+					} else {
+						instance().storageMappings = new StorageMappings(nodes());
+					}
 				}
 			}
 		}
@@ -815,22 +803,29 @@ public class Config {
 		return nodes().get(node());
 	}
 
-	public static String x_program_centerUrlRoot() throws Exception {
-		String primary = nodes().primaryCenterNode();
+	public static String url_x_program_center_jaxrs(String... paths) throws Exception {
+		String n = resource_node_centersPirmaryNode();
+		Integer p = resource_node_centersPirmaryPort();
+		Boolean s = resource_node_centersPirmarySslEnable();
 		StringBuffer buffer = new StringBuffer();
-		if (centerServer().getSslEnable()) {
-			buffer.append("https://").append(primary);
-			if (!NumberTools.valueEuqals(Config.centerServer().getPort(), 443)) {
-				buffer.append(":").append(Config.centerServer().getPort());
+		if (s) {
+			buffer.append("https://").append(n);
+			if (!NumberTools.valueEuqals(p, 443)) {
+				buffer.append(":").append(p);
 			}
 		} else {
-			buffer.append("http://").append(primary);
-			if (!NumberTools.valueEuqals(Config.centerServer().getPort(), 80)) {
-				buffer.append(":").append(Config.centerServer().getPort());
+			buffer.append("http://").append(n);
+			if (!NumberTools.valueEuqals(p, 80)) {
+				buffer.append(":").append(p);
 			}
 		}
 		buffer.append("/").append(x_program_center.class.getSimpleName());
 		buffer.append("/jaxrs/");
+		List<String> os = new ArrayList<>();
+		for (String path : paths) {
+			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), DefaultCharset.name));
+		}
+		buffer.append(StringUtils.join(os, "/"));
 		return buffer.toString();
 	}
 
@@ -1061,16 +1056,76 @@ public class Config {
 	}
 
 	public static Object resource_jdbc(String name) throws Exception {
-		return initialContext().lookup(RESOUCE_JDBC_PREFIX + name);
+		return initialContext().lookup(RESOURCE_JDBC_PREFIX + name);
+	}
+
+	public static Object resource_node(String name) throws Exception {
+		return initialContext().lookup(RESOURCE_NODE_PREFIX + name);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static ConcurrentHashMap<String, Object> resource_node() throws Exception {
-		return (ConcurrentHashMap<String, Object>) initialContext().lookup(RESOUCE_NODE);
+	public static LinkedBlockingQueue<JsonElement> resource_node_eventQueue() throws Exception {
+		return (LinkedBlockingQueue<JsonElement>) initialContext().lookup(RESOURCE_NODE_EVENTQUEUE);
 	}
 
-	public static void registWebServer() {
+	public static synchronized JsonElement resource_node_applications() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONS);
+		if (null != o) {
+			return (JsonElement) o;
+		}
+		return null;
+	}
 
+	public static synchronized void resource_node_applications(JsonElement jsonElement) throws Exception {
+		initialContext().rebind(RESOURCE_NODE_APPLICATIONS, jsonElement);
+	}
+
+	public static synchronized Date resource_node_applicationsTimestamp() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
+		if (null != o) {
+			return (Date) o;
+		}
+		return null;
+	}
+
+	public static synchronized void resource_node_applicationsTimestamp(Date date) throws Exception {
+		initialContext().rebind(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
+	}
+
+	public static synchronized String resource_node_centersPirmaryNode() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYNODE);
+		if (null != o) {
+			return (String) o;
+		}
+		return null;
+	}
+
+	public static synchronized void resource_node_centersPirmaryNode(String node) throws Exception {
+		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYNODE, node);
+	}
+
+	public static synchronized Integer resource_node_centersPirmaryPort() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYPORT);
+		if (null != o) {
+			return (Integer) o;
+		}
+		return null;
+	}
+
+	public static synchronized void resource_node_centersPirmaryPort(Integer port) throws Exception {
+		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
+	}
+
+	public static synchronized Boolean resource_node_centersPirmarySslEnable() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
+		if (null != o) {
+			return (Boolean) o;
+		}
+		return null;
+	}
+
+	public static synchronized void resource_node_centersPirmarySslEnable(Boolean sslEnable) throws Exception {
+		initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
 	}
 
 }

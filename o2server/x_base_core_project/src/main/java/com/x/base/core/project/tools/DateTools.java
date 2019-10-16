@@ -1,5 +1,6 @@
 package com.x.base.core.project.tools;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -537,4 +538,42 @@ public class DateTools {
 		}
 		return calendar.getTime();
 	}
+	
+	  /** 
+	  * 判断当前日期是星期几
+	  * @param dateTime 修要判断的时间 
+	  * @return dayForWeek 判断结果
+	  * @Exception 发生异常
+	  */  
+	public static int dayForWeek(String dateTime ) throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.setTime( DateUtils.parseDate( dateTime, format_yyyyMMdd) ); 
+		int dayForWeek = 0 ;
+		if (c.get(Calendar.DAY_OF_WEEK) == 1 ){ 
+			dayForWeek = 7;
+		}else {
+			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+		}
+		return dayForWeek; 
+	}
+	
+	 /** 
+	  * 判断当前日期是星期几
+	  * @param dateTime 修要判断的时间 
+	  * @return dayForWeek 判断结果
+	  * @Exception 发生异常
+	  */  
+	public static int dayForWeek( Date dateTime ) throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.setTime( dateTime ); 
+		int dayForWeek = 0 ;
+		if (c.get(Calendar.DAY_OF_WEEK) == 1 ){ 
+			dayForWeek = 7;
+		}else {
+			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+		}
+		return dayForWeek; 
+	}
+
+	
 }

@@ -11,7 +11,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
@@ -39,11 +38,15 @@ public class ActionCreate extends BaseAction {
 				share = Wi.copier.copy(wi);
 				isExist = false;
 			}else{
+				share.setPassword(wi.getPassword());
 				share.setShareUserList(wi.getShareUserList());
 				share.setShareOrgList(wi.getShareOrgList());
+				share.setShareType(wi.getShareType());
 			}
 			if("password".equals(wi.getShareType())){
-				share.setPassword(StringTools.randomNumber4());
+				if(StringUtils.isBlank(share.getPassword())){
+					throw new Exception("password can not be empty.");
+				}
 			}else{
 				if((wi.getShareUserList()==null || wi.getShareUserList().isEmpty()) &&
 						(wi.getShareOrgList()==null || wi.getShareOrgList().isEmpty())){
@@ -56,15 +59,16 @@ public class ActionCreate extends BaseAction {
 				if(folder==null){
 					throw new ExceptionShareNotExist(wi.getFileId());
 				}else{
-					if (!StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
+					if (!effectivePerson.isManager() && !StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
 						throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} access folder{id:" + wi.getFileId()
 								+ "} denied.");
 					}
 					share.setFileType("folder");
 					share.setName(folder.getName());
+					share.setPerson(folder.getPerson());
 				}
 			}else{
-				if (!StringUtils.equals(attachment.getPerson(), effectivePerson.getDistinguishedName())) {
+				if (!effectivePerson.isManager() && !StringUtils.equals(attachment.getPerson(), effectivePerson.getDistinguishedName())) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} access att{id:" + wi.getFileId()
 							+ "} denied.");
 				}
@@ -72,9 +76,9 @@ public class ActionCreate extends BaseAction {
 				share.setName(attachment.getName());
 				share.setLength(attachment.getLength());
 				share.setExtension(attachment.getExtension());
+				share.setPerson(attachment.getPerson());
 			}
 			share.setLastUpdateTime(new Date());
-			share.setPerson(effectivePerson.getDistinguishedName());
 			if(share.getValidTime()==null){
 				share.setValidTime(DateTools.getDateAfterYearAdjust(new Date(),100,null,null));
 			}

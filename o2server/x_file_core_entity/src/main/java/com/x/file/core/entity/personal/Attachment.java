@@ -15,6 +15,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -185,6 +186,16 @@ public class Attachment extends StorageObject {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
+	}
+
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("所属用户.")
 	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
@@ -225,7 +236,7 @@ public class Attachment extends StorageObject {
 	public static final String shareList_FIELDNAME = "shareList";
 	@FieldDescribe("共享人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shareList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + shareList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shareList_FIELDNAME)
@@ -236,7 +247,7 @@ public class Attachment extends StorageObject {
 	public static final String editorList_FIELDNAME = "editorList";
 	@FieldDescribe("可编辑人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editorList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + editorList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editorList_FIELDNAME)
@@ -265,6 +276,13 @@ public class Attachment extends StorageObject {
 	@Index(name = TABLE + IndexNameMiddle + lastUpdatePerson_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String lastUpdatePerson;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	public String getPerson() {
 		return person;

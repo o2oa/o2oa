@@ -8,23 +8,46 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.schedule.ScheduleLocalRequest;
+import com.x.base.core.project.schedule.ScheduleRequest;
 
 public class Application extends GsonPropertyObject {
 
+	private String className;
 	private String name;
 	private String node;
 	private String contextPath;
 	private Integer port;
 	private String token;
 	private Boolean sslEnable;
-	private List<String> containerEntities = new ArrayList<>();
-
 	private String proxyHost;
 	private Integer proxyPort;
-
 	private Integer weight;
-
+	private Integer scheduleWeight;
 	private Date reportDate;
+
+	private List<ScheduleRequest> scheduleRequestList = new ArrayList<>();
+	private List<ScheduleLocalRequest> scheduleLocalRequestList = new ArrayList<>();
+
+	public Application() {
+
+	}
+
+	public List<ScheduleRequest> getScheduleRequestList() {
+		return scheduleRequestList;
+	}
+
+	public void setScheduleRequestList(List<ScheduleRequest> scheduleRequestList) {
+		this.scheduleRequestList = scheduleRequestList;
+	}
+
+	public List<ScheduleLocalRequest> getScheduleLocalRequestList() {
+		return scheduleLocalRequestList;
+	}
+
+	public void setScheduleLocalRequestList(List<ScheduleLocalRequest> scheduleLocalRequestList) {
+		this.scheduleLocalRequestList = scheduleLocalRequestList;
+	}
 
 	public String getUrlRoot() {
 		StringBuffer buffer = new StringBuffer();
@@ -120,14 +143,20 @@ public class Application extends GsonPropertyObject {
 		this.contextPath = contextPath;
 	}
 
- 
-
-	public List<String> getContainerEntities() {
-		return containerEntities;
+	public String getClassName() {
+		return className;
 	}
 
-	public void setContainerEntities(List<String> containerEntities) {
-		this.containerEntities = containerEntities;
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public Integer getScheduleWeight() {
+		return scheduleWeight;
+	}
+
+	public void setScheduleWeight(Integer scheduleWeight) {
+		this.scheduleWeight = scheduleWeight;
 	}
 
 }

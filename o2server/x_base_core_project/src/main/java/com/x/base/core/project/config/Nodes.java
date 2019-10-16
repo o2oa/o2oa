@@ -17,6 +17,19 @@ public class Nodes extends ConcurrentSkipListMap<String, Node> {
 		super();
 	}
 
+	private CenterServers centerServers;
+
+	public CenterServers centerServers() throws Exception {
+		if (centerServers == null) {
+			synchronized (Nodes.class) {
+				if (centerServers == null) {
+					centerServers = new CenterServers(this);
+				}
+			}
+		}
+		return centerServers;
+	}
+
 	private ApplicationServers applicationServers;
 
 	public ApplicationServers applicationServers() throws Exception {

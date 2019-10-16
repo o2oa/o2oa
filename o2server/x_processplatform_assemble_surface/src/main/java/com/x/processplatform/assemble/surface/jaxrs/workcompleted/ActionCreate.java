@@ -22,6 +22,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -82,8 +83,10 @@ class ActionCreate extends BaseAction {
 			workCompleted.setTitle(wi.getTitle());
 			workCompleted.setWork(null);
 			emc.persist(workCompleted, CheckPersistType.all);
+			Data data = gson.fromJson(wi.getData(), Data.class);
+			data.setWork(workCompleted);
 			DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
-			List<Item> adds = converter.disassemble(wi.getData());
+			List<Item> adds = converter.disassemble(gson.toJsonTree(data));
 			for (Item o : adds) {
 				this.fill(o, workCompleted);
 				business.entityManagerContainer().persist(o);

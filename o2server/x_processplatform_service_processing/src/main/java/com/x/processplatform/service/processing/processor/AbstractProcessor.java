@@ -220,6 +220,14 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	}
 
 	private void callBeforeExecuteScript(AeiObjects aeiObjects) throws Exception {
+		System.out.println(StringUtils.isNotEmpty(aeiObjects.getActivity().get(BES, String.class)));
+		System.out.println(aeiObjects.getActivity().get("beforeExecuteScriptText", String.class));
+
+		System.out.println(aeiObjects.getActivity().get("beforeExecuteScriptText"));
+		System.out.println(aeiObjects.getActivity().get("form"));
+		System.out.println(aeiObjects.getActivity());
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeExecuteScript()) {
 			if (this.hasBeforeExecuteScript(aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);

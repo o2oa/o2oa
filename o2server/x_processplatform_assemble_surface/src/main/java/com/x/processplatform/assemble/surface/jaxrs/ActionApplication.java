@@ -19,6 +19,7 @@ import com.x.processplatform.assemble.surface.jaxrs.queryview.QueryViewAction;
 import com.x.processplatform.assemble.surface.jaxrs.read.ReadAction;
 import com.x.processplatform.assemble.surface.jaxrs.readcompleted.ReadCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.review.ReviewAction;
+import com.x.processplatform.assemble.surface.jaxrs.route.RouteAction;
 import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
 import com.x.processplatform.assemble.surface.jaxrs.serialnumber.SerialNumberAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
@@ -59,6 +60,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(UtilAction.class);
 		classes.add(WorkLogAction.class);
 		classes.add(ControlAction.class);
+		classes.add(RouteAction.class);
 		return classes;
 	}
 }

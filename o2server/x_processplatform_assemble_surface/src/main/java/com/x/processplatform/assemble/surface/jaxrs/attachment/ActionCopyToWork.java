@@ -10,6 +10,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -38,13 +39,12 @@ class ActionCopyToWork extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Work work = emc.find(workId, Work.class);
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			if (effectivePerson.isNotManager()) {
 				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
 				if (!workControl.getAllowProcessing()) {
-					throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-							work.getId());
+					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
 			Req req = new Req();

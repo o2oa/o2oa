@@ -82,7 +82,7 @@ public class ActionRestoreData {
 	@SuppressWarnings("unchecked")
 	public boolean execute() throws Exception {
 		List<String> containerEntityNames = new ArrayList<>();
-		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 		List<String> classNames = new ArrayList<>();
 		classNames.addAll(this.catalog.keySet());
 		classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(), Config.dumpRestoreData().getExcludes());

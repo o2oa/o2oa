@@ -235,7 +235,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String ORDERCOLUMNCOLUMN = "xorderColumn";
 
 	public static final String DISTINGUISHEDNAME = "distinguishedName";
-	
+
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_INTEGER = "integer";
 	public static final String TYPE_LONG = "long";
@@ -273,18 +273,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 		return ListTools.trim(values, true, true);
 	}
 
-	public Object get(String name) throws Exception {
-		return PropertyUtils.getProperty(this, name);
-	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T get(String name, Class<T> clazz) throws Exception {
-		Object o = get(name);
-		if (null == o) {
-			return null;
-		}
-		return (T) o;
-	}
 
 	public int hashCode() {
 		return 31 + ((this.getId() == null) ? 0 : this.getId().hashCode());

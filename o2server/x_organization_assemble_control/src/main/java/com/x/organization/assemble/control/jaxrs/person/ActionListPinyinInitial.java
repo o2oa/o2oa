@@ -36,17 +36,18 @@ class ActionListPinyinInitial extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
-			Element element =  business.cache().get(cacheKey);
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
+					wi.getKey(), StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			Element element = business.cache().get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
-				List<Wo> wos = this.list(business, wi);
-				 business.cache().put(new Element(cacheKey, wos));
+				List<Wo> wos = this.list(business, effectivePerson, wi);
+				business.cache().put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}
@@ -95,7 +96,7 @@ class ActionListPinyinInitial extends BaseAction {
 
 	}
 
-	private List<Wo> list(Business business, Wi wi) throws Exception {
+	private List<Wo> list(Business business, EffectivePerson effectivePerson, Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
@@ -110,6 +111,7 @@ class ActionListPinyinInitial extends BaseAction {
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		}
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);

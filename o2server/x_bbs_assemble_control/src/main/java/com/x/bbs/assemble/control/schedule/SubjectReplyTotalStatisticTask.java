@@ -2,12 +2,11 @@ package com.x.bbs.assemble.control.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSForumSubjectStatisticService;
 import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
@@ -21,7 +20,7 @@ import com.x.bbs.entity.BBSSubjectInfo;
  * @author LIYI
  *
  */
-public class SubjectReplyTotalStatisticTask implements Job {
+public class SubjectReplyTotalStatisticTask extends AbstractJob {
 
 	private Logger logger = LoggerFactory.getLogger(SubjectReplyTotalStatisticTask.class);
 	private BBSSubjectInfoService subjectInfoService = new BBSSubjectInfoService();
@@ -29,7 +28,7 @@ public class SubjectReplyTotalStatisticTask implements Job {
 	private BBSForumSubjectStatisticService forumSubjectStatisticService = new BBSForumSubjectStatisticService();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		List<BBSSectionInfo> sectionList = null;
 		try {
 			sectionList = sectionInfoServiceAdv.listAll();

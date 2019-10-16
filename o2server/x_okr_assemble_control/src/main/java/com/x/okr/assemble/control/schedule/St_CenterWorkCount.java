@@ -3,12 +3,11 @@ package com.x.okr.assemble.control.schedule;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.okr.assemble.control.service.OkrCenterWorkQueryService;
 
 /**
@@ -18,13 +17,13 @@ import com.x.okr.assemble.control.service.OkrCenterWorkQueryService;
  * @author LIYI
  *
  */
-public class St_CenterWorkCount implements Job  {
+public class St_CenterWorkCount extends AbstractJob  {
 
 	private static Logger logger = LoggerFactory.getLogger(St_CenterWorkCount.class);
 	private OkrCenterWorkQueryService okrCenterWorkInfoService = new OkrCenterWorkQueryService();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		List<String> ids = null;
 		// 草稿|待审核|待确认|执行中|已完成|已撤消
 		List<String> processStatus = new ArrayList<String>();

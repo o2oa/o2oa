@@ -22,15 +22,16 @@ class ActionListWithRole extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), roleFlag);
-			Element element =  business.cache().get(cacheKey);
+			Element element = business.cache().get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
 				List<Wo> wos = this.list(business, roleFlag);
-				 business.cache().put(new Element(cacheKey, wos));
+				business.cache().put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}

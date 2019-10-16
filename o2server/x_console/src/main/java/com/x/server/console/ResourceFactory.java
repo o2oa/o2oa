@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.naming.NamingException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -16,10 +14,12 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.Storage;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
@@ -27,6 +27,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
+import com.x.server.console.node.EventQueueExecutor;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -38,7 +39,7 @@ public class ResourceFactory {
 
 	public static void bind() throws Exception {
 		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().scan()) {
-			node();
+			node(sr);
 			containerEntities(sr);
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
@@ -53,9 +54,18 @@ public class ResourceFactory {
 		}
 	}
 
-	private static void node() throws Exception {
-		ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-		new Resource(Config.RESOUCE_NODE, map);
+	private static void node(ScanResult sr) throws Exception {
+		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
+		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
+		eventQueueExecutor.start();
+		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
+		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
+		new Resource(Config.RESOURCE_NODE_APPLICATIONS, null);
+		new Resource(Config.RESOURCE_NODE_APPLICATIONSTIMESTAMP, null);
+		Entry<String, CenterServer> entry = Config.nodes().centerServers().orderedEntrySet().get(0);
+		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
+		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
+		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());
 	}
 
 	private static void external() throws Exception {
@@ -75,7 +85,7 @@ public class ResourceFactory {
 			dataSource.setUsername(ds.getUsername());
 			dataSource.setPassword(ds.getPassword());
 			String name = Config.externalDataSources().name(ds);
-			new Resource(Config.RESOUCE_JDBC_PREFIX + name, dataSource);
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 		}
 
 	}
@@ -102,7 +112,7 @@ public class ResourceFactory {
 			dataSource.setTestOnBorrow(false);
 			dataSource.setPassword(Config.token().getPassword());
 			String name = Config.nodes().dataServers().name(entry.getValue());
-			new Resource(Config.RESOUCE_JDBC_PREFIX + name, dataSource);
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 
 		}
 
@@ -114,7 +124,7 @@ public class ResourceFactory {
 			list.add(info.getName());
 		}
 		list = ListTools.trim(list, true, true);
-		new Resource(Config.RESOUCE_CONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
+		new Resource(Config.RESOURCE_CONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
 	}
 
 	private static void stroageContainerEntityNames(ScanResult sr) throws Exception {
@@ -123,7 +133,7 @@ public class ResourceFactory {
 			list.add(info.getName());
 		}
 		list = ListTools.trim(list, true, true);
-		new Resource(Config.RESOUCE_STORAGECONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
+		new Resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES, ListUtils.unmodifiableList(list));
 	}
 
 	private static void containerEntities(ScanResult sr) throws Exception {
@@ -133,14 +143,14 @@ public class ResourceFactory {
 			List<String> os = ListTools.toList(cls.getAnnotation(Module.class).containerEntities());
 			map.put(info.getName(), ListUtils.unmodifiableList(os));
 		}
-		new Resource(Config.RESOUCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
+		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
 	private static void auditLog() throws Exception {
 		RolloverFileOutputStream rolloverFileOutputStream = new RolloverFileOutputStream(
 				Config.dir_logs(true).getAbsolutePath() + "/yyyy_mm_dd.audit.log", true,
 				Config.logLevel().audit().logSize());
-		new Resource(Config.RESOUCE_AUDITLOGPRINTSTREAM,
+		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
 				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
 	}
 

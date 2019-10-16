@@ -16,7 +16,6 @@ import com.x.attendance.entity.AttendanceWorkPlace_;
 import com.x.base.core.project.exception.ExceptionWhen;
 /**
  * 工作场所信息服务类
- * @author liyi
  */
 public class AttendanceWorkPlaceFactory extends AbstractFactory {
 	

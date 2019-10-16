@@ -11,12 +11,15 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
 class ActionEdit extends BaseAction {
@@ -27,20 +30,25 @@ class ActionEdit extends BaseAction {
 			Business business = new Business(emc);
 			Identity identity = business.identity().pick(flag);
 			if (null == identity) {
-				throw new ExceptionIdentityNotExist(flag);
+				throw new ExceptionEntityNotExist(flag, Identity.class);
 			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			Person person = emc.find(identity.getPerson(), Person.class);
+			if (null == person) {
+				throw new ExceptionEntityNotExist(identity.getPerson(), Person.class);
+			}
 			Unit unit = business.unit().pick(identity.getUnit());
 			if (null == unit) {
-				throw new ExceptionUnitNotExist(identity.getUnit());
+				throw new ExceptionEntityNotExist(identity.getUnit(), Unit.class);
 			}
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if (!business.editable(effectivePerson, unit)) {
-				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
+				throw new ExceptionAccessDenied(effectivePerson, unit);
 			}
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionNameEmpty();
 			}
 			emc.beginTransaction(Identity.class);
+			emc.beginTransaction(Person.class);
 			identity = emc.find(identity.getId(), Identity.class);
 			Wi.copier.copy(wi, identity);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
@@ -51,8 +59,6 @@ class ActionEdit extends BaseAction {
 			identity.setUnitLevel(unit.getLevel());
 			identity.setUnitLevelName(unit.getLevelName());
 			identity.setUnitName(unit.getName());
-			// /** 检查并调整主管身份 */
-			// //this.adjustJunior(business, identity);
 			/* 设置主身份 */
 			if (BooleanUtils.isTrue(identity.getMajor())) {
 				for (Identity o : emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson())) {
@@ -62,6 +68,9 @@ class ActionEdit extends BaseAction {
 				}
 			}
 			emc.check(identity, CheckPersistType.all);
+			person.setTopUnitList(
+					(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId())));
+			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Identity.class);
 			Wo wo = new Wo();

@@ -28,9 +28,9 @@ class ActionListWithFolder extends BaseAction {
 			if (!StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionFolderAccessDenied(effectivePerson, folder);
 			}
-			List<String> ids = business.attachment2().listWithFolder(folder.getId());
+			List<String> ids = business.attachment2().listWithFolder(folder.getId(),"正常");
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
-			SortTools.asc(wos, false, "name");
+			SortTools.desc(wos, false, "createTime");
 			result.setData(wos);
 			return result;
 		}

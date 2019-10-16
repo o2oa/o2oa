@@ -31,7 +31,7 @@ class ActionDownload extends BaseAction {
 			List<Folder2> folderList = new ArrayList<>();
 			folderList.add(folder);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				this.downToZip(emc, business, null, folderList, os);
+				this.fileCommonService.downToZip(emc, null, folderList, os);
 				byte[] bs = os.toByteArray();
 				Wo wo = new Wo(bs, this.contentType(false,zipName),
 						this.contentDisposition(false, zipName));

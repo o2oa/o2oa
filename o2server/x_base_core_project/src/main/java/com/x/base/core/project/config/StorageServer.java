@@ -8,15 +8,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
 
 public class StorageServer extends ConfigObject {
 
 	private static final Integer default_port = 20040;
 	private static final String default_passivePorts = "29000-30000";
-	/** 2的八次方最小的质数 */
+	private static final String default_prefix = "";
+	/** 2的八次方最大的质数 */
 	private static final String default_name = "251";
+	private static final Boolean default_deepPath = false;
 
 	public static StorageServer defaultInstance() {
 		return new StorageServer();
@@ -28,6 +29,8 @@ public class StorageServer extends ConfigObject {
 		this.sslEnable = false;
 		this.name = default_name;
 		this.accounts = new CopyOnWriteArrayList<Account>();
+		this.prefix = default_prefix;
+		this.deepPath = default_deepPath;
 	}
 
 	@FieldDescribe("是否启用,对于二进制流文件,比如附件,图片等存储在单独的文件服务器中,可以支持多种文件服务器,默认情况下使用ftp服务器作为文件服务器,每个节点可以启动一个文件服务器以提供高性能.")
@@ -42,6 +45,10 @@ public class StorageServer extends ConfigObject {
 	private CopyOnWriteArrayList<Account> accounts;
 	@FieldDescribe("ftp传输有主动和被动之分,如果使用了被动传输,设置被动端口范围,默认为29000-30000.")
 	private String passivePorts;
+	@FieldDescribe("路径前缀.")
+	private String prefix;
+	@FieldDescribe("使用更深的路径")
+	private Boolean deepPath;
 
 	public CopyOnWriteArrayList<Account> getCalculatedAccounts() throws Exception {
 		if (ListTools.isEmpty(accounts)) {
@@ -49,7 +56,6 @@ public class StorageServer extends ConfigObject {
 			for (StorageType o : StorageType.values()) {
 				Account account = new Account();
 				account.setProtocol(StorageProtocol.ftp);
-				// account.setName(o.toString());
 				account.setUsername(o.toString());
 				account.setWeight(100);
 				account.setPassword(Config.token().getPassword());
@@ -57,6 +63,14 @@ public class StorageServer extends ConfigObject {
 			}
 		}
 		return accounts;
+	}
+
+	public String getPrefix() {
+		return StringUtils.isBlank(this.prefix) ? default_prefix : this.prefix;
+	}
+
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
 	}
 
 	public String getPassivePorts() {

@@ -14,6 +14,7 @@ public class ApplicationServletContextListener implements ServletContextListener
 		try {
 			ThisApplication.context = Context.concrete(servletContextEvent);
 			ThisApplication.init();
+			ThisApplication.context().regist();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

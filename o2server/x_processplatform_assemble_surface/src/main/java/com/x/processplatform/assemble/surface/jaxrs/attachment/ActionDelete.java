@@ -7,6 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,20 +31,15 @@ class ActionDelete extends BaseAction {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionAttachmentNotExist(id);
 			}
-//			if (!work.getAttachmentList().contains(id)) {
-//				throw new ExceptionWorkNotContainsAttachment(work.getTitle(), work.getId(), attachment.getName(),
-//						attachment.getId());
-//			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			Wo wo = ThisApplication.context().applications()
 					.deleteQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,

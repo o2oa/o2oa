@@ -14,6 +14,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -45,12 +47,12 @@ class ActionDelete extends BaseAction {
 				Business business = new Business(emc);
 				Person person = business.person().pick(flag);
 				if (null == person) {
-					throw new ExceptionPersonNotExist(flag);
+					throw new ExceptionEntityNotExist(flag, Person.class);
 				}
 				/** 从内存中取到人 */
 				person = emc.find(person.getId(), Person.class);
-				if (!business.editable(effectivePerson, person)) {
-					throw new ExceptionDenyDeletePerson(effectivePerson, flag);
+				if (!this.editable(business, effectivePerson, person)) {
+					throw new ExceptionAccessDenied(effectivePerson);
 				}
 				List<Identity> identities = this.listIdentity(business, person);
 				/** 删除身份组织职务成员,提交后才可以删除身份 */

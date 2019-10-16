@@ -2,9 +2,10 @@ package com.x.base.core.project;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,6 +19,7 @@ import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
@@ -28,6 +30,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	private volatile String token = UUID.randomUUID().toString();
 
+	private volatile Date updateTimestamp;
+
+	private static final Random random = new Random(System.currentTimeMillis());
+
 	public String getToken() {
 		return token;
 	}
@@ -36,11 +42,12 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		this.token = token;
 	}
 
-	public Application get(String className, String token) throws Exception {
+	public Application get(String className, String tokenOrNode) throws Exception {
 		List<Application> list = this.get(className);
 		if (null != list) {
 			for (Application application : list) {
-				if (StringUtils.equals(token, application.getToken())) {
+				if (StringUtils.equals(tokenOrNode, application.getToken())
+						|| StringUtils.equals(tokenOrNode, application.getNode())) {
 					return application;
 				}
 			}
@@ -134,7 +141,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse postQuery(Boolean xdebugger, Application application, String uri, Object body)
 			throws Exception {
-		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), 	body);
+		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
+				body);
 	}
 
 	public ActionResponse postQuery(String applicationName, String uri, Object body) throws Exception {
@@ -195,30 +203,43 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public Application randomWithWeight(String className) throws Exception {
-		List<Application> availabeApplications = new ArrayList<>();
 		List<Application> list = this.get(className);
-		if (null != list) {
-			for (Application app : list) {
-				availabeApplications.add(app);
+		if (ListTools.isNotEmpty(list)) {
+			if (list.size() == 1) {
+				list.get(0);
 			}
-		}
-		if (availabeApplications.isEmpty()) {
-			return null;
-		}
-		int total = 0;
-		for (Application application : availabeApplications) {
-			total += application.getWeight();
-		}
-		Random random = new Random();
-		int rdm = random.nextInt(total);
-		int current = 0;
-		for (Application application : availabeApplications) {
-			current += application.getWeight();
-			if (rdm <= current) {
-				return application;
+			int cursor = 0;
+			TreeMap<Integer, Application> tree = new TreeMap<>();
+			for (Application o : list) {
+				if (o.getWeight() > 0) {
+					cursor += o.getWeight();
+					tree.put(cursor, o);
+				}
 			}
+			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
+			return application;
 		}
-		throw new Exception("randomWithWeight error.");
+		throw new Exception("randomWithWeight error: " + className + ".");
+	}
+
+	public Application randomWithScheduleWeight(String className) throws Exception {
+		List<Application> list = this.get(className);
+		if (ListTools.isNotEmpty(list)) {
+			if (list.size() == 1) {
+				list.get(0);
+			}
+			int cursor = 0;
+			TreeMap<Integer, Application> tree = new TreeMap<>();
+			for (Application o : list) {
+				if (o.getScheduleWeight() > 0) {
+					cursor += o.getScheduleWeight();
+					tree.put(cursor, o);
+				}
+			}
+			Application application = tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
+			return application;
+		}
+		throw new Exception("randomWithScheduleWeight error: " + className + ".");
 	}
 
 	public static String joinQueryUri(String... parts) {
@@ -231,4 +252,13 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			}
 		}).collect(Collectors.joining("/"));
 	}
+
+	public Date updateTimestamp() {
+		return updateTimestamp;
+	}
+
+	public void updateTimestamp(Date updateTimestamp) {
+		this.updateTimestamp = updateTimestamp;
+	}
+
 }

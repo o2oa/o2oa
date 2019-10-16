@@ -26,7 +26,7 @@ class ActionDispatch extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		logger.debug("receive dispatch cache request: {}", XGsonBuilder.toJson(jsonElement));
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Map<String, List<String>> map = (Map<String, List<String>>) Config.resource(Config.RESOUCE_CONTAINERENTITIES);
+		Map<String, List<String>> map = (Map<String, List<String>>) Config.resource(Config.RESOURCE_CONTAINERENTITIES);
 		for (Entry<String, List<String>> entry : map.entrySet()) {
 			if (entry.getValue().contains(wi.getClassName())) {
 				List<Application> apps = ThisApplication.context().applications().get(entry.getKey());

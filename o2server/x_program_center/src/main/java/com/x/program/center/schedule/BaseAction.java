@@ -1,8 +1,10 @@
 package com.x.program.center.schedule;
 
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
 
 import com.google.gson.Gson;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 
 abstract class BaseAction implements Job {
@@ -23,4 +25,11 @@ abstract class BaseAction implements Job {
 
 	static final String ADDRESS_AREA_GET = "/o2_collect_assemble/jaxrs/area/province";
 
+	protected boolean pirmaryCenter() throws Exception {
+		if (StringUtils.equals(Config.node(), Config.resource_node_centersPirmaryNode())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

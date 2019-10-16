@@ -11,16 +11,12 @@ public class ScheduleLocalRequest extends GsonPropertyObject {
 
 	public ScheduleLocalRequest(JobDetail jobDetail, String cron, Integer delay, Integer interval) {
 		this.className = jobDetail.getKey().getName();
-		this.application = jobDetail.getKey().getGroup();
-		this.node = jobDetail.getDescription();
 		this.cron = cron;
 		this.delay = delay;
 		this.interval = interval;
 	}
 
 	private String className;
-	private String application;
-	private String node;
 	private String cron;
 	private Integer delay;
 	private Integer interval;
@@ -31,22 +27,6 @@ public class ScheduleLocalRequest extends GsonPropertyObject {
 
 	public void setClassName(String className) {
 		this.className = className;
-	}
-
-	public String getApplication() {
-		return application;
-	}
-
-	public void setApplication(String application) {
-		this.application = application;
-	}
-
-	public String getNode() {
-		return node;
-	}
-
-	public void setNode(String node) {
-		this.node = node;
 	}
 
 	public String getCron() {

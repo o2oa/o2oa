@@ -38,7 +38,7 @@ import com.x.query.core.entity.Item_;
 
 public abstract class Plan extends GsonPropertyObject {
 
- //private static Logger logger = LoggerFactory.getLogger(Plan.class);
+	// private static Logger logger = LoggerFactory.getLogger(Plan.class);
 
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
@@ -98,8 +98,8 @@ public abstract class Plan extends GsonPropertyObject {
 				Comparable c1 = null;
 				Comparable c2 = null;
 				for (SelectEntry en : orderList) {
-					o1 = r1.get(en.column);
-					o2 = r2.get(en.column);
+					o1 = r1.find(en.column);
+					o2 = r2.find(en.column);
 					if (null == o1 && null == o2) {
 						comp = 0;
 					} else if (null == o1) {
@@ -136,33 +136,10 @@ public abstract class Plan extends GsonPropertyObject {
 		return table;
 	}
 
-	/*
-	 * [ { "column": "C7AC7F427FC0000141704670375F79F0", "displayName": "金额",
-	 * "value": 2110.0 } ]
-	 */
-//	private CalculateRow calculate(Table table, Calculate calculate) throws Exception {
-//		/** 非分类总计 */
-//		CalculateRow calculateRow = new CalculateRow();
-//		for (CalculateEntry o : calculate.calculateList) {
-//			switch (StringUtils.trimToEmpty(o.calculateType)) {
-//			case CALCULATE_SUM:
-//				calculateRow.add(new CalculateCell(o, o.sum(table)));
-//				break;
-//			case CALCULATE_AVERAGE:
-//				calculateRow.add(new CalculateCell(o, o.average(table)));
-//				break;
-//			default:
-//				calculateRow.add(new CalculateCell(o, o.count(table)));
-//				break;
-//			}
-//		}
-//		return calculateRow;
-//	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private GroupTable group(Table table) throws Exception {
 		final String orderType = (null == this.group) ? SelectEntry.ORDER_ORIGINAL : this.group.orderType;
-		Map<Object, List<Row>> map = table.stream().collect(Collectors.groupingBy(row -> row.get(this.group.column)));
+		Map<Object, List<Row>> map = table.stream().collect(Collectors.groupingBy(row -> row.find(this.group.column)));
 		List<GroupRow> groupRows = new GroupTable();
 		for (Entry<Object, List<Row>> en : map.entrySet()) {
 			Table o = new Table();
@@ -263,7 +240,7 @@ public abstract class Plan extends GsonPropertyObject {
 							ExtractObject extractObject = new ExtractObject();
 							extractObject.setBundle(r.bundle);
 							extractObject.setColumn(selectEntry.getColumn());
-							extractObject.setValue(r.get(selectEntry.getColumn()));
+							extractObject.setValue(r.find(selectEntry.getColumn()));
 							extractObject.setEntry(r);
 							extractObjects.add(extractObject);
 						});
@@ -311,9 +288,9 @@ public abstract class Plan extends GsonPropertyObject {
 					if (null != selectEntry) {
 						for (Row o : table) {
 							if (selectEntry.isName) {
-								list.add(name(Objects.toString(o.get(column), "")));
+								list.add(name(Objects.toString(o.find(column), "")));
 							} else {
-								list.add(o.get(column));
+								list.add(o.find(column));
 							}
 						}
 					}
@@ -337,7 +314,7 @@ public abstract class Plan extends GsonPropertyObject {
 				return BooleanUtils.isTrue(o.isName);
 			}).forEach(o -> {
 				this.grid.forEach(row -> {
-					row.put(o.column, name(Objects.toString(row.get(o.column), "")));
+					row.put(o.column, name(Objects.toString(row.find(o.column), "")));
 				});
 			});
 		}
@@ -351,7 +328,7 @@ public abstract class Plan extends GsonPropertyObject {
 				return BooleanUtils.isTrue(o.isName);
 			}).forEach(o -> {
 				this.grid.forEach(row -> {
-					row.put(o.column, name(Objects.toString(row.get(o.column), "")));
+					row.put(o.column, name(Objects.toString(row.find(o.column), "")));
 				});
 			});
 		}

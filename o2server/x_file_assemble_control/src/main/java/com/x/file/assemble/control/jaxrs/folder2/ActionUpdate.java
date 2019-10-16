@@ -45,7 +45,7 @@ class ActionUpdate extends BaseAction {
 				}
 				List<String> ids = new ArrayList<>();
 				ids.add(folder.getId());
-				ids.addAll(business.folder2().listSubNested(folder.getId()));
+				ids.addAll(business.folder2().listSubNested(folder.getId(),"正常"));
 				if(ids.contains(folder.getSuperior())){
 					throw new Exception("superior can not be sub folder.");
 				}

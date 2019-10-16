@@ -82,7 +82,8 @@ public class Folder2 extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
 	/* 同一个用户同一个目录下不能有重名 */
 	@CitationNotExist(fields = { "name", "id" }, type = Folder2.class, equals = {
-			@Equal(property = "person", field = "person"), @Equal(property = "superior", field = "superior") }))
+			@Equal(property = "person", field = "person"), @Equal(property = "superior", field = "superior"),
+			@Equal(property = "status", field = "status") }))
 	private String name;
 
 	public static final String superior_FIELDNAME = "superior";

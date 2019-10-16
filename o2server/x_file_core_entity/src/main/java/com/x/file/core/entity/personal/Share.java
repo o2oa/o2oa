@@ -168,6 +168,17 @@ public class Share extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> shareOrgList;
 
+	public static final String shieldUserList_FIELDNAME = "shieldUserList";
+	@FieldDescribe("屏蔽人员")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shieldUserList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + shieldUserList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shieldUserList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + shieldUserList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> shieldUserList;
+
 	public String getPerson() {
 		return person;
 	}
@@ -262,5 +273,13 @@ public class Share extends SliceJpaObject {
 
 	public void setShareType(String shareType) {
 		this.shareType = shareType;
+	}
+
+	public List<String> getShieldUserList() {
+		return shieldUserList;
+	}
+
+	public void setShieldUserList(List<String> shieldUserList) {
+		this.shieldUserList = shieldUserList;
 	}
 }

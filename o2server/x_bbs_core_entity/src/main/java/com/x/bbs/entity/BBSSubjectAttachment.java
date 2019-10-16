@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -106,6 +107,16 @@ public class BBSSubjectAttachment extends StorageObject {
 		str += this.id;
 		str += StringUtils.isEmpty(this.extension) ? "" : ("." + this.extension);
 		return str;
+	}
+
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
 	}
 
 	/*
@@ -230,6 +241,13 @@ public class BBSSubjectAttachment extends StorageObject {
 	@Index(name = TABLE + IndexNameMiddle + site_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String site;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	public String getForumId() {
 		return forumId;

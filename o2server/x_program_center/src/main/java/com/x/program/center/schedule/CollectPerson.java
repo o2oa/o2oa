@@ -10,6 +10,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
@@ -28,10 +29,10 @@ public class CollectPerson extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(CollectPerson.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		logger.debug("start to collect Person.");
+	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
 		try {
-			if (BooleanUtils.isTrue(Config.collect().getEnable())) {
+			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					if (business.validateCollect()) {
@@ -44,7 +45,8 @@ public class CollectPerson extends BaseAction {
 						req.setSecret(Config.collect().getSecret());
 						req.setKey(Config.collect().getKey());
 						req.setMobileList(mobiles);
-						req.setCenterProxyHost(Config.centerServer().getProxyHost());
+						CenterServer centerServer = Config.nodes().centerServers().first();
+						req.setCenterProxyHost(centerServer.getProxyHost());
 						if (StringUtils.isEmpty(req.getCenterProxyHost())) {
 							/* 如果没有设置地址,那么使用远程得到的服务器地址 */
 							if (Host.ip(Config.node()) && (!Host.isRollback(Config.node()))
@@ -57,8 +59,8 @@ public class CollectPerson extends BaseAction {
 								req.setCenterProxyHost(respIp.getData(WrapString.class).getValue());
 							}
 						}
-						req.setCenterProxyPort(Config.centerServer().getProxyPort());
-						req.setHttpProtocol(Config.centerServer().getHttpProtocol());
+						req.setCenterProxyPort(centerServer.getProxyPort());
+						req.setHttpProtocol(centerServer.getHttpProtocol());
 						try {
 							ActionResponse response = ConnectionAction
 									.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE), null, req);
@@ -73,10 +75,9 @@ public class CollectPerson extends BaseAction {
 			} else {
 				logger.debug("系统没有启用O2云服务器连接.");
 			}
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			logger.error(e);
+			throw new JobExecutionException(e);
 		}
 	}
 
@@ -187,19 +188,6 @@ public class CollectPerson extends BaseAction {
 	private List<String> listMobile(EntityManagerContainer emc) throws Exception {
 		List<String> list = emc.select(Person.class, Person.mobile_FIELDNAME, String.class);
 		return ListTools.trim(list, true, true);
-		// EntityManager em = emc.get(Person.class);
-		// CriteriaBuilder cb = em.getCriteriaBuilder();
-		// CriteriaQuery<String> cq = cb.createQuery(String.class);
-		// Root<Person> root = cq.from(Person.class);
-		// cq.select(root.get(Person_.mobile));
-		// List<String> list = em.createQuery(cq).getResultList();
-		// List<String> mobiles = new ArrayList<>();
-		// for (String str : list) {
-		// if (StringUtils.isNotEmpty(str)) {
-		// mobiles.add(str);
-		// }
-		// }
-		// return mobiles;
 	}
 
 }

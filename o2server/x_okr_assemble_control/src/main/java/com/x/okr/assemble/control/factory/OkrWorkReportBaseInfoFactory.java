@@ -19,6 +19,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.control.AbstractFactory;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapInFilter;
+import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo_;
 
@@ -492,10 +493,21 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 	public List<String> listAllDistinctCurrentProcessorIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
+		/*
 		CriteriaQuery<List> cq = cb.createQuery( List.class );
 		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
 		cq.select(root.get( OkrWorkReportBaseInfo_.currentProcessorIdentityList ));
 		List<List> allList = em.createQuery(cq).getResultList();
+		*/
+		
+		CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery( OkrWorkReportBaseInfo.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);		
+		List<OkrWorkReportBaseInfo> os = em.createQuery(cq.select(root)).getResultList();
+		List<List> allList = new ArrayList<>();
+		for (OkrWorkReportBaseInfo o : os) {
+			allList.add(o.getCurrentProcessorIdentityList());
+		}
+		
 		if(ListTools.isNotEmpty( allList )) {
 			HashSet hashSet = new  HashSet();
 			for( List<String> identities : allList ) {
@@ -528,10 +540,21 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 	public List<String> listAllDistinctReadleadersIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
+		/*
 		CriteriaQuery<List> cq = cb.createQuery( List.class );
 		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
 		cq.select(root.get( OkrWorkReportBaseInfo_.readLeadersIdentityList ));
 		List<List> allList = em.createQuery(cq).getResultList();
+		*/
+		
+		CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery( OkrWorkReportBaseInfo.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);		
+		List<OkrWorkReportBaseInfo> os = em.createQuery(cq.select(root)).getResultList();
+		List<List> allList = new ArrayList<>();
+		for (OkrWorkReportBaseInfo o : os) {
+			allList.add(o.getReadLeadersIdentityList());
+		}
+		
 		if(ListTools.isNotEmpty( allList )) {
 			HashSet hashSet = new  HashSet();
 			for( List<String> identities : allList ) {

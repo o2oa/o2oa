@@ -1,6 +1,5 @@
 package com.x.base.core.project.instrument;
 
-import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.WrapOutBoolean;
@@ -14,8 +13,8 @@ public class CaptchaFactory {
 
 	public WoCaptcha create(Integer width, Integer height) throws Exception {
 		try {
-			String url = Config.x_program_centerUrlRoot() + Applications.joinQueryUri("captcha", "create", "width",
-					width.toString(), "height", height.toString());
+			String url = Config.url_x_program_center_jaxrs("captcha", "create", "width", width.toString(), "height",
+					height.toString());
 			Wo o = CipherConnectionAction.get(false, url).getData(Wo.class);
 			return o;
 		} catch (Exception e) {
@@ -29,8 +28,7 @@ public class CaptchaFactory {
 
 	public Boolean validate(String id, String answer) throws Exception {
 		try {
-			String url = Config.x_program_centerUrlRoot()
-					+ Applications.joinQueryUri("captcha", id, "validate", "answer", answer);
+			String url = Config.url_x_program_center_jaxrs("captcha", id, "validate", "answer", answer);
 			WrapOutBoolean wrap = CipherConnectionAction.get(false, url).getData(WrapOutBoolean.class);
 			return wrap.getValue();
 		} catch (Exception e) {

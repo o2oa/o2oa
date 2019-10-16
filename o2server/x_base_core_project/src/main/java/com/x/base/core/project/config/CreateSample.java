@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.io.FileUtils;
@@ -19,6 +18,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.StorageProtocol;
+import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -52,6 +53,7 @@ public class CreateSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(ExternalDataSource.class);
+		classes.add(ExternalStorageSource.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {
@@ -70,6 +72,7 @@ public class CreateSample {
 			FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		}
 		this.convertExternalDataSource2ExternalDataSources();
+		this.convertExternalStorageSource2ExternalStorageSources();
 		this.renameNode();
 
 	}
@@ -79,12 +82,29 @@ public class CreateSample {
 				"configSample/externalDataSource.json");
 		File file_externalDataSources = new File(FileTools.parent(FileTools.parent(new File("./"))),
 				"configSample/externalDataSources.json");
-		JsonElement jsonElement = XGsonBuilder.instance().fromJson(FileUtils.readFileToString(file_externalDataSource),
-				JsonElement.class);
+		JsonElement jsonElement = XGsonBuilder.instance()
+				.fromJson(FileUtils.readFileToString(file_externalDataSource, "utf-8"), JsonElement.class);
 		List<JsonElement> list = new ArrayList<>();
 		list.add(jsonElement);
 		FileUtils.writeStringToFile(file_externalDataSources, XGsonBuilder.toJson(list), DefaultCharset.charset);
 		file_externalDataSource.delete();
+	}
+
+	private void convertExternalStorageSource2ExternalStorageSources() throws Exception, IOException {
+		File file_externalStorageSource = new File(FileTools.parent(FileTools.parent(new File("./"))),
+				"configSample/externalStorageSource.json");
+		File file_externalStorageSources = new File(FileTools.parent(FileTools.parent(new File("./"))),
+				"configSample/externalStorageSources.json");
+		JsonElement jsonElement = XGsonBuilder.instance()
+				.fromJson(FileUtils.readFileToString(file_externalStorageSource, "utf-8"), JsonElement.class);
+		List<JsonElement> list = new ArrayList<>();
+		list.add(jsonElement);
+		LinkedHashMap<String, List<JsonElement>> map = new LinkedHashMap<>();
+		for (StorageType o : StorageType.values()) {
+			map.put(o.toString(), list);
+		}
+		FileUtils.writeStringToFile(file_externalStorageSources, XGsonBuilder.toJson(map), DefaultCharset.charset);
+		file_externalStorageSource.delete();
 	}
 
 	private void renameNode() throws Exception, IOException {
@@ -119,39 +139,7 @@ public class CreateSample {
 				}
 			}
 		}
-		// EntryComparator entryComparator = new EntryComparator();
-		// map = map.entrySet().stream().sorted(entryComparator)
-		// .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (v1, v2) -> v1,
-		// LinkedHashMap::new));
 		return map;
-	}
-
-	public static class EntryComparator implements Comparator<Entry<String, Object>> {
-		public int compare(Entry<String, Object> en1, Entry<String, Object> en2) {
-			String k1 = en1.getKey();
-			String k2 = en2.getKey();
-			return 1;
-			// if ((!k1.startsWith("###")) && (!k2.startsWith("###"))) {
-			// return 1;
-			// } else {
-			// if (k1.startsWith("###")) {
-			// k1 = StringUtils.substringAfter(k1, "###");
-			// }
-			// if (k2.startsWith("###")) {
-			// k2 = StringUtils.substringAfter(k2, "###");
-			// }
-			// if (StringUtils.equals(k1, k2)) {
-			// if (en1.getKey().startsWith("###")) {
-			// return -1;
-			// }
-			// if (en2.getKey().startsWith("###")) {
-			// return 1;
-			// }
-			// }
-			// return k1.compareTo(k2);
-			// }
-
-		}
 	}
 
 }

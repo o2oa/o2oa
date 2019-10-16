@@ -14,11 +14,11 @@ public class ActionSetCenterServer extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.centerServer().getConfigApiEnable()) {
+		if (!Config.nodes().centerServers().first().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
-		Wi.copier.copy(wi, Config.centerServer());
-		Config.centerServer().save();
+		Wi.copier.copy(wi, Config.nodes().centerServers().first());
+		Config.nodes().save();
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
 		wo.setValue(true);

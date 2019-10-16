@@ -1,13 +1,10 @@
 package com.x.query.service.processing.test;
 
-import com.hankcs.hanlp.corpus.io.IOUtil;
-import com.hankcs.hanlp.mining.word2vec.DocVectorModel;
-import com.hankcs.hanlp.mining.word2vec.Word2VecTrainer;
-import com.hankcs.hanlp.mining.word2vec.WordVectorModel;
-import com.x.base.core.project.config.Config;
-
 import java.io.IOException;
 import java.util.Map;
+
+import com.hankcs.hanlp.mining.word2vec.DocVectorModel;
+import com.hankcs.hanlp.mining.word2vec.WordVectorModel;
 
 /**
  * 演示词向量的训练与应用

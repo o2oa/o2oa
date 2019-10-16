@@ -192,7 +192,7 @@ public class Table extends SliceJpaObject {
 
 	public static final String buildSuccess_FIELDNAME = "buildSuccess";
 	@FieldDescribe("是否编译成功.")
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + buildSuccess_FIELDNAME)
 	private Boolean buildSuccess;
 

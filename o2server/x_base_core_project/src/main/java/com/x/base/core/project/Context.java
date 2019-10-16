@@ -1,6 +1,7 @@
 package com.x.base.core.project;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,6 @@ import org.apache.openjpa.enhance.PCRegistry;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.DateBuilder.IntervalUnit;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -24,19 +24,20 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.EverythingMatcher;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMappings;
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.schedule.JobReportListener;
-import com.x.base.core.project.schedule.ReportToCenter;
 import com.x.base.core.project.schedule.ScheduleLocalRequest;
 import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
@@ -111,7 +112,6 @@ public class Context extends AbstractContext {
 	}
 
 //	/* Storage资源 */
-//	private volatile StorageMappings storageMappings;
 
 	public StorageMappings storageMappings() throws Exception {
 		return Config.storageMappings();
@@ -129,6 +129,13 @@ public class Context extends AbstractContext {
 
 	public Integer weight() {
 		return this.weight;
+	}
+
+	/* 应用的权重 */
+	private volatile Integer scheduleWeight;
+
+	public Integer scheduleWeight() {
+		return this.scheduleWeight;
 	}
 
 	private Boolean sslEnable;
@@ -152,6 +159,22 @@ public class Context extends AbstractContext {
 		return this.clearCacheRequestQueue;
 	}
 
+	private volatile Date applicationsTimestamp = null;
+
+	public Applications applications() throws Exception {
+		if (null != Config.resource_node_applicationsTimestamp()) {
+			if (null == this.applicationsTimestamp
+					|| (this.applicationsTimestamp.before(Config.resource_node_applicationsTimestamp()))) {
+				synchronized (this) {
+					this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
+							Applications.class);
+					this.applicationsTimestamp = Config.resource_node_applicationsTimestamp();
+				}
+			}
+		}
+		return this.applications;
+	}
+
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
 
@@ -164,17 +187,6 @@ public class Context extends AbstractContext {
 		this.scheduler.start();
 	}
 
-//	/** 可以自定义缓存清空消息处理器 */
-//	public static Context concrete(ServletContextEvent servletContextEvent,
-//			AbstractQueue<WrapClearCacheRequest> clearCacheRequestQueue) throws Exception {
-//		Context context = concrete(servletContextEvent);
-//		if (null != clearCacheRequestQueue) {
-//			context.clearCacheRequestQueue = clearCacheRequestQueue;
-//			context.startQueue(clearCacheRequestQueue);
-//		}
-//		return context;
-//	}
-
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
 		/* 强制忽略ssl服务器认证 */
 		SslTools.ignoreSsl();
@@ -182,22 +194,44 @@ public class Context extends AbstractContext {
 		Context context = new Context();
 		context.contextPath = servletContext.getContextPath();
 		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
-//		context.clazzInstance = (Deployable) context.clazz.newInstance();
 		context.module = context.clazz.getAnnotation(Module.class);
 		context.name = getName(context.clazz);
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
+		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas();
-		context.scheduleLocal(ReportToCenter.class, 0, ReportToCenter.INTERVAL);
 		servletContext.setAttribute(context.getClass().getName(), context);
 		context.initialized = true;
+		/* 20190927新注册机制 */
+		// registApplication(context);
 		return context;
 	}
 
-	public <T extends Job> void scheduleLocal(Class<T> cls, String cron) throws Exception {
+	/* 20190927新注册机制 */
+	public void regist() throws Exception {
+		Application application = new Application();
+		application.setClassName(this.clazz().getName());
+		application.setName(this.name());
+		application.setNode(Config.node());
+		application.setContextPath(this.contextPath());
+		application.setPort(Config.currentNode().getApplication().getPort());
+		application.setSslEnable(this.sslEnable());
+		application.setProxyHost(Config.currentNode().getApplication().getProxyHost());
+		application.setProxyPort(Config.currentNode().getApplication().getProxyPort());
+		application.setWeight(this.weight());
+		application.setScheduleWeight(this.scheduleWeight());
+		application.setScheduleLocalRequestList(this.scheduleLocalRequestList);
+		application.setScheduleRequestList(this.scheduleRequestList);
+		JsonElement jsonElement = XGsonBuilder.instance().toJsonTree(application);
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		jsonObject.addProperty("type", "registApplication");
+		Config.resource_node_eventQueue().put(jsonObject);
+	}
+
+	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, String cron) throws Exception {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
 		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
@@ -208,7 +242,7 @@ public class Context extends AbstractContext {
 		this.scheduleLocalRequestList.add(new ScheduleLocalRequest(jobDetail, cron, null, null));
 	}
 
-	public <T extends Job> void scheduleLocal(Class<T> cls, Trigger existTrigger) throws Exception {
+	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, Trigger existTrigger) throws Exception {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
 		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
@@ -219,7 +253,7 @@ public class Context extends AbstractContext {
 		this.scheduleLocalRequestList.add(new ScheduleLocalRequest(jobDetail, null, null, null));
 	}
 
-	public <T extends Job> void scheduleLocal(Class<T> cls, Integer delay, Integer interval) throws Exception {
+	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, Integer delay, Integer interval) throws Exception {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
 		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
@@ -232,41 +266,29 @@ public class Context extends AbstractContext {
 		this.scheduleLocalRequestList.add(new ScheduleLocalRequest(jobDetail, null, delay, interval));
 	}
 
-	public <T extends Job> void scheduleLocal(Class<T> cls) throws Exception {
+	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, Integer delay) throws Exception {
 		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
 		String group = StringTools.uniqueToken();
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
 		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), group).usingJobData(jobDataMap)
 				.withDescription(Config.node()).build();
-		/* 经过测试0代表不重复,进运行一次 */
+		/* 经过测试0代表不重复,仅运行一次 */
 		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), group)
-				.withDescription("scheduleLocal")
+				.withDescription("scheduleLocal").startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
 				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(0))
 				.build();
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
 	/* 统一排程任务需要延时90秒,等待instrument启动,每次间隔不能少于5分钟 */
-	public <T extends Job> void schedule(Class<T> clz, String cron) throws Exception {
-		this.scheduleRequestList.add(new ScheduleRequest(clz, this.clazz.getName(), Config.node(), cron));
+	public <T extends AbstractJob> void schedule(Class<T> clz, String cron) throws Exception {
+		this.scheduleRequestList.add(new ScheduleRequest(clz, Config.node(), cron));
 	}
 
 	public void startQueue(AbstractQueue<?> queue) {
 		queues.add(queue);
 		queue.start();
-	}
-
-	public void loadApplications() {
-		try {
-			synchronized (this) {
-				ActionResponse response = CipherConnectionAction.get(false,
-						Config.x_program_centerUrlRoot() + "applications");
-				this.applications = response.getData(Applications.class);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void initDatas() throws Exception {

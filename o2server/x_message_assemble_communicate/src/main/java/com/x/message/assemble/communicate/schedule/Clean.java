@@ -10,7 +10,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -18,6 +17,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.message.assemble.communicate.Business;
@@ -26,12 +26,12 @@ import com.x.message.core.entity.Instant_;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class Clean implements Job {
+public class Clean extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Clean.class);
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);
