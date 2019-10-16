@@ -88,7 +88,7 @@ public class ActionEraseContentProcessPlatform {
 	protected void run() throws Exception {
 		logger.print("clean {} content data, start at {}.", name, DateTools.format(start));
 		this.classNames = ListUtils.intersection(this.classNames,
-				(List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+				(List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 		StorageMappings storageMappings = Config.storageMappings();
 		File persistence = new File(Config.dir_local_temp_classes(),
 				DateTools.compact(this.start) + "_eraseContent.xml");

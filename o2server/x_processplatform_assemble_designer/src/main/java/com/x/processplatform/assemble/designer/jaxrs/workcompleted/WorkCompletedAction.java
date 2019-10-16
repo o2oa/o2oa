@@ -28,17 +28,36 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(WorkCompletedAction.class);
 
-	@JaxrsMethodDescribe(value = "合并DataItem数据到WorkCompleted,并删除Item表中的数据.", action = ActionMergeDataItem.class)
+	@JaxrsMethodDescribe(value = "指定process合并DataItem数据到WorkCompleted,并删除Item表中的数据.", action = ActionMergeDataWithProcess.class)
 	@GET
-	@Path("{process}/{processFlag}/merge/data/item")
+	@Path("process/{processFlag}/merge/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void mergeDataItem(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("processFlag") String processFlag) {
-		ActionResult<ActionMergeDataItem.Wo> result = new ActionResult<>();
+	public void mergeDataWithProcess(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag) {
+		ActionResult<ActionMergeDataWithProcess.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionMergeDataItem().execute(effectivePerson, processFlag);
+			result = new ActionMergeDataWithProcess().execute(effectivePerson, processFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "指定application合并DataItem数据到WorkCompleted,并删除Item表中的数据.", action = ActionMergeDataWithApplication.class)
+	@GET
+	@Path("application/{applicationFlag}/merge/data")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void mergeDataWithApplication(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<ActionMergeDataWithApplication.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionMergeDataWithApplication().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

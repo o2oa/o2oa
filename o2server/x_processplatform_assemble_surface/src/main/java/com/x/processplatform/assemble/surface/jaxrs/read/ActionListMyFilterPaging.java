@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -59,6 +60,12 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
 		}
+		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
+		}
+		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+			p = cb.and(p, cb.lessThan(root.get(Read_.startTime), DateTools.parse(wi.getEndTime())));
+		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(Read_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
@@ -97,6 +104,12 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
 		}
+		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
+		}
+		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+			p = cb.and(p, cb.lessThan(root.get(Read_.startTime), DateTools.parse(wi.getEndTime())));
+		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(Read_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
@@ -128,6 +141,12 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		@FieldDescribe("流程")
 		private List<String> processList;
+
+		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
+		private String startTime;
+
+		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
+		private String endTime;
 
 		@FieldDescribe("创建组织")
 		private List<String> creatorUnitList;
@@ -187,6 +206,22 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		public void setCreatorUnitList(List<String> creatorUnitList) {
 			this.creatorUnitList = creatorUnitList;
+		}
+
+		public String getStartTime() {
+			return startTime;
+		}
+
+		public void setStartTime(String startTime) {
+			this.startTime = startTime;
+		}
+
+		public String getEndTime() {
+			return endTime;
+		}
+
+		public void setEndTime(String endTime) {
+			this.endTime = endTime;
 		}
 
 	}

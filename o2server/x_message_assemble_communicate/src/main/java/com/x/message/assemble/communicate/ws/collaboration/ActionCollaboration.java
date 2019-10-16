@@ -10,11 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.websocket.CloseReason;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.JsonElement;
@@ -30,6 +26,7 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.message.WsMessage;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
+import org.apache.commons.lang3.StringUtils;
 
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
 public class ActionCollaboration {
@@ -73,6 +70,18 @@ public class ActionCollaboration {
 	@OnError
 	public void error(Throwable t) throws Throwable {
 
+	}
+
+	@OnMessage
+	public void message(String input, Session session) throws Exception {
+		logger.info("@OnMessage receive message {}",input);
+		if (StringUtils.isBlank(input)) {
+			return;
+		}
+		//建立心跳，维持websocket链接
+		if(input.equalsIgnoreCase("heartbeat")){
+			session.getBasicRemote().sendText("heartbeat");
+		}
 	}
 
 	private List<Message> load(EffectivePerson effectivePerson) {

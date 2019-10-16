@@ -103,18 +103,18 @@ public class ScheduleAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "触发定时任务.", action = ActionFire.class)
-	@GET
-	@Path("schedule/{id}/fire")
+	@POST
+	@Path("schedule/fire")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void fire(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionFire.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionFire().execute(effectivePerson, id);
+			result = new ActionFire().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

@@ -1,12 +1,11 @@
 package com.x.okr.assemble.control.schedule;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.x.base.core.project.Context;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
 
 /**
@@ -15,13 +14,13 @@ import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
  * @author LIYI
  *
  */
-public class WorkReportCollectCreate implements Job {
+public class WorkReportCollectCreate extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(WorkReportCollectCreate.class);
 	private OkrWorkReportTaskCollectService okrWorkReportTaskCollectService = new OkrWorkReportTaskCollectService();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 
 		// 调用服务去核对汇总待办
 		try {

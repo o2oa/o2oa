@@ -18,7 +18,7 @@ public class Row extends GsonPropertyObject {
 		data = new TreeMap<String, Object>();
 	}
 
-	public Object get(String key) {
+	public Object find(String key) {
 		return this.data.get(key);
 	}
 

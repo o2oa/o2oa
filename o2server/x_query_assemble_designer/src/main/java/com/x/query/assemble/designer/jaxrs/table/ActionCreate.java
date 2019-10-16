@@ -76,7 +76,7 @@ class ActionCreate extends BaseAction {
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
 				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
 						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
-						Table.status_FIELDNAME));
+						Table.status_FIELDNAME, Table.buildSuccess_FIELDNAME));
 	}
 
 }

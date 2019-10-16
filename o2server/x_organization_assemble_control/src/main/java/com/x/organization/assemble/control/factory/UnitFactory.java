@@ -94,28 +94,6 @@ public class UnitFactory extends AbstractFactory {
 					}
 				}
 			}
-			// if (null == o && StringUtils.contains(flag,
-			// PersistenceProperties.Unit.levelNameSplit)) {
-			// List<String> names = Arrays.asList(StringUtils.split(flag,
-			// PersistenceProperties.Unit.levelNameSplit));
-			// EntityManager em = this.entityManagerContainer().get(Unit.class);
-			// CriteriaBuilder cb = em.getCriteriaBuilder();
-			// CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
-			// Root<Unit> root = cq.from(Unit.class);
-			// Predicate p = root.get(Unit_.name).in(names);
-			// List<Unit> os =
-			// em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-			// os = os.stream().sorted(Comparator.comparing(Unit::getLevel,
-			// Comparator.nullsLast(Integer::compareTo)))
-			// .collect(Collectors.toList());
-			// List<String> values = ListTools.extractProperty(os, "name",
-			// String.class, false, false);
-			// if (StringUtils.equals(flag, StringUtils.join(values,
-			// PersistenceProperties.Unit.levelNameSplit))) {
-			// o = os.get(os.size() - 1);
-			// em.detach(o);
-			// }
-			// }
 		}
 		return o;
 	}

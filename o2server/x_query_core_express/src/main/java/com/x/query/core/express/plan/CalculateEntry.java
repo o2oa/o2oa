@@ -76,19 +76,19 @@ public class CalculateEntry extends GsonPropertyObject {
 		Map<Object, Long> map = new TreeMap<Object, Long>();
 		if ((null != groupSelectEntry) && (groupSelectEntry.available())) {
 			map = table.stream()
-					.collect(Collectors.groupingBy(row -> row.get(groupSelectEntry.column), Collectors.counting()));
+					.collect(Collectors.groupingBy(row -> row.find(groupSelectEntry.column), Collectors.counting()));
 		}
 		return map;
 	}
 
 	protected Map<Object, Double> groupSum(Table table, SelectEntry groupSelectEntry) throws Exception {
-		Map<Object, Double> map = table.stream().collect(Collectors.groupingBy(row -> row.get(groupSelectEntry.column),
+		Map<Object, Double> map = table.stream().collect(Collectors.groupingBy(row -> row.find(groupSelectEntry.column),
 				Collectors.summingDouble(row -> row.getAsDouble(this.column))));
 		return map;
 	}
 
 	protected Map<Object, Double> groupAverage(List<Row> rows, SelectEntry groupSelectEntry) throws Exception {
-		Map<Object, Double> map = rows.stream().collect(Collectors.groupingBy(row -> row.get(groupSelectEntry.column),
+		Map<Object, Double> map = rows.stream().collect(Collectors.groupingBy(row -> row.find(groupSelectEntry.column),
 				Collectors.averagingDouble(row -> row.getAsDouble(this.column))));
 		return map;
 	}

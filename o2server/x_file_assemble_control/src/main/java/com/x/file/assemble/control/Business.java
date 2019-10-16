@@ -79,6 +79,15 @@ public class Business {
 		return share;
 	}
 
+	private RecycleFactory recycle;
+
+	public RecycleFactory recycle() throws Exception {
+		if (null == this.recycle) {
+			this.recycle = new RecycleFactory(this);
+		}
+		return recycle;
+	}
+
 	private Organization organization;
 
 	public Organization organization() throws Exception {

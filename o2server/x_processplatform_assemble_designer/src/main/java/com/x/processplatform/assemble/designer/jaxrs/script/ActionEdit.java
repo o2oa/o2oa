@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -16,6 +17,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.entity.element.ScriptVersion;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -41,6 +43,12 @@ class ActionEdit extends BaseAction {
 			script.setLastUpdateTime(new Date());
 			emc.commit();
 			ApplicationCache.notify(Script.class);
+			emc.beginTransaction(ScriptVersion.class);
+			ScriptVersion scriptVersion = new ScriptVersion();
+			scriptVersion.setData(gson.toJson(jsonElement));
+			scriptVersion.setScript(scriptVersion.getId());
+			emc.persist(scriptVersion, CheckPersistType.all);
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(script.getId());
 			result.setData(wo);
@@ -55,8 +63,8 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = -5237741099036357033L;
 
-		static WrapCopier<Wi, Script> copier = WrapCopierFactory.wi(Wi.class, Script.class, null, Arrays
-				.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
+		static WrapCopier<Wi, Script> copier = WrapCopierFactory.wi(Wi.class, Script.class, null,
+				Arrays.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
 						JpaObject.sequence_FIELDNAME, JpaObject.distributeFactor_FIELDNAME));
 
 	}

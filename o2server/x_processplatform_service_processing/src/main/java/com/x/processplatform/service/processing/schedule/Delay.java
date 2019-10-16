@@ -2,7 +2,6 @@ package com.x.processplatform.service.processing.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -13,6 +12,7 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -20,12 +20,12 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 
-public class Delay implements Job {
+public class Delay extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Delay.class);
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		TimeStamp stamp = new TimeStamp();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);

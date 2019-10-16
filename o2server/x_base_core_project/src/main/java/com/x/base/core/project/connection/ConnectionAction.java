@@ -25,22 +25,22 @@ import com.x.base.core.project.tools.ListTools;
 
 public class ConnectionAction {
 
-	private static String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
-	private static String Access_Control_Allow_Credentials_Value = "true";
-	private static String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-	private static String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
-	private static String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
-	private static String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
+	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
+	public static final String Access_Control_Allow_Credentials_Value = "true";
+	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
+	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
+	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
+	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
 
-	private static String Cache_Control = "Cache-Control";
-	private static String Cache_Control_Value = "no-cache, no-transform";
-	private static String Content_Type = "Content-Type";
-	private static String Content_Type_Value = "application/json;charset=UTF-8";
+	public static final String Cache_Control = "Cache-Control";
+	public static final String Cache_Control_Value = "no-cache, no-transform";
+	public static final String Content_Type = "Content-Type";
+	public static final String Content_Type_Value = "application/json;charset=UTF-8";
 
-	private static String METHOD_PUT = "PUT";
-	private static String METHOD_POST = "POST";
-	private static String METHOD_GET = "GET";
-	private static String METHOD_DELETE = "DELETE";
+	public static final String METHOD_PUT = "PUT";
+	public static final String METHOD_POST = "POST";
+	public static final String METHOD_GET = "GET";
+	public static final String METHOD_DELETE = "DELETE";
 
 	private static Gson gson = XGsonBuilder.instance();
 

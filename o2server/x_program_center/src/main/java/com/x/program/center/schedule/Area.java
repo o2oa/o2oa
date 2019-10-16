@@ -37,6 +37,17 @@ public class Area extends BaseAction {
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		try {
+			if (pirmaryCenter()) {
+				area();
+			}
+		} catch (Exception e) {
+			logger.error(e);
+			throw new JobExecutionException(e);
+		}
+	}
+
+	private void area() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			for (WrapProvince o : this.list()) {
@@ -54,9 +65,6 @@ public class Area extends BaseAction {
 				logger.debug("更新 {}.", wrapProvince.getName());
 				this.saveProvince(business, wrapProvince, sha);
 			}
-		} catch (Exception e) {
-			logger.error(e);
-			throw new JobExecutionException(e);
 		}
 	}
 

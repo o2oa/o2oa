@@ -21,6 +21,7 @@ import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormField;
+import com.x.processplatform.core.entity.element.FormVersion;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -40,6 +41,7 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
+
 			/* 先删除FormField */
 			List<String> formFieldIds = business.formField().listWithForm(form.getId());
 			emc.beginTransaction(FormField.class);
@@ -62,6 +64,13 @@ class ActionEdit extends BaseAction {
 			emc.check(form, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Form.class);
+			/* 保存历史版本 */
+			emc.beginTransaction(FormVersion.class);
+			FormVersion formVersion = new FormVersion();
+			formVersion.setData(gson.toJson(jsonElement));
+			formVersion.setForm(form.getId());
+			emc.persist(formVersion, CheckPersistType.all);
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(form.getId());
 			result.setData(wo);

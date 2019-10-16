@@ -42,7 +42,7 @@ public class PmsConsumeQueue extends AbstractQueue<Message> {
 					pms.setAccount(person.getMobile());
 					pms.setTitle(message.getTitle());
 					pms.setText(message.getTitle());
-					String url = Config.x_program_centerUrlRoot() + MessageConnector.CONSUME_PMS;
+					String url = Config.url_x_program_center_jaxrs(MessageConnector.CONSUME_PMS);
 					WrapBoolean wrapBoolean = CipherConnectionAction.post(false, url, pms).getData(WrapBoolean.class);
 					result = wrapBoolean.getValue();
 				}

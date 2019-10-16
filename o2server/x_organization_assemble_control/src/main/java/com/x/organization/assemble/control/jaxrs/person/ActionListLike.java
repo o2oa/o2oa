@@ -36,17 +36,18 @@ class ActionListLike extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
+					wi.getKey(), StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
 			Element element = business.cache().get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
-				List<Wo> wos = this.list(business, wi);
+				List<Wo> wos = this.list(business, effectivePerson, wi);
 				business.cache().put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}
@@ -86,16 +87,7 @@ class ActionListLike extends BaseAction {
 
 	}
 
-	public static class Wo extends WoPersonAbstract {
-
-		private static final long serialVersionUID = -125007357898871894L;
-
-		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null,
-				person_fieldsInvisible);
-
-	}
-
-	private List<Wo> list(Business business, Wi wi) throws Exception {
+	private List<Wo> list(Business business, EffectivePerson effectivePesron, Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
@@ -115,10 +107,20 @@ class ActionListLike extends BaseAction {
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		}
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);
 		return wos;
+	}
+
+	public static class Wo extends WoPersonAbstract {
+
+		private static final long serialVersionUID = -125007357898871894L;
+
+		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null,
+				person_fieldsInvisible);
+
 	}
 
 }

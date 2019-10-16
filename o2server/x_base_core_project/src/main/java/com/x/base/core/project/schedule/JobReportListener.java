@@ -33,7 +33,7 @@ public class JobReportListener implements JobListener {
 		if (null != jobExecutionException) {
 			ScheduleLogRequest request = new ScheduleLogRequest(jobExecutionContext, jobExecutionException);
 			try {
-				CipherConnectionAction.post(false, Config.x_program_centerUrlRoot() + "schedule/report", request);
+				CipherConnectionAction.post(false, Config.url_x_program_center_jaxrs("schedule", "report"), request);
 			} catch (Exception e) {
 				logger.error(e);
 			}

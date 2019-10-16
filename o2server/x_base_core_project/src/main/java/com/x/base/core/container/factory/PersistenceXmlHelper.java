@@ -61,7 +61,7 @@ public class PersistenceXmlHelper {
 		List<String> names = new ArrayList<>();
 		String name = "";
 		try {
-			names.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+			names.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 			names = ListTools.includesExcludesWildcard(names, entities, null);
 			Document document = DocumentHelper.createDocument();
 			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
@@ -139,7 +139,7 @@ public class PersistenceXmlHelper {
 		properties.put("openjpa.slice.Names",
 				StringUtils.join(Config.externalDataSources().findNamesOfContainerEntity(className), ","));
 		for (String name : Config.externalDataSources().findNamesOfContainerEntity(className)) {
-			properties.put("openjpa.slice." + name + ".ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.slice." + name + ".ConnectionFactoryName", Config.RESOURCE_JDBC_PREFIX + name);
 			properties.put("openjpa.slice." + name + ".Log", Config.externalDataSources().log(name));
 		}
 		return properties;
@@ -151,7 +151,7 @@ public class PersistenceXmlHelper {
 		properties.put("openjpa.slice.Names",
 				StringUtils.join(Config.nodes().dataServers().findNamesOfContainerEntity(className), ","));
 		for (String name : Config.nodes().dataServers().findNamesOfContainerEntity(className)) {
-			properties.put("openjpa.slice." + name + ".ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.slice." + name + ".ConnectionFactoryName", Config.RESOURCE_JDBC_PREFIX + name);
 			properties.put("openjpa.slice." + name + ".Log", Config.nodes().dataServers().log(name));
 		}
 		return properties;
@@ -180,7 +180,7 @@ public class PersistenceXmlHelper {
 			properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 		}
 		for (String name : Config.externalDataSources().findNamesOfContainerEntity(className)) {
-			properties.put("openjpa.ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.ConnectionFactoryName", Config.RESOURCE_JDBC_PREFIX + name);
 			properties.put("openjpa.Log", Config.externalDataSources().log(name));
 			break;
 		}
@@ -191,7 +191,7 @@ public class PersistenceXmlHelper {
 		Properties properties = properties_base_single(className);
 		properties.put("openjpa.jdbc.DBDictionary", SlicePropertiesBuilder.dictionary_h2);
 		for (String name : Config.nodes().dataServers().findNamesOfContainerEntity(className)) {
-			properties.put("openjpa.ConnectionFactoryName", Config.RESOUCE_JDBC_PREFIX + name);
+			properties.put("openjpa.ConnectionFactoryName", Config.RESOURCE_JDBC_PREFIX + name);
 			properties.put("openjpa.Log", Config.nodes().dataServers().log(name));
 			break;
 		}

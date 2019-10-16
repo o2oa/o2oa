@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -41,7 +42,7 @@ class ActionOrder extends BaseAction {
 				throw new ExceptionUnitNotExist(identity.getUnit());
 			}
 			if (!business.editable(effectivePerson, unit)) {
-				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
+				throw new ExceptionAccessDenied(effectivePerson, unit);
 			}
 			Identity followIdentity = null;
 			if (!StringUtils.equals(followFlag, EMPTY_SYMBOL)) {

@@ -13,7 +13,7 @@ class ActionExpire extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			ThisApplication.context().scheduleLocal(Expire.class);
+			ThisApplication.context().scheduleLocal(Expire.class, 1);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

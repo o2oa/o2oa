@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -31,17 +32,26 @@ class ActionLogin extends BaseAction {
 			String url = "https://oapi.dingtalk.com/user/getuserinfo?access_token="
 					+ Config.dingding().corpAccessToken() + "&code=" + code;
 			String value = this.get(url);
-			JsonElement jsonElement = gson.fromJson(value, JsonElement.class);
-			String userId = jsonElement.getAsJsonObject().get("userid").getAsString();
+			Resp resp = gson.fromJson(value, Resp.class);
+
+			if (resp.getErrcode() > 0) {
+				throw new ExceptionDingding(resp.getErrcode(), resp.getErrmsg());
+			}
+
+			String userId = resp.getUserid();
 
 			url = "https://oapi.dingtalk.com/user/get?access_token=" + Config.dingding().corpAccessToken() + "&userid="
 					+ userId;
 
 			value = this.get(url);
-			jsonElement = gson.fromJson(value, JsonElement.class);
 
-			String mobile = jsonElement.getAsJsonObject().get("mobile").getAsString();
+			resp = gson.fromJson(value, Resp.class);
 
+			if (resp.getErrcode() > 0) {
+				throw new ExceptionDingding(resp.getErrcode(), resp.getErrmsg());
+			}
+
+			String mobile = resp.getMobile();
 			Business business = new Business(emc);
 			String personId = business.person().getWithCredential(mobile);
 			if (StringUtils.isEmpty(personId)) {
@@ -59,6 +69,50 @@ class ActionLogin extends BaseAction {
 			result.setData(wo);
 		}
 		return result;
+	}
+
+	public static class Resp {
+
+		private Integer errcode;
+
+		private String errmsg;
+
+		private String userid;
+
+		private String mobile;
+
+		public String getUserid() {
+			return userid;
+		}
+
+		public void setUserid(String userid) {
+			this.userid = userid;
+		}
+
+		public String getMobile() {
+			return mobile;
+		}
+
+		public void setMobile(String mobile) {
+			this.mobile = mobile;
+		}
+
+		public Integer getErrcode() {
+			return errcode;
+		}
+
+		public void setErrcode(Integer errcode) {
+			this.errcode = errcode;
+		}
+
+		public String getErrmsg() {
+			return errmsg;
+		}
+
+		public void setErrmsg(String errmsg) {
+			this.errmsg = errmsg;
+		}
+
 	}
 
 	public static class Wo extends Person {

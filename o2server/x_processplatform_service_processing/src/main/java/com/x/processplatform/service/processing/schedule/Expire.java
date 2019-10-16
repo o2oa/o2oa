@@ -14,7 +14,6 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -30,6 +29,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.ProcessingType;
@@ -45,12 +45,12 @@ import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.neural.NeuralAnalyzer;
 
-public class Expire implements Job {
+public class Expire extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(Expire.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);

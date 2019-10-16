@@ -8,11 +8,7 @@ public abstract class AbstractContext {
 
 	protected static final String INITPARAMETER_PORJECT = "project";
 
-	public Applications applications() {
-		synchronized (this) {
-			return this.applications;
-		}
-	}
+	public abstract Applications applications() throws Exception;
 
 	protected static String getName(Class<?> clz) throws Exception {
 		Module module = clz.getAnnotation(Module.class);
@@ -31,7 +27,7 @@ public abstract class AbstractContext {
 
 	/* 模块指示类 */
 	protected Module module;
-	
+
 	public Module module() {
 		return this.module;
 	}

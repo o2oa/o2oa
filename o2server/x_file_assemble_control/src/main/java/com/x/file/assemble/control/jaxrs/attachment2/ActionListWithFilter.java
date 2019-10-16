@@ -21,7 +21,7 @@ class ActionListWithFilter extends BaseAction {
 			Business business = new Business(emc);
 			List<String> ids = business.attachment2().listWithName(effectivePerson.getDistinguishedName(),name);
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
-			SortTools.asc(wos, false, "name");
+			SortTools.desc(wos, false, "createTime");
 			result.setData(wos);
 			return result;
 		}

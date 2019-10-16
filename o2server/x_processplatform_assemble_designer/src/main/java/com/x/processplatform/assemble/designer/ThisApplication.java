@@ -4,6 +4,7 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.processplatform.assemble.designer.schedule.CleanElementVersion;
 
 public class ThisApplication {
 
@@ -22,6 +23,7 @@ public class ThisApplication {
 			MessageConnector.start(context());
 			projectionExecuteQueue.start();
 			mappingExecuteQueue.start();
+			context.schedule(CleanElementVersion.class, "20 20 5 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,11 +1,10 @@
 package com.x.okr.assemble.control.schedule;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.okr.assemble.control.service.OkrSystemIdentityOperatorService;
 
 /**
@@ -14,12 +13,12 @@ import com.x.okr.assemble.control.service.OkrSystemIdentityOperatorService;
  * @author LIYI
  *
  */
-public class ErrorIdentityCheckTask implements Job {
+public class ErrorIdentityCheckTask extends AbstractJob {
 	private static Logger logger = LoggerFactory.getLogger(ErrorIdentityCheckTask.class);
 	private OkrSystemIdentityOperatorService okrSystemIdentityOperatorService = new OkrSystemIdentityOperatorService();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try {
 			okrSystemIdentityOperatorService.checkAllAbnormalIdentityInSystem();
 			logger.info("Timertask_ErrorIdentityCheckTask completed and excute success.");

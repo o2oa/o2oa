@@ -16,6 +16,7 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -34,20 +35,24 @@ class ActionProcessing extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Task task = null;
+		List<String> sameJobActivityIdentityTasks = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Business business = new Business(emc);
-			emc.beginTransaction(Task.class);
-			Task task = emc.find(id, Task.class);
+			task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			ProcessingRequest processingRequest = new ProcessingRequest();
-			processingRequest.setRouteData(wi.getRouteData());
 			if (!StringUtils.equalsIgnoreCase(task.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
+			if (Config.processPlatform().getProcessingTaskSameJobActivityIdentity()) {
+				sameJobActivityIdentityTasks = emc.idsEqualAndEqualAndEqualAndNotEqual(Task.class, Task.job_FIELDNAME,
+						task.getJob(), Task.activity_FIELDNAME, task.getActivity(), Task.identity_FIELDNAME,
+						task.getIdentity(), Task.id_FIELDNAME, task.getId());
+			}
+			emc.beginTransaction(Task.class);
 			/* 如果有输入新的路由决策覆盖原有决策 */
 			if (StringUtils.isNotEmpty(wi.getRouteName())) {
 				task.setRouteName(wi.getRouteName());
@@ -58,14 +63,47 @@ class ActionProcessing extends BaseAction {
 			}
 			/* 强制覆盖多媒体意见 */
 			task.setMediaOpinion(wi.getMediaOpinion());
-
 			emc.commit();
-			/* processing task */
-			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", processingRequest);
+		}
+		/* processing task */
+		ProcessingRequest processingRequest = new ProcessingRequest();
+		processingRequest.setRouteData(wi.getRouteData());
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", processingRequest);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
 			List<Wo> wos = this.referenceWorkLog(business, task);
 			result.setData(wos);
-			return result;
+		}
+
+		other(wi, sameJobActivityIdentityTasks);
+
+		return result;
+	}
+
+	private void other(Wi wi, List<String> sameJobActivityIdentityTasks) throws Exception {
+		for (String str : sameJobActivityIdentityTasks) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Task other = emc.find(str, Task.class);
+				if (null != other) {
+					emc.beginTransaction(Task.class);
+					/* 如果有输入新的路由决策覆盖原有决策 */
+					if (StringUtils.isNotEmpty(wi.getRouteName())) {
+						other.setRouteName(wi.getRouteName());
+					}
+					/* 如果有新的流程意见那么覆盖原有流程意见 */
+					if (StringUtils.isNotEmpty(wi.getOpinion())) {
+						other.setOpinion(wi.getOpinion());
+					}
+					/* 强制覆盖多媒体意见 */
+					other.setMediaOpinion(wi.getMediaOpinion());
+					emc.commit();
+					ProcessingRequest request = new ProcessingRequest();
+					request.setRouteData(wi.getRouteData());
+					ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+							"task/" + URLEncoder.encode(other.getId(), DefaultCharset.name) + "/processing", request);
+				}
+			}
 		}
 	}
 

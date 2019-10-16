@@ -27,7 +27,7 @@ class ActionGetWithPassword extends BaseAction {
 				if(StringUtils.isEmpty(password)){
 					throw new Exception("password can not be empty.");
 				}
-				if(!password.equals(share.getPassword())){
+				if(!password.equalsIgnoreCase(share.getPassword())){
 					throw new Exception("invalid password.");
 				}
 			}else{

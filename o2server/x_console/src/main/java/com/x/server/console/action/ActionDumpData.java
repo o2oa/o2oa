@@ -63,7 +63,7 @@ public class ActionDumpData {
 		/* 初始化完成 */
 
 		List<String> containerEntityNames = new ArrayList<>();
-		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_CONTAINERENTITYNAMES));
+		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
 		List<String> classNames = ListTools.includesExcludesWildcard(containerEntityNames,
 				Config.dumpRestoreData().getIncludes(), Config.dumpRestoreData().getExcludes());
 		logger.print("dump data find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));

@@ -3,7 +3,6 @@ package com.x.calendar.assemble.control.schedule;
 import java.util.Date;
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -11,6 +10,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.Business;
 import com.x.calendar.assemble.control.factory.MessageFactory;
@@ -23,13 +23,13 @@ import com.x.calendar.core.entity.Calendar_Event;
  * @author O2LEE
  *
  */
-public class AlarmTrigger implements Job {
+public class AlarmTrigger extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(AlarmTrigger.class);
 	protected Calendar_EventServiceAdv calendar_EventServiceAdv = new Calendar_EventServiceAdv();
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			alarm(business);

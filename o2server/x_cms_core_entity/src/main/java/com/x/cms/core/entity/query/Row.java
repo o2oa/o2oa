@@ -37,7 +37,7 @@ public class Row extends GsonPropertyObject {
 		return data;
 	}
 
-	public Object get(String key) {
+	public Object find(String key) {
 		return this.data.get(key);
 	}
 

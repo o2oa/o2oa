@@ -67,9 +67,9 @@ import com.x.query.core.entity.neural.Entry;
 import com.x.query.core.entity.neural.InText;
 import com.x.query.core.entity.neural.InText_;
 import com.x.query.core.entity.neural.InValue;
+import com.x.query.core.entity.neural.Model;
 import com.x.query.core.entity.neural.OutText;
 import com.x.query.core.entity.neural.OutValue;
-import com.x.query.core.entity.neural.Model;
 import com.x.query.service.processing.Business;
 
 public class Learn {

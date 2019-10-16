@@ -22,20 +22,6 @@ public class SchedulerFactoryProperties extends Properties {
 		properties.setProperty("org.quartz.jobStore.misfireThreshold", "60000");
 		properties.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
 		properties.setProperty("log4j.logger.org.quartz", "OFF");
-		// org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-		// org.quartz.scheduler.rmi.export: false
-		// org.quartz.scheduler.rmi.proxy: false
-		// org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-		//
-		// org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
-		// org.quartz.threadPool.threadCount: 10
-		// org.quartz.threadPool.threadPriority: 5
-		// org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread:
-		// true
-		//
-		// org.quartz.jobStore.misfireThreshold: 60000
-		//
-		// org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
 		return properties;
 	}
 

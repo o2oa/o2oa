@@ -54,8 +54,6 @@ public class CmsPermissionService {
 		// Predicate p=null;
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter(Review_.class, cb, null, root, queryFilter);
 		cq.orderBy(cb.desc(root.get(Review.publishTime_FIELDNAME)));
-		// System.out.println(">>>>>>>>>>>SQL:" + em.createQuery( cq.where( p )
-		// ).setMaxResults( maxResultCount ).toString() );
 		reviews = em.createQuery(cq.where(p)).setMaxResults(maxResultCount).getResultList();
 		if (reviews != null && !reviews.isEmpty()) {
 			for (Review review : reviews) {
@@ -332,10 +330,10 @@ public class CmsPermissionService {
 
 		if (!isAnonymous) {
 			// 在指定的栏目范围内（inAppInfoIds），查询所有我可以发布文档的分类ID列表（包含有发布权限的分类，不检测全员可发布标识）
-			publishableCategoryInfoIds = addResultToSourceList(
-					this.listPublishableCategoryIdsInPermission(emc, personName, unitNames, groupNames, inAppInfoIds,
-							inCategoryInfoIds, excludCategoryInfoIds, documentType, maxCount),
-					publishableCategoryInfoIds);
+//			publishableCategoryInfoIds = addResultToSourceList(
+//					this.listPublishableCategoryIdsInPermission(emc, personName, unitNames, groupNames, inAppInfoIds,
+//							inCategoryInfoIds, excludCategoryInfoIds, documentType, maxCount),
+//					publishableCategoryInfoIds);
 
 			// 在指定的栏目范围内（inAppInfoIds），查询我可以管理的分类ID列表
 			publishableCategoryInfoIds = addResultToSourceList(this.listManageableCategoryIdsByPerson(emc, personName,
@@ -528,20 +526,20 @@ public class CmsPermissionService {
 					cb.isMember(personName, root.get(CategoryInfo.viewablePersonList_FIELDNAME)));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(CategoryInfo.manageablePersonList_FIELDNAME)));
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					cb.isMember(personName, root.get(CategoryInfo.publishablePersonList_FIELDNAME)));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					cb.isMember(personName, root.get(CategoryInfo.publishablePersonList_FIELDNAME)));
 		}
 		if (ListTools.isNotEmpty(unitNames)) {
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					root.get(CategoryInfo.publishableUnitList_FIELDNAME).in(unitNames));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					root.get(CategoryInfo.publishableUnitList_FIELDNAME).in(unitNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(CategoryInfo.viewableUnitList_FIELDNAME).in(unitNames));
 		}
 		if (ListTools.isNotEmpty(groupNames)) {
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(CategoryInfo.publishableGroupList_FIELDNAME).in(groupNames));
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					root.get(CategoryInfo.viewableGroupList_FIELDNAME).in(groupNames));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					root.get(CategoryInfo.viewableGroupList_FIELDNAME).in(groupNames));
 		}
 
 		p = CriteriaBuilderTools.predicate_and(cb, p, p_permission);
@@ -616,20 +614,20 @@ public class CmsPermissionService {
 			// 可以管理的栏目，肯定可以发布信息
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(AppInfo.manageablePersonList_FIELDNAME)));
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					cb.isMember(personName, root.get(AppInfo.publishablePersonList_FIELDNAME)));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					cb.isMember(personName, root.get(AppInfo.publishablePersonList_FIELDNAME)));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(AppInfo.viewablePersonList_FIELDNAME)));
 		}
 		if (ListTools.isNotEmpty(unitNames)) {
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					root.get(AppInfo.publishableUnitList_FIELDNAME).in(unitNames));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					root.get(AppInfo.publishableUnitList_FIELDNAME).in(unitNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(AppInfo.viewableUnitList_FIELDNAME).in(unitNames));
 		}
 		if (ListTools.isNotEmpty(groupNames)) {
-			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-					root.get(AppInfo.publishableGroupList_FIELDNAME).in(groupNames));
+//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+//					root.get(AppInfo.publishableGroupList_FIELDNAME).in(groupNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(AppInfo.viewableGroupList_FIELDNAME).in(groupNames));
 		}
@@ -806,7 +804,7 @@ public class CmsPermissionService {
 					cb.equal(root.get(AppInfo.documentType_FIELDNAME), documentType));
 		}
 		Predicate permission = cb.isTrue(root.get(AppInfo.allPeopleView_FIELDNAME));
-		permission = cb.or(permission, cb.isTrue(root.get(AppInfo.allPeoplePublish_FIELDNAME)));
+//		permission = cb.or(permission, cb.isTrue(root.get(AppInfo.allPeoplePublish_FIELDNAME)));
 
 		p = CriteriaBuilderTools.predicate_and(cb, p, permission);
 		appInfoIds = em.createQuery(cq.where(p)).getResultList();

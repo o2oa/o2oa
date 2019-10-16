@@ -640,14 +640,20 @@ public class ReviewService {
 		review.setCategoryId( document.getCategoryId() );
 		review.setCategoryName( document.getCategoryName() );
 		
-		review.setCreatorPerson( document.getCreatorPerson() );
-		review.setCreatorTopUnitName( document.getCreatorTopUnitName() );
-		review.setCreatorUnitName( document.getCreatorUnitName() );
-		
 		review.setCreateTime(  document.getCreateTime()  );
 		review.setDocCreateTime( document.getCreateTime() );	
 		review.setPublishTime(  document.getPublishTime()  );
 		review.setUpdateTime(  document.getUpdateTime()  );	
+		
+		review.setCreatorPerson( document.getCreatorPerson() );
+		review.setCreatorTopUnitName( document.getCreatorTopUnitName() );
+		review.setCreatorUnitName( document.getCreatorUnitName() );
+		
+		if(StringUtils.isEmpty( review.getCreatorPerson() )) {
+			review.setCreatorPerson( "xadmin" );
+			review.setCreatorTopUnitName( "xadmin" );
+			review.setCreatorUnitName( "xadmin" );
+		}
 		
 		review.setImportBatchName( document.getImportBatchName() );
 		

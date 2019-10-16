@@ -53,14 +53,6 @@ public class Agent extends SliceJpaObject {
 	public void onPersist() throws Exception {
 	}
 
-	/* 更新运行方法 */
-
-	// public static String[] FLAGS = new String[] { id_FIELDNAME, "alias", "name"
-	// };
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
-
 	public static final String name_FIELDNAME = "name";
 	@Flag
 	@FieldDescribe("名称.")
@@ -126,12 +118,12 @@ public class Agent extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + lastEndTime_FIELDNAME)
 	private Date lastEndTime;
 
-	public static final String appointmentTime_FIELDNAME = "appointmentTime";
-	@FieldDescribe("预计时间.")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + appointmentTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + appointmentTime_FIELDNAME)
-	private Date appointmentTime;
+//	public static final String appointmentTime_FIELDNAME = "appointmentTime";
+//	@FieldDescribe("预计时间.")
+//	@CheckPersist(allowEmpty = true)
+//	@Column(name = ColumnNamePrefix + appointmentTime_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + appointmentTime_FIELDNAME)
+//	private Date appointmentTime;
 
 	public String getName() {
 		return name;
@@ -205,12 +197,12 @@ public class Agent extends SliceJpaObject {
 		this.enable = enable;
 	}
 
-	public Date getAppointmentTime() {
-		return appointmentTime;
-	}
-
-	public void setAppointmentTime(Date appointmentTime) {
-		this.appointmentTime = appointmentTime;
-	}
+//	public Date getAppointmentTime() {
+//		return appointmentTime;
+//	}
+//
+//	public void setAppointmentTime(Date appointmentTime) {
+//		this.appointmentTime = appointmentTime;
+//	}
 
 }

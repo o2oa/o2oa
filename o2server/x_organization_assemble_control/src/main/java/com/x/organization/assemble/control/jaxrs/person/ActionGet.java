@@ -69,6 +69,7 @@ class ActionGet extends BaseAction {
 				}
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}

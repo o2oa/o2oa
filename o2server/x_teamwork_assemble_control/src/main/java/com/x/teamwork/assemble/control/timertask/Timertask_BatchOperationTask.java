@@ -2,12 +2,11 @@ package com.x.teamwork.assemble.control.timertask;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.ThisApplication;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
@@ -21,13 +20,13 @@ import com.x.teamwork.core.entity.Task;
  * 定时代理: 定期执行批处理，将批处理信息压入队列（如果队列是空的话）
  *
  */
-public class Timertask_BatchOperationTask implements Job {
+public class Timertask_BatchOperationTask extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger( Timertask_BatchOperationTask.class );
 	private BatchOperationQueryService batchOperationQueryService = new BatchOperationQueryService();
 
 	@Override
-	public void execute( JobExecutionContext arg0 ) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		if( ThisApplication.queueBatchOperation.isEmpty() ) {//如果队列里有消息需要处理，先处理队列
 			List<BatchOperation> operations = null;		
 			try {

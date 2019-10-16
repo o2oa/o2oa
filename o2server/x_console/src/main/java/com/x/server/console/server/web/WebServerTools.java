@@ -61,7 +61,7 @@ public class WebServerTools extends JettySeverTools {
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
 		context.setDefaultsDescriptor(new File(Config.base(), "commons/webdefault_w.xml").getAbsolutePath());
-		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "" + webServer.getDirAllowed());
 		context.setWelcomeFiles(new String[] { "default.html", "index.html" });
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
@@ -88,33 +88,34 @@ public class WebServerTools extends JettySeverTools {
 		Gson gson = XGsonBuilder.instance();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		/** 覆盖掉配置的参数 */
-		map.putAll(Config.centerServer().getConfig());
+		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first();
+		map.putAll(centerServerConfig.getConfig());
 		List<Map<String, String>> centers = new ArrayList<>();
 		map.put("center", centers);
 		/** 写入center地址 */
 		Map<String, String> center = new HashMap<String, String>();
 		center = new HashMap<String, String>();
 		center.put("host", "");
-		center.put("port", Config.centerServer().getPort().toString());
+		center.put("port", centerServerConfig.getPort().toString());
 		centers.add(center);
-		if (!Objects.equals(Config.centerServer().getProxyPort(), Config.centerServer().getPort())) {
+		if (!Objects.equals(centerServerConfig.getProxyPort(), centerServerConfig.getPort())) {
 			center = new HashMap<String, String>();
 			center.put("host", "");
-			center.put("port", Config.centerServer().getProxyPort().toString());
+			center.put("port", centerServerConfig.getProxyPort().toString());
 			centers.add(center);
 		}
 		String host = Config.nodes().primaryCenterNode();
 		if (!Host.isRollback(host)) {
 			center = new HashMap<String, String>();
 			center.put("host", host);
-			center.put("port", Config.centerServer().getPort().toString());
+			center.put("port", centerServerConfig.getPort().toString());
 			centers.add(center);
 		}
 		/** 写入proxy地址 */
-		if (StringUtils.isNotEmpty(Config.centerServer().getProxyHost())) {
+		if (StringUtils.isNotEmpty(centerServerConfig.getProxyHost())) {
 			center = new HashMap<String, String>();
-			center.put("host", Config.centerServer().getProxyHost());
-			center.put("port", Config.centerServer().getProxyPort().toString());
+			center.put("host", centerServerConfig.getProxyHost());
+			center.put("port", centerServerConfig.getProxyPort().toString());
 			centers.add(center);
 		}
 
@@ -133,7 +134,7 @@ public class WebServerTools extends JettySeverTools {
 		map.put("footer", Config.collect().getFooter());
 		map.put("title", Config.collect().getTitle());
 		/***/
-		if (Config.centerServer().getSslEnable()) {
+		if (centerServerConfig.getSslEnable()) {
 			map.put("app_protocol", "https:");
 		} else {
 			map.put("app_protocol", "http:");

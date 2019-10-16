@@ -17,6 +17,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -34,7 +36,7 @@ public class ActionDelete extends BaseAction {
 			Business business = new Business(emc);
 			Identity identity = business.identity().pick(flag);
 			if (null == identity) {
-				throw new ExceptionIdentityNotExist(flag);
+				throw new ExceptionEntityNotExist(flag,Identity.class);
 			}
 			if (StringUtils.isNotEmpty(identity.getUnit())) {
 				Unit unit = business.unit().pick(identity.getUnit());
@@ -42,7 +44,7 @@ public class ActionDelete extends BaseAction {
 					throw new ExceptionUnitNotExist(identity.getUnit());
 				}
 				if (!business.editable(effectivePerson, unit)) {
-					throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
+					throw new ExceptionAccessDenied(effectivePerson, unit);
 				}
 				/** 由于有关联所以要分段提交，提交UnitDuty的成员删除。 */
 				emc.beginTransaction(UnitDuty.class);

@@ -13,6 +13,8 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -20,7 +22,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.jaxrs.person.ActionGet.Wo;
 import com.x.organization.core.entity.Person;
+
+import net.sf.ehcache.Element;
 
 class ActionCreate extends BaseAction {
 
@@ -32,10 +37,14 @@ class ActionCreate extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			Person person = new Person();
-			if (!business.editable(effectivePerson, person)) {
-				throw new ExceptionDenyCreatePerson(effectivePerson, wi.getName());
-			}
 			Wi.copier.copy(wi, person);
+			if (!this.editable(business, effectivePerson, person)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+			if (!Config.token().isInitialManager(effectivePerson.getDistinguishedName())) {
+				Person current = business.person().pick(effectivePerson.getDistinguishedName());
+				person.setTopUnitList(current.getTopUnitList());
+			}
 			this.checkName(business, person.getName(), person.getId());
 			this.checkMobile(business, person.getMobile(), person.getId());
 			this.checkEmployee(business, person.getEmployee(), person.getId());
@@ -50,6 +59,7 @@ class ActionCreate extends BaseAction {
 				}
 				person.setSuperior(superior.getId());
 			}
+
 			/** 不设置默认头像,可以通过为空直接显示默认头像 */
 			if (StringUtils.isNotEmpty(wi.getPassword())) {
 				business.person().setPassword(person, wi.getPassword());

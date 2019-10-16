@@ -45,7 +45,7 @@ public class CrawlWork extends Crawl {
 	private static final Integer BATCH_SIZE = 500;
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		TimeStamp stamp = new TimeStamp();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			converter = new DataItemConverter<Item>(Item.class);

@@ -367,13 +367,17 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 	 * @throws Exception 
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<String> listAllDistinctReportAuditLeaderIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+	public List<String> listAllDistinctReportAuditLeaderIdentity(List<String> identities_ok,
+			List<String> identities_error) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(OkrCenterWorkInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<List> cq = cb.createQuery( List.class );
+		CriteriaQuery<OkrCenterWorkInfo> cq = cb.createQuery(OkrCenterWorkInfo.class);
 		Root<OkrCenterWorkInfo> root = cq.from(OkrCenterWorkInfo.class);
-		cq.select(root.get( OkrCenterWorkInfo_.reportAuditLeaderIdentityList ));
-		List<List> allList = em.createQuery(cq).getResultList();
+		List<OkrCenterWorkInfo> os = em.createQuery(cq.select(root)).getResultList();
+		List<List> allList = new ArrayList<>();
+		for (OkrCenterWorkInfo o : os) {
+			allList.add(o.getReportAuditLeaderIdentityList());
+		}
 		if(ListTools.isNotEmpty( allList )) {
 			HashSet hashSet = new  HashSet();
 			for( List<String> identities : allList ) {

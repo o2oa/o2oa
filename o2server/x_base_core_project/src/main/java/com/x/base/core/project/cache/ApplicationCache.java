@@ -191,7 +191,7 @@ public class ApplicationCache extends AbstractApplicationCache {
 					if (wi instanceof StopNotifyThreadSignal) {
 						break out;
 					} else {
-						String url = Config.x_program_centerUrlRoot() + "cachedispatch";
+						String url = Config.url_x_program_center_jaxrs("cachedispatch");
 						CipherConnectionAction.put(false, url, wi);
 					}
 				} catch (Exception e) {

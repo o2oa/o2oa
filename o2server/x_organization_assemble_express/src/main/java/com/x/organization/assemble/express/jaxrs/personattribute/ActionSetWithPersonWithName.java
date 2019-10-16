@@ -22,6 +22,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.CacheFactory;
@@ -45,7 +46,7 @@ class ActionSetWithPersonWithName extends BaseAction {
 				logger.warn("user {} set personAttribute {} fail, person {} not exist.",
 						effectivePerson.getDistinguishedName(), StringUtils.join(wi.getAttributeList(), ","),
 						wi.getPerson());
-			} else if ((!effectivePerson.isManager()) && effectivePerson.isNotPerson(person.getDistinguishedName())) {
+			} else if (!enable(business, effectivePerson, person)) {
 				wo.setValue(false);
 				logger.warn("user {} set personAttribute person: {}, value: {} fail, permission denied.",
 						effectivePerson.getDistinguishedName(), wi.getPerson(),
@@ -71,6 +72,22 @@ class ActionSetWithPersonWithName extends BaseAction {
 			}
 			result.setData(wo);
 			return result;
+		}
+	}
+
+	private boolean enable(Business business, EffectivePerson effectivePerson, Person person) throws Exception {
+		if (effectivePerson.isManager() || effectivePerson.isCipher()) {
+			return true;
+		}
+		if (effectivePerson.isNotPerson(person.getDistinguishedName())) {
+			return true;
+		}
+		List<String> people = business.expendGroupRoleToPerson(ListTools.toList(OrganizationDefinition.Manager,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager));
+		if (people.contains(effectivePerson.getDistinguishedName())) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

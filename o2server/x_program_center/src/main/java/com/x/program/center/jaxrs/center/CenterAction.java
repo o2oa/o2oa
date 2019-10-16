@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.center;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,21 +28,57 @@ public class CenterAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterAction.class);
 
+//	@PUT
+//	@Path("report/application")
+//	@JaxrsMethodDescribe(value = "应用报告.", action = ActionReportApplication.class)
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void report(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			JsonElement jsonElement) {
+//		ActionResult<ActionReportApplication.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionReportApplication().execute(effectivePerson, jsonElement);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, jsonElement);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+//	}
+
 	@PUT
-	@Path("report/application")
-	@JaxrsMethodDescribe(value = "应用报告.", action = ActionReportApplication.class)
+	@Path("regist/applications")
+	@JaxrsMethodDescribe(value = "批量注册应用.", action = ActionRegistApplications.class)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void report(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void registApplications(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
-		ActionResult<ActionReportApplication.Wo> result = new ActionResult<>();
+		ActionResult<ActionRegistApplications.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionReportApplication().execute(effectivePerson, jsonElement);
+			result = new ActionRegistApplications().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@GET
+	@Path("applications")
+	@JaxrsMethodDescribe(value = ".", action = ActionApplications.class)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void load(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionApplications.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionApplications().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

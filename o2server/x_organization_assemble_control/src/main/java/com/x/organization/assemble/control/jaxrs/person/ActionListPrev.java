@@ -14,6 +14,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.jaxrs.person.ActionListNext.Wo;
 import com.x.organization.core.entity.Person;
 
 import net.sf.ehcache.Element;
@@ -24,7 +25,8 @@ class ActionListPrev extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, count);
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
+					flag, count);
 			Element element = business.cache().get(cacheKey);
 			if (null != element && null != element.getObjectValue()) {
 				Co co = (Co) element.getObjectValue();
@@ -40,14 +42,14 @@ class ActionListPrev extends BaseAction {
 					}
 					id = o.getId();
 				}
-				result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null,
-						null, null, true, DESC);
-				/** 产生头像 */
-				// this.updateIcon(result.getData());
+				result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
+						business.personPredicateWithTopUnit(effectivePerson));
+
 				Co co = new Co(result.getData(), result.getCount());
 				business.cache().put(new Element(cacheKey, co));
 			}
 			this.updateControl(effectivePerson, business, result.getData());
+			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
 	}
@@ -83,8 +85,10 @@ class ActionListPrev extends BaseAction {
 
 		private static final long serialVersionUID = -125007357898871894L;
 
-		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null,
-				person_fieldsInvisible);
+//		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null,
+//				person_fieldsInvisible);
+		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class,
+				JpaObject.singularAttributeField(Person.class, true, true), null);
 
 		private Long rank;
 

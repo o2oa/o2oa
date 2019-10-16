@@ -36,59 +36,64 @@ public class CollectLog extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(CollectLog.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			if (BooleanUtils.isTrue(Config.collect().getEnable())) {
-				Business business = new Business(emc);
-				if (business.validateCollect()) {
-					List<PromptErrorLog> os_promptErrorLog = this.list_promptErrorLog(emc);
-					List<UnexpectedErrorLog> os_unexpectedErrorLog = this.list_unexpectedErrorLog(emc);
-					List<WarnLog> os_warnLog = this.list_warnLog(emc);
-					if (!os_promptErrorLog.isEmpty()) {
-						Req req = new Req();
-						req.setName(Config.collect().getName());
-						req.setPassword(Config.collect().getPassword());
-						req.setPromptErrorLogList(os_promptErrorLog);
-						try {
-							ActionResponse response = ConnectionAction
-									.put(Config.collect().url(ADDRESS_COLLECT_PROMPTERRORLOG), null, req);
-							response.getData(WrapOutBoolean.class);
-						} catch (Exception e) {
-							e.printStackTrace();
+	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		try {
+			if (pirmaryCenter()) {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					if (BooleanUtils.isTrue(Config.collect().getEnable())) {
+						Business business = new Business(emc);
+						if (business.validateCollect()) {
+							List<PromptErrorLog> os_promptErrorLog = this.list_promptErrorLog(emc);
+							List<UnexpectedErrorLog> os_unexpectedErrorLog = this.list_unexpectedErrorLog(emc);
+							List<WarnLog> os_warnLog = this.list_warnLog(emc);
+							if (!os_promptErrorLog.isEmpty()) {
+								Req req = new Req();
+								req.setName(Config.collect().getName());
+								req.setPassword(Config.collect().getPassword());
+								req.setPromptErrorLogList(os_promptErrorLog);
+								try {
+									ActionResponse response = ConnectionAction
+											.put(Config.collect().url(ADDRESS_COLLECT_PROMPTERRORLOG), null, req);
+									response.getData(WrapOutBoolean.class);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							if (!os_unexpectedErrorLog.isEmpty()) {
+								Req req = new Req();
+								req.setName(Config.collect().getName());
+								req.setPassword(Config.collect().getPassword());
+								req.setUnexceptedErrorLog(os_unexpectedErrorLog);
+								try {
+									ActionResponse response = ConnectionAction
+											.put(Config.collect().url(ADDRESS_COLLECT_UNEXPECTEDERRORLOG), null, req);
+									response.getData(WrapOutBoolean.class);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							if (!os_warnLog.isEmpty()) {
+								Req req = new Req();
+								req.setName(Config.collect().getName());
+								req.setPassword(Config.collect().getPassword());
+								req.setWarnLogList(os_warnLog);
+								try {
+									ActionResponse response = ConnectionAction
+											.put(Config.collect().url(ADDRESS_COLLECT_WARNLOG), null, req);
+									response.getData(WrapOutBoolean.class);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						} else {
+							logger.info("无法登录到云服务器.");
 						}
 					}
-					if (!os_unexpectedErrorLog.isEmpty()) {
-						Req req = new Req();
-						req.setName(Config.collect().getName());
-						req.setPassword(Config.collect().getPassword());
-						req.setUnexceptedErrorLog(os_unexpectedErrorLog);
-						try {
-							ActionResponse response = ConnectionAction
-									.put(Config.collect().url(ADDRESS_COLLECT_UNEXPECTEDERRORLOG), null, req);
-							response.getData(WrapOutBoolean.class);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					if (!os_warnLog.isEmpty()) {
-						Req req = new Req();
-						req.setName(Config.collect().getName());
-						req.setPassword(Config.collect().getPassword());
-						req.setWarnLogList(os_warnLog);
-						try {
-							ActionResponse response = ConnectionAction
-									.put(Config.collect().url(ADDRESS_COLLECT_WARNLOG), null, req);
-							response.getData(WrapOutBoolean.class);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				} else {
-					logger.info("无法登录到云服务器.");
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
+			throw new JobExecutionException(e);
 		}
 	}
 

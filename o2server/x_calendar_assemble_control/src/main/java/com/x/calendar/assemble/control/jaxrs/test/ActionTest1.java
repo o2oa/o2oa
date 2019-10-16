@@ -18,7 +18,7 @@ public class ActionTest1 extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setValue(true);
-		ThisApplication.context().scheduleLocal(AlarmTrigger.class);
+		ThisApplication.context().scheduleLocal(AlarmTrigger.class,1);
 		result.setData(wo);
 		return result;
 	}

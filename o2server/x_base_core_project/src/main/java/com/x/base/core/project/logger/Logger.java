@@ -137,7 +137,7 @@ public class Logger {
 						parameters.put(PARAMETER_OCCURTIME, DateTools.now());
 						parameters.put(PARAMETER_LOGGERNAME, loggerName);
 						parameters.put(PARAMETER_MESSAGE, str);
-						String url = Config.x_program_centerUrlRoot() + "warnlog";
+						String url = Config.url_x_program_center_jaxrs("warnlog");
 						CipherConnectionAction.post(false, url, parameters);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -178,10 +178,10 @@ public class Logger {
 					parameters.put(PARAMETER_MESSAGE, e.getMessage());
 					parameters.put(PARAMETER_STACKTRACE, stackTraceString);
 					if (e instanceof PromptException) {
-						String url = Config.x_program_centerUrlRoot() + "prompterrorlog";
+						String url = Config.url_x_program_center_jaxrs("prompterrorlog");
 						CipherConnectionAction.post(false, url, parameters);
 					} else {
-						String url = Config.x_program_centerUrlRoot() + "unexpectederrorlog";
+						String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
 						CipherConnectionAction.post(false, url, parameters);
 					}
 				} catch (Exception e) {
@@ -230,10 +230,10 @@ public class Logger {
 					parameters.put(PARAMETER_REQUESTBODY, bodyString);
 					parameters.put(PARAMETER_REQUESTBODYLENGTH, bodyString.length());
 					if (e instanceof PromptException) {
-						String url = Config.x_program_centerUrlRoot() + "prompterrorlog";
+						String url = Config.url_x_program_center_jaxrs("prompterrorlog");
 						CipherConnectionAction.post(false, url, parameters);
 					} else {
-						String url = Config.x_program_centerUrlRoot() + "unexpectederrorlog";
+						String url = Config.url_x_program_center_jaxrs("unexpectederrorlog");
 						CipherConnectionAction.post(false, url, parameters);
 					}
 				} catch (Exception e) {

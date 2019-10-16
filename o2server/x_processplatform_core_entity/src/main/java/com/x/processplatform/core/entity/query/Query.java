@@ -393,7 +393,7 @@ public class Query extends GsonPropertyObject {
 				for (String column : this.columnList) {
 					List<Object> list = new ArrayList<>();
 					for (Row o : table) {
-						list.add(o.get(column));
+						list.add(o.find(column));
 					}
 					/* 只有一列的情况下直接输出List */
 					if (this.columnList.size() == 1) {

@@ -15,6 +15,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
+import org.apache.commons.collections4.ListUtils;
 
 import java.util.List;
 
@@ -37,6 +38,9 @@ class ActionListShareToMe extends BaseAction {
 					}
 				}
 			}
+			//去除设置屏蔽的共享文件
+			List<String> shieldIds = business.share().listWithShieldUser1(effectivePerson.getDistinguishedName());
+			shareIds = ListUtils.subtract(shareIds, shieldIds);
 			List<Wo> wos = Wo.copier.copy(emc.list(Share.class, shareIds));
 			for (Wo o : wos) {
 				o.setContentType(this.contentType(false, o.getName()));

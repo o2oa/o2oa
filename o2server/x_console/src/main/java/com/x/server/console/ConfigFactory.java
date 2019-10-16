@@ -28,7 +28,7 @@ public class ConfigFactory {
 	}
 
 	private static void syncFromPrimaryCenter() throws Exception {
-		String url = Config.x_program_centerUrlRoot() + "config";
+		String url = Config.url_x_program_center_jaxrs("config");
 		ReturnWoString wo = CipherConnectionAction.get(false, url).getData(ReturnWoString.class);
 		byte[] bytes = Base64.decodeBase64(wo.getValue());
 		File dist = new File(Config.base(), "config");

@@ -9,6 +9,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -35,7 +37,7 @@ class ActionUpdate extends BaseAction {
 			Work work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
@@ -47,8 +49,7 @@ class ActionUpdate extends BaseAction {
 			/* 统计待办数量判断用户是否可以上传附件 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			/* 天印扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {

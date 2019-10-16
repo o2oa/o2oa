@@ -1,7 +1,6 @@
 package com.x.query.service.processing.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -12,7 +11,6 @@ import com.hankcs.hanlp.dictionary.CoreSynonymDictionary;
 import com.hankcs.hanlp.mining.word.WordInfo;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.tokenizer.StandardTokenizer;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.query.service.processing.helper.ExtractTextHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 

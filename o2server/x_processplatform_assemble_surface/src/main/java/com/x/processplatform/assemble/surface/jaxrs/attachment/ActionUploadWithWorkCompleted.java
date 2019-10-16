@@ -28,7 +28,6 @@ import com.x.processplatform.core.entity.element.Process;
 class ActionUploadWithWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId, String site, String fileName,
 			byte[] bytes, FormDataContentDisposition disposition, String extraParam) throws Exception {
-		System.out.println(">>>>>>>>ActionUploadWithWorkCompleted"  );
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -36,7 +35,7 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			/** 判断work是否存在 */
 			if (null == workCompleted) {
-				throw new ExceptionWorkCompletedNotExist(workCompletedId);
+				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
 			Application application = business.application().pick(workCompleted.getApplication());
 			if (null == application) {
@@ -60,11 +59,9 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
-				System.out.println(">>>>>>>>fileName with disposition=" + fileName  );
 			}
 			/* 天印扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
-				System.out.println(">>>>>>>>extraParam=" + extraParam );
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
 					fileName = wiExtraParam.getFileName();
@@ -80,7 +77,6 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			emc.beginTransaction(Attachment.class);
 			emc.persist(attachment, CheckPersistType.all);
-			// work.getAttachmentList().add(attachment.getId());
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(attachment.getId());

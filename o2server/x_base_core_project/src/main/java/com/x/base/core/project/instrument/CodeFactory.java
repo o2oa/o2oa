@@ -1,6 +1,5 @@
 package com.x.base.core.project.instrument;
 
-import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.WrapOutBoolean;
@@ -9,8 +8,7 @@ public class CodeFactory {
 
 	public void create(String mobile) throws Exception {
 		try {
-			String url = Config.x_program_centerUrlRoot()
-					+ Applications.joinQueryUri("code", "create", "mobile", mobile);
+			String url = Config.url_x_program_center_jaxrs("code", "create", "mobile", mobile);
 			CipherConnectionAction.get(false, url);
 		} catch (Exception e) {
 			throw new Exception("CodeFactory create error:" + mobile + ".", e);
@@ -19,8 +17,7 @@ public class CodeFactory {
 
 	public Boolean validate(String mobile, String answer) throws Exception {
 		try {
-			String url = Config.x_program_centerUrlRoot()
-					+ Applications.joinQueryUri("code", "validate", "mobile", mobile, "answer", answer);
+			String url = Config.url_x_program_center_jaxrs("code", "validate", "mobile", mobile, "answer", answer);
 			WrapOutBoolean wrap = CipherConnectionAction.get(false, url).getData(WrapOutBoolean.class);
 			return wrap.getValue();
 		} catch (Exception e) {
@@ -32,8 +29,8 @@ public class CodeFactory {
 		try {
 			Boolean value = this.validate(mobile, answer);
 			if (value == false) {
-				String url = Config.x_program_centerUrlRoot()
-						+ Applications.joinQueryUri("code", "validate", "mobile", mobile, "answer", answer, "cascade");
+				String url = Config.url_x_program_center_jaxrs("code", "validate", "mobile", mobile, "answer", answer,
+						"cascade");
 				WrapOutBoolean wrap = CipherConnectionAction.get(false, url).getData(WrapOutBoolean.class);
 				return wrap.getValue();
 			} else {

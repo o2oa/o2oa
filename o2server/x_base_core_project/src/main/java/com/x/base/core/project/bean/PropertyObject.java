@@ -51,4 +51,17 @@ public abstract class PropertyObject {
 		}
 	}
 
+	public final Object get(String name) throws Exception {
+		return PropertyUtils.isReadable(this, name) ? PropertyUtils.getProperty(this, name) : null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <T> T get(String name, Class<T> clazz) throws Exception {
+		Object o = get(name);
+		if (null == o) {
+			return null;
+		}
+		return (T) o;
+	}
+
 }

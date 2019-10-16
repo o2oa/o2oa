@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -79,13 +78,13 @@ public class Message extends Activity {
 
 	@FieldDescribe("节点名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String name;
 
 	@Flag
 	@FieldDescribe("节点别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
 	@FieldDescribe("描述.")

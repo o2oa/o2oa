@@ -8,26 +8,31 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.personal.Business;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.accredit.Empower;
 
 import net.sf.ehcache.Element;
 
 class ActionListWithPerson extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String person) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					effectivePerson.getDistinguishedName());
+			Person person = business.person().pick(flag);
+			if (null == person) {
+				throw new ExceptionEntityNotExist(flag);
+			}
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), person.getDistinguishedName());
 			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
 			} else {
-				List<Wo> wos = this.list(business, person);
+				List<Wo> wos = this.list(business, person.getDistinguishedName());
 				cache.put(new Element(cacheKey, wos));
 				result.setData(wos);
 			}

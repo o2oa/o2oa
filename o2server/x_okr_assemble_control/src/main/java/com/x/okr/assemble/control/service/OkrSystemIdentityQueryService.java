@@ -762,10 +762,16 @@ public class OkrSystemIdentityQueryService {
 		if( identities != null && !identities.isEmpty() ){
 			if( result == null ) {
 				result = new ArrayList<>();
+				return result;
 			}
+			
 			for( String identity : identities ){
+				if(identity != null) {
 				if( !result.contains( identity) && !identity.equalsIgnoreCase( "SYSTEM" )&& !identity.equalsIgnoreCase( "xadmin" ) ){
 					result.add( identity );
+				}}else {
+					logger.info("identity=" + identity);
+					
 				}
 			}
 		}

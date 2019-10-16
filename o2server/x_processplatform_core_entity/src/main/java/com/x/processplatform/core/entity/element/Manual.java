@@ -80,13 +80,13 @@ public class Manual extends Activity {
 
 	@FieldDescribe("节点名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String name;
 
 	@Flag
 	@FieldDescribe("节点别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
 	@FieldDescribe("描述.")
@@ -1152,20 +1152,5 @@ public class Manual extends Activity {
 		this.opinionGroup = opinionGroup;
 	}
 
-//	public String getManualPressScript() {
-//		return manualPressScript;
-//	}
-//
-//	public void setManualPressScript(String manualPressScript) {
-//		this.manualPressScript = manualPressScript;
-//	}
-//
-//	public String getManualPressScriptText() {
-//		return manualPressScriptText;
-//	}
-//
-//	public void setManualPressScriptText(String manualPressScriptText) {
-//		this.manualPressScriptText = manualPressScriptText;
-//	}
 
 }

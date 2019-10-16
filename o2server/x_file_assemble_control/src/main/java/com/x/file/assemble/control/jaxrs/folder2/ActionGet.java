@@ -21,7 +21,7 @@ class ActionGet extends BaseAction {
 			if (null == folder) {
 				throw new ExceptionFolderNotExist(id);
 			}
-			if (!StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
+			if (!effectivePerson.isManager() && !StringUtils.equals(folder.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} access folder{id:" + id
 						+ "} denied.");
 			}

@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -63,14 +64,14 @@ public class OkrAttachmentFileInfo extends StorageObject {
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + lastUpdateTime_FIELDNAME )
+	@Column(name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastUpdateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date lastUpdateTime;
 
 	public static final String storage_FIELDNAME = "storage";
 	@FieldDescribe("关联的存储名称.")
-	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + storage_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + storage_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	@Index(name = TABLE + IndexNameMiddle + storage_FIELDNAME)
 	private String storage;
@@ -93,6 +94,16 @@ public class OkrAttachmentFileInfo extends StorageObject {
 	@Override
 	public void setStorage(String storage) {
 		this.storage = storage;
+	}
+
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
 	}
 
 	@Override
@@ -127,89 +138,99 @@ public class OkrAttachmentFileInfo extends StorageObject {
 	 */
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("文件真实名称")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String name;
 
 	public static final String fileName_FIELDNAME = "fileName";
 	@FieldDescribe("服务器上编码后的文件名,为了方便辨识带扩展名")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + fileName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ fileName_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String fileName;
 
 	public static final String centerId_FIELDNAME = "centerId";
 	@FieldDescribe("文件所属中心工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + centerId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerId;
 
 	public static final String workInfoId_FIELDNAME = "workInfoId";
 	@FieldDescribe("文件所属工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workInfoId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workInfoId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + workInfoId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workInfoId;
 
 	public static final String parentType_FIELDNAME = "parentType";
 	@FieldDescribe("对象类别:中心工作、工作、工作汇报、问题请示")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + parentType_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + parentType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String parentType;
 
 	public static final String key_FIELDNAME = "key";
 	@FieldDescribe("关键字:存储关键字，工作ID，汇报ID或者问题请示ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + key_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + key_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String key;
 
 	public static final String fileHost_FIELDNAME = "fileHost";
 	@FieldDescribe("文件存储主机名")
-	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + fileHost_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + fileHost_FIELDNAME)
 	private String fileHost;
 
 	public static final String filePath_FIELDNAME = "filePath";
 	@FieldDescribe("文件存储路径")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + filePath_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + filePath_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String filePath;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("文件说明")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
 	public static final String creatorUid_FIELDNAME = "creatorUid";
 	@FieldDescribe("创建者UID")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + creatorUid_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ creatorUid_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUid;
 
 	public static final String extension_FIELDNAME = "extension";
 	@FieldDescribe("扩展名")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + extension_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + extension_FIELDNAME)
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String extension;
 
 	public static final String length_FIELDNAME = "length";
 	@FieldDescribe("文件大小.")
-	@Column( name = ColumnNamePrefix + length_FIELDNAME)
+	@Column(name = ColumnNamePrefix + length_FIELDNAME)
 	@Index(name = TABLE + "_length")
 	@CheckPersist(allowEmpty = true)
 	private Long length;
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("处理状态：正常|已删除")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String status = "正常";
 
 	public static final String site_FIELDNAME = "site";
 	@FieldDescribe("附件框分类.")
-	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + site_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + site_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String site;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	/**
 	 * 获取分类说明信息

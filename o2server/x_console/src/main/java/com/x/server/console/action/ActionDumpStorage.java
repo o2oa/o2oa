@@ -67,7 +67,7 @@ public class ActionDumpStorage {
 		this.catalog = new DumpRestoreStorageCatalog();
 
 		List<String> storageContainerEntityNames = new ArrayList<>();
-		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOUCE_STORAGECONTAINERENTITYNAMES));
+		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES));
 		List<String> classNames = ListTools.includesExcludesWildcard(storageContainerEntityNames,
 				Config.dumpRestoreStorage().getIncludes(), Config.dumpRestoreStorage().getExcludes());
 		logger.print("dump storage find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));

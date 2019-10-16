@@ -1,13 +1,23 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.exception.ExceptionCollectConnectError;
+import com.x.base.core.project.exception.ExceptionCollectDisable;
+import com.x.base.core.project.exception.ExceptionCollectValidateFailure;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -142,6 +152,51 @@ public class Collect extends ConfigObject {
 
 	public void setServer(String server) {
 		this.server = server;
+	}
+
+	public boolean validate()
+			throws ExceptionCollectConnectError, ExceptionCollectDisable, ExceptionCollectValidateFailure, Exception {
+
+		if (Config.collect().getEnable()) {
+			throw new ExceptionCollectDisable();
+		}
+
+		try {
+			URL url = new URL(this.url("/o2_collect_assemble/jaxrs/collect/validate"));
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Credentials,
+					ConnectionAction.Access_Control_Allow_Credentials_Value);
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Headers,
+					ConnectionAction.Access_Control_Allow_Headers_Value);
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Methods,
+					ConnectionAction.Access_Control_Allow_Methods_Value);
+			connection.setRequestProperty(ConnectionAction.Cache_Control, ConnectionAction.Cache_Control_Value);
+			connection.setRequestProperty(ConnectionAction.Content_Type, ConnectionAction.Content_Type_Value);
+			connection.setRequestMethod("POST");
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.connect();
+			try (OutputStream output = connection.getOutputStream()) {
+				String req = "{\"name\":\"" + Config.collect().getName() + "\",\"password\":\""
+						+ Config.collect().getPassword() + "\"}";
+				IOUtils.write(req, output, StandardCharsets.UTF_8);
+			}
+			if (200 != connection.getResponseCode()) {
+				throw new ExceptionCollectValidateFailure();
+			}
+			try (InputStream input = connection.getInputStream()) {
+				byte[] buffer = IOUtils.toByteArray(input);
+				String value = new String(buffer, DefaultCharset.name);
+				if (!StringUtils.contains(value, "success")) {
+					throw new ExceptionCollectValidateFailure();
+				}
+			}
+			connection.disconnect();
+		} catch (Exception e) {
+			throw new ExceptionCollectConnectError();
+		}
+		return true;
 	}
 
 	public String url() {

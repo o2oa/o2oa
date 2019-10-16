@@ -6,6 +6,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -27,7 +29,7 @@ class ActionGetText extends BaseAction {
 			Work work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
-				throw new ExceptionWorkNotExist(workId);
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
@@ -35,14 +37,8 @@ class ActionGetText extends BaseAction {
 			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-//			Application application = business.application().pick(work.getApplication());
-//			Process process = business.process().pick(work.getProcess());
-//			if (business.controllerable(business, effectivePerson, application, process, attachment)) {
-//				throw new ExceptionAccessDenied(effectivePerson, attachment);
-//			}
 			Wo wo = Wo.copier.copy(attachment);
 			result.setData(wo);
 			return result;

@@ -2,12 +2,11 @@ package com.x.teamwork.assemble.control.timertask;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.ThisApplication;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
@@ -20,7 +19,7 @@ import com.x.teamwork.core.entity.Task;
  * 定时代理: 定期将所有的工作任务的Review重新核对一次，定期做修复
  *
  */
-public class Timertask_RefreshAllTaskReview implements Job {
+public class Timertask_RefreshAllTaskReview extends AbstractJob {
 
 	private BatchOperationPersistService batchOperationPersistService = new BatchOperationPersistService();
 	private ProjectQueryService projectQueryService = new ProjectQueryService();
@@ -28,7 +27,7 @@ public class Timertask_RefreshAllTaskReview implements Job {
 	private static Logger logger = LoggerFactory.getLogger( Timertask_RefreshAllTaskReview.class );
 
 	@Override
-	public void execute( JobExecutionContext arg0 ) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		if( ThisApplication.queueBatchOperation.isEmpty() ) {//如果队列里有消息需要处理，先处理队列
 			logger.info("Timertask_BatchOperationTask ->try to check all task in database......");
 			//如果队列里已经没有任务了，那么检查一下是否还有未revieiw的工作任务，添加到队列刷新工作作息的Review

@@ -53,7 +53,7 @@ public class Calculate extends GsonPropertyObject {
 		return false;
 	}
 
-	public CalculateEntry get(String id) {
+	public CalculateEntry find(String id) {
 		for (CalculateEntry o : this.calculateList) {
 			if (StringUtils.equals(o.id, id)) {
 				return o;

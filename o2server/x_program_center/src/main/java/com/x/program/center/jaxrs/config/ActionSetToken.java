@@ -17,7 +17,6 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Token;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -27,7 +26,7 @@ public class ActionSetToken extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.centerServer().getConfigApiEnable()) {
+		if (!Config.nodes().centerServers().first().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
 		/** 需要修改数据库密码 */

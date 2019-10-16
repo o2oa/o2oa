@@ -11,18 +11,18 @@ import com.x.processplatform.assemble.designer.jaxrs.applicationdict.Application
 import com.x.processplatform.assemble.designer.jaxrs.elementtool.ElementToolAction;
 import com.x.processplatform.assemble.designer.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.designer.jaxrs.form.FormAction;
+import com.x.processplatform.assemble.designer.jaxrs.formversion.FormVersionAction;
 import com.x.processplatform.assemble.designer.jaxrs.id.IdAction;
 import com.x.processplatform.assemble.designer.jaxrs.input.InputAction;
 import com.x.processplatform.assemble.designer.jaxrs.mapping.MappingAction;
 import com.x.processplatform.assemble.designer.jaxrs.output.OutputAction;
 import com.x.processplatform.assemble.designer.jaxrs.process.ProcessAction;
-import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoParallelAction;
-import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoSimpleAction;
+import com.x.processplatform.assemble.designer.jaxrs.processversion.ProcessVersionAction;
 import com.x.processplatform.assemble.designer.jaxrs.projection.ProjectionAction;
-import com.x.processplatform.assemble.designer.jaxrs.querystat.QueryStatAction;
-import com.x.processplatform.assemble.designer.jaxrs.queryview.QueryViewAction;
 import com.x.processplatform.assemble.designer.jaxrs.script.ScriptAction;
+import com.x.processplatform.assemble.designer.jaxrs.scriptversion.ScriptVersionAction;
 import com.x.processplatform.assemble.designer.jaxrs.templateform.TemplateFormAction;
+import com.x.processplatform.assemble.designer.jaxrs.workcompleted.WorkCompletedAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -32,20 +32,22 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ApplicationCategoryAction.class);
 		classes.add(ApplicationDictAction.class);
 		classes.add(ProcessAction.class);
+		classes.add(ProcessVersionAction.class);
 		classes.add(FileAction.class);
 		classes.add(FormAction.class);
+		classes.add(FormVersionAction.class);
 		classes.add(TemplateFormAction.class);
-		classes.add(QueryViewAction.class);
-		classes.add(QueryStatAction.class);
+//		classes.add(QueryViewAction.class);
+//		classes.add(QueryStatAction.class);
 		classes.add(ScriptAction.class);
+		classes.add(ScriptVersionAction.class);
 		classes.add(IdAction.class);
-		classes.add(DemoSimpleAction.class);
-		classes.add(DemoParallelAction.class);
 		classes.add(InputAction.class);
 		classes.add(OutputAction.class);
 		classes.add(ProjectionAction.class);
 		classes.add(MappingAction.class);
 		classes.add(ElementToolAction.class);
+		classes.add(WorkCompletedAction.class);
 		return classes;
 	}
 

@@ -1,11 +1,10 @@
 package com.x.base.core.project.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.Storage;
@@ -22,6 +21,20 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		super();
 	}
 
+	public StorageMappings(ExternalStorageSources externalStorageSources) {
+		for (Entry<StorageType, CopyOnWriteArrayList<ExternalStorageSource>> entry : externalStorageSources
+				.entrySet()) {
+			CopyOnWriteArrayList<StorageMapping> list = new CopyOnWriteArrayList<>();
+			for (ExternalStorageSource externalStorageSource : entry.getValue()) {
+				if (BooleanUtils.isTrue(externalStorageSource.getEnable())) {
+					StorageMapping storageMapping = new StorageMapping(externalStorageSource);
+					list.add(storageMapping);
+				}
+				this.put(entry.getKey(), list);
+			}
+		}
+	}
+
 	public StorageMappings(Nodes nodeConfigs) throws Exception {
 		super();
 		/** 填充空值 */
@@ -34,15 +47,15 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 			StorageServer server = en.getValue();
 			for (Account account : server.getCalculatedAccounts()) {
 				StorageMapping o = new StorageMapping();
-				o.setEnable(true);
 				o.setHost(node);
+				o.setDeepPath(server.getDeepPath());
+				o.setPrefix(server.getPrefix());
+				o.setName(server.getName());
 				o.setPassword(account.getPassword());
-				// o.setName(account.getName());
 				o.setPort(en.getValue().getPort());
 				o.setUsername(account.getUsername());
 				o.setProtocol(account.getProtocol());
-				o.setWeight((account.getWeight() == null) ? 100 : account.getWeight());
-				o.setName(server.getName());
+				o.setWeight(account.getWeight());
 				StorageType type = StorageType.valueOf(account.getUsername());
 				this.get(type).add(o);
 			}
@@ -91,23 +104,14 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		if (ListTools.isEmpty(list)) {
 			throw new Exception("can not get storage of " + type);
 		}
-		List<StorageMapping> availables = new ArrayList<>();
-		for (StorageMapping o : list) {
-			if (o.getEnable()) {
-				availables.add(o);
-			}
-		}
-		if (availables.isEmpty()) {
-			throw new Exception("storageType{:" + type + " has none available storage.");
-		}
 		int total = 0;
 		Random random = new Random();
-		for (StorageMapping o : availables) {
+		for (StorageMapping o : list) {
 			total += o.getWeight();
 		}
 		int rdm = random.nextInt(total);
 		int current = 0;
-		for (StorageMapping o : availables) {
+		for (StorageMapping o : list) {
 			current += o.getWeight();
 			if (rdm <= current) {
 				return o;

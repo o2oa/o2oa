@@ -35,8 +35,7 @@ public class ActionConfig extends ActionBase {
 
 	@SuppressWarnings("deprecation")
 	private byte[] getZip() throws Exception {
-		String center = Config.nodes().primaryCenterNode();
-		String address = "http://" + center + ":" + Config.centerServer().getPort() + "/x_program_center/jaxrs/config";
+		String address =Config.url_x_program_center_jaxrs("config");
 		URL url = new URL(address);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);

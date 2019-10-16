@@ -49,12 +49,25 @@ import com.x.base.core.project.tools.SslTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
-import com.x.program.center.core.entity.Schedule;
-import com.x.program.center.core.entity.ScheduleLocal;
 
 public class Context extends AbstractContext {
 
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
+
+	public Applications applications() throws Exception {
+//		if (applications.isEmpty()) {
+//			synchronized (Context.class) {
+//				if (applications.isEmpty()) {
+//					if (null != Config.resource_node_applications()) {
+//						this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
+//								Applications.class);
+//					}
+//
+//				}
+//			}
+//		}
+		return applications;
+	}
 
 	/* 应用的磁盘路径 */
 	private volatile String path;
@@ -77,19 +90,6 @@ public class Context extends AbstractContext {
 		return this.servletContext;
 	}
 
-//	/* 应用类 */
-//	private Class<?> clazz;
-//
-//	public Class<?> clazz() {
-//		return this.clazz;
-//	}
-//
-//	private Deployable clazzInstance;
-//
-//	public Deployable clazzInstance() {
-//		return this.clazzInstance;
-//	}
-
 	/* 随机令牌 */
 	private volatile String token;
 
@@ -110,18 +110,6 @@ public class Context extends AbstractContext {
 	public String name() {
 		return this.name;
 	}
-
-	/* Applications资源 */
-	private volatile Applications applications;
-
-	public Applications applications() {
-		synchronized (this) {
-			return this.applications;
-		}
-	}
-
-//	/* Storage资源 */
-//	private volatile StorageMappings storageMappings;
 
 	public StorageMappings storageMappings() throws Exception {
 		return Config.storageMappings();
@@ -183,8 +171,8 @@ public class Context extends AbstractContext {
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			context.cleanupSchedule(emc);
-			context.cleanupScheduleLocal(emc);
+			// context.cleanupSchedule(emc);
+			// context.cleanupScheduleLocal(emc);
 			context.checkDefaultRole(emc);
 		}
 		servletContext.setAttribute(context.getClass().getName(), context);
@@ -235,65 +223,9 @@ public class Context extends AbstractContext {
 		queue.start();
 	}
 
-//	private void initDatas() throws Exception {
-//		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
-//				clazzInstance.dependency().containerEntities.size());
-//		EntityManagerContainerFactory.init(path, Config.dataMappings(),
-//				this.clazzInstance.dependency().containerEntities);
-//	}
-
-//	private void initDatas() throws Exception {
-//		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
-//				clazzInstance.dependency().containerEntities.size());
-//		EntityManagerContainerFactory.init(path, this.clazzInstance.dependency().containerEntities);
-//	}
-
 	private void initDatas() throws Exception {
 		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), this.module.containerEntities().length);
 		EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
-	}
-
-//	private void initStorages() throws Exception {
-//		this.storageMappings = Config.storageMappings();
-//	}
-
-//	private void initStorages() throws Exception {
-//		@SuppressWarnings("unchecked")
-//		List<StorageType> usedStorageTypes = (List<StorageType>) FieldUtils.readStaticField(clazz, "usedStorageTypes");
-//		if (ListTools.isNotEmpty(usedStorageTypes)) {
-//			logger.print("{} loading storages, type size:{}.", this.clazz.getName(), usedStorageTypes.size());
-//			this.storageMappings = Config.storageMappings();
-//		}
-//	}
-
-	private void cleanupSchedule(EntityManagerContainer emc) throws Exception {
-		List<Schedule> list = emc.listAll(Schedule.class);
-		if (!list.isEmpty()) {
-			emc.beginTransaction(Schedule.class);
-			list.stream().forEach(o -> {
-				try {
-					emc.remove(o);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-			emc.commit();
-		}
-	}
-
-	private void cleanupScheduleLocal(EntityManagerContainer emc) throws Exception {
-		List<ScheduleLocal> list = emc.listAll(ScheduleLocal.class);
-		if (!list.isEmpty()) {
-			emc.beginTransaction(ScheduleLocal.class);
-			list.stream().forEach(o -> {
-				try {
-					emc.remove(o);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-			emc.commit();
-		}
 	}
 
 	private void checkDefaultRole(EntityManagerContainer emc) throws Exception {

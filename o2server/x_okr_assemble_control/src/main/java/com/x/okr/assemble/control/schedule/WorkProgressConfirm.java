@@ -2,12 +2,12 @@ package com.x.okr.assemble.control.schedule;
 
 import java.util.List;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
@@ -23,7 +23,7 @@ import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
  * @author LIYI
  *
  */
-public class WorkProgressConfirm implements Job {
+public class WorkProgressConfirm extends AbstractJob {
 
 	private static  Logger logger = LoggerFactory.getLogger( WorkProgressConfirm.class );
 	private OkrConfigSystemService okrConfigSystemService = new OkrConfigSystemService();	
@@ -31,7 +31,7 @@ public class WorkProgressConfirm implements Job {
 	private DateOperation dateOperation = new DateOperation();
 
 	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		String report_progress = null;
 		String nowDateTime = dateOperation.getNowDateTime();
 		List<String> ids = null;

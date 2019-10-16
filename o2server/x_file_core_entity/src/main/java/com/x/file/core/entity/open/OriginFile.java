@@ -8,24 +8,18 @@ import com.x.base.core.entity.annotation.*;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.file.core.entity.PersistenceProperties;
-import com.x.file.core.entity.personal.Folder;
-import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @ContainerEntity
 @Entity
 @Table(name = PersistenceProperties.Open.OriginFile.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Open.OriginFile.table+ JpaObject.IndexNameMiddle
+		@UniqueConstraint(name = PersistenceProperties.Open.OriginFile.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -157,6 +151,16 @@ public class OriginFile extends StorageObject {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
+	@Override
+	public void setDeepPath(Boolean deepPath) {
+		this.deepPath = deepPath;
+	}
+
 	public static final String person_FIELDNAME = "person";
 	@FieldDescribe("上传用户.")
 	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
@@ -219,6 +223,13 @@ public class OriginFile extends StorageObject {
 	@Index(name = TABLE + IndexNameMiddle + lastUpdatePerson_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String lastUpdatePerson;
+
+	public static final String deepPath_FIELDNAME = "deepPath";
+	@FieldDescribe("是否使用更深的路径.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
+	private Boolean deepPath;
 
 	public String getPerson() {
 		return person;

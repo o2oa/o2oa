@@ -1,6 +1,5 @@
 package com.x.program.center.schedule;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -12,23 +11,26 @@ import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.qiyeweixin.SyncOrganization;
 
-public class QiyeweixinSyncOrganization implements Job {
+public class QiyeweixinSyncOrganization extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(QiyeweixinSyncOrganization.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			if (!ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.isEmpty()) {
-				ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.clear();
-				Business business = new Business(emc);
-				SyncOrganization o = new SyncOrganization();
-				o.execute(business);
+		try {
+			if (pirmaryCenter()) {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					if (!ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.isEmpty()) {
+						ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.clear();
+						Business business = new Business(emc);
+						SyncOrganization o = new SyncOrganization();
+						o.execute(business);
+					}
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
-
 }

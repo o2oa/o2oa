@@ -14,7 +14,7 @@ public class GroupEntryTools {
 	public static List<LinkedHashMap<String, Object>> group(Table table, GroupEntry groupEntry,
 			List<OrderEntry> orderEntries) throws Exception {
 		Map<Object, List<Row>> map = table.stream()
-				.collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn())));
+				.collect(Collectors.groupingBy(row -> row.find(groupEntry.getColumn())));
 		List<LinkedHashMap<String, Object>> result = new ArrayList<>();
 
 		for (Entry<Object, List<Row>> en : map.entrySet()) {

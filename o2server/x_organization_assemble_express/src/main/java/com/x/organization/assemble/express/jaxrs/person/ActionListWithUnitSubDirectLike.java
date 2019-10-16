@@ -38,7 +38,7 @@ class ActionListWithUnitSubDirectLike extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					StringUtils.join(wi.getUnitList(), ","));
+					StringUtils.join(wi.getUnitList(), wi.getKey(), ","));
 			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((Wo) element.getObjectValue());

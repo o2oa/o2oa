@@ -24,7 +24,7 @@ class ActionGetWithWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
-				throw new ExceptionWorkNotExist(workCompletedId);
+				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {

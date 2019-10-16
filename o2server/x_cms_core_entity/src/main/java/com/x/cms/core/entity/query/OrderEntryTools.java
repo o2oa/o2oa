@@ -29,9 +29,9 @@ public class OrderEntryTools {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
 		for (OrderEntry en : orderEntries) {
 			if (Objects.equals(OrderType.asc, en.getOrderType())) {
-				compareToBuilder.append(o1.get(en.getColumn()), o2.get(en.getColumn()));
+				compareToBuilder.append(o1.find(en.getColumn()), o2.find(en.getColumn()));
 			} else {
-				compareToBuilder.append(o2.get(en.getColumn()), o1.get(en.getColumn()));
+				compareToBuilder.append(o2.find(en.getColumn()), o1.find(en.getColumn()));
 			}
 		}
 		return compareToBuilder.toComparison();

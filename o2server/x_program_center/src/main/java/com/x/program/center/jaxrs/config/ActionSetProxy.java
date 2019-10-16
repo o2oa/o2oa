@@ -17,13 +17,9 @@ class ActionSetProxy extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.centerServer().getConfigApiEnable()) {
+		if (!Config.nodes().centerServers().first().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
-		Config.centerServer().setHttpProtocol(wi.getHttpProtocol());
-		Config.centerServer().setProxyHost(wi.getCenter().getProxyHost());
-		Config.centerServer().setProxyPort(wi.getCenter().getProxyPort());
-		Config.centerServer().save();
 		for (Entry<String, Node> en : Config.nodes().entrySet()) {
 			Node node = en.getValue();
 			if (null != node) {
@@ -31,6 +27,12 @@ class ActionSetProxy extends BaseAction {
 					node.getWeb().setProxyHost(wi.getWeb().getProxyHost());
 					node.getWeb().setProxyPort(wi.getWeb().getProxyPort());
 				}
+				if (null != node.getCenter() && BooleanUtils.isTrue(node.getCenter().getEnable())) {
+					node.getCenter().setHttpProtocol(wi.getHttpProtocol());
+					node.getCenter().setProxyHost(wi.getCenter().getProxyHost());
+					node.getCenter().setProxyPort(wi.getCenter().getProxyPort());
+				}
+
 			}
 		}
 		for (Application o : wi.getApplicationList()) {

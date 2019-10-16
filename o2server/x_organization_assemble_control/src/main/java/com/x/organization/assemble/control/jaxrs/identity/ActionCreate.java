@@ -19,6 +19,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -40,12 +41,13 @@ class ActionCreate extends BaseAction {
 			if (null == person) {
 				throw new ExceptionPersonNotExist(wi.getPerson());
 			}
+			person = emc.find(person.getId(), Person.class);
 			Unit unit = business.unit().pick(wi.getUnit());
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(wi.getUnit());
 			}
 			if (!business.editable(effectivePerson, unit)) {
-				throw new ExceptionDenyEditUnit(effectivePerson, unit.getName());
+				throw new ExceptionAccessDenied(effectivePerson, unit);
 			}
 			if (this.existedWithPersonWithUnit(business, person, unit)) {
 				throw new ExceptionExistInUnit(person, unit);
@@ -77,10 +79,17 @@ class ActionCreate extends BaseAction {
 					}
 				}
 			}
-			// this.adjustJunior(business, identity);
+
 			emc.beginTransaction(Identity.class);
+			emc.beginTransaction(Person.class);
+
 			emc.persist(identity, CheckPersistType.all);
+			person.setTopUnitList(
+					(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId())));
+			emc.persist(person, CheckPersistType.all);
+
 			emc.commit();
+
 			ApplicationCache.notify(Identity.class);
 			Wo wo = new Wo();
 			wo.setId(identity.getId());

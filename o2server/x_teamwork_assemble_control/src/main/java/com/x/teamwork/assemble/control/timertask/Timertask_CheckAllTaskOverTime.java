@@ -4,15 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.assemble.control.service.ProjectQueryService;
@@ -23,14 +22,14 @@ import com.x.teamwork.core.entity.Task;
  * 定时代理: 定期将所有的工作任务的截止时间核对一次，标识超时的工作任务
  *
  */
-public class Timertask_CheckAllTaskOverTime implements Job {
+public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 
 	private ProjectQueryService projectQueryService = new ProjectQueryService();
 	private TaskQueryService taskQueryService = new TaskQueryService();
 	private static Logger logger = LoggerFactory.getLogger( Timertask_CheckAllTaskOverTime.class );
 
 	@Override
-	public void execute( JobExecutionContext arg0 ) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		Task task = null;
 		Date now = new Date();
 		List<String> projectIds = null;

@@ -1,11 +1,11 @@
 package com.x.okr.assemble.control.schedule;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.okr.assemble.control.service.ExcuteWorkReportCreateService;
 
 /**
@@ -14,12 +14,12 @@ import com.x.okr.assemble.control.service.ExcuteWorkReportCreateService;
  * @author LIYI
  *
  */
-public class WorkReportCreate implements Job {
+public class WorkReportCreate extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(ExcuteWorkReportCreateService.class);
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try {
 			new ExcuteWorkReportCreateService().execute();
 			logger.info("Timertask WorkReportCreate completed and excute success.");
