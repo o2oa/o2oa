@@ -59,7 +59,7 @@ O2OA平台拥有流程管理、门户管理、信息管理、数据管理和服�
 
 官方网站 : http://www.o2oa.net
 
-Gitee : https://gitee.com/liyihz2008/O2OA
+Gitee : https://gitee.com/o2oa/O2OA
 
 Github : https://github.com/o2oa/o2oa
 
