@@ -79,6 +79,7 @@ public class FireSchedule extends BaseAction {
 
 	private Date getLastStartTime(ScheduleRequest request) throws Exception {
 		Date lastStartTime = request.getLastStartTime();
+		// Date lastStartTime = null;
 		if (null == lastStartTime) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				EntityManager em = emc.get(ScheduleLog.class);

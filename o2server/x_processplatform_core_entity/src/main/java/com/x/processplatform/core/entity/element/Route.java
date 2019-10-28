@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -33,6 +34,12 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Route extends SliceJpaObject {
+
+	public static final String TYPE_NORMAL = "normal";
+	public static final String TYPE_APPENDTASK = "appendTask";
+
+	public static final String APPENDTASKIDENTITYTYPE_SCRIPT = "script";
+	public static final String APPENDTASKIDENTITYTYPE_CONFIG = "config";
 
 	private static final long serialVersionUID = -1151288890276589956L;
 	private static final String TABLE = PersistenceProperties.Element.Route.table;
@@ -214,6 +221,54 @@ public class Route extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String selectConfig;
 
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("路由类型")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + type_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String type;
+
+	public static final String appendTaskIdentityType_FIELDNAME = "appendTaskIdentityType";
+	@FieldDescribe("添加待办方式.")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + appendTaskIdentityType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String appendTaskIdentityType;
+
+	public static final String appendTaskIdentityScript_FIELDNAME = "appendTaskIdentityScript";
+	@IdReference(Script.class)
+	@FieldDescribe("添加待办人脚本.")
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ appendTaskIdentityScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String appendTaskIdentityScript;
+
+	public static final String appendTaskIdentityScriptText_FIELDNAME = "appendTaskIdentityScriptText";
+	@FieldDescribe("添加待办人脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + appendTaskIdentityScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String appendTaskIdentityScriptText;
+
+	public String getAppendTaskIdentityType() {
+		return appendTaskIdentityType;
+	}
+
+	public void setAppendTaskIdentityType(String appendTaskIdentityType) {
+		this.appendTaskIdentityType = appendTaskIdentityType;
+	}
+
+	public String getAppendTaskIdentityScript() {
+		return appendTaskIdentityScript;
+	}
+
+	public void setAppendTaskIdentityScript(String appendTaskIdentityScript) {
+		this.appendTaskIdentityScript = appendTaskIdentityScript;
+	}
+
+	public static String getAppendtaskidentityscriptFieldname() {
+		return appendTaskIdentityScript_FIELDNAME;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -388,6 +443,22 @@ public class Route extends SliceJpaObject {
 
 	public void setSelectConfig(String selectConfig) {
 		this.selectConfig = selectConfig;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getAppendTaskIdentityScriptText() {
+		return appendTaskIdentityScriptText;
+	}
+
+	public void setAppendTaskIdentityScriptText(String appendTaskIdentityScriptText) {
+		this.appendTaskIdentityScriptText = appendTaskIdentityScriptText;
 	}
 
 }

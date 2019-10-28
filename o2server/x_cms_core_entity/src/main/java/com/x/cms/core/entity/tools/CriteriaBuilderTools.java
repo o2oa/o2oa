@@ -87,6 +87,9 @@ public class CriteriaBuilderTools {
 	 */
 	public static <T extends JpaObject, T_ extends SliceJpaObject_> Predicate composePredicateWithQueryFilter( 
 			Class<T_> cls_, CriteriaBuilder cb, Predicate p, Root<T> root,  QueryFilter queryFilter ) throws NoSuchFieldException, SecurityException {
+		if( queryFilter == null ) {
+			queryFilter = new QueryFilter();
+		}
 		//组装条件
 		if( ListTools.isNotEmpty( queryFilter.getEqualsTerms() )) {
 			for( EqualsTerm term : queryFilter.getEqualsTerms() ) {
@@ -167,9 +170,9 @@ public class CriteriaBuilderTools {
 					continue;
 				}
 				if( "and".equalsIgnoreCase( queryFilter.getJoinType() )) {
-					p = CriteriaBuilderTools.predicate_and( cb, p, cb.like( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue() ));
+					p = CriteriaBuilderTools.predicate_and( cb, p, cb.like( root.get( cls_.getDeclaredField( term.getName() ).getName() ), "%"+term.getValue()+"%" ));
 				} else if( "or".equalsIgnoreCase( queryFilter.getJoinType() )) {
-					p = CriteriaBuilderTools.predicate_or( cb, p, cb.like( root.get( cls_.getDeclaredField( term.getName() ).getName() ), term.getValue() ));
+					p = CriteriaBuilderTools.predicate_or( cb, p, cb.like( root.get( cls_.getDeclaredField( term.getName() ).getName() ), "%"+term.getValue()+"%" ));
 				}
 			}
 		}

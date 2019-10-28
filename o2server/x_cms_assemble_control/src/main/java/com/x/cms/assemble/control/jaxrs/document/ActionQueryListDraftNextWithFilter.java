@@ -24,8 +24,7 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListDraftNextWithFilter.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, String id, Integer count,
-			JsonElement jsonElement, EffectivePerson effectivePerson) {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, String id, Integer count, JsonElement jsonElement, EffectivePerson effectivePerson) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
 		List<Document> documentList = null;

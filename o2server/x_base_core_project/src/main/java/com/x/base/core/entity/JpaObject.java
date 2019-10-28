@@ -94,6 +94,11 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 			Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
 					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
+	public static final List<String> FieldsDefault = ListUtils
+			.unmodifiableList(Arrays.asList(id_FIELDNAME, key_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME,
+					sequence_FIELDNAME, distributeFactor_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
+					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
+
 	@FieldDescribe("创建时间,自动生成,索引创建在约束中.")
 	@Column(name = ColumnNamePrefix + createTime_FIELDNAME)
 	private Date createTime;
@@ -272,8 +277,6 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 		}
 		return ListTools.trim(values, true, true);
 	}
-
-
 
 	public int hashCode() {
 		return 31 + ((this.getId() == null) ? 0 : this.getId().hashCode());

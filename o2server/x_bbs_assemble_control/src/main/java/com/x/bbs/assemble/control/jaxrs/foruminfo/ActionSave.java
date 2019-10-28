@@ -1,6 +1,7 @@
 package com.x.bbs.assemble.control.jaxrs.foruminfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -151,8 +153,22 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
-			try {
-				forumInfo = Wi.copier.copy(wrapIn);
+			forumInfo = Wi.copier.copy(wrapIn);
+			
+			List<String> arrayList = new ArrayList<>(); 
+			if( StringUtils.equals( wrapIn.getForumVisible(), "根据权限" )) {
+				if( StringUtils.isNotEmpty( wrapIn.getForumVisibleResult())) {
+					arrayList.clear();
+					Collections.addAll(arrayList, wrapIn.getForumVisibleResult().split( "," ));
+					forumInfo.setVisiblePermissionList( arrayList );
+				}
+			}else {
+				forumInfo.setVisiblePermissionList( new ArrayList<>() );
+			}
+		}
+		
+		if (check) {
+			try {				
 				forumInfo.setForumManagerList( forumManagerList );
 				if( StringUtils.isNotEmpty( wrapIn.getId() )) {
 					forumInfo.setId( wrapIn.getId() );
@@ -219,8 +235,12 @@ public class ActionSave extends BaseAction {
 
 	public static class Wi extends BBSForumInfo {
 		
+		@FieldDescribe("论坛管理员.")
 		private String forumManagerName = null;
 
+		@FieldDescribe("论坛可见范围.")
+		private String forumVisibleResult ;
+		
 		private static final long serialVersionUID = -5076990764713538973L;
 
 		public static WrapCopier<Wi, BBSForumInfo> copier = WrapCopierFactory.wi(Wi.class, BBSForumInfo.class, null,
@@ -232,7 +252,16 @@ public class ActionSave extends BaseAction {
 
 		public void setForumManagerName(String forumManagerName) {
 			this.forumManagerName = forumManagerName;
-		}		
+		}
+
+		public String getForumVisibleResult() {
+			return forumVisibleResult;
+		}
+
+		public void setForumVisibleResult(String forumVisibleResult) {
+			this.forumVisibleResult = forumVisibleResult;
+		}
+		
 	}
 
 	public static class Wo extends WoId {

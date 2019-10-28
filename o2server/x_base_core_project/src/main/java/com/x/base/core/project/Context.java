@@ -268,13 +268,12 @@ public class Context extends AbstractContext {
 
 	public <T extends AbstractJob> void scheduleLocal(Class<T> cls, Integer delay) throws Exception {
 		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
-		String group = StringTools.uniqueToken();
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
-		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), group).usingJobData(jobDataMap)
-				.withDescription(Config.node()).build();
+		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
+				.usingJobData(jobDataMap).withDescription(Config.node()).build();
 		/* 经过测试0代表不重复,仅运行一次 */
-		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), group)
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), clazz.getName())
 				.withDescription("scheduleLocal").startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
 				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(0))
 				.build();

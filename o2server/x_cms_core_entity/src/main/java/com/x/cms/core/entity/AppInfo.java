@@ -187,6 +187,13 @@ public class AppInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + allPeoplePublish_FIELDNAME)
 	private Boolean allPeoplePublish = true;
 	
+	public static final String sendNotify_FIELDNAME = "sendNotify";
+	@FieldDescribe("发布文档后是否通知阅读者：true | false")
+	@Column( name = ColumnNamePrefix + sendNotify_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
+	private Boolean sendNotify = true;
+	
 	public static final String categoryList_FIELDNAME = "categoryList";
 	@FieldDescribe("分类列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -736,6 +743,14 @@ public class AppInfo extends SliceJpaObject {
 
 	public void setAllPeoplePublish(Boolean allPeoplePublish) {
 		this.allPeoplePublish = allPeoplePublish;
+	}
+
+	public Boolean getSendNotify() {
+		return sendNotify;
+	}
+
+	public void setSendNotify(Boolean sendNotify) {
+		this.sendNotify = sendNotify;
 	}
 
 }

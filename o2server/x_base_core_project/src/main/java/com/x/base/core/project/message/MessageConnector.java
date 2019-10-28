@@ -105,6 +105,8 @@ public class MessageConnector {
 	public static final String TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime";
 	
 	public static final String TYPE_TEAMWORK_CHAT = "teamwork_taskChat";
+	
+	public static final String TYPE_CMS_PUBLISH = "cms_publish";
 
 	public static final String CONSUME_WS = "ws";
 

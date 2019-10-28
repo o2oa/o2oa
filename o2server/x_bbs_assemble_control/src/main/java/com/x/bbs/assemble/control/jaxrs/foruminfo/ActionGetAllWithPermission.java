@@ -18,6 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.MethodExcuteResult;
+import com.x.bbs.assemble.control.jaxrs.foruminfo.ActionGetAll.WoSectionInfo;
 import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoProcess;
 import com.x.bbs.entity.BBSForumInfo;
 
@@ -125,6 +126,7 @@ public class ActionGetAllWithPermission extends BaseAction {
 		if( check ){
 			if( ListTools.isNotEmpty( wraps ) ){
 				for( Wo wo : wraps ) {
+					wo.setForumVisibleResult( wo.getVisiblePermissionList() );
 					wo.setForumManagerName( wo.transferStringListToString( wo.getForumManagerList() ));
 				}
 			}
@@ -146,7 +148,7 @@ public class ActionGetAllWithPermission extends BaseAction {
 		return sb.toString();
 	}
 
-public static class Wo extends BBSForumInfo{
+	public static class Wo extends BBSForumInfo{
 		
 		@FieldDescribe("字符串形式输出的管理员信息，逗号(,)分隔.")
 		private String forumManagerName = null;
@@ -155,6 +157,21 @@ public static class Wo extends BBSForumInfo{
 		
 		public static WrapCopier< BBSForumInfo, Wo > copier = WrapCopierFactory.wo( BBSForumInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String forumVisibleResult ;
+		
+		//论坛版块列表
+		@FieldDescribe("版块列表.")
+		private List<WoSectionInfo> sections = null;
+
+		public List<WoSectionInfo> getSections() {
+			return sections;
+		}
+
+		public void setSections(List<WoSectionInfo> sections) {
+			this.sections = sections;
+		}
+
 		public String getForumManagerName() {
 			return forumManagerName;
 		}
@@ -163,14 +180,25 @@ public static class Wo extends BBSForumInfo{
 			this.forumManagerName = forumManagerName;
 		}
 		
+		public String getForumVisibleResult() {
+			return forumVisibleResult;
+		}
+		public void setForumVisibleResult(String forumVisibleResult) {
+			this.forumVisibleResult = forumVisibleResult;
+		}
+		
+		public void setForumVisibleResult( List<String> list ) {
+			this.forumVisibleResult = transferStringListToString(list);
+		}
+		
 		public String transferStringListToString( List<String> list ) {
 			StringBuffer sb = new StringBuffer();
 			if( ListTools.isNotEmpty( list )) {
 				for( String str : list ) {
 					if( StringUtils.isNotEmpty( sb.toString() )) {
 						sb.append(",");
-						sb.append(str);
 					}
+					sb.append(str);
 				}
 			}
 			return sb.toString();

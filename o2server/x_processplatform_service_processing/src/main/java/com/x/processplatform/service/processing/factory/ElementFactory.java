@@ -396,7 +396,7 @@ public class ElementFactory extends AbstractFactory {
 		default:
 			break;
 		}
-		return list;
+		return ListTools.trim(list, true, true);
 	}
 
 	public List<String> listFormWithProcess(Process process) throws Exception {

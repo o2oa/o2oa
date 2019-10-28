@@ -326,6 +326,18 @@ public class Work extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> manualTaskIdentityList;
 
+//	public static final String manualReadIdentityList_FIELDNAME = "manualReadIdentityList";
+//	@FieldDescribe("预期的待阅人")
+//	@PersistentCollection(fetch = FetchType.EAGER)
+//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+//			+ manualReadIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+//					+ manualReadIdentityList_FIELDNAME + JoinIndexNameSuffix))
+//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualReadIdentityList_FIELDNAME)
+//	@ElementIndex(name = TABLE + IndexNameMiddle + manualReadIdentityList_FIELDNAME + ElementIndexNameSuffix)
+//	@CheckPersist(allowEmpty = true)
+//	private List<String> manualReadIdentityList;
+
 	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + manualTaskIdentityText_FIELDNAME)

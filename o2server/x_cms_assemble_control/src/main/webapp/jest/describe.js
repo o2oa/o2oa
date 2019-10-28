@@ -407,7 +407,10 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															if( $('#' + i.name, '#ins').val() != "" ) {
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
+															
 														}
 													}
 												});
@@ -431,7 +434,10 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															if( $('#' + i.name, '#ins').val() != "" ) {
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
+															
 														}
 													}
 												});

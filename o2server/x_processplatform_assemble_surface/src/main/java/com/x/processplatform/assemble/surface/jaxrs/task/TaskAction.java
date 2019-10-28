@@ -316,7 +316,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "保存并继续流转.返回是最新的WorkLog", action = ActionProcessing.class)
+	@JaxrsMethodDescribe(value = "保存待办意见并继续流转.返回是最新的WorkLog", action = ActionProcessing.class)
 	@POST
 	@Path("{id}/processing")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -558,8 +558,8 @@ public class TaskAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageListNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						 @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-						 @JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
 		ActionResult<List<ActionManageListNext.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -577,8 +577,8 @@ public class TaskAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageListPrev(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						 @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-						 @JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
 		ActionResult<List<ActionManageListPrev.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -595,9 +595,9 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("list/{id}/next/{count}/filter/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								   @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-								   @JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+	public void manageListNextWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<ActionManageListNextFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -614,9 +614,9 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}/filter/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListPrevWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								   @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-								   @JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+	public void manageListPrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<ActionManageListPrevFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -633,9 +633,9 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("list/filter/{page}/size/{size}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListFilterPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-								   @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+	public void manageListFilterPaging(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<List<ActionManageListFilterPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

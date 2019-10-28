@@ -9,11 +9,10 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Table;
 
@@ -46,17 +45,15 @@ class ActionRowInsert extends BaseAction {
 			}
 			emc.commit();
 			Wo wo = new Wo();
-			if (os.isEmpty()) {
-				wo.setValue(false);
-			} else {
-				wo.setValue(true);
+			for (Object o : os) {
+				wo.addValue(((JpaObject)o).getId(), true);
 			}
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends WrapStringList {
 
 	}
 

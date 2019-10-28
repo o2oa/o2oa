@@ -25,21 +25,21 @@ public class ActionQueryCountWithFilter extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		
 		Long total = 0L;
-		WrapInDocumentFilter wi = null;
+		Wi wi = null;
 		Wo wo = new Wo();		
 		Boolean check = true;		
 		String personName = effectivePerson.getDistinguishedName();
 		QueryFilter queryFilter = null;
 		
 		try {
-			wi = this.convertToWrapIn( jsonElement, WrapInDocumentFilter.class );
+			wi = this.convertToWrapIn( jsonElement, Wi.class );
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new ExceptionDocumentInfoProcess( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		if ( wi == null ) { wi = new WrapInDocumentFilter(); }
+		if ( wi == null ) { wi = new Wi(); }
 		
 		if( StringUtils.isEmpty( wi.getDocumentType() )) {
 			wi.setDocumentType( "信息" );
@@ -114,6 +114,10 @@ public class ActionQueryCountWithFilter extends BaseAction {
 		return result;
 	}
 	
+	public static class Wi extends WrapInDocumentFilter{
+		
+	}
+
 	public static class Wo {
 		
 		@FieldDescribe( "查询到的文档数量" )

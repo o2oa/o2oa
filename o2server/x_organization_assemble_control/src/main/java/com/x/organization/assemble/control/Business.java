@@ -473,6 +473,7 @@ public class Business {
 		List<Identity> identities = emc.listEqual(Identity.class, Identity.person_FIELDNAME, person.getId());
 		List<String> unitIds = new ArrayList<>();
 		for (String id : ListTools.extractField(identities, Identity.unit_FIELDNAME, String.class, true, true)) {
+			unitIds.add(id);
 			unitIds.addAll(unit().listSupNested(id));
 		}
 		unitIds = ListTools.trim(unitIds, true, true);

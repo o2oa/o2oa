@@ -27,6 +27,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.Data.DataWork;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -129,18 +130,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void updateData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
-		if (jsonElement.isJsonObject()) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-
-			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCopier.copy(work)));
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		if (paths.length == 0) {
+			DataWork dataWork = DataWork.workCopier.copy(work);
+			dataWork.setWorkId(work.getId());
+			dataWork.setWorkCompletedId("");
+			dataWork.setCompleted(false);
+			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(dataWork));
 			jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
 					gson.toJsonTree(this.listDataAttachment(business, work.getJob())));
-
-			jsonElement = jsonObject;
 		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		List<Item> exists = business.item().listWithJobWithPath(work.getJob(), paths);
-		List<Item> currents = converter.disassemble(jsonElement, paths);
+		List<Item> currents = converter.disassemble(jsonObject, paths);
 		List<Item> removes = converter.subtract(exists, currents);
 		List<Item> adds = converter.subtract(currents, exists);
 		if ((!removes.isEmpty()) || (!adds.isEmpty())) {
@@ -162,18 +164,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	void updateData(Business business, WorkCompleted workCompleted, JsonElement jsonElement, String... paths)
 			throws Exception {
-		if (jsonElement.isJsonObject()) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-
-			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCompletedCopier.copy(workCompleted)));
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		if (paths.length == 0) {
+			DataWork dataWork = DataWork.workCompletedCopier.copy(workCompleted);
+			dataWork.setWorkCompletedId(workCompleted.getId());
+			dataWork.setWorkId(workCompleted.getWork());
+			dataWork.setCompleted(true);
+			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(dataWork));
 			jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
 					gson.toJsonTree(this.listDataAttachment(business, workCompleted.getJob())));
-
-			jsonElement = jsonObject;
 		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		List<Item> exists = business.item().listWithJobWithPath(workCompleted.getJob(), paths);
-		List<Item> currents = converter.disassemble(jsonElement, paths);
+		List<Item> currents = converter.disassemble(jsonObject, paths);
 		List<Item> removes = converter.subtract(exists, currents);
 		List<Item> adds = converter.subtract(currents, exists);
 		if ((!removes.isEmpty()) || (!adds.isEmpty())) {

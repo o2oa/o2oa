@@ -3,7 +3,6 @@ package com.x.processplatform.service.processing.jaxrs.task;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -29,8 +28,6 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.WorkDataHelper;
@@ -112,14 +109,12 @@ class ActionProcessing extends BaseAction {
 				}
 			}
 			MessageFactory.task_to_taskCompleted(taskCompleted);
-//			MessageFactory.taskCompleted_create(taskCompleted);
-//			MessageFactory.task_delete(task);
-			if (BooleanUtils.isNotFalse(wi.getFinallyProcessingWork())) {
-				ProcessingAttributes processingAttributes = new ProcessingAttributes();
-				processingAttributes.setDebugger(effectivePerson.getDebugger());
-				Processing processing = new Processing(processingAttributes);
-				processing.processing(task.getWork());
-			}
+//			if (BooleanUtils.isNotFalse(wi.getFinallyProcessingWork())) {
+//				ProcessingAttributes processingAttributes = new ProcessingAttributes();
+//				processingAttributes.setDebugger(effectivePerson.getDebugger());
+//				Processing processing = new Processing(processingAttributes);
+//				processing.processing(task.getWork());
+//			}
 			Wo wo = new Wo();
 			wo.setId(task.getId());
 			result.setData(wo);
@@ -135,8 +130,8 @@ class ActionProcessing extends BaseAction {
 		@FieldDescribe("流转类型.")
 		private ProcessingType processingType;
 
-		@FieldDescribe("最后是否触发work的流转,默认流转.")
-		private Boolean finallyProcessingWork;
+//		@FieldDescribe("最后是否触发work的流转,默认流转.")
+//		private Boolean finallyProcessingWork;
 
 		@FieldDescribe("路由数据.")
 		private JsonElement routeData;
@@ -147,14 +142,6 @@ class ActionProcessing extends BaseAction {
 
 		public void setProcessingType(ProcessingType processingType) {
 			this.processingType = processingType;
-		}
-
-		public Boolean getFinallyProcessingWork() {
-			return finallyProcessingWork;
-		}
-
-		public void setFinallyProcessingWork(Boolean finallyProcessingWork) {
-			this.finallyProcessingWork = finallyProcessingWork;
 		}
 
 		public JsonElement getRouteData() {

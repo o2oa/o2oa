@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
+import com.x.cms.core.entity.Review;
+import com.x.cms.core.entity.Review_;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -239,7 +237,6 @@ public class DocumentFactory extends AbstractFactory {
 	 * @param sequenceFieldValue
 	 * @param orderField
 	 * @param orderType
-	 * @param personName
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception
@@ -443,6 +440,101 @@ public class DocumentFactory extends AbstractFactory {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
+	}
+
+	/**
+	 * 根据条件分页查询符合条件的文档信息列表
+	 * @param orderField
+	 * @param orderType
+	 * @param queryFilter
+	 * @param adjustPage
+	 * @param adjustPageSize
+	 * @return
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
+												   Integer adjustPageSize ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		EntityManager em1 = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb1 = em1.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery(Document.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
+
+		if(StringUtils.isNotBlank(personName)){
+			Subquery<Review> subquery = cq.subquery(Review.class);
+			Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
+			subquery.select(root2);
+			Predicate p_permission = cb1.conjunction();
+			p_permission = cb1.and(p_permission,
+					cb1.or(cb1.equal( root2.get( Review_.permissionObj), "*"),
+							cb1.equal( root2.get( Review_.permissionObj ), personName )));
+			p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+			subquery.where(p_permission);
+			p = cb.and(p, cb.exists(subquery));
+		}
+		cq.select(root).where(p);
+
+		//排序，添加排序列，默认使用sequence
+		List<Order> orders = new ArrayList<>();
+		if( !Document.isTop_FIELDNAME.equals( orderField )) {
+			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
+			if( isTopOrder != null ){
+				orders.add( isTopOrder );
+			}
+		}
+
+		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, orderField, orderType );
+		if( orderWithField != null ){
+			orders.add( orderWithField );
+		}
+
+		if( !Document.isFieldInSequence(orderField)) {
+			//如果是其他的列，很可能排序值不唯一，所以使用多一列排序列来确定每次查询的顺序
+			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.id_FIELDNAME, orderType );
+			if( orderWithField != null ){
+				orders.add( orderWithField );
+			}
+		}
+		if( ListTools.isNotEmpty(  orders )){
+			cq.orderBy( orders );
+		}
+		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+				.getResultList();
+	}
+
+	/**
+	 * 根据条件统计文档数目
+	 * @param personName
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public Long countWithCondition( String personName, QueryFilter queryFilter) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		EntityManager em1 = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb1 = em1.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
+
+		if(StringUtils.isNotBlank(personName)){
+			Subquery<Review> subquery = cq.subquery(Review.class);
+			Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
+			subquery.select(root2);
+			Predicate p_permission = cb1.conjunction();
+			p_permission = cb1.and(p_permission,
+					cb1.or(cb1.equal( root2.get( Review_.permissionObj), "*"),
+							cb1.equal( root2.get( Review_.permissionObj ), personName )));
+			p_permission = cb1.and(p_permission, cb1.equal(root.get(Document_.id), root2.get(Review_.docId)));
+			subquery.where(p_permission);
+			p = cb.and(p, cb.exists(subquery));
+		}
+
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
 

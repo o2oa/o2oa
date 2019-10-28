@@ -26,8 +26,6 @@ public class ProcessPlatform extends ConfigObject {
 
 	public final static String DEFAULT_DOCTOWORDDEFAULTSITE = "$doc";
 
-	public final static Boolean DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY = true;
-
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -45,7 +43,6 @@ public class ProcessPlatform extends ConfigObject {
 		this.docToWordType = DEFAULT_DOCTOWORDTYPE;
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
-		this.processingTaskSameJobActivityIdentity = DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY;
 	}
 
 	@FieldDescribe("提醒设置,设置提醒间隔.")
@@ -86,14 +83,6 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
 	private String docToWordDefaultSite;
-
-	@FieldDescribe("同步处理同一工作在同一环节同一处理身份.")
-	private Boolean processingTaskSameJobActivityIdentity;
-
-	public Boolean getProcessingTaskSameJobActivityIdentity() {
-		return processingTaskSameJobActivityIdentity == null ? DEFAULT_PROCESSINGTASKSAMEJOBACTIVITYIDENTITY
-				: BooleanUtils.isTrue(this.processingTaskSameJobActivityIdentity);
-	}
 
 	public Integer getFormVersionPeriod() {
 		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD

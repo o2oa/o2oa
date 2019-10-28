@@ -48,7 +48,7 @@ public class ActionSubjectView extends BaseAction {
 		}
 		
 		if( check ){
-			String cacheKey = "subject#view#" + id;
+			String cacheKey = "subject#view#"+ id;
 			Element element = cache.get( cacheKey );
 			if ((null != element) && (null != element.getObjectValue())) {
 				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
@@ -56,8 +56,84 @@ public class ActionSubjectView extends BaseAction {
 				result.setCount( 1L);
 			} else {
 				//继续进行数据查询
-				result = getSubjectViewQueryResult( id, request, effectivePerson );
+				result = getSubjectViewQueryResult( id, request, effectivePerson );				
 				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		
+		if( check && result.getData() != null ) {
+			WoBBSSubjectInfo currentSubject = result.getData().getCurrentSubject();
+			if (check) {
+				if( currentSubject != null ){//获取该主题的投票选项组
+					List<BBSVoteOption> voteOptionList = null;
+					List<BBSVoteOptionGroup> voteOptionGroupList = null;
+					List<WoBBSVoteOptionGroup> wrapOutSubjectVoteOptionGroupList = null;
+					List<WoBBSVoteOption> wrapOutSubjectVoteOptionList = null;
+					
+					currentSubject.setVoted( false );
+					
+					try {
+						voteOptionGroupList = subjectVoteService.listVoteOptionGroup( id );
+						if( ListTools.isNotEmpty( voteOptionGroupList ) ){
+							wrapOutSubjectVoteOptionGroupList = WoBBSVoteOptionGroup.copier.copy( voteOptionGroupList );
+							for( WoBBSVoteOptionGroup group : wrapOutSubjectVoteOptionGroupList ){
+								voteOptionList = subjectVoteService.listVoteOptionByGroupId( group.getId() );
+								if( ListTools.isNotEmpty( voteOptionList ) ){
+									try {
+										wrapOutSubjectVoteOptionList = WoBBSVoteOption.copier.copy( voteOptionList );
+										for( WoBBSVoteOption wrapOutBBSVoteOption: wrapOutSubjectVoteOptionList ){
+											wrapOutBBSVoteOption.setVoted( false );
+											try {
+												if( subjectVoteService.optionHasVoted( effectivePerson, wrapOutBBSVoteOption.getId() )){
+													//判断是否已经投过票
+													wrapOutBBSVoteOption.setVoted( true );
+													currentSubject.setVoted( true );
+												}
+											} catch (Exception e) {
+												check = false;
+												Exception exception = new ExceptionVoteResultQueryById( e, id );
+												result.error( exception );
+												logger.error( e, effectivePerson, request, null);
+											}
+										}
+										group.setVoteOptions( wrapOutSubjectVoteOptionList );
+									} catch (Exception e) {
+										check = false;
+										Exception exception = new ExceptionSubjectWrapOut( e );
+										result.error( exception );
+										logger.error( e, effectivePerson, request, null);
+									}
+								}
+							}
+							currentSubject.setVoteOptionGroupList( wrapOutSubjectVoteOptionGroupList );
+						}
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionVoteOptionListById( e, id );
+						result.error( exception );
+						logger.error( e, effectivePerson, request, null);
+					}
+					try {
+						//查询投票总人数
+						Long voteCount = subjectVoteService.countVoteRecordForSubject( id, null );
+						currentSubject.setVoteCount( voteCount );
+					}catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionVoteOptionListById( e, id );
+						result.error( exception );
+						logger.error( e, effectivePerson, request, null);
+					}
+					
+					try {
+						voteOptionList = subjectVoteService.listVoteOption( id );
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionVoteOptionListById( e, id );
+						result.error( exception );
+						logger.error( e, effectivePerson, request, null);
+					}
+					result.getData().setCurrentSubject(currentSubject);
+				}
 			}
 		}
 		
@@ -84,10 +160,6 @@ public class ActionSubjectView extends BaseAction {
 		WoBBSSubjectInfo currentSubject = null;
 		WoBBSSubjectInfo nextSubject = null;
 		BBSSubjectInfo subjectInfo = null;
-		List<BBSVoteOption> voteOptionList = null;
-		List<BBSVoteOptionGroup> voteOptionGroupList = null;
-		List<WoBBSVoteOptionGroup> wrapOutSubjectVoteOptionGroupList = null;
-		List<WoBBSVoteOption> wrapOutSubjectVoteOptionList = null;
 		String subjectContent = null;
 		Boolean check = true;
 		
@@ -185,75 +257,7 @@ public class ActionSubjectView extends BaseAction {
 				nextSubject.setTitle( subjectInfo.getTitle() );
 				wrapOutNearSubjectInfo.setNextSubject( nextSubject );
 			}
-		}
-		
-		if (check) {
-			if( currentSubject != null ){//获取该主题的投票选项
-				try {
-					voteOptionList = subjectVoteService.listVoteOption( id );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionVoteOptionListById( e, id );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
-				}
-			}
-		}
-		
-		if (check) {
-			if( currentSubject != null ){//获取该主题的投票选项组
-				try {
-					voteOptionGroupList = subjectVoteService.listVoteOptionGroup( id );
-					if( ListTools.isNotEmpty( voteOptionGroupList ) ){
-						wrapOutSubjectVoteOptionGroupList = WoBBSVoteOptionGroup.copier.copy( voteOptionGroupList );
-						for( WoBBSVoteOptionGroup group : wrapOutSubjectVoteOptionGroupList ){
-							voteOptionList = subjectVoteService.listVoteOptionByGroupId( group.getId() );
-							if( ListTools.isNotEmpty( voteOptionList ) ){
-								try {
-									wrapOutSubjectVoteOptionList = WoBBSVoteOption.copier.copy( voteOptionList );
-									for( WoBBSVoteOption wrapOutBBSVoteOption: wrapOutSubjectVoteOptionList ){
-										try {
-											if( subjectVoteService.optionHasVoted( effectivePerson, wrapOutBBSVoteOption.getId() )){
-												wrapOutBBSVoteOption.setVoted( true );
-												currentSubject.setVoted( true );
-											}
-										} catch (Exception e) {
-											check = false;
-											Exception exception = new ExceptionVoteResultQueryById( e, id );
-											result.error( exception );
-											logger.error( e, effectivePerson, request, null);
-										}
-									}
-									group.setVoteOptions( wrapOutSubjectVoteOptionList );
-								} catch (Exception e) {
-									check = false;
-									Exception exception = new ExceptionSubjectWrapOut( e );
-									result.error( exception );
-									logger.error( e, effectivePerson, request, null);
-								}
-							}
-						}
-						currentSubject.setVoteOptionGroupList( wrapOutSubjectVoteOptionGroupList );
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionVoteOptionListById( e, id );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
-				}
-				try {
-					//查询投票总人数
-					Long voteCount = subjectVoteService.countVoteRecordForSubject( id, null );
-					currentSubject.setVoteCount( voteCount );
-				}catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionVoteOptionListById( e, id );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
-				}
-			}
-		}
-		
+		}		
 		//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
 		cutPersonNames( wrapOutNearSubjectInfo.getCurrentSubject() );
 		

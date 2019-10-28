@@ -146,6 +146,12 @@ public class ActionSave extends BaseAction {
 			wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 			wi.setCreatorUnitName( unitName );
 			wi.setCreatorTopUnitName( topUnitName );
+
+			if( StringUtils.equals( "信息", wi.getDocumentType() ) && wi.getSendNotify() == null ) {
+				wi.setSendNotify( true );
+			}else {
+				wi.setSendNotify( false );
+			}
 			
 			try {
 				appInfo = appInfoServiceAdv.save( wi, effectivePerson );

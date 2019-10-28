@@ -182,7 +182,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (wi.getCreatorIdentity() != null) {
+				if ( StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
 					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
 					wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
 					wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );

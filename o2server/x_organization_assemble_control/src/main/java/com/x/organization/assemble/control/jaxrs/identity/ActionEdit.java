@@ -73,6 +73,7 @@ class ActionEdit extends BaseAction {
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Identity.class);
+			ApplicationCache.notify(Person.class);
 			Wo wo = new Wo();
 			wo.setId(identity.getId());
 			result.setData(wo);

@@ -237,8 +237,15 @@ public class DocumentPersistService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			Document document = emc.find( id, Document.class );
 			if( document != null ) {
+//				emc.beginTransaction( Item.class );
 				emc.beginTransaction( Document.class );
-				document.setIsTop( true );
+				document.setIsTop( true );			
+				
+				DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
+				Data data = documentDataHelper.get();
+				data.setDocument( document );
+				documentDataHelper.update( data );
+				
 				emc.commit();
 			}
 			

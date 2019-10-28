@@ -145,7 +145,7 @@ public class ReviewService {
 	 * @return
 	 * @throws Exception 
 	 */
-	private List<String> listPermissionPersons( AppInfo appInfo, CategoryInfo categoryInfo, Document document ) throws Exception {
+	public List<String> listPermissionPersons( AppInfo appInfo, CategoryInfo categoryInfo, Document document ) throws Exception {
 		List<String> permissionObjs = new ArrayList<>();
 		Boolean documentHasPermissionControl = documentViewPermissionExists(document);
 		Boolean categoryHasPermissionControl = categoryPermissionExists(categoryInfo);
