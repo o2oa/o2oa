@@ -274,20 +274,20 @@ public class DocumentAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID修改信息发布文档状态为已发布.", action = ActionPersistPublishDocument.class)
+	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，并且使用Message通知所有的阅读者。", action = ActionPersistPublishAndNotify.class)
 	@PUT
 	@Path("publish/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void persist_publish( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id, JsonElement jsonElement ) {		
+	public void persist_publishAndNotify( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement ) {		
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionPersistPublishDocument.Wo> result = new ActionResult<>();
+		ActionResult<ActionPersistPublishAndNotify.Wo> result = new ActionResult<>();
 		Boolean check = true;
 
 		if( check ){
 			try {
-				result = new ActionPersistPublishDocument().execute( request, id, effectivePerson, jsonElement );
+				result = new ActionPersistPublishAndNotify().execute( request, id, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -558,6 +558,74 @@ public class DocumentAction extends StandardJaxrsAction{
 		if( check ){
 			try {
 				result = new ActionPersistUnTopDocument().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListWithFilterPaging.class)
+	@PUT
+	@Path("filter/list/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listWithFilterPaging( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+											@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionQueryListWithFilterPaging().execute( request, page, size, jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "获取文件基础信息和访问控制信息.", action = ActionQueryGetControl.class)
+	@GET
+	@Path("{id}/control")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_getControl( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryGetControl.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionQueryGetControl().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+	
+	@JaxrsMethodDescribe(value = "获取文件可见范围内的所有人员.", action = ActionQueryListVisiblePersons.class)
+	@GET
+	@Path("{id}/persons")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_getVisiblePersons( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryListVisiblePersons.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionQueryListVisiblePersons().execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

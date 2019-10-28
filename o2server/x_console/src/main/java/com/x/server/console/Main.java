@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -19,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
 import org.apache.commons.io.FileUtils;
@@ -76,303 +75,301 @@ public class Main {
 		if (null == Config.currentNode()) {
 			throw new Exception("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
 		}
-		try (PipedInputStream pipedInput = new PipedInputStream();
-				PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
-			new Thread() {
-				/* 文件中的命令输出到解析器 */
-				public void run() {
-					try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw")) {
-						FileChannel fc = raf.getChannel();
-						MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, 256);
-						byte[] fillBytes = new byte[256];
-						byte[] readBytes = new byte[256];
-						Arrays.fill(fillBytes, (byte) 0);
+		final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
+//		try (PipedInputStream pipedInput = new PipedInputStream();
+//				PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
+		new Thread() {
+			/* 文件中的命令输出到解析器 */
+			public void run() {
+				try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw")) {
+					FileChannel fc = raf.getChannel();
+					MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, 256);
+					byte[] fillBytes = new byte[256];
+					byte[] readBytes = new byte[256];
+					Arrays.fill(fillBytes, (byte) 0);
+					mbb.put(fillBytes);
+					FileLock flock = null;
+					String cmd = "";
+					while (true) {
+						flock = fc.lock();
+						mbb.position(0);
+						mbb.get(readBytes, 0, 256);
+						mbb.position(0);
 						mbb.put(fillBytes);
-						FileLock flock = null;
-						String cmd = "";
-						while (true) {
-							flock = fc.lock();
-							mbb.position(0);
-							mbb.get(readBytes, 0, 256);
-							mbb.position(0);
-							mbb.put(fillBytes);
-							flock.release();
-							if (!Arrays.equals(readBytes, fillBytes)) {
-								cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
-								System.out.println("read command:" + cmd);
-								pipedOutput.write((cmd + StringUtils.LF).getBytes(DefaultCharset.name));
-							}
-							Thread.sleep(4000);
+						flock.release();
+						if (!Arrays.equals(readBytes, fillBytes)) {
+							cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
+							System.out.println("read command:" + cmd);
+							commandQueue.put(cmd);
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+						Thread.sleep(1000);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			}.start();
-			new Thread() {
-				/* 将屏幕命令输出到解析器 */
-				public void run() {
-					try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-						String cmd = "";
-						while (null != cmd) {
-							cmd = reader.readLine();
-							/** 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值 */
-							if (null != cmd) {
-								cmd = cmd + StringUtils.LF;
-								pipedOutput.write(cmd.getBytes(DefaultCharset.name));
-								pipedOutput.flush();
-							}
-							Thread.sleep(1000);
-						}
-						System.out.println("console input closed!");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}.start();
-			/* 启动NodeAgent */
-			if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
-				NodeAgent nodeAgent = new NodeAgent();
-				nodeAgent.start();
 			}
-
-			SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
-			Scheduler scheduler = schedulerBuilder.start();
-
-			if (Config.currentNode().autoStart()) {
-				startAll();
-			}
-
-			Matcher matcher = null;
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(pipedInput))) {
-				String cmd = "";
-				while (true) {
-					try {
+		}.start();
+		new Thread() {
+			/* 将屏幕命令输出到解析器 */
+			public void run() {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+					String cmd = "";
+					while (null != cmd) {
 						cmd = reader.readLine();
-					} catch (Exception e) {
-						continue;
-					}
-					if (StringUtils.isBlank(cmd)) {
-						continue;
-					}
-
-					matcher = CommandFactory.test_pattern.matcher(cmd);
-					if (matcher.find()) {
-						test();
-						continue;
-					}
-
-					matcher = CommandFactory.show_os_pattern.matcher(cmd);
-					if (matcher.find()) {
-						showOs(matcher.group(1), matcher.group(2));
-						continue;
-					}
-
-					matcher = CommandFactory.show_cpu_pattern.matcher(cmd);
-					if (matcher.find()) {
-						showCpu(matcher.group(1), matcher.group(2));
-						continue;
-					}
-
-					matcher = CommandFactory.show_memory_pattern.matcher(cmd);
-					if (matcher.find()) {
-						showMemory(matcher.group(1), matcher.group(2));
-						continue;
-					}
-
-					matcher = CommandFactory.show_thread_pattern.matcher(cmd);
-					if (matcher.find()) {
-						showThread(matcher.group(1), matcher.group(2));
-						continue;
-					}
-
-					matcher = CommandFactory.show_dataSource_pattern.matcher(cmd);
-					if (matcher.find()) {
-						showDataSource(matcher.group(1), matcher.group(2));
-						continue;
-					}
-
-					matcher = CommandFactory.start_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "application":
-							startApplicationServer();
-							break;
-						case "center":
-							startCenterServer();
-							break;
-						case "web":
-							startWebServer();
-							break;
-						case "storage":
-							startStorageServer();
-							break;
-						case "data":
-							startDataServer();
-							break;
-						default:
-							startAll();
-							break;
+						/** 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值 */
+						if (null != cmd) {
+							commandQueue.put(cmd);
 						}
-						continue;
+						Thread.sleep(4000);
 					}
-					matcher = CommandFactory.stop_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "application":
-							stopApplicationServer();
-							break;
-						case "center":
-							stopCenterServer();
-							break;
-						case "web":
-							stopWebServer();
-							break;
-						case "storage":
-							stopStorageServer();
-							break;
-						case "data":
-							stopDataServer();
-							break;
-						default:
-							stopAll();
-							break;
-						}
-						continue;
-					}
-					matcher = CommandFactory.dump_path_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "data":
-							dumpData(matcher.group(2), matcher.group(3));
-							break;
-						case "storage":
-							dumpStorage(matcher.group(2), matcher.group(3));
-							break;
-						default:
-							break;
-						}
-						continue;
-					}
-					matcher = CommandFactory.dump_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "data":
-							dumpData("", matcher.group(2));
-							break;
-						case "storage":
-							dumpStorage("", matcher.group(2));
-							break;
-						default:
-							break;
-						}
-						continue;
-					}
-					matcher = CommandFactory.restore_path_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "data":
-							resotreDataPath(matcher.group(2), matcher.group(3));
-							break;
-						case "storage":
-							resotreStoragePath(matcher.group(2), matcher.group(3));
-							break;
-						default:
-							break;
-						}
-						continue;
-					}
-					matcher = CommandFactory.restore_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "data":
-							resotreData(matcher.group(2), matcher.group(3));
-							break;
-						case "storage":
-							resotreStorage(matcher.group(2), matcher.group(3));
-							break;
-						default:
-							break;
-						}
-						continue;
-					}
-					matcher = CommandFactory.help_pattern.matcher(cmd);
-					if (matcher.find()) {
-						CommandFactory.printHelp();
-						continue;
-					}
-
-					matcher = CommandFactory.version_pattern.matcher(cmd);
-					if (matcher.find()) {
-						version();
-						continue;
-					}
-
-					matcher = CommandFactory.updateFile_pattern.matcher(cmd);
-					if (matcher.find()) {
-						if (updateFile(matcher.group(1), matcher.group(2), matcher.group(3))) {
-							stopAll();
-							System.exit(0);
-						} else {
-							continue;
-						}
-					}
-
-					matcher = CommandFactory.setPassword_pattern.matcher(cmd);
-					if (matcher.find()) {
-						setPassword(matcher.group(1), matcher.group(2));
-						if (config()) {
-							break;
-						} else {
-							continue;
-						}
-					}
-
-					matcher = CommandFactory.erase_content_pattern.matcher(cmd);
-					if (matcher.find()) {
-						switch (matcher.group(1)) {
-						case "pp":
-							eraseContentProcessPlatform(matcher.group(2));
-							break;
-						case "cms":
-							eraseContentCms(matcher.group(2));
-							break;
-						case "log":
-							eraseContentLog(matcher.group(2));
-							break;
-						case "bbs":
-							eraseContentBbs(matcher.group(2));
-							break;
-
-						default:
-							break;
-						}
-						continue;
-					}
-
-					matcher = CommandFactory.compact_data_pattern.matcher(cmd);
-					if (matcher.find()) {
-						compactData(matcher.group(1));
-						continue;
-					}
-
-					matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
-					if (matcher.find()) {
-						createEncryptKey(matcher.group(1));
-						continue;
-					}
-
-					matcher = CommandFactory.exit_pattern.matcher(cmd);
-					if (matcher.find()) {
-						exit();
-					}
-
-					System.out.println("unknown command:" + cmd);
+				} catch (Exception e) {
+					System.out.println("console input closed!");
 				}
 			}
-			/* 关闭定时器 */
-			scheduler.shutdown();
+		}.start();
+		/* 启动NodeAgent */
+		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
+			NodeAgent nodeAgent = new NodeAgent();
+			nodeAgent.start();
 		}
+
+		SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
+		Scheduler scheduler = schedulerBuilder.start();
+
+		if (Config.currentNode().autoStart()) {
+			startAll();
+		}
+
+		Matcher matcher = null;
+		// try (BufferedReader reader = new BufferedReader(new
+		// InputStreamReader(pipedInput))) {
+		String cmd = "";
+		while (true) {
+			try {
+				cmd = commandQueue.take();
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+			if (StringUtils.isBlank(cmd)) {
+				continue;
+			}
+			matcher = CommandFactory.test_pattern.matcher(cmd);
+			if (matcher.find()) {
+				test();
+				continue;
+			}
+
+			matcher = CommandFactory.show_os_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showOs(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.show_cpu_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showCpu(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.show_memory_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showMemory(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.show_thread_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showThread(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.show_dataSource_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showDataSource(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.start_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "application":
+					startApplicationServer();
+					break;
+				case "center":
+					startCenterServer();
+					break;
+				case "web":
+					startWebServer();
+					break;
+				case "storage":
+					startStorageServer();
+					break;
+				case "data":
+					startDataServer();
+					break;
+				default:
+					startAll();
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.stop_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "application":
+					stopApplicationServer();
+					break;
+				case "center":
+					stopCenterServer();
+					break;
+				case "web":
+					stopWebServer();
+					break;
+				case "storage":
+					stopStorageServer();
+					break;
+				case "data":
+					stopDataServer();
+					break;
+				default:
+					stopAll();
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.dump_path_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "data":
+					dumpData(matcher.group(2), matcher.group(3));
+					break;
+				case "storage":
+					dumpStorage(matcher.group(2), matcher.group(3));
+					break;
+				default:
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.dump_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "data":
+					dumpData("", matcher.group(2));
+					break;
+				case "storage":
+					dumpStorage("", matcher.group(2));
+					break;
+				default:
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.restore_path_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "data":
+					resotreDataPath(matcher.group(2), matcher.group(3));
+					break;
+				case "storage":
+					resotreStoragePath(matcher.group(2), matcher.group(3));
+					break;
+				default:
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.restore_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "data":
+					resotreData(matcher.group(2), matcher.group(3));
+					break;
+				case "storage":
+					resotreStorage(matcher.group(2), matcher.group(3));
+					break;
+				default:
+					break;
+				}
+				continue;
+			}
+			matcher = CommandFactory.help_pattern.matcher(cmd);
+			if (matcher.find()) {
+				CommandFactory.printHelp();
+				continue;
+			}
+
+			matcher = CommandFactory.version_pattern.matcher(cmd);
+			if (matcher.find()) {
+				version();
+				continue;
+			}
+
+			matcher = CommandFactory.updateFile_pattern.matcher(cmd);
+			if (matcher.find()) {
+				if (updateFile(matcher.group(1), matcher.group(2), matcher.group(3))) {
+					stopAll();
+					System.exit(0);
+				} else {
+					continue;
+				}
+			}
+
+			matcher = CommandFactory.setPassword_pattern.matcher(cmd);
+			if (matcher.find()) {
+				setPassword(matcher.group(1), matcher.group(2));
+				if (config()) {
+					break;
+				} else {
+					continue;
+				}
+			}
+
+			matcher = CommandFactory.erase_content_pattern.matcher(cmd);
+			if (matcher.find()) {
+				switch (matcher.group(1)) {
+				case "pp":
+					eraseContentProcessPlatform(matcher.group(2));
+					break;
+				case "cms":
+					eraseContentCms(matcher.group(2));
+					break;
+				case "log":
+					eraseContentLog(matcher.group(2));
+					break;
+				case "bbs":
+					eraseContentBbs(matcher.group(2));
+					break;
+
+				default:
+					break;
+				}
+				continue;
+			}
+
+			matcher = CommandFactory.compact_data_pattern.matcher(cmd);
+			if (matcher.find()) {
+				compactData(matcher.group(1));
+				continue;
+			}
+
+			matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
+			if (matcher.find()) {
+				createEncryptKey(matcher.group(1));
+				continue;
+			}
+
+			matcher = CommandFactory.exit_pattern.matcher(cmd);
+			if (matcher.find()) {
+				exit();
+			}
+
+			System.out.println("unknown command:" + cmd);
+		}
+		/* 关闭定时器 */
+		scheduler.shutdown();
+		// }
 		SystemOutErrorSideCopyBuilder.stop();
 	}
 

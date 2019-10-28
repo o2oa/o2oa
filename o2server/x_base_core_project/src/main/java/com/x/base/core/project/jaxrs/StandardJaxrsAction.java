@@ -1107,11 +1107,11 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 			if (StringUtils.equalsIgnoreCase(order, DESC)) {
 				cq.where(null == sequence ? predicate
 						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
-				cq.orderBy(cb.desc(root.get(sequenceField)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
 			} else {
 				cq.where(null == sequence ? predicate
 						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
-				cq.orderBy(cb.asc(root.get(sequenceField)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
 			}
 
 			List<Selection<?>> selections = new ArrayList<>();
@@ -1157,6 +1157,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 					sequence = PropertyUtils.getProperty(t, sequenceField);
 				}
 			}
+
 			EntityManager em = emc.get(cls);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(cls);
@@ -1210,11 +1211,11 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 			if (StringUtils.equalsIgnoreCase(order, DESC)) {
 				cq.where(null == sequence ? predicate
 						: cb.and(predicate, cb.greaterThan(root.get(sequenceField), (Comparable) sequence)));
-				cq.orderBy(cb.desc(root.get(sequenceField)));
+				cq.orderBy(cb.asc(root.get(sequenceField)));
 			} else {
 				cq.where(null == sequence ? predicate
 						: cb.and(predicate, cb.lessThan(root.get(sequenceField), (Comparable) sequence)));
-				cq.orderBy(cb.asc(root.get(sequenceField)));
+				cq.orderBy(cb.desc(root.get(sequenceField)));
 			}
 
 			List<T> os = em.createQuery(cq.select(root)).setMaxResults(Math.max(Math.min(count, list_max), list_min))

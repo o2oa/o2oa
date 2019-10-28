@@ -10,6 +10,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.entity.dynamic.DynamicEntity.Field;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -48,8 +49,20 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isNotEmpty(emc.conflict(Table.class, table))) {
 				throw new ExceptionDuplicateFlag(Table.class, emc.conflict(Table.class, table));
 			}
+
+			DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getDraftData(), DynamicEntity.class);
+			if (ListTools.isEmpty(dynamicEntity.getFieldList())) {
+				throw new ExceptionFieldEmpty();
+			}
+
+			for (Field field : dynamicEntity.getFieldList()) {
+				if (JpaObject.FieldsDefault.stream().filter(o -> StringUtils.equalsIgnoreCase(o, field.getName()))
+						.count() > 0) {
+					throw new ExceptionFieldName(field.getName());
+				}
+			}
+
 			emc.beginTransaction(Table.class);
-			XGsonBuilder.instance().fromJson(table.getData(), DynamicEntity.class);
 			table.setCreatorPerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());

@@ -91,6 +91,7 @@ class ActionCreate extends BaseAction {
 			emc.commit();
 
 			ApplicationCache.notify(Identity.class);
+			ApplicationCache.notify(Person.class);
 			Wo wo = new Wo();
 			wo.setId(identity.getId());
 			result.setData(wo);

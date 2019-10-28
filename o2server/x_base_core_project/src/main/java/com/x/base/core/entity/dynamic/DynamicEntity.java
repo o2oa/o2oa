@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.ListTools;
 
 public class DynamicEntity extends GsonPropertyObject {
 

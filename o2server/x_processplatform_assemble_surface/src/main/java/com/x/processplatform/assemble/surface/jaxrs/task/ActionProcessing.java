@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,17 +11,16 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -30,6 +28,8 @@ import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Route;
 
 class ActionProcessing extends BaseAction {
 
@@ -38,19 +38,15 @@ class ActionProcessing extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Task task = null;
-		List<String> sameJobActivityIdentityTasks = new ArrayList<>();
+		boolean appendTask = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
 			task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			if (!StringUtils.equalsIgnoreCase(task.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
-			}
-			if (Config.processPlatform().getProcessingTaskSameJobActivityIdentity()) {
-				sameJobActivityIdentityTasks = emc.idsEqualAndEqualAndEqualAndNotEqual(Task.class, Task.job_FIELDNAME,
-						task.getJob(), Task.activity_FIELDNAME, task.getActivity(), Task.identity_FIELDNAME,
-						task.getIdentity(), Task.id_FIELDNAME, task.getId());
 			}
 			emc.beginTransaction(Task.class);
 			/* 如果有输入新的路由决策覆盖原有决策 */
@@ -64,47 +60,51 @@ class ActionProcessing extends BaseAction {
 			/* 强制覆盖多媒体意见 */
 			task.setMediaOpinion(wi.getMediaOpinion());
 			emc.commit();
+
+			appendTask = this.appendTask(business, task, wi);
 		}
-		/* processing task */
+
+		if (appendTask) {
+			ReqAppendTask req = new ReqAppendTask();
+			req.setIdentityList(wi.getAppendTaskIdentityList());
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("task", task.getId(), "append"), req);
+		}
+
 		ProcessingRequest processingRequest = new ProcessingRequest();
 		processingRequest.setRouteData(wi.getRouteData());
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", processingRequest);
+				Applications.joinQueryUri("task", task.getId(), "processing"), processingRequest);
+
+		ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
+				x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", task.getWork(), "processing"), null);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			List<Wo> wos = this.referenceWorkLog(business, task);
 			result.setData(wos);
 		}
 
-		other(wi, sameJobActivityIdentityTasks);
-
 		return result;
 	}
 
-	private void other(Wi wi, List<String> sameJobActivityIdentityTasks) throws Exception {
-		for (String str : sameJobActivityIdentityTasks) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Task other = emc.find(str, Task.class);
-				if (null != other) {
-					emc.beginTransaction(Task.class);
-					/* 如果有输入新的路由决策覆盖原有决策 */
-					if (StringUtils.isNotEmpty(wi.getRouteName())) {
-						other.setRouteName(wi.getRouteName());
-					}
-					/* 如果有新的流程意见那么覆盖原有流程意见 */
-					if (StringUtils.isNotEmpty(wi.getOpinion())) {
-						other.setOpinion(wi.getOpinion());
-					}
-					/* 强制覆盖多媒体意见 */
-					other.setMediaOpinion(wi.getMediaOpinion());
-					emc.commit();
-					ProcessingRequest request = new ProcessingRequest();
-					request.setRouteData(wi.getRouteData());
-					ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-							"task/" + URLEncoder.encode(other.getId(), DefaultCharset.name) + "/processing", request);
+	private boolean appendTask(Business business, Task task, Wi wi) throws Exception {
+		Manual manual = business.manual().pick(task.getActivity());
+		if (null != manual) {
+			Route route = null;
+			for (Route o : business.route().pick(manual.getRouteList())) {
+				if (StringUtils.equals(o.getName(), task.getRouteName())) {
+					route = o;
+					break;
 				}
 			}
+			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK))
+					&& StringUtils.equals(manual.getId(), route.getActivity())) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	private List<Wo> referenceWorkLog(Business business, Task task) throws Exception {
@@ -207,6 +207,21 @@ class ActionProcessing extends BaseAction {
 
 	}
 
+	public static class ReqAppendTask extends GsonPropertyObject {
+
+		@FieldDescribe("添加的待办身份.")
+		private List<String> identityList;
+
+		public List<String> getIdentityList() {
+			return identityList;
+		}
+
+		public void setIdentityList(List<String> identityList) {
+			this.identityList = identityList;
+		}
+
+	}
+
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("路由名称")
@@ -220,6 +235,17 @@ class ActionProcessing extends BaseAction {
 
 		@FieldDescribe("路由数据")
 		private JsonElement routeData;
+
+		@FieldDescribe("新添加的待办处理人")
+		private List<String> appendTaskIdentityList;
+
+		public List<String> getAppendTaskIdentityList() {
+			return appendTaskIdentityList;
+		}
+
+		public void setAppendTaskIdentityList(List<String> appendTaskIdentityList) {
+			this.appendTaskIdentityList = appendTaskIdentityList;
+		}
 
 		public String getRouteName() {
 			return routeName;

@@ -76,7 +76,6 @@ public class ActionQueryGetDocument extends BaseAction {
 			wrapOutDocument = wo.getDocument();
 			result.setData(wo);
 		} else {
-			logger.debug(">>>>>>>>>>>>>get document '"+id+"' in database!" );			
 			if (check) {
 				try {
 					document = documentQueryService.get(id);

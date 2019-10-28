@@ -160,7 +160,11 @@ public class DataItemConverter<T extends DataItem> {
 			// if (!NumberUtils.isNumber(name)) {
 			o.getAsJsonObject().add(name, jsonElement);
 		} else {
-			o.getAsJsonArray().add(jsonElement);
+			try {
+				o.getAsJsonArray().add(jsonElement);
+			} catch (Exception e) {
+				throw new Exception(e.getMessage() + ": name:" + name + ", jsonElement:" + jsonElement + ".", e);
+			}
 		}
 		return root;
 	}

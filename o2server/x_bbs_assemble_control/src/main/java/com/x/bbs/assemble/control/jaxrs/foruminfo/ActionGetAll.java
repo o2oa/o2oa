@@ -80,6 +80,7 @@ public class ActionGetAll extends BaseAction {
 		if( check ){
 			if( ListTools.isNotEmpty( wraps ) ){
 				for( Wo wo : wraps ) {
+					wo.setForumVisibleResult( wo.getVisiblePermissionList() );
 					wo.setForumManagerName( wo.transferStringListToString( wo.getForumManagerList() ));
 				}
 			}
@@ -98,7 +99,11 @@ public class ActionGetAll extends BaseAction {
 		
 		public static WrapCopier< BBSForumInfo, Wo > copier = WrapCopierFactory.wo( BBSForumInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String forumVisibleResult ;
+		
 		//论坛版块列表
+		@FieldDescribe("版块列表.")
 		private List<WoSectionInfo> sections = null;
 
 		public List<WoSectionInfo> getSections() {
@@ -108,7 +113,7 @@ public class ActionGetAll extends BaseAction {
 		public void setSections(List<WoSectionInfo> sections) {
 			this.sections = sections;
 		}
-		
+
 		public String getForumManagerName() {
 			return forumManagerName;
 		}
@@ -117,14 +122,25 @@ public class ActionGetAll extends BaseAction {
 			this.forumManagerName = forumManagerName;
 		}
 		
+		public String getForumVisibleResult() {
+			return forumVisibleResult;
+		}
+		public void setForumVisibleResult(String forumVisibleResult) {
+			this.forumVisibleResult = forumVisibleResult;
+		}
+		
+		public void setForumVisibleResult( List<String> list ) {
+			this.forumVisibleResult = transferStringListToString(list);
+		}
+		
 		public String transferStringListToString( List<String> list ) {
 			StringBuffer sb = new StringBuffer();
 			if( ListTools.isNotEmpty( list )) {
 				for( String str : list ) {
 					if( StringUtils.isNotEmpty( sb.toString() )) {
 						sb.append(",");
-						sb.append(str);
 					}
+					sb.append(str);
 				}
 			}
 			return sb.toString();

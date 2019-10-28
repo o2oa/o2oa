@@ -1,6 +1,7 @@
 package com.x.bbs.assemble.control.jaxrs.sectioninfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -220,6 +222,39 @@ public class ActionSave extends BaseAction {
 		}
 
 		if (check) {
+			List<String> arrayList = new ArrayList<>(); 
+			if( StringUtils.equals( wrapIn.getSectionVisible(), "根据权限" )) {
+				if( StringUtils.isNotEmpty( wrapIn.getSectionVisibleResult() )) {
+					arrayList.clear();
+					Collections.addAll(arrayList, wrapIn.getSectionVisibleResult().split( "," ));
+					sectionInfo.setVisiblePermissionList( arrayList );
+				}
+			}else {
+				sectionInfo.setVisiblePermissionList( new ArrayList<>() );
+			}
+			
+			if( StringUtils.equals( wrapIn.getReplyPublishAble(), "根据权限" )) {
+				if( StringUtils.isNotEmpty( wrapIn.getReplyPublishResult() )) {
+					arrayList.clear();
+					Collections.addAll(arrayList, wrapIn.getReplyPublishResult().split( "," ));
+					sectionInfo.setReplyPermissionList( arrayList );
+				}
+			}else {
+				sectionInfo.setReplyPermissionList( new ArrayList<>() );
+			}
+
+			if( StringUtils.equals( wrapIn.getSubjectPublishAble(), "根据权限" )) {
+				if( StringUtils.isNotEmpty( wrapIn.getSubjectPublishResult() )) {
+					arrayList.clear();
+					Collections.addAll(arrayList, wrapIn.getSubjectPublishResult().split( "," ));
+					sectionInfo.setPublishPermissionList( arrayList );
+				}
+			}else {
+				sectionInfo.setPublishPermissionList( new ArrayList<>() );
+			}
+		}
+		
+		if (check) {
 			try {
 				if( sectionInfo.getCreateTime() == null ) {
 					sectionInfo.setCreateTime( new Date() );
@@ -340,6 +375,39 @@ public class ActionSave extends BaseAction {
 		public static List<String> Excludes = new ArrayList<String>();
 		
 		public static WrapCopier< Wi, BBSSectionInfo > copier = WrapCopierFactory.wi( Wi.class, BBSSectionInfo.class, null, JpaObject.FieldsUnmodify);
+		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String sectionVisibleResult ;
+		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String replyPublishResult ;
+		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String subjectPublishResult ;
+
+		public String getSectionVisibleResult() {
+			return sectionVisibleResult;
+		}
+
+		public void setSectionVisibleResult(String sectionVisibleResult) {
+			this.sectionVisibleResult = sectionVisibleResult;
+		}
+
+		public String getReplyPublishResult() {
+			return replyPublishResult;
+		}
+
+		public void setReplyPublishResult(String replyPublishResult) {
+			this.replyPublishResult = replyPublishResult;
+		}
+
+		public String getSubjectPublishResult() {
+			return subjectPublishResult;
+		}
+
+		public void setSubjectPublishResult(String subjectPublishResult) {
+			this.subjectPublishResult = subjectPublishResult;
+		}
 	}
 
 	

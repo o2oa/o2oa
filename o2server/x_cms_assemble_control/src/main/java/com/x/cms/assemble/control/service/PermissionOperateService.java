@@ -52,7 +52,7 @@ public class PermissionOperateService {
 			permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
 		} else {
 			for( PermissionInfo p : readerList ) {
-				System.out.println(">>>>>readerList:" + p.getPermissionObjectCode());
+//				System.out.println(">>>>>readerList:" + p.getPermissionObjectCode());
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
 					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
@@ -64,7 +64,7 @@ public class PermissionOperateService {
 		//将所有的作者都添加到阅读者里去
 		if ( authorList != null && !authorList.isEmpty() ) {
 			for( PermissionInfo p : authorList ) {
-				System.out.println(">>>>>authorList:" + p.getPermissionObjectCode());
+//				System.out.println(">>>>>authorList:" + p.getPermissionObjectCode());
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
 					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );

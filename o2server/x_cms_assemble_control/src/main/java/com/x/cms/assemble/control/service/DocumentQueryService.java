@@ -44,6 +44,17 @@ public class DocumentQueryService {
 		}
 	}
 	
+	public Long getViewableReview( String id , String personName ) throws Exception {
+		if( StringUtils.isEmpty( id ) ){
+			throw new Exception("id is null!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return reviewService.countViewableWithFilter(emc, personName, new QueryFilter() );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
 	public String getSequence(String id) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			return null;
@@ -380,6 +391,46 @@ public class DocumentQueryService {
 		//按正常逻辑根据序列进行分页查询
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {			
 			return documentInfoService.listNextWithCondition( emc, pageSize, lastId, orderField, orderType, queryFilter );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 对Document信息进行分页查询(包含权限)
+	 * @param personName
+	 * @param orderField
+	 * @param orderType
+	 * @param queryFilter
+	 * @param adjustPage
+	 * @param pageSize
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Document> listPagingWithCondition( String personName, String orderField, String orderType, QueryFilter queryFilter, Integer adjustPage,
+																  Integer pageSize ) throws Exception {
+		if( pageSize == 0 ) { pageSize = 20; }
+		//按正常逻辑根据序列进行分页查询
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc);
+			return business.getDocumentFactory().listPagingWithCondition(personName, orderField, orderType, queryFilter, adjustPage, pageSize);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据条件统计Document信息(包含权限)
+	 * @param personName
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public Long countWithCondition( String personName, QueryFilter queryFilter) throws Exception {
+		//按正常逻辑根据序列进行分页查询
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc);
+			return business.getDocumentFactory().countWithCondition(personName, queryFilter);
 		} catch ( Exception e ) {
 			throw e;
 		}

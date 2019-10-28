@@ -3,9 +3,10 @@ package com.x.cms.assemble.control.jaxrs.document;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -22,12 +23,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
-public class ActionPersistPublishDocument extends BaseAction {
+public class ActionPersistPublishAndNotify extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishDocument.class);
+	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishAndNotify.class);
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -61,10 +63,9 @@ public class ActionPersistPublishDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-
 		if (check) {
 			try {
-				modifyDocStatus(id, "published", effectivePerson.getDistinguishedName());
+				modifyDocStatus( id, "published", effectivePerson.getDistinguishedName() );
 				document.setDocStatus("published");
 				document.setPublishTime(new Date());
 				
@@ -174,7 +175,7 @@ public class ActionPersistPublishDocument extends BaseAction {
 		}
 
 		//将读者以及作者信息持久化到数据库中
-		if( !wi.getSkipPermission() ) {
+		if( wi.getSkipPermission() ) {
 			try {
 				documentPersistService.refreshDocumentPermission( id, wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
@@ -184,34 +185,32 @@ public class ActionPersistPublishDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		
+		//判断是否需要发送通知消息
+		if (check) {
+			try {
+				CategoryInfo categoryInfo = categoryInfoServiceAdv.getWithFlag( document.getCategoryId() );
+				if( categoryInfo != null ){
+					//如果分类配置为需要推送通知，或者（分类配置为空，但是文档为信息文档时），推送通知
+					if( categoryInfo.getSendNotify() || (categoryInfo.getSendNotify() == null && StringUtils.equals("信息", categoryInfo.getDocumentType()))){
+						ThisApplication.queueSendDocumentNotify.send( document );
+					}
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
 		ApplicationCache.notify(Document.class);
 
 		return result;
 	}
 
-	public static class Wi extends Document {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
+	public static class Wi {
 		
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify );
-		
-		@FieldDescribe( "文档操作者身份." )
-		private String identity = null;
-		
-		@FieldDescribe( "数据的路径列表." )
-		private String[] dataPaths = null;
-		
-		@FieldDescribe( "启动流程的JobId." )
-		private String wf_jobId = null;
-		
-		@FieldDescribe( "启动流程的WorkId." )
-		private String wf_workId = null;
-		
-		@FieldDescribe( "启动流程的附件列表." )
-		private String[] wf_attachmentIds = null;	
-		
-		@FieldDescribe( "文档数据." )
-		private Map<?, ?> docData = null;
 		
 		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
@@ -233,14 +232,6 @@ public class ActionPersistPublishDocument extends BaseAction {
 			this.skipPermission = skipPermission;
 		}
 
-		public String getIdentity() {
-			return identity;
-		}
-
-		public void setIdentity(String identity) {
-			this.identity = identity;
-		}
-
 		public List<PermissionInfo> getReaderList() {
 			return readerList;
 		}
@@ -255,49 +246,6 @@ public class ActionPersistPublishDocument extends BaseAction {
 
 		public void setAuthorList(List<PermissionInfo> authorList) {
 			this.authorList = authorList;
-		}
-
-		public String[] getDataPaths() {
-			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
-				return null;
-			}
-			return dataPaths;
-		}
-
-		public void setDataPaths(String[] dataPaths) {
-			this.dataPaths = dataPaths;
-		}
-
-		public Map<?, ?> getDocData() {
-			return docData;
-		}
-
-		public void setDocData(Map<?, ?> docData) {
-			this.docData = docData;
-		}
-
-		public String getWf_jobId() {
-			return wf_jobId;
-		}
-
-		public String getWf_workId() {
-			return wf_workId;
-		}
-
-		public String[] getWf_attachmentIds() {
-			return wf_attachmentIds;
-		}
-
-		public void setWf_jobId(String wf_jobId) {
-			this.wf_jobId = wf_jobId;
-		}
-
-		public void setWf_workId(String wf_workId) {
-			this.wf_workId = wf_workId;
-		}
-
-		public void setWf_attachmentIds(String[] wf_attachmentIds) {
-			this.wf_attachmentIds = wf_attachmentIds;
 		}
 
 		public List<String> getCloudPictures() {

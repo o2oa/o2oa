@@ -21,6 +21,7 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -105,6 +106,17 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + forumVisible_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String forumVisible = "所有人";
+	
+	public static final String visiblePermissionList_FIELDNAME = "visiblePermissionList";
+	@FieldDescribe("版块可见范围")
+	@PersistentCollection( fetch = FetchType.EAGER )
+	@OrderColumn( name = ORDERCOLUMNCOLUMN )
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + visiblePermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
+			+ IndexNameMiddle + visiblePermissionList_FIELDNAME + JoinIndexNameSuffix ))
+	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + visiblePermissionList_FIELDNAME )
+	@ElementIndex( name = TABLE + IndexNameMiddle + visiblePermissionList_FIELDNAME + ElementIndexNameSuffix )
+	@CheckPersist( allowEmpty = true )
+	private List<String> visiblePermissionList;
 
 	public static final String subjectPublishAble_FIELDNAME = "subjectPublishAble";
 	@FieldDescribe("版块发贴权限：所有人（默认）|根据权限")
@@ -112,12 +124,34 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + subjectPublishAble_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String subjectPublishAble = "所有人";
+	
+	public static final String publishPermissionList_FIELDNAME = "publishPermissionList";
+	@FieldDescribe("可发布范围")
+	@PersistentCollection( fetch = FetchType.EAGER )
+	@OrderColumn( name = ORDERCOLUMNCOLUMN )
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + publishPermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
+			+ IndexNameMiddle + publishPermissionList_FIELDNAME + JoinIndexNameSuffix ))
+	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + publishPermissionList_FIELDNAME )
+	@ElementIndex( name = TABLE + IndexNameMiddle + publishPermissionList_FIELDNAME + ElementIndexNameSuffix )
+	@CheckPersist( allowEmpty = true )
+	private List<String> publishPermissionList;
 
 	public static final String replyPublishAble_FIELDNAME = "replyPublishAble";
 	@FieldDescribe("版块回复权限：所有人（默认）|根据权限")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + replyPublishAble_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String replyPublishAble = "所有人";
+	
+	public static final String replyPermissionList_FIELDNAME = "replyPermissionList";
+	@FieldDescribe("可回复范围")
+	@PersistentCollection( fetch = FetchType.EAGER )
+	@OrderColumn( name = ORDERCOLUMNCOLUMN )
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + replyPermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
+			+ IndexNameMiddle + replyPermissionList_FIELDNAME + JoinIndexNameSuffix ))
+	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + replyPermissionList_FIELDNAME )
+	@ElementIndex( name = TABLE + IndexNameMiddle + replyPermissionList_FIELDNAME + ElementIndexNameSuffix )
+	@CheckPersist( allowEmpty = true )
+	private List<String> replyPermissionList;
 
 	public static final String indexListStyle_FIELDNAME = "indexListStyle";
 	@FieldDescribe("首页列表样式：经典|简单矩形|图片矩形")
@@ -539,5 +573,59 @@ public class BBSForumInfo extends SliceJpaObject {
 			this.forumManagerList.add(forumManagerName);
 		}
 		return this.forumManagerList;
+	}
+
+	public List<String> getVisiblePermissionList() {
+		return visiblePermissionList;
+	}
+
+	public void setVisiblePermissionList(List<String> visiblePermissionList) {
+		this.visiblePermissionList = visiblePermissionList;
+	}
+	
+	public List<String> addVisiblePermission(String permissoin) {
+		if (this.visiblePermissionList == null) {
+			this.visiblePermissionList = new ArrayList<>();
+		}
+		if (!this.visiblePermissionList.contains(permissoin)) {
+			this.visiblePermissionList.add(permissoin);
+		}
+		return this.visiblePermissionList;
+	}
+
+	public List<String> getPublishPermissionList() {
+		return publishPermissionList;
+	}
+
+	public void setPublishPermissionList(List<String> publishPermissionList) {
+		this.publishPermissionList = publishPermissionList;
+	}
+
+	public List<String> addPublishPermission(String permissoin) {
+		if (this.publishPermissionList == null) {
+			this.publishPermissionList = new ArrayList<>();
+		}
+		if (!this.publishPermissionList.contains(permissoin)) {
+			this.publishPermissionList.add(permissoin);
+		}
+		return this.publishPermissionList;
+	}
+	
+	public List<String> getReplyPermissionList() {
+		return replyPermissionList;
+	}
+
+	public void setReplyPermissionList(List<String> replyPermissionList) {
+		this.replyPermissionList = replyPermissionList;
+	}
+	
+	public List<String> addReplyPermission(String permissoin) {
+		if (this.replyPermissionList == null) {
+			this.replyPermissionList = new ArrayList<>();
+		}
+		if (!this.replyPermissionList.contains(permissoin)) {
+			this.replyPermissionList.add(permissoin);
+		}
+		return this.replyPermissionList;
 	}
 }

@@ -323,25 +323,26 @@ public class StringTools {
 	}
 
 	public static boolean matchWildcard(String str, String pattern) {
-		if (StringUtils.isNotEmpty(str) && StringUtils.isNotEmpty(pattern) && StringUtils.contains(pattern, "*")) {
-			if (StringUtils.equals(pattern, "*")) {
-				return true;
-			}
-			if (StringUtils.startsWith(pattern, "*")) {
-				return StringUtils.endsWith(str, StringUtils.substringAfter(pattern, "*"));
-			}
-			if (StringUtils.endsWith(pattern, "*")) {
-				return StringUtils.startsWith(str, StringUtils.substringBeforeLast(pattern, "*"));
-			}
-			String[] parts = StringUtils.split(pattern, "*", 2);
-			if (StringUtils.startsWith(str, parts[0]) && StringUtils.endsWith(str, parts[1])) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return StringUtils.equals(str, pattern);
-		}
+		return Objects.toString(str, "").matches(Objects.toString(pattern, "").replace("?", ".?").replace("*", ".*?"));
+//		if (StringUtils.isNotEmpty(str) && StringUtils.isNotEmpty(pattern) && StringUtils.contains(pattern, "*")) {
+//			if (StringUtils.equals(pattern, "*")) {
+//				return true;
+//			}
+//			if (StringUtils.startsWith(pattern, "*")) {
+//				return StringUtils.endsWith(str, StringUtils.substringAfter(pattern, "*"));
+//			}
+//			if (StringUtils.endsWith(pattern, "*")) {
+//				return StringUtils.startsWith(str, StringUtils.substringBeforeLast(pattern, "*"));
+//			}
+//			String[] parts = StringUtils.split(pattern, "*", 2);
+//			if (StringUtils.startsWith(str, parts[0]) && StringUtils.endsWith(str, parts[1])) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} else {
+//			return StringUtils.equals(str, pattern);
+//		}
 	}
 
 	public static List<String> includesExcludesWithWildcard(List<String> list, Collection<String> includes,
@@ -386,11 +387,12 @@ public class StringTools {
 		}
 	}
 
-	private static final int[] SIZE_TABLE = new int[]{9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, 2147483647};
+	private static final int[] SIZE_TABLE = new int[] { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
+			2147483647 };
 
 	public static int sizeOfInt(int x) {
 		int i;
-		for(i = 0; x > SIZE_TABLE[i]; ++i) {
+		for (i = 0; x > SIZE_TABLE[i]; ++i) {
 		}
 
 		return i + 1;
@@ -408,7 +410,7 @@ public class StringTools {
 			if (i < 0) {
 				return true;
 			}
-		} while(Character.isDigit(str.charAt(i)));
+		} while (Character.isDigit(str.charAt(i)));
 
 		return false;
 	}
@@ -416,7 +418,7 @@ public class StringTools {
 	public static boolean equalsNull(String str) {
 		int strLen;
 		if (str != null && (strLen = str.length()) != 0 && !str.equalsIgnoreCase("null")) {
-			for(int i = 0; i < strLen; ++i) {
+			for (int i = 0; i < strLen; ++i) {
 				if (!Character.isWhitespace(str.charAt(i))) {
 					return false;
 				}

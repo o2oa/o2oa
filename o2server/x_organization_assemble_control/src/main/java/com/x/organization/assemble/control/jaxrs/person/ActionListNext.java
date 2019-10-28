@@ -41,10 +41,8 @@ class ActionListNext extends BaseAction {
 					}
 					id = o.getId();
 				}
-				System.out.println("!!!!!!!");
-				System.out.println(business.personPredicateWithTopUnit(effectivePerson));
-				System.out.println("!!!!!!!");
-				result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
+	
+				result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
 						business.personPredicateWithTopUnit(effectivePerson));
 
 				Co co = new Co(result.getData(), result.getCount());

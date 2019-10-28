@@ -271,7 +271,7 @@ public class UserPermissionService {
 			}
 			if ( methodExcuteResult.getSuccess() ) {// 获取用户可以访问的论坛相关权限
 				try {
-					forumViewPermissionList = permissionInfoService.filterPermissionListByPermissionFunction("FORUM_VIEW", permissionList);
+					forumViewPermissionList = permissionInfoService.filterPermissionListByPermissionFunction("FORUM_VIEW", permissionList );
 				} catch (Exception e) {
 					methodExcuteResult.setSuccess(false);
 					methodExcuteResult.error(e);

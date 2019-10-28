@@ -16,16 +16,10 @@ class ActionUpdateWithWork extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/** 防止提交空数据清空data */
-			if (jsonElement.isJsonNull()) {
-				throw new ExceptionNullData();
+			if (null == jsonElement || (!jsonElement.isJsonObject())) {
+				throw new ExceptionNotJsonObject();
 			}
-			if (jsonElement.isJsonArray()) {
-				throw new ExceptionArrayData();
-			}
-			if (jsonElement.isJsonPrimitive()) {
-				throw new ExceptionPrimitiveData();
-			}
-			if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().entrySet().isEmpty()) {
+			if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
 				throw new ExceptionEmptyData();
 			}
 			ActionResult<Wo> result = new ActionResult<>();

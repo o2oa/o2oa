@@ -16,6 +16,7 @@ import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -51,6 +52,8 @@ public class WorkLogFactory extends AbstractFactory {
 		} else if (list.size() == 1) {
 			return list.get(0);
 		} else {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(XGsonBuilder.toJson(list));
 			throw new Exception("find multiple workLog point to arrivedActivityToken{value:" + activityToken
 					+ "}, is not impossible.");
 		}

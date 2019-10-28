@@ -37,6 +37,7 @@ public class ActionSave extends BaseAction {
 		String unitName = null;
 		String topUnitName = null;
 		Wi wi = null;
+		AppInfo appInfo = null;
 		CategoryInfo old_categoryInfo = null;
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
@@ -74,6 +75,14 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
+		if( check ) {
+			if ( StringUtils.isEmpty( wi.getAppId() ) ) {
+				check = false;
+				Exception exception = new ExceptionAppIdEmpty();
+				result.error(exception);
+			}
+		}
+		
 		if ( check && !"xadmin".equals( identityName ) ) {
 			try {
 				unitName = userManagerService.getUnitNameByIdentity(identityName);
@@ -95,7 +104,21 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+		if( check ){
+			try {
+				appInfo = appInfoServiceAdv.getWithFlag( wi.getAppId() );
+				if( appInfo == null ){
+					check = false;
+					Exception exception = new ExceptionAppInfoNotExists( wi.getAppId() );
+					result.error( exception );
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionCategoryInfoProcess( e, "根据指定flag查询应用栏目信息对象时发生异常。flag:" + wi.getAppId() );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
 		if (check) {
 			if( StringUtils.isEmpty( wi.getId() )) {
 				wi.setId( CategoryInfo.createId() );
@@ -117,6 +140,22 @@ public class ActionSave extends BaseAction {
 			wi.setCreatorUnitName(unitName);
 			wi.setCreatorTopUnitName(topUnitName);
 			
+			if( StringUtils.equals( "信息", wi.getDocumentType() ) ) {
+				if( wi.getSendNotify() == null ) {
+					if( appInfo.getSendNotify() == null) {
+						wi.setSendNotify( true );
+					}else {
+						//继承栏目的通知配置
+						wi.setSendNotify( appInfo.getSendNotify() );
+					}
+				}
+			}else {
+				//数据就默认为false，不通知
+				if( wi.getSendNotify() == null ) {
+					wi.setSendNotify( false );
+				}
+			}
+
 			try {
 				categoryInfo = categoryInfoServiceAdv.save( wi, wi.getExtContent(), effectivePerson );
 

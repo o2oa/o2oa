@@ -74,12 +74,14 @@ public class ActionCollaboration {
 
 	@OnMessage
 	public void message(String input, Session session) throws Exception {
-		logger.info("@OnMessage receive message {}",input);
+		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
+		logger.debug("@OnMessage1 receive: message {}, person:{}, ip:{}, client:{} .", input,
+				effectivePerson.getDistinguishedName(), effectivePerson.getRemoteAddress(), effectivePerson.getUserAgent());
 		if (StringUtils.isBlank(input)) {
 			return;
 		}
-		//建立心跳，维持websocket链接
-		if(input.equalsIgnoreCase("heartbeat")){
+		// 建立心跳，维持websocket链接
+		if (input.equalsIgnoreCase("heartbeat")) {
 			session.getBasicRemote().sendText("heartbeat");
 		}
 	}

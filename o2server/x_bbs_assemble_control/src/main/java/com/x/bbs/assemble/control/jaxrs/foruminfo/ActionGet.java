@@ -77,7 +77,7 @@ public class ActionGet extends BaseAction {
 			if( forumInfo != null ){
 				try {
 					wrap = Wo.copier.copy( forumInfo );
-					
+					wrap.setForumVisibleResult( wrap.getVisiblePermissionList() );
 					//TODO 为了不改变前端的逻辑，此处将List转为String进行输出，逗号分隔
 					wrap.setForumManagerName( wrap.transferStringListToString( wrap.getForumManagerList()) );
 					result.setData( wrap );
@@ -105,7 +105,11 @@ public class ActionGet extends BaseAction {
 		
 		public static WrapCopier< BBSForumInfo, Wo > copier = WrapCopierFactory.wo( BBSForumInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
 		
+		@FieldDescribe("版块访问权限列表，用于接收参数.")
+		private String forumVisibleResult ;
+		
 		//论坛版块列表
+		@FieldDescribe("版块列表.")
 		private List<WoSectionInfo> sections = null;
 
 		public List<WoSectionInfo> getSections() {
@@ -124,14 +128,25 @@ public class ActionGet extends BaseAction {
 			this.forumManagerName = forumManagerName;
 		}
 		
+		public String getForumVisibleResult() {
+			return forumVisibleResult;
+		}
+		public void setForumVisibleResult(String forumVisibleResult) {
+			this.forumVisibleResult = forumVisibleResult;
+		}
+		
+		public void setForumVisibleResult( List<String> list ) {
+			this.forumVisibleResult = transferStringListToString(list);
+		}
+		
 		public String transferStringListToString( List<String> list ) {
 			StringBuffer sb = new StringBuffer();
 			if( ListTools.isNotEmpty( list )) {
 				for( String str : list ) {
 					if( StringUtils.isNotEmpty( sb.toString() )) {
 						sb.append(",");
-						sb.append(str);
 					}
+					sb.append(str);
 				}
 			}
 			return sb.toString();
@@ -143,6 +158,7 @@ public class ActionGet extends BaseAction {
 		private static final long serialVersionUID = -5076990764713538973L;
 		
 		//版块的子版块信息列表
+		@FieldDescribe("子版块列表.")
 		private List<WoSectionInfo> subSections = null;
 
 		public List<WoSectionInfo> getSubSections() {
@@ -150,7 +166,8 @@ public class ActionGet extends BaseAction {
 		}
 		public void setSubSections(List<WoSectionInfo> subSections) {
 			this.subSections = subSections;
-		}	
+		}
+		
 	}
 
 

@@ -179,7 +179,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (wi.getCreatorIdentity() != null) {
+				if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
 					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
 					wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
 					wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
@@ -209,8 +209,9 @@ public class ActionPersistPublishContent extends BaseAction {
 			try {
 				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData(), Map.class);
 				wi.setDocStatus("published");
-				wi.setPublishTime(new Date());
-			
+				if( wi.getPublishTime() == null ) {
+					wi.setPublishTime(new Date());
+				}			
 				document = documentPersistService.save(wi, docData );
 			} catch (Exception e) {
 				check = false;

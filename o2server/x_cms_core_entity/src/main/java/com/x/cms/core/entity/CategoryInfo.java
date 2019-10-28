@@ -280,6 +280,13 @@ public class CategoryInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
+	
+	public static final String sendNotify_FIELDNAME = "sendNotify";
+	@FieldDescribe("发布文档后是否通知阅读者：true | false")
+	@Column( name = ColumnNamePrefix + sendNotify_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
+	private Boolean sendNotify = true;
 
 	public static final String viewablePersonList_FIELDNAME = "viewablePersonList";
 	@FieldDescribe("发布可见人员")
@@ -968,6 +975,14 @@ public class CategoryInfo extends SliceJpaObject {
 
 	public void setAnonymousAble(Boolean anonymousAble) {
 		this.anonymousAble = anonymousAble;
+	}
+
+	public Boolean getSendNotify() {
+		return sendNotify;
+	}
+
+	public void setSendNotify(Boolean sendNotify) {
+		this.sendNotify = sendNotify;
 	}
 
 }

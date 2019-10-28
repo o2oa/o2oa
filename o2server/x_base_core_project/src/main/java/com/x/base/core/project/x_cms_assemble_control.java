@@ -5,7 +5,7 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
-@Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "内容管理", packageName = "com.x.cms.assemble.control", containerEntities = {
+@Module( type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "内容管理", packageName = "com.x.cms.assemble.control", containerEntities = {
 		"com.x.cms.core.entity.element.AppDict", "com.x.cms.core.entity.element.AppDictItem",
 		"com.x.cms.core.entity.element.Form", "com.x.cms.core.entity.element.FormField",
 		"com.x.cms.core.entity.element.QueryView", "com.x.cms.core.entity.element.Script",

@@ -63,8 +63,6 @@ public class Manual extends Activity {
 
 	/* 更新运行方法 */
 
-	// public static String[] FLA GS = new String[] { "id", "alias" };
-
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
 
@@ -455,14 +453,6 @@ public class Manual extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private List<String> taskDataPathList;
 
-	public static final String manualMode_FIELDNAME = "manualMode";
-	@FieldDescribe("人工节点的处理方式.")
-	@Enumerated(EnumType.STRING)
-	@Column(length = ManualMode.length, name = ColumnNamePrefix + manualMode_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + manualMode_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private ManualMode manualMode;
-
 	public static final String allowReset_FIELDNAME = "allowReset";
 	@FieldDescribe("允许重置待办")
 	@CheckPersist(allowEmpty = true)
@@ -517,6 +507,14 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + resetCount_FIELDNAME)
 	private Integer resetCount;
 
+	public static final String manualMode_FIELDNAME = "manualMode";
+	@FieldDescribe("人工节点的处理方式.")
+	@Enumerated(EnumType.STRING)
+	@Column(length = ManualMode.length, name = ColumnNamePrefix + manualMode_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + manualMode_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ManualMode manualMode;
+
 	public static final String manualBeforeTaskScript_FIELDNAME = "manualBeforeTaskScript";
 	@IdReference(Script.class)
 	@FieldDescribe("待办执行前脚本.")
@@ -565,23 +563,22 @@ public class Manual extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String manualStayScriptText;
 
-//	public static final String manualPressScript_FIELDNAME = "manualPressScript";
-//	@IdReference(Script.class)
-//	@FieldDescribe("提醒内容脚本.")
-//	@Column(length = length_255B, name = ColumnNamePrefix + manualPressScript_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String manualPressScript;
-//
-//	public static final String manualPressScriptText_FIELDNAME = "manualPressScriptText";
-//	@FieldDescribe("提醒内容脚本文本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + manualPressScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String manualPressScriptText;
+	public static final String manualMergeSameJobActivity_FIELDNAME = "manualMergeSameJobActivity";
+	@FieldDescribe("合并相同job相同活动的工作.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + manualMergeSameJobActivity_FIELDNAME)
+	private Boolean manualMergeSameJobActivity;
 
 	public String getName() {
 		return name;
+	}
+
+	public Boolean getManualMergeSameJobActivity() {
+		return manualMergeSameJobActivity;
+	}
+
+	public void setManualMergeSameJobActivity(Boolean manualMergeSameJobActivity) {
+		this.manualMergeSameJobActivity = manualMergeSameJobActivity;
 	}
 
 	public void setName(String name) {
@@ -1151,6 +1148,5 @@ public class Manual extends Activity {
 	public void setOpinionGroup(String opinionGroup) {
 		this.opinionGroup = opinionGroup;
 	}
-
 
 }

@@ -20,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.jaxrs.person.ActionGet.Wo;
@@ -38,12 +39,19 @@ class ActionCreate extends BaseAction {
 			Business business = new Business(emc);
 			Person person = new Person();
 			Wi.copier.copy(wi, person);
-			if (!this.editable(business, effectivePerson, person)) {
+
+			if ((!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+					OrganizationDefinition.PersonManager, OrganizationDefinition.Manager))
+					&& (!effectivePerson.isManager()) && (!effectivePerson.isCipher())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			if (!Config.token().isInitialManager(effectivePerson.getDistinguishedName())) {
+
+			if ((!Config.token().isInitialManager(effectivePerson.getDistinguishedName()))
+					&& (!effectivePerson.isCipher())) {
 				Person current = business.person().pick(effectivePerson.getDistinguishedName());
 				person.setTopUnitList(current.getTopUnitList());
+			} else {
+				person.setTopUnitList(new ArrayList<String>());
 			}
 			this.checkName(business, person.getName(), person.getId());
 			this.checkMobile(business, person.getMobile(), person.getId());

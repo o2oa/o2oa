@@ -14,7 +14,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.core.entity.ScheduleLog;
 
 class ActionReport extends BaseAction {
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -37,7 +37,7 @@ class ActionReport extends BaseAction {
 
 		private static final long serialVersionUID = 1996856138701159925L;
 		static WrapCopier<Wi, ScheduleLog> copier = WrapCopierFactory.wi(Wi.class, ScheduleLog.class, null,
-				JpaObject.FieldsInvisible);
+				JpaObject.FieldsUnmodify);
 	}
 
 	public static class Wo extends WrapBoolean {

@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -189,13 +190,13 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if ( identity != null) {
+				if ( StringUtils.isNotEmpty(identity)) {
 					document.setCreatorIdentity( identity );
 					document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
 					document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
 					document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
 				} else {
-					if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
+					if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
 						document.setCreatorIdentity("xadmin");
 						document.setCreatorPerson("xadmin");
 						document.setCreatorUnitName("xadmin");
@@ -203,7 +204,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 					} else {
 						//取第一个身份
 						identity = userManagerService.getIdentityWithPerson(effectivePerson.getDistinguishedName());
-						if(StringUtils.isNotEmpty(identity)) {
+						if( StringUtils.isNotEmpty(identity) ) {
 							document.setCreatorIdentity( identity );
 							document.setCreatorPerson( effectivePerson.getDistinguishedName() );
 							document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
@@ -220,6 +221,14 @@ public class ActionPersistSaveDocument extends BaseAction {
 			}
 		}
 
+		if (check) {
+			if( StringUtils.equals( wi.getDocStatus(), "published")) {
+				if( document.getPublishTime() == null ) {
+					document.setPublishTime( new Date() );
+				}
+			}
+		}
+		
 		if (check) {
 			try {
 				JsonElement dataJson = null;
@@ -351,6 +360,9 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		@FieldDescribe("文档状态: published | draft | checking | error，非必填，默认为draft")
 		private String docStatus = "draft";
+		
+		@FieldDescribe("文档发布时间")
+		private Date publishTime;
 
 		@FieldDescribe("首页图片列表，非必填")
 		private List<String> pictureList = null;		
@@ -513,6 +525,14 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		public void setSkipPermission(Boolean skipPermission) {
 			this.skipPermission = skipPermission;
+		}
+
+		public Date getPublishTime() {
+			return publishTime;
+		}
+
+		public void setPublishTime(Date publishTime) {
+			this.publishTime = publishTime;
 		}
 	}
 

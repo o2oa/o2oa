@@ -31,8 +31,34 @@ public class TestClient {
 		b.add("33");
 		b.add("44");
 		System.out.println(ListUtils.sum(a, b));
+		System.out.println(ListUtils.intersection(a, b));
+		System.out.println(ListUtils.union(a, b));
 	}
 
+	@Test
+	public void test2() {
+		List<String> aaa = new ArrayList<>();
 
+		aaa.add("aaa");
+		aaa.add("bbb");
+		aaa.add("ccc");
+
+		List<String> bbb = new ArrayList<>();
+
+		bbb.add("111");
+		bbb.add("222");
+
+		List<List<String>> list = new ArrayList<>();
+
+		list.add(aaa);
+		list.add(bbb);
+
+		list = list.stream().sorted((o1, o2) -> {
+			return o2.size() - o1.size();
+		}).collect(Collectors.toList());
+
+		System.out.println(list);
+
+	}
 
 }
