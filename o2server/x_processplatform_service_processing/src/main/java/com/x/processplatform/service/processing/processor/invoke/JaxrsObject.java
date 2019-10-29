@@ -1,5 +1,7 @@
 package com.x.processplatform.service.processing.processor.invoke;
 
+import java.util.Map;
+
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class JaxrsObject extends GsonPropertyObject {
@@ -11,6 +13,16 @@ public class JaxrsObject extends GsonPropertyObject {
 	private String address;
 
 	private String contentType;
+
+	private Map<String, String> head;
+
+	public Map<String, String> getHead() {
+		return head;
+	}
+
+	public void setHead(Map<String, String> head) {
+		this.head = head;
+	}
 
 	private Boolean internal;
 

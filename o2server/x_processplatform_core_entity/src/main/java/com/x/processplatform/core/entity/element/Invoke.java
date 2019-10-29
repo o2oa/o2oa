@@ -63,11 +63,6 @@ public class Invoke extends Activity {
 
 	/* 更新运行方法 */
 
-	// public static String[] FLA GS = new String[] { "id", "alias" };
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
-
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
@@ -435,6 +430,22 @@ public class Invoke extends Activity {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + jaxrsBodyScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String jaxrsBodyScriptText;
+
+	public static final String jaxrsHeadScript_FIELDNAME = "jaxrsHeadScript";
+	@IdReference(Script.class)
+	@FieldDescribe("jaxrs请求头脚本.")
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ jaxrsHeadScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String jaxrsHeadScript;
+
+	public static final String jaxrsHeadScriptText_FIELDNAME = "jaxrsHeadScriptText";
+	@FieldDescribe("jaxrs请求头脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + jaxrsHeadScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String jaxrsHeadScriptText;
 
 	public static final String jaxrsContentType_FIELDNAME = "jaxrsContentType";
 	@FieldDescribe("发送请求的类型")
@@ -944,6 +955,22 @@ public class Invoke extends Activity {
 
 	public void setOpinionGroup(String opinionGroup) {
 		this.opinionGroup = opinionGroup;
+	}
+
+	public String getJaxrsHeadScript() {
+		return jaxrsHeadScript;
+	}
+
+	public void setJaxrsHeadScript(String jaxrsHeadScript) {
+		this.jaxrsHeadScript = jaxrsHeadScript;
+	}
+
+	public String getJaxrsHeadScriptText() {
+		return jaxrsHeadScriptText;
+	}
+
+	public void setJaxrsHeadScriptText(String jaxrsHeadScriptText) {
+		this.jaxrsHeadScriptText = jaxrsHeadScriptText;
 	}
 
 }

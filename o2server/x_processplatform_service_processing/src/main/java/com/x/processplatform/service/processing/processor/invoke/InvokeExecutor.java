@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.invoke;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,6 +58,11 @@ public class InvokeExecutor {
 		} else {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+			if (null != jaxrsObject.getHead()) {
+				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+				}
+			}
 			return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 		}
 	}
@@ -68,6 +74,11 @@ public class InvokeExecutor {
 		} else {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+			if (null != jaxrsObject.getHead()) {
+				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+				}
+			}
 			return HttpConnection.postAsString(jaxrsObject.getAddress(), heads, jaxrsObject.getBody());
 		}
 	}
@@ -78,6 +89,11 @@ public class InvokeExecutor {
 		} else {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+			if (null != jaxrsObject.getHead()) {
+				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+				}
+			}
 			return HttpConnection.getAsString(jaxrsObject.getAddress(), heads);
 		}
 	}
@@ -88,6 +104,11 @@ public class InvokeExecutor {
 		} else {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpConnection.Content_Type, jaxrsObject.getContentType()));
+			if (null != jaxrsObject.getHead()) {
+				for (Entry<String, String> entry : jaxrsObject.getHead().entrySet()) {
+					heads.add(new NameValuePair(entry.getKey(), entry.getValue()));
+				}
+			}
 			return HttpConnection.deleteAsString(jaxrsObject.getAddress(), heads);
 		}
 	}

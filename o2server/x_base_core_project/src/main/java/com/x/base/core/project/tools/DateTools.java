@@ -538,6 +538,36 @@ public class DateTools {
 		}
 		return calendar.getTime();
 	}
+
+	/**
+	 * 根据需要调整时间
+	 * @param dateTime
+	 * @param dayAdjust
+	 * @param hourAdjust
+	 * @param minuteAdjust
+	 * @param secondAdjust
+	 * @return
+	 */
+	public static  Date getAdjustTimeDay( Date dateTime, Integer dayAdjust, Integer hourAdjust, Integer minuteAdjust, Integer secondAdjust) {
+		Calendar calendar = Calendar.getInstance();
+		if(dateTime==null){
+			dateTime = new Date();
+		}
+		calendar.setTime( dateTime );
+		if ((null != dayAdjust) && (dayAdjust != 0)) {
+			calendar.add(Calendar.DAY_OF_MONTH, dayAdjust );
+		}
+		if ((null != hourAdjust) && (hourAdjust != 0)) {
+			calendar.add(Calendar.HOUR_OF_DAY, dayAdjust );
+		}
+		if ((null != minuteAdjust) && (minuteAdjust != 0)) {
+			calendar.add(Calendar.MINUTE, minuteAdjust );
+		}
+		if ((null != secondAdjust) && (secondAdjust != 0)) {
+			calendar.add(Calendar.SECOND, secondAdjust );
+		}
+		return calendar.getTime();
+	}
 	
 	  /** 
 	  * 判断当前日期是星期几

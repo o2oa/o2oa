@@ -608,18 +608,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 			this.mergeHint(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
-//			try {
-//				aeiObjects.getWorkLogs().stream().filter(
-//						p -> StringUtils.equals(p.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
-//						.forEach(obj -> {
-//							System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!###########");
-//							System.out.println(obj);
-//							System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!###########");
-//							aeiObjects.getDeleteWorkLogs().add(obj);
-//						});
-//			} catch (Exception e) {
-//				logger.error(e);
-//			}
 			aeiObjects.getUpdateWorks().add(other);
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
 			return other;

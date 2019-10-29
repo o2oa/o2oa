@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.invoke;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -218,11 +219,11 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		String result = "";
 		String address = this.jaxrsUrl(aeiObjects, invoke);
 		String body = "";
-		JaxrsObject jaxrsObject = null;
+		JaxrsObject jaxrsObject = new JaxrsObject();
+		jaxrsObject.setHead(this.jaxrsEvalHead(aeiObjects, invoke));
 		switch (StringUtils.lowerCase(invoke.getJaxrsMethod())) {
 		case "post":
 			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			jaxrsObject = new JaxrsObject();
 			jaxrsObject.setMethod("post");
 			jaxrsObject.setInternal(false);
 			jaxrsObject.setAddress(address);
@@ -237,7 +238,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			break;
 		case "put":
 			body = this.jaxrsEvalBody(aeiObjects, invoke);
-			jaxrsObject = new JaxrsObject();
 			jaxrsObject.setMethod("put");
 			jaxrsObject.setInternal(false);
 			jaxrsObject.setAddress(address);
@@ -251,7 +251,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			}
 			break;
 		case "get":
-			jaxrsObject = new JaxrsObject();
 			jaxrsObject.setMethod("get");
 			jaxrsObject.setInternal(false);
 			jaxrsObject.setAddress(address);
@@ -264,7 +263,6 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			}
 			break;
 		case "delete":
-			jaxrsObject = new JaxrsObject();
 			jaxrsObject.setMethod("delete");
 			jaxrsObject.setInternal(false);
 			jaxrsObject.setAddress(address);
@@ -285,7 +283,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		case "trace":
 			break;
 		default:
-			throw new Exception("unknown http method " + invoke.getJaxrsMethod());
+			throw new Exception("unknown http method: " + invoke.getJaxrsMethod());
 		}
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
@@ -326,6 +324,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 		}
 		return jaxrsBody.get();
+	}
+
+	private Map<String, String> jaxrsEvalHead(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		Map<String, String> map = new LinkedHashMap<>();
+		if ((StringUtils.isNotEmpty(invoke.getJaxrsHeadScript()))
+				|| (StringUtils.isNotEmpty(invoke.getJaxrsHeadScriptText()))) {
+			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects, new BindingPair("jaxrsHead", map));
+			scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsHeadScript(),
+					invoke.getJaxrsHeadScriptText());
+		}
+		return map;
 	}
 
 	public class JaxrsBody {

@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -75,6 +76,14 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
+		if(StringUtils.isNotBlank(wi.getExpireTime())){
+			int expireTime = 0;
+			try {
+				expireTime = Integer.parseInt(wi.getExpireTime());
+			} catch (NumberFormatException e) {
+			}
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -119,6 +128,14 @@ class ActionListMyFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
+		if(StringUtils.isNotBlank(wi.getExpireTime())){
+			int expireTime = 0;
+			try {
+				expireTime = Integer.parseInt(wi.getExpireTime());
+			} catch (NumberFormatException e) {
+			}
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -156,6 +173,9 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		@FieldDescribe("开始时期")
 		private List<String> startTimeMonthList;
+
+		@FieldDescribe("时效超时时间（0表示所有已超时的、1表示超时1小时以上的、2、3...）")
+		private String expireTime;
 
 		@FieldDescribe("匹配关键字")
 		private String key;
@@ -224,6 +244,13 @@ class ActionListMyFilterPaging extends BaseAction {
 			this.endTime = endTime;
 		}
 
+		public String getExpireTime() {
+			return expireTime;
+		}
+
+		public void setExpireTime(String expireTime) {
+			this.expireTime = expireTime;
+		}
 	}
 
 	public static class Wo extends Task {

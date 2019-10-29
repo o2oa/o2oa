@@ -1,5 +1,7 @@
 package com.x.base.core.project.config;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
@@ -32,6 +34,11 @@ public class StorageMapping extends GsonPropertyObject {
 
 	}
 
+	/* 默认是false */
+	public Boolean getDeepPath() {
+		return BooleanUtils.isTrue(this.deepPath);
+	}
+
 	public StorageProtocol getProtocol() {
 		return protocol;
 	}
@@ -62,10 +69,6 @@ public class StorageMapping extends GsonPropertyObject {
 
 	public String getName() {
 		return name;
-	}
-
-	public Boolean getDeepPath() {
-		return deepPath;
 	}
 
 	public void setProtocol(StorageProtocol protocol) {

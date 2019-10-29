@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -79,7 +80,6 @@ public class FireSchedule extends BaseAction {
 
 	private Date getLastStartTime(ScheduleRequest request) throws Exception {
 		Date lastStartTime = request.getLastStartTime();
-		// Date lastStartTime = null;
 		if (null == lastStartTime) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				EntityManager em = emc.get(ScheduleLog.class);
