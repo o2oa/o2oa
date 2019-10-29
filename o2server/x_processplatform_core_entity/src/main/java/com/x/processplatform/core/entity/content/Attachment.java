@@ -106,6 +106,12 @@ public class Attachment extends StorageObject {
 			throw new Exception("id can not be empty.");
 		}
 		String str = DateTools.format(workCreateTime, DateTools.formatCompact_yyyyMMdd);
+		if (BooleanUtils.isTrue(this.getDeepPath())) {
+			str += PATHSEPARATOR;
+			str += StringUtils.substring(this.job, 0, 2);
+			str += PATHSEPARATOR;
+			str += StringUtils.substring(this.job, 2, 4);
+		}
 		str += PATHSEPARATOR;
 		str += this.job;
 		str += PATHSEPARATOR;

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
@@ -40,46 +42,10 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			results.add(aeiObjects.getWork());
 			return results;
 		}
-		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
-
-		/* 查找同级 */
-		Work other = aeiObjects.getWorks().stream().filter(o -> {
-			if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
-				if (StringUtils.equals(StringUtils.join(o.getSplitTokenList(), ","), join)) {
-					return true;
-				}
-			}
-			return false;
-		}).sorted((o1, o2) -> {
-			return o1.getCreateTime().compareTo(o2.getCreateTime());
-		}).findFirst().orElse(null);
-
-		/* 找不到同级找上层 */
-		if (null == other) {
-			other = aeiObjects.getWorks().stream().filter(o -> {
-				if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
-					if (StringUtils.startsWith(join, StringUtils.join(o.getSplitTokenList(), ","))) {
-						return true;
-					}
-				}
-				return false;
-			}).sorted((o1, o2) -> {
-				int compare = o2.getSplitTokenList().size() - o1.getSplitTokenList().size();
-				if (compare == 0) {
-					return o2.getCreateTime().compareTo(o1.getCreateTime());
-				}
-				return compare;
-			}).findFirst().orElse(null);
-		}
+		Work other = findWorkMergeTo(aeiObjects);
 
 		/* 完全找不到合并的文档,唯一一份 */
-		if (null == other) {
-			aeiObjects.getWork().setSplitting(false);
-			aeiObjects.getWork().setSplitToken("");
-			aeiObjects.getWork().setSplitTokenList(new ArrayList<String>());
-			aeiObjects.getWork().setSplitValue("");
-			results.add(aeiObjects.getWork());
-		} else {
+		if (null != other) {
 			aeiObjects.getUpdateWorks().add(other);
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
 			this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
@@ -94,8 +60,80 @@ public class MergeProcessor extends AbstractMergeProcessor {
 					.forEach(obj -> {
 						aeiObjects.getDeleteWorkLogs().add(obj);
 					});
+		} else {
+			Work branch = this.findWorkBranch(aeiObjects);
+			if (null != branch) {
+				aeiObjects.getWork().setSplitting(true);
+				aeiObjects.getWork().setSplitTokenList(ListUtils.longestCommonSubsequence(
+						aeiObjects.getWork().getSplitTokenList(), branch.getSplitTokenList()));
+				aeiObjects.getWork().setSplitToken(aeiObjects.getWork().getSplitTokenList()
+						.get(aeiObjects.getWork().getSplitTokenList().size() - 1));
+				aeiObjects.getWork().setSplitValue("");
+				results.add(aeiObjects.getWork());
+			} else {
+				aeiObjects.getWork().setSplitting(false);
+				aeiObjects.getWork().setSplitTokenList(new ArrayList<String>());
+				aeiObjects.getWork().setSplitToken("");
+				aeiObjects.getWork().setSplitValue("");
+				results.add(aeiObjects.getWork());
+			}
 		}
 		return results;
+	}
+
+	private Work findWorkMergeTo(AeiObjects aeiObjects) throws Exception {
+		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
+		/* 查找同级 */
+		Work other = aeiObjects.getWorks().stream().filter(o -> {
+			if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
+				if (StringUtils.equals(StringUtils.join(o.getSplitTokenList(), ","), join)) {
+					return true;
+				}
+			}
+			return false;
+		}).sorted((o1, o2) -> {
+			return o1.getCreateTime().compareTo(o2.getCreateTime());
+		}).findFirst().orElse(null);
+
+		/* 找不到同级那么开始早更深层次的文档 */
+		if (null == other) {
+			other = aeiObjects.getWorks().stream().filter(o -> {
+				if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
+					if (StringUtils.startsWith(StringUtils.join(o.getSplitTokenList(), ","), join)) {
+						return true;
+					}
+				}
+				return false;
+			}).sorted((o1, o2) -> {
+				int compare = o2.getSplitTokenList().size() - o1.getSplitTokenList().size();
+				if (compare == 0) {
+					return o2.getCreateTime().compareTo(o1.getCreateTime());
+				}
+				return compare;
+			}).findFirst().orElse(null);
+		}
+		return other;
+	}
+
+	private Work findWorkBranch(AeiObjects aeiObjects) throws Exception {
+		Work branch = null;
+		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
+		while (StringUtils.indexOf(join, ",") > 0) {
+			join = StringUtils.substringBeforeLast(join, ",");
+			final String part = join;
+			branch = aeiObjects.getWorks().stream().filter(o -> {
+				if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
+					if (StringUtils.startsWithIgnoreCase(StringUtils.join(o.getSplitTokenList(), ","), part)) {
+						return true;
+					}
+				}
+				return false;
+			}).findFirst().orElse(null);
+			if (null != branch) {
+				return branch;
+			}
+		}
+		return null;
 	}
 
 	private void mergeTaskCompleted(AeiObjects aeiObjects, Work work, Work oldest) {

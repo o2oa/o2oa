@@ -20,7 +20,7 @@ class ActionExecute extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		com.x.base.core.project.Context ctx = com.x.base.core.project.Context.fromServletContext(servletContext);
 		Class<?> clz = Class.forName(className);
-		ctx.scheduleLocal((Class<AbstractJob>) clz, 1);
+		ctx.fireScheduleOnLocal((Class<AbstractJob>) clz, 1);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

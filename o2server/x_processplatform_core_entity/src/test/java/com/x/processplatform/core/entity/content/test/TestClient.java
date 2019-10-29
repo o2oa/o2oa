@@ -3,6 +3,7 @@ package com.x.processplatform.core.entity.content.test;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -37,4 +38,13 @@ public class TestClient {
 
 	}
 
+	@Test
+	public void test2() {
+		String abc = "abcefg";
+		System.out.println(StringUtils.substring(abc, 0));
+		System.out.println(StringUtils.substring(abc, 0,2));
+		System.out.println(StringUtils.substring(abc, 2,4));
+		
+	}
+	
 }

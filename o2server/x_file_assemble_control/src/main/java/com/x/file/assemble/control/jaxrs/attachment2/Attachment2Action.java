@@ -89,6 +89,26 @@ public class Attachment2Action extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "下载图片设定宽高后的(png格式).width(0-5000)像素,0代表不限制,height(0-5000)像素,0代表不限制.", action = ActionDownloadImageWidthHeight.class)
+	@GET
+	@Path("{id}/download/image/width/{width}/height/{height}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadImageWidthHeight(@Suspended final AsyncResponse asyncResponse,
+										  @Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+										  @JaxrsParameterDescribe("宽度") @PathParam("width") Integer width,
+										  @JaxrsParameterDescribe("高度") @PathParam("height") Integer height) {
+		ActionResult<ActionDownloadImageWidthHeight.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadImageWidthHeight().execute(effectivePerson, id, width, height);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取指定人员共享给我的文件.", action = ActionGet.class)
 	@GET
 	@Path("{id}")

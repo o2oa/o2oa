@@ -53,7 +53,11 @@ public class ScriptHelper {
 		for (Entry<String, Object> entry : map.entrySet()) {
 			engine.put(entry.getKey(), entry.getValue());
 		}
-		engine.eval(initialScriptText);
+		try {
+			engine.eval(initialScriptText);
+		} catch (Exception e) {
+			throw new ExceptionInitialScript(e, initialScriptText);
+		}
 	}
 
 	public Object eval(String scriptText) throws Exception {

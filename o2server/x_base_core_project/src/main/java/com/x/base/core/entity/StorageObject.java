@@ -22,7 +22,7 @@ import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.ftp.FtpFileType;
-import org.apache.commons.vfs2.provider.http.HttpFileSystemConfigBuilder;
+import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.webdav.WebdavFileSystemConfigBuilder;
 
 import com.x.base.core.project.config.Config;
@@ -114,6 +114,7 @@ public abstract class StorageObject extends SliceJpaObject {
 	/** 将导入的流进行保存 */
 	public Long saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
 		this.setName(name);
+		this.setDeepPath(mapping.getDeepPath());
 		this.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
 		return this.updateContent(mapping, input);
 	}
@@ -252,6 +253,12 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
+		case ftps:
+			// ftps://[ username[: password]@] hostname[: port][ relative-path]
+			prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+					+ mapping.getPort();
+			break;
 		case cifs:
 			// smb://[ username[: password]@] hostname[: port][ absolute-path]
 			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
@@ -263,6 +270,7 @@ public abstract class StorageObject extends SliceJpaObject {
 			prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
+			break;
 		default:
 			break;
 		}
@@ -301,14 +309,26 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpBuilder.setSoTimeout(opts, 10000);
 			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
+		case ftps:
+			FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
+			ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			/** 强制不校验IP */
+			ftpsBuilder.setRemoteVerification(opts, false);
+			// FtpFileType.BINARY is the default
+			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
+			ftpsBuilder.setConnectTimeout(opts, 10000);
+			ftpsBuilder.setSoTimeout(opts, 10000);
+			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
+			break;
 		case cifs:
 			break;
 		case webdav:
-			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder)WebdavFileSystemConfigBuilder.getInstance();
+			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder) WebdavFileSystemConfigBuilder
+					.getInstance();
 			webdavBuilder.setConnectionTimeout(opts, 10000);
 			webdavBuilder.setSoTimeout(opts, 10000);
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
-			//webdavBuilder.setVersioning(opts, true);
+			// webdavBuilder.setVersioning(opts, true);
 			break;
 		default:
 			break;

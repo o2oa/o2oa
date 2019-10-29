@@ -32,8 +32,6 @@ public class CleanupScheduleLog implements Job {
 		try {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-//				this.clearScheduleLocal(business);
-//				this.clearSchedule(business);
 				this.clearScheduleLog(business);
 			}
 		} catch (Exception e) {
@@ -42,58 +40,6 @@ public class CleanupScheduleLog implements Job {
 		}
 
 	}
-
-//	private void clearScheduleLocal(Business business) throws Exception {
-//		List<ScheduleLocal> list = new ArrayList<>();
-//		do {
-//			EntityManagerContainer emc = business.entityManagerContainer();
-//			EntityManager em = emc.get(ScheduleLocal.class);
-//			CriteriaBuilder cb = em.getCriteriaBuilder();
-//			CriteriaQuery<ScheduleLocal> cq = cb.createQuery(ScheduleLocal.class);
-//			Root<ScheduleLocal> root = cq.from(ScheduleLocal.class);
-//			Calendar threshold = Calendar.getInstance();
-//			threshold.add(Calendar.SECOND, -(30 * 3));
-//			Predicate p = cb.lessThan(root.get(ScheduleLocal_.reportTime), threshold.getTime());
-//			list = em.createQuery(cq.select(root).where(p)).setMaxResults(10000).getResultList();
-//			if (!list.isEmpty()) {
-//				emc.beginTransaction(ScheduleLocal.class);
-//				list.stream().forEach(o -> {
-//					try {
-//						emc.remove(o, CheckRemoveType.all);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				});
-//				emc.commit();
-//			}
-//		} while (!list.isEmpty());
-//	}
-
-//	private void clearSchedule(Business business) throws Exception {
-//		List<Schedule> list = new ArrayList<>();
-//		do {
-//			EntityManagerContainer emc = business.entityManagerContainer();
-//			EntityManager em = emc.get(Schedule.class);
-//			CriteriaBuilder cb = em.getCriteriaBuilder();
-//			CriteriaQuery<Schedule> cq = cb.createQuery(Schedule.class);
-//			Root<Schedule> root = cq.from(Schedule.class);
-//			Calendar threshold = Calendar.getInstance();
-//			threshold.add(Calendar.SECOND, -(30 * 3));
-//			Predicate p = cb.lessThan(root.get(Schedule_.reportTime), threshold.getTime());
-//			list = em.createQuery(cq.select(root).where(p)).setMaxResults(10000).getResultList();
-//			if (!list.isEmpty()) {
-//				emc.beginTransaction(Schedule.class);
-//				list.stream().forEach(o -> {
-//					try {
-//						emc.remove(o, CheckRemoveType.all);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				});
-//				emc.commit();
-//			}
-//		} while (!list.isEmpty());
-//	}
 
 	private void clearScheduleLog(Business business) throws Exception {
 		List<ScheduleLog> list = new ArrayList<>();

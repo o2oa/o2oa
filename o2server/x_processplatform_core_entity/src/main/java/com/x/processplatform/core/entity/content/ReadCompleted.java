@@ -418,19 +418,40 @@ public class ReadCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String stringValue05;
 
-	public static final String integerValue01_FIELDNAME = "integerValue01";
-	@FieldDescribe("业务数据Integer值01.")
-	@Column(name = ColumnNamePrefix + integerValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + integerValue01_FIELDNAME)
+	public static final String stringValue06_FIELDNAME = "stringValue06";
+	@FieldDescribe("业务数据String值06.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue06_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue06_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Integer integerValue01;
+	private String stringValue06;
 
-	public static final String integerValue02_FIELDNAME = "integerValue02";
-	@FieldDescribe("业务数据Integer值02.")
-	@Column(name = ColumnNamePrefix + integerValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + integerValue02_FIELDNAME)
+	public static final String stringValue07_FIELDNAME = "stringValue07";
+	@FieldDescribe("业务数据String值07.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue07_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue07_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Integer integerValue02;
+	private String stringValue07;
+
+	public static final String stringValue08_FIELDNAME = "stringValue08";
+	@FieldDescribe("业务数据String值08.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue08_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue08_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue08;
+
+	public static final String stringValue09_FIELDNAME = "stringValue09";
+	@FieldDescribe("业务数据String值09.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue09_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue09_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue09;
+
+	public static final String stringValue10_FIELDNAME = "stringValue10";
+	@FieldDescribe("业务数据String值10.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue10_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue10_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue10;
 
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
@@ -460,6 +481,27 @@ public class ReadCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue02;
 
+	public static final String doubleValue03_FIELDNAME = "doubleValue03";
+	@FieldDescribe("业务数据Double值03.")
+	@Column(name = ColumnNamePrefix + doubleValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue03;
+
+	public static final String doubleValue04_FIELDNAME = "doubleValue04";
+	@FieldDescribe("业务数据Double值04.")
+	@Column(name = ColumnNamePrefix + doubleValue04_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue04_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue04;
+
+	public static final String doubleValue05_FIELDNAME = "doubleValue05";
+	@FieldDescribe("业务数据Double值05.")
+	@Column(name = ColumnNamePrefix + doubleValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + doubleValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Double doubleValue05;
+
 	public static final String longValue01_FIELDNAME = "longValue01";
 	@FieldDescribe("业务数据Long值01.")
 	@Column(name = ColumnNamePrefix + longValue01_FIELDNAME)
@@ -473,6 +515,27 @@ public class ReadCompleted extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + longValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue02;
+
+	public static final String longValue03_FIELDNAME = "longValue03";
+	@FieldDescribe("业务数据Long值03.")
+	@Column(name = ColumnNamePrefix + longValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue03;
+
+	public static final String longValue04_FIELDNAME = "longValue04";
+	@FieldDescribe("业务数据Long值04.")
+	@Column(name = ColumnNamePrefix + longValue04_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue04_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue04;
+
+	public static final String longValue05_FIELDNAME = "longValue05";
+	@FieldDescribe("业务数据Long值05.")
+	@Column(name = ColumnNamePrefix + longValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + longValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Long longValue05;
 
 	public static final String dateTimeValue01_FIELDNAME = "dateTimeValue01";
 	@Temporal(TemporalType.TIMESTAMP)
@@ -489,6 +552,30 @@ public class ReadCompleted extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue02;
+
+	public static final String dateTimeValue03_FIELDNAME = "dateTimeValue03";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值03.")
+	@Column(name = ColumnNamePrefix + dateTimeValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue03;
+
+	public static final String dateTimeValue04_FIELDNAME = "dateTimeValue04";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值04.")
+	@Column(name = ColumnNamePrefix + dateTimeValue04_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue04_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue04;
+
+	public static final String dateTimeValue05_FIELDNAME = "dateTimeValue05";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值05.")
+	@Column(name = ColumnNamePrefix + dateTimeValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue05;
 
 	public static final String dateValue01_FIELDNAME = "dateValue01";
 	@Temporal(TemporalType.DATE)
@@ -814,20 +901,116 @@ public class ReadCompleted extends SliceJpaObject {
 		this.stringValue05 = stringValue05;
 	}
 
-	public Integer getIntegerValue01() {
-		return integerValue01;
+	public String getStringValue06() {
+		return stringValue06;
 	}
 
-	public void setIntegerValue01(Integer integerValue01) {
-		this.integerValue01 = integerValue01;
+	public void setStringValue06(String stringValue06) {
+		this.stringValue06 = stringValue06;
 	}
 
-	public Integer getIntegerValue02() {
-		return integerValue02;
+	public String getStringValue07() {
+		return stringValue07;
 	}
 
-	public void setIntegerValue02(Integer integerValue02) {
-		this.integerValue02 = integerValue02;
+	public void setStringValue07(String stringValue07) {
+		this.stringValue07 = stringValue07;
+	}
+
+	public String getStringValue08() {
+		return stringValue08;
+	}
+
+	public void setStringValue08(String stringValue08) {
+		this.stringValue08 = stringValue08;
+	}
+
+	public String getStringValue09() {
+		return stringValue09;
+	}
+
+	public void setStringValue09(String stringValue09) {
+		this.stringValue09 = stringValue09;
+	}
+
+	public String getStringValue10() {
+		return stringValue10;
+	}
+
+	public void setStringValue10(String stringValue10) {
+		this.stringValue10 = stringValue10;
+	}
+
+	public Double getDoubleValue03() {
+		return doubleValue03;
+	}
+
+	public void setDoubleValue03(Double doubleValue03) {
+		this.doubleValue03 = doubleValue03;
+	}
+
+	public Double getDoubleValue04() {
+		return doubleValue04;
+	}
+
+	public void setDoubleValue04(Double doubleValue04) {
+		this.doubleValue04 = doubleValue04;
+	}
+
+	public Double getDoubleValue05() {
+		return doubleValue05;
+	}
+
+	public void setDoubleValue05(Double doubleValue05) {
+		this.doubleValue05 = doubleValue05;
+	}
+
+	public Long getLongValue03() {
+		return longValue03;
+	}
+
+	public void setLongValue03(Long longValue03) {
+		this.longValue03 = longValue03;
+	}
+
+	public Long getLongValue04() {
+		return longValue04;
+	}
+
+	public void setLongValue04(Long longValue04) {
+		this.longValue04 = longValue04;
+	}
+
+	public Long getLongValue05() {
+		return longValue05;
+	}
+
+	public void setLongValue05(Long longValue05) {
+		this.longValue05 = longValue05;
+	}
+
+	public Date getDateTimeValue03() {
+		return dateTimeValue03;
+	}
+
+	public void setDateTimeValue03(Date dateTimeValue03) {
+		this.dateTimeValue03 = dateTimeValue03;
+	}
+
+	public Date getDateTimeValue04() {
+		return dateTimeValue04;
+	}
+
+	public void setDateTimeValue04(Date dateTimeValue04) {
+		this.dateTimeValue04 = dateTimeValue04;
+	}
+
+	public Date getDateTimeValue05() {
+		return dateTimeValue05;
+	}
+
+	public void setDateTimeValue05(Date dateTimeValue05) {
+		this.dateTimeValue05 = dateTimeValue05;
 	}
 
 	public Boolean getBooleanValue01() {

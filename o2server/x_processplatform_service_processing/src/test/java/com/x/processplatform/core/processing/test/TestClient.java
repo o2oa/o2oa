@@ -60,5 +60,12 @@ public class TestClient {
 		System.out.println(list);
 
 	}
+	
+	@Test
+	public void test3() {
+		String aa="dddddddddd,aaa,bbb";
+//System.out.println(StringUtils.sub(aa, "@"));
+		
+	}
 
 }
