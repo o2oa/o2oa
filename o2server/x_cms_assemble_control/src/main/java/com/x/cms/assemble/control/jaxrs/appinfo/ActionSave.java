@@ -149,8 +149,6 @@ public class ActionSave extends BaseAction {
 
 			if( StringUtils.equals( "信息", wi.getDocumentType() ) && wi.getSendNotify() == null ) {
 				wi.setSendNotify( true );
-			}else {
-				wi.setSendNotify( false );
 			}
 			
 			try {

@@ -88,7 +88,7 @@ public class WebServerTools extends JettySeverTools {
 		Gson gson = XGsonBuilder.instance();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		/** 覆盖掉配置的参数 */
-		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first();
+		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first().getValue();
 		map.putAll(centerServerConfig.getConfig());
 		List<Map<String, String>> centers = new ArrayList<>();
 		map.put("center", centers);

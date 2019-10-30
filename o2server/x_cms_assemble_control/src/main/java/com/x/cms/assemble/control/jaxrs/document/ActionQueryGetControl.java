@@ -74,37 +74,28 @@ public class ActionQueryGetControl extends BaseAction {
 			}
 		}
 		
+		if (check) {
+			try {
+				document = documentQueryService.get(id);
+				if (document == null) {
+					check = false;
+					Exception exception = new ExceptionDocumentNotExists(id);
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess(e, "文档信息获取操作时发生异常。Id:" + id + ", Name:" + personName);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		
 		String cacheKey = ApplicationCache.concreteCacheKey( id, "getControl", isManager, effectivePerson.getDistinguishedName() );
 		Element element = cache.get(cacheKey);
 		if ((null != element) && (null != element.getObjectValue())) {
-			document = wo = (Wo) element.getObjectValue();
+			wo = (Wo) element.getObjectValue();
 			result.setData(wo);
-		} else {
-			if (check) {
-				try {
-					document = documentQueryService.get(id);
-					if (document == null) {
-						check = false;
-						Exception exception = new ExceptionDocumentNotExists(id);
-						result.error(exception);
-					} else {
-						try {
-							wo = Wo.copier.copy(document);
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e, "将查询出来的文档信息对象转换为可输出的数据信息时发生异常。");
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess(e, "文档信息获取操作时发生异常。Id:" + id + ", Name:" + personName);
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
-			
+		} else {			
 			if (check) {
 				try {					
 					reviewCount = documentQueryService.getViewableReview(id, personName);
@@ -121,7 +112,7 @@ public class ActionQueryGetControl extends BaseAction {
 			
 			//判断用户是否是文档的创建者，创建者是有权限编辑文档的
 			if (check) {
-				if (wo != null && StringUtils.equals( personName, wo.getCreatorPerson())) {
+				if (wo != null && StringUtils.equals( personName, document.getCreatorPerson())) {
 					isCreator = true;
 					woControl.setAllowVisit(true);
 				}
@@ -223,15 +214,15 @@ public class ActionQueryGetControl extends BaseAction {
 				// 判断当前登录者是不是该文档的可编辑者
 				try {
 					if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-						if ( wo.getAuthorPersonList().contains( personName )) {
+						if ( document.getAuthorPersonList().contains( personName )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
-						if( ListTools.containsAny( unitNames , wo.getAuthorUnitList() )) {
+						if( ListTools.containsAny( unitNames , document.getAuthorUnitList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
-						if( ListTools.containsAny( groupNames , wo.getAuthorGroupList() )) {
+						if( ListTools.containsAny( groupNames , document.getAuthorGroupList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
@@ -248,111 +239,9 @@ public class ActionQueryGetControl extends BaseAction {
 		result.setData(wo);
 		return result;
 	}
-
-//	private List<String> composeAuthorUnitsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorUnits = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )) {
-//			for( String name : appInfo.getManageableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishableUnitList() )) {
-//			for( String name : appInfo.getPublishableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageableUnitList() )) {
-//			for( String name : category.getManageableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishableUnitList() )) {
-//			for( String name : category.getPublishableUnitList() ) {
-//				if( !authorUnits.contains( name )) {
-//					authorUnits.add( name );
-//				}
-//			}
-//		}
-//		return authorUnits;
-//	}
-//
-//	private List<String> composeAuthorGroupsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorGroups = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )) {
-//			for( String name : appInfo.getManageableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishableGroupList() )) {
-//			for( String name : appInfo.getPublishableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageableGroupList() )) {
-//			for( String name : category.getManageableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishableGroupList() )) {
-//			for( String name : category.getPublishableGroupList() ) {
-//				if( !authorGroups.contains( name )) {
-//					authorGroups.add( name );
-//				}
-//			}
-//		}
-//		return authorGroups;
-//	}
-//
-//	private List<String> composeAuthorPersonsWithAppAndCagetory(AppInfo appInfo, CategoryInfo category) {
-//		List<String> authorPersons = new ArrayList<>();
-//		if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )) {
-//			for( String name : appInfo.getManageablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( appInfo.getPublishablePersonList() )) {
-//			for( String name : appInfo.getPublishablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getManageablePersonList() )) {
-//			for( String name : category.getManageablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		if( ListTools.isNotEmpty( category.getPublishablePersonList() )) {
-//			for( String name : category.getPublishablePersonList() ) {
-//				if( !authorPersons.contains( name )) {
-//					authorPersons.add( name );
-//				}
-//			}
-//		}
-//		return authorPersons;
-//	}
-
 	
 
-	public static class Wo extends Document {
-
-		private static final long serialVersionUID = -5076990764713538973L;
+	public static class Wo {
 
 		public static WrapCopier<Document, Wo> copier = WrapCopierFactory.wo(Document.class, Wo.class, null, JpaObject.FieldsInvisible);
 
@@ -366,7 +255,7 @@ public class ActionQueryGetControl extends BaseAction {
 			this.control = control;
 		}		
 	}
-
+	
 	public static class WoControl extends GsonPropertyObject {
 
 		@FieldDescribe("是否允许查看.")

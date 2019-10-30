@@ -93,6 +93,17 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_READCOMPLETED_DELETE, new Message());
 		/* 待阅已阅通知结束 */
 
+		/* 日程管理消息通知 */
+		o.put(MessageConnector.TYPE_CALENDAR_ALARM,
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
+						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
+						MessageConnector.CONSUME_QIYEWEIXIN));
+		
+		/* 文档发布消息通知 */
+		o.put(MessageConnector.TYPE_CMS_PUBLISH,
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
+						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
+						MessageConnector.CONSUME_QIYEWEIXIN));
 		return o;
 	}
 

@@ -35,7 +35,7 @@ public class ThisApplication {
 
 	public static LogQueue logQueue;
 
-	public static CodeTransferQueue codeTransferQueue;
+	// public static CodeTransferQueue codeTransferQueue;
 
 	public static List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public class ThisApplication {
 		try {
 			centerQueue.stop();
 			logQueue.stop();
-			codeTransferQueue.stop();
+			// codeTransferQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

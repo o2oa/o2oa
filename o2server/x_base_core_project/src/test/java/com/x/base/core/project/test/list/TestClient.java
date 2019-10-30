@@ -28,4 +28,12 @@ public class TestClient {
 		System.out.println(tree.tailMap(1, true).firstEntry().getValue());
 	}
 
+	@Test
+	public void test1() {
+		Integer a = 1;
+		Integer b = 2;
+		System.out.println(a.compareTo(b));
+
+	}
+
 }

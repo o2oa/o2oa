@@ -21,6 +21,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Unit;
 
 class ActionEdit extends BaseAction {
 
@@ -37,6 +38,7 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wi.copier.copy(wi, person);
+
 			this.checkName(business, person.getName(), person.getId());
 			this.checkMobile(business, person.getMobile(), person.getId());
 			this.checkEmployee(business, person.getEmployee(), person.getId());
@@ -52,6 +54,10 @@ class ActionEdit extends BaseAction {
 				person.setSuperior(superior.getId());
 			}
 			this.convertControllerList(effectivePerson, business, person);
+			if (ListTools.isNotEmpty(person.getTopUnitList())) {
+				List<Unit> topUnits = business.unit().pick(person.getTopUnitList());
+				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
+			}
 			emc.beginTransaction(Person.class);
 			/*
 			 * 从内存中pick出来的无法作为实体保存,不能在前面执行,以为后面的convertControllerList也有一个pick,

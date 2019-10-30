@@ -14,7 +14,7 @@ public class ActionSetCollect extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.nodes().centerServers().first().getConfigApiEnable()) {
+		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi.copier.copy(wi, Config.collect());

@@ -13,7 +13,7 @@ public class MessageFactory {
 		LogUtil.INFO( "send calendar alarm message", event.getTitle() + ", StartTime: " + event.getStartTimeStr() );
 		if( ListTools.isNotEmpty( event.getParticipants() )) {
 			for( String participant : event.getParticipants() ) {
-				MessageConnector.send( MessageConnector.TYPE_CALENDAR_ALARM, event.getValarm_Summary(), participant, event );
+				MessageConnector.send( MessageConnector.TYPE_CALENDAR_ALARM, "日程提醒："+event.getTitle(), participant, event );
 			}
 		}
 		

@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map.Entry;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
@@ -807,6 +807,33 @@ public class Config {
 		String n = resource_node_centersPirmaryNode();
 		Integer p = resource_node_centersPirmaryPort();
 		Boolean s = resource_node_centersPirmarySslEnable();
+		StringBuffer buffer = new StringBuffer();
+		if (s) {
+			buffer.append("https://").append(n);
+			if (!NumberTools.valueEuqals(p, 443)) {
+				buffer.append(":").append(p);
+			}
+		} else {
+			buffer.append("http://").append(n);
+			if (!NumberTools.valueEuqals(p, 80)) {
+				buffer.append(":").append(p);
+			}
+		}
+		buffer.append("/").append(x_program_center.class.getSimpleName());
+		buffer.append("/jaxrs/");
+		List<String> os = new ArrayList<>();
+		for (String path : paths) {
+			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), DefaultCharset.name));
+		}
+		buffer.append(StringUtils.join(os, "/"));
+		return buffer.toString();
+	}
+
+	public static String url_x_program_center_jaxrs(Entry<String, CenterServer> entry, String... paths)
+			throws Exception {
+		String n = entry.getKey();
+		Integer p = entry.getValue().getPort();
+		Boolean s = entry.getValue().getSslEnable();
 		StringBuffer buffer = new StringBuffer();
 		if (s) {
 			buffer.append("https://").append(n);
