@@ -23,6 +23,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
@@ -327,6 +328,31 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
+		//判断是否需要发送通知消息
+		if (check) {
+			try {
+				Boolean notify = false;
+				if( categoryInfo.getSendNotify() == null ) {
+					if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
+						notify = true;
+					}						
+				}else {
+					if( categoryInfo.getSendNotify() ) {
+						notify = true;
+					}
+				}
+				if( notify ){
+					logger.info("try to add notify object to queue for document:" + document.getTitle() );
+					ThisApplication.queueSendDocumentNotify.send( document );
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+				
 		ApplicationCache.notify(Document.class);
 		return result;
 	}

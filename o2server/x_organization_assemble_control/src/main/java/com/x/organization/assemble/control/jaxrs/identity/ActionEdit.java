@@ -1,5 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
+import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,8 +70,9 @@ class ActionEdit extends BaseAction {
 				}
 			}
 			emc.check(identity, CheckPersistType.all);
-			person.setTopUnitList(
-					(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId())));
+			List<Unit> topUnits = business.unit()
+					.pick(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
+			person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Identity.class);

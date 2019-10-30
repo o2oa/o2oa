@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,12 +23,13 @@ public class VoteCenterEvent implements Event {
 
 	public void execute() throws Exception {
 
-		Set<Entry<String, CenterServer>> set = Config.nodes().centerServers().orderedEntrySet();
+		List<Entry<String, CenterServer>> list = Config.nodes().centerServers().orderedEntry();
 
-		for (Entry<String, CenterServer> entry : set) {
+		for (Entry<String, CenterServer> entry : list) {
 			try {
 
-				ActionResponse response = CipherConnectionAction.get(false, Config.url_x_program_center_jaxrs("echo"));
+				ActionResponse response = CipherConnectionAction.get(false,
+						Config.url_x_program_center_jaxrs(entry, "echo"));
 
 				JsonElement jsonElement = response.getData();
 
@@ -38,7 +38,7 @@ public class VoteCenterEvent implements Event {
 							|| (!Objects.equals(Config.resource_node_centersPirmaryPort(), entry.getValue().getPort()))
 							|| (!Objects.equals(Config.resource_node_centersPirmarySslEnable(),
 									entry.getValue().getSslEnable()))) {
-						logger.print("pirmary center set as:{}, in {}.", entry.getKey(), this.nodes(set));
+						logger.print("pirmary center set as:{}, in {}.", entry.getKey(), this.nodes(list));
 						Config.resource_node_centersPirmaryNode(entry.getKey());
 						Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
 						Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
@@ -53,9 +53,9 @@ public class VoteCenterEvent implements Event {
 
 	}
 
-	private String nodes(Set<Entry<String, CenterServer>> set) {
+	private String nodes(List<Entry<String, CenterServer>> list) {
 		List<String> os = new ArrayList<>();
-		for (Entry<String, CenterServer> entry : set) {
+		for (Entry<String, CenterServer> entry : list) {
 			os.add(entry.getKey());
 		}
 		return StringUtils.join(os, ",");

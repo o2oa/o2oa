@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.queue;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,14 +32,35 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 
 	public void execute( Document document ) throws Exception {
 		if( document == null ) {
+			logger.info("can not send publish notify , document is NULL!" );
 			return;
 		}
-		logger.debug("send publish notify for new document:" + document.getTitle() );
+		logger.info("send publish notify for new document:" + document.getTitle() );	
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo category = emc.find( document.getCategoryId(), CategoryInfo.class );
+//			Boolean sendNotify = false;
 			if( appInfo != null && category != null ) {
-				//计算该文档有多少阅读者
+//				//根据栏目和分类配置判断是否需要提醒
+//				if(StringUtils.equals( "信息", document.getDocumentType() )) {
+//					if( category.getSendNotify() == null ) {
+//						if( appInfo.getSendNotify() == null ) {
+//							//都为空，默认发送通知
+//							sendNotify = true;
+//						}else {
+//							sendNotify = appInfo.getSendNotify();
+//						}
+//					}else {
+//						sendNotify = category.getSendNotify();
+//					}
+//				}else {
+//					//数据类型，只有分类设置了需要通知，才会有通知，为空和为false都不通知
+//					if( category.getSendNotify() ) {
+//						sendNotify = true;
+//					}
+//				}
+			//	if( sendNotify ) {
+					//计算该文档有多少阅读者
 				ReviewService reviewService = new ReviewService();
 				List<String> persons = reviewService.listPermissionPersons( appInfo, category, document );
 				if( ListTools.isNotEmpty( persons )) {
@@ -56,16 +78,24 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 					}
 				}
 				if( ListTools.isNotEmpty( persons )) {
+					
+					//去一下重复
+			        HashSet<String> set = new HashSet<String>( persons );
+			        persons.clear();
+			        persons.addAll(set);
+			        
 					MessageWo wo = MessageWo.copier.copy(document);
 					for( String person : persons ) {
 						if( !StringUtils.equals( "*", person  )) {
 							MessageFactory.cms_publish(person, wo);
 						}
 					}
-					logger.debug("send total count:" + persons.size()  );
+					logger.info("send total count:" + persons.size()  );
 				}
-				logger.debug("send publish notify for new document completed! " );
+				logger.info("send publish notify for new document completed! " );
+				//}
 			}
+			logger.info("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
 		}
 	}
 

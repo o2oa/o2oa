@@ -84,8 +84,9 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(Person.class);
 
 			emc.persist(identity, CheckPersistType.all);
-			person.setTopUnitList(
-					(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId())));
+			List<Unit> topUnits = business.unit()
+					.pick(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
+			person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
 			emc.persist(person, CheckPersistType.all);
 
 			emc.commit();

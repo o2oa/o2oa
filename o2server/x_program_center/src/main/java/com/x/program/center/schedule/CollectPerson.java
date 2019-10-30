@@ -45,7 +45,7 @@ public class CollectPerson extends BaseAction {
 						req.setSecret(Config.collect().getSecret());
 						req.setKey(Config.collect().getKey());
 						req.setMobileList(mobiles);
-						CenterServer centerServer = Config.nodes().centerServers().first();
+						CenterServer centerServer = Config.nodes().centerServers().first().getValue();
 						req.setCenterProxyHost(centerServer.getProxyHost());
 						if (StringUtils.isEmpty(req.getCenterProxyHost())) {
 							/* 如果没有设置地址,那么使用远程得到的服务器地址 */

@@ -1,10 +1,10 @@
 package com.x.base.core.project.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class CenterServers extends ConcurrentSkipListMap<String, CenterServer> {
 
@@ -23,24 +23,24 @@ public class CenterServers extends ConcurrentSkipListMap<String, CenterServer> {
 		}
 	}
 
-	public ListOrderedSet<Entry<String, CenterServer>> orderedEntrySet() {
-		ListOrderedSet<Entry<String, CenterServer>> set = new ListOrderedSet<>();
+	public List<Entry<String, CenterServer>> orderedEntry() {
+		List<Entry<String, CenterServer>> list = new ArrayList<>();
 		this.entrySet().stream().sorted((o1, o2) -> {
-			return o1.getValue().getOrder() - o2.getValue().getOrder();
+			return o1.getValue().getOrder().compareTo(o2.getValue().getOrder());
 		}).forEachOrdered(o -> {
-			set.add(o);
+			list.add(o);
 		});
-		return set;
+		return list;
 	}
 
-	public CenterServer first() {
+	public Entry<String, CenterServer> first() {
 
-		ListOrderedSet<Entry<String, CenterServer>> set = orderedEntrySet();
+		List<Entry<String, CenterServer>> list = orderedEntry();
 
-		if (set.isEmpty()) {
+		if (list.isEmpty()) {
 			return null;
 		} else {
-			return set.get(0).getValue();
+			return list.get(0);
 		}
 
 	}

@@ -62,7 +62,7 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONS, null);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONSTIMESTAMP, null);
-		Entry<String, CenterServer> entry = Config.nodes().centerServers().orderedEntrySet().get(0);
+		Entry<String, CenterServer> entry = Config.nodes().centerServers().first();
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYNODE, entry.getKey());
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYPORT, entry.getValue().getPort());
 		new Resource(Config.RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, entry.getValue().getSslEnable());

@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -107,6 +108,7 @@ public class ActionQueryListVisiblePersons extends BaseAction {
 				//计算该文档有多少阅读者
 				ReviewService reviewService = new ReviewService();
 				List<String> persons = reviewService.listPermissionPersons( appInfo, categoryInfo, document );
+				
 				if( ListTools.isNotEmpty( persons )) {
 					//有可能是*， 一般是所有的人员标识列表
 					if( persons.contains( "*" )) {
@@ -124,6 +126,12 @@ public class ActionQueryListVisiblePersons extends BaseAction {
 				if( persons == null ) {
 					persons = new ArrayList<>();
 				}
+				
+				//去一下重复
+		        HashSet<String> set = new HashSet<String>( persons );
+		        persons.clear();
+		        persons.addAll(set);
+				
 				wo.setValueList(persons);
 				result.setData(wo);
 				result.setCount( Long.parseLong( persons.size() + ""));

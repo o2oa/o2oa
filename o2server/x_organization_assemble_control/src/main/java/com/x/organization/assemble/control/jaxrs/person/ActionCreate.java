@@ -23,10 +23,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.jaxrs.person.ActionGet.Wo;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Element;
+import com.x.organization.core.entity.Unit;
 
 class ActionCreate extends BaseAction {
 
@@ -49,7 +47,8 @@ class ActionCreate extends BaseAction {
 			if ((!Config.token().isInitialManager(effectivePerson.getDistinguishedName()))
 					&& (!effectivePerson.isCipher())) {
 				Person current = business.person().pick(effectivePerson.getDistinguishedName());
-				person.setTopUnitList(current.getTopUnitList());
+				List<Unit> topUnits = business.unit().pick(current.getTopUnitList());
+				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
 			} else {
 				person.setTopUnitList(new ArrayList<String>());
 			}

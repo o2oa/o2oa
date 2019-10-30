@@ -191,8 +191,18 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 			try {
 				CategoryInfo categoryInfo = categoryInfoServiceAdv.getWithFlag( document.getCategoryId() );
 				if( categoryInfo != null ){
-					//如果分类配置为需要推送通知，或者（分类配置为空，但是文档为信息文档时），推送通知
-					if( categoryInfo.getSendNotify() || (categoryInfo.getSendNotify() == null && StringUtils.equals("信息", categoryInfo.getDocumentType()))){
+					Boolean notify = false;
+					if( categoryInfo.getSendNotify() == null ) {
+						if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
+							notify = true;
+						}						
+					}else {
+						if( categoryInfo.getSendNotify() ) {
+							notify = true;
+						}
+					}
+					if( notify ){
+						logger.info("try to add notify object to queue for document:" + document.getTitle() );
 						ThisApplication.queueSendDocumentNotify.send( document );
 					}
 				}

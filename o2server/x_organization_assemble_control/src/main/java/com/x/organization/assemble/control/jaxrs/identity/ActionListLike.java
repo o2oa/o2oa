@@ -57,6 +57,8 @@ class ActionListLike extends BaseAction {
 		private String key;
 		@FieldDescribe("搜索组织范围,为空则不限定")
 		private List<String> unitList = new ArrayList<>();
+		@FieldDescribe("搜索职务范围,为空则不限定")
+		private List<String> dutyList = new ArrayList<>();
 
 		public String getKey() {
 			return key;

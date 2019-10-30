@@ -2,6 +2,7 @@ package com.x.server.console.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -65,8 +67,11 @@ public class RegistApplicationsEvent implements Event {
 
 			req.setValue(XGsonBuilder.toJson(list));
 
-			CipherConnectionAction.put(false, Config.url_x_program_center_jaxrs("center", "regist", "applications"),
-					req);
+			for (Entry<String, CenterServer> entry : Config.nodes().centerServers().orderedEntry()) {
+				CipherConnectionAction.put(false,
+						Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req);
+
+			}
 
 			Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new UpdateApplicationsEvent()));
 		}

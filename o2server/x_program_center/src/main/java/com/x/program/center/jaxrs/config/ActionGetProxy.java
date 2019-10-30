@@ -21,10 +21,10 @@ class ActionGetProxy extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setApplicationList(new ArrayList<Application>());
-		wo.setHttpProtocol(Config.nodes().centerServers().first().getHttpProtocol());
+		wo.setHttpProtocol(Config.nodes().centerServers().first().getValue().getHttpProtocol());
 		Center center = new Center();
-		center.setProxyHost(Config.nodes().centerServers().first().getProxyHost());
-		center.setProxyPort(Config.nodes().centerServers().first().getProxyPort());
+		center.setProxyHost(Config.nodes().centerServers().first().getValue().getProxyHost());
+		center.setProxyPort(Config.nodes().centerServers().first().getValue().getProxyPort());
 		wo.setCenter(center);
 		for (Entry<String, Node> en : Config.nodes().entrySet()) {
 			if (null != en.getValue()) {

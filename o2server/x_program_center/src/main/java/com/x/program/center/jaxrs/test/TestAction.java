@@ -34,7 +34,7 @@ public class TestAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "测试,触发Area行政区域同步.", action = ActionTest1.class)
 	public void test1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<List<Object>> result = new ActionResult<>();
+		ActionResult<ActionTest1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionTest1().execute(effectivePerson);
