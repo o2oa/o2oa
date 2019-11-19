@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -27,6 +28,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.UnitDuty;
 
 import net.sf.ehcache.Element;
 
@@ -58,7 +60,7 @@ class ActionListLike extends BaseAction {
 		@FieldDescribe("搜索组织范围,为空则不限定")
 		private List<String> unitList = new ArrayList<>();
 		@FieldDescribe("搜索职务范围,为空则不限定")
-		private List<String> dutyList = new ArrayList<>();
+		private List<String> unitDutyList = new ArrayList<>();
 
 		public String getKey() {
 			return key;
@@ -74,6 +76,14 @@ class ActionListLike extends BaseAction {
 
 		public void setUnitList(List<String> unitList) {
 			this.unitList = unitList;
+		}
+
+		public List<String> getUnitDutyList() {
+			return unitDutyList;
+		}
+
+		public void setUnitDutyList(List<String> unitDutyList) {
+			this.unitDutyList = unitDutyList;
 		}
 
 	}
@@ -92,7 +102,6 @@ class ActionListLike extends BaseAction {
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
 		}
-		List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -103,7 +112,17 @@ class ActionListLike extends BaseAction {
 		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", '\\'));
 		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyinInitial)), str + "%", '\\'));
 		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.distinguishedName)), str + "%", '\\'));
-		if (ListTools.isNotEmpty(identityIds)) {
+		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
+			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());
+			List<String> unitDutyIdentities = new ArrayList<>();
+			for (UnitDuty o : unitDuties) {
+				unitDutyIdentities.addAll(o.getIdentityList());
+			}
+			unitDutyIdentities = ListTools.trim(unitDutyIdentities, true, true);
+			p = cb.and(p, root.get(Identity_.id).in(unitDutyIdentities));
+		}
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
+			List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
 			p = cb.and(p, root.get(Identity_.id).in(identityIds));
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();

@@ -189,13 +189,13 @@ public class Node extends ConfigObject {
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
-		private Boolean enable = false;
+		private Boolean enable = true;
 
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";
 
 		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
-		private Integer size = 14;
+		private Integer size = 7;
 
 		@FieldDescribe("备份路径")
 		private String path = "";
@@ -228,14 +228,14 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron);
 		}
 
-		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
-		private Boolean enable = false;
+		@FieldDescribe("是否启用,默认每天凌晨4点进行备份.")
+		private Boolean enable = true;
 
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";
 
 		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
-		private Integer size = 14;
+		private Integer size = 7;
 
 		@FieldDescribe("备份路径")
 		private String path = "";
@@ -245,7 +245,7 @@ public class Node extends ConfigObject {
 		}
 
 		public String cron() {
-			return (null == cron) ? "5 0 3 * * ?" : this.cron;
+			return (null == cron) ? "5 0 4 * * ?" : this.cron;
 		}
 
 		public Integer size() {
@@ -269,7 +269,7 @@ public class Node extends ConfigObject {
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
-		private Boolean enable;
+		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";
@@ -302,7 +302,7 @@ public class Node extends ConfigObject {
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
-		private Boolean enable;
+		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
 		private String cron = "";

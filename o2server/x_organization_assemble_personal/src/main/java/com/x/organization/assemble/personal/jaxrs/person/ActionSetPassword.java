@@ -2,7 +2,6 @@ package com.x.organization.assemble.personal.jaxrs.person;
 
 import java.util.Date;
 
-import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,8 +67,8 @@ class ActionSetPassword extends BaseAction {
 							person.getPassword())) {
 						throw new ExceptionOldPasswordNotMatch();
 					}
-					if (PasswordTools.checkPasswordStrength(wi.getNewPassword()) < 4) {
-						throw new ExceptionInvalidPassword();
+					if (!wi.getNewPassword().matches(Config.person().getPasswordRegex())) {
+						throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 					}
 				}
 				emc.beginTransaction(Person.class);

@@ -41,6 +41,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.schema.Table_;
 
 class ActionBuildAll extends BaseAction {
 
@@ -64,13 +65,12 @@ class ActionBuildAll extends BaseAction {
 			FileUtils.forceMkdir(target);
 			File resources = new File(dir, "resources");
 			FileUtils.forceMkdir(resources);
-			List<Table> tables = emc.listAll(Table.class);
+			List<Table> tables = emc.listEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build);
 			/* 产生用于创建persistence.xml */
 			List<String> classNames = new ArrayList<>();
 			for (Table table : tables) {
 				try {
 					emc.beginTransaction(Table.class);
-					table.setBuildSuccess(false);
 					if (StringUtils.isNotEmpty(table.getData())) {
 						DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getData(),
 								DynamicEntity.class);

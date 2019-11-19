@@ -63,7 +63,10 @@ public class Config {
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_CONFIG_SLICE = "config/slice.json";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
+	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
+	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
+	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -111,6 +114,8 @@ public class Config {
 	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
 
 	public static final String RESOURCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
+
+	public static final String SCRIPTING_ENGINE_NAME = "JavaScript";
 
 	// public static final String RESOUCE_CONFIG = "config";
 
@@ -482,7 +487,7 @@ public class Config {
 					if (null != files && files.length > 0) {
 						for (File o : files) {
 							String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
-							Node node = BaseTools.readObject(DIR_CONFIG + "/" + o.getName(), Node.class);
+							Node node = BaseTools.readConfigObject(DIR_CONFIG + "/" + o.getName(), Node.class);
 							if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
 								nodes.put(name, node);
 							}
@@ -492,7 +497,7 @@ public class Config {
 						nodes.put(node(), o);
 					}
 					/* 20191009兼容centerServer */
-					CenterServer c = BaseTools.readObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
+					CenterServer c = BaseTools.readConfigObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
 					if (null != c) {
 						for (Node n : nodes.values()) {
 							n.setCenter(c);
@@ -512,7 +517,7 @@ public class Config {
 		if (null == instance().token) {
 			synchronized (Config.class) {
 				if (null == instance().token) {
-					Token o = BaseTools.readObject(PATH_CONFIG_TOKEN, Token.class);
+					Token o = BaseTools.readConfigObject(PATH_CONFIG_TOKEN, Token.class);
 					if (null == o) {
 						o = Token.defaultInstance();
 					}
@@ -529,7 +534,7 @@ public class Config {
 		if (null == instance().externalDataSources) {
 			synchronized (Config.class) {
 				if (null == instance().externalDataSources) {
-					ExternalDataSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALDATASOURCES,
+					ExternalDataSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALDATASOURCES,
 							ExternalDataSources.class);
 					if (null == obj) {
 						obj = ExternalDataSources.defaultInstance();
@@ -547,7 +552,7 @@ public class Config {
 		if (null == instance().externalStorageSources) {
 			synchronized (Config.class) {
 				if (null == instance().externalStorageSources) {
-					ExternalStorageSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+					ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
 							ExternalStorageSources.class);
 					if (null == obj) {
 						obj = ExternalStorageSources.defaultInstance();
@@ -601,7 +606,7 @@ public class Config {
 		if (null == instance().person) {
 			synchronized (Config.class) {
 				if (null == instance().person) {
-					Person obj = BaseTools.readObject(PATH_CONFIG_PERSON, Person.class);
+					Person obj = BaseTools.readConfigObject(PATH_CONFIG_PERSON, Person.class);
 					if (null == obj) {
 						obj = Person.defaultInstance();
 					}
@@ -612,13 +617,30 @@ public class Config {
 		return instance().person;
 	}
 
+	private Communicate communicate = null;
+
+	public static Communicate communicate() throws Exception {
+		if (null == instance().communicate) {
+			synchronized (Config.class) {
+				if (null == instance().communicate) {
+					Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
+					if (null == obj) {
+						obj = Communicate.defaultInstance();
+					}
+					instance().communicate = obj;
+				}
+			}
+		}
+		return instance().communicate;
+	}
+
 	private Meeting meeting;
 
 	public static Meeting meeting() throws Exception {
 		if (null == instance().meeting) {
 			synchronized (Config.class) {
 				if (null == instance().meeting) {
-					Meeting obj = BaseTools.readObject(PATH_CONFIG_MEETING, Meeting.class);
+					Meeting obj = BaseTools.readConfigObject(PATH_CONFIG_MEETING, Meeting.class);
 					if (null == obj) {
 						obj = Meeting.defaultInstance();
 					}
@@ -635,7 +657,7 @@ public class Config {
 		if (null == instance().workTime) {
 			synchronized (Config.class) {
 				if (null == instance().workTime) {
-					com.x.base.core.project.config.WorkTime obj = BaseTools.readObject(PATH_CONFIG_WORKTIME,
+					com.x.base.core.project.config.WorkTime obj = BaseTools.readConfigObject(PATH_CONFIG_WORKTIME,
 							com.x.base.core.project.config.WorkTime.class);
 					if (null == obj) {
 						obj = com.x.base.core.project.config.WorkTime.defaultInstance();
@@ -655,7 +677,7 @@ public class Config {
 		if (null == instance().collect) {
 			synchronized (Config.class) {
 				if (null == instance().collect) {
-					Collect obj = BaseTools.readObject(PATH_CONFIG_COLLECT, Collect.class);
+					Collect obj = BaseTools.readConfigObject(PATH_CONFIG_COLLECT, Collect.class);
 					if (null == obj) {
 						obj = Collect.defaultInstance();
 					}
@@ -673,7 +695,8 @@ public class Config {
 		if (null == instance().dumpRestoreData) {
 			synchronized (Config.class) {
 				if (null == instance().dumpRestoreData) {
-					DumpRestoreData obj = BaseTools.readObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
+					DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA,
+							DumpRestoreData.class);
 					if (null == obj) {
 						obj = DumpRestoreData.defaultInstance();
 					}
@@ -690,7 +713,7 @@ public class Config {
 		if (null == instance().dumpRestoreStorage) {
 			synchronized (Config.class) {
 				if (null == instance().dumpRestoreStorage) {
-					DumpRestoreStorage obj = BaseTools.readObject(PATH_CONFIG_DUMPRESTORESTORAGE,
+					DumpRestoreStorage obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTORESTORAGE,
 							DumpRestoreStorage.class);
 					if (null == obj) {
 						obj = DumpRestoreStorage.defaultInstance();
@@ -713,6 +736,19 @@ public class Config {
 			}
 		}
 		return instance().initialScriptText;
+	}
+
+	public String initialServiceScriptText;
+
+	public static String initialServiceScriptText() throws Exception {
+		if (null == instance().initialServiceScriptText) {
+			synchronized (Config.class) {
+				if (null == instance().initialServiceScriptText) {
+					instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
+				}
+			}
+		}
+		return instance().initialServiceScriptText;
 	}
 
 	public String mooToolsScriptText;
@@ -769,7 +805,7 @@ public class Config {
 		if (null == instance().storageMappings) {
 			synchronized (Config.class) {
 				if (null == instance().storageMappings) {
-					ExternalStorageSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
+					ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
 							ExternalStorageSources.class);
 					if ((obj != null)) {
 						instance().storageMappings = new StorageMappings(obj);
@@ -789,6 +825,9 @@ public class Config {
 			synchronized (Config.class) {
 				if (null == instance().sslKeyStore) {
 					File file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE);
+					if ((!file.exists()) || file.isDirectory()) {
+						file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE + ".jks");
+					}
 					if ((!file.exists()) || file.isDirectory()) {
 						file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORESAMPLE);
 					}
@@ -863,7 +902,7 @@ public class Config {
 			synchronized (Config.class) {
 				if (null == instance().messages) {
 					Messages obj = Messages.defaultInstance();
-					Messages custom = BaseTools.readObject(PATH_CONFIG_MESSAGES, Messages.class);
+					Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
 					if (null != custom) {
 						custom.entrySet().stream().forEach(o -> {
 							obj.put(o.getKey(), new Message(o.getValue().getConsumers()));
@@ -876,13 +915,32 @@ public class Config {
 		return instance().messages;
 	}
 
+	private PushConfig pushConfig;
+
+	public static PushConfig pushConfig() throws Exception {
+		if (null == instance().pushConfig) {
+			synchronized (Config.class) {
+				if (null == instance().pushConfig) {
+					PushConfig custom = BaseTools.readConfigObject(PATH_CONFIG_JPUSH, PushConfig.class);
+					if (null != custom) {
+						instance().pushConfig = custom;
+					} else {
+						instance().pushConfig = PushConfig.defaultInstance();
+					}
+				}
+			}
+		}
+		return instance().pushConfig;
+	}
+
 	private ProcessPlatform processPlatform;
 
 	public static ProcessPlatform processPlatform() throws Exception {
 		if (null == instance().processPlatform) {
 			synchronized (Config.class) {
 				if (null == instance().processPlatform) {
-					ProcessPlatform obj = BaseTools.readObject(PATH_CONFIG_PROCESSPLATFORM, ProcessPlatform.class);
+					ProcessPlatform obj = BaseTools.readConfigObject(PATH_CONFIG_PROCESSPLATFORM,
+							ProcessPlatform.class);
 					if (null == obj) {
 						obj = ProcessPlatform.defaultInstance();
 					}
@@ -899,7 +957,7 @@ public class Config {
 		if (null == instance().query) {
 			synchronized (Config.class) {
 				if (null == instance().query) {
-					Query obj = BaseTools.readObject(PATH_CONFIG_QUERY, Query.class);
+					Query obj = BaseTools.readConfigObject(PATH_CONFIG_QUERY, Query.class);
 					if (null == obj) {
 						obj = Query.defaultInstance();
 					}
@@ -916,7 +974,7 @@ public class Config {
 		if (null == instance().dingding) {
 			synchronized (Config.class) {
 				if (null == instance().dingding) {
-					Dingding obj = BaseTools.readObject(PATH_CONFIG_DINGDING, Dingding.class);
+					Dingding obj = BaseTools.readConfigObject(PATH_CONFIG_DINGDING, Dingding.class);
 					if (null == obj) {
 						obj = Dingding.defaultInstance();
 					}
@@ -933,7 +991,7 @@ public class Config {
 		if (null == instance().qiyeweixin) {
 			synchronized (Config.class) {
 				if (null == instance().qiyeweixin) {
-					Qiyeweixin obj = BaseTools.readObject(PATH_CONFIG_QIYEWEIXIN, Qiyeweixin.class);
+					Qiyeweixin obj = BaseTools.readConfigObject(PATH_CONFIG_QIYEWEIXIN, Qiyeweixin.class);
 					if (null == obj) {
 						obj = Qiyeweixin.defaultInstance();
 					}
@@ -950,7 +1008,8 @@ public class Config {
 		if (null == instance().zhengwuDingding) {
 			synchronized (Config.class) {
 				if (null == instance().zhengwuDingding) {
-					ZhengwuDingding obj = BaseTools.readObject(PATH_CONFIG_ZHENGWUDINGDING, ZhengwuDingding.class);
+					ZhengwuDingding obj = BaseTools.readConfigObject(PATH_CONFIG_ZHENGWUDINGDING,
+							ZhengwuDingding.class);
 					if (null == obj) {
 						obj = ZhengwuDingding.defaultInstance();
 					}
@@ -967,7 +1026,7 @@ public class Config {
 		if (null == instance().vfs) {
 			synchronized (Config.class) {
 				if (null == instance().vfs) {
-					Vfs obj = BaseTools.readObject(PATH_CONFIG_VFS, Vfs.class);
+					Vfs obj = BaseTools.readConfigObject(PATH_CONFIG_VFS, Vfs.class);
 					if (null == obj) {
 						obj = Vfs.defaultInstance();
 					}
@@ -984,7 +1043,7 @@ public class Config {
 		if (null == instance().appStyle) {
 			synchronized (Config.class) {
 				if (null == instance().appStyle) {
-					AppStyle obj = BaseTools.readObject(PATH_CONFIG_APPSTYLE, AppStyle.class);
+					AppStyle obj = BaseTools.readConfigObject(PATH_CONFIG_APPSTYLE, AppStyle.class);
 					if (null == obj) {
 						obj = AppStyle.defaultInstance();
 					}
@@ -1019,7 +1078,7 @@ public class Config {
 		if (null == instance().logLevel) {
 			synchronized (Config.class) {
 				if (null == instance().logLevel) {
-					LogLevel obj = BaseTools.readObject(PATH_CONFIG_LOGLEVEL, LogLevel.class);
+					LogLevel obj = BaseTools.readConfigObject(PATH_CONFIG_LOGLEVEL, LogLevel.class);
 					if (null == obj) {
 						obj = LogLevel.defaultInstance();
 					}
@@ -1067,7 +1126,7 @@ public class Config {
 		if (null == instance().slice) {
 			synchronized (Config.class) {
 				if (null == instance().slice) {
-					Slice obj = BaseTools.readObject(PATH_CONFIG_SLICE, Slice.class);
+					Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
 					if (null == obj) {
 						obj = Slice.defaultInstance();
 					}

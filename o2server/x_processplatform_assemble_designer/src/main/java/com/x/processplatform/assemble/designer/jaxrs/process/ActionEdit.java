@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
+import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
@@ -90,12 +91,7 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			cacheNotify();
 			/* 保存历史版本 */
-			emc.beginTransaction(ProcessVersion.class);
-			ProcessVersion processVersion = new ProcessVersion();
-			processVersion.setData(gson.toJson(jsonElement));
-			processVersion.setProcess(process.getId());
-			emc.persist(processVersion, CheckPersistType.all);
-			emc.commit();
+			ThisApplication.processVersionQueue.send(new ProcessVersion(process.getId(), jsonElement));
 			Wo wo = new Wo();
 			wo.setId(process.getId());
 			result.setData(wo);

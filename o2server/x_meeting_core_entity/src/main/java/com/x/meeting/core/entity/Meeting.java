@@ -136,7 +136,7 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ invitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + invitePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -150,7 +150,7 @@ public class Meeting extends SliceJpaObject {
 	// + expandInvitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE +
 	// IndexNameMiddle
 	// + expandInvitePersonList_FIELDNAME + JoinIndexNameSuffix))
-	// @OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	// @OrderColumn(name = ORDERCOLUMNCOLUMN)
 	// @ElementColumn(length = length_255B, name = ColumnNamePrefix +
 	// expandInvitePersonList_FIELDNAME)
 	// @ElementIndex(name = TABLE + IndexNameMiddle +
@@ -164,7 +164,7 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ acceptPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + acceptPersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + acceptPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + acceptPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -176,19 +176,19 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ rejectPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + rejectPersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + rejectPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + rejectPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> rejectPersonList;
-	
+
 	public static final String checkinPersonList_FIELDNAME = "checkinPersonList";
 	@FieldDescribe("签到人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ checkinPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + checkinPersonList_FIELDNAME
-					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+			+ checkinPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ checkinPersonList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + checkinPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + checkinPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -197,7 +197,7 @@ public class Meeting extends SliceJpaObject {
 	public static final String confirmStatus_FIELDNAME = "confirmStatus";
 	@FieldDescribe("会议预定状态")
 	@Enumerated(EnumType.STRING)
-	@Column(length = ConfirmStatus.length, name = ColumnNamePrefix + confirmStatus_FIELDNAME)
+	@Column(length = JpaObject.length_8B, name = ColumnNamePrefix + confirmStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + confirmStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ConfirmStatus confirmStatus;
@@ -398,21 +398,23 @@ public class Meeting extends SliceJpaObject {
 	public void setCheckinPersonList(List<String> checkinPersonList) {
 		this.checkinPersonList = checkinPersonList;
 	}
-	
+
 	/**
 	 * 添加一个签到人员
+	 * 
 	 * @param distinguishedName
 	 */
-	public void addCheckinPerson( String distinguishedName ) {
-		this.checkinPersonList = ListTools.addStringToList( distinguishedName, this.checkinPersonList );
+	public void addCheckinPerson(String distinguishedName) {
+		this.checkinPersonList = ListTools.addStringToList(distinguishedName, this.checkinPersonList);
 	}
-	
+
 	/**
 	 * 删除一个签到人员
+	 * 
 	 * @param distinguishedName
 	 */
-	public void removeCheckinPerson( String distinguishedName ) {
-		this.checkinPersonList = ListTools.removeStringFromList( distinguishedName, this.checkinPersonList );
+	public void removeCheckinPerson(String distinguishedName) {
+		this.checkinPersonList = ListTools.removeStringFromList(distinguishedName, this.checkinPersonList);
 	}
 
 }

@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.Business;
 
 /***
@@ -159,8 +160,13 @@ public abstract class AbstractBaseProcessor {
 		return copy;
 	}
 
-	protected boolean hasArriveScript(Activity activity) throws Exception {
-		return this.hasBeforeArriveScript(activity) || this.hasAfterArriveScript(activity);
+	protected boolean hasBeforeArriveScript(Process process, Activity activity) throws Exception {
+		return this.hasBeforeArriveScript(process) || this.hasBeforeArriveScript(activity);
+	}
+
+	protected boolean hasBeforeArriveScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(BAS, String.class))
+				|| StringUtils.isNotEmpty(process.get(BAST, String.class));
 	}
 
 	protected boolean hasBeforeArriveScript(Activity activity) throws Exception {
@@ -168,13 +174,27 @@ public abstract class AbstractBaseProcessor {
 				|| StringUtils.isNotEmpty(activity.get(BAST, String.class));
 	}
 
+	protected boolean hasAfterArriveScript(Process process, Activity activity) throws Exception {
+		return this.hasAfterArriveScript(process) || this.hasAfterArriveScript(activity);
+	}
+
+	protected boolean hasAfterArriveScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(AAS, String.class))
+				|| StringUtils.isNotEmpty(process.get(AAST, String.class));
+	}
+
 	protected boolean hasAfterArriveScript(Activity activity) throws Exception {
 		return StringUtils.isNotEmpty(activity.get(AAS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AAST, String.class));
 	}
 
-	protected boolean hasExecuteScript(Activity activity) throws Exception {
-		return this.hasBeforeExecuteScript(activity) || this.hasAfterExecuteScript(activity);
+	protected boolean hasBeforeExecuteScript(Process process, Activity activity) throws Exception {
+		return this.hasBeforeExecuteScript(process) || this.hasBeforeExecuteScript(activity);
+	}
+
+	protected boolean hasBeforeExecuteScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(BES, String.class))
+				|| StringUtils.isNotEmpty(process.get(BEST, String.class));
 	}
 
 	protected boolean hasBeforeExecuteScript(Activity activity) throws Exception {
@@ -182,18 +202,41 @@ public abstract class AbstractBaseProcessor {
 				|| StringUtils.isNotEmpty(activity.get(BEST, String.class));
 	}
 
+	protected boolean hasAfterExecuteScript(Process process, Activity activity) throws Exception {
+		return this.hasAfterExecuteScript(process) || this.hasAfterExecuteScript(activity);
+	}
+
+	protected boolean hasAfterExecuteScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(AES, String.class))
+				|| StringUtils.isNotEmpty(process.get(AEST, String.class));
+	}
+
 	protected boolean hasAfterExecuteScript(Activity activity) throws Exception {
 		return StringUtils.isNotEmpty(activity.get(AES, String.class))
 				|| StringUtils.isNotEmpty(activity.get(AEST, String.class));
 	}
 
-	protected boolean hasInquireScript(Activity activity) throws Exception {
-		return this.hasBeforeInquireScript(activity) || this.hasAfterInquireScript(activity);
+	protected boolean hasBeforeInquireScript(Process process, Activity activity) throws Exception {
+		return this.hasBeforeInquireScript(process) || this.hasBeforeInquireScript(activity);
+	}
+
+	protected boolean hasBeforeInquireScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(BIS, String.class))
+				|| StringUtils.isNotEmpty(process.get(BIST, String.class));
 	}
 
 	protected boolean hasBeforeInquireScript(Activity activity) throws Exception {
 		return StringUtils.isNotEmpty(activity.get(BIS, String.class))
 				|| StringUtils.isNotEmpty(activity.get(BIST, String.class));
+	}
+
+	protected boolean hasAfterInquireScript(Process process, Activity activity) throws Exception {
+		return this.hasAfterInquireScript(process) || this.hasAfterInquireScript(activity);
+	}
+
+	protected boolean hasAfterInquireScript(Process process) throws Exception {
+		return StringUtils.isNotEmpty(process.get(AIS, String.class))
+				|| StringUtils.isNotEmpty(process.get(AIST, String.class));
 	}
 
 	protected boolean hasAfterInquireScript(Activity activity) throws Exception {

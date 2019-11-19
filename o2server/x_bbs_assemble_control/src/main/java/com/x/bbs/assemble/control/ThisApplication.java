@@ -5,7 +5,10 @@ import java.util.List;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
+import com.x.bbs.assemble.control.queue.QueueNewReplyNotify;
+import com.x.bbs.assemble.control.queue.QueueNewSubjectNotify;
 import com.x.bbs.assemble.control.schedule.SubjectReplyTotalStatisticTask;
 import com.x.bbs.assemble.control.schedule.SubjectTotalStatisticTask;
 import com.x.bbs.assemble.control.schedule.UserSubjectReplyPermissionStatisticTask;
@@ -21,9 +24,10 @@ import com.x.bbs.entity.BBSSectionInfo;
 public class ThisApplication {
 	
 	protected static Context context;
-	
-	public static final String BBSMANAGER = "BBSManager";
-	
+	public static final String BBSMANAGER = "BBSManager@CMSManagerSystemRole@R";
+	public static QueueNewReplyNotify queueNewReplyNotify;
+	public static QueueNewSubjectNotify queueNewSubjectNotify;
+
 	public static Context context() {
 		return context;
 	}
@@ -31,6 +35,14 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		try {
 			initAllSystemConfig();
+			queueNewReplyNotify = new QueueNewReplyNotify();
+			queueNewSubjectNotify = new QueueNewSubjectNotify();
+
+			MessageConnector.start(context());
+
+			context().startQueue( queueNewReplyNotify );
+			context().startQueue( queueNewSubjectNotify );
+
 			context.schedule( SubjectTotalStatisticTask.class, "0 10 * * * ?");
 			context.schedule( SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
 			context.schedule( UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");

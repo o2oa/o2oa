@@ -12,6 +12,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import com.x.base.core.project.tools.ListTools;
 import net.sf.ehcache.Element;
 
 public class ActionListAllAppType extends BaseAction {
@@ -24,8 +25,11 @@ public class ActionListAllAppType extends BaseAction {
 		List<Wo> wos = null;
 		List<String> appTypes = null;
 		Boolean check = true;
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( "allType" );
+		String personName = effectivePerson.getName();
+		Boolean isAnonymous = effectivePerson.isAnonymous();
+		Boolean isManager = effectivePerson.isManager() || effectivePerson.isCipher();
+
+		String cacheKey = ApplicationCache.concreteCacheKey( "allType", personName, isAnonymous, isManager );
 		Element element = cache.get( cacheKey );
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
@@ -42,19 +46,36 @@ public class ActionListAllAppType extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 			if( check ){
-				if( appTypes != null && !appTypes.isEmpty() ){
-					for( String type : appTypes ) {
-						if( !"未分类".equals( type )) {
-							wos.add( new Wo( type, appInfoServiceAdv.countAppInfoWithAppType( type )));
+				//查询每个类别的应用ID列表，查询出ID列表后，根据ID列表查询用户可访问的栏目对象
+				List<String> appIdsForType = null;
+				if(ListTools.isNotEmpty( appTypes ) ){
+					for( String appType : appTypes ) {
+						if( !"未分类".equals( appType )) {
+							appIdsForType = appInfoServiceAdv.listAppIdsWithAppType( appType );
+							if( !isManager && ListTools.isNotEmpty( appIdsForType ) ){
+								List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
+								List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
+								appIdsForType = permissionQueryService.listViewableAppIdByPerson( personName, isAnonymous, unitNames, groupNames, appIdsForType, null, null, appType, 99 );
+							}
+							if( appIdsForType == null ){
+								appIdsForType = new ArrayList<>();
+							}
+							wos.add( new Wo( appType, Long.parseLong( appIdsForType.size() + "") ));
 						}
 					}
 				}
-				
-				Long outTypeCount = appInfoServiceAdv.countAppInfoWithOutAppType();
-				if( outTypeCount != null && outTypeCount > 0 ) {
-					wos.add( new Wo( "未分类", outTypeCount ));
+				//查询所有的未分类的并且有权限查看的栏目列表
+				appIdsForType = appInfoServiceAdv.listAppIdsWithOutAppType();
+				if( !isManager && ListTools.isNotEmpty( appIdsForType ) ){
+					List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
+					List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
+					appIdsForType = permissionQueryService.listViewableAppIdByPerson( personName, isAnonymous, unitNames, groupNames, appIdsForType, null, null, null, 99 );
 				}
-				
+				if( appIdsForType == null ){
+					appIdsForType = new ArrayList<>();
+				}
+				wos.add( new Wo( "未分类", Long.parseLong( appIdsForType.size() + "") ));
+
 				cache.put(new Element( cacheKey, wos ));
 				result.setData( wos );
 			}
@@ -86,8 +107,6 @@ public class ActionListAllAppType extends BaseAction {
 		public void setCount(Long count) {
 			this.count = count;
 		}
-		
-		
 	}
 	
 }

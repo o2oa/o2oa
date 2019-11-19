@@ -49,6 +49,23 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apiBuilder</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<addOutputToClasspath>true</addOutputToClasspath>
+							<includePluginDependencies>true</includePluginDependencies>
+							<includeProjectDependencies>true</includeProjectDependencies>
+							<mainClass>com.x.base.core.project.annotation.ApiBuilder</mainClass>
+							<arguments>
+								<argument>${basedir}</argument>
+								<argument>${project.build.sourceDirectory}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>checkAssemble</id>
 						<phase>prepare-package</phase>
 						<goals>

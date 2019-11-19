@@ -68,27 +68,27 @@ public class OkrStatisticReportStatus extends SliceJpaObject {
 
 	public static final String workId_FIELDNAME = "workId";
 	@FieldDescribe("工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + workId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workId = "";
 
 	public static final String workTitle_FIELDNAME = "workTitle";
 	@FieldDescribe("工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String workTitle = "";
 
 	public static final String statisticYear_FIELDNAME = "statisticYear";
 	@FieldDescribe("统计年份")
-	@Column( name = ColumnNamePrefix + statisticYear_FIELDNAME)
+	@Column(name = ColumnNamePrefix + statisticYear_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + statisticYear_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer statisticYear = 2018;
 
 	public static final String statisticTimeFlag_FIELDNAME = "statisticTimeFlag";
 	@FieldDescribe("统计时间标识.")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + statisticTimeFlag_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + statisticTimeFlag_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + statisticTimeFlag_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String statisticTimeFlag = null;
@@ -97,109 +97,113 @@ public class OkrStatisticReportStatus extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("中心工作汇报统计内容")
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + reportStatistic_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + reportStatistic_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reportStatistic = "";
 
 	public static final String centerId_FIELDNAME = "centerId";
 	@FieldDescribe("中心工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + centerId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerId = "";
 
 	public static final String centerTitle_FIELDNAME = "centerTitle";
 	@FieldDescribe("中心标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String centerTitle = "";
 
 	public static final String parentId_FIELDNAME = "parentId";
 	@FieldDescribe("上级工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + parentId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + parentId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String parentId = null;
 
 	public static final String responsibilityEmployeeName_FIELDNAME = "responsibilityEmployeeName";
 	@FieldDescribe("主责人姓名")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityEmployeeName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityEmployeeName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityEmployeeName = "";
 
 	public static final String responsibilityIdentity_FIELDNAME = "responsibilityIdentity";
 	@FieldDescribe("主责人身份")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityIdentity = "";
 
 	public static final String responsibilityUnitName_FIELDNAME = "responsibilityUnitName";
 	@FieldDescribe("主责人所属组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityUnitName = "";
 
 	public static final String responsibilityTopUnitName_FIELDNAME = "responsibilityTopUnitName";
 	@FieldDescribe("主责人所属顶层组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityTopUnitName = "";
 
 	public static final String workType_FIELDNAME = "workType";
 	@FieldDescribe("工作类别")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + workType_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + workType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workType = "";
 
 	public static final String workLevel_FIELDNAME = "workLevel";
 	@FieldDescribe("工作级别")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + workLevel_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + workLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workLevel = "";
 
 	public static final String overallProgress_FIELDNAME = "overallProgress";
 	@FieldDescribe("工作进度")
-	@Column( name = ColumnNamePrefix + overallProgress_FIELDNAME)
+	@Column(name = ColumnNamePrefix + overallProgress_FIELDNAME)
 	private Integer overallProgress = 0;
 
 	public static final String reportCycle_FIELDNAME = "reportCycle";
 	@FieldDescribe("汇报周期:不需要汇报|每月汇报|每周汇报")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + reportCycle_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + reportCycle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reportCycle = null;
 
 	public static final String reportDayInCycle_FIELDNAME = "reportDayInCycle";
 	@FieldDescribe("周期汇报时间：每月的几号(1-31)，每周的星期几(1-7)，启动时间由系统配置设定，比如：10:00")
-	@Column( name = ColumnNamePrefix + reportDayInCycle_FIELDNAME)
+	@Column(name = ColumnNamePrefix + reportDayInCycle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer reportDayInCycle = 0;
 
 	public static final String workDateTimeType_FIELDNAME = "workDateTimeType";
 	@FieldDescribe("工作期限类型:短期工作(不需要自动启动定期汇报) | 长期工作（需要自动启动定期汇报）")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + workDateTimeType_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workDateTimeType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workDateTimeType = "长期工作";
 
 	public static final String workProcessStatus_FIELDNAME = "workProcessStatus";
 	@FieldDescribe("工作处理状态：草稿|待确认|执行中|已超期|已完成|已撤消")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + workProcessStatus_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workProcessStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workProcessStatus = "草稿";
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("工作处理状态：正常|已归档")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String status = "正常";
 
 	public static final String deployDateStr_FIELDNAME = "deployDateStr";
 	@FieldDescribe("工作部署日期-字符串，显示用：yyyy-mm-dd")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + deployDateStr_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + deployDateStr_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String deployDateStr = "";
 
 	public static final String completeDateLimitStr_FIELDNAME = "completeDateLimitStr";
 	@FieldDescribe("工作完成日期-字符串，显示用：yyyy-mm-dd")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + completeDateLimitStr_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + completeDateLimitStr_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String completeDateLimitStr = "";
 

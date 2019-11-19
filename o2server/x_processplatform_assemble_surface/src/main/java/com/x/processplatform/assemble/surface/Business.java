@@ -1,8 +1,12 @@
 package com.x.processplatform.assemble.surface;
 
-import java.util.List;
-import java.util.Objects;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import com.x.base.core.project.config.StorageMapping;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -1195,6 +1199,40 @@ public class Business {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 下载附件并打包为zip
+	 * @param attachmentList
+	 * @param os
+	 * @throws Exception
+	 */
+	public void downToZip(List<Attachment> attachmentList, OutputStream os) throws Exception {
+		Map<String, Attachment> filePathMap = new HashMap<>();
+		List<String> emptyFolderList = new ArrayList<>();
+		/* 生成zip压缩文件内的目录结构 */
+		if(attachmentList!=null) {
+			for (Attachment att : attachmentList) {
+				filePathMap.put(att.getName(), att);
+			}
+		}
+		try(ZipOutputStream zos  = new ZipOutputStream(os)){
+			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
+				zos.putNextEntry(new ZipEntry(entry.getKey()));
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						entry.getValue().getStorage());
+				try (ByteArrayOutputStream os1 = new ByteArrayOutputStream()) {
+					entry.getValue().readContent(mapping, os1);
+					byte[] bs = os1.toByteArray();
+					os1.close();
+					zos.write(bs);
+				}
+			}
+			// 往zip里添加空文件夹
+			for (String emptyFolder : emptyFolderList) {
+				zos.putNextEntry(new ZipEntry(emptyFolder));
+			}
+		}
 	}
 
 }

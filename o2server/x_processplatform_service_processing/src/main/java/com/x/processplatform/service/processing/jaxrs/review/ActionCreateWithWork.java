@@ -8,7 +8,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.jaxrs.WrapIdList;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
@@ -32,16 +32,18 @@ class ActionCreateWithWork extends BaseAction {
 			if (ListTools.isEmpty(people)) {
 				throw new ExceptionPersonEmpty();
 			}
+			List<String> idList = new ArrayList<>();
 			if (ListTools.isNotEmpty(people)) {
 				emc.beginTransaction(Review.class);
 				for (String person : people) {
 					Review review = new Review(work, person);
 					emc.persist(review, CheckPersistType.all);
+					idList.add(review.getId());
 				}
 				emc.commit();
 			}
 			Wo wo = new Wo();
-			wo.setValue(true);
+			wo.setIdList(idList);
 			result.setData(wo);
 			return result;
 		}
@@ -69,7 +71,7 @@ class ActionCreateWithWork extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends WrapIdList {
 	}
 
 }

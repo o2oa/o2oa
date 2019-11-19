@@ -14,6 +14,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.mind.assemble.control.ThisApplication;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderWrapInConvert;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindNotExists;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindQuery;
@@ -120,6 +121,15 @@ public class ActionMindShare extends BaseAction {
 				wo.setId( mindId );
 			}catch( Exception e ) {
 				check = false;
+				Exception exception = new ExceptionMindShare( e, "{‘id’:'"+mindId+"'}" );
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		if( check ){
+			try {
+				ThisApplication.queueShareNotify.send( mindBaseInfo );
+			}catch( Exception e ) {
 				Exception exception = new ExceptionMindShare( e, "{‘id’:'"+mindId+"'}" );
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);

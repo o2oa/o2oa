@@ -18,10 +18,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.FormVersion;
+import com.x.processplatform.core.entity.element.ScriptVersion;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -65,12 +67,7 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			ApplicationCache.notify(Form.class);
 			/* 保存历史版本 */
-			emc.beginTransaction(FormVersion.class);
-			FormVersion formVersion = new FormVersion();
-			formVersion.setData(gson.toJson(jsonElement));
-			formVersion.setForm(form.getId());
-			emc.persist(formVersion, CheckPersistType.all);
-			emc.commit();
+			ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
 			Wo wo = new Wo();
 			wo.setId(form.getId());
 			result.setData(wo);

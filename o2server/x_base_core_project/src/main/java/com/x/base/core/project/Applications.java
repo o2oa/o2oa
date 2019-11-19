@@ -12,10 +12,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -81,7 +83,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse getQuery(Boolean xdebugger, Application application, String uri) throws Exception {
-		return CipherConnectionAction.get(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+		return CipherConnectionAction.get(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse getQuery(String applicationName, String uri) throws Exception {
@@ -94,7 +96,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throw new Exception("getQuery can not find application with name:" + applicationName + ".");
 		}
 		Application application = this.randomWithWeight(name);
-		return CipherConnectionAction.get(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+		return CipherConnectionAction.get(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(Class<?> applicationClass, String uri) throws Exception {
@@ -110,7 +112,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse deleteQuery(Boolean xdebugger, Application application, String uri) throws Exception {
-		return CipherConnectionAction.delete(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+		return CipherConnectionAction.delete(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(String applicationName, String uri) throws Exception {
@@ -123,7 +126,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throw new Exception("deleteQuery can not find application with name:" + applicationName + ".");
 		}
 		Application application = this.randomWithWeight(name);
-		return CipherConnectionAction.delete(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+		return CipherConnectionAction.delete(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
@@ -141,7 +145,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public ActionResponse postQuery(Boolean xdebugger, Application application, String uri, Object body)
 			throws Exception {
-		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
+		return CipherConnectionAction.post(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
 	}
 
@@ -156,7 +160,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throw new Exception("postQuery can not find application with name:" + applicationName + ".");
 		}
 		Application application = this.randomWithWeight(name);
-		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
+		return CipherConnectionAction.post(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
 	}
 
@@ -176,7 +180,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	public ActionResponse putQuery(Boolean xdebugger, Application application, String uri, Object body)
 			throws Exception {
 		return CipherConnectionAction.put(xdebugger,
-				StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)), body);
+				StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)), body);
 	}
 
 	public ActionResponse putQuery(String applicationName, String uri, Object body) throws Exception {
@@ -190,7 +194,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throw new Exception("putQuery can not find application with name:" + applicationName + ".");
 		}
 		Application application = this.randomWithWeight(name);
-		return CipherConnectionAction.put(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), body);
+		return CipherConnectionAction.put(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
+				body);
 	}
 
 	public String findApplicationName(String name) throws Exception {
@@ -259,6 +264,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
 	public void updateTimestamp(Date updateTimestamp) {
 		this.updateTimestamp = updateTimestamp;
+	}
+
+	public String describeApi(String name) throws Exception {
+		String applicationName = this.findApplicationName(name);
+		if (StringUtils.isEmpty(applicationName)) {
+			throw new Exception("getDescribe can not find application with name:" + name + ".");
+		}
+		Application application = this.randomWithWeight(applicationName);
+		return HttpConnection.getAsString(application.getUrlDescribeApiJson(), null);
 	}
 
 }

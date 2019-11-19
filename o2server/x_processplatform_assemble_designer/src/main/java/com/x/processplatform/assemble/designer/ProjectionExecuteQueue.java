@@ -8,6 +8,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
@@ -25,6 +26,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.query.core.entity.Item;
@@ -39,330 +41,61 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 	protected void execute(String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Projection projection = emc.find(id, Projection.class);
-			if (null == projection) {
-				throw new ExceptionEntityNotExist(id, Projection.class);
+			Process process = emc.find(id, Process.class);
+			if (null == process) {
+				throw new ExceptionEntityNotExist(id, Process.class);
 			}
-			if (BooleanUtils.isTrue(projection.getEnable())) {
-				switch (Objects.toString(projection.getType(), "")) {
-				case Projection.TYPE_WORK:
-					this.work(business, projection);
-					break;
-				case Projection.TYPE_WORKCOMPLETED:
-					this.workCompleted(business, projection);
-					break;
-				case Projection.TYPE_TASK:
-					this.task_work(business, projection);
-					break;
-				case Projection.TYPE_TASKCOMPLETED:
-					this.taskCompleted_work(business, projection);
-					this.taskCompleted_workCompleted(business, projection);
-					break;
-				case Projection.TYPE_READ:
-					this.read_work(business, projection);
-					this.read_workCompleted(business, projection);
-					break;
-				case Projection.TYPE_READCOMPLETED:
-					this.readCompleted_work(business, projection);
-					this.readCompleted_workCompleted(business, projection);
-					break;
-				case Projection.TYPE_REVIEW:
-					this.review_work(business, projection);
-					this.review_workCompleted(business, projection);
-					break;
-				default:
-					break;
-				}
+			if (StringUtils.isNotEmpty(process.getProjection()) && XGsonBuilder.isJson(process.getProjection())) {
+				List<Projection> projections = XGsonBuilder.instance().fromJson(process.getProjection(),
+						new TypeToken<List<Projection>>() {
+						}.getType());
+				this.work(business, process, projections);
+				this.workCompleted(business, process, projections);
 			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
 
-	private void work(Business business, Projection projection) throws Exception {
+	private void work(Business business, Process process, List<Projection> projections) throws Exception {
 		String sequence = "";
 		List<Work> os = new ArrayList<>();
 		Data data = null;
 		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
+			os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
+					process.getId(), 100, sequence);
 			if (!os.isEmpty()) {
 				business.entityManagerContainer().beginTransaction(Work.class);
-				for (Work o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
-					ProjectionFactory.projectionWork(projection, data, o);
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void workCompleted(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<WorkCompleted> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.process_FIELDNAME, projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.application_FIELDNAME, projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
-				for (WorkCompleted o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
-					ProjectionFactory.projectionWorkCompleted(projection, data, o);
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void task_work(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<Work> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
 				business.entityManagerContainer().beginTransaction(Task.class);
+				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+				business.entityManagerContainer().beginTransaction(Read.class);
+				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+				business.entityManagerContainer().beginTransaction(Review.class);
 				for (Work o : os) {
 					sequence = o.getSequence();
 					data = this.data(business, o);
+					ProjectionFactory.projectionWork(projections, data, o);
 					for (Task task : business.entityManagerContainer().listEqualAndEqual(Task.class, Task.job_FIELDNAME,
 							o.getJob(), Task.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionTask(projection, data, task);
+						ProjectionFactory.projectionTask(projections, data, task);
 					}
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void taskCompleted_work(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<Work> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-				for (Work o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
 					for (TaskCompleted taskCompleted : business.entityManagerContainer().listEqualAndEqual(
 							TaskCompleted.class, TaskCompleted.job_FIELDNAME, o.getJob(),
 							TaskCompleted.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionTaskCompleted(projection, data, taskCompleted);
+						ProjectionFactory.projectionTaskCompleted(projections, data, taskCompleted);
 					}
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void taskCompleted_workCompleted(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<WorkCompleted> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.process_FIELDNAME, projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.application_FIELDNAME, projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-				for (WorkCompleted o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
-					for (TaskCompleted taskCompleted : business.entityManagerContainer().listEqualAndEqual(
-							TaskCompleted.class, TaskCompleted.job_FIELDNAME, o.getJob(),
-							TaskCompleted.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionTaskCompleted(projection, data, taskCompleted);
-					}
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void read_work(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<Work> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(Read.class);
-				for (Work o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
 					for (Read read : business.entityManagerContainer().listEqualAndEqual(Read.class, Read.job_FIELDNAME,
 							o.getJob(), Read.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionRead(projection, data, read);
+						ProjectionFactory.projectionRead(projections, data, read);
 					}
-
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void read_workCompleted(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<WorkCompleted> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.process_FIELDNAME, projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.application_FIELDNAME, projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(Read.class);
-				for (WorkCompleted o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
-					for (Read read : business.entityManagerContainer().listEqualAndEqual(Read.class, Read.job_FIELDNAME,
-							o.getJob(), Read.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionRead(projection, data, read);
-					}
-
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void readCompleted_work(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<Work> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-				for (Work o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
 					for (ReadCompleted readCompleted : business.entityManagerContainer().listEqualAndEqual(
 							ReadCompleted.class, ReadCompleted.job_FIELDNAME, o.getJob(),
 							ReadCompleted.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionReadCompleted(projection, data, readCompleted);
+						ProjectionFactory.projectionReadCompleted(projections, data, readCompleted);
 					}
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void readCompleted_workCompleted(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<WorkCompleted> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.process_FIELDNAME, projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.application_FIELDNAME, projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-				for (WorkCompleted o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
-					for (ReadCompleted readCompleted : business.entityManagerContainer().listEqualAndEqual(
-							ReadCompleted.class, ReadCompleted.job_FIELDNAME, o.getJob(),
-							ReadCompleted.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionReadCompleted(projection, data, readCompleted);
-					}
-
-				}
-				business.entityManagerContainer().commit();
-			}
-		} while (!os.isEmpty());
-	}
-
-	private void review_work(Business business, Projection projection) throws Exception {
-		String sequence = "";
-		List<Work> os = new ArrayList<>();
-		Data data = null;
-		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.process_FIELDNAME,
-						projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(Work.class, Work.application_FIELDNAME,
-						projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
-			if (!os.isEmpty()) {
-				business.entityManagerContainer().beginTransaction(Review.class);
-				for (Work o : os) {
-					sequence = o.getSequence();
-					data = this.data(business, o);
 					for (Review review : business.entityManagerContainer().listEqualAndEqual(Review.class,
 							Review.job_FIELDNAME, o.getJob(), Review.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionReview(projection, data, review);
+						ProjectionFactory.projectionReview(projections, data, review);
 					}
 				}
 				business.entityManagerContainer().commit();
@@ -370,28 +103,45 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 		} while (!os.isEmpty());
 	}
 
-	private void review_workCompleted(Business business, Projection projection) throws Exception {
+	private void workCompleted(Business business, Process process, List<Projection> projections) throws Exception {
 		String sequence = "";
 		List<WorkCompleted> os = new ArrayList<>();
 		Data data = null;
 		do {
-			if (StringUtils.isNotEmpty(projection.getProcess())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.process_FIELDNAME, projection.getProcess(), 100, sequence);
-			} else if (StringUtils.isNotEmpty(projection.getApplication())) {
-				os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
-						WorkCompleted.application_FIELDNAME, projection.getApplication(), 100, sequence);
-			} else {
-				os = new ArrayList<>();
-			}
+			os = business.entityManagerContainer().listEqualAndSequenceAfter(WorkCompleted.class,
+					WorkCompleted.process_FIELDNAME, process.getId(), 100, sequence);
 			if (!os.isEmpty()) {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				business.entityManagerContainer().beginTransaction(Task.class);
+				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+				business.entityManagerContainer().beginTransaction(Read.class);
+				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 				business.entityManagerContainer().beginTransaction(Review.class);
 				for (WorkCompleted o : os) {
 					sequence = o.getSequence();
 					data = this.data(business, o);
+					ProjectionFactory.projectionWorkCompleted(projections, data, o);
+					for (Task task : business.entityManagerContainer().listEqualAndEqual(Task.class, Task.job_FIELDNAME,
+							o.getJob(), Task.process_FIELDNAME, o.getProcess())) {
+						ProjectionFactory.projectionTask(projections, data, task);
+					}
+					for (TaskCompleted taskCompleted : business.entityManagerContainer().listEqualAndEqual(
+							TaskCompleted.class, TaskCompleted.job_FIELDNAME, o.getJob(),
+							TaskCompleted.process_FIELDNAME, o.getProcess())) {
+						ProjectionFactory.projectionTaskCompleted(projections, data, taskCompleted);
+					}
+					for (Read read : business.entityManagerContainer().listEqualAndEqual(Read.class, Read.job_FIELDNAME,
+							o.getJob(), Read.process_FIELDNAME, o.getProcess())) {
+						ProjectionFactory.projectionRead(projections, data, read);
+					}
+					for (ReadCompleted readCompleted : business.entityManagerContainer().listEqualAndEqual(
+							ReadCompleted.class, ReadCompleted.job_FIELDNAME, o.getJob(),
+							ReadCompleted.process_FIELDNAME, o.getProcess())) {
+						ProjectionFactory.projectionReadCompleted(projections, data, readCompleted);
+					}
 					for (Review review : business.entityManagerContainer().listEqualAndEqual(Review.class,
 							Review.job_FIELDNAME, o.getJob(), Review.process_FIELDNAME, o.getProcess())) {
-						ProjectionFactory.projectionReview(projection, data, review);
+						ProjectionFactory.projectionReview(projections, data, review);
 					}
 				}
 				business.entityManagerContainer().commit();

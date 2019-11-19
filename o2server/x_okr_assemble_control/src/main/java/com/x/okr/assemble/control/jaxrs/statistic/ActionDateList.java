@@ -15,6 +15,7 @@ import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.jaxrs.statistic.exception.ExceptionQueryEndDateInvalid;
 import com.x.okr.assemble.control.jaxrs.statistic.exception.ExceptionQueryStartDateInvalid;
 import com.x.okr.assemble.control.jaxrs.statistic.exception.ExceptionQueryWithCondition;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionDateList extends BaseAction {
 
@@ -44,7 +45,7 @@ public class ActionDateList extends BaseAction {
 			reportCycle = wrapIn.getReportCycle();
 		}
 		if (check) {
-			if ( wrapIn.getStartDate() != null && !wrapIn.getStartDate().isEmpty() ) {
+			if ( StringUtils.isNotEmpty( wrapIn.getStartDate() )) {
 				try {
 					startDate = dateOperation.getDateFromString( wrapIn.getStartDate() );
 				} catch (Exception e) {
@@ -54,7 +55,7 @@ public class ActionDateList extends BaseAction {
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			if ( wrapIn.getEndDate() != null && !wrapIn.getEndDate().isEmpty() ) {
+			if ( StringUtils.isNotEmpty( wrapIn.getEndDate())) {
 				try {
 					endDate = dateOperation.getDateFromString( wrapIn.getEndDate() );
 				} catch (Exception e) {
@@ -67,7 +68,7 @@ public class ActionDateList extends BaseAction {
 		}
 		if (check) {
 			try {
-				if( reportCycle == null || reportCycle.isEmpty() ){
+				if( StringUtils.isNotEmpty(reportCycle) ){
 					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), "每周汇报", year, month, week, startDate, endDate, wrapIn.getStatus() );
 					if( datetimes != null && !datetimes.isEmpty() ){
 						for( String datetime : datetimes){

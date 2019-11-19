@@ -87,7 +87,7 @@ class ActionOauthLogin extends BaseAction {
 			} else {
 				logger.debug("info script:{}.", oauthClient.getInfoScriptText());
 				ScriptEngineManager factory = new ScriptEngineManager();
-				ScriptEngine engine = factory.getEngineByName("nashorn");
+				ScriptEngine engine = factory.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 				engine.put("text", infoBody);
 				credential = engine.eval(oauthClient.getInfoScriptText()).toString();
 			}
@@ -106,7 +106,7 @@ class ActionOauthLogin extends BaseAction {
 				}
 				Person o = emc.find(personId, Person.class);
 				wo = this.user(request, response, business, o, Wo.class);
-				audit.log(o.getDistinguishedName());
+				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

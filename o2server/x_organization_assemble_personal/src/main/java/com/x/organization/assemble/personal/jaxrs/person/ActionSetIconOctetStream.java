@@ -35,13 +35,28 @@ class ActionSetIconOctetStream extends BaseAction {
 			/** 从内存中pick出来的无法作为实体保存 */
 			person = emc.find(person.getId(), Person.class);
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ByteArrayOutputStream baos_m = new ByteArrayOutputStream();
+					ByteArrayOutputStream baos_l = new ByteArrayOutputStream()) {
 				BufferedImage image = ImageIO.read(bais);
+
 				BufferedImage scalrImage = Scalr.resize(image, 144, 144);
 				ImageIO.write(scalrImage, "png", baos);
-				emc.beginTransaction(Person.class);
 				String icon = Base64.encodeBase64String(baos.toByteArray());
+
+				BufferedImage scalrImage_m = Scalr.resize(image, 72, 72);
+				ImageIO.write(scalrImage_m, "png", baos_m);
+				String icon_m = Base64.encodeBase64String(baos_m.toByteArray());
+
+				BufferedImage scalrImage_l = Scalr.resize(image, 36, 36);
+				ImageIO.write(scalrImage_l, "png", baos_l);
+				String icon_l = Base64.encodeBase64String(baos_l.toByteArray());
+
+				emc.beginTransaction(Person.class);
 				person.setIcon(icon);
+				person.setIconMdpi(icon_m);
+				person.setIconLdpi(icon_l);
+
 				emc.commit();
 				ApplicationCache.notify(Person.class);
 				Wo wo = new Wo();

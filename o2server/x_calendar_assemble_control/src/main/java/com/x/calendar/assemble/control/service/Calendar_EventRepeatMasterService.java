@@ -19,17 +19,18 @@ import com.x.calendar.core.entity.Calendar_EventRepeatMaster;
 
 /**
  * 日历重复信息主体记录信息服务类
- * @author O2LEE
  *
  */
 public class Calendar_EventRepeatMasterService {
 
 	/**
 	 * 根据ID彻底删除指定的日历重复信息主体记录信息
-	 * @param id
+	 * @param emc
+	 * @param repeatMasterId
+	 * @param excludeIds 排除EventID列表
 	 * @throws Exception
 	 */
-	public void destoryWithMasterId( EntityManagerContainer emc, String repeatMasterId ) throws Exception {
+	public void destoryWithMasterId( EntityManagerContainer emc, String repeatMasterId, List<String> excludeIds ) throws Exception {
 		Calendar_EventRepeatMaster calendar_EventRepeatMaster = null;
 		if( StringUtils.isEmpty( repeatMasterId ) ){
 			throw new Exception( "repeatMasterId is empty, system can not delete any object." );
@@ -43,9 +44,11 @@ public class Calendar_EventRepeatMasterService {
 		emc.beginTransaction( Calendar_EventRepeatMaster.class );
 		if( ListTools.isNotEmpty( eventIds )) {
 			for( String id : eventIds ) {
-				calendar_Event = emc.find( id, Calendar_Event.class );
-				if( calendar_Event != null ) {
-					emc.remove( calendar_Event, CheckRemoveType.all );
+				if( !ListTools.contains( excludeIds, id ) ) {
+					calendar_Event = emc.find( id, Calendar_Event.class );
+					if( calendar_Event != null) {
+						emc.remove( calendar_Event, CheckRemoveType.all );
+					}
 				}
 			}
 		}
@@ -57,8 +60,9 @@ public class Calendar_EventRepeatMasterService {
 
 	/**
 	 * 创建日历重复信息主体记录信息
-	 * @param calendar_record
-	 * @param b 
+	 * @param emc
+	 * @param calendar_EventRepeatMaster
+	 * @param autoTransaction
 	 * @return
 	 * @throws Exception
 	 */
@@ -67,7 +71,7 @@ public class Calendar_EventRepeatMasterService {
 			Boolean autoTransaction ) throws Exception {
 		if( autoTransaction == null ) {
 			autoTransaction = true;
-		}		
+		}
 		Calendar_EventRepeatMaster calendar_EventRepeatMaster_old = null;
 		calendar_EventRepeatMaster_old = emc.find( calendar_EventRepeatMaster.getId(), Calendar_EventRepeatMaster.class );
 		if( calendar_EventRepeatMaster_old != null ){
@@ -79,17 +83,19 @@ public class Calendar_EventRepeatMasterService {
 			if( StringUtils.isEmpty( calendar_EventRepeatMaster.getId() )) {
 				calendar_EventRepeatMaster.setId( Calendar_Event.createId() );
 			}
-			emc.persist( calendar_EventRepeatMaster, CheckPersistType.all);			
+			emc.persist( calendar_EventRepeatMaster, CheckPersistType.all);
 			if(autoTransaction) {
 				emc.commit();
 			}
 		}
 		return calendar_EventRepeatMaster;
 	}
-	
+
 	/**
 	 * 更新日历重复信息主体记录信息
-	 * @param calendar_record
+	 * @param emc
+	 * @param calendar_EventRepeatMaster
+	 * @param autoTransaction
 	 * @return
 	 * @throws Exception
 	 */
@@ -105,10 +111,14 @@ public class Calendar_EventRepeatMasterService {
 		Business business = new Business(emc);
 		calendar_EventRepeatMaster_old = business.calendar_EventRepeatMasterFactory().get( calendar_EventRepeatMaster.getId() );
 		if( calendar_EventRepeatMaster_old != null ){
-			emc.beginTransaction( Calendar_EventRepeatMaster.class );
+			if(autoTransaction) {
+				emc.beginTransaction( Calendar_EventRepeatMaster.class );
+			}
 			calendar_EventRepeatMaster.copyTo(calendar_EventRepeatMaster_old, JpaObject.FieldsUnmodify);
 			emc.check( calendar_EventRepeatMaster_old, CheckPersistType.all);
-			emc.commit();
+			if(autoTransaction) {
+				emc.commit();
+			}
 		}else{
 			throw new Exception("old object calendar_EventRepeatMaster{'id':' "+ calendar_EventRepeatMaster.getId() +" '} is not exists. ");
 		}
@@ -198,19 +208,18 @@ public class Calendar_EventRepeatMasterService {
 		}		
 		return result;
 	}
-	
+
 	/**
 	 * 根据条件和时间范围查询需要进行事件生成的重复主体ID列表,  时间根据已经生成过的日期来判断
 	 * @param emc
 	 * @param calendarIds
 	 * @param eventType
-	 * @param startTime
-	 * @param endTime
+	 * @param createMonth
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listNeedRepeatMaster( EntityManagerContainer emc, List<String> calendarIds, String eventType,
 			String createMonth, String personName, List<String> unitNames, List<String> groupNames) throws Exception {

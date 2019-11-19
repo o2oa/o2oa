@@ -44,12 +44,12 @@ public class StatisticPersonForMonth extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 		String employeeName = null;
-		if(  this.employeeName != null ) {
+		if (this.employeeName != null) {
 			employeeName = this.employeeName.split("@")[0];
-		}else {
+		} else {
 			employeeName = this.employeeName;
 		}
-		this.setSequence( StringUtils.join(this.statisticYear + this.statisticMonth, employeeName, this.getId()) );
+		this.setSequence(StringUtils.join(this.statisticYear + this.statisticMonth, employeeName, this.getId()));
 	}
 	/*
 	 * =============================================================================

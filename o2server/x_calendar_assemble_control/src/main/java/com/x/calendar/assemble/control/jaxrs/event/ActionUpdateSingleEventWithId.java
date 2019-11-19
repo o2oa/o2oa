@@ -129,7 +129,7 @@ public class ActionUpdateSingleEventWithId extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if( check ) {
 			PromptException exception = this.eventValidate( new_Event, calendar );
 			if( exception != null ) {
@@ -152,7 +152,7 @@ public class ActionUpdateSingleEventWithId extends BaseAction {
 		return result;
 	}
 	
-public static class Wi extends Calendar_Event{
+	public static class Wi extends Calendar_Event{
 		
 		private static final long serialVersionUID = -5076990764713538973L;
 		

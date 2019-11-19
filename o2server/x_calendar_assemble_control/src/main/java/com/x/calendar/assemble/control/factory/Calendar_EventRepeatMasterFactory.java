@@ -136,7 +136,7 @@ public class Calendar_EventRepeatMasterFactory extends AbstractFactory {
 	 * 查询需要生成日历事件的重复主体信息ID列表
 	 * @param calendarIds
 	 * @param eventType
-	 * @param needCreateMonths
+	 * @param createMonth
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames

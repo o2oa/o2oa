@@ -51,8 +51,8 @@ public class MindVersionInfo extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
-		if( null == this.getCreateTime() ) {
-			this.setCreateTime( new Date() );
+		if (null == this.getCreateTime()) {
+			this.setCreateTime(new Date());
 		}
 		this.setSequence(StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId()));
 	}

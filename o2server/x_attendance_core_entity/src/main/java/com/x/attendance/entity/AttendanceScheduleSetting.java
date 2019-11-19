@@ -1,19 +1,12 @@
 package com.x.attendance.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -21,7 +14,6 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
 
 @ContainerEntity
 @Entity
@@ -29,6 +21,8 @@ import com.x.base.core.project.tools.DateTools;
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 				JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Table(name = PersistenceProperties.AttendanceScheduleSetting.table)
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceScheduleSetting extends SliceJpaObject {
 
 	private static final long serialVersionUID = 4555094494086574586L;

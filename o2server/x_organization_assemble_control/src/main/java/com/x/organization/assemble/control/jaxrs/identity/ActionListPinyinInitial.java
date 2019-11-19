@@ -27,6 +27,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.UnitDuty;
 
 import net.sf.ehcache.Element;
 
@@ -57,6 +58,16 @@ public class ActionListPinyinInitial extends BaseAction {
 		private String key;
 		@FieldDescribe("搜索组织范围,为空则不限定")
 		private List<String> unitList = new ArrayList<>();
+		@FieldDescribe("搜索职务范围,为空则不限定")
+		private List<String> unitDutyList = new ArrayList<>();
+
+		public List<String> getUnitDutyList() {
+			return unitDutyList;
+		}
+
+		public void setUnitDutyList(List<String> unitDutyList) {
+			this.unitDutyList = unitDutyList;
+		}
 
 		public String getKey() {
 			return key;
@@ -90,14 +101,23 @@ public class ActionListPinyinInitial extends BaseAction {
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
 		}
-		List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
 		String str = StringUtils.lowerCase(StringTools.escapeSqlLikeKey(wi.getKey()));
 		EntityManager em = business.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.like(root.get(Identity_.pinyinInitial), str + "%", '\\');
-		if (ListTools.isNotEmpty(identityIds)) {
+		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
+			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());
+			List<String> unitDutyIdentities = new ArrayList<>();
+			for (UnitDuty o : unitDuties) {
+				unitDutyIdentities.addAll(o.getIdentityList());
+			}
+			unitDutyIdentities = ListTools.trim(unitDutyIdentities, true, true);
+			p = cb.and(p, root.get(Identity_.id).in(unitDutyIdentities));
+		}
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
+			List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
 			p = cb.and(p, root.get(Identity_.id).in(identityIds));
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();

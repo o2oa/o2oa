@@ -89,6 +89,12 @@ public class BBSVoteRecord extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String subjectId = null;
 
+	public static final String optionGroupId_FIELDNAME = "optionGroupId";
+	@FieldDescribe("选项组ID")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + optionGroupId_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String optionGroupId = null;
+
 	public static final String optionId_FIELDNAME = "optionId";
 	@FieldDescribe("用户投票结果选择项Id")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + optionId_FIELDNAME)
@@ -162,4 +168,8 @@ public class BBSVoteRecord extends SliceJpaObject {
 	public void setOptionId(String optionId) {
 		this.optionId = optionId;
 	}
+
+	public String getOptionGroupId() { return this.optionGroupId; }
+
+	public void setOptionGroupId(final String optionGroupId) { this.optionGroupId = optionGroupId; }
 }

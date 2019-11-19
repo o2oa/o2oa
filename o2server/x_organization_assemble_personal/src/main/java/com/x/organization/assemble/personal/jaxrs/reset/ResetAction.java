@@ -7,35 +7,43 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutBoolean;
-import com.x.base.core.project.http.WrapOutInteger;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("reset")
 public class ResetAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ResetAction.class);
 
 	@JaxrsMethodDescribe(value = "验证人员是否存在.", action = ActionCheckCredential.class)
 	@GET
 	@Path("check/credential/{credential}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkCredential(@Context HttpServletRequest request, @PathParam("credential") String credential) {
+	public void checkCredential(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("credential") String credential) {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCheckCredential().execute(credential);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "验证密码强度等级.", action = ActionCheckPassword.class)
@@ -43,15 +51,17 @@ public class ResetAction extends StandardJaxrsAction {
 	@Path("check/password/{password}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkPassword(@Context HttpServletRequest request, @PathParam("password") String password) {
-		ActionResult<WrapOutInteger> result = new ActionResult<>();
+	public void checkPassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("password") String password) {
+		ActionResult<ActionCheckPassword.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCheckPassword().execute(password);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取短信验证码", action = ActionCode.class)
@@ -59,30 +69,34 @@ public class ResetAction extends StandardJaxrsAction {
 	@Path("code/credential/{credential}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response code(@Context HttpServletRequest request, @PathParam("credential") String credential) {
+	public void code(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("credential") String credential) {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCode().execute(credential);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "重置密码.", action = ActionReset.class)
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response reset(@Context HttpServletRequest request, WrapInReset wrapIn) {
-		ActionResult<WrapOutBoolean> result = new ActionResult<>();
+	public void reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionReset.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionReset().execute(wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionReset().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 }

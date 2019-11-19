@@ -18,7 +18,7 @@ class ActionCheckCredential extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
+			//Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
@@ -28,7 +28,6 @@ class ActionCheckCredential extends BaseAction {
 				wo.setValue(true);
 			}
 			result.setData(wo);
-			audit.log(wo.getValue().toString());
 			return result;
 		}
 	}

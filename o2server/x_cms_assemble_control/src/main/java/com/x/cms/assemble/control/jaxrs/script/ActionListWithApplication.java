@@ -21,11 +21,11 @@ import net.sf.ehcache.Element;
 class ActionListWithApplication extends BaseAction {
 	
 	@SuppressWarnings("unchecked")
-	ActionResult<List<Wo>> execute( EffectivePerson effectivePerson, String appId ) throws Exception {
+	ActionResult<List<Wo>> execute( EffectivePerson effectivePerson, String appFlag ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		Wo wrap = null;
-		String cacheKey = "script.listWithApp.appId." + appId;
+		String cacheKey = "script.listWithApp.appFlag." + appFlag;
 		Element element = null;
 		element = cache.get(cacheKey);
 		if (element != null) {
@@ -34,9 +34,9 @@ class ActionListWithApplication extends BaseAction {
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				AppInfo appInfo = emc.find(appId, AppInfo.class);
+				AppInfo appInfo = emc.flag( appFlag, AppInfo.class );
 				if (null == appInfo) {
-					throw new Exception("[listWithApp]appInfo{id:" + appId + "} not existed.");
+					throw new Exception("[ActionListWithApplication]appInfo{flag:" + appFlag + "} not existed.");
 				}
 				List<String> ids = business.getScriptFactory().listWithApp(appInfo.getId());
 

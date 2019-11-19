@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.cms.core.entity.Review;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -39,6 +40,7 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 			Exception exception = new ExceptionIdEmpty();
 			result.error(exception);
 		}
+
 		if( check ){
 			try {
 				appInfo = appInfoServiceAdv.get( id );
@@ -69,24 +71,26 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 			DocumentDataHelper documentDataHelper = null;
 			
 			if ( count > 0 ) {
-				logger.info(">>>>一共需要删除"+count+"个文档。");
+				logger.debug("there are "+count+" documents need to delete.");
 				result.setCount(count);
-				whileCount =  (int) (count/queryMaxCount + 1);
+				whileCount =  (int) ( count/queryMaxCount + 1 );
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business( emc );
 					
 					//循环清除分类下所有的文档信息
 					while( count > 0 && currentWhileCount<=whileCount ) {
-						logger.info(">>>>正在根据appId查询"+queryMaxCount+"个需要删除的文档ID列表。");
+						logger.info("search document with appId for max count '"+queryMaxCount+"' document ids.");
 						idsForDelete = documentServiceAdv.listIdsByAppId( id, null, queryMaxCount );
 						if( ListTools.isNotEmpty(  idsForDelete )) {
-							emc.beginTransaction( Document.class );
-							emc.beginTransaction( Item.class );
-							emc.beginTransaction( FileInfo.class );
-							
 							for( String docId : idsForDelete ) {
+								logger.info("system try to delete document. id: '"+docId+"'" );
+								emc.beginTransaction( Document.class );
+								emc.beginTransaction( FileInfo.class );
 								try {
 									document = emc.find( docId, Document.class );
+									if( document != null ){
+										logger.info("system try to delete document. title: '"+document.getTitle()+"'" );
+									}
 									//删除与该文档有关的所有数据Item信息
 									documentDataHelper = new DocumentDataHelper( emc, document );
 									documentDataHelper.remove();
@@ -106,16 +110,40 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 										}
 									}
 									//删除文档信息
-									emc.remove( document, CheckRemoveType.all  );
+									if( document != null ){
+										emc.remove( document, CheckRemoveType.all  );
+									}
+								}catch( Exception e ) {
+										e.printStackTrace();
+								}
+								//先提交事务
+								emc.commit();
+
+								try {
+									//删除该文档对应的所有Review信息
+									emc.beginTransaction( Review.class );
+									Review review = null;
+									List<String> reviewIds = business.reviewFactory().listByDocument( docId, 2000 );
+									while( ListTools.isNotEmpty( reviewIds )){
+										for( String reviewId : reviewIds ){
+											logger.info("system try to delete document review. id: '"+reviewId+"'" );
+											review = emc.find( reviewId, Review.class );
+											if( review != null ){
+												emc.remove( review, CheckRemoveType.all );
+											}
+										}
+										emc.commit();
+										reviewIds = business.reviewFactory().listByDocument( docId, 2000 );
+									}
 								}catch( Exception e ) {
 									e.printStackTrace();
 								}
 							}
-							emc.commit();
 							ApplicationCache.notify( Document.class );
 						}
+
 						count = documentServiceAdv.countByAppId( id );
-						logger.info(">>>>已经删除"+queryMaxCount+"个文档，还剩下"+count+"个文档需要删除。");
+						logger.debug("cms delete " + queryMaxCount + "documents, and left "+count+" documents need to delete.");
 					}
 				}
 			}

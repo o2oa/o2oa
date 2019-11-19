@@ -91,25 +91,29 @@ public class OkrWorkChat extends SliceJpaObject {
 
 	public static final String senderName_FIELDNAME = "senderName";
 	@FieldDescribe("发送者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + senderName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ senderName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String senderName = null;
 
 	public static final String senderIdentity_FIELDNAME = "senderIdentity";
 	@FieldDescribe("发送者身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + senderIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ senderIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String senderIdentity = null;
 
 	public static final String targetName_FIELDNAME = "targetName";
 	@FieldDescribe("目标者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetName = null;
 
 	public static final String targetIdentity_FIELDNAME = "targetIdentity";
 	@FieldDescribe("目标者身份")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetIdentity_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetIdentity = null;
 

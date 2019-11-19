@@ -256,6 +256,15 @@ public class LogLevel extends ConfigObject {
 		@FieldDescribe("审计日志保留天数")
 		private Integer logSize;
 
+		@FieldDescribe("审计日志归属系统code")
+		private String system;
+
+		@FieldDescribe("审计日志归属系统名称")
+		private String systemName;
+
+		@FieldDescribe("审计日志归属省份")
+		private String companycode;
+
 		public Boolean enable() {
 			return BooleanUtils.isTrue(this.enable);
 		}
@@ -267,6 +276,18 @@ public class LogLevel extends ConfigObject {
 				return this.logSize;
 			}
 		}
+		public String getSystem() { return system; }
 
+		public void setSystem(String system) {
+			this.system = system;
+		}
+
+		public String getSystemName() { return systemName; }
+
+		public void setSystemName(String systemName) { this.systemName = systemName; }
+
+		public String getCompanycode() { return companycode; }
+
+		public void setCompanycode(String companycode) { this.companycode = companycode; }
 	}
 }

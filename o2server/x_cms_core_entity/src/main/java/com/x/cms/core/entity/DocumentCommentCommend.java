@@ -68,7 +68,7 @@ public class DocumentCommentCommend extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + documentId_FIELDNAME)
 	private String documentId;
-	
+
 	public static final String commentId_FIELDNAME = "commentId";
 	@FieldDescribe("文档评论ID")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + commentId_FIELDNAME)
@@ -82,7 +82,7 @@ public class DocumentCommentCommend extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	@Index(name = TABLE + IndexNameMiddle + commendPerson_FIELDNAME)
 	private String commendPerson;
-	
+
 	public String getCommentId() {
 		return commentId;
 	}
@@ -105,5 +105,5 @@ public class DocumentCommentCommend extends SliceJpaObject {
 
 	public void setCommendPerson(String commendPerson) {
 		this.commendPerson = commendPerson;
-	}	
+	}
 }

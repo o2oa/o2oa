@@ -67,8 +67,9 @@ public class OkrUserInfo extends SliceJpaObject {
 	 */
 	public static final String userName_FIELDNAME = "userName";
 	@FieldDescribe("用户姓名")
-	@Index( name = TABLE + IndexNameMiddle + userName_FIELDNAME )
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + userName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + userName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ userName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String userName = null;
 
@@ -76,7 +77,7 @@ public class OkrUserInfo extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("内容")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + customContent_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + customContent_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String customContent = "";
 

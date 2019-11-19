@@ -11,10 +11,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -30,107 +28,101 @@ import com.x.processplatform.core.entity.element.Projection;
 
 public class ProjectionFactory {
 
-	public static void projectionWork(Projection projection, Data data, Work work) throws Exception {
-		projection(projection, data, work);
+	public static void projectionWork(List<Projection> projections, Data data, Work work) throws Exception {
+		projection(projections, data, work);
 	}
 
-	public static void projectionWorkCompleted(Projection projection, Data data, WorkCompleted workCompleted)
+	public static void projectionWorkCompleted(List<Projection> projections, Data data, WorkCompleted workCompleted)
 			throws Exception {
-		projection(projection, data, workCompleted);
+		projection(projections, data, workCompleted);
 	}
 
-	public static void projectionTask(Projection projection, Data data, Task task) throws Exception {
-		projection(projection, data, task);
+	public static void projectionTask(List<Projection> projections, Data data, Task task) throws Exception {
+		projection(projections, data, task);
 	}
 
-	public static void projectionTaskCompleted(Projection projection, Data data, TaskCompleted taskCompleted)
+	public static void projectionTaskCompleted(List<Projection> projections, Data data, TaskCompleted taskCompleted)
 			throws Exception {
-		projection(projection, data, taskCompleted);
+		projection(projections, data, taskCompleted);
 	}
 
-	public static void projectionRead(Projection projection, Data data, Read read) throws Exception {
-		projection(projection, data, read);
+	public static void projectionRead(List<Projection> projections, Data data, Read read) throws Exception {
+		projection(projections, data, read);
 	}
 
-	public static void projectionReadCompleted(Projection projection, Data data, ReadCompleted readCompleted)
+	public static void projectionReadCompleted(List<Projection> projections, Data data, ReadCompleted readCompleted)
 			throws Exception {
-		projection(projection, data, readCompleted);
+		projection(projections, data, readCompleted);
 	}
 
-	public static void projectionReview(Projection projection, Data data, Review review) throws Exception {
-		projection(projection, data, review);
+	public static void projectionReview(List<Projection> projections, Data data, Review review) throws Exception {
+		projection(projections, data, review);
 	}
 
-	private static void projection(Projection projection, Data data, JpaObject jpaObject) throws Exception {
-
-		List<Projection.Item> items = XGsonBuilder.instance().fromJson(projection.getData(),
-				new TypeToken<List<Projection.Item>>() {
-				}.getType());
-
- 
+	private static void projection(List<Projection> projections, Data data, JpaObject jpaObject) throws Exception {
 
 		FieldIndex fieldIndex = new FieldIndex();
 
-		for (Projection.Item item : items) {
-			switch (item.getType()) {
+		for (Projection projection : projections) {
+			switch (projection.getType()) {
 			case JpaObject.TYPE_STRING:
-				stringValue(data, item.getPath(), jpaObject, fieldIndex.nextStringFieldName());
+				stringValue(data, projection.getPath(), jpaObject, fieldIndex.nextStringFieldName());
 				break;
 
 			case JpaObject.TYPE_INTEGER:
-				integerValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerFieldName());
+				integerValue(data, projection.getPath(), jpaObject, fieldIndex.nextIntegerFieldName());
 				break;
 
 			case JpaObject.TYPE_LONG:
-				longValue(data, item.getPath(), jpaObject, fieldIndex.nextLongFieldName());
+				longValue(data, projection.getPath(), jpaObject, fieldIndex.nextLongFieldName());
 				break;
 
 			case JpaObject.TYPE_DOUBLE:
-				doubleValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleFieldName());
+				doubleValue(data, projection.getPath(), jpaObject, fieldIndex.nextDoubleFieldName());
 				break;
 
 			case JpaObject.TYPE_BOOLEAN:
-				booleanValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanFieldName());
+				booleanValue(data, projection.getPath(), jpaObject, fieldIndex.nextBooleanFieldName());
 				break;
 
 			case JpaObject.TYPE_DATE:
-				dateValue(data, item.getPath(), jpaObject, fieldIndex.nextDateFieldName());
+				dateValue(data, projection.getPath(), jpaObject, fieldIndex.nextDateFieldName());
 				break;
 
 			case JpaObject.TYPE_TIME:
-				timeValue(data, item.getPath(), jpaObject, fieldIndex.nextTimeFieldName());
+				timeValue(data, projection.getPath(), jpaObject, fieldIndex.nextTimeFieldName());
 				break;
 
 			case JpaObject.TYPE_DATETIME:
-				dateTimeValue(data, item.getPath(), jpaObject, fieldIndex.nextDateTimeFieldName());
+				dateTimeValue(data, projection.getPath(), jpaObject, fieldIndex.nextDateTimeFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGLIST:
-				stringListValue(data, item.getPath(), jpaObject, fieldIndex.nextStringListFieldName());
+				stringListValue(data, projection.getPath(), jpaObject, fieldIndex.nextStringListFieldName());
 				break;
 
 			case JpaObject.TYPE_INTEGERLIST:
-				integerListValue(data, item.getPath(), jpaObject, fieldIndex.nextIntegerListFieldName());
+				integerListValue(data, projection.getPath(), jpaObject, fieldIndex.nextIntegerListFieldName());
 				break;
 
 			case JpaObject.TYPE_LONGLIST:
-				longListValue(data, item.getPath(), jpaObject, fieldIndex.nextLongListFieldName());
+				longListValue(data, projection.getPath(), jpaObject, fieldIndex.nextLongListFieldName());
 				break;
 
 			case JpaObject.TYPE_DOUBLELIST:
-				doubleListValue(data, item.getPath(), jpaObject, fieldIndex.nextDoubleListFieldName());
+				doubleListValue(data, projection.getPath(), jpaObject, fieldIndex.nextDoubleListFieldName());
 				break;
 
 			case JpaObject.TYPE_BOOLEANLIST:
-				booleanListValue(data, item.getPath(), jpaObject, fieldIndex.nextBooleanListFieldName());
+				booleanListValue(data, projection.getPath(), jpaObject, fieldIndex.nextBooleanListFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGLOB:
-				stringLobValue(data, item.getPath(), jpaObject, fieldIndex.nextStringLobFieldName());
+				stringLobValue(data, projection.getPath(), jpaObject, fieldIndex.nextStringLobFieldName());
 				break;
 
 			case JpaObject.TYPE_STRINGMAP:
-				stringMapValue(data, item.getPath(), jpaObject, fieldIndex.nextStringMapFieldName());
+				stringMapValue(data, projection.getPath(), jpaObject, fieldIndex.nextStringMapFieldName());
 				break;
 
 			default:

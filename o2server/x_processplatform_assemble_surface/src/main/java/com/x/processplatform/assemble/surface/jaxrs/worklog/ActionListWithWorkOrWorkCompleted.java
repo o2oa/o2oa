@@ -225,7 +225,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.routeName_FIELDNAME, TaskCompleted.opinion_FIELDNAME,
 						TaskCompleted.opinionLob_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
-						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME),
+						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
+						TaskCompleted.processingType_FIELDNAME),
 				null);
 	}
 

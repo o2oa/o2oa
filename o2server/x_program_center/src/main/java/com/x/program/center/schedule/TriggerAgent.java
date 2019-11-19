@@ -20,12 +20,12 @@ import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.CronExpression;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.CronTools;
@@ -191,6 +191,7 @@ public class TriggerAgent extends BaseAction {
 						resources.setEntityManagerContainer(emc);
 						resources.setContext(ThisApplication.context());
 						resources.setOrganization(new Organization(ThisApplication.context()));
+						resources.setApplications(ThisApplication.context().applications());
 						resources.setWebservicesClient(new WebservicesClient());
 						engineScope.put(BINDING_RESOURCES, resources);
 						try {
@@ -223,6 +224,7 @@ public class TriggerAgent extends BaseAction {
 		private Context context;
 		private Organization organization;
 		private WebservicesClient webservicesClient;
+		private Applications applications;
 
 		public static String RESOURCES_BINDING_NAME = "resources";
 
@@ -257,6 +259,15 @@ public class TriggerAgent extends BaseAction {
 		public void setWebservicesClient(WebservicesClient webservicesClient) {
 			this.webservicesClient = webservicesClient;
 		}
+
+		public Applications getApplications() {
+			return applications;
+		}
+
+		public void setApplications(Applications applications) {
+			this.applications = applications;
+		}
+
 	}
 
 }

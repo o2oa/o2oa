@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.deploy.App;
@@ -828,7 +829,9 @@ public class Main {
 		File dynamic_jars_dir = new File(base, "dynamic/jars");
 		if (dynamic_jars_dir.exists() && dynamic_jars_dir.isDirectory()) {
 			for (File file : dynamic_jars_dir.listFiles()) {
-				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
+				if (StringUtils.equalsIgnoreCase("jar", FilenameUtils.getExtension(file.getName()))) {
+					method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
+				}
 			}
 		}
 		/* load temp class */

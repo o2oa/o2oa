@@ -40,9 +40,9 @@ public class Message extends SliceJpaObject {
 		this.id = id;
 	}
 
-	@FieldDescribe("ID,数据库主键.")
+	@FieldDescribe("数据库主键,自动生成.")
 	@Id
-	@Column(length = length_id, name = IDCOLUMN)
+	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */

@@ -137,14 +137,14 @@ public class OkrWorkPerson extends SliceJpaObject {
 
 	public static final String isOverTime_FIELDNAME = "isOverTime";
 	@FieldDescribe("工作是否已超期")
-	@Column( name = ColumnNamePrefix + isOverTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isOverTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + isOverTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isOverTime = true;
 
 	public static final String isCompleted_FIELDNAME = "isCompleted";
 	@FieldDescribe("工作是否已完成")
-	@Column( name = ColumnNamePrefix + isCompleted_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isCompleted_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + isCompleted_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isCompleted = true;
@@ -171,7 +171,7 @@ public class OkrWorkPerson extends SliceJpaObject {
 	public static final String completeDateLimit_FIELDNAME = "completeDateLimit";
 	@FieldDescribe("工作完成日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + completeDateLimit_FIELDNAME)
+	@Column(name = ColumnNamePrefix + completeDateLimit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date completeDateLimit = null;
 
@@ -183,28 +183,32 @@ public class OkrWorkPerson extends SliceJpaObject {
 
 	public static final String employeeName_FIELDNAME = "employeeName";
 	@FieldDescribe("员工姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ employeeName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + employeeName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String employeeName = null;
 
 	public static final String employeeIdentity_FIELDNAME = "employeeIdentity";
 	@FieldDescribe("员工身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ employeeIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + employeeIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String employeeIdentity = null;
 
 	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("员工所属组织名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ unitName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName = null;
 
 	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("员工所属顶层组织名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ topUnitName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + topUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName = null;
@@ -218,7 +222,7 @@ public class OkrWorkPerson extends SliceJpaObject {
 
 	public static final String isDelegateTarget_FIELDNAME = "isDelegateTarget";
 	@FieldDescribe("是否受托人")
-	@Column( name = ColumnNamePrefix + isDelegateTarget_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isDelegateTarget_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + isDelegateTarget_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean isDelegateTarget = false;

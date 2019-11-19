@@ -38,18 +38,16 @@ public class ActionAppIconUpload extends BaseAction {
 		String iconMainColor = null;
 		String base64 = null;
 		Boolean check = true;
-		
+
+		if( size == null|| size== 0 ){
+			size = 72;
+		}
+
 		if( check ){
 			if( StringUtils.isEmpty(appId) ){
 				check = false;
-				Exception exception = new URLParameterGetException( new Exception("未获取到栏目ID") );
+				Exception exception = new URLParameterGetException( new Exception("appId can not be empty!") );
 				result.error( exception );
-			}
-		}
-		
-		if( check ){
-			if( size== 0 ){
-				size = 72;
 			}
 		}
 		

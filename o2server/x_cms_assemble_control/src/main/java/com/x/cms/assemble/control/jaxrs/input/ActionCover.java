@@ -9,6 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.cms.core.entity.CategoryExt;
+import com.x.cms.core.entity.element.wrap.*;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,12 +35,6 @@ import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
-import com.x.cms.core.entity.element.wrap.WrapAppDict;
-import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
-import com.x.cms.core.entity.element.wrap.WrapCms;
-import com.x.cms.core.entity.element.wrap.WrapFile;
-import com.x.cms.core.entity.element.wrap.WrapForm;
-import com.x.cms.core.entity.element.wrap.WrapScript;
 
 class ActionCover extends BaseAction {
 
@@ -60,7 +57,7 @@ class ActionCover extends BaseAction {
 	private AppInfo cover(Business business, Wi wi) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		List<JpaObject> removeObjects = new ArrayList<>();
-		
+		List<JpaObject> checkPersistObjects = new ArrayList<>();
 		AppInfo appInfo = business.entityManagerContainer().find(wi.getId(), AppInfo.class);
 		if (null == appInfo) {
 			throw new ExceptionAppInfoNotExist(wi.getId());
@@ -162,6 +159,29 @@ class ActionCover extends BaseAction {
 				categoryInfo.setCategoryAlias(this.idleNameWithCategory(business, appInfo.getId(), categoryInfo.getCategoryName(),
 						CategoryInfo.class, categoryInfo.getId()));
 			}
+
+			//添加CategoryExt信息更新逻辑
+			CategoryExt categoryExt = business.entityManagerContainer().find( categoryInfo.getId(), CategoryExt.class);
+			if (null != categoryInfo) {
+				if( wrapCategoryInfo.getCategoryExt() != null ){
+					if( categoryExt != null ){
+						//更新CategoryExt
+						wrapCategoryInfo.getCategoryExt().copyTo( categoryExt );
+						checkPersistObjects.add( categoryExt );
+					}else{
+						//原来就没有，需要添加一个
+						categoryExt = new CategoryExt();
+						wrapCategoryInfo.getCategoryExt().copyTo( categoryExt );
+						persistObjects.add( categoryInfo );
+					}
+				}else{
+					//需要删除CategoryExt
+					if( categoryExt != null ){
+						//删除CategoryExt
+						removeObjects.add( categoryExt );
+					}
+				}
+			}
 		}
 		
 		business.entityManagerContainer().beginTransaction(File.class);
@@ -171,12 +191,16 @@ class ActionCover extends BaseAction {
 		business.entityManagerContainer().beginTransaction(AppDict.class);
 		business.entityManagerContainer().beginTransaction(AppDictItem.class);
 		business.entityManagerContainer().beginTransaction(CategoryInfo.class);
-		
+		business.entityManagerContainer().beginTransaction(CategoryExt.class);
+
+		for (JpaObject o : removeObjects) {
+			business.entityManagerContainer().remove(o);
+		}
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
-		for (JpaObject o : removeObjects) {
-			business.entityManagerContainer().remove(o);
+		for (JpaObject o : checkPersistObjects) {
+			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
 		
 		business.entityManagerContainer().commit();

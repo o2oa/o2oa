@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.DelayMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
@@ -43,18 +44,15 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Delay delay) throws Exception {
 		List<Work> results = new ArrayList<>();
 		Date limit = null;
-		switch (delay.getDelayMode()) {
-		case until:
+		if (null != delay.getDelayMode() && Objects.equals(DelayMode.until, delay.getDelayMode())) {
 			limit = this.until(aeiObjects, delay);
-			break;
-		default:
+		} else {
 			Integer minutes = this.minute(aeiObjects, delay);
 			if (delay.getWorkMinute()) {
 				limit = Config.workTime().forwardMinutes(aeiObjects.getWork().getStartTime(), minutes);
 			} else {
 				limit = DateUtils.addMinutes(aeiObjects.getWork().getStartTime(), minutes);
 			}
-			break;
 		}
 		logger.debug("work title:{}, id:{}, limit time:{}.", aeiObjects.getWork().getTitle(),
 				aeiObjects.getWork().getId(), limit);

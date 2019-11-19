@@ -22,7 +22,7 @@ import com.x.cms.core.entity.tools.filter.QueryFilter;
 public class ReviewService {
 
 	private UserManagerService userManagerService = new UserManagerService();
-	private static  Logger logger = LoggerFactory.getLogger( ReviewService.class );
+	private static Logger logger = LoggerFactory.getLogger( ReviewService.class );
 	/**
 	 * 根据权限和条件查询符合要求的可见的所有Review总数
 	 * @param emc
@@ -76,7 +76,7 @@ public class ReviewService {
 		return business.reviewFactory().listDocIdsWithConditionInReview( personName, queryFilter, maxCount);
 	}
 	
-	public List<String> listDocIdsWithConditionInReview( EntityManagerContainer emc, String personName,  String orderField, String orderType, QueryFilter queryFilter, Integer maxCount ) throws Exception {
+	public List<String> listDocIdsWithConditionInReview( EntityManagerContainer emc, String personName, String orderField, String orderType, QueryFilter queryFilter, Integer maxCount ) throws Exception {
 		Business business = new Business(emc);
 		return business.reviewFactory().listDocIdsWithConditionInReview( personName, orderField, orderType, queryFilter, maxCount);
 	}
@@ -95,27 +95,27 @@ public class ReviewService {
 			CategoryInfo categoryInfo = emc.find( document.getCategoryId(), CategoryInfo.class );		
 			
 			if( "draft".equalsIgnoreCase( document.getDocStatus() ) ) {
-				logger.info( "refreshDocumentReview -> refresh review for draft document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> refresh review for draft document: " + document.getTitle() );
 				//草稿只有拟稿人可以看见
 				List<String> persons = new ArrayList<>();
 				persons.add( document.getCreatorPerson() );
-				logger.info( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
 			}else if( "published".equalsIgnoreCase( document.getDocStatus() ) ) {
-				logger.info( "refreshDocumentReview -> refresh review for published document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> refresh review for published document: " + document.getTitle() );
 				List<String> persons = listPermissionPersons( appInfo, categoryInfo, document );
 				//将文档新的权限与数据库中的权限进行比对，新建或者更新
-				logger.info( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
 			}else if( "archived".equalsIgnoreCase( document.getDocStatus() ) ) {
-				logger.info( "refreshDocumentReview -> refresh review for archived document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> refresh review for archived document: " + document.getTitle() );
 				//归档的文档应该只有管理员和拟稿人能看见
 				List<String> persons = listPublishAndManagePersons( appInfo, categoryInfo, document );
-				logger.info( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
+				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
 			}
 		}else {
-			logger.info( "refreshDocumentReview -> document not exists: " + docId );
+			logger.debug( "refreshDocumentReview -> document not exists: " + docId );
 		}
 	}
 
@@ -134,7 +134,7 @@ public class ReviewService {
 		persons = addListToList( persons, appInfo.getPublishablePersonList() );			
 		persons = addPermissionObj( persons, appInfo.getPublishableUnitList() );
 		persons = addPermissionObj( persons, appInfo.getPublishableGroupList() );
-		return null;
+		return persons;
 	}
 
 	/**
@@ -161,34 +161,34 @@ public class ReviewService {
 			if( !categoryHasPermissionControl ) {//分类没有权限
 				if( !documentHasPermissionControl ) {//文档没有权限
 					//栏目没有权限限制，分类没有权限限制，文档没有权限限制
-					logger.info("栏目没有阅读权限限制，分类没有阅读权限限制，文档没有阅读权限限制。文档所有人可见：*");
+					logger.debug("栏目没有阅读权限限制，分类没有阅读权限限制，文档没有阅读权限限制。文档所有人可见：*");
 					permissionObjs.add( "*" );
 				}else {
-					logger.info("栏目没有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主");
+					logger.debug("栏目没有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主");
 					//栏目没有权限限制，分类没有权限限制，文档有权限限制，以文档的权限为主
 					permissionObjs = addDocumentAllPermission( permissionObjs, document );
 				}
 			}else {
 				if( !documentHasPermissionControl ) {//如果文档没有权限控制，则添加分类的权限就可以了
-					logger.info("栏目没有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主");
+					logger.debug("栏目没有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主");
 					//栏目没有权限限制，分类有权限限制，文档没有权限限制，以分析权限为主
 					permissionObjs = addCategoryAllPermission( permissionObjs, categoryInfo );
 				}else { 
-					logger.info("栏目没有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类可见范围");
+					logger.debug("栏目没有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类可见范围");
 					//栏目没有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
 					permissionObjs = addDocumentAllPermission( permissionObjs, document );
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
-					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(),  categoryInfo ) );
+					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), categoryInfo ) );
 				}
 			}
 		}else {//栏目有权限
 			if( !categoryHasPermissionControl ) {//分类没有权限
 				if( !documentHasPermissionControl ) {//文档没有权限
-					logger.info("栏目有阅读权限限制，分类没有阅读权限限制，文档没有阅读权限限制。文档可见范围以栏目的权限为主");
+					logger.debug("栏目有阅读权限限制，分类没有阅读权限限制，文档没有阅读权限限制。文档可见范围以栏目的权限为主");
 					//栏目有权限限制，分类没有权限限制，文档没有权限限制，以栏目的权限为主
 					permissionObjs = addAppInfoAllPermission( permissionObjs, appInfo );
 				}else {
-					logger.info("栏目有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主，交栏目可见范围");
+					logger.debug("栏目有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主，交栏目可见范围");
 					//栏目有权限限制，分类没有权限限制，文档有权限限制，以文档的权限为主
 					permissionObjs = addDocumentAllPermission( permissionObjs, document );
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
@@ -196,13 +196,13 @@ public class ReviewService {
 				}
 			}else {
 				if( !documentHasPermissionControl ) {//如果文档没有权限控制，则添加分类的权限就可以了
-					logger.info("栏目有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主，交栏目可见范围");
+					logger.debug("栏目有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主，交栏目可见范围");
 					//栏目有权限限制，分类有权限限制，文档没有权限限制，以分类权限为主
 					permissionObjs = addCategoryAllPermission( permissionObjs, categoryInfo );
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
 					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), appInfo ) );
 				}else { 
-					logger.info("栏目有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类和栏目可见范围");
+					logger.debug("栏目有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类和栏目可见范围");
 					//栏目有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
 					permissionObjs = addDocumentAllPermission( permissionObjs, document );
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
@@ -215,7 +215,7 @@ public class ReviewService {
 		if( permissionObjs.contains("*")) {
 			//如果是全员可见，那么只需要保留一个权限记录即可
 			permissionObjs.clear();
-			System.out.println(">>>>>>>Document all person can read. document has read permission *， clean all other permissions. ");
+			logger.debug(">>>>>>>Document all person can read. document has read permission *， clean all other permissions. ");
 			permissionObjs.add( "*" );
 		}
 		return permissionObjs;
@@ -234,32 +234,17 @@ public class ReviewService {
 			if( !document.getReadPersonList().contains( "所有人" )) {
 				return true;
 			}
-		}		
-//		if( ListTools.isNotEmpty( document.getAuthorPersonList() ) ) {
-//			if( !document.getAuthorPersonList().contains( "所有人" )) {
-//				return true;
-//			}
-//		}
+		}
 		if( ListTools.isNotEmpty( document.getReadUnitList() ) ) {
 			if( !document.getReadUnitList().contains( "所有人" )) {
 				return true;
 			}
 		}
-//		if( ListTools.isNotEmpty( document.getAuthorUnitList() ) ) {
-//			if( !document.getAuthorUnitList().contains( "所有人" )) {
-//				return true;
-//			}
-//		}
 		if( ListTools.isNotEmpty( document.getReadGroupList() ) ) {
 			if( !document.getReadGroupList().contains( "所有人" )) {
 				return true;
 			}
 		}
-//		if( ListTools.isNotEmpty( document.getAuthorGroupList() ) ) {
-//			if( !document.getAuthorGroupList().contains( "所有人" )) {
-//				return true;
-//			}
-//		}
 		return false;
 	}
 
@@ -453,7 +438,7 @@ public class ReviewService {
 	 */
 	private List<String> addPermissionObj(List<String> permissionObjs, List<String> objNames ) throws Exception {
 		String result = null;
-		List<String> persons  = null;
+		List<String> persons = null;
 		if( permissionObjs == null ) {
 			permissionObjs = new ArrayList<>();
 		}
@@ -468,17 +453,17 @@ public class ReviewService {
 			}else if( objName.endsWith( "@U" ) ) {//将组织拆解为人员
 				//判断一下，如果不是顶层组织，就或者顶层组织不唯一，才将组织解析为人员
 				if( !userManagerService.isTopUnit( objName ) || userManagerService.countTopUnit() > 1 ) {
-					persons  = userManagerService.listPersonWithUnit( objName );
+					persons = userManagerService.listPersonWithUnit( objName );
 					permissionObjs = addListToList( permissionObjs, persons );
 				}else {
 					//如果是顶层组织，并且顶层组织只有一个
 					permissionObjs = addStringToList( permissionObjs, "*" );
 				}
 			}else if( objName.endsWith( "@G" ) ) {//将群组拆解为人员
-				persons  = userManagerService.listPersonWithGroup( objName );
+				persons = userManagerService.listPersonWithGroup( objName );
 				permissionObjs = addListToList( permissionObjs, persons );
 			}else if( objName.endsWith( "@R" ) ) {
-				persons  = userManagerService.listPersonWithRole( objName );
+				persons = userManagerService.listPersonWithRole( objName );
 				permissionObjs = addListToList( permissionObjs, persons );
 			}else if( "*".equals( objName ) ) {
 				permissionObjs = addStringToList( permissionObjs, objName );
@@ -571,7 +556,6 @@ public class ReviewService {
 				}else {
 					personName = "*";
 				}
-				//System.out.println(">>>>>>>["+ document.getTitle() +"] create review: " + personName );
 				if( StringUtils.isNotEmpty( personName )) {
 					//查询一下，数据库里， 是否有相同的数据，如果有，就不再添加了
 					 oldReviewIds = business.reviewFactory().listByDocumentAndPerson( document.getId(), personName );
@@ -603,11 +587,12 @@ public class ReviewService {
 	}
 
 	/**
+	 *
 	 * 根据栏目，分类，文档信息以及可见权限来组织一个Review对象
 	 * @param appInfo
 	 * @param categoryInfo
 	 * @param document
-	 * @param permissionObj
+	 * @param person
 	 * @return
 	 */
 	private Review createReviewWithDocument( AppInfo appInfo, CategoryInfo categoryInfo, Document document, String person ) {
@@ -640,10 +625,10 @@ public class ReviewService {
 		review.setCategoryId( document.getCategoryId() );
 		review.setCategoryName( document.getCategoryName() );
 		
-		review.setCreateTime(  document.getCreateTime()  );
+		review.setCreateTime( document.getCreateTime() );
 		review.setDocCreateTime( document.getCreateTime() );	
-		review.setPublishTime(  document.getPublishTime()  );
-		review.setUpdateTime(  document.getUpdateTime()  );	
+		review.setPublishTime( document.getPublishTime() );
+		review.setUpdateTime( document.getUpdateTime() );	
 		
 		review.setCreatorPerson( document.getCreatorPerson() );
 		review.setCreatorTopUnitName( document.getCreatorTopUnitName() );

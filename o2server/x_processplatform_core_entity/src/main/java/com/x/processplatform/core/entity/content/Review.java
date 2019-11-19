@@ -33,7 +33,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Review extends SliceJpaObject {
+public class Review extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = -570048661936488247L;
 
@@ -82,7 +82,6 @@ public class Review extends SliceJpaObject {
 		this.work = work.getId();
 		this.workCompleted = "";
 		this.completed = false;
-		// this.title = work.getTitle();
 		this.setTitle(work.getTitle());
 		this.serial = work.getSerial();
 		this.startTime = work.getStartTime();
@@ -99,6 +98,7 @@ public class Review extends SliceJpaObject {
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.copyProjectionFields(work);
 	}
 
 	public Review(WorkCompleted workCompleted, String person) {
@@ -122,6 +122,7 @@ public class Review extends SliceJpaObject {
 		this.creatorPerson = workCompleted.getCreatorPerson();
 		this.creatorIdentity = workCompleted.getCreatorIdentity();
 		this.creatorUnit = workCompleted.getCreatorUnit();
+		this.copyProjectionFields(workCompleted);
 	}
 
 	public static final String job_FIELDNAME = "job";

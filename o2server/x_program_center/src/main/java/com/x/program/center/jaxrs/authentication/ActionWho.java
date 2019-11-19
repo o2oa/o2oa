@@ -27,7 +27,7 @@ class ActionWho extends BaseAction {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpToken.X_Token, token));
 			JsonElement jsonElement = HttpConnection.getAsObject(
-					app.getUrlRoot() + Applications.joinQueryUri("authentication"), heads, JsonElement.class);
+					app.getUrlJaxrsRoot() + Applications.joinQueryUri("authentication"), heads, JsonElement.class);
 			result.setData(jsonElement);
 		}
 		return result;

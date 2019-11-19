@@ -25,7 +25,7 @@ public class BaseAction extends StandardJaxrsAction{
 	protected BBSForumInfoServiceAdv forumInfoServiceAdv = new BBSForumInfoServiceAdv();
 	protected BBSOperationRecordService operationRecordService = new BBSOperationRecordService();
 	protected UserManagerService userManagerService = new UserManagerService();
-	
+
 	protected Boolean checkUserPermission( String checkPermissionCode, List<String> permissionInfoList ) {
 		if( ListTools.isNotEmpty( permissionInfoList ) ){
 			for( String permissionCode : permissionInfoList ){

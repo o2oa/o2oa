@@ -257,6 +257,28 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "获取分类访问控制信息.", action = ActionQueryGetControl.class)
+	@GET
+	@Path("{id}/control")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_getControl( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  @JaxrsParameterDescribe("分类ID") @PathParam("id") String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionQueryGetControl.Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			try {
+				result = new ActionQueryGetControl().execute( request, id, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 	
 	@JaxrsMethodDescribe(value = "根据别名获取分类信息对象.", action = ActionGet.class)
 	@GET

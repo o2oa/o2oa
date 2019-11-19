@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.tools.StringTools;
+import com.x.calendar.core.entity.Calendar_EventComment;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -83,6 +85,7 @@ public class Calendar_EventServiceAdv{
 
 	/**
 	 * 保存日历记录信息
+	 * 2019-11-11 添加逻辑，适应超长的备注信息，如果备注信息超长，则将信息存储到Comment表中，并且在event和eventmaster里存储引用的ID
 	 * @param calendar_event
 	 * @param effectivePerson 
 	 * @return
@@ -105,14 +108,25 @@ public class Calendar_EventServiceAdv{
 		if( StringUtils.isEmpty( calendar_event.getUpdatePerson() )) {
 			calendar_event.setUpdatePerson( effectivePerson.getDistinguishedName() );
 		}
-		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		Calendar_EventComment calendar_EventComment = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			calendar_EventComment = calendar_EventService.createNewEventComment( emc, calendar_event );
+
+			//修改Comment信息
+			if( calendar_EventComment != null ){
+				calendar_event.setComment( "{#CLOB#}" );
+				calendar_event.setCommentId( calendar_EventComment.getId() );
+			}else{
+				calendar_event.setCommentId( null );
+			}
+
 			//如果是复重的日程，保存为重复信息主体，否则，保存为普通日程信息
 			if( StringUtils.isNotEmpty( calendar_event.getRecurrenceRule()) ) {
-				Calendar_EventRepeatMaster calendar_EventRepeatMaster = composeEventRepeatMasterWithEvent( calendar_event );				
+				Calendar_EventRepeatMaster calendar_EventRepeatMaster = composeEventRepeatMasterWithEvent( calendar_event );
 				calendar_event.setRepeatMasterId( calendar_EventRepeatMaster.getId() );
-				emc.beginTransaction( Calendar_EventRepeatMaster.class );	
-				calendar_EventRepeatMaster = calendar_EventRepeatMasterService.create(emc, calendar_EventRepeatMaster, false );				
+				emc.beginTransaction( Calendar_EventRepeatMaster.class );
+				calendar_EventRepeatMasterService.create(emc, calendar_EventRepeatMaster, false );
 			}
 			
 			if( StringUtils.isEmpty( calendar_event.getId() )) {
@@ -127,11 +141,10 @@ public class Calendar_EventServiceAdv{
 		}
 		return calendar_event;
 	}
-	
+
 	/**
 	 * 保存日历记录信息
 	 * @param calendar_event
-	 * @param effectivePerson 
 	 * @return
 	 * @throws Exception
 	 */
@@ -156,6 +169,14 @@ public class Calendar_EventServiceAdv{
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
 			if( StringUtils.isEmpty( calendar_event.getId() )) {
 				calendar_event.setId( Calendar_Event.createId() );
+			}
+			Calendar_EventComment calendar_EventComment = calendar_EventService.createNewEventComment( emc, calendar_event );
+			//修改Comment信息
+			if( calendar_EventComment != null ){
+				calendar_event.setComment( "{#CLOB#}" );
+				calendar_event.setCommentId( calendar_EventComment.getId() );
+			}else{
+				calendar_event.setCommentId( null );
 			}
 			emc.beginTransaction( Calendar_Event.class );
 			//保存日程信息
@@ -218,10 +239,20 @@ public class Calendar_EventServiceAdv{
 				calendar_EventRepeatMaster.setUpdatePerson( effectivePerson.getDistinguishedName() );
 			}
 			calendar_EventRepeatMaster.setCreatedMonthList( new ArrayList<>());
-			emc.beginTransaction( Calendar_EventRepeatMaster.class );	
+
+			//判断事件的备注信息是否超长，如果已经存在则需要更新一下
+			Calendar_EventComment calendar_EventComment = calendar_EventService.createOrUpdateEventComment( emc, calendar_event );
+			if( calendar_EventComment != null ){
+				calendar_EventRepeatMaster.setComment( "{#CLOB#}" );
+				calendar_EventRepeatMaster.setCommentId( calendar_EventComment.getId() );
+			}else{
+				calendar_EventRepeatMaster.setCommentId( null );
+			}
+
+			emc.beginTransaction( Calendar_EventRepeatMaster.class );
 			emc.check( calendar_EventRepeatMaster, CheckPersistType.all );
 			
-			//2、删除该RepeatMaster已经生成的所有日程事件
+			//2、删除该RepeatMaster已经生成的所有日程事件，等待重新生成
 			eventIds = business.calendar_EventFactory().listWithRepeatMaster(repeatMasterId, null, null );
 			if( ListTools.isNotEmpty( eventIds )) {
 				count = eventIds.size();
@@ -334,11 +365,21 @@ public class Calendar_EventServiceAdv{
 			
 			calendar_EventRepeatMaster_new = copyEventPropertyToMaster( calendar_event );
 			calendar_EventRepeatMaster_new.setRecurrenceStartTime( calendar_event.getStartTime() );
-			
+
+			//处理新的calendar_EventRepeatMaster_new的备注信息，原来的calendar_EventRepeatMaster不动
+			Calendar_EventComment calendar_EventComment = calendar_EventService.createNewEventComment( emc, calendar_event );
+			if( calendar_EventComment != null ){
+				calendar_EventRepeatMaster_new.setComment( "{#CLOB#}" );
+				calendar_EventRepeatMaster_new.setCommentId( calendar_EventComment.getId() );
+			}else{
+				calendar_EventRepeatMaster_new.setCommentId( null );
+			}
+
 			emc.beginTransaction( Calendar_EventRepeatMaster.class );	
 			emc.check( calendar_EventRepeatMaster, CheckPersistType.all );
 			emc.persist( calendar_EventRepeatMaster_new, CheckPersistType.all  );
 			emc.commit();
+
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -375,7 +416,36 @@ public class Calendar_EventServiceAdv{
 			if( StringUtils.isEmpty( calendar_event.getId() )) {
 				old_event.setId( Calendar_Event.createId() );
 			}
+			//检查日程备注信息的长度，如果超长，则需要新建一个Calendar_EventComment记录
+			//如果超长，则创建一个新的则需要新建一个Calendar_EventComment记录
+			Calendar_EventComment calendar_EventComment = calendar_EventService.createNewEventComment( emc, calendar_event );
+			if( calendar_EventComment != null ){
+				old_event.setComment( "{#CLOB#}" );
+				old_event.setCommentId( calendar_EventComment.getId() );
+			}else{
+				old_event.setCommentId( null );
+			}
+
 			emc.beginTransaction( Calendar_Event.class );
+			if( StringUtils.isEmpty( old_event.getRepeatMasterId() ) ){
+				//原来不是重复的日程，修改后复重的日程，保存为重复信息主体
+				if( StringUtils.isNotEmpty( calendar_event.getRecurrenceRule()) ) {
+					Calendar_EventRepeatMaster calendar_EventRepeatMaster = composeEventRepeatMasterWithEvent( calendar_event );
+					old_event.setRepeatMasterId( calendar_EventRepeatMaster.getId() );
+					emc.beginTransaction( Calendar_EventRepeatMaster.class );
+					calendar_EventRepeatMasterService.create(emc, calendar_EventRepeatMaster, false );
+				}
+			}else{
+				if( StringUtils.isEmpty( calendar_event.getRecurrenceRule()) ) {
+					//原来是重复的，现在不重复了，需要把repeatMaster删除，还有已经生成的所有event
+					if( StringUtils.isNotEmpty( old_event.getRepeatMasterId() )){
+						ArrayList arrayList = new ArrayList<>();
+						arrayList.add( old_event.getId() );
+						calendar_EventRepeatMasterService.destoryWithMasterId( emc, old_event.getRepeatMasterId(), arrayList );
+					}
+				}
+			}
+
 			//保存日程信息
 			calendar_event = calendar_EventService.update( emc, old_event, false );
 			emc.commit();
@@ -449,20 +519,24 @@ public class Calendar_EventServiceAdv{
 			List<String> needCreateMonths = new DateOperation().listMonthsBetweenDate( startTime, endTime );
 			
 			if( ListTools.isNotEmpty( needCreateMonths )) {
+				List<String> repeatMasterIds = new ArrayList<>();
+				List<String> repeatMasterIds_month = null;
+
 				for( String createMonth : needCreateMonths ) {
 					//先看看有没有需要生成的日历重复主体
-					List<String> repeatMasterIds = calendar_EventRepeatMasterService.listNeedRepeatMaster( emc, calendarIds,  eventType, createMonth, 
-						personName, unitNames, groupNames);
-					if( ListTools.isNotEmpty( repeatMasterIds )) {
-						//根据日期范围为指定的日期重复主体生成日历事件信息
-						calendar_EventService.createCalendarWithMaster( emc, repeatMasterIds, startTime, endTime, needCreateMonths );	
+					repeatMasterIds_month = calendar_EventRepeatMasterService.listNeedRepeatMaster( emc, calendarIds,  eventType, createMonth, personName, unitNames, groupNames);
+					if( ListTools.isNotEmpty( repeatMasterIds_month )){
+						repeatMasterIds.addAll( repeatMasterIds_month );
 					}
+				}
+				if( ListTools.isNotEmpty( repeatMasterIds )) {
+					//根据日期范围为指定的日期重复主体生成日历事件信息
+					calendar_EventService.createCalendarWithMaster( emc, repeatMasterIds, startTime, endTime, needCreateMonths );
 				}
 			}
 			
 			//最后从日历事件信息表里按条件进行数据查询返回
-			return calendar_EventService.listWithCondition( emc, key, eventType, source, createPerson, calendarIds, personName, 
-					 unitNames, groupNames, startTime, endTime );
+			return calendar_EventService.listWithCondition( emc, key, eventType, source, createPerson, calendarIds, personName, unitNames, groupNames, startTime, endTime );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -726,11 +800,11 @@ public class Calendar_EventServiceAdv{
         CalendarOutputter outputter = new CalendarOutputter();
         outputter.output(calendar, fout );
 	}
-	
+
 	/**
 	 * 将一个日程事件写为一个ical文件
 	 * @param o2_calendar_event
-	 * @param path
+	 * @param out
 	 * @throws ValidationException
 	 * @throws IOException
 	 */
@@ -852,6 +926,23 @@ public class Calendar_EventServiceAdv{
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return calendar_EventService.destoryWithBundle( emc, bundle );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据commentId获取Calendar_EventComment信息
+	 * @param commentId
+	 * @return
+	 * @throws Exception
+	 */
+	public Calendar_EventComment getCommentWithCommentId(String commentId) throws Exception {
+		if( StringUtils.isEmpty( commentId ) ) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return emc.find( commentId, Calendar_EventComment.class );
 		} catch ( Exception e ) {
 			throw e;
 		}

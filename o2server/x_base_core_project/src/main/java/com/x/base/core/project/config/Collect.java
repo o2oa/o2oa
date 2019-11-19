@@ -26,7 +26,7 @@ public class Collect extends ConfigObject {
 	private static String Default_title = "企业办公平台";
 	private static String Default_footer = "www.o2oa.net";
 	private static String Default_name = "www.o2oa.net";
-	private static String Default_appUrl = "http://www.pgyer.com/ZhiHe_android";
+	private static String Default_appUrl = "https://sample.o2oa.net/app/download.html";
 	private static String Default_server = "collect.o2oa.net";
 	private static Integer Default_port = 20080;
 

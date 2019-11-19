@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -99,14 +100,6 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	public Calendar_EventRepeatMaster() {
 	}
 
-	/**
-	 * Create a new calendar event with the given subject and given start and end
-	 * times as UNIX timestamps.
-	 * 
-	 * @param title
-	 * @param startTime
-	 * @param endTime
-	 */
 	public Calendar_EventRepeatMaster(final String id, final String title, final Date startTime, final Date endTime) {
 		this.id = id;
 		this.title = title;
@@ -116,14 +109,6 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 		this.isAllDayEvent = false;
 	}
 
-	/**
-	 * Create a new calendar entry with the given subject, starting at <begin> and
-	 * with a duration of <duration> milliseconds.
-	 * 
-	 * @param title
-	 * @param startTime
-	 * @param duration
-	 */
 	public Calendar_EventRepeatMaster(final String id, final String title, final Date startTime, final int duration) {
 		this.id = id;
 		this.title = title;
@@ -133,30 +118,12 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 		this.isAllDayEvent = false;
 	}
 
-	/**
-	 * Create a new calendar entry with the given start, a duration and a recurrence
-	 * 
-	 * @param id
-	 * @param title
-	 * @param startTime
-	 * @param duration
-	 * @param recurrenceRule
-	 */
 	public Calendar_EventRepeatMaster(final String id, final String title, final Date startTime, final int duration,
 			final String recurrenceRule) {
 		this(id, title, startTime, duration);
 		this.recurrenceRule = recurrenceRule;
 	}
 
-	/**
-	 * Create a new calendar entry with the given start and end
-	 * 
-	 * @param id
-	 * @param subject
-	 * @param begin
-	 * @param end
-	 * @param recurrenceRule
-	 */
 	public Calendar_EventRepeatMaster(final String id, final String title, final Date startTime, final Date endTime,
 			final String recurrenceRule) {
 		this(id, title, startTime, endTime);
@@ -200,6 +167,12 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + comment_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String comment = null;
+
+	public static final String commentId_FIELDNAME = "commentId";
+	@FieldDescribe("备注LOB信息")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + commentId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String commentId = null;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("事件开始时间")
@@ -507,6 +480,10 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	public String getTargetType() {
 		return targetType;
 	}
+
+	public String getCommentId() { return commentId; }
+
+	public void setCommentId(String commentId) { this.commentId = commentId; }
 
 	public List<String> getParticipants() {
 		if (this.participants == null) {
@@ -840,9 +817,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 	/**
 	 * 获取重复时间表达式中结束的日期
-	 * 
-	 * @param rule
-	 * @return date of recurrence end
+	 * @return
 	 */
 	public Date getRecurrenceEndDate() {
 		final TimeZone tz = TimeZoneRegistryFactory.getInstance().createRegistry()
@@ -865,12 +840,10 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	}
 
 	/**
-	 * 获取日程事件下一次执行的事件 Get the recurring event
-	 * 
-	 * @param today
-	 * @param kEvent
-	 * @return affected <code>KalendarEvent</code> or <code>null</code> if not
-	 *         recurring in period
+	 * 取日程事件下一次执行的事件
+	 * @param periodStart
+	 * @param periodEnd
+	 * @return
 	 * @throws Exception
 	 */
 	public Calendar_Event getRecurringInPeriod(final Date periodStart, final Date periodEnd) throws Exception {
@@ -900,13 +873,10 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	}
 
 	/**
-	 * 判断事件是否在指定的时间范围之内 Check if the event recurs within the given period
-	 * 
+	 * 判断事件是否在指定的时间范围之内
 	 * @param periodStart
 	 * @param periodEnd
-	 * @param kEvent
-	 * @return <code>true</code> if event recurs in the given period, otherwise
-	 *         <code>false</code>
+	 * @return
 	 * @throws Exception
 	 */
 	private boolean isRecurringInPeriod(final Date periodStart, final Date periodEnd) throws Exception {
@@ -939,7 +909,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 			// 排队日期
 			final String recurrenceExc = getRecurrenceExc();
-			if (recurrenceExc != null && !recurrenceExc.equals("")) {
+			if ( StringUtils.isNotEmpty( recurrenceExc )) {
 				try {
 					final ExDate exdate = new ExDate();
 					if (recurrenceExc.length() > 8) {
@@ -964,13 +934,10 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	}
 
 	/**
-	 * 计算一个重复日程事件在指定时间范围内所有的日程事件列表 Get all recurrings of an event within the given
-	 * period
-	 * 
+	 * 计算一个重复日程事件在指定时间范围内所有的日程事件列表
 	 * @param periodStart
 	 * @param periodEnd
-	 * @param kEvent
-	 * @return list with <code>KalendarRecurEvent</code>
+	 * @return
 	 * @throws Exception
 	 */
 	public List<Calendar_Event> getRecurringDatesInPeriod(final Date periodStart, final Date periodEnd)
@@ -1043,7 +1010,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	 */
 	private List<Date> getRecurrenceExcludeDates(final String recurrenceExc) {
 		final List<Date> recurExcDates = new ArrayList<Date>();
-		if (recurrenceExc != null && !recurrenceExc.equals("")) {
+		if ( StringUtils.isNotEmpty( recurrenceExc )) {
 			try {
 				final net.fortuna.ical4j.model.ParameterList pl = new net.fortuna.ical4j.model.ParameterList();
 				final ExDate exdate = new ExDate(pl, recurrenceExc);
@@ -1067,7 +1034,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	 * @return string with exclude rule
 	 */
 	private static String getRecurrenceExcludeRule(final List<Date> dates) {
-		if (dates != null && dates.size() > 0) {
+		if (ListTools.isNotEmpty( dates )) {
 			final DateList dl = new DateList();
 			for (final Date date : dates) {
 				final net.fortuna.ical4j.model.Date dd = new net.fortuna.ical4j.model.Date(date);

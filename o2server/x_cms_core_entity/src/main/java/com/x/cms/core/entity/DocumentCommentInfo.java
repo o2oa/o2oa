@@ -134,16 +134,16 @@ public class DocumentCommentInfo extends SliceJpaObject {
 
 	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号")
-	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME )
-	@CheckPersist( allowEmpty = true)
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private Integer orderNumber = 1;
-	
+
 	public static final String commendCount_FIELDNAME = "commendCount";
 	@FieldDescribe("评论被赞次数")
 	@Column(name = ColumnNamePrefix + commendCount_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long commendCount = 0L;
-	
+
 	public Long getCommendCount() {
 		return commendCount;
 	}
@@ -247,20 +247,20 @@ public class DocumentCommentInfo extends SliceJpaObject {
 	public void setIsPrivate(Boolean isPrivate) {
 		this.isPrivate = isPrivate;
 	}
-	
+
 	public void addCommendCount(Integer count) {
-		if( this.commendCount == null ) {
+		if (this.commendCount == null) {
 			this.commendCount = 0L;
 		}
 		this.commendCount = this.commendCount + count;
 	}
-	
+
 	public void subCommendCount(Integer count) {
-		if( this.commendCount == null ) {
+		if (this.commendCount == null) {
 			this.commendCount = 0L;
 		}
 		this.commendCount = this.commendCount - count;
-		if( this.commendCount < 0 ) {
+		if (this.commendCount < 0) {
 			this.commendCount = 0L;
 		}
 	}

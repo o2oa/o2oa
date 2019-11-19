@@ -116,16 +116,16 @@ public class Calendar_EventRepeatMasterServiceAdv{
 	 */
 	public void destoryWithMasterId(String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			 calendar_EventRepeatMasterService.destoryWithMasterId(emc, id );
+			 calendar_EventRepeatMasterService.destoryWithMasterId(emc, id, null );
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 检查该repeatMaster下所有的记录是不是全都是已经删除了，如果没有有效的记录的话，就全部删除掉
-	 * @param repeatMaster
-	 * @throws Exception 
+	 * @param repeatMasterId
+	 * @throws Exception
 	 */
 	public void checkRepeatMaster(String repeatMasterId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

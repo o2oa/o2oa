@@ -34,6 +34,7 @@ import com.x.cms.core.entity.PersistenceProperties;
 
 /**
  * 资源文件
+ * 
  * @author O2LEE
  *
  */
@@ -165,7 +166,7 @@ public class File extends SliceJpaObject {
 	public void setData(String data) {
 		this.data = data;
 	}
-	
+
 	public String getAppId() {
 		return appId;
 	}

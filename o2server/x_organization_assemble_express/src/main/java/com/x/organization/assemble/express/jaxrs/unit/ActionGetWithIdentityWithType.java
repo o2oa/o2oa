@@ -27,7 +27,7 @@ class ActionGetWithIdentityWithType extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getIdentity(), wi.getType());
-			Element element = cache.get(cacheKey);
+			Element element = cache.get(cacheKey + "!!!!!!!!");
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((Wo) element.getObjectValue());
 			} else {
@@ -80,6 +80,7 @@ class ActionGetWithIdentityWithType extends BaseAction {
 	}
 
 	private Wo get(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
+		Wo wo = new Wo();
 		if (StringUtils.isNotEmpty(wi.getIdentity()) && StringUtils.isNotEmpty(wi.getType())) {
 			Identity identity = business.identity().pick(wi.getIdentity());
 			if (null != identity) {
@@ -90,10 +91,9 @@ class ActionGetWithIdentityWithType extends BaseAction {
 					unitIds.add(unit.getId());
 					List<Unit> units = business.entityManagerContainer().list(Unit.class, unitIds);
 					units = business.unit().sort(units);
-					for (int i = units.size() - 1; i <= 0; i--) {
+					for (int i = units.size() - 1; i >= 0; i--) {
 						Unit o = units.get(i);
 						if (o.getTypeList().contains(wi.getType())) {
-							Wo wo = new Wo();
 							wo.setUnit(o.getDistinguishedName());
 							return wo;
 						}
@@ -101,7 +101,7 @@ class ActionGetWithIdentityWithType extends BaseAction {
 				}
 			}
 		}
-		return null;
+		return wo;
 	}
 
 }

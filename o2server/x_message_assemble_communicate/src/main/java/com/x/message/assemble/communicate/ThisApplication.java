@@ -15,6 +15,8 @@ public class ThisApplication {
 
 	public static PmsConsumeQueue pmsConsumeQueue = new PmsConsumeQueue();
 
+	public static PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
+
 	public static CalendarConsumeQueue calendarConsumeQueue = new CalendarConsumeQueue();
 
 	public static QiyeweixinConsumeQueue qiyeweixinConsumeQueue = new QiyeweixinConsumeQueue();
@@ -45,8 +47,11 @@ public class ThisApplication {
 					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
 				dingdingConsumeQueue.start();
 			}
-			if (BooleanUtils.isTrue(Config.messages().clean().getEnable())) {
-				context().schedule(Clean.class, Config.messages().clean().getCron());
+			if (BooleanUtils.isTrue(Config.communicate().clean().getEnable())) {
+				context().schedule(Clean.class, Config.communicate().clean().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
+				pmsInnerConsumeQueue.start();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,6 +74,9 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.dingding().getEnable())
 					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
 				dingdingConsumeQueue.stop();
+			}
+			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
+				pmsInnerConsumeQueue.stop();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

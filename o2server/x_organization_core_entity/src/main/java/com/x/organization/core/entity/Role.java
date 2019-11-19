@@ -138,7 +138,7 @@ public class Role extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + personList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Person.class) })
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + personList_FIELDNAME)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	private List<String> personList = new ArrayList<String>();
 
 	public static final String groupList_FIELDNAME = "groupList";
@@ -148,7 +148,7 @@ public class Role extends SliceJpaObject {
 			+ IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME + ElementIndexNameSuffix)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + groupList_FIELDNAME)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Group.class) })
 	private List<String> groupList = new ArrayList<String>();
 

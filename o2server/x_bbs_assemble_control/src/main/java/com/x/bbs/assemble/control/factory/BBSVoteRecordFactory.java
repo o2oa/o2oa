@@ -136,4 +136,27 @@ public class BBSVoteRecordFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( BBSVoteRecord_.createTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
 	}
+
+	/**
+	 * 根据人员和选项组查询人员选择过的所有选项列表
+	 * @param personName
+	 * @param optionGroupId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BBSVoteRecord> listVoteCountByUserAndGroup(String personName, String optionGroupId) throws Exception {
+		if( StringUtils.isEmpty( personName ) ){
+			throw new Exception( "personName is empty!" );
+		}
+		if( StringUtils.isEmpty( optionGroupId ) ){
+			throw new Exception( "optionGroupId is empty!" );
+		}
+		EntityManager em = this.entityManagerContainer().get( BBSVoteRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<BBSVoteRecord> cq = cb.createQuery( BBSVoteRecord.class);
+		Root<BBSVoteRecord> root = cq.from( BBSVoteRecord.class );
+		Predicate p = cb.equal( root.get( BBSVoteRecord_.votorName ), personName );
+		p = cb.and( p, cb.equal( root.get( BBSVoteRecord_.optionGroupId ), optionGroupId ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }

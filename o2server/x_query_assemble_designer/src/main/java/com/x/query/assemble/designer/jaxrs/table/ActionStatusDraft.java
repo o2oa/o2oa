@@ -23,7 +23,6 @@ class ActionStatusDraft extends BaseAction {
 			this.check(effectivePerson, business, table);
 			emc.beginTransaction(Table.class);
 			table.setStatus(Table.STATUS_draft);
-			table.setData("");
 			emc.commit();
 			ApplicationCache.notify(Table.class);
 			ApplicationCache.notify(Statement.class);

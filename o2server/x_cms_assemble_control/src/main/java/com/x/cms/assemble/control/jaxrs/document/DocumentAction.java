@@ -545,7 +545,7 @@ public class DocumentAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "取消文档点赞.", action = ActionPersistUnTopDocument.class)
+	@JaxrsMethodDescribe(value = "取消文档置顶.", action = ActionPersistUnTopDocument.class)
 	@GET
 	@Path("{id}/unTop")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -591,7 +591,7 @@ public class DocumentAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "获取文件基础信息和访问控制信息.", action = ActionQueryGetControl.class)
+	@JaxrsMethodDescribe(value = "获取文件访问控制信息.", action = ActionQueryGetControl.class)
 	@GET
 	@Path("{id}/control")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

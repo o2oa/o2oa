@@ -19,6 +19,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.BindingPair;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ScriptHelper;
@@ -88,7 +89,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			}
 			if (null != aeiObjects.getProcess()) {
 				if (StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
-						aeiObjects.getActivity().getId())) {
+						aeiObjects.getActivity().getId())
+						&& (!StringUtils.equals(aeiObjects.getProcess().getSerialPhase(),
+								Process.SERIALPHASE_INQUIRE))) {
 					if (StringUtils.isEmpty(work.getSerial())) {
 						SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
 								this.entityManagerContainer(), work.getProcess(), work.getId());
@@ -99,11 +102,6 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			}
 			aeiObjects.commit();
 			this.arriveCommitted(aeiObjects);
-			/* 待阅需要在数据提交后再发出提醒 */
-//			for (Read read : aeiObjects.getCreateReads()) {
-//				ReadMessage message = new ReadMessage(read.getPerson(), read.getWork(), read.getId());
-//				Collaboration.send(message);
-//			}
 			/* 运行AfterArriveScript时间 */
 			this.callAfterArriveScript(aeiObjects);
 			return work.getId();
@@ -116,22 +114,36 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	private void callBeforeArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeArriveScript()) {
 			/** 如果需要运行到达前脚本 */
-			if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
+			if (this.hasBeforeArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BAS)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BAST)));
+				if (this.hasBeforeArriveScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BAS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BAST)));
+				}
+				if (this.hasBeforeArriveScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BAS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BAST)));
+				}
 			}
 		}
 	}
 
 	private void callAfterArriveScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallAfterArriveScript()) {
-			if (this.hasAfterArriveScript(aeiObjects.getActivity())) {
+			if (this.hasAfterArriveScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AAS)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AAST)));
+				if (this.hasAfterArriveScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AAS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AAST)));
+				}
+				if (this.hasAfterArriveScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AAS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AAST)));
+				}
 			}
 		}
 	}
@@ -190,17 +202,9 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				this.callBeforeExecuteScript(aeiObjects);
 				work.setBeforeExecuted(true);
 			}
-			/*
-			 * 
-			 * 运行业务方法
-			 * 
-			 */
+			/* 运行业务方法 */
 			List<Work> works = this.executeProcessing(aeiObjects);
-			/*
-			 * 
-			 * 运行业务结束
-			 * 
-			 */
+
 			if (ListTools.isNotEmpty(works)) {
 				for (Work o : works) {
 					results.add(o.getId());
@@ -221,22 +225,36 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	private void callBeforeExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeExecuteScript()) {
-			if (this.hasBeforeExecuteScript(aeiObjects.getActivity())) {
+			if (this.hasBeforeExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BES)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BEST)));
+				if (this.hasBeforeExecuteScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BES)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BEST)));
+				}
+				if (this.hasBeforeExecuteScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BES)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BEST)));
+				}
 			}
 		}
 	}
 
 	private void callAfterExecuteScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallAfterExecuteScript()) {
-			if (this.hasAfterExecuteScript(aeiObjects.getActivity())) {
+			if (this.hasAfterExecuteScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AES)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AEST)));
+				if (this.hasAfterExecuteScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AES)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AEST)));
+				}
+				if (this.hasAfterExecuteScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AES)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AEST)));
+				}
 			}
 		}
 	}
@@ -291,6 +309,19 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			for (Work o : works) {
 				results.add(o.getId());
 			}
+			if (null != aeiObjects.getProcess()) {
+				if (StringUtils.equalsIgnoreCase(aeiObjects.getProcess().getSerialActivity(),
+						aeiObjects.getActivity().getId())
+						&& (StringUtils.equals(aeiObjects.getProcess().getSerialPhase(),
+								Process.SERIALPHASE_INQUIRE))) {
+					if (StringUtils.isEmpty(work.getSerial())) {
+						SerialBuilder serialBuilder = new SerialBuilder(ThisApplication.context(),
+								this.entityManagerContainer(), work.getProcess(), work.getId());
+						String serial = serialBuilder.concrete(aeiObjects);
+						work.setSerial(serial);
+					}
+				}
+			}
 			aeiObjects.commit();
 			this.inquireCommitted(aeiObjects);
 			/** 运行 AfterInquireScript事件 */
@@ -303,24 +334,38 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	private void callBeforeInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeInquireScript()) {
-			if (this.hasBeforeInquireScript(aeiObjects.getActivity())) {
+			if (this.hasBeforeInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
 						new BindingPair(ScriptingEngine.BINDINGNAME_ROUTES, aeiObjects.getRoutes()));
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIS)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIST)));
+				if (this.hasBeforeInquireScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BIS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), BIST)));
+				}
+				if (this.hasBeforeInquireScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIST)));
+				}
 			}
 		}
 	}
 
 	private void callAfterInquireScript(AeiObjects aeiObjects) throws Exception {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallAfterInquireScript()) {
-			if (this.hasAfterInquireScript(aeiObjects.getActivity())) {
+			if (this.hasAfterInquireScript(aeiObjects.getProcess(), aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
 						new BindingPair(ScriptingEngine.BINDINGNAME_ROUTES, aeiObjects.getSelectRoutes()));
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIS)),
-						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIST)));
+				if (this.hasAfterInquireScript(aeiObjects.getProcess())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AIS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getProcess(), AIST)));
+				}
+				if (this.hasAfterInquireScript(aeiObjects.getActivity())) {
+					scriptHelper.eval(aeiObjects.getWork().getApplication(),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIS)),
+							Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIST)));
+				}
 			}
 		}
 	}

@@ -16,11 +16,14 @@ import com.x.program.center.jaxrs.center.CenterAction;
 import com.x.program.center.jaxrs.code.CodeAction;
 import com.x.program.center.jaxrs.collect.CollectAction;
 import com.x.program.center.jaxrs.config.ConfigAction;
+import com.x.program.center.jaxrs.datastructure.DataStructureAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
 import com.x.program.center.jaxrs.distribute.DistributeAction;
+import com.x.program.center.jaxrs.input.InputAction;
 import com.x.program.center.jaxrs.invoke.InvokeAction;
 import com.x.program.center.jaxrs.jest.JestAction;
 import com.x.program.center.jaxrs.module.ModuleAction;
+import com.x.program.center.jaxrs.output.OutputAction;
 import com.x.program.center.jaxrs.pms.PmsAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
@@ -59,7 +62,10 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ScheduleAction.class);
 		classes.add(AuthenticationAction.class);
 		classes.add(ValidationAction.class);
+		classes.add(DataStructureAction.class);
 		classes.add(TestAction.class);
+		classes.add(OutputAction.class);
+		classes.add(InputAction.class);
 		return classes;
 	}
 }

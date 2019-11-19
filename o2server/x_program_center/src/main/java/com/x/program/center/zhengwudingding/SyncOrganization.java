@@ -49,7 +49,7 @@ public class SyncOrganization {
 	private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
 
 	private ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-	private ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
+	private ScriptEngine engine = scriptEngineManager.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 	private Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 
 	public PullResult execute(Business business) throws Exception {

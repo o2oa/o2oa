@@ -54,7 +54,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 			groupNames = userManagerService.listGroupNamesByPerson( personName );
 			
 			try {
-				manager = userManagerService.isManager(request, effectivePerson );
+				manager = userManagerService.isManager( effectivePerson );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
@@ -85,9 +85,9 @@ public class ActionListWhatICanPublish extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}	
+		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( personName, effectivePerson.isAnonymous(), appId, "publish",	manager, appManager, appPublisher);
+		String cacheKey = ApplicationCache.concreteCacheKey( personName, appId, "publish",	isAnonymous, manager, appManager, appPublisher);
 		Element element = cache.get(cacheKey);
 
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -95,7 +95,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 			result.setData(wos);
 		} else {
 			if (check) {
-				if (manager || appManager || appPublisher) {
+				if ( manager || appManager || appPublisher) {
 					try {
 						ids = categoryInfoServiceAdv.listIdsByAppId(appId);
 					} catch (Exception e) {
@@ -110,7 +110,8 @@ public class ActionListWhatICanPublish extends BaseAction {
 						inAppInfoIds.add( appId );						
 						try {
 							ids = permissionQueryService.listPublishableCategoryIdByPerson(
-									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, "全部", 1000, manager );
+									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null,
+									null, "全部", "all", 1000, false );
 						} catch (Exception e) {
 							check = false;
 							Exception exception = new ExceptionCategoryInfoProcess(e,

@@ -1,6 +1,5 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,6 +8,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Person;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -30,8 +30,8 @@ class ActionRegist extends BaseAction {
 		if (this.exist(name)) {
 			throw new ExceptionNameExist(name);
 		}
-		if (PasswordTools.checkPasswordStrength(password) < 4) {
-			throw new ExceptionInvalidPassword();
+		if (!password.matches(Person.DEFAULT_PASSWORDREGEX)) {
+			throw new ExceptionInvalidPassword(Person.DEFAULT_PASSWORDREGEXHINT);
 		}
 		if (!Config.person().isMobile(mobile)) {
 			throw new ExceptionInvalidMobile(mobile);

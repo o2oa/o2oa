@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -42,7 +43,7 @@ public class ActionSave extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Boolean check = true;
-		String[] names = null;
+		List<String> names = null;
 		String[] typeCategory = null;
 		String personName = null;
 		BBSForumInfo forumInfo = null;
@@ -149,9 +150,9 @@ public class ActionSave extends BaseAction {
 		}
 		// 校验版块管理员（版主）是否存在
 		if (check) {
-			if ( StringUtils.isNotEmpty( wrapIn.getModeratorNames() )) {
+			if ( ListTools.isNotEmpty( wrapIn.getModeratorNames() )) {
 				// 判断指定的用户是否存在
-				names = wrapIn.getModeratorNames().split(",");
+				names = wrapIn.getModeratorNames();
 				for (String name : names) {
 					try {
 						personName = userManagerService.getPersonNameByFlag( name );
@@ -170,7 +171,7 @@ public class ActionSave extends BaseAction {
 					}
 				}
 			} else {
-				wrapIn.setModeratorNames(effectivePerson.getDistinguishedName());
+				wrapIn.addModeratorName( effectivePerson.getDistinguishedName() );
 			}
 		}
 		if (check) {

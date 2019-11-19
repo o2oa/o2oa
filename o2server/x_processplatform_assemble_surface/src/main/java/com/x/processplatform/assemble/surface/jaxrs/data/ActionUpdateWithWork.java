@@ -7,14 +7,20 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionUpdateWithWork extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWork.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Audit audit = logger.audit(effectivePerson);
 			/** 防止提交空数据清空data */
 			if (null == jsonElement || (!jsonElement.isJsonObject())) {
 				throw new ExceptionNotJsonObject();
@@ -40,6 +46,7 @@ class ActionUpdateWithWork extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(work.getId());
 			result.setData(wo);
+			audit.log(null, "修改");
 			return result;
 		}
 	}

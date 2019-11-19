@@ -38,6 +38,9 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
 
+	public static final String DEFAULT_PASSWORDREGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$";
+	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
+
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
@@ -47,6 +50,8 @@ public class Person extends ConfigObject {
 		this.passwordPeriod = DEFAULT_PASSWORDPERIOD;
 		this.register = REGISTER_TYPE_DISABLE;
 		this.superPermission = DEFAULT_SUPERPERMISSION;
+		this.passwordRegex = DEFAULT_PASSWORDREGEX;
+		this.passwordRegexHint = DEFAULT_PASSWORDREGEXHINT;
 	}
 
 	public static Person defaultInstance() {
@@ -70,8 +75,14 @@ public class Person extends ConfigObject {
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
 	private String password;
 
-	@FieldDescribe("密码过期时间,0表示不过期,默认值:0")
+	@FieldDescribe("密码过期时间(天),0表示不过期,默认值:0.")
 	private Integer passwordPeriod;
+
+	@FieldDescribe("密码校验正则表达式,默认6位以上,包含数字和字母.")
+	private String passwordRegex;
+
+	@FieldDescribe("密码校验不通过的提示信息.")
+	private String passwordRegexHint;
 
 	@FieldDescribe("是否允许用户自注册,disable:不允许,captcha通过验证码注册,code:通过短信注册,默认值:disable")
 	private String register;
@@ -172,6 +183,14 @@ public class Person extends ConfigObject {
 
 	public Boolean getSuperPermission() {
 		return BooleanUtils.isTrue(this.superPermission) ? true : false;
+	}
+
+	public String getPasswordRegex() {
+		return StringUtils.isEmpty(this.passwordRegex) ? DEFAULT_PASSWORDREGEX : this.passwordRegex;
+	}
+
+	public String getPasswordRegexHint() {
+		return StringUtils.isEmpty(this.passwordRegexHint) ? DEFAULT_PASSWORDREGEXHINT : this.passwordRegexHint;
 	}
 
 	public String getRegister() {

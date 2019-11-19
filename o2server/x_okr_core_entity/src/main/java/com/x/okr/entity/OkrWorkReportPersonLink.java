@@ -96,38 +96,43 @@ public class OkrWorkReportPersonLink extends SliceJpaObject {
 
 	public static final String processorName_FIELDNAME = "processorName";
 	@FieldDescribe("处理人姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorName = "";
 
 	public static final String processorIdentity_FIELDNAME = "processorIdentity";
 	@FieldDescribe("处理人身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + processorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorIdentity = "";
 
 	public static final String processorUnitName_FIELDNAME = "processorUnitName";
 	@FieldDescribe("处理人所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorUnitName = "";
 
 	public static final String processorTopUnitName_FIELDNAME = "processorTopUnitName";
 	@FieldDescribe("处理人所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorTopUnitName = "";
 
 	public static final String processLevel_FIELDNAME = "processLevel";
 	@FieldDescribe("处理层级次序")
-	@Column( name = ColumnNamePrefix + processLevel_FIELDNAME)
+	@Column(name = ColumnNamePrefix + processLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer processLevel = 1;
 
 	public static final String activityName_FIELDNAME = "activityName";
 	@FieldDescribe("处理环节名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + activityName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName = "";
 

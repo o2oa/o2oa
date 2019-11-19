@@ -90,5 +90,5 @@ public class DocumentCommend extends SliceJpaObject {
 
 	public void setCommendPerson(String commendPerson) {
 		this.commendPerson = commendPerson;
-	}	
+	}
 }

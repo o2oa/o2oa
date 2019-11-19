@@ -63,7 +63,7 @@ class ActionCodeLogin extends BaseAction {
 					}
 				}
 				wo = this.user(request, response, business, o, Wo.class);
-				audit.log(o.getDistinguishedName());
+				audit.log(o.getDistinguishedName(), "登录");
 			}
 			result.setData(wo);
 			return result;

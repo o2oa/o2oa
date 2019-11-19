@@ -32,7 +32,7 @@ class ActionDispatch extends BaseAction {
 				List<Application> apps = ThisApplication.context().applications().get(entry.getKey());
 				if (ListTools.isNotEmpty(apps)) {
 					apps.stream().forEach(o -> {
-						String url = o.getUrlRoot() + "cache";
+						String url = o.getUrlJaxrsRoot() + "cache";
 						logger.debug("dispatch cache request to : {}", url);
 						try {
 							CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);

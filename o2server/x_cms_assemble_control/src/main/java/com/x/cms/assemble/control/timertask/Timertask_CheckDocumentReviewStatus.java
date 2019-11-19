@@ -17,6 +17,7 @@ public class Timertask_CheckDocumentReviewStatus extends AbstractJob {
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		cmsBatchOperationPersistService = new CmsBatchOperationPersistService();
 		cmsBatchOperationPersistService.checkDocumentReviewStatus();
+		cmsBatchOperationPersistService.checkDocumentIsTop(false);
 	}
 
 }

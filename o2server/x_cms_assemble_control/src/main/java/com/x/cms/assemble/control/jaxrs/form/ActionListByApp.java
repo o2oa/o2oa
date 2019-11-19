@@ -36,7 +36,7 @@ public class ActionListByApp extends BaseAction {
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				if (!business.formEditAvailable( request, effectivePerson )) {
+				if (!business.formEditAvailable( effectivePerson )) {
 					throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有查询全部表单模板的权限！");
 				}
 				FormFactory formFactory = business.getFormFactory();

@@ -30,12 +30,8 @@ public class CmsPermissionService {
 
 	/**
 	 * 根据条件获取用户有权限访问的所有文档ID列表
-	 * 
 	 * @param emc
-	 * @param categoryIdList
-	 * @param personName
-	 * @param viewableDocIds
-	 * @param viewableCategoryIds
+	 * @param queryFilter
 	 * @param maxResultCount
 	 * @return
 	 * @throws Exception
@@ -55,7 +51,7 @@ public class CmsPermissionService {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter(Review_.class, cb, null, root, queryFilter);
 		cq.orderBy(cb.desc(root.get(Review.publishTime_FIELDNAME)));
 		reviews = em.createQuery(cq.where(p)).setMaxResults(maxResultCount).getResultList();
-		if (reviews != null && !reviews.isEmpty()) {
+		if ( ListTools.isNotEmpty( reviews )) {
 			for (Review review : reviews) {
 				if (!ids.contains(review.getDocId())) {
 					ids.add(review.getDocId());
@@ -79,12 +75,14 @@ public class CmsPermissionService {
 	 */
 	public List<String> listViewableAppIdByPerson(EntityManagerContainer emc, String personName, Boolean isAnonymous,
 			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
-			String documentType, Integer maxCount) throws Exception {
+			String documentType, String appType, Integer maxCount) throws Exception {
 
 		List<String> viewableAppInfoIds = new ArrayList<>();
 
-		// 1、将所有未设置访问权限的栏目ID列表添加到viewAbleAppInfoIds中（全员可以访问的AppInfo)
-		viewableAppInfoIds = addResultToSourceList(this.listAllPeopleViewAppIds(emc, documentType), viewableAppInfoIds);
+		//1、将所有未设置访问权限的栏目ID列表添加到viewAbleAppInfoIds中（全员可以访问的AppInfo)
+		viewableAppInfoIds = addResultToSourceList(this.listAllPeopleViewAppIds(emc, documentType, appType), viewableAppInfoIds);
+		//2、加入所有人都能发布的栏目
+		viewableAppInfoIds = addResultToSourceList(this.listAllPeoplePublishAppIds( emc, documentType, appType ), viewableAppInfoIds);
 
 		if (!isAnonymous) {
 			// 2、将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
@@ -120,12 +118,11 @@ public class CmsPermissionService {
 	 */
 	public List<String> listPublishableAppIdByPerson(EntityManagerContainer emc, String personName, Boolean isAnonymous,
 			List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds,
-			String documentType, Integer maxCount) throws Exception {
+			String documentType, String appType, Integer maxCount) throws Exception {
 		List<String> publishableAppInfoIds = new ArrayList<>();
 
 		// 1、全员可发布的栏目 ，将所有未设置访问权限的栏目ID列表添加到viewAbleAppInfoIds中
-		publishableAppInfoIds = addResultToSourceList(this.listAllPeoplePublishAppIds(emc, documentType),
-				publishableAppInfoIds);
+		publishableAppInfoIds = addResultToSourceList( this.listAllPeoplePublishAppIds(emc, documentType, appType), publishableAppInfoIds);
 
 		if (!isAnonymous) {
 			// 2、用户可管理的栏目， 将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
@@ -233,19 +230,24 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询指定用户，组织，群组可以访问到的所有分类ID列表（包含全员可以访问的分类） 所获得到的分类列表可能会大于可访问的栏目列表
-	 * 
+	 * @param emc
 	 * @param personName
+	 * @param isAnonymous
 	 * @param unitNames
 	 * @param groupNames
-	 * @param inAppInfoIds          - 过滤栏目ID
-	 * @param inCategoryInfoIds     - 过滤分类ID
-	 * @param excludCategoryInfoIds - 排队分类ID
+	 * @param inAppInfoIds
+	 * @param inCategoryInfoIds
+	 * @param excludCategoryInfoIds
+	 * @param documentType
+	 * @param appType
+	 * @param maxCount
+	 * @param manager
 	 * @return
 	 * @throws Exception
 	 */
 	public List<String> listViewableCategoryIdByPerson(EntityManagerContainer emc, String personName,
 			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds,
-			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, Integer maxCount,
+			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, String appType, Integer maxCount,
 			Boolean manager) throws Exception {
 		List<String> viewableCategoryInfoIds = new ArrayList<>();
 		List<String> allViewableAppIds = null;
@@ -254,7 +256,7 @@ public class CmsPermissionService {
 			allViewableAppIds = this.listAllAppIds(emc, inAppInfoIds, null, documentType, maxCount);
 		} else {
 			allViewableAppIds = this.listViewableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames,
-					inAppInfoIds, null, documentType, maxCount);
+					inAppInfoIds, null, documentType, appType, maxCount);
 			if (ListTools.isNotEmpty(inAppInfoIds) && ListTools.isEmpty(allViewableAppIds)) {
 				allViewableAppIds = new ArrayList<>();
 				allViewableAppIds.add("无可见栏目");
@@ -312,14 +314,14 @@ public class CmsPermissionService {
 	 */
 	public List<String> listPublishableCategoryIdByPerson(EntityManagerContainer emc, String personName,
 			Boolean isAnonymous, List<String> unitNames, List<String> groupNames, List<String> inAppInfoIds,
-			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, Integer maxCount,
-			Boolean manager) throws Exception {
+			List<String> inCategoryInfoIds, List<String> excludCategoryInfoIds, String documentType, String appType,
+			Integer maxCount, Boolean manager) throws Exception {
 		List<String> publishableCategoryInfoIds = new ArrayList<>();
 		List<String> allPublishableAppIds = null;
 
 		// 查询我可以发布文档的所有栏目ID列表（单从栏目信息层面判断，不涉及分类，未设置发布者，或者有发布者权限）
 		allPublishableAppIds = this.listPublishableAppIdByPerson(emc, personName, isAnonymous, unitNames, groupNames,
-				inAppInfoIds, null, documentType, maxCount);
+				inAppInfoIds, null, documentType, appType, maxCount);
 		if (ListTools.isEmpty(allPublishableAppIds)) {
 			allPublishableAppIds.add("无可发布栏目ID");
 		}
@@ -330,10 +332,10 @@ public class CmsPermissionService {
 
 		if (!isAnonymous) {
 			// 在指定的栏目范围内（inAppInfoIds），查询所有我可以发布文档的分类ID列表（包含有发布权限的分类，不检测全员可发布标识）
-//			publishableCategoryInfoIds = addResultToSourceList(
-//					this.listPublishableCategoryIdsInPermission(emc, personName, unitNames, groupNames, inAppInfoIds,
-//							inCategoryInfoIds, excludCategoryInfoIds, documentType, maxCount),
-//					publishableCategoryInfoIds);
+			publishableCategoryInfoIds = addResultToSourceList(
+					this.listPublishableCategoryIdsInPermission(emc, personName, unitNames, groupNames, inAppInfoIds,
+							inCategoryInfoIds, excludCategoryInfoIds, documentType, maxCount),
+					publishableCategoryInfoIds);
 
 			// 在指定的栏目范围内（inAppInfoIds），查询我可以管理的分类ID列表
 			publishableCategoryInfoIds = addResultToSourceList(this.listManageableCategoryIdsByPerson(emc, personName,
@@ -526,20 +528,20 @@ public class CmsPermissionService {
 					cb.isMember(personName, root.get(CategoryInfo.viewablePersonList_FIELDNAME)));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(CategoryInfo.manageablePersonList_FIELDNAME)));
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					cb.isMember(personName, root.get(CategoryInfo.publishablePersonList_FIELDNAME)));
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					cb.isMember(personName, root.get(CategoryInfo.publishablePersonList_FIELDNAME)));
 		}
 		if (ListTools.isNotEmpty(unitNames)) {
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					root.get(CategoryInfo.publishableUnitList_FIELDNAME).in(unitNames));
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					root.get(CategoryInfo.publishableUnitList_FIELDNAME).in(unitNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(CategoryInfo.viewableUnitList_FIELDNAME).in(unitNames));
 		}
 		if (ListTools.isNotEmpty(groupNames)) {
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(CategoryInfo.publishableGroupList_FIELDNAME).in(groupNames));
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					root.get(CategoryInfo.viewableGroupList_FIELDNAME).in(groupNames));
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					root.get(CategoryInfo.viewableGroupList_FIELDNAME).in(groupNames));
 		}
 
 		p = CriteriaBuilderTools.predicate_and(cb, p, p_permission);
@@ -611,23 +613,24 @@ public class CmsPermissionService {
 
 		Predicate p_permission = null;
 		if (StringUtils.isNotEmpty(personName)) {
-			// 可以管理的栏目，肯定可以发布信息
+			// 可以管理的栏目，肯定可以看到
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(AppInfo.manageablePersonList_FIELDNAME)));
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					cb.isMember(personName, root.get(AppInfo.publishablePersonList_FIELDNAME)));
+			// 可发布的栏目，肯定可以看到
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					cb.isMember(personName, root.get(AppInfo.publishablePersonList_FIELDNAME)));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					cb.isMember(personName, root.get(AppInfo.viewablePersonList_FIELDNAME)));
 		}
 		if (ListTools.isNotEmpty(unitNames)) {
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					root.get(AppInfo.publishableUnitList_FIELDNAME).in(unitNames));
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					root.get(AppInfo.publishableUnitList_FIELDNAME).in(unitNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(AppInfo.viewableUnitList_FIELDNAME).in(unitNames));
 		}
 		if (ListTools.isNotEmpty(groupNames)) {
-//			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
-//					root.get(AppInfo.publishableGroupList_FIELDNAME).in(groupNames));
+			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
+					root.get(AppInfo.publishableGroupList_FIELDNAME).in(groupNames));
 			p_permission = CriteriaBuilderTools.predicate_or(cb, p_permission,
 					root.get(AppInfo.viewableGroupList_FIELDNAME).in(groupNames));
 		}
@@ -645,12 +648,11 @@ public class CmsPermissionService {
 
 	/**
 	 * 查询用户有权限访问的所有栏目ID列表（ 不检测allPeopleView, with List copy ）
-	 * 
-	 * @param personName
-	 * @param unitNames
-	 * @param groupNames
+	 * @param emc
 	 * @param inAppInfoIds
 	 * @param excludAppInfoIds
+	 * @param documentType
+	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
@@ -788,7 +790,7 @@ public class CmsPermissionService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> listAllPeopleViewAppIds(EntityManagerContainer emc, String documentType) throws Exception {
+	private List<String> listAllPeopleViewAppIds(EntityManagerContainer emc, String documentType, String appType ) throws Exception {
 		List<String> appInfoIds = null;
 		List<String> appInfoIds_out = new ArrayList<>();
 		EntityManager em = emc.get(AppInfo.class);
@@ -797,16 +799,13 @@ public class CmsPermissionService {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get(AppInfo.id_FIELDNAME));
 
-		Predicate p = null;
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)
-				&& !"all".equalsIgnoreCase(documentType)) {
-			p = CriteriaBuilderTools.predicate_and(cb, p,
-					cb.equal(root.get(AppInfo.documentType_FIELDNAME), documentType));
+		Predicate p = cb.isTrue(root.get(AppInfo.allPeopleView_FIELDNAME));
+		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType )  ){
+			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo.appType_FIELDNAME), appType));
 		}
-		Predicate permission = cb.isTrue(root.get(AppInfo.allPeopleView_FIELDNAME));
-//		permission = cb.or(permission, cb.isTrue(root.get(AppInfo.allPeoplePublish_FIELDNAME)));
-
-		p = CriteriaBuilderTools.predicate_and(cb, p, permission);
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
+			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo.documentType_FIELDNAME), documentType));
+		}
 		appInfoIds = em.createQuery(cq.where(p)).getResultList();
 		if (appInfoIds == null) {
 			appInfoIds = new ArrayList<>();
@@ -822,7 +821,7 @@ public class CmsPermissionService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> listAllPeoplePublishAppIds(EntityManagerContainer emc, String documentType) throws Exception {
+	private List<String> listAllPeoplePublishAppIds(EntityManagerContainer emc, String documentType, String appType) throws Exception {
 		List<String> appInfoIds = null;
 		List<String> appInfoIds_out = new ArrayList<>();
 		EntityManager em = emc.get(AppInfo.class);
@@ -831,8 +830,10 @@ public class CmsPermissionService {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get(AppInfo.id_FIELDNAME));
 		Predicate p = cb.isTrue(root.get(AppInfo.allPeoplePublish_FIELDNAME));
-		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType)
-				&& !"all".equalsIgnoreCase(documentType)) {
+		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType )  ){
+			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo.appType_FIELDNAME), appType));
+		}
+		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
 			p = cb.and(p, cb.equal(root.get(AppInfo.documentType_FIELDNAME), documentType));
 		}
 		appInfoIds = em.createQuery(cq.where(p)).getResultList();

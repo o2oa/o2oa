@@ -37,7 +37,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class WorkCompleted extends SliceJpaObject {
+public class WorkCompleted extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 8340732901486828267L;
 	private static final String TABLE = PersistenceProperties.Content.WorkCompleted.table;
@@ -122,6 +122,7 @@ public class WorkCompleted extends SliceJpaObject {
 			this.expired = false;
 		}
 		this.duration = duration;
+		this.copyProjectionFields(work);
 	}
 
 	public void setTitle(String title) {

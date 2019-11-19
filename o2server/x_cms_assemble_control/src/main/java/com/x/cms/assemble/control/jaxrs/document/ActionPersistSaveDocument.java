@@ -189,35 +189,30 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if ( StringUtils.isNotEmpty(identity)) {
-					document.setCreatorIdentity( identity );
-					document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
-					document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-					document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+			if ( StringUtils.isNotEmpty(identity)) {
+				document.setCreatorIdentity( identity );
+				document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
+				document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
+				document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+			} else {
+				if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
+					document.setCreatorIdentity("xadmin");
+					document.setCreatorPerson("xadmin");
+					document.setCreatorUnitName("xadmin");
+					document.setCreatorTopUnitName("xadmin");
 				} else {
-					if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-						document.setCreatorIdentity("xadmin");
-						document.setCreatorPerson("xadmin");
-						document.setCreatorUnitName("xadmin");
-						document.setCreatorTopUnitName("xadmin");
-					} else {
-						//取第一个身份
-						identity = userManagerService.getIdentityWithPerson(effectivePerson.getDistinguishedName());
-						if( StringUtils.isNotEmpty(identity) ) {
-							document.setCreatorIdentity( identity );
-							document.setCreatorPerson( effectivePerson.getDistinguishedName() );
-							document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-							document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
-						}else {
-							Exception exception = new ExceptionPersonHasNoIdentity(effectivePerson.getDistinguishedName());
-							result.error(exception);
-						}						
+					//取第一个身份
+					identity = userManagerService.getIdentityWithPerson(effectivePerson.getDistinguishedName());
+					if( StringUtils.isNotEmpty(identity) ) {
+						document.setCreatorIdentity( identity );
+						document.setCreatorPerson( effectivePerson.getDistinguishedName() );
+						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
+						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+					}else {
+						Exception exception = new ExceptionPersonHasNoIdentity(effectivePerson.getDistinguishedName());
+						result.error(exception);
 					}
 				}
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
 			}
 		}
 

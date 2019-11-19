@@ -218,10 +218,14 @@ public class ActionQueryGetControl extends BaseAction {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
+					}
+					if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
 						if( ListTools.containsAny( unitNames , document.getAuthorUnitList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);
 						}
+					}
+					if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
 						if( ListTools.containsAny( groupNames , document.getAuthorGroupList() )) {
 							woControl.setAllowVisit(true);
 							woControl.setAllowEdit(true);

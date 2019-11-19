@@ -20,7 +20,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 	private SearchServiceAdv searchServiceAdv = new SearchServiceAdv();
 	private UserManagerService userManagerService = new UserManagerService();
 	
-	public ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson currentPerson, String docStatus, String categoryId) {
+	public ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson currentPerson, String docStatus, String categoryId ) {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = new Wo();
 		List<String> app_ids = null;
@@ -36,7 +36,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 		String documentType = "信息";
 		if (check) {
 			try {
-				isXAdmin = userManagerService.isManager(request, currentPerson);
+				isXAdmin = userManagerService.isManager( currentPerson);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSearchProcess(e, 
@@ -60,7 +60,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 					List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
 					List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
 					app_ids = permissionQueryService.listViewableAppIdByPerson(
-							personName, isAnonymous, unitNames, groupNames, null, null, documentType, 1000 );
+							personName, isAnonymous, unitNames, groupNames, null, null, documentType, null,1000 );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSearchProcess( e, 

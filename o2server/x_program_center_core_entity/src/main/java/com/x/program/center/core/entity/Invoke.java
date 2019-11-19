@@ -55,9 +55,6 @@ public class Invoke extends SliceJpaObject {
 
 	/* 更新运行方法 */
 
-	// public static String[] FLAGS = new String[] { id_FIELDNAME, "alias", "name"
-	// };
-
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
 

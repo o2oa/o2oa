@@ -104,7 +104,7 @@ public class Component extends SliceJpaObject {
 	public static final String allowList_FIELDNAME = "allowList";
 	@FieldDescribe("可访问人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + allowList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + allowList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + allowList_FIELDNAME)
@@ -115,7 +115,7 @@ public class Component extends SliceJpaObject {
 	public static final String denyList_FIELDNAME = "denyList";
 	@FieldDescribe("拒绝访问人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + denyList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + denyList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + denyList_FIELDNAME)
@@ -130,7 +130,7 @@ public class Component extends SliceJpaObject {
 	// @FieldDescribe("管理人员.")
 	// public static final String title_FIELDNAME = "title";
 	// @PersistentCollection(fetch = FetchType.EAGER)
-	// @OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	// @OrderColumn(name = ORDERCOLUMNCOLUMN)
 	// @ContainerTable(name = TABLE + "_controllerList", joinIndex = @Index(name =
 	// TABLE + "_controllerList_join"))
 	// @ElementColumn(length =

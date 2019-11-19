@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,10 +48,13 @@ public class BBSSectionInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 向数据库保存BBSSectionInfo对象
-	 * @param wrapIn
+	 * @param emc
+	 * @param _bBSSectionInfo
+	 * @return
+	 * @throws Exception
 	 */
 	public BBSSectionInfo save( EntityManagerContainer emc, BBSSectionInfo _bBSSectionInfo ) throws Exception {
 		BBSSectionInfo _bBSSectionInfo_tmp = null;
@@ -168,9 +172,10 @@ public class BBSSectionInfoService {
 
 	/**
 	 * 根据论坛ID查询论坛中所有的主版块信息数量
-	 * @param id
+	 * @param emc
+	 * @param forumId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Long countMainSectionByForumId( EntityManagerContainer emc, String forumId ) throws Exception {
 		if( forumId  == null || forumId.isEmpty() ){
@@ -179,12 +184,13 @@ public class BBSSectionInfoService {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().countMainSectionByForumId( forumId );
 	}
-	
+
 	/**
 	 * 根据主版块ID查询主版块中所有的子版块信息数量
-	 * @param id
+	 * @param emc
+	 * @param sectionId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Long countSubSectionByMainSectionId( EntityManagerContainer emc, String sectionId ) throws Exception {
 		if( sectionId  == null || sectionId.isEmpty() ){
@@ -267,7 +273,7 @@ public class BBSSectionInfoService {
 		if( sectionInfo == null ){
 			throw new Exception( "sectionInfo is null!" );
 		}
-		String[] currentManagerNames = null;
+
 		List<String> ids = null;
 		List<BBSUserRole> userRoleList= null;
 		String unitName = null;
@@ -276,9 +282,12 @@ public class BBSSectionInfoService {
 		BBSUserRole userRole_new = null;
 		Business business = null;
 		Boolean exists = false;
-		if( StringUtils.isNotEmpty( sectionInfo.getModeratorNames() ) ){
-			currentManagerNames = sectionInfo.getModeratorNames().split(",");
+		List<String> currentManagerNames = new ArrayList<>();
+
+		if( ListTools.isNotEmpty( sectionInfo.getModeratorNames() ) ){
+			currentManagerNames = sectionInfo.getModeratorNames();
 		}
+
 		business = new Business( emc );
 		emc.beginTransaction( BBSUserRole.class );
 		roleInfo = business.roleInfoFactory().getRoleByCode( "SECTION_MANAGER_" + sectionInfo.getId() );
@@ -292,7 +301,7 @@ public class BBSSectionInfoService {
 		if( ListTools.isNotEmpty( userRoleList ) ){
 			for( BBSUserRole userRole : userRoleList ){
 				exists = false;
-				if( ListTools.isNotEmpty( Arrays.asList( currentManagerNames )) ){
+				if( ListTools.isNotEmpty(currentManagerNames) ){
 					for( String name : currentManagerNames ){
 						if( name.equals( userRole.getObjectName()) || name.equalsIgnoreCase( userRole.getUniqueId() )){
 							exists = true;
@@ -304,7 +313,7 @@ public class BBSSectionInfoService {
 				}
 			}
 		}
-		if( currentManagerNames != null && currentManagerNames.length > 0 ){
+		if( ListTools.isNotEmpty( currentManagerNames ) ){
 			for( String name : currentManagerNames ){
 				exists = false;
 				if( ListTools.isNotEmpty( userRoleList ) ){

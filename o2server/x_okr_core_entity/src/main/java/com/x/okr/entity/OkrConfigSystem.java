@@ -63,50 +63,50 @@ public class OkrConfigSystem extends SliceJpaObject {
 	 */
 	public static final String configName_FIELDNAME = "configName";
 	@FieldDescribe("系统配置名称")
-	@Column(length =  JpaObject.length_32B, name = ColumnNamePrefix + configName_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + configName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String configName = null;
 
 	public static final String configCode_FIELDNAME = "configCode";
 	@FieldDescribe("系统配置编码")
-	@Column(length =  JpaObject.length_32B, name = ColumnNamePrefix + configCode_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + configCode_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + configCode_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String configCode = null;
 
 	public static final String configValue_FIELDNAME = "configValue";
 	@FieldDescribe("配置值")
-	@Column(length =  JpaObject.length_255B, name = ColumnNamePrefix + configValue_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + configValue_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String configValue = null;
 
 	public static final String valueType_FIELDNAME = "valueType";
 	@FieldDescribe("值类型: select | identity | number | date | text")
-	@Column(length =  JpaObject.length_16B, name = ColumnNamePrefix + valueType_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + valueType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String valueType = null;
 
 	public static final String selectContent_FIELDNAME = "selectContent";
 	@FieldDescribe("可选值，和select配合使用，以‘|’号分隔")
-	@Column(length =  JpaObject.length_255B, name = ColumnNamePrefix + selectContent_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + selectContent_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String selectContent = "--无--";
 
 	public static final String isMultiple_FIELDNAME = "isMultiple";
 	@FieldDescribe("是否可以多值")
-	@Column( name = ColumnNamePrefix + isMultiple_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isMultiple_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isMultiple = false;
 
 	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号")
-	@Column( name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer orderNumber = 1;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("备注说明")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description = null;
 

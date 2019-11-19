@@ -51,7 +51,7 @@ class ActionFire extends BaseAction {
 	private void fire(EffectivePerson effectivePerson, Application application, ScheduleRequest request)
 			throws Exception {
 		try {
-			String url = application.getUrlRoot()
+			String url = application.getUrlJaxrsRoot()
 					+ Applications.joinQueryUri("fireschedule", "classname", request.getClassName());
 			CipherConnectionAction.get(effectivePerson.getDebugger(), url);
 			request.setLastStartTime(new Date());

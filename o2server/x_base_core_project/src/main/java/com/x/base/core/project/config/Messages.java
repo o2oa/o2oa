@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.quartz.CronExpression;
-
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.ProcessPlatform.Press;
 import com.x.base.core.project.message.MessageConnector;
 
 public class Messages extends ConcurrentSkipListMap<String, Message> {
 
 	private static final long serialVersionUID = 1336172131736006743L;
+
+	public static final Boolean DEFAULT_WEBSOCKETENABLE = true;
 
 	public Messages() throws Exception {
 		super();
@@ -98,12 +94,26 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
 						MessageConnector.CONSUME_QIYEWEIXIN));
-		
+
 		/* 文档发布消息通知 */
-		o.put(MessageConnector.TYPE_CMS_PUBLISH,
-				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
-						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+//		o.put(MessageConnector.TYPE_CMS_PUBLISH,
+//				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+
+		/* 社区新贴发布消息通知 */
+		o.put(MessageConnector.TYPE_BBS_SUBJECTCREATE,
+				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+
+		/* 社区新回复发布消息通知 */
+		o.put(MessageConnector.TYPE_BBS_REPLYCREATE,
+				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+		/* 脑图分享消息通知 */
+		o.put(MessageConnector.TYPE_MIND_FILESHARE,
+				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+
+		/* 脑图发送消息通知 */
+		o.put(MessageConnector.TYPE_MIND_FILESEND,
+				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+
 		return o;
 	}
 
@@ -118,53 +128,4 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		return new ArrayList<String>();
 	}
 
-	@FieldDescribe("清理设置.")
-	private Clean clean;
-
-	public Clean clean() {
-		return this.clean == null ? new Clean() : this.clean;
-	}
-
-	public static class Clean extends ConfigObject {
-
-		public static Clean defaultInstance() {
-			Clean o = new Clean();
-			return o;
-		}
-
-		public final static Boolean DEFAULT_ENABLE = true;
-
-		public final static Integer DEFAULT_KEEP = 7;
-
-		public final static String DEFAULT_CRON = "30 30 6 * * ?";
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式")
-		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("消息保留天数")
-		private Integer keep = DEFAULT_KEEP;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-	}
 }

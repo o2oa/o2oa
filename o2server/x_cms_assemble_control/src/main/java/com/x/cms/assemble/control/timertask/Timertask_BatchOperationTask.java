@@ -18,7 +18,7 @@ import com.x.cms.assemble.control.service.DocumentInfoService;
 import com.x.cms.core.entity.CmsBatchOperation;
 
 /**
- * 定时代理: 定期执行批处理，将批处理信息压入队列（如果队列是空的话）
+ * 定时代理: 定期执行批处理，或者将批处理信息压入处理队列并且待久化（如果队列是空的话）
  *
  */
 public class Timertask_BatchOperationTask extends AbstractJob {
@@ -31,7 +31,7 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 		if (ThisApplication.queueBatchOperation.isEmpty()) {
 			List<CmsBatchOperation> operations = null;
 			try {
-				logger.info("Timertask_BatchOperationTask ->  query 2000 cms batch operation in database......");
+				logger.debug("Timertask_BatchOperationTask ->  query 2000 cms batch operation in database......");
 				operations = cmsBatchOperationQueryService.list(2000);
 			} catch (Exception e) {
 				logger.warn("Timertask_BatchOperationTask -> list operations got an exception.");
@@ -41,7 +41,7 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 			if (ListTools.isNotEmpty(operations)) {
 				for (CmsBatchOperation operation : operations) {
 					try {
-						logger.info(
+						logger.debug(
 								"Timertask_BatchOperationTask -> send operation to queue[queueBatchOperation]......");
 						ThisApplication.queueBatchOperation.send(operation);
 					} catch (Exception e) {
@@ -65,7 +65,7 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 									"刷新文档权限：ID=" + docId);
 						}
 					} else {
-						logger.info("Timertask_BatchOperationTask -> not found any unreview document in database.");
+						logger.debug("Timertask_BatchOperationTask -> not found any unreview document in database.");
 						// 也没有需要review的文档了，那么检查一下最近变更过的身份，组织，群组，人员等信息
 					}
 				} catch (Exception e) {
@@ -73,8 +73,10 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 				}
 			}
 		} else {
-			logger.info("Timertask_BatchOperationTask -> queueBatchOperation is processing, wait to next excute.");
+			logger.info("Timertask_BatchOperationTask -> queueBatchOperation is processing, wait to next excute point.");
 		}
 		logger.info("Timertask_BatchOperationTask -> batch operations timer task excute completed.");
 	}
+
+
 }

@@ -280,10 +280,10 @@ public class CategoryInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
-	
+
 	public static final String sendNotify_FIELDNAME = "sendNotify";
 	@FieldDescribe("发布文档后是否通知阅读者：true | false")
-	@Column( name = ColumnNamePrefix + sendNotify_FIELDNAME)
+	@Column(name = ColumnNamePrefix + sendNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
 	private Boolean sendNotify = true;

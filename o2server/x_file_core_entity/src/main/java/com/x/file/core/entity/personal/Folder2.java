@@ -55,11 +55,11 @@ public class Folder2 extends SliceJpaObject {
 		this.superior = StringUtils.trimToEmpty(this.superior);
 	}
 
-	public Folder2(){
+	public Folder2() {
 
 	}
 
-	public Folder2(String name, String person, String superior, String status){
+	public Folder2(String name, String person, String superior, String status) {
 		this.name = name;
 		this.person = person;
 		this.superior = superior;

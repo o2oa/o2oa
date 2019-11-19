@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.cms.assemble.control.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -61,7 +62,7 @@ public class UserManagerService {
 	 * 根据员工姓名获取组织名称
 	 * 如果用户有多个身份，则取组织级别最大的组织名称
 	 * 
-	 * @param employeeName
+	 * @param personName
 	 * @return
 	 * @throws Exception
 	 */
@@ -113,7 +114,6 @@ public class UserManagerService {
 	/**
 	 * 根据人员姓名获取人员所属的一级组织名称，如果人员有多个身份，则取组织等级最大的身份
 	 * @param personName
-	 * @param level
 	 * @return
 	 * @throws Exception
 	 */
@@ -225,7 +225,7 @@ public class UserManagerService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
 			unitNames = business.organization().unit().listWithPersonSupNested( personName );
-			return unitNames;
+			return unitNames == null ? new ArrayList<>():unitNames ;
 		} catch( NullPointerException e ) {
 			return null;
 		} catch (Exception e) {
@@ -257,7 +257,7 @@ public class UserManagerService {
 
 	/**
 	 * 列示人员所拥有的所有角色信息
-	 * @param name
+	 * @param personName
 	 * @return
 	 * @throws Exception
 	 */
@@ -276,7 +276,7 @@ public class UserManagerService {
 		} catch (Exception e) {
 			throw e;
 		}
-		return nameList;
+		return nameList == null ? new ArrayList<>():nameList;
 	}
 
 	/**
@@ -300,14 +300,14 @@ public class UserManagerService {
 		} catch (Exception e) {
 			throw e;
 		}
-		return nameList;
+		return nameList == null ? new ArrayList<>():nameList;
 	}
 	
 	/**
 	 * 判断用户是否有指定的平台角色，比如CMS系统管理员
 	 * 
-	 * @param name
-	 * @param string
+	 * @param personName
+	 * @param roleName
 	 * @return
 	 * @throws Exception
 	 */
@@ -338,22 +338,29 @@ public class UserManagerService {
 		return false;
 	}
 
-	public Boolean isManager(HttpServletRequest request, EffectivePerson currentPerson) throws Exception {
-		if (request == null) {
-			throw new Exception("request is null!");
-		}
-		if (currentPerson == null) {
+	/**
+	 * 判断指定人员是否是管理员
+	 * 1、xadmin
+	 * 2、拥有manager角色
+	 * 3、拥有CMSManager@CMSManagerSystemRole@R角色
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Boolean isManager( EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson == null) {
 			throw new Exception("currentPerson is null!");
 		}
-		Business business = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-			return business.isManager(request, currentPerson);
-		} catch( NullPointerException e ) {
-			return false;
-		} catch (Exception e) {
-			throw e;
+		if(effectivePerson.isManager()){
+			return true;
 		}
+		if( effectivePerson.isManager() || effectivePerson.isCipher() ){
+			return true;
+		}
+		if( this.isHasPlatformRole( effectivePerson.getDistinguishedName(), ThisApplication.ROLE_CMSManager)){
+			return true;
+		}
+		return false;
 	}
 	
 	public String getPersonIdentity( String personName, String identity ) throws Exception {

@@ -35,11 +35,7 @@ class ActionDelete extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			emc.beginTransaction(Query.class);
-			emc.beginTransaction(View.class);
-			emc.beginTransaction(Stat.class);
-			emc.beginTransaction(Reveal.class);
-			Query query = emc.flag(flag, Query.class );
+			Query query = emc.flag(flag, Query.class);
 			if (null == query) {
 				throw new ExceptionQueryNotExist(flag);
 			}
@@ -47,15 +43,22 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionQueryAccessDenied(effectivePerson.getDistinguishedName(), query.getName(),
 						query.getId());
 			}
+			emc.beginTransaction(View.class);
 			for (View _o : this.listView(business, query)) {
 				emc.remove(_o, CheckRemoveType.all);
 			}
+			emc.commit();
+			emc.beginTransaction(Stat.class);
 			for (Stat _o : this.listStat(business, query)) {
 				emc.remove(_o, CheckRemoveType.all);
 			}
+			emc.commit();
+			emc.beginTransaction(Reveal.class);
 			for (Reveal _o : this.listReveal(business, query)) {
 				emc.remove(_o, CheckRemoveType.all);
 			}
+			emc.commit();
+			emc.beginTransaction(Query.class);
 			emc.remove(query, CheckRemoveType.all);
 			emc.commit();
 			ApplicationCache.notify(View.class);

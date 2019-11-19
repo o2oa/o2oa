@@ -88,7 +88,8 @@ public class WebServerTools extends JettySeverTools {
 		Gson gson = XGsonBuilder.instance();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		/** 覆盖掉配置的参数 */
-		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first().getValue();
+		com.x.base.core.project.config.CenterServer centerServerConfig = Config.nodes().centerServers().first()
+				.getValue();
 		map.putAll(centerServerConfig.getConfig());
 		List<Map<String, String>> centers = new ArrayList<>();
 		map.put("center", centers);
@@ -142,6 +143,7 @@ public class WebServerTools extends JettySeverTools {
 		/* 上面的无效 */
 		map.put("app_protocol", "auto");
 		map.put("loginPage", Config.person().getLoginPage());
+		map.put("webSocketEnable", Config.communicate().webSocketEnable());
 		FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 	}
 

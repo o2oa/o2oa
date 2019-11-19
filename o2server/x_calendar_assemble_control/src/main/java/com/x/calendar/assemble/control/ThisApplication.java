@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.schedule.AlarmTrigger;
+import com.x.calendar.assemble.control.schedule.CheckEventComment;
 import com.x.calendar.assemble.control.service.UserManagerService;
 import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
@@ -23,7 +24,10 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		try {
 			MessageConnector.start(context());
+			//每30秒检查一次需要推送的消息
 			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");
+			//每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
+			context.schedule(CheckEventComment.class, "* * */2 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

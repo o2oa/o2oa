@@ -36,19 +36,19 @@ public class BaseAction extends StandardJaxrsAction {
 
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
     protected FormServiceAdv formServiceAdv = new FormServiceAdv();
-    protected ViewServiceAdv viewServiceAdv = new ViewServiceAdv();
+//    protected ViewServiceAdv viewServiceAdv = new ViewServiceAdv();
     protected ScriptServiceAdv scriptServiceAdv = new ScriptServiceAdv();
 	protected AppDictServiceAdv appDictServiceAdv = new AppDictServiceAdv();
     protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
     protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected PermissionQueryService permissionQueryService = new PermissionQueryService();
-	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
+//	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
 	
 	/**
-	 * 当前登录者访问栏目分类列表查询<br/>
-	  * 1、根据人员的访问权限获取可以访问的栏目信息ID列表<br/>
-	  * 2、根据人员的访问权限获取可以访问的分类信息ID列表<br/>
+	 * 当前登录者访问栏目分类列表查询
+	  * 1、根据人员的访问权限获取可以访问的栏目信息ID列表
+	  * 2、根据人员的访问权限获取可以访问的分类信息ID列表
 	  * 3、将栏目信息和分类信息查询出来组织在一起，如果只有分类，那么也要把栏目信息加上
 	  * 4、如果栏目信息下没有分类，则删除栏目信息的输出
 	 * @param personName
@@ -61,33 +61,41 @@ public class BaseAction extends StandardJaxrsAction {
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Wo> listViewAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String appType, String documentType, 
+	protected List<Wo> listViewAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds, String appType, String documentType,
 			Boolean manager, Integer maxCount ) throws Exception {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
-		List<String> viewableAppInfoIds = null;
+		List<String> viewableAppInfoIds = new ArrayList<>();
 		List<String> viewableCategoryIds = new ArrayList<>();
 		if( manager ) {
 			if( ListTools.isNotEmpty( inAppInfoIds )) {
 				viewableAppInfoIds = inAppInfoIds; //可发布栏目就限制为inAppInfoIds
 			}else {
-				viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType); //所有栏目均可见
+				if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
+					viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType);
+				}
+				if( ListTools.isEmpty( viewableAppInfoIds )) {
+					if( viewableAppInfoIds == null ){
+						viewableAppInfoIds = new ArrayList<>();
+					}
+					viewableAppInfoIds.add("NO_APPINFO");
+				}
 			}
-			viewableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( viewableAppInfoIds, documentType, manager, maxCount );
+			viewableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( viewableAppInfoIds, documentType, maxCount );
 		}else {
 			if( !isAnonymous ) {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
 				groupNames = userManagerService.listGroupNamesByPerson( personName );
 			}
 			//查询用户可以访问到的栏目
-			viewableAppInfoIds = permissionQueryService.listViewableAppIdByPerson(personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, documentType, maxCount );
-			if( ListTools.isNotEmpty( viewableAppInfoIds )) {
+			viewableAppInfoIds = permissionQueryService.listViewableAppIdByPerson( personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, documentType, appType, maxCount );
+			if( ListTools.isEmpty( viewableAppInfoIds )) {
 				viewableAppInfoIds.add("NO_APPINFO");
 			}
 			
 			//根据人员的发布权限获取可以发布文档的分类信息ID列表
 			viewableCategoryIds = permissionQueryService.listViewableCategoryIdByPerson( personName, isAnonymous, unitNames, groupNames, viewableAppInfoIds, 
-					null, null, documentType, maxCount, manager );
+					null, null, documentType, appType, maxCount, false );
 		}
 		return composeCategoriesIntoAppInfo( viewableAppInfoIds, viewableCategoryIds, appType );
 	}
@@ -111,38 +119,30 @@ public class BaseAction extends StandardJaxrsAction {
 	protected List<Wo> listPublishAbleAppInfoByPermission( String personName, Boolean isAnonymous, List<String> inAppInfoIds,  String documentType, String appType, Boolean manager, Integer maxCount ) throws Exception {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
-		List<String> publishableAppInfoIds = null;
 		List<String> publishableCategoryIds = new ArrayList<>();
 		if( manager ) {
-			if( ListTools.isNotEmpty( inAppInfoIds )) {
-				publishableAppInfoIds = inAppInfoIds; //可发布栏目就限制为inAppInfoIds
-			}else {				
-				publishableAppInfoIds = appInfoServiceAdv.listAllIds(documentType); //所有栏目均可发布
-			}
-			publishableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( publishableAppInfoIds, documentType, manager, maxCount );
+			//管理员，可以在所有的栏目和分类中进行发布，只需要过滤指定的栏目ID和信息类别即可
+			publishableCategoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( inAppInfoIds, documentType, maxCount );
 		}else {
+			//如果不是管理员，则需要根据该员工的权限来进一步分析可见栏目和分类
 			if( !isAnonymous ) {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
 				groupNames = userManagerService.listGroupNamesByPerson( personName );
 			}
 			//2、根据人员的发布权限获取可以发布文档的分类信息ID列表
 			publishableCategoryIds = permissionQueryService.listPublishableCategoryIdByPerson(
-					personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, maxCount, manager );
+					personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, documentType, appType, maxCount, false );
 		}
-//		if( ListTools.isNotEmpty(publishableCategoryIds  )) {
-//			System.out.println(">>>>>>>>>publishableCategoryIds.size=" + publishableCategoryIds.size() );
-//		}else {
-//			System.out.println(">>>>>>>>>publishableCategoryIds is empty!"  );
-//		}		
-		return composeCategoriesIntoAppInfo( publishableAppInfoIds, publishableCategoryIds, appType );
+		return composeCategoriesIntoAppInfo( inAppInfoIds, publishableCategoryIds, appType );
 	}
-	
+
 	/**
 	 * 根据指定的栏目和分类ID，将分类组织到栏目信息中
-	 * @param publishableAppInfoIds
-	 * @param publishableCategoryIds
+	 * @param appInfoIds
+	 * @param categoryInfoIds
+	 * @param appType
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private List<Wo> composeCategoriesIntoAppInfo(List<String> appInfoIds, List<String> categoryInfoIds, String appType ) throws Exception {
 		List<Wo> wraps = null;

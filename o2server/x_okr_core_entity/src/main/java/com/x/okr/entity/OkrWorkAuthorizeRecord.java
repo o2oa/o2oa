@@ -68,113 +68,121 @@ public class OkrWorkAuthorizeRecord extends SliceJpaObject {
 	 */
 	public static final String workId_FIELDNAME = "workId";
 	@FieldDescribe("工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + workId_FIELDNAME )
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workId = "";
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title = "";
 
 	public static final String centerId_FIELDNAME = "centerId";
 	@FieldDescribe("中心工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerId = "";
 
 	public static final String centerTitle_FIELDNAME = "centerTitle";
 	@FieldDescribe("中心工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerTitle = "";
 
 	public static final String delegatorName_FIELDNAME = "delegatorName";
 	@FieldDescribe("委托者姓名")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + delegatorName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ delegatorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegatorName = "";
 
 	public static final String delegatorIdentity_FIELDNAME = "delegatorIdentity";
 	@FieldDescribe("委托者身份")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + delegatorIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ delegatorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegatorIdentity = "";
 
 	public static final String delegatorUnitName_FIELDNAME = "delegatorUnitName";
 	@FieldDescribe("委托者所属组织")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + delegatorUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ delegatorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegatorUnitName = "";
 
 	public static final String delegatorTopUnitName_FIELDNAME = "delegatorTopUnitName";
 	@FieldDescribe("委托者所属顶层组织")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + delegatorTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ delegatorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegatorTopUnitName = "";
 
 	public static final String delegateLevel_FIELDNAME = "delegateLevel";
 	@FieldDescribe("委托层级")
-	@Column( name = ColumnNamePrefix + delegateLevel_FIELDNAME)
+	@Column(name = ColumnNamePrefix + delegateLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer delegateLevel = 1;
 
 	public static final String targetName_FIELDNAME = "targetName";
 	@FieldDescribe("受托者姓名")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetName = "";
 
 	public static final String targetIdentity_FIELDNAME = "targetIdentity";
 	@FieldDescribe("受托者身份")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetIdentity = null;
 
 	public static final String targetUnitName_FIELDNAME = "targetUnitName";
 	@FieldDescribe("受托者所属组织")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetUnitName = "";
 
 	public static final String targetTopUnitName_FIELDNAME = "targetTopUnitName";
 	@FieldDescribe("受托者所属顶层组织")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetTopUnitName = "";
 
 	public static final String delegateDateTimeStr_FIELDNAME = "delegateDateTimeStr";
 	@FieldDescribe("委托时间：yyyy-mm-dd hh:mi:ss")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + delegateDateTimeStr_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + delegateDateTimeStr_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegateDateTimeStr = "";
 
 	public static final String delegateDateTime_FIELDNAME = "delegateDateTime";
 	@FieldDescribe("委托时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + delegateDateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + delegateDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date delegateDateTime = null;
 
 	public static final String takebackDateTime_FIELDNAME = "takebackDateTime";
 	@FieldDescribe("收回时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + takebackDateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + takebackDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date takebackDateTime = null;
 
 	public static final String delegateOpinion_FIELDNAME = "delegateOpinion";
 	@FieldDescribe("委托意见")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + delegateOpinion_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + delegateOpinion_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String delegateOpinion = "";
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("信息状态：正常|已删除")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + status_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + status_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String status = "正常";
 

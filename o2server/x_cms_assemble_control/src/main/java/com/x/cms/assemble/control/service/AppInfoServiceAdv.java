@@ -487,19 +487,46 @@ public class AppInfoServiceAdv {
 		}
 	}
 
-	public Long countAppInfoWithAppType(String type) throws Exception {
+//	public Long countAppInfoWithAppType(String type) throws Exception {
+//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//			return appInfoService.countAppInfoWithAppType(emc, type);
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//	}
+//
+//	public Long countAppInfoWithOutAppType() throws Exception {
+//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//			return appInfoService.countAppInfoWithOutAppType(emc );
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//	}
+
+	/**
+	 * 根据指定的应用类型查询符合类别的所有的内容管理栏目ID列表
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listAppIdsWithAppType(String type) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return appInfoService.countAppInfoWithAppType(emc, type);
+			return appInfoService.listAppIdsWithAppType(emc, type);
 		} catch (Exception e) {
 			throw e;
 		}
-	}	
-	
-	public Long countAppInfoWithOutAppType() throws Exception {
+	}
+
+	/**
+	 * 查询所有未分类的内容管理栏目ID列表
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listAppIdsWithOutAppType() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return appInfoService.countAppInfoWithOutAppType(emc );
+			return appInfoService.listAppIdsWithOutAppType(emc);
 		} catch (Exception e) {
 			throw e;
 		}
-	}	
+	}
 }

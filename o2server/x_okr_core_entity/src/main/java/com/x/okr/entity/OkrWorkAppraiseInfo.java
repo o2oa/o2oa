@@ -63,58 +63,58 @@ public class OkrWorkAppraiseInfo extends SliceJpaObject {
 	 */
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("考核标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String title = "";
 
 	public static final String centerId_FIELDNAME = "centerId";
 	@FieldDescribe("中心工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + centerId_FIELDNAME )
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + centerId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String centerId = "";
 
 	public static final String centerTitle_FIELDNAME = "centerTitle";
 	@FieldDescribe("中心工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerTitle = "";
 
 	public static final String workId_FIELDNAME = "workId";
 	@FieldDescribe("工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + workId_FIELDNAME )
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workId = "";
 
 	public static final String workTitle_FIELDNAME = "workTitle";
 	@FieldDescribe("工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workTitle = "";
 
 	public static final String wf_jobId_FIELDNAME = "wf_jobId";
 	@FieldDescribe("流程wf_JobID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + wf_jobId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + wf_jobId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String wf_jobId = "";
 
 	public static final String wf_workId_FIELDNAME = "wf_workId";
 	@FieldDescribe("流程wf_workId")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + wf_workId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + wf_workId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String wf_workId = "";
 
 	public static final String activityName_FIELDNAME = "activityName";
 	@FieldDescribe("当前审核环节")
-	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + activityName_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName = "";
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("审核状态")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + status_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + status_FIELDNAME )
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + status_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + status_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String status = "";
 

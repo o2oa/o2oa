@@ -62,7 +62,7 @@ public class ActionSave extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);				
 				//看看用户是否有权限进行应用信息新增操作
-				if (!business.viewEditAvailable( request, effectivePerson )) {
+				if (!business.viewEditAvailable( effectivePerson )) {
 					check = false;
 					Exception exception = new ExceptionNoPermission( effectivePerson.getDistinguishedName() );
 					result.error( exception );

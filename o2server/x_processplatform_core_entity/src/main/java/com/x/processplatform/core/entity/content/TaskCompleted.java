@@ -28,7 +28,6 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -48,7 +47,7 @@ import com.x.processplatform.core.entity.element.Route;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class TaskCompleted extends SliceJpaObject {
+public class TaskCompleted extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 3290580054829723177L;
 	private static final String TABLE = PersistenceProperties.Content.TaskCompleted.table;
@@ -86,6 +85,23 @@ public class TaskCompleted extends SliceJpaObject {
 			this.opinion = Objects.toString(this.getOpinion(), "");
 			this.opinionLob = null;
 		}
+		if (Objects.isNull(this.processingType)) {
+			this.processingType = ProcessingType.processing;
+		}
+		switch (this.processingType) {
+		case appendTask:
+			this.joinInquire = false;
+			break;
+		case reroute:
+			this.joinInquire = false;
+			break;
+		case retract:
+			this.joinInquire = false;
+			break;
+		default:
+			this.joinInquire = true;
+			break;
+		}
 	}
 
 	public void setOpinion(String opinion) {
@@ -117,7 +133,6 @@ public class TaskCompleted extends SliceJpaObject {
 	public TaskCompleted(Work work, Manual manual, Route route, TaskCompleted taskCompleted) {
 		Date now = new Date();
 		this.job = work.getJob();
-		// this.title = work.getTitle();
 		this.setTitle(work.getTitle());
 		this.startTime = now;
 		this.completedTime = now;
@@ -153,6 +168,7 @@ public class TaskCompleted extends SliceJpaObject {
 		this.processingType = ProcessingType.sameTarget;
 		this.retractTime = null;
 		this.latest = true;
+		this.copyProjectionFields(work);
 	}
 
 	public TaskCompleted(Task task, ProcessingType processingType, Date completedTime, Long duration) {
@@ -193,16 +209,14 @@ public class TaskCompleted extends SliceJpaObject {
 		this.duration = duration;
 		this.processingType = processingType;
 		/* 必须使用set方法,执行opinion的判断 */
-		if (StringUtils.isEmpty(task.getOpinion())) {
-			this.setOpinion(StringUtils.trimToEmpty(
-					ListTools.parallel(task.getRouteNameList(), task.getRouteName(), task.getRouteOpinionList())));
-		} else {
-			this.setOpinion(task.getOpinion());
-		}
-		/* 如果还是没有,就用路由名称代替 */
-		if (StringUtils.isEmpty(task.getOpinion())) {
-			this.setOpinion(task.getRouteName());
-		}
+//		if (StringUtils.isEmpty(task.getOpinion())) {
+//			this.setOpinion(StringUtils.trimToEmpty(
+//					ListTools.parallel(task.getRouteNameList(), task.getRouteName(), task.getRouteOpinionList())));
+//		} else {
+//			this.setOpinion(task.getOpinion());
+//		}
+		this.setOpinion(task.getOpinion());
+		this.copyProjectionFields(task);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -514,6 +528,13 @@ public class TaskCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
 
+	public static final String joinInquire_FIELDNAME = "joinInquire";
+	@FieldDescribe("已办是否参与路由.")
+	@Column(name = ColumnNamePrefix + joinInquire_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + joinInquire_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean joinInquire;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
@@ -758,6 +779,14 @@ public class TaskCompleted extends SliceJpaObject {
 
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
+	}
+
+	public Boolean getJoinInquire() {
+		return joinInquire;
+	}
+
+	public void setJoinInquire(Boolean joinInquire) {
+		this.joinInquire = joinInquire;
 	}
 
 	public String getWork() {

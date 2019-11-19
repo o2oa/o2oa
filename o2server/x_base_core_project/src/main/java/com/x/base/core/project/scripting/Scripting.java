@@ -2,9 +2,10 @@ package com.x.base.core.project.scripting;
 
 import javax.script.ScriptEngineManager;
 
+import com.x.base.core.project.config.Config;
+
 public class Scripting {
 
-	public static final String ENGINE_NAME = "JavaScript";
 	private static ScriptEngineManager scriptEngineManager;
 
 	public static ScriptingEngine getEngine() {
@@ -15,7 +16,7 @@ public class Scripting {
 				}
 			}
 		}
-		ScriptingEngine engine = new ScriptingEngine(scriptEngineManager.getEngineByName(ENGINE_NAME));
+		ScriptingEngine engine = new ScriptingEngine(scriptEngineManager.getEngineByName(Config.SCRIPTING_ENGINE_NAME));
 		return engine;
 	}
 

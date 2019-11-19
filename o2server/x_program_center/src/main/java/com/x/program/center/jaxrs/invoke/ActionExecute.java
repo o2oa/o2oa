@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -60,6 +61,7 @@ class ActionExecute extends BaseAction {
 			resources.setContext(ThisApplication.context());
 			resources.setOrganization(new Organization(ThisApplication.context()));
 			resources.setWebservicesClient(new WebservicesClient());
+			resources.setApplications(ThisApplication.context().applications());
 			engineScope.put(Resources.RESOURCES_BINDING_NAME, resources);
 			engineScope.put("requestText", gson.toJson(jsonElement));
 			engineScope.put("request", request);
@@ -68,8 +70,24 @@ class ActionExecute extends BaseAction {
 			engineScope.put("customResponse", customResponse);
 			Wo wo = new Wo();
 			try {
-				engine.eval(Config.mooToolsScriptText());
-				Object o = engine.eval(invoke.getText(), newContext);
+				engine.eval(Config.initialServiceScriptText(), newContext);
+				StringBuffer sb = new StringBuffer();
+
+				// sb.append(Config.initialServiceScriptText()).append(System.lineSeparator());
+				sb.append(invoke.getText()).append(System.lineSeparator());
+				// sb.append("return (function(){").append(System.lineSeparator());
+//				if (StringUtils.isNotEmpty(scriptName)) {
+//					List<Script> list = business.element().listScriptNestedWithApplicationWithUniqueName(application,
+//							scriptName);
+//					for (Script o : list) {
+//						sb.append(o.getText()).append(SystemUtils.LINE_SEPARATOR);
+//					}
+//				}
+//				if (StringUtils.isNotEmpty(invoke.getText())) {
+//					sb.append(invoke.getText()).append(System.lineSeparator());
+//				}
+				// sb.append("}).apply(bind);");
+				Object o = engine.eval(sb.toString(), newContext);
 
 				if (StringUtils.equals("seeOther", customResponse.type)) {
 					WoSeeOther woSeeOther = new WoSeeOther(Objects.toString(customResponse.value, ""));
@@ -79,7 +97,11 @@ class ActionExecute extends BaseAction {
 							Objects.toString(customResponse.value, ""));
 					result.setData(woTemporaryRedirect);
 				} else {
-					wo.setValue(o);
+					if (null != customResponse.value) {
+						wo.setValue(customResponse.value);
+					} else {
+						wo.setValue(o);
+					}
 					result.setData(wo);
 				}
 			} catch (Exception e) {
@@ -95,7 +117,6 @@ class ActionExecute extends BaseAction {
 
 	public static class CustomResponse {
 		protected String type = null;
-		protected byte[] bytes;
 		protected Object value;
 
 		public void seeOther(String url) {
@@ -106,6 +127,10 @@ class ActionExecute extends BaseAction {
 		public void temporaryRedirect(String url) {
 			this.type = "temporaryRedirect";
 			this.value = url;
+		}
+
+		public void setBody(Object obj) {
+			this.value = obj;
 		}
 
 	}
@@ -120,6 +145,7 @@ class ActionExecute extends BaseAction {
 		private Organization organization;
 		private WebservicesClient webservicesClient;
 		private String input;
+		private Applications applications;
 
 		public static String RESOURCES_BINDING_NAME = "resources";
 
@@ -137,6 +163,14 @@ class ActionExecute extends BaseAction {
 
 		public void setContext(Context context) {
 			this.context = context;
+		}
+
+		public Applications getApplications() {
+			return applications;
+		}
+
+		public void setApplications(Applications applications) {
+			this.applications = applications;
 		}
 
 		public Organization getOrganization() {

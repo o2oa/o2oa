@@ -17,6 +17,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -48,6 +49,9 @@ public class Process extends SliceJpaObject {
 	private static final long serialVersionUID = 3241184900530625402L;
 	private static final String TABLE = PersistenceProperties.Element.Process.table;
 
+	public static final String SERIALPHASE_ARRIVE = "arrive";
+	public static final String SERIALPHASE_INQUIRE = "inquire";
+
 	public String getId() {
 		return id;
 	}
@@ -67,9 +71,57 @@ public class Process extends SliceJpaObject {
 
 	}
 
-	/* 更新运行方法 */
+	public String getBeforeArriveScript() {
+		return (null == beforeArriveScript) ? "" : this.beforeArriveScript;
+	}
 
-	/* Entity 默认字段结束 */
+	public String getBeforeArriveScriptText() {
+		return (null == beforeArriveScriptText) ? "" : this.beforeArriveScriptText;
+	}
+
+	public String getAfterArriveScript() {
+		return (null == afterArriveScript) ? "" : this.afterArriveScript;
+	}
+
+	public String getAfterArriveScriptText() {
+		return (null == afterArriveScriptText) ? "" : this.afterArriveScriptText;
+	}
+
+	public String getBeforeExecuteScript() {
+		return (null == beforeExecuteScript) ? "" : this.beforeExecuteScript;
+	}
+
+	public String getBeforeExecuteScriptText() {
+		return (null == beforeExecuteScriptText) ? "" : this.beforeExecuteScriptText;
+	}
+
+	public String getAfterExecuteScript() {
+		return (null == afterExecuteScript) ? "" : this.afterExecuteScript;
+	}
+
+	public String getAfterExecuteScriptText() {
+		return (null == afterExecuteScriptText) ? "" : this.afterExecuteScriptText;
+	}
+
+	public String getBeforeInquireScript() {
+		return (null == beforeInquireScript) ? "" : this.beforeInquireScript;
+	}
+
+	public String getBeforeInquireScriptText() {
+		return (null == beforeInquireScriptText) ? "" : this.beforeInquireScriptText;
+	}
+
+	public String getAfterInquireScript() {
+		return (null == afterInquireScript) ? "" : this.afterInquireScript;
+	}
+
+	public String getAfterInquireScriptText() {
+		return (null == afterInquireScriptText) ? "" : this.afterInquireScriptText;
+	}
+
+	public Boolean getRouteNameAsOpinion() {
+		return BooleanUtils.isFalse(routeNameAsOpinion) ? false : true;
+	}
 
 	public static final String name_FIELDNAME = "name";
 	@RestrictFlag
@@ -246,6 +298,12 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String serialActivity;
 
+	public static final String serialPhase_FIELDNAME = "serialPhase";
+	@FieldDescribe("编号活动阶段可以选择arrive或者inquire,默认情况下为空为arrive")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + serialPhase_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String serialPhase;
+
 	public static final String expireType_FIELDNAME = "expireType";
 	@FieldDescribe("过期方式.可选值never,appoint,script")
 	@Enumerated(EnumType.STRING)
@@ -292,6 +350,110 @@ public class Process extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + checkDraft_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean checkDraft;
+
+	public static final String projection_FIELDNAME = "projection";
+	@FieldDescribe("字段映射配置.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + projection_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String projection;
+
+	public static final String routeNameAsOpinion_FIELDNAME = "routeNameAsOpinion";
+	@FieldDescribe("如果没有默认意见那么将路由名称作为默认意见.")
+	@Column(name = ColumnNamePrefix + routeNameAsOpinion_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean routeNameAsOpinion;
+
+	public static final String beforeArriveScript_FIELDNAME = "beforeArriveScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一活动到达前事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + beforeArriveScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeArriveScript;
+
+	public static final String beforeArriveScriptText_FIELDNAME = "beforeArriveScriptText";
+	@FieldDescribe("统一活动到达前事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeArriveScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeArriveScriptText;
+
+	public static final String afterArriveScript_FIELDNAME = "afterArriveScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一活动到达后事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + afterArriveScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterArriveScript;
+
+	public static final String afterArriveScriptText_FIELDNAME = "afterArriveScriptText";
+	@FieldDescribe("统一活动到达后事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterArriveScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterArriveScriptText;
+
+	public static final String beforeExecuteScript_FIELDNAME = "beforeExecuteScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一活动执行前事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + beforeExecuteScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeExecuteScript;
+
+	public static final String beforeExecuteScriptText_FIELDNAME = "beforeExecuteScriptText";
+	@FieldDescribe("统一活动执行前事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeExecuteScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeExecuteScriptText;
+
+	public static final String afterExecuteScript_FIELDNAME = "afterExecuteScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一活动执行后事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + afterExecuteScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterExecuteScript;
+
+	public static final String afterExecuteScriptText_FIELDNAME = "afterExecuteScriptText";
+	@FieldDescribe("统一活动执行后事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterExecuteScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterExecuteScriptText;
+
+	public static final String beforeInquireScript_FIELDNAME = "beforeInquireScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一路由查询前事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + beforeInquireScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeInquireScript;
+
+	public static final String beforeInquireScriptText_FIELDNAME = "beforeInquireScriptText";
+	@FieldDescribe("统一路由查询前事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + beforeInquireScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String beforeInquireScriptText;
+
+	public static final String afterInquireScript_FIELDNAME = "afterInquireScript";
+	@IdReference(Script.class)
+	@FieldDescribe("统一路由查询后事件脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + afterInquireScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterInquireScript;
+
+	public static final String afterInquireScriptText_FIELDNAME = "afterInquireScriptText";
+	@FieldDescribe("统一路由查询后事件脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterInquireScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String afterInquireScriptText;
 
 	/* flag标志位 */
 
@@ -431,13 +593,13 @@ public class Process extends SliceJpaObject {
 		this.afterEndScriptText = afterEndScriptText;
 	}
 
-//	public List<String> getReviewIdentityList() {
-//		return reviewIdentityList;
-//	}
-//
-//	public void setReviewIdentityList(List<String> reviewIdentityList) {
-//		this.reviewIdentityList = reviewIdentityList;
-//	}
+	public String getProjection() {
+		return projection;
+	}
+
+	public void setProjection(String projection) {
+		this.projection = projection;
+	}
 
 	public String getSerialTexture() {
 		return serialTexture;
@@ -525,6 +687,66 @@ public class Process extends SliceJpaObject {
 
 	public void setCheckDraft(Boolean checkDraft) {
 		this.checkDraft = checkDraft;
+	}
+
+	public String getSerialPhase() {
+		return serialPhase;
+	}
+
+	public void setSerialPhase(String serialPhase) {
+		this.serialPhase = serialPhase;
+	}
+
+	public void setRouteNameAsOpinion(Boolean routeNameAsOpinion) {
+		this.routeNameAsOpinion = routeNameAsOpinion;
+	}
+
+	public void setBeforeArriveScript(String beforeArriveScript) {
+		this.beforeArriveScript = beforeArriveScript;
+	}
+
+	public void setBeforeArriveScriptText(String beforeArriveScriptText) {
+		this.beforeArriveScriptText = beforeArriveScriptText;
+	}
+
+	public void setAfterArriveScript(String afterArriveScript) {
+		this.afterArriveScript = afterArriveScript;
+	}
+
+	public void setAfterArriveScriptText(String afterArriveScriptText) {
+		this.afterArriveScriptText = afterArriveScriptText;
+	}
+
+	public void setBeforeExecuteScript(String beforeExecuteScript) {
+		this.beforeExecuteScript = beforeExecuteScript;
+	}
+
+	public void setBeforeExecuteScriptText(String beforeExecuteScriptText) {
+		this.beforeExecuteScriptText = beforeExecuteScriptText;
+	}
+
+	public void setAfterExecuteScript(String afterExecuteScript) {
+		this.afterExecuteScript = afterExecuteScript;
+	}
+
+	public void setAfterExecuteScriptText(String afterExecuteScriptText) {
+		this.afterExecuteScriptText = afterExecuteScriptText;
+	}
+
+	public void setBeforeInquireScript(String beforeInquireScript) {
+		this.beforeInquireScript = beforeInquireScript;
+	}
+
+	public void setBeforeInquireScriptText(String beforeInquireScriptText) {
+		this.beforeInquireScriptText = beforeInquireScriptText;
+	}
+
+	public void setAfterInquireScript(String afterInquireScript) {
+		this.afterInquireScript = afterInquireScript;
+	}
+
+	public void setAfterInquireScriptText(String afterInquireScriptText) {
+		this.afterInquireScriptText = afterInquireScriptText;
 	}
 
 }

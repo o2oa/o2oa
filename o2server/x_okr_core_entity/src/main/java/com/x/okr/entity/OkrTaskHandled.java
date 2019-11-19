@@ -68,140 +68,145 @@ public class OkrTaskHandled extends SliceJpaObject {
 	 */
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("待办标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title = "";
 
 	public static final String processType_FIELDNAME = "processType";
 	@FieldDescribe("办理类别: TASK|READ")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + processType_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + processType_FIELDNAME )
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + processType_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + processType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processType = "TASK";
 
 	public static final String centerId_FIELDNAME = "centerId";
 	@FieldDescribe("所属中心工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + centerId_FIELDNAME )
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + centerId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + centerId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerId = null;
 
 	public static final String centerTitle_FIELDNAME = "centerTitle";
 	@FieldDescribe("中心工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + centerTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String centerTitle = null;
 
 	public static final String workId_FIELDNAME = "workId";
 	@FieldDescribe("所属工作ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + workId_FIELDNAME )
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workId = null;
 
 	public static final String workTitle_FIELDNAME = "workTitle";
 	@FieldDescribe("工作标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + workTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workTitle = null;
 
 	public static final String workType_FIELDNAME = "workType";
 	@FieldDescribe("工作类别")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + workType_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + workType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workType = "";
 
 	public static final String dynamicObjectType_FIELDNAME = "dynamicObjectType";
 	@FieldDescribe("动态对象类别:中心工作|工作|工作汇报|问题请示|交流")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + dynamicObjectType_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + dynamicObjectType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String dynamicObjectType = null;
 
 	public static final String dynamicObjectId_FIELDNAME = "dynamicObjectId";
 	@FieldDescribe("动态对象ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + dynamicObjectId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + dynamicObjectId_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String dynamicObjectId = null;
 
 	public static final String dynamicObjectTitle_FIELDNAME = "dynamicObjectTitle";
 	@FieldDescribe("动态对象标题")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + dynamicObjectTitle_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + dynamicObjectTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String dynamicObjectTitle = "";
 
 	public static final String arriveDateTimeStr_FIELDNAME = "arriveDateTimeStr";
 	@FieldDescribe("到达时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + arriveDateTimeStr_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + arriveDateTimeStr_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arriveDateTimeStr = null;
 
 	public static final String arriveDateTime_FIELDNAME = "arriveDateTime";
 	@FieldDescribe("到达时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + arriveDateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + arriveDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date arriveDateTime = null;
 
 	public static final String targetName_FIELDNAME = "targetName";
 	@FieldDescribe("目标者姓名")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetName_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + targetName_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + targetName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetName = null;
 
 	public static final String targetIdentity_FIELDNAME = "targetIdentity";
 	@FieldDescribe("目标者身份")
-	@Column( length =  AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetIdentity_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + targetIdentity_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetIdentity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + targetIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetIdentity = null;
 
 	public static final String targetUnitName_FIELDNAME = "targetUnitName";
 	@FieldDescribe("目标者所属组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetUnitName = null;
 
 	public static final String targetTopUnitName_FIELDNAME = "targetTopUnitName";
 	@FieldDescribe("目标者所属顶层组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetTopUnitName = null;
 
 	public static final String processDateTimeStr_FIELDNAME = "processDateTimeStr";
 	@FieldDescribe("办理时间字符串")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + processDateTimeStr_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + processDateTimeStr_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processDateTimeStr = null;
 
 	public static final String processDateTime_FIELDNAME = "processDateTime";
 	@FieldDescribe("办理时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + processDateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + processDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date processDateTime = null;
 
 	public static final String activityName_FIELDNAME = "activityName";
 	@FieldDescribe("处理环节名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + activityName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName = "";
 
 	public static final String viewUrl_FIELDNAME = "viewUrl";
 	@FieldDescribe("访问链接")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + viewUrl_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + viewUrl_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String viewUrl = "";
 
 	public static final String duration_FIELDNAME = "duration";
 	@FieldDescribe("办理时长")
-	@Column( name = ColumnNamePrefix + duration_FIELDNAME)
+	@Column(name = ColumnNamePrefix + duration_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long duration = 0L;
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("处理状态：正常|已删除")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String status = "正常";
 

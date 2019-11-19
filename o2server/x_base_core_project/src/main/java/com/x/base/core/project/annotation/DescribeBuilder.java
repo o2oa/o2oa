@@ -60,7 +60,7 @@ public class DescribeBuilder {
 
 		File basedir = new File(args[0]);
 
-		File sourcedir = new File(args[1]);
+		File sourcesdir = new File(args[1]);
 
 		File dir = new File(basedir, "src/main/webapp/describe");
 
@@ -70,7 +70,7 @@ public class DescribeBuilder {
 
 		builder.scan(dir);
 
-		FileUtils.copyDirectory(sourcedir, new File(dir, "sources"));
+		FileUtils.copyDirectory(sourcesdir, new File(dir, "sources"));
 
 	}
 

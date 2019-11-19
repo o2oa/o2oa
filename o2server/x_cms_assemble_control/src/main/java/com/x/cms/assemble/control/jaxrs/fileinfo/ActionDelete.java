@@ -58,7 +58,7 @@ public class ActionDelete extends BaseAction {
 				throw new Exception("document{id:" + fileInfo.getDocumentId() + "} 文档信息不存在，无法继续删除.");
 			}
 			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
-			if (!business.fileInfoEditAvailable(request, effectivePerson)) {
+			if (!business.fileInfoEditAvailable( effectivePerson)) {
 				throw new Exception( "fileInfo{name:" + effectivePerson.getDistinguishedName() + "} ，用户没有内容管理应用信息操作的权限！");
 			}
 			// 删除文件，并且删除记录及文档的关联信息

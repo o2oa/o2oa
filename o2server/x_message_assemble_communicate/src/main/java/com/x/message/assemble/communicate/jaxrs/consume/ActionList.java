@@ -44,6 +44,7 @@ class ActionList extends BaseAction {
 		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
 		Root<Message> root = cq.from(Message.class);
 		Predicate p = cb.equal(root.get(Message_.consumer), consume);
+		p = cb.and( p, cb.isFalse( root.get(Message_.consumed) ));
 		List<Message> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(Message_.createTime))))
 				.setMaxResults(count).getResultList();
 		return Wo.copier.copy(os);

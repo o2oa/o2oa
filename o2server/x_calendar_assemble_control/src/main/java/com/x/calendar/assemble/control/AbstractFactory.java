@@ -1,6 +1,10 @@
 package com.x.calendar.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.calendar.core.entity.Calendar_EventComment;
+
+import java.util.Date;
+import java.util.List;
 
 public abstract class AbstractFactory {
 

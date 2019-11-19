@@ -20,6 +20,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
@@ -27,12 +28,7 @@ import com.x.cms.core.entity.element.AppDictItem_;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
-import com.x.cms.core.entity.element.wrap.WrapAppDict;
-import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
-import com.x.cms.core.entity.element.wrap.WrapCms;
-import com.x.cms.core.entity.element.wrap.WrapFile;
-import com.x.cms.core.entity.element.wrap.WrapForm;
-import com.x.cms.core.entity.element.wrap.WrapScript;
+import com.x.cms.core.entity.element.wrap.*;
 
 import net.sf.ehcache.Element;
 
@@ -49,8 +45,7 @@ class ActionSelect extends BaseAction {
 				throw new ExceptionAppInfoNotExist(appInfoFlag);
 			}
 			if (!business.editable(effectivePerson, appInfo)) {
-				throw new ExceptionAppInfoAccessDenied(effectivePerson.getDistinguishedName(), appInfo.getAppName(),
-						appInfo.getId());
+				throw new ExceptionAppInfoAccessDenied(effectivePerson.getDistinguishedName(), appInfo.getAppName(), appInfo.getId());
 			}
 
 			WrapCms wrapAppInfo = this.get(business, appInfo, wi);
@@ -76,6 +71,16 @@ class ActionSelect extends BaseAction {
 		wo.setScriptList( WrapScript.outCopier.copy(business.entityManagerContainer().list(Script.class, wi.listScriptId())));
 		wo.setAppDictList(this.listAppDict(business, appInfo, wi));
 		wo.setFileList(WrapFile.outCopier.copy(business.entityManagerContainer().list(File.class, wi.listFileId())));
+
+		//添加CategoryExt信息导出内容逻辑
+		if( ListTools.isNotEmpty( wo.getCategoryInfoList() )){
+			CategoryExt categoryExt = null;
+			WrapCategoryExt wrapCategoryExt = null;
+			for( WrapCategoryInfo wrapCategoryInfo : wo.getCategoryInfoList() ){
+				//查询Category对应的CategoryExt
+				wrapCategoryInfo.setCategoryExt( WrapCategoryExt.outCopier.copy( business.entityManagerContainer().find( wrapCategoryInfo.getId(), CategoryExt.class )));
+			}
+		}
 		return wo;
 	}
 

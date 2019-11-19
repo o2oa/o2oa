@@ -13,11 +13,13 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
@@ -52,6 +54,15 @@ public class FormVersion extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public FormVersion() {
+
+	}
+
+	public FormVersion(String form, JsonElement jsonElement) {
+		this.form = form;
+		this.data = XGsonBuilder.toJson(jsonElement);
+	}
 
 	public static final String form_FIELDNAME = "form";
 	@FieldDescribe("所属表单.")

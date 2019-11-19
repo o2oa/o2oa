@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,8 +47,11 @@ import com.x.processplatform.core.entity.element.Process;
  * */
 class ActionCreateWithApplicationProcess extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithApplicationProcess.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag, String processFlag,
 			JsonElement jsonElement) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		/* 新建工作id */
 		String workId = "";
 		/* 已存在草稿id */
@@ -133,6 +139,7 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 					}
 				}
 			}
+			audit.log(null, "填单");
 		}
 		result.setData(wos);
 		return result;

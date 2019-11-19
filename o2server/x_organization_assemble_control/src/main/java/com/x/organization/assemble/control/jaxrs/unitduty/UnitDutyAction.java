@@ -195,7 +195,7 @@ public class UnitDutyAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "给定组织职务名称,列示组织.", action = ActionListWithName.class)
+	@JaxrsMethodDescribe(value = "给定组织职务名称,列示组织职务.", action = ActionListWithName.class)
 	@GET
 	@Path("list/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

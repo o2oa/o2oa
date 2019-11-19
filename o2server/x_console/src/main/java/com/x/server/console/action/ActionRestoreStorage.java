@@ -56,7 +56,7 @@ public class ActionRestoreStorage {
 			return false;
 		}
 		this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(date));
-		this.catalog = BaseTools.readObject("local/dump/dumpStorage_" + DateTools.compact(date) + "/catalog.json",
+		this.catalog = BaseTools.readConfigObject("local/dump/dumpStorage_" + DateTools.compact(date) + "/catalog.json",
 				DumpRestoreStorageCatalog.class);
 		pureGsonDateFormated = XGsonBuilder.instance();
 		return this.execute();
@@ -168,6 +168,7 @@ public class ActionRestoreStorage {
 				}
 				em.getTransaction().commit();
 				em.clear();
+				System.gc();
 			}
 		}
 		return count;

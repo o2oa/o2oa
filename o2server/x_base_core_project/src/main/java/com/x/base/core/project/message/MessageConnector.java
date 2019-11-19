@@ -108,9 +108,19 @@ public class MessageConnector {
 	
 	public static final String TYPE_CMS_PUBLISH = "cms_publish";
 
+	public static final String TYPE_BBS_SUBJECTCREATE = "bbs_subjectCreate";
+
+	public static final String TYPE_BBS_REPLYCREATE = "bbs_replyCreate";
+
+	public static final String TYPE_MIND_FILESEND = "mind_fileSend";
+
+	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
+
 	public static final String CONSUME_WS = "ws";
 
 	public static final String CONSUME_PMS = "pms";
+
+	public static final String CONSUME_PMS_INNER = "pmsinner";
 
 	public static final String CONSUME_CALENDAR = "calendar";
 

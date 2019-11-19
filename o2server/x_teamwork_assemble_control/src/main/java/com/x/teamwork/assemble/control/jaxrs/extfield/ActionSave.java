@@ -215,7 +215,7 @@ public class ActionSave extends BaseAction {
 		}
 	}
 
-public static class Wo extends WoId {
+	public static class Wo extends WoId {
 		
 		@FieldDescribe("操作引起的动态内容")
 		List<WoDynamic> dynamics = new ArrayList<>();

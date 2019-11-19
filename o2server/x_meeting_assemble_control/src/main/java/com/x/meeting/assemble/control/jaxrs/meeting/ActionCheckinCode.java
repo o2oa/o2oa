@@ -28,9 +28,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.Bind;
 
-class ActionCheckinCode extends BaseAction {
+class ActionCheckInCode extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCheckinCode.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionCheckInCode.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String meetingId) throws Exception {
 		Audit audit = logger.audit(effectivePerson);
@@ -74,7 +74,7 @@ class ActionCheckinCode extends BaseAction {
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
-		audit.log();
+		audit.log(effectivePerson.getDistinguishedName(), "认证码发送.");
 		return result;
 	}
 

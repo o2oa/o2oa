@@ -497,25 +497,47 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public Long countAppInfoWithAppType(String type) throws Exception {
+//	public Long countAppInfoWithAppType(String type) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+//		Root<AppInfo> root = cq.from(AppInfo.class);
+//		Predicate p = cb.equal( root.get(AppInfo_.appType), type );
+//		cq.select(cb.count(root));
+//		return em.createQuery(cq.where(p)).getSingleResult();
+//	}
+//
+//	public Long countAppInfoWithOutAppType() throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+//		Root<AppInfo> root = cq.from(AppInfo.class);
+//		Predicate p = cb.isNull( root.get(AppInfo_.appType) );
+//		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), ""));
+//		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), "未分类"));
+//		cq.select(cb.count(root));
+//		return em.createQuery(cq.where(p)).getSingleResult();
+//	}
+
+	public List<String> listAppIdsWithAppType(String type) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.equal( root.get(AppInfo_.appType), type );
-		cq.select(cb.count(root));
-		return em.createQuery(cq.where(p)).getSingleResult();
+		cq.select(root.get(AppInfo_.id));
+		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
-	public Long countAppInfoWithOutAppType() throws Exception {
+
+	public List<String> listAppIdsWithOutAppType() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.isNull( root.get(AppInfo_.appType) );
 		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), ""));
 		p = cb.or( p, cb.equal( root.get(AppInfo_.appType), "未分类"));
-		cq.select(cb.count(root));
-		return em.createQuery(cq.where(p)).getSingleResult();
+		cq.select(root.get(AppInfo_.id));
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

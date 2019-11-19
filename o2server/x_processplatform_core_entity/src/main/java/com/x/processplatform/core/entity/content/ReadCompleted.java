@@ -44,7 +44,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class ReadCompleted extends SliceJpaObject {
+public class ReadCompleted extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 8904696811782764708L;
 	private static final String TABLE = PersistenceProperties.Content.ReadCompleted.table;
@@ -139,6 +139,7 @@ public class ReadCompleted extends SliceJpaObject {
 		this.duration = duration;
 		/** 必须使用set方法,执行opinion的判断 */
 		this.setOpinion(read.getOpinion());
+		this.copyProjectionFields(read);
 	}
 
 	/** 内容 */

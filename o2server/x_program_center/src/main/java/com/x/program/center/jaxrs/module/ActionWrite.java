@@ -3,6 +3,9 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -130,6 +133,25 @@ public class ActionWrite extends BaseAction {
 					}
 				}
 			}
+			for (WiCommand cmd : wi.getServiceModuleList()) {
+				WrapServiceModule o = module.getServiceModule(cmd.getId());
+				if (null != o) {
+					switch (cmd.getMethod()) {
+						case "create":
+							replaces.addAll(CipherConnectionAction.put(false,
+									Config.url_x_program_center_jaxrs("input", "prepare", "create"), o)
+									.getDataAsList(WrapPair.class));
+							break;
+						case "cover":
+							replaces.addAll(CipherConnectionAction.put(false,
+									Config.url_x_program_center_jaxrs("input", "prepare", "cover"), o)
+									.getDataAsList(WrapPair.class));
+							break;
+						default:
+							break;
+					}
+				}
+			}
 			for (WiCommand cmd : wi.getProcessPlatformList()) {
 				WrapProcessPlatform o = module.getProcessPlatform(cmd.getId());
 				if (null != o) {
@@ -242,6 +264,32 @@ public class ActionWrite extends BaseAction {
 					}
 				}
 			}
+			for (WiCommand cmd : wi.getServiceModuleList()) {
+				WrapServiceModule o = module.getServiceModule(cmd.getId());
+				if (null != o) {
+					String json = gson.toJson(o);
+					for (WrapPair re : replaces) {
+						json = StringUtils.replace(json, re.getFirst(), re.getSecond());
+					}
+					WrapServiceModule obj = gson.fromJson(json, WrapServiceModule.class);
+					switch (cmd.getMethod()) {
+						case "create":
+							wo.getServiceModuleList()
+									.add(CipherConnectionAction.put(false,
+											Config.url_x_program_center_jaxrs("input", "create"), obj)
+											.getData(WoId.class).getId());
+							break;
+						case "cover":
+							wo.getServiceModuleList()
+									.add(CipherConnectionAction.put(false,
+											Config.url_x_program_center_jaxrs("input", "cover"), obj)
+											.getData(WoId.class).getId());
+							break;
+						default:
+							break;
+					}
+				}
+			}
 			result.setData(wo);
 			return result;
 		}
@@ -260,6 +308,9 @@ public class ActionWrite extends BaseAction {
 
 		@FieldDescribe("内容管理应用")
 		private List<WiCommand> cmsList = new ArrayList<>();
+
+		@FieldDescribe("服务管理应用")
+		private List<WiCommand> serviceModuleList = new ArrayList<>();
 
 		public List<WiCommand> getProcessPlatformList() {
 			return processPlatformList;
@@ -291,6 +342,14 @@ public class ActionWrite extends BaseAction {
 
 		public void setCmsList(List<WiCommand> cmsList) {
 			this.cmsList = cmsList;
+		}
+
+		public List<WiCommand> getServiceModuleList() {
+			return serviceModuleList;
+		}
+
+		public void setServiceModuleList(List<WiCommand> serviceModuleList) {
+			this.serviceModuleList = serviceModuleList;
 		}
 
 	}
@@ -335,6 +394,9 @@ public class ActionWrite extends BaseAction {
 		@FieldDescribe("内容管理应用")
 		private List<String> cmsList = new ArrayList<>();
 
+		@FieldDescribe("服务管理应用")
+		private List<String> serviceModuleList = new ArrayList<>();
+
 		public List<String> getProcessPlatformList() {
 			return processPlatformList;
 		}
@@ -365,6 +427,14 @@ public class ActionWrite extends BaseAction {
 
 		public void setCmsList(List<String> cmsList) {
 			this.cmsList = cmsList;
+		}
+
+		public List<String> getServiceModuleList() {
+			return serviceModuleList;
+		}
+
+		public void setServiceModuleList(List<String> serviceModuleList) {
+			this.serviceModuleList = serviceModuleList;
 		}
 	}
 

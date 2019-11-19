@@ -59,7 +59,8 @@ public class Share extends SliceJpaObject {
 
 	}
 
-	public Share(String name, String person, String folder, String originFile, Long length, String type) throws Exception {
+	public Share(String name, String person, String folder, String originFile, Long length, String type)
+			throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("name can not be empty.");
 		}
@@ -88,7 +89,7 @@ public class Share extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
 	/* 同一个用户同一个名称文件不能多次分享 */
 	@CitationNotExist(fields = { "name", "id" }, type = Share.class, equals = {
-			@Equal(property = "person", field = "person")}))
+			@Equal(property = "person", field = "person") }))
 	private String name;
 
 	public static final String fileId_FIELDNAME = "fileId";
@@ -97,7 +98,7 @@ public class Share extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
 	/* 同一个用户同一个文件或目录不能多次分享 */
 	@CitationNotExist(fields = { "fileId", "id" }, type = Share.class, equals = {
-			@Equal(property = "person", field = "person")}))
+			@Equal(property = "person", field = "person") }))
 	private String fileId;
 
 	public static final String fileType_FIELDNAME = "fileType";
@@ -149,7 +150,7 @@ public class Share extends SliceJpaObject {
 	public static final String shareUserList_FIELDNAME = "shareUserList";
 	@FieldDescribe("共享人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shareUserList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + shareUserList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shareUserList_FIELDNAME)
@@ -160,7 +161,7 @@ public class Share extends SliceJpaObject {
 	public static final String shareOrgList_FIELDNAME = "shareOrgList";
 	@FieldDescribe("共享组织")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shareOrgList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + shareOrgList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shareOrgList_FIELDNAME)
@@ -171,7 +172,7 @@ public class Share extends SliceJpaObject {
 	public static final String shieldUserList_FIELDNAME = "shieldUserList";
 	@FieldDescribe("屏蔽人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shieldUserList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + shieldUserList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shieldUserList_FIELDNAME)

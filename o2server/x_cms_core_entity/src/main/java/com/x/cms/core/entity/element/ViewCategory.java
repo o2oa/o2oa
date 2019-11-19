@@ -63,20 +63,20 @@ public class ViewCategory extends SliceJpaObject {
 	 */
 	public static final String editor_FIELDNAME = "editor";
 	@FieldDescribe("最后的编辑者.")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String editor;
 
 	public static final String viewId_FIELDNAME = "viewId";
 	@FieldDescribe("列表ID.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + viewId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + viewId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + viewId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String viewId;
 
 	public static final String categoryId_FIELDNAME = "categoryId";
 	@FieldDescribe("分类ID.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + categoryId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + categoryId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + categoryId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String categoryId;

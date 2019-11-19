@@ -25,7 +25,7 @@ class ActionLogout extends BaseAction {
 		wo.setTokenType(TokenType.anonymous);
 		wo.setName(EffectivePerson.ANONYMOUS);
 		result.setData(wo);
-		audit.log(effectivePerson.getDistinguishedName());
+		audit.log(null, "注销");
 		return result;
 	}
 

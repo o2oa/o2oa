@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
+import com.x.base.core.project.logger.Audit;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -30,7 +31,7 @@ class ActionGetWithWorkOrWorkCompletedMobile extends BaseAction {
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
+			Audit audit = logger.audit(effectivePerson);
 			ActionResult<JsonElement> result = new ActionResult<>();
 
 			Business business = new Business(emc);
@@ -49,6 +50,7 @@ class ActionGetWithWorkOrWorkCompletedMobile extends BaseAction {
 			} else {
 				wo = gson.toJsonTree(this.workCompleted(business, emc.flag(workOrWorkCompleted, WorkCompleted.class)));
 			}
+			audit.log(null, "查看");
 			result.setData(wo);
 			return result;
 		}

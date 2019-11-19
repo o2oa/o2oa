@@ -74,6 +74,8 @@ public class EndProcessor extends AbstractEndProcessor {
 				/* 已办的完成时间是不需要更新的 */
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
+				/* 重新赋值映射字段 */
+				o.copyProjectionFields(workCompleted);
 				/* 加入到更新队列保证事务开启 */
 				aeiObjects.getUpdateTaskCompleteds().add(o);
 			});
@@ -81,6 +83,8 @@ public class EndProcessor extends AbstractEndProcessor {
 				/* 待阅的完成时间是不需要更新的 */
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
+				/* 重新赋值映射字段 */
+				o.copyProjectionFields(workCompleted);
 				/* 加入到更新队列保证事务开启 */
 				aeiObjects.getUpdateReads().add(o);
 			});
@@ -88,6 +92,8 @@ public class EndProcessor extends AbstractEndProcessor {
 				/* 已阅的完成时间是不需要更新的 */
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
+				/* 重新赋值映射字段 */
+				o.copyProjectionFields(workCompleted);
 				/* 加入到更新队列保证事务开启 */
 				aeiObjects.getUpdateReadCompleteds().add(o);
 			});
@@ -96,6 +102,8 @@ public class EndProcessor extends AbstractEndProcessor {
 				o.setWorkCompleted(workCompleted.getId());
 				o.setCompletedTime(workCompleted.getCompletedTime());
 				o.setCompletedTimeMonth(workCompleted.getCompletedTimeMonth());
+				/* 重新赋值映射字段 */
+				o.copyProjectionFields(workCompleted);
 				/* 加入到更新队列保证事务开启 */
 				aeiObjects.getUpdateReviews().add(o);
 			});
@@ -126,79 +134,6 @@ public class EndProcessor extends AbstractEndProcessor {
 		}
 
 		return results;
-
-//		if (aeiObjects.getWorks().stream().count() > 1) {
-//			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
-//		}
-//
-//		if (!aeiObjects.getWorks().stream().allMatch(o -> Objects.equals(o.getActivityType(), ActivityType.end))) {
-//			/* 如果还有多个副本没有到达end节点那么不能路由 */
-//			return results;
-//		}
-//		/* 删除所有待办 */
-//		Work oldest = aeiObjects.getWorks().stream()
-//				.sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Date::compareTo))).findFirst()
-//				.get();
-//		WorkCompleted workCompleted = this.createWorkCompleted(oldest);
-//
-//		workCompleted.setAllowRollback(end.getAllowRollback());
-//		aeiObjects.getCreateWorkCompleteds().add(workCompleted);
-//		aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
-//		aeiObjects.getHints().stream().forEach(o -> aeiObjects.getDeleteHints().add(o));
-//		aeiObjects.getTaskCompleteds().stream().forEach(o -> {
-//			/* 已办的完成时间是不需要更新的 */
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateTaskCompleteds().add(o);
-//		});
-//		aeiObjects.getReads().stream().forEach(o -> {
-//			/* 待阅的完成时间是不需要更新的 */
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateReads().add(o);
-//		});
-//		aeiObjects.getReadCompleteds().stream().forEach(o -> {
-//			/* 已阅的完成时间是不需要更新的 */
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateReadCompleteds().add(o);
-//		});
-//		aeiObjects.getReviews().stream().forEach(o -> {
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			o.setCompletedTime(workCompleted.getCompletedTime());
-//			o.setCompletedTimeMonth(workCompleted.getCompletedTimeMonth());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateReviews().add(o);
-//		});
-//		aeiObjects.getWorkLogs().stream().forEach(o -> {
-//			o.setSplitting(false);
-//			o.setSplitToken("");
-//			o.setSplitTokenList(new ArrayList<String>());
-//			o.setSplitValue("");
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateWorkLogs().add(o);
-//			/* 删除未连接的WorkLog */
-//			if (BooleanUtils.isNotTrue(o.getConnected())) {
-//				aeiObjects.getDeleteWorkLogs().add(o);
-//			}
-//		});
-//		aeiObjects.getAttachments().stream().forEach(o -> {
-//			o.setCompleted(true);
-//			o.setWorkCompleted(workCompleted.getId());
-//			/* 加入到更新队列保证事务开启 */
-//			aeiObjects.getUpdateAttachments().add(o);
-//		});
-//		/* 已workCompleted数据为准进行更新 */
-//		aeiObjects.getData().setWork(workCompleted);
-//		aeiObjects.getData().setAttachmentList(aeiObjects.getAttachments());
-//		aeiObjects.getDeleteWorks().addAll(aeiObjects.getWorks());
-//		return results;
 	}
 
 	@Override

@@ -135,7 +135,7 @@ public class Group extends SliceJpaObject {
 	public static final String personList_FIELDNAME = "personList";
 	@FieldDescribe("群组的个人成员.存放个人 ID.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + personList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + personList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + personList_FIELDNAME)
@@ -149,7 +149,7 @@ public class Group extends SliceJpaObject {
 			+ IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME + ElementIndexNameSuffix)
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + groupList_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Group.class))
 	private List<String> groupList;
@@ -160,7 +160,7 @@ public class Group extends SliceJpaObject {
 			+ IndexNameMiddle + unitList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + unitList_FIELDNAME + ElementIndexNameSuffix)
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + unitList_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Unit.class))
 	private List<String> unitList;

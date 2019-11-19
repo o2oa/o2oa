@@ -27,7 +27,8 @@ class ActionUpdate extends BaseAction {
 			if (!os.isEmpty()) {
 				emc.beginTransaction(Message.class);
 				for (Message o : os) {
-					emc.remove(o);
+//					emc.remove(o);
+					o.setConsumed(true);
 				}
 				emc.commit();
 			}

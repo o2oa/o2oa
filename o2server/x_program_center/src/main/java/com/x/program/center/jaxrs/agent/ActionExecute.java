@@ -10,7 +10,6 @@ import javax.script.SimpleScriptContext;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
@@ -26,7 +25,7 @@ class ActionExecute extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Agent agent = emc.flag(flag, Agent.class );
+			Agent agent = emc.flag(flag, Agent.class);
 			if (null == agent) {
 				throw new ExceptionAgentNotExist(flag);
 			}
@@ -40,6 +39,7 @@ class ActionExecute extends BaseAction {
 			resources.setContext(ThisApplication.context());
 			resources.setOrganization(new Organization(ThisApplication.context()));
 			resources.setWebservicesClient(new WebservicesClient());
+			resources.setApplications(ThisApplication.context().applications());
 			engineScope.put(Resources.RESOURCES_BINDING_NAME, resources);
 			Object o = engine.eval(agent.getText(), newContext);
 			agent.setLastEndTime(new Date());

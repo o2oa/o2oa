@@ -85,7 +85,7 @@ public class ActionCreateFormProcessPlatform extends BaseAction {
 	private byte[] readAttachmentContent(String workId, String workAttachmentId) throws Exception {
 		Application app = ThisApplication.context().applications()
 				.randomWithWeight(x_processplatform_assemble_surface.class.getName());
-		String address = app.getUrlRoot() + "attachment/download/" + workAttachmentId + "/work/" + workId;
+		String address = app.getUrlJaxrsRoot() + "attachment/download/" + workAttachmentId + "/work/" + workId;
 		HttpURLConnection connection = HttpConnection.prepare(address, CipherConnectionAction.cipher());
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(false);

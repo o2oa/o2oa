@@ -56,15 +56,15 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 			wi.setDocumentType( "信息" );
 		}
 		
-		if( StringUtils.isNotEmpty( wi.getOrderField() )) {
+		if( StringUtils.isEmpty( wi.getOrderField() )) {
 			wi.setOrderField( "createTime" );
 		}
 		
-		if( StringUtils.isNotEmpty( wi.getOrderType() )) {
-			wi.setOrderField( "DESC" );
+		if( StringUtils.isEmpty( wi.getOrderType() )) {
+			wi.setOrderType( "DESC" );
 		}
 		
-		if( ListTools.isNotEmpty( wi.getStatusList() )) {
+		if( ListTools.isEmpty( wi.getStatusList() )) {
 			List<String> status = new ArrayList<>();
 			status.add( "published" );
 			wi.setStatusList( status );
@@ -136,11 +136,9 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 			}
 		}
 		
-		if (check) {
-			// 从Review表中查询符合条件的对象总数
+		if (check) { // 从Review表中查询符合条件的对象总数
 			try {
-				if( isManager ) {
-					//直接从Document忽略权限查询
+				if( isManager ) { //直接从Document忽略权限查询
 					total = documentQueryService.countWithConditionOutofPermission( queryFilter );
 				}else {
 					total = documentQueryService.countWithConditionInReview( personName, queryFilter );
@@ -158,10 +156,11 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 			//除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
 			try {
 				if( isManager ) {
-					if( Document.isFieldInSequence(wi.getOrderField()) ) {
-						//直接从Document忽略权限查询
+					//判断排序列是不是已经在Document表里做了sequence索引列，如果是，则只需要从document表查询 即可。
+					if( Document.isFieldInSequence( wi.getOrderField()) ) { //直接从Document忽略权限查询
 						searchResultList = documentQueryService.listNextWithConditionOutofPermission( id, count, wi.getOrderField(), wi.getOrderType(), queryFilter );
 					}else {
+						//根据人员权限查询出2000条文档的完整信息，然后对某属性进行排序，在内存中进行分页
 						documentList = documentQueryService.listNextWithConditionOutofPermission( wi.getOrderField(), wi.getOrderType(), queryFilter, 2000 );
 						//循环分页，查询传入的ID所在的位置，向后再查询N条
 						if( ListTools.isNotEmpty( documentList )) {
@@ -171,18 +170,13 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 								if( StringUtils.isEmpty( id ) || document.getId().equalsIgnoreCase( id ) ) {
 									add2List = true;
 								}
-								if( add2List ) {
-									searchResultList.add( document );
-								}
-								if( searchResultList.size() >= count ) {
-									break;
-								}
+								if( add2List ) { searchResultList.add( document ); }
+								if( searchResultList.size() >= count ) { break; }
 							}
 						}
 					}
 				}else {
-					if( Document.isFieldInSequence(wi.getOrderField()) ) {
-						// 从Review表中查询符合条件的对象，并且转换为Document对象列表
+					if( Document.isFieldInSequence(wi.getOrderField()) ) { // 从Review表中查询符合条件的对象，并且转换为Document对象列表
 						searchResultList = documentQueryService.listNextWithConditionInReview( id, count, wi.getOrderField(), wi.getOrderType(), personName, queryFilter );
 					}else {
 						reviewList =  documentQueryService.listNextWithConditionInReview( wi.getOrderField(), wi.getOrderType(), personName, queryFilter, 2000 );

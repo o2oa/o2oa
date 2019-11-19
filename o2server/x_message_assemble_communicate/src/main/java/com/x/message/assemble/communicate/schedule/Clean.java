@@ -15,6 +15,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
@@ -67,7 +68,7 @@ public class Clean extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
 		Root<Instant> root = cq.from(Instant.class);
-		Date limit = DateUtils.addDays(new Date(), -7);
+		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
 		Predicate p = cb.lessThan(root.get(Instant_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(2000).getResultList();
 	}
@@ -95,7 +96,7 @@ public class Clean extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
 		Root<Message> root = cq.from(Message.class);
-		Date limit = DateUtils.addDays(new Date(), -7);
+		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
 		Predicate p = cb.lessThan(root.get(Message_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(2000).getResultList();
 	}

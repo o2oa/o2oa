@@ -85,13 +85,15 @@ public class TemplateForm extends SliceJpaObject {
 
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String name;
 
 	public static final String category_FIELDNAME = "category";
 	@FieldDescribe("模版分类.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + category_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ category_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + category_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String category;
@@ -99,13 +101,15 @@ public class TemplateForm extends SliceJpaObject {
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
 	@FieldDescribe("表单别名.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
@@ -113,7 +117,7 @@ public class TemplateForm extends SliceJpaObject {
 	@FieldDescribe("icon Base64编码后的文本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + icon_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + icon_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String icon;
 
@@ -121,7 +125,7 @@ public class TemplateForm extends SliceJpaObject {
 	@FieldDescribe("缩略图.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + outline_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + outline_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String outline;
 
@@ -129,7 +133,7 @@ public class TemplateForm extends SliceJpaObject {
 	@FieldDescribe("文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -137,7 +141,7 @@ public class TemplateForm extends SliceJpaObject {
 	@FieldDescribe("移动端文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mobileData;
 

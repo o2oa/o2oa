@@ -15,10 +15,12 @@ public class DumpRestoreStorage extends GsonPropertyObject {
 		return new DumpRestoreStorage();
 	}
 
+	public static final int default_batchSize = 100;
+
 	public DumpRestoreStorage() {
 		this.includes = new ArrayList<String>();
 		this.excludes = new ArrayList<String>();
-		this.batchSize = 500;
+		this.batchSize = default_batchSize;
 		this.redistribute = true;
 		this.exceptionInvalidStorage = true;
 	}

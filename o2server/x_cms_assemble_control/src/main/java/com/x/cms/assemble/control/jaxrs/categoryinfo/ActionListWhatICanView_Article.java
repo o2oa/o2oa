@@ -49,7 +49,7 @@ public class ActionListWhatICanView_Article extends BaseAction {
 		}
 
 		try {
-			manager = userManagerService.isManager(request, effectivePerson );
+			manager = userManagerService.isManager( effectivePerson );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionCategoryInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
@@ -119,7 +119,7 @@ public class ActionListWhatICanView_Article extends BaseAction {
 							List<String> inAppInfoIds = new ArrayList<>();
 							inAppInfoIds.add( appId );			
 							ids = permissionQueryService.listViewableCategoryIdByPerson(
-									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, "信息", 1000, manager );
+									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null, null, "信息", null,1000, manager );
 						} catch (Exception e) {
 							check = false;
 							Exception exception = new ExceptionCategoryInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);

@@ -44,7 +44,7 @@ class ActionBindLogin extends BaseAction {
 					if (StringUtils.isNotEmpty(personId)) {
 						Person o = emc.find(personId, Person.class);
 						wo = this.user(request, response, business, o, Wo.class);
-						audit.log(o.getDistinguishedName());
+						audit.log(o.getDistinguishedName(), "登录");
 					}
 				}
 			}

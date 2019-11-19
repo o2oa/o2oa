@@ -17,6 +17,7 @@ import com.x.bbs.entity.BBSSubjectVoteResult;
 import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionGroup;
 import com.x.bbs.entity.BBSVoteRecord;
+import org.apache.commons.lang3.StringUtils;
 
 public class BBSSubjectVoteService {
 
@@ -108,33 +109,40 @@ public class BBSSubjectVoteService {
 		//BBSVoteOptionGroup voteOptionGroup = null;
 		BBSVoteOption  voteOption = null;
 		BBSVoteRecord voteRecord = null;
+		BBSVoteOptionGroup voteOptionGroup = null;
 		//Business busines = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			//busines = new Business(emc);
 			//emc.beginTransaction( BBSVoteOptionGroup.class );
 			emc.beginTransaction( BBSVoteOption.class );
 			emc.beginTransaction( BBSVoteRecord.class );
-			
+			Business buiness = new Business(emc);
 			for( WiVoteOptionGroup group : optionGroups ){
-				//voteOptionGroup = emc.find( group.getId(), BBSVoteOptionGroup.class );
+				voteOptionGroup = emc.find( group.getId(), BBSVoteOptionGroup.class );
 				if( ListTools.isNotEmpty( group.getSelectedVoteOptionIds() ) ){
 					for( String selectedOptionId : group.getSelectedVoteOptionIds()){
 						voteOption = emc.find( selectedOptionId, BBSVoteOption.class );
 						if( voteOption != null ){
-							voteRecord = new BBSVoteRecord();
-							voteRecord.setId( BBSVoteRecord.createId() );
-							voteRecord.setOptionId( selectedOptionId );
-							voteRecord.setForumId( subjectInfo.getForumId() );
-							voteRecord.setMainSectionId( subjectInfo.getMainSectionId() );
-							voteRecord.setSectionId( subjectInfo.getSectionId() );
-							voteRecord.setSubjectId( subjectInfo.getId());
-							voteRecord.setOptionValue( voteOption.getId() );
-							voteRecord.setCreateTime( new Date() );
-							voteRecord.setVotorName( effectivePerson.getDistinguishedName() );
-							emc.persist( voteRecord, CheckPersistType.all );
-							
-							voteOption.setChooseCount( voteOption.getChooseCount() + 1 );
-							emc.check( voteOption, CheckPersistType.all );
+							//查询一下是否已经投过票了
+							List<BBSVoteRecord> recordList = buiness.voteRecordFactory().listVoteCountByUserAndGroup( effectivePerson.getDistinguishedName(), group.getId() );
+							if( (ListTools.isEmpty( recordList) || recordList.size() < voteOptionGroup.getVoteChooseCount())
+									&& !doseNotChoosen( recordList, selectedOptionId )){
+								voteRecord = new BBSVoteRecord();
+								voteRecord.setOptionGroupId( voteOptionGroup.getId() );
+								voteRecord.setId( BBSVoteRecord.createId() );
+								voteRecord.setOptionId( selectedOptionId );
+								voteRecord.setForumId( subjectInfo.getForumId() );
+								voteRecord.setMainSectionId( subjectInfo.getMainSectionId() );
+								voteRecord.setSectionId( subjectInfo.getSectionId() );
+								voteRecord.setSubjectId( subjectInfo.getId());
+								voteRecord.setOptionValue( voteOption.getId() );
+								voteRecord.setCreateTime( new Date() );
+								voteRecord.setVotorName( effectivePerson.getDistinguishedName() );
+								emc.persist( voteRecord, CheckPersistType.all );
+
+								voteOption.setChooseCount( voteOption.getChooseCount() + 1 );
+								emc.check( voteOption, CheckPersistType.all );
+							}
 						}
 					}
 				}
@@ -144,7 +152,24 @@ public class BBSSubjectVoteService {
 			throw e;
 		}
 	}
-	
+
+	/**
+	 * 选项是否已经被选择过了。
+	 * @param recordList
+	 * @param selectedOptionId
+	 * @return
+	 */
+	private boolean doseNotChoosen(List<BBSVoteRecord> recordList, String selectedOptionId) {
+		if( ListTools.isNotEmpty( recordList)){
+			for( BBSVoteRecord voteRecord : recordList){
+				if(StringUtils.equals( voteRecord.getOptionId(), selectedOptionId )){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public void deleteAllVoteOptions( String subjectId ) throws Exception {
 		if( subjectId  == null || subjectId.isEmpty() ){
 			throw new Exception( "subjectId is null!" );
