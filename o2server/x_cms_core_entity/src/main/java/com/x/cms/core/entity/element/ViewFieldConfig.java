@@ -50,7 +50,7 @@ public class ViewFieldConfig extends SliceJpaObject {
 
 	public static final String editor_FIELDNAME = "editor";
 	@FieldDescribe("最后的编辑者.")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String editor;
 
@@ -71,32 +71,32 @@ public class ViewFieldConfig extends SliceJpaObject {
 
 	public static final String viewId_FIELDNAME = "viewId";
 	@FieldDescribe("列表ID.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + viewId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + viewId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + viewId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String viewId;
 
 	public static final String fieldTitle_FIELDNAME = "fieldTitle";
 	@FieldDescribe("列标题.")
-	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + fieldTitle_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + fieldTitle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fieldTitle;
 
 	public static final String fieldName_FIELDNAME = "fieldName";
 	@FieldDescribe("列（属性）名称.")
-	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + fieldName_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + fieldName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fieldName;
 
 	public static final String showSequence_FIELDNAME = "showSequence";
 	@FieldDescribe("显示顺序")
 	@CheckPersist(allowEmpty = true)
-	@Column( name = ColumnNamePrefix + showSequence_FIELDNAME)
+	@Column(name = ColumnNamePrefix + showSequence_FIELDNAME)
 	private Integer showSequence = 0;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 

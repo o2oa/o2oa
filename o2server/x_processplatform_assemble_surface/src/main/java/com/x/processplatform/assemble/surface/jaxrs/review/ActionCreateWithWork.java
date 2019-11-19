@@ -9,7 +9,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.jaxrs.WrapIdList;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
@@ -73,7 +73,7 @@ class ActionCreateWithWork extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends WrapIdList {
 	}
 
 	public static class WoControl extends WorkControl {

@@ -26,7 +26,7 @@ class ActionCode extends BaseAction {
 				throw new ExceptionPersonNotExisted(credential);
 			}
 
-			person = emc.find(person.getId(), Person.class, ExceptionWhen.not_found);
+			person = emc.find(person.getId(), Person.class);
 			if (!Config.person().isMobile(person.getMobile())) {
 				throw new ExceptionInvalidMobile(person.getMobile());
 			}

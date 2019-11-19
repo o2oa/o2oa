@@ -21,9 +21,9 @@ class ActionSelectFile extends BaseAction {
 				throw new ExceptionFlagNotExist(flag);
 			}
 			OutputCacheObject outputCacheObject = (OutputCacheObject) element.getObjectValue();
-			Wo wo = new Wo(gson.toJson(outputCacheObject.getCmsAppInfo()).getBytes(DefaultCharset.name),
-					this.contentType(true, outputCacheObject.getName() + extension),
-					this.contentDisposition(true, outputCacheObject.getName() + extension));
+			Wo wo = new Wo( gson.toJson(outputCacheObject.getCmsAppInfo()).getBytes(DefaultCharset.name ),
+					this.contentType(true, outputCacheObject.getName() + extension ),
+					this.contentDisposition(true, outputCacheObject.getName() + extension ));
 			result.setData(wo);
 			return result;
 		}

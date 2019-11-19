@@ -458,6 +458,36 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	public <T extends JpaObject, W extends Object> List<T> listEqualAndEqualAndIn(Class<T> cls, String firstAttribute,
+			Object firstValue, String secondAttribute, Object secondValue, String thirdAttribute,
+			Collection<W> thirdValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(firstAttribute), firstValue);
+		p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
+		p = cb.and(p, cb.isMember(root.get(thirdAttribute), cb.literal(thirdValues)));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject, W extends Object> List<T> listEqualAndInAndNotEqual(Class<T> cls,
+			String firstAttribute, Object firstValue, String secondAttribute, Collection<W> secondValues,
+			String thirdAttribute, Object thirdValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(firstAttribute), firstValue);
+		p = cb.and(p, cb.isMember(root.get(secondAttribute), cb.literal(secondValues)));
+		p = cb.and(p, cb.notEqual(root.get(thirdAttribute), thirdValue));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndGreaterThanOrEqualTo(Class<T> cls,
 			String attribute, Object value, String otherAttribute, Object otherValue) throws Exception {
 		EntityManager em = this.get(cls);
@@ -527,6 +557,15 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
 		cq.select(cb.count(root)).where(cb.equal(root.get(attribute), value));
+		return em.createQuery(cq).getSingleResult();
+	}
+
+	public <T extends JpaObject> Long count(Class<T> cls, Predicate predicate) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		cq.select(cb.count(root)).where(predicate);
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -1442,6 +1481,94 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.sequence_FIELDNAME)));
 		List<T> os = em.createQuery(cq).setMaxResults((count != null && count > 0) ? count : 100).getResultList();
 		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetchDescPaging(Class<T> clz, Predicate predicate, Integer page, Integer count,
+			String orderAttribute) throws Exception {
+		List<T> os = fetchDescPaging(clz, JpaObject.singularAttributeField(clz, true, true), predicate, page, count,
+				orderAttribute);
+		return os;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchDescPaging(Class<T> clz,
+			WrapCopier<T, W> copier, Predicate predicate, Integer page, Integer count, String orderAttribute)
+			throws Exception {
+		List<T> os = fetchDescPaging(clz, copier.getCopyFields(), predicate, page, count, orderAttribute);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetchDescPaging(Class<T> clz,
+			List<String> fetchAttributes, Predicate predicate, Integer page, Integer pageSize, String orderAttribute)
+			throws Exception {
+		List<T> list = new ArrayList<>();
+		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		cq.multiselect(selections).where(predicate).orderBy(cb.desc(root.get(orderAttribute)));
+		T t = null;
+		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
+			t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetchAscPaging(Class<T> clz, Predicate predicate, Integer page, Integer count,
+			String orderAttribute) throws Exception {
+		List<T> os = fetchAscPaging(clz, JpaObject.singularAttributeField(clz, true, true), predicate, page, count,
+				orderAttribute);
+		return os;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchAscPaging(Class<T> clz,
+			WrapCopier<T, W> copier, Predicate predicate, Integer page, Integer count, String orderAttribute)
+			throws Exception {
+		List<T> os = fetchAscPaging(clz, copier.getCopyFields(), predicate, page, count, orderAttribute);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetchAscPaging(Class<T> clz,
+			List<String> fetchAttributes, Predicate predicate, Integer page, Integer pageSize, String orderAttribute)
+			throws Exception {
+		List<T> list = new ArrayList<>();
+		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		cq.multiselect(selections).where(predicate).orderBy(cb.asc(root.get(orderAttribute)));
+		T t = null;
+		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
+			t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
 		return list;
 	}
 

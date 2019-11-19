@@ -18,7 +18,7 @@ class ActionCompare extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		logger.debug(effectivePerson, "receive:{}.", jsonElement);
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

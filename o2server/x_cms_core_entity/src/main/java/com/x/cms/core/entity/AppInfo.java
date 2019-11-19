@@ -33,6 +33,7 @@ import com.x.base.core.project.tools.ListTools;
 
 /**
  * 栏目信息
+ * 
  * @author O2LEE
  *
  */
@@ -83,7 +84,7 @@ public class AppInfo extends SliceJpaObject {
 	public static final String appName_FIELDNAME = "appName";
 	@Flag
 	@FieldDescribe("栏目名称")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + appName_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME)
 	@CheckPersist(citationNotExists = {
 			/* 验证不可重名 */
@@ -93,32 +94,32 @@ public class AppInfo extends SliceJpaObject {
 	public static final String appAlias_FIELDNAME = "appAlias";
 	@Flag
 	@FieldDescribe("栏目别名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + appAlias_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appAlias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + appAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appAlias;
 
 	public static final String appType_FIELDNAME = "appType";
 	@FieldDescribe("栏目类别")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appType_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + appType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appType = "未分类";
-	
+
 	public static final String documentType_FIELDNAME = "documentType";
 	@FieldDescribe("默认文档类型：信息 | 数据")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + documentType_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + documentType_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + documentType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String documentType = "信息";
 
 	public static final String appInfoSeq_FIELDNAME = "appInfoSeq";
 	@FieldDescribe("栏目信息排序号")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + appInfoSeq_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + appInfoSeq_FIELDNAME)
 	private String appInfoSeq;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("栏目信息说明")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
@@ -126,81 +127,86 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("图标icon Base64编码后的文本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + appIcon_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + appIcon_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appIcon;
 
 	public static final String iconColor_FIELDNAME = "iconColor";
 	@FieldDescribe("图标主色调.")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + iconColor_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + iconColor_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String iconColor;
 
 	public static final String appMemo_FIELDNAME = "appMemo";
 	@FieldDescribe("备注信息")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appMemo_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + appMemo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appMemo;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorPerson_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorPerson;
 
 	public static final String creatorIdentity_FIELDNAME = "creatorIdentity";
 	@FieldDescribe("创建人Identity，可能为空，如果由系统创建。")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorIdentity;
 
 	public static final String creatorUnitName_FIELDNAME = "creatorUnitName";
 	@FieldDescribe("创建人组织，可能为空，如果由系统创建。")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUnitName;
 
 	public static final String creatorTopUnitName_FIELDNAME = "creatorTopUnitName";
 	@FieldDescribe("创建人顶层组织，可能为空，如果由系统创建。")
-	@Column( length =AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorTopUnitName;
-	
+
 	public static final String anonymousAble_FIELDNAME = "anonymousAble";
 	@FieldDescribe("是否允许匿名访问.")
-	@Column( name = ColumnNamePrefix + anonymousAble_FIELDNAME)
+	@Column(name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
-	
+
 	public static final String allPeopleView_FIELDNAME = "allPeopleView";
 	@FieldDescribe("可见范围为所有人可见.")
-	@Column( name = ColumnNamePrefix + allPeopleView_FIELDNAME)
+	@Column(name = ColumnNamePrefix + allPeopleView_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + allPeopleView_FIELDNAME)
 	private Boolean allPeopleView = true;
 
 	public static final String allPeoplePublish_FIELDNAME = "allPeoplePublish";
 	@FieldDescribe("发布范围栏目为所有人可发布.")
-	@Column( name = ColumnNamePrefix + allPeoplePublish_FIELDNAME)
+	@Column(name = ColumnNamePrefix + allPeoplePublish_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + allPeoplePublish_FIELDNAME)
 	private Boolean allPeoplePublish = true;
-	
+
 	public static final String sendNotify_FIELDNAME = "sendNotify";
 	@FieldDescribe("发布文档后是否通知阅读者：true | false")
-	@Column( name = ColumnNamePrefix + sendNotify_FIELDNAME)
+	@Column(name = ColumnNamePrefix + sendNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
 	private Boolean sendNotify = true;
-	
+
 	public static final String categoryList_FIELDNAME = "categoryList";
 	@FieldDescribe("分类列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + categoryList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + categoryList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + categoryList_FIELDNAME)
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ categoryList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + categoryList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> categoryList;
@@ -209,9 +215,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("发布可见人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + viewablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + viewablePersonList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + viewablePersonList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ viewablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ viewablePersonList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ viewablePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + viewablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> viewablePersonList;
@@ -220,9 +228,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("发布可见组织")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + viewableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + viewableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + viewableUnitList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ viewableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + viewableUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ viewableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + viewableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> viewableUnitList;
@@ -231,9 +241,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("发布可见群组")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + viewableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + viewableGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + viewableGroupList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ viewableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ viewableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ viewableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + viewableGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> viewableGroupList;
@@ -242,9 +254,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("可发布人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + publishablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + publishablePersonList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + publishablePersonList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ publishablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ publishablePersonList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ publishablePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + publishablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> publishablePersonList;
@@ -253,9 +267,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("可发布组织")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + publishableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + publishableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + publishableUnitList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ publishableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ publishableUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ publishableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + publishableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> publishableUnitList;
@@ -264,9 +280,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("可发布群组")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + publishableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + publishableGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + publishableGroupList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ publishableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ publishableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ publishableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + publishableGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> publishableGroupList;
@@ -275,9 +293,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("栏目可管理人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + manageablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + manageablePersonList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + manageablePersonList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ manageablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ manageablePersonList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ manageablePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageablePersonList;
@@ -286,9 +306,11 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("栏目可管理组织")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + manageableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + manageableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + manageableUnitList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ manageableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ manageableUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ manageableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageableUnitList;
@@ -297,14 +319,15 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("栏目可管理群组")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + manageableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + manageableGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + manageableGroupList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ manageableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ manageableGroupList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ manageableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + manageableGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manageableGroupList;
 
-	
 	public String getAppType() {
 		return appType;
 	}

@@ -1,6 +1,5 @@
 package com.x.organization.assemble.personal.jaxrs.regist;
 
-import com.x.base.core.project.tools.PasswordTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,9 +51,12 @@ class ActionCreate extends BaseAction {
 			if (this.mobileExisted(emc, mobile)) {
 				throw new ExceptionMobileExist(mobile);
 			}
-			if (PasswordTools.checkPasswordStrength(password) < 4) {
-				throw new ExceptionInvalidPassword();
+			if (!password.matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 			}
+//			if (PasswordTools.checkPasswordStrength(password) < 4) {
+//				throw new ExceptionInvalidPassword();
+//			}
 			if (null == genderType) {
 				throw new ExceptionInvalidGenderType();
 			}

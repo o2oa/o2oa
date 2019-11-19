@@ -254,9 +254,13 @@ public class ActionQueryGetDocument extends BaseAction {
 						if ( wrapOutDocument.getAuthorPersonList().contains( personName )) {
 							isEditor = true;
 						}
+					}
+					if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
 						if( ListTools.containsAny( unitNames , wrapOutDocument.getAuthorUnitList() )) {
 							isEditor = true;
 						}
+					}
+					if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
 						if( ListTools.containsAny( groupNames , wrapOutDocument.getAuthorGroupList() )) {
 							isEditor = true;
 						}

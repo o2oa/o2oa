@@ -67,7 +67,8 @@ public class Attachment2 extends SliceJpaObject {
 
 	}
 
-	public Attachment2(String name, String person, String folder, String originFile, Long length, String type) throws Exception {
+	public Attachment2(String name, String person, String folder, String originFile, Long length, String type)
+			throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("name can not be empty.");
 		}
@@ -147,7 +148,7 @@ public class Attachment2 extends SliceJpaObject {
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("文件状态：正常|已删除")
-	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String status = "正常";
 

@@ -64,52 +64,60 @@ public class OkrConfigSecretary extends SliceJpaObject {
 	 */
 	public static final String secretaryName_FIELDNAME = "secretaryName";
 	@FieldDescribe("秘书姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + secretaryName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ secretaryName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + secretaryName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String secretaryName = "";
 
 	public static final String secretaryIdentity_FIELDNAME = "secretaryIdentity";
 	@FieldDescribe("秘书身份名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + secretaryIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ secretaryIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + secretaryIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String secretaryIdentity = "";
 
 	public static final String secretaryUnitName_FIELDNAME = "secretaryUnitName";
 	@FieldDescribe("秘书所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + secretaryUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ secretaryUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String secretaryUnitName = "";
 
 	public static final String secretaryTopUnitName_FIELDNAME = "secretaryTopUnitName";
 	@FieldDescribe("秘书所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + secretaryTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ secretaryTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String secretaryTopUnitName = "";
 
 	public static final String leaderName_FIELDNAME = "leaderName";
 	@FieldDescribe("领导姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + leaderName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ leaderName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String leaderName = "";
 
 	public static final String leaderIdentity_FIELDNAME = "leaderIdentity";
 	@FieldDescribe("领导身份名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + leaderIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ leaderIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + leaderIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String leaderIdentity = "";
 
 	public static final String leaderUnitName_FIELDNAME = "leaderUnitName";
 	@FieldDescribe("领导所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + leaderUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ leaderUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String leaderUnitName = "";
 
 	public static final String leaderTopUnitName_FIELDNAME = "leaderTopUnitName";
 	@FieldDescribe("领导所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + leaderTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ leaderTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String leaderTopUnitName = "";
 

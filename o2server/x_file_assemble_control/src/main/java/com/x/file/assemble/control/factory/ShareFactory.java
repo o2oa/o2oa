@@ -19,7 +19,7 @@ public class ShareFactory extends AbstractFactory {
 		super(business);
 	}
 
-	public List<Share> listWithPerson(String person, String shareType) throws Exception {
+	public List<Share> listWithPerson(String person, String shareType, String fileType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Share.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Share> cq = cb.createQuery(Share.class);
@@ -27,6 +27,9 @@ public class ShareFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Share_.person), person);
 		if(StringUtils.isNotBlank(shareType)){
 			p = cb.and(p, cb.equal(root.get(Share_.shareType), shareType));
+		}
+		if(StringUtils.isNotBlank(fileType)){
+			p = cb.and(p, cb.equal(root.get(Share_.fileType), fileType));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
 	}
@@ -40,12 +43,15 @@ public class ShareFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public List<String> listWithShareUser1(String person) throws Exception {
+	public List<String> listWithShareUser1(String person, String fileType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Share.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Share> root = cq.from(Share.class);
 		Predicate p = cb.isMember(person, root.get(Share_.shareUserList));
+		if(StringUtils.isNotBlank(fileType)){
+			p = cb.and(p, cb.equal(root.get(Share_.fileType), fileType));
+		}
 		cq.select(root.get(Share_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -59,12 +65,15 @@ public class ShareFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public List<String> listWithShareOrg1(String org) throws Exception {
+	public List<String> listWithShareOrg1(String org, String fileType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Share.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Share> root = cq.from(Share.class);
 		Predicate p = cb.isMember(org, root.get(Share_.shareOrgList));
+		if(StringUtils.isNotBlank(fileType)){
+			p = cb.and(p, cb.equal(root.get(Share_.fileType), fileType));
+		}
 		cq.select(root.get(Share_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}

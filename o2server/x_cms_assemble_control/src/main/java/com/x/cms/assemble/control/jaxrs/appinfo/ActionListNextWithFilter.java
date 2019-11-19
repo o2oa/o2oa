@@ -57,7 +57,7 @@ public class ActionListNextWithFilter extends BaseAction {
 			if ((null != wi.getCreatorList()) && (!wi.getCreatorList().isEmpty())) {
 				ins.put("creatorUid", wi.getCreatorList());
 			}
-			if (StringUtils.isNotEmpty(wi.getKey())) {
+			if ( StringUtils.isNotEmpty(wi.getKey()) ) {
 				String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 				if (StringUtils.isNotEmpty(key)) {
 					likes.put("appName", key);

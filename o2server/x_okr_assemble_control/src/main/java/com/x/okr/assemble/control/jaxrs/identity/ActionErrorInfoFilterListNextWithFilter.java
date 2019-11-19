@@ -25,6 +25,7 @@ import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.ExceptionInsufficientPermissions;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.ExceptionOkrSystemAdminCheck;
 import com.x.okr.entity.OkrErrorSystemIdentityInfo;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionErrorInfoFilterListNextWithFilter extends BaseAction {
 
@@ -71,7 +72,7 @@ public class ActionErrorInfoFilterListNextWithFilter extends BaseAction {
 		}
 
 		if (check) {
-			if (wrapIn.getIdentity() != null && !wrapIn.getIdentity().isEmpty()) {
+			if ( StringUtils.isNotEmpty( wrapIn.getIdentity()) ) {
 				equalsMap.put("identity", wrapIn.getIdentity());
 			}
 		}

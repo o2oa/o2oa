@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,20 +22,26 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.jaxrs.WrapStringList;
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 
 class ActionProcessing extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Task task = null;
@@ -63,29 +70,44 @@ class ActionProcessing extends BaseAction {
 
 			appendTask = this.appendTask(business, task, wi);
 		}
-
 		if (appendTask) {
 			ReqAppendTask req = new ReqAppendTask();
 			req.setIdentityList(wi.getAppendTaskIdentityList());
-			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("task", task.getId(), "append"), req);
+			WrapStringList taskAppendResp = ThisApplication.context().applications()
+					.putQuery(x_processplatform_service_processing.class,
+							Applications.joinQueryUri("task", task.getId(), "append"), req)
+					.getData(WrapStringList.class);
+		}
+		ProcessingRequest processingRequest = new ProcessingRequest();
+		if (appendTask) {
+			processingRequest.setProcessingType(ProcessingType.appendTask);
+		} else {
+			processingRequest.setProcessingType(ProcessingType.processing);
+		}
+		processingRequest.setRouteData(wi.getRouteData());
+		WoId taskProcessingResp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", task.getId(), "processing"), processingRequest)
+				.getData(WoId.class);
+		if (StringUtils.isBlank(taskProcessingResp.getId())) {
+			throw new ExceptionTaskProcessing(task.getId());
 		}
 
-		ProcessingRequest processingRequest = new ProcessingRequest();
-		processingRequest.setRouteData(wi.getRouteData());
-		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", task.getId(), "processing"), processingRequest);
+		WoId workProcessingResp = ThisApplication.context().applications()
+				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", task.getWork(), "processing"), null)
+				.getData(WoId.class);
 
-		ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
-				x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", task.getWork(), "processing"), null);
+		if (StringUtils.isBlank(workProcessingResp.getId())) {
+			throw new ExceptionWorkProcessing(task.getId());
+		}
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			List<Wo> wos = this.referenceWorkLog(business, task);
+			List<Wo> wos = this.listCurrentTask(business, task.getJob());
 			result.setData(wos);
 		}
-
+		audit.log(null, "审批");
 		return result;
 	}
 
@@ -107,63 +129,83 @@ class ActionProcessing extends BaseAction {
 		return false;
 	}
 
-	private List<Wo> referenceWorkLog(Business business, Task task) throws Exception {
-		List<Wo> os = Wo.copier.copy(business.entityManagerContainer().list(WorkLog.class,
-				business.workLog().listWithFromActivityTokenForwardNotConnected(task.getActivityToken())));
-		List<WoTaskCompleted> _taskCompleteds = WoTaskCompleted.copier
-				.copy(business.taskCompleted().listWithJobObject(task.getJob()));
-		List<WoTask> _tasks = WoTask.copier.copy(business.task().listWithJobObject(task.getJob()));
-		os = business.workLog().sort(os);
-
-		Map<String, List<WoTaskCompleted>> _map_taskCompleteds = _taskCompleteds.stream()
-				.collect(Collectors.groupingBy(o -> o.getActivityToken()));
-
-		Map<String, List<WoTask>> _map_tasks = _tasks.stream()
-				.collect(Collectors.groupingBy(o -> o.getActivityToken()));
-
-		for (Wo o : os) {
-			List<WoTaskCompleted> _parts_taskCompleted = _map_taskCompleteds.get(o.getFromActivityToken());
-			o.setTaskCompletedList(new ArrayList<WoTaskCompleted>());
-			if (!ListTools.isEmpty(_parts_taskCompleted)) {
-				for (WoTaskCompleted _taskCompleted : business.taskCompleted().sort(_parts_taskCompleted)) {
-					o.getTaskCompletedList().add(_taskCompleted);
-					if (_taskCompleted.getProcessingType().equals(ProcessingType.retract)) {
-						TaskCompleted _retract = new TaskCompleted();
-						o.copyTo(_retract);
-						_retract.setRouteName("撤回");
-						_retract.setOpinion("撤回");
-						_retract.setStartTime(_retract.getRetractTime());
-						_retract.setCompletedTime(_retract.getRetractTime());
-						o.getTaskCompletedList().add(WoTaskCompleted.copier.copy(_retract));
-					}
-				}
-			}
-			List<WoTask> _parts_tasks = _map_tasks.get(o.getFromActivityToken());
-			o.setTaskList(new ArrayList<WoTask>());
-			if (!ListTools.isEmpty(_parts_tasks)) {
-				o.setTaskList(business.task().sort(_parts_tasks));
-			}
+	private List<Wo> listCurrentTask(Business business, String job) throws Exception {
+		List<Wo> wos = new ArrayList<>();
+		List<WoTask> woTasks = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier,
+				Task.job_FIELDNAME, job);
+		for (Entry<String, List<WoTask>> en : woTasks.stream().collect(Collectors.groupingBy(WoTask::getActivity))
+				.entrySet()) {
+			Wo wo = new Wo();
+			wo.setActivity(en.getValue().get(0).getActivity());
+			wo.setActivityName(en.getValue().get(0).getActivityName());
+			wo.setTaskList(en.getValue());
+			wos.add(wo);
 		}
-		return os;
+		return wos;
 	}
 
-	public static class Wo extends WorkLog {
+	// private List<Wo> referenceWorkLog(Business business, Task task) throws
+	// Exception {
+//		List<Wo> os = Wo.copier.copy(business.entityManagerContainer().list(WorkLog.class,
+//				business.workLog().listWithFromActivityTokenForwardNotConnected(task.getActivityToken())));
+//		List<WoTaskCompleted> _taskCompleteds = WoTaskCompleted.copier
+//				.copy(business.taskCompleted().listWithJobObject(task.getJob()));
+//		List<WoTask> _tasks = WoTask.copier.copy(business.task().listWithJobObject(task.getJob()));
+//		os = business.workLog().sort(os);
+//
+//		Map<String, List<WoTaskCompleted>> _map_taskCompleteds = _taskCompleteds.stream()
+//				.collect(Collectors.groupingBy(o -> o.getActivityToken()));
+//
+//		Map<String, List<WoTask>> _map_tasks = _tasks.stream()
+//				.collect(Collectors.groupingBy(o -> o.getActivityToken()));
+//
+//		for (Wo o : os) {
+//			List<WoTaskCompleted> _parts_taskCompleted = _map_taskCompleteds.get(o.getFromActivityToken());
+//			o.setTaskCompletedList(new ArrayList<WoTaskCompleted>());
+//			if (!ListTools.isEmpty(_parts_taskCompleted)) {
+//				for (WoTaskCompleted _taskCompleted : business.taskCompleted().sort(_parts_taskCompleted)) {
+//					o.getTaskCompletedList().add(_taskCompleted);
+//					if (_taskCompleted.getProcessingType().equals(ProcessingType.retract)) {
+//						TaskCompleted _retract = new TaskCompleted();
+//						o.copyTo(_retract);
+//						_retract.setRouteName("撤回");
+//						_retract.setOpinion("撤回");
+//						_retract.setStartTime(_retract.getRetractTime());
+//						_retract.setCompletedTime(_retract.getRetractTime());
+//						o.getTaskCompletedList().add(WoTaskCompleted.copier.copy(_retract));
+//					}
+//				}
+//			}
+//			List<WoTask> _parts_tasks = _map_tasks.get(o.getFromActivityToken());
+//			o.setTaskList(new ArrayList<WoTask>());
+//			if (!ListTools.isEmpty(_parts_tasks)) {
+//				o.setTaskList(business.task().sort(_parts_tasks));
+//			}
+//		}
+//		return os;
+//	}
 
-		private static final long serialVersionUID = 1307569946729101786L;
+	public static class Wo extends GsonPropertyObject {
 
-		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-
-		private List<WoTaskCompleted> taskCompletedList;
+		private String activityName;
+		private String activity;
 
 		private List<WoTask> taskList;
 
-		public List<WoTaskCompleted> getTaskCompletedList() {
-			return taskCompletedList;
+		public String getActivityName() {
+			return activityName;
 		}
 
-		public void setTaskCompletedList(List<WoTaskCompleted> taskCompletedList) {
-			this.taskCompletedList = taskCompletedList;
+		public void setActivityName(String activityName) {
+			this.activityName = activityName;
+		}
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
 		}
 
 		public List<WoTask> getTaskList() {
@@ -176,25 +218,60 @@ class ActionProcessing extends BaseAction {
 
 	}
 
-	public static class WoTaskCompleted extends TaskCompleted {
-
-		private static final long serialVersionUID = -7253999118308715077L;
-
-		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
-				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
-	}
-
+//	public static class Wo extends WorkLog {
+//
+//		private static final long serialVersionUID = 1307569946729101786L;
+//
+//		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class, null,
+//				JpaObject.FieldsInvisible);
+//
+//		private List<WoTaskCompleted> taskCompletedList;
+//
+//		private List<WoTask> taskList;
+//
+//		public List<WoTaskCompleted> getTaskCompletedList() {
+//			return taskCompletedList;
+//		}
+//
+//		public void setTaskCompletedList(List<WoTaskCompleted> taskCompletedList) {
+//			this.taskCompletedList = taskCompletedList;
+//		}
+//
+//		public List<WoTask> getTaskList() {
+//			return taskList;
+//		}
+//
+//		public void setTaskList(List<WoTask> taskList) {
+//			this.taskList = taskList;
+//		}
+//
+//	}
+//
+//	public static class WoTaskCompleted extends TaskCompleted {
+//
+//		private static final long serialVersionUID = -7253999118308715077L;
+//
+//		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
+//				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
+//	}
+//
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 2702712453822143654L;
 
-		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
+				ListTools.toList(Task.activity_FIELDNAME, Task.activityName_FIELDNAME, Task.person_FIELDNAME,
+						Task.unit_FIELDNAME),
+				null);
 
 	}
 
 	public static class ProcessingRequest extends GsonPropertyObject {
 
+		@FieldDescribe("流转类型.")
+		private ProcessingType processingType;
+
+		@FieldDescribe("路由数据.")
 		private JsonElement routeData;
 
 		public JsonElement getRouteData() {
@@ -203,6 +280,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setRouteData(JsonElement routeData) {
 			this.routeData = routeData;
+		}
+
+		public ProcessingType getProcessingType() {
+			return processingType;
+		}
+
+		public void setProcessingType(ProcessingType processingType) {
+			this.processingType = processingType;
 		}
 
 	}
@@ -278,7 +363,6 @@ class ActionProcessing extends BaseAction {
 		public void setRouteData(JsonElement routeData) {
 			this.routeData = routeData;
 		}
-
 	}
 
 }

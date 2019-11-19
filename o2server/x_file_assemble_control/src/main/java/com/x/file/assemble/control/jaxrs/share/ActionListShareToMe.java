@@ -21,18 +21,21 @@ import java.util.List;
 
 class ActionListShareToMe extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListShareToMe.class);
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String fileType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<String> shareIds = business.share().listWithShareUser1(effectivePerson.getDistinguishedName());
+			if (EMPTY_SYMBOL.equals(fileType)) {
+				fileType = null;
+			}
+			List<String> shareIds = business.share().listWithShareUser1(effectivePerson.getDistinguishedName(), fileType);
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			for (String str : identities) {
 				List<String> units = business.organization().unit().listWithIdentitySupNested(str);
 				for(String unitName : units){
 					Unit unit = business.organization().unit().getObject( unitName );
 					if(unit!=null){
-						List<String> ids = business.share().listWithShareOrg1(unit.getUnique());
+						List<String> ids = business.share().listWithShareOrg1(unit.getUnique(), fileType);
 						logger.debug("{}根据组织{}查询分享结果：{}",effectivePerson.getDistinguishedName(),unit.getUnique(),ids+""+ids.size());
 						shareIds = ListTools.add(shareIds,true,true,ids);
 					}

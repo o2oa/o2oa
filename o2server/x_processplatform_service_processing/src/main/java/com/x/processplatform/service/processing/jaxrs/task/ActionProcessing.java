@@ -19,6 +19,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
@@ -26,6 +27,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ScriptHelper;
@@ -85,6 +87,13 @@ class ActionProcessing extends BaseAction {
 			Date now = new Date();
 			Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 			TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
+			if (StringUtils.isEmpty(taskCompleted.getOpinion())) {
+				Process process = business.element().get(task.getProcess(), Process.class);
+				if ((null != process) && process.getRouteNameAsOpinion()) {
+					taskCompleted.setOpinion(StringUtils.trimToEmpty(ListTools.parallel(task.getRouteNameList(),
+							task.getRouteName(), task.getRouteOpinionList())));
+				}
+			}
 			taskCompleted.onPersist();
 			emc.persist(taskCompleted, CheckPersistType.all);
 			emc.remove(task, CheckRemoveType.all);
@@ -109,12 +118,6 @@ class ActionProcessing extends BaseAction {
 				}
 			}
 			MessageFactory.task_to_taskCompleted(taskCompleted);
-//			if (BooleanUtils.isNotFalse(wi.getFinallyProcessingWork())) {
-//				ProcessingAttributes processingAttributes = new ProcessingAttributes();
-//				processingAttributes.setDebugger(effectivePerson.getDebugger());
-//				Processing processing = new Processing(processingAttributes);
-//				processing.processing(task.getWork());
-//			}
 			Wo wo = new Wo();
 			wo.setId(task.getId());
 			result.setData(wo);
@@ -129,9 +132,6 @@ class ActionProcessing extends BaseAction {
 
 		@FieldDescribe("流转类型.")
 		private ProcessingType processingType;
-
-//		@FieldDescribe("最后是否触发work的流转,默认流转.")
-//		private Boolean finallyProcessingWork;
 
 		@FieldDescribe("路由数据.")
 		private JsonElement routeData;

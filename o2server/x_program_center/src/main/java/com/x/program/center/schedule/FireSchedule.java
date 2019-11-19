@@ -63,7 +63,7 @@ public class FireSchedule extends BaseAction {
 							logger.info("fire schedule className: {}, cron: {}, node: {}, application: {}.",
 									request.getClassName(), request.getCron(), application.getNode(),
 									application.getClassName());
-							String url = application.getUrlRoot()
+							String url = application.getUrlJaxrsRoot()
 									+ Applications.joinQueryUri("fireschedule", "classname", request.getClassName());
 							request.setLastStartTime(now);
 							CipherConnectionAction.get(false, url);

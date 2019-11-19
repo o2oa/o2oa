@@ -54,6 +54,7 @@ public class ActionListNextPageViewData extends BaseAction {
 		Document document = null;
 		String personName =  effectivePerson.getDistinguishedName();
 		List<String> sortableFieldNames = null;
+		List<String> sortableFieldNames_upperCase = null;
 		QueryFilter queryFilter = null;
 		
 		if( pageSize <= 0 || pageSize == null ){
@@ -86,7 +87,7 @@ public class ActionListNextPageViewData extends BaseAction {
 		}
 		
 		try {
-			isManager = userManagerService.isManager(request, effectivePerson );
+			isManager = userManagerService.isManager(effectivePerson );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionViewInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
@@ -166,12 +167,20 @@ public class ActionListNextPageViewData extends BaseAction {
 		}
 
 		if( check ) {
+			//将Document表拥有的列保存为List备用，判断排序列，或者展现列是否为文档内部属性
 			sortableFieldNames = Arrays.asList( Document.documentFieldNames );
+			//因为有时候查询 的时候排序 列会使用大写的字符串比如：CREATETIME，并非createTime，这样，所以要容个错
+			sortableFieldNames_upperCase = new ArrayList<>();
+			for( String fieldName : sortableFieldNames ){
+				sortableFieldNames_upperCase.add( fieldName.toUpperCase() );
+			}
+
 			List<ViewFieldConfig>  fieldConfigs = viewServiceAdv.listFieldConfigByView( view.getId() );
 			if( ListTools.isNotEmpty( fieldConfigs )) {
 				for( ViewFieldConfig config : fieldConfigs ) {
-					if( !sortableFieldNames.contains( config.getFieldName() )) { //存在Document里不存在的列
-						needData = true;
+					//sortableFieldNames 是Document直接有的属性民，可以直接进行排序的的列
+				    if( !sortableFieldNames.contains(config.getFieldName())) {
+						needData = true; //列表展现列有业务数据列，需要查询所有的业务数据。
 						break;
 					}
 				}
@@ -194,8 +203,10 @@ public class ActionListNextPageViewData extends BaseAction {
 				document = documentQueryService.get( lastDocId );
 			}
 			
-			//判断一下，如果排序的列不是Document的常规列
-			if( !sortableFieldNames.contains( wi.getOrderField() ) ) {
+			//判断一下，如果排序的列不是Document的常规列, 需要从Item里查出符合条件的DocumentID列表
+			//从正常的Document属性列和全大写的属性列中都需要判断一下， sortableFieldNames and sortableFieldNames_upperCase
+			//如果sortableFieldNames and sortableFieldNames_upperCase都没有，那么就属性业务属性数据了，需要从item里去查询
+			if( !sortableFieldNames.contains(wi.getOrderField()) && !sortableFieldNames_upperCase.contains( wi.getOrderField() ) ) {
 				//查询该分类下所有可见的DocId
 				List<String> viewableDocList = null;
 				if( isManager ) {
@@ -206,7 +217,7 @@ public class ActionListNextPageViewData extends BaseAction {
 					viewableDocList = documentQueryService.listDocIdsWithConditionInReview( personName, wi.getOrderField(), wi.getOrderField(), queryFilter, 2000 );
 				}
 				
-				//从Item里查询出2000个排序好的对象，拼成 dataObjList (  docId, sortFieldValue )返回
+				//以所有可见的DocId为基准，从Item里查询出2000个排序好的对象，拼成 dataObjList ( docId, sortFieldValue )返回
 				List<SimpleItemObj> simpleItems = documentQueryService.listSortObjWithOrderFieldInData( viewableDocList, wi.getOrderField(), wi.getOrderField(), wi.getOrderType() );
 			
 				if( ListTools.isNotEmpty( simpleItems )) {
@@ -234,7 +245,8 @@ public class ActionListNextPageViewData extends BaseAction {
 						}
 					}
 				}
-			}else {//只是根据文档数据进行排序
+			}else {
+				//如果在 sortableFieldNames or sortableFieldNames_upperCase 中存在，那么就只是根据文档数据进行排序
 				if( isManager ) {
 					documentCount = documentQueryService.countWithConditionOutofPermission( queryFilter );
 					if( Document.isFieldInSequence(wi.getOrderField()) ) {
@@ -315,6 +327,7 @@ public class ActionListNextPageViewData extends BaseAction {
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
+					//如果列表展现列中没有业务数据的需求，就不查了
 					if( needData ) { //存在Document里不存在的列，需要进一步组装Data
 						try {
 							wo.setData( documentQueryService.getDocumentData( _document ) );

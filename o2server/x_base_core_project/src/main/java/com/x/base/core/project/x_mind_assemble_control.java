@@ -10,19 +10,4 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.mind.entity.MindVersionInfo", "com.x.mind.entity.MindVersionContent" }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_mind_core_entity" })
 public class x_mind_assemble_control extends Deployable {
-
-//	public x_mind_assemble_control() {
-//		super();
-//		dependency.containerEntities.add("com.x.mind.entity.MindBaseInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindContentInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindFolderInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindIconInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindRecycleInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindShareRecord");
-//		dependency.containerEntities.add("com.x.mind.entity.MindVersionInfo");
-//		dependency.containerEntities.add("com.x.mind.entity.MindVersionContent");
-//		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
-//		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
-//		dependency.storeJars.add(x_mind_core_entity.class.getSimpleName());
-//	}
 }

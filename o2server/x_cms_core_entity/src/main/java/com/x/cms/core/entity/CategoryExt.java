@@ -34,7 +34,7 @@ public class CategoryExt extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	@SuppressWarnings("unused")
 	private static final String TABLE = PersistenceProperties.CategoryExt.table;
-	
+
 	public String getId() {
 		return id;
 	}

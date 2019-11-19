@@ -84,6 +84,14 @@ class ActionListMyFilterPaging extends BaseAction {
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
 		}
+		if(StringUtils.isNotBlank(wi.getUrgeTime())){
+			int urgeTime = 0;
+			try {
+				urgeTime = Integer.parseInt(wi.getUrgeTime());
+			} catch (NumberFormatException e) {
+			}
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -136,6 +144,14 @@ class ActionListMyFilterPaging extends BaseAction {
 			}
 			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.expireTime), DateTools.getAdjustTimeDay(null, 0, -expireTime, 0, 0)));
 		}
+		if(StringUtils.isNotBlank(wi.getUrgeTime())){
+			int urgeTime = 0;
+			try {
+				urgeTime = Integer.parseInt(wi.getUrgeTime());
+			} catch (NumberFormatException e) {
+			}
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), DateTools.getAdjustTimeDay(null, 0, -urgeTime, 0, 0)));
+		}
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -153,7 +169,7 @@ class ActionListMyFilterPaging extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("应用")
+		@FieldDescribe("应用id")
 		private List<String> applicationList;
 
 		@FieldDescribe("流程")
@@ -176,6 +192,9 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		@FieldDescribe("时效超时时间（0表示所有已超时的、1表示超时1小时以上的、2、3...）")
 		private String expireTime;
+
+		@FieldDescribe("催办超时时间（0表示所有已超时的、1表示超时1小时以上的、2、3...）")
+		private String urgeTime;
 
 		@FieldDescribe("匹配关键字")
 		private String key;
@@ -250,6 +269,14 @@ class ActionListMyFilterPaging extends BaseAction {
 
 		public void setExpireTime(String expireTime) {
 			this.expireTime = expireTime;
+		}
+
+		public String getUrgeTime() {
+			return urgeTime;
+		}
+
+		public void setUrgeTime(String urgeTime) {
+			this.urgeTime = urgeTime;
 		}
 	}
 

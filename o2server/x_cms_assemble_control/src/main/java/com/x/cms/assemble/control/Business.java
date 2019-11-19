@@ -282,17 +282,16 @@ public class Business {
 	}
 	
 	/**
-	 * TODO 判断用户是否管理员权限
+	 * 判断用户是否管理员权限
 	 * 1、person.isManager()
 	 * 2、xadmin
 	 * 3、CMSManager
-	 * 
-	 * @param request
-	 * @param personName
+	 *
+	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isManager(HttpServletRequest request, EffectivePerson person) throws Exception {
+	public boolean isManager(EffectivePerson person) throws Exception {
 		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
 		if ( person.isManager() ) {
 			return true;
@@ -307,127 +306,14 @@ public class Business {
 	}
 
 	/**
-	 * TODO 判断应用信息是否可以被删除，查询与其他数据之间的关联信息
-	 * 
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean appInfoDeleteAvailable(String appId) throws Exception {
-		// 查询是否有下级应用分类信息
-		long count = this.getCategoryInfoFactory().countByAppId(appId, "全部");
-		if (count > 0) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * TODO 判断分类信息是否可以被删除，查询与其他数据之间的关联信息
-	 * 
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean categoryInfoDeleteAvailable(String categoryId) throws Exception {
-		// 查询是否有下级应用分类信息
-		long count = this.getDocumentFactory().countByCategoryId(categoryId);
-		if (count > 0) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * TODO TODO (uncomplete)判断用户是否有权限进行：[内容管理应用信息管理]的操作
-	 * 
-	 * @param request
-	 * @param personName
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean appInfoEditAvailable(HttpServletRequest request, EffectivePerson person, String id)
-			throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)判断用户是否有权限进行:[内容管理分类信息管理]的操作
-	 * 
-	 * @param request
-	 * @param personName
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean categoryInfoEditAvailable(EffectivePerson person, String appId) throws Exception {
-		if (person.isManager()) {
-			return true;
-		}
-		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)判断用户是否有权限进行：[内容管理应用及分类权限配置]的操作
-	 * 
-	 * @param request
-	 * @param personName
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean appCategoryPermissionEditAvailable(HttpServletRequest request, EffectivePerson person)
-			throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return true;
-	}
-
-	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[文件或者附件管理]的操作
-	 * 
-	 * @param request
-	 * @param personName
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean fileInfoEditAvailable(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)判断用户是否有权限进行：[文件或者附件管理]的操作
-	 * 
-	 * @param request
-	 * @param personName
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean logEditAvailable(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)判断用户是否有权限进行：[设置应用或者分类管理员权限]的操作 平台的管理员有权限进行设置
-	 * 
-	 * @param request
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean appCategoryAdminEditAvailable(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager(request, person)) {
+	public boolean fileInfoEditAvailable( EffectivePerson person) throws Exception {
+		if ( isManager( person)) {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
@@ -436,14 +322,13 @@ public class Business {
 
 	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[表单模板管理]操作
-	 * 
-	 * @param request
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean formEditAvailable(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager(request, person)) {
+	public boolean formEditAvailable( EffectivePerson person) throws Exception {
+		if ( isManager( person)) {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
@@ -452,66 +337,17 @@ public class Business {
 
 	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[视图配置管理]操作
-	 * 
-	 * @param request
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean viewEditAvailable(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager(request, person)) {
+	public boolean viewEditAvailable( EffectivePerson person) throws Exception {
+		if (isManager(person)) {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
 		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)用户是否有权限进行：[访问文档信息]的操作
-	 * 
-	 * @param person
-	 * @param documentId
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean documentAllowRead(HttpServletRequest request, EffectivePerson person, String id) throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return true;
-	}
-
-	/**
-	 * TODO (uncomplete)用户是否有权限进行：[保存文档信息]的操作
-	 * 
-	 * @param person
-	 * @param documentId
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean documentAllowSave(HttpServletRequest request, EffectivePerson person, String documentId)
-			throws Exception {
-		if ( isManager(request, person)) {
-			return true;
-		}
-		// 其他情况暂时全部不允许操作
-		return true;
-	}
-
-	/**
-	 * 获取文档列表的查看权限
-	 * 
-	 * @param request
-	 * @param person
-	 * @return
-	 * @throws Exception
-	 */
-	public String getDocumentListViewPermission1(HttpServletRequest request, EffectivePerson person) throws Exception {
-		if ( isManager( request, person )) {
-			return "XAdmin";
-		}
-		return "Person";
 	}
 
 	public boolean editable( EffectivePerson effectivePerson, AppInfo appInfo ) throws Exception {

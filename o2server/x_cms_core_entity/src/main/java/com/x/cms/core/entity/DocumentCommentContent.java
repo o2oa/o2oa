@@ -30,7 +30,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class DocumentCommentContent extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
-	
+
 	@SuppressWarnings("unused")
 	private static final String TABLE = PersistenceProperties.DocumentCommentContent.table;
 
@@ -76,5 +76,5 @@ public class DocumentCommentContent extends SliceJpaObject {
 
 	public void setContent(String content) {
 		this.content = content;
-	}	
+	}
 }

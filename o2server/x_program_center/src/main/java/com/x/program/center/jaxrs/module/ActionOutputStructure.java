@@ -1,10 +1,8 @@
 package com.x.program.center.jaxrs.module;
 
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_cms_assemble_control;
-import com.x.base.core.project.x_portal_assemble_designer;
-import com.x.base.core.project.x_processplatform_assemble_designer;
-import com.x.base.core.project.x_query_assemble_designer;
+import com.x.base.core.project.*;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -14,6 +12,7 @@ import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
 
 public class ActionOutputStructure extends BaseAction {
@@ -35,6 +34,9 @@ public class ActionOutputStructure extends BaseAction {
 		wo.setQueryList(ThisApplication.context().applications()
 				.getQuery(x_query_assemble_designer.class, Applications.joinQueryUri("output", "list"))
 				.getDataAsList(WrapQuery.class));
+		wo.setServiceModuleList(CipherConnectionAction.get(false,
+				Config.url_x_program_center_jaxrs("output", "list"))
+				.getDataAsList(WrapServiceModule.class));
 		result.setData(wo);
 		return result;
 	}

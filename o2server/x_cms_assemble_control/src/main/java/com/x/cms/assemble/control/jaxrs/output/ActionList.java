@@ -3,7 +3,6 @@ package com.x.cms.assemble.control.jaxrs.output;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,17 +12,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
-import com.x.cms.core.entity.element.wrap.WrapAppDict;
-import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
-import com.x.cms.core.entity.element.wrap.WrapCms;
-import com.x.cms.core.entity.element.wrap.WrapFile;
-import com.x.cms.core.entity.element.wrap.WrapForm;
-import com.x.cms.core.entity.element.wrap.WrapScript;
+import com.x.cms.core.entity.element.wrap.*;
 
 class ActionList extends BaseAction {
 
@@ -32,13 +27,13 @@ class ActionList extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
 			List<Wo> wos = emc.fetchAll(AppInfo.class, Wo.copier);
-			List<WrapCategoryInfo> caetgoryList = emc.fetchAll(CategoryInfo.class, categoryInfoCopier);
+			List<WrapCategoryInfo> categoryList = emc.fetchAll(CategoryInfo.class, categoryInfoCopier);
 			List<WrapForm> formList = emc.fetchAll(Form.class, formCopier);
 			List<WrapScript> scriptList = emc.fetchAll(Script.class, scriptCopier);
 			List<WrapAppDict> appDictList = emc.fetchAll(AppDict.class, appDictCopier);
 			List<WrapFile> fileList = emc.fetchAll(File.class, fileCopier);
-			
-			ListTools.groupStick(wos, caetgoryList, "id", "appId", "categoryInfoList");
+
+			ListTools.groupStick(wos, categoryList, "id", "appId", "categoryInfoList");
 			ListTools.groupStick(wos, formList, "id", "appId", "formList");
 			ListTools.groupStick(wos, scriptList, "id", "appId", "scriptList");
 			ListTools.groupStick(wos, appDictList, "id", "appId", "appDictList");
@@ -48,6 +43,7 @@ class ActionList extends BaseAction {
 					.sorted(Comparator.comparing(Wo::getAppAlias, Comparator.nullsLast(String::compareTo))
 							.thenComparing(Wo::getAppName, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());
+
 			result.setData(wos);
 			return result;
 		}

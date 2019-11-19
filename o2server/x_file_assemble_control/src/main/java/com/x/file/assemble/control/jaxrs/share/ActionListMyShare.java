@@ -11,16 +11,23 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
 class ActionListMyShare extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String shareType) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String shareType, String fileType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<Wo> wos = Wo.copier.copy(business.share().listWithPerson(effectivePerson.getDistinguishedName(), shareType));
+			if (EMPTY_SYMBOL.equals(shareType)) {
+				shareType = null;
+			}
+			if (EMPTY_SYMBOL.equals(fileType)) {
+				fileType = null;
+			}
+			List<Wo> wos = Wo.copier.copy(business.share().listWithPerson(effectivePerson.getDistinguishedName(), shareType, fileType));
 			for (Wo o : wos) {
 				o.setContentType(this.contentType(false, o.getName()));
 			}

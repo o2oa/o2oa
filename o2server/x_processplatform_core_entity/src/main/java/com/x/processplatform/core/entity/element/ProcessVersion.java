@@ -13,11 +13,13 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
@@ -48,10 +50,16 @@ public class ProcessVersion extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		// this.editor = StringUtils.trimToEmpty(this.editor);
 	}
 
 	/* 更新运行方法 */
+	public ProcessVersion() {
+	}
+
+	public ProcessVersion(String process, JsonElement jsonElement) {
+		this.process = process;
+		this.data = XGsonBuilder.toJson(jsonElement);
+	}
 
 	public static final String process_FIELDNAME = "process";
 	@FieldDescribe("所属流程.")

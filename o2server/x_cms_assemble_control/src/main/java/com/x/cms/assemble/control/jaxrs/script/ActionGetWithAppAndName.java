@@ -21,10 +21,10 @@ import net.sf.ehcache.Element;
 
 class ActionGetWithAppAndName extends BaseAction {
 	
-	ActionResult<Wo> execute( EffectivePerson effectivePerson, String appId, String name ) throws Exception {
+	ActionResult<Wo> execute( EffectivePerson effectivePerson, String appFlag, String name ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
-		String cacheKey = "script.getWithAppWithName.appId." + appId + ".name." + name;
+		String cacheKey = "script.getWithAppWithName.appFlag." + appFlag + ".scriptName." + name;
 		Element element = null;
 		element = cache.get(cacheKey);
 		if (element != null) {
@@ -33,9 +33,9 @@ class ActionGetWithAppAndName extends BaseAction {
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				AppInfo appInfo = emc.find(appId, AppInfo.class);
+				AppInfo appInfo = emc.flag(appFlag, AppInfo.class);
 				if (null == appInfo) {
-					throw new Exception("[getWithAppWithName]appInfo{id:" + appId + "} not existed.");
+					throw new Exception("[getWithAppWithName]appInfo{flag:" + appFlag + "} not existed.");
 				}
 				String id = business.getScriptFactory().getWithAppWithName(appInfo.getId(), name);
 				if (StringUtils.isNotEmpty(id)) {

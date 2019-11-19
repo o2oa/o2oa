@@ -44,9 +44,9 @@ public class StatisticTopUnitForDay extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 		String topUnitName = null;
-		if(  this.topUnitName != null ) {
+		if (this.topUnitName != null) {
 			topUnitName = this.topUnitName.split("@")[0];
-		}else {
+		} else {
 			topUnitName = this.topUnitName;
 		}
 		this.setSequence(StringUtils.join(this.statisticDate, topUnitName, this.getId()));

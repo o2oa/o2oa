@@ -566,4 +566,18 @@ public class DocumentQueryService {
 		}
 		return false;
 	}
+
+	/**
+	 * 查询所有isTop属性为空（NULL）的文档ID列表
+	 * @return
+	 */
+	public List<String> listNULLIsTopDocIds() throws Exception {
+		//按正常逻辑根据序列进行分页查询
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business = new Business(emc);
+			return business.getDocumentFactory().listNULLIsTopDocIds();
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 }

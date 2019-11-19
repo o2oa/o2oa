@@ -25,10 +25,14 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("script")
 @JaxrsDescribe("脚本信息管理")
 public class ScriptAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取指定的脚本信息.", action = ActionGet.class)
 	@GET
@@ -41,9 +45,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGet().execute( effectivePerson, id );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error( e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -57,9 +61,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreate().execute( request, effectivePerson, jsonElement );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error( e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -75,9 +79,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdate().execute( effectivePerson, id, jsonElement );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error( e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -93,27 +97,27 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDelete().execute( effectivePerson, id );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error( e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中的所有脚本.", action = ActionListWithApplication.class)
 	@GET
-	@Path("list/app/{appId}")
+	@Path("list/app/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithApplication( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId ) {
+			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag ) {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithApplication().execute( effectivePerson, appId );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListWithApplication().execute( effectivePerson, flag );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -130,9 +134,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetWithAppAndName().execute( effectivePerson, appId, name );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -150,9 +154,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListNext().execute( effectivePerson, id, count );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -170,9 +174,9 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListPrev().execute( effectivePerson, id, count );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
@@ -190,9 +194,29 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetScriptNested().execute( request, effectivePerson, uniqueName, flag, jsonElement );
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取Script以及依赖脚本内容。", action = ActionLoad.class)
+	@POST
+	@Path("{flag}/appInfo/{appInfoFlag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void load(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("脚本标识") @PathParam("flag") String flag,
+					 @JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String applicationFlag,
+					 JsonElement jsonElement) {
+		ActionResult<ActionLoad.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionLoad().execute(effectivePerson, flag, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}

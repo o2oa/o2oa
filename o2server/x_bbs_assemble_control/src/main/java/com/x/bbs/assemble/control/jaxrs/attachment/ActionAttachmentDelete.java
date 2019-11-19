@@ -12,6 +12,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionAttachmentIdEmpty;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionAttachmentNotExists;
@@ -76,7 +77,7 @@ public class ActionAttachmentDelete extends BaseAction {
 					subjectInfo = emc.find(subjectAttachment.getSubjectId(), BBSSubjectInfo.class);
 					emc.beginTransaction(BBSSubjectAttachment.class);
 					emc.beginTransaction(BBSSubjectInfo.class);
-					if (subjectInfo != null && subjectInfo.getAttachmentList() != null) {
+					if (subjectInfo != null && ListTools.isNotEmpty(subjectInfo.getAttachmentList())) {
 						subjectInfo.getAttachmentList().remove(subjectAttachment.getId());
 						emc.check(subjectInfo, CheckPersistType.all);
 					}

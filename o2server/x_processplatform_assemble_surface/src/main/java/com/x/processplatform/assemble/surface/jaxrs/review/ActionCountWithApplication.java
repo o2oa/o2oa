@@ -4,85 +4,85 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValueCountPair;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
-import com.x.processplatform.core.entity.element.Application;
 
-public class ActionCountWithApplication extends BaseAction {
+class ActionCountWithApplication extends BaseAction {
 
-	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
-			List<NameValueCountPair> wraps = new ArrayList<>();
 			Business business = new Business(emc);
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			Wo wo = new Wo();
 			EntityManager em = emc.get(Review.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Review> root = cq.from(Review.class);
-			Predicate p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
-			cq.select(root.get(Review_.application)).where(p).distinct(true);
-			List<String> list = em.createQuery(cq).getResultList();
-			for (String str : list) {
-				NameValueCountPair o = this.concreteNameValueCountPair(business, effectivePerson, str);
-				wraps.add(o);
+			Path<String> pathApplication = root.get(Review_.application);
+			Path<String> pathApplicationName = root.get(Review_.applicationName);
+			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+			cq.multiselect(pathApplication, pathApplicationName, cb.count(root)).where(p).groupBy(pathApplication);
+			List<Tuple> os = em.createQuery(cq).getResultList();
+			List<NameValueCountPair> list = new ArrayList<>();
+			NameValueCountPair pair = null;
+			for (Tuple o : os) {
+				pair = new NameValueCountPair();
+				pair.setName(o.get(pathApplicationName));
+				pair.setValue(o.get(pathApplication));
+				pair.setCount(o.get(2, Long.class));
+				list.add(pair);
 			}
-			SortTools.asc(wraps, false, "name");
+			wo.setList(list);
+			wo.setTotal(list.stream().mapToLong(NameValueCountPair::getCount).sum());
+			result.setData(wo);
 			return result;
 		}
 	}
 
-	private NameValueCountPair concreteNameValueCountPair(Business business, EffectivePerson effectivePerson,
-			String applicationId) throws Exception {
-		NameValueCountPair pair = new NameValueCountPair();
-		pair.setValue(applicationId);
-		pair.setName(this.getApplicationName(business, effectivePerson, applicationId));
-		pair.setCount(this.count(business, effectivePerson, applicationId));
-		return pair;
+	public static class Wi extends FilterWi {
+
 	}
 
-	private String getApplicationName(Business business, EffectivePerson effectivePerson, String applicationId)
-			throws Exception {
-		Application application = business.application().pick(applicationId);
-		if (null != application) {
-			return application.getName();
-		} else {
-			EntityManagerContainer emc = business.entityManagerContainer();
-			EntityManager em = emc.get(Review.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<String> cq = cb.createQuery(String.class);
-			Root<Review> root = cq.from(Review.class);
-			Predicate p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
-			p = cb.and(p, cb.equal(root.get(Review_.application), applicationId));
-			cq.select(root.get(Review_.applicationName)).where(p);
-			List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
-			if (!list.isEmpty()) {
-				return list.get(0);
-			}
-			return null;
+	public static class Wo extends GsonPropertyObject {
+
+		@FieldDescribe("总数量")
+		private Long total;
+
+		@FieldDescribe("分类数量")
+		private List<NameValueCountPair> list = new ArrayList<>();
+
+		public Long getTotal() {
+			return total;
 		}
-	}
 
-	private Long count(Business business, EffectivePerson effectivePerson, String applicationId) throws Exception {
-		EntityManagerContainer emc = business.entityManagerContainer();
-		EntityManager em = emc.get(Review.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Review> root = cq.from(Review.class);
-		Predicate p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.equal(root.get(Review_.application), applicationId));
-		cq.select(cb.count(root)).where(p);
-		return em.createQuery(cq).getSingleResult();
+		public void setTotal(Long total) {
+			this.total = total;
+		}
+
+		public List<NameValueCountPair> getList() {
+			return list;
+		}
+
+		public void setList(List<NameValueCountPair> list) {
+			this.list = list;
+		}
+
 	}
 }

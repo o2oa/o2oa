@@ -3,6 +3,8 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -84,6 +86,11 @@ class ActionCompare extends BaseAction {
 						x_query_assemble_designer.class, Applications.joinQueryUri("input", "compare"), o);
 				wo.getQueryList().add(r.getData(JsonElement.class));
 			}
+			for (WrapServiceModule o : module.getServiceModuleList()) {
+				ActionResponse r = CipherConnectionAction.put(false,
+						Config.url_x_program_center_jaxrs("input", "compare"), o);
+				wo.getServiceModuleList().add(r.getData(JsonElement.class));
+			}
 			result.setData(wo);
 			return result;
 		}
@@ -105,6 +112,9 @@ class ActionCompare extends BaseAction {
 
 		@FieldDescribe("查询")
 		List<JsonElement> queryList = new ArrayList<>();
+
+		@FieldDescribe("服务")
+		List<JsonElement> serviceModuleList = new ArrayList<>();
 
 		public List<JsonElement> getProcessPlatformList() {
 			return processPlatformList;
@@ -144,6 +154,14 @@ class ActionCompare extends BaseAction {
 
 		public void setFlag(String flag) {
 			this.flag = flag;
+		}
+
+		public List<JsonElement> getServiceModuleList() {
+			return serviceModuleList;
+		}
+
+		public void setServiceModuleList(List<JsonElement> serviceModuleList) {
+			this.serviceModuleList = serviceModuleList;
 		}
 	}
 

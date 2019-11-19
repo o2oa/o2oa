@@ -188,10 +188,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_E_QUERYSTATTIMED";
 		}
 
-		public static class Projection {
-			public static final String table = "PP_E_PROJECTION";
-		}
-
 		public static class Mapping {
 			public static final String table = "PP_E_MAPPING";
 		}

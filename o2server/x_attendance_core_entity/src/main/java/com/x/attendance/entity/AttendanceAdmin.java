@@ -58,27 +58,28 @@ public class AttendanceAdmin extends SliceJpaObject {
 	 */
 	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName = "";
 
 	public static final String unitOu_FIELDNAME = "unitOu";
 	@FieldDescribe("组织编号")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitOu_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + unitOu_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitOu_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + unitOu_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitOu = "";
 
 	public static final String adminName_FIELDNAME = "adminName";
 	@FieldDescribe("管理员姓名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + adminName_FIELDNAME)
-	@Index( name = TABLE + IndexNameMiddle + adminName_FIELDNAME )
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + adminName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + adminName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String adminName = "";
 
 	public static final String adminLevel_FIELDNAME = "adminLevel";
 	@FieldDescribe("管理级别:UNIT|TOPUNIT")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + adminLevel_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + adminLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String adminLevel = "TOPUNIT";
 

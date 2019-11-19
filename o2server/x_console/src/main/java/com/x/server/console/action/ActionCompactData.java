@@ -49,7 +49,7 @@ public class ActionCompactData {
 		//Class.forName(SlicePropertiesBuilder.driver_h2).newInstance();
 		logger.print("compact data start at {}.", DateTools.format(start));
 		String dir = StringUtils.replace(Config.base(), "\\", "/") + "/local/repository/data";
-		String url = "jdbc:h2:" + dir + "/X";
+		String url = "jdbc:h2:" + dir + "/X;FILE_LOCK=NO";
 		String backup = dir + "/backup.sql";
 		Script.process(url, "sa", Config.token().getPassword(), backup, "", "");
 		DeleteDbFiles.execute(dir, "X", true);

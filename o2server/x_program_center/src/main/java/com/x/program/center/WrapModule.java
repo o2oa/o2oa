@@ -3,6 +3,7 @@ package com.x.program.center;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -45,6 +46,9 @@ public class WrapModule extends GsonPropertyObject {
 	@FieldDescribe("内容")
 	private List<WrapCms> cmsList = new ArrayList<>();
 
+	@FieldDescribe("服务")
+	private List<WrapServiceModule> serviceModuleList = new ArrayList<>();
+
 	public WrapProcessPlatform getProcessPlatform(String id) {
 		for (WrapProcessPlatform _o : ListTools.trim(this.processPlatformList, true, true)) {
 			if (StringUtils.equalsIgnoreCase(id, _o.getId())) {
@@ -65,6 +69,15 @@ public class WrapModule extends GsonPropertyObject {
 
 	public WrapCms getCms(String id) {
 		for (WrapCms _o : ListTools.trim(this.cmsList, true, true)) {
+			if (StringUtils.equalsIgnoreCase(id, _o.getId())) {
+				return _o;
+			}
+		}
+		return null;
+	}
+
+	public WrapServiceModule getServiceModule(String id) {
+		for (WrapServiceModule _o : ListTools.trim(this.serviceModuleList, true, true)) {
 			if (StringUtils.equalsIgnoreCase(id, _o.getId())) {
 				return _o;
 			}
@@ -161,4 +174,11 @@ public class WrapModule extends GsonPropertyObject {
 		this.downloadCount = downloadCount;
 	}
 
+	public List<WrapServiceModule> getServiceModuleList() {
+		return serviceModuleList;
+	}
+
+	public void setServiceModuleList(List<WrapServiceModule> serviceModuleList) {
+		this.serviceModuleList = serviceModuleList;
+	}
 }

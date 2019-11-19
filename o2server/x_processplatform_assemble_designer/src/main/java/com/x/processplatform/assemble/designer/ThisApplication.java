@@ -12,6 +12,9 @@ public class ThisApplication {
 
 	public static ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
 	public static MappingExecuteQueue mappingExecuteQueue = new MappingExecuteQueue();
+	public static FormVersionQueue formVersionQueue = new FormVersionQueue();
+	public static ProcessVersionQueue processVersionQueue = new ProcessVersionQueue();
+	public static ScriptVersionQueue scriptVersionQueue = new ScriptVersionQueue();
 
 	public static Context context() {
 		return context;
@@ -23,6 +26,9 @@ public class ThisApplication {
 			MessageConnector.start(context());
 			projectionExecuteQueue.start();
 			mappingExecuteQueue.start();
+			formVersionQueue.start();
+			processVersionQueue.start();
+			scriptVersionQueue.start();
 			context.schedule(CleanElementVersion.class, "20 20 5 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -33,6 +39,9 @@ public class ThisApplication {
 		try {
 			projectionExecuteQueue.stop();
 			mappingExecuteQueue.stop();
+			formVersionQueue.stop();
+			processVersionQueue.stop();
+			scriptVersionQueue.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();

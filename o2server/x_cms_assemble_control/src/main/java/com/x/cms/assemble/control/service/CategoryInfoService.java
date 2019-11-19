@@ -53,13 +53,21 @@ public class CategoryInfoService {
 		Business business = new Business( EntityManagerContainerFactory.instance().create() );
 		return business.getCategoryInfoFactory().listByAppId( appId );
 	}
-	
-	public List<String> listByAppIds( EntityManagerContainer emc, List<String> appIds, String documentType, Boolean manager, Integer maxCount ) throws Exception {
+
+	/**
+	 * 根据需要过滤的栏目列表和信息类型以及返回最大条目数量列示栏目信息ID列表
+	 * @param appIds
+	 * @param documentType
+	 * @param maxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listByAppIds( EntityManagerContainer emc, List<String> appIds, String documentType, Integer maxCount ) throws Exception {
 		if( ListTools.isEmpty( appIds ) ){
 			return listAllIds(emc);
 		}
 		Business business = new Business( emc );
-		return business.getCategoryInfoFactory().listByAppIds( appIds, documentType, manager, maxCount );
+		return business.getCategoryInfoFactory().listByAppIds( appIds, documentType, maxCount );
 	}
 
 	public List<String> listAppPeopleViewableCategoryInfoIds( EntityManagerContainer emc, List<String> inAppInfoIds, List<String> inCategoryIds, 

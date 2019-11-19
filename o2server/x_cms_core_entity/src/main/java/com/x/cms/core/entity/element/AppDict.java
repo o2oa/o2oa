@@ -61,37 +61,42 @@ public class AppDict extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + appId_FIELDNAME)
 	@CheckPersist(citationExists = {
 			/* 检查关联的Application需存在 */
-			@CitationExist( type = AppInfo.class ) })
+			@CitationExist(type = AppInfo.class) })
 	private String appId;
 
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("字典名称.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(citationNotExists =
 	/* 同一个应用下不能有重名 */
-	@CitationNotExist(fields = { "id", "alias", "name" }, type = AppDict.class, equals = @Equal(property = "appId", field = "appId")))
+	@CitationNotExist(fields = { "id", "alias",
+			"name" }, type = AppDict.class, equals = @Equal(property = "appId", field = "appId")))
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
 	@FieldDescribe("别名.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ alias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(citationNotExists =
 	/* 同一个应用下不能有重名 */
-	@CitationNotExist(fields = { "id", "alias", "name" }, type = AppDict.class, equals = @Equal(property = "appId", field = "appId")))
+	@CitationNotExist(fields = { "id", "alias",
+			"name" }, type = AppDict.class, equals = @Equal(property = "appId", field = "appId")))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ description_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
 	public static final String creatorUid_FIELDNAME = "creatorUid";
 	@FieldDescribe("信息创建人UID")
-	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + creatorUid_FIELDNAME)
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + creatorUid_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorUid_FIELDNAME)
 	private String creatorUid;
 

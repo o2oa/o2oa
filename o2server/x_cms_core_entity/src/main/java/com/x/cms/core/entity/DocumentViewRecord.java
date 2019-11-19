@@ -125,14 +125,14 @@ public class DocumentViewRecord extends SliceJpaObject {
 
 	public static final String viewCount_FIELDNAME = "viewCount";
 	@FieldDescribe("访问次数")
-	@Column( name = ColumnNamePrefix + viewCount_FIELDNAME)
+	@Column(name = ColumnNamePrefix + viewCount_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer viewCount;
 
 	public static final String lastViewTime_FIELDNAME = "lastViewTime";
 	@FieldDescribe("最后访问时间.")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + lastViewTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lastViewTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastViewTime_FIELDNAME)
 	private Date lastViewTime;
 

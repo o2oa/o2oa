@@ -30,60 +30,64 @@ import net.sf.ehcache.Element;
 
 class ActionListWithPersonObject extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					StringUtils.join(wi.getPersonList(), ","));
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((List<Wo>) element.getObjectValue());
-			} else {
-				List<Wo> wos = this.list(business, wi);
-				cache.put(new Element(cacheKey, wos));
-				result.setData(wos);
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            Business business = new Business(emc);
+            String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
+                    StringUtils.join(wi.getPersonList(), ","));
+            Element element = cache.get(cacheKey);
+            if (null != element && (null != element.getObjectValue())) {
+                result.setData((List<Wo>) element.getObjectValue());
+            } else {
+                List<Wo> wos = this.list(business, wi);
+                cache.put(new Element(cacheKey, wos));
+                result.setData(wos);
+            }
+            return result;
+        }
+    }
+
+    public static class Wi extends GsonPropertyObject {
+        @FieldDescribe("个人")
+        private List<String> personList = new ArrayList<>();
+        public List<String> getPersonList() {
+            return personList;
+        }
+        public void setPersonList(List<String> personList) {
+            this.personList = personList;
+        }
+    }
+
+    public static class Wo extends com.x.base.core.project.organization.Identity {
+    }
+
+    private List<Wo> list(Business business, Wi wi) throws Exception {
+        List<Wo> wos = new ArrayList<>();
+        List<String> personMajorIds = new ArrayList<>();
+        List<Person> os = business.person().pick(wi.getPersonList());
+        List<String> personIds = ListTools.extractProperty(os, JpaObject.id_FIELDNAME, String.class, true, true);
+        List<Identity> personMajors = business.identity().listMajorOfPerson(business, personIds);
+        if( ListTools.isNotEmpty( personMajors )){
+			for( Identity identity : personMajors ){
+                personMajorIds.add( identity.getId() );
 			}
-			return result;
 		}
-	}
-
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("个人")
-		private List<String> personList = new ArrayList<>();
-
-		public List<String> getPersonList() {
-			return personList;
-		}
-
-		public void setPersonList(List<String> personList) {
-			this.personList = personList;
-		}
-
-	}
-
-	public static class Wo extends com.x.base.core.project.organization.Identity {
-
-	}
-
-	private List<Wo> list(Business business, Wi wi) throws Exception {
-		List<Wo> wos = new ArrayList<>();
-		List<Person> os = business.person().pick(wi.getPersonList());
-		List<String> personIds = ListTools.extractProperty(os, JpaObject.id_FIELDNAME, String.class, true, true);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.person).in(personIds);
-		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p).distinct(true))
-				.getResultList();
-		List<Identity> list = business.identity().pick(identityIds);
-		for (Identity o : list) {
-			wos.add(this.convert(business, o, Wo.class));
-		}
-		return wos;
-	}
+        EntityManager em = business.entityManagerContainer().get(Identity.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<Identity> root = cq.from(Identity.class);
+        Predicate p = root.get(Identity_.person).in(personIds);
+        List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p).distinct(true)).getResultList();
+        List<Identity> list = business.identity().pick(identityIds);
+        for (Identity o : list) {
+        	if( ListTools.contains( personMajorIds, o.getId() )){
+				o.setMajor( true );
+			}
+            wos.add(this.convert(business, o, Wo.class));
+        }
+        return wos;
+    }
 
 }

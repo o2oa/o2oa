@@ -88,6 +88,7 @@ public class ActionDumpStorage {
 				em.close();
 				emf.close();
 			}
+			System.gc();
 		}
 		FileUtils.write(new File(dir, "catalog.json"), XGsonBuilder.instance().toJson(this.catalog),
 				DefaultCharset.charset);

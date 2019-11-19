@@ -217,34 +217,27 @@ public class DocumentInfoService {
 		除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
 	 * @param emc
 	 * @param pageSize
-	 * @param id
+	 * @param lastId
 	 * @param orderField
 	 * @param orderType
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Document> listNextWithCondition( EntityManagerContainer emc, Integer pageSize, String id, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+	public List<Document> listNextWithCondition( EntityManagerContainer emc, Integer pageSize, String lastId, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		if( pageSize == 0 ) { pageSize = 20; }
 		if( StringUtils.isEmpty( orderType ) ) {  orderType = "desc"; }
-		
-		//判断排序列情况
-		if( StringUtils.isEmpty( orderField ) ) { 
-			orderField = Document.sequence_FIELDNAME;
-		}
-		if( Document.sequence_FIELDNAME.equalsIgnoreCase( orderField )) {
-			orderField = "sequence";
-		}
-		
-		orderField = Document.getSequnceFieldNameWithProperty( orderField );
-			
 		Business business = new Business(emc);
 		Document document = null;
 		String sequenceFieldValue = null;
 		Object obj = null;
-		
-		if( StringUtils.isNotEmpty( id ) && !StringUtils.equalsIgnoreCase( id, StandardJaxrsAction.EMPTY_SYMBOL ) ) {
-			document = emc.find( id, Document.class );
+
+		//校正排序列情况
+		orderField = Document.getSequnceFieldNameWithProperty( orderField );
+
+		//如果有指定lastId值 ，需要查询该ID对应的文档的sequence
+		if( StringUtils.isNotEmpty( lastId ) && !StringUtils.equalsIgnoreCase( lastId, StandardJaxrsAction.EMPTY_SYMBOL ) ) {
+			document = emc.find( lastId, Document.class );
 			if( document != null ){//查询出ID对应的记录的sequence
 				obj = PropertyUtils.getProperty( document, orderField );
 				if( obj != null ) {

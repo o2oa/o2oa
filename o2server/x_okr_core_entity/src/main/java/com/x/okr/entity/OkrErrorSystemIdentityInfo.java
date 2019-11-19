@@ -64,14 +64,15 @@ public class OkrErrorSystemIdentityInfo extends SliceJpaObject {
 	 */
 	public static final String identity_FIELDNAME = "identity";
 	@FieldDescribe("身份名称")
-	@Column(length =  AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + identity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ identity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + identity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String identity = "未知";
-	
+
 	public static final String flag_FIELDNAME = "flag";
 	@FieldDescribe("更新标识")
-	@Column(length =  AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + flag_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + flag_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String flag = "未知";
 

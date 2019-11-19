@@ -301,9 +301,13 @@ public class ActionQueryViewDocument extends BaseAction {
 							if( document.getAuthorPersonList().contains( personName ) ) {
 								isEditor = true;
 							}
+						}
+						if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
 							if( ListTools.containsAny( unitNames, document.getAuthorUnitList())) {
 								isEditor = true;
 							}
+						}
+						if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
 							if( ListTools.containsAny( groupNames, document.getAuthorGroupList())) {
 								isEditor = true;
 							}

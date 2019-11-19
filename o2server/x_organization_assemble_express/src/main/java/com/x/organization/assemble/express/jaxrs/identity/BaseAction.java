@@ -44,6 +44,7 @@ class BaseAction extends StandardJaxrsAction {
 		t.setUnitLevel(identity.getUnitLevel());
 		t.setUnitLevelName(identity.getUnitLevelName());
 		t.setOrderNumber(identity.getOrderNumber());
+		t.setMajor( identity.getMajor() );
 		Person p = business.person().pick(identity.getPerson());
 		if (null != p) {
 			t.setPerson(p.getDistinguishedName());

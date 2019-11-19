@@ -17,11 +17,14 @@ public enum ProcessingType {
 	retract,
 	/* 重置处理人 */
 	reset,
-	/** 智能流转 */
+	/* 智能流转 */
 	sameTarget,
-	/** 超时流转 */
+	/* 超时流转 */
 	expire,
 	/* 管理员流转 */
-	control;
+	control,
+	/* 添加处理人 */
+	appendTask;
+
 	public static final int length = JpaObject.length_16B;
 }

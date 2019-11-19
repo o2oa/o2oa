@@ -222,12 +222,6 @@ public class Data extends ListOrderedMap<String, Object> {
 		public void setImportBatchName(String importBatchName) {
 			this.importBatchName = importBatchName;
 		}
-		public static WrapCopier<Document, DataDocument> getDocumentCopier() {
-			return documentCopier;
-		}
-		public static void setDocumentCopier(WrapCopier<Document, DataDocument> documentCopier) {
-			DataDocument.documentCopier = documentCopier;
-		}
 		public Long getCommentCount() {
 			return commentCount;
 		}

@@ -90,14 +90,6 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 	public Calendar_Event() {
 	}
 
-	/**
-	 * Create a new calendar event with the given subject and given start and end
-	 * times as UNIX timestamps.
-	 * 
-	 * @param title
-	 * @param startTime
-	 * @param endTime
-	 */
 	public Calendar_Event(final String id, final String title, final Date startTime, final Date endTime) {
 		this.id = id;
 		this.title = title;
@@ -106,14 +98,6 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 		this.isAllDayEvent = false;
 	}
 
-	/**
-	 * Create a new calendar entry with the given subject, starting at <begin> and
-	 * with a duration of <duration> milliseconds.
-	 * 
-	 * @param title
-	 * @param startTime
-	 * @param duration
-	 */
 	public Calendar_Event(final String id, final String title, final Date startTime, final int duration) {
 		this.id = id;
 		this.title = title;
@@ -122,30 +106,12 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 		this.isAllDayEvent = false;
 	}
 
-	/**
-	 * Create a new calendar entry with the given start, a duration and a recurrence
-	 * 
-	 * @param id
-	 * @param title
-	 * @param startTime
-	 * @param duration
-	 * @param recurrenceRule
-	 */
 	public Calendar_Event(final String id, final String title, final Date startTime, final int duration,
 			final String recurrenceRule) {
 		this(id, title, startTime, duration);
 		this.recurrenceRule = recurrenceRule;
 	}
 
-	/**
-	 * Create a new calendar entry with the given start and end
-	 * 
-	 * @param id
-	 * @param subject
-	 * @param begin
-	 * @param end
-	 * @param recurrenceRule
-	 */
 	public Calendar_Event(final String id, final String title, final Date startTime, final Date endTime,
 			final String recurrenceRule) {
 		this(id, title, startTime, endTime);
@@ -196,6 +162,12 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + comment_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String comment = null;
+
+	public static final String commentId_FIELDNAME = "commentId";
+	@FieldDescribe("备注LOB信息")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + commentId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String commentId = null;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("事件开始时间")
@@ -754,6 +726,10 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 		this.color = color;
 	}
 
+	public String getCommentId() { return commentId; }
+
+	public void setCommentId(String commentId) { this.commentId = commentId; }
+
 	/**
 	 * 是否是在一天内结束的日程或者事件
 	 * 
@@ -799,12 +775,9 @@ public class Calendar_Event extends SliceJpaObject implements Cloneable, Compara
 
 	/**
 	 * 判断事件是否在指定的时间范围之内 Check if the event recurs within the given period
-	 * 
 	 * @param periodStart
 	 * @param periodEnd
-	 * @param kEvent
-	 * @return <code>true</code> if event recurs in the given period, otherwise
-	 *         <code>false</code>
+	 * @return
 	 */
 	public boolean isRecurringInPeriod(final Date periodStart, final Date periodEnd) {
 		final DateList recurDates = getRecurringsInPeriod(periodStart, periodEnd);

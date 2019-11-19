@@ -46,7 +46,7 @@ public class ActionListCategoryInfoViewers extends BaseAction {
 		return result;
 	}
 
-public static class Wo{
+	public static class Wo{
 		
 		@FieldDescribe("人员列表")
 		private List<String> personList;

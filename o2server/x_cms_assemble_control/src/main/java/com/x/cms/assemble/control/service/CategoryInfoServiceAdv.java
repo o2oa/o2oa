@@ -50,14 +50,21 @@ public class CategoryInfoServiceAdv {
             throw e;
         }
     }
-    
-    public List<String> listCategoryIdsWithAppIds(List<String> viewAbleAppIds, String documentType, Boolean manager, Integer maxCount ) throws Exception {
+
+	/**
+	 * 根据需要过滤的栏目列表和信息类型以及返回最大条目数量列示栏目信息ID列表(无权限查询)
+	 * @param viewAbleAppIds
+	 * @param documentType
+	 * @param maxCount
+	 * @return
+	 * @throws Exception
+	 */
+    public List<String> listCategoryIdsWithAppIds(List<String> viewAbleAppIds, String documentType, Integer maxCount ) throws Exception {
     	if (ListTools.isEmpty( viewAbleAppIds )) {
-//    		System.out.println(">>>>>>>>listCategoryIdsWithAppIds viewAbleAppIds is empty!");
            return new ArrayList<>();
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-           return categoryInfoService.listByAppIds( emc, viewAbleAppIds, documentType, manager, maxCount );
+           return categoryInfoService.listByAppIds( emc, viewAbleAppIds, documentType, maxCount );
         } catch (Exception e) {
             throw e;
         }
@@ -313,14 +320,14 @@ public class CategoryInfoServiceAdv {
 		} catch (Exception e) {
 			throw e;
 		}
-	}	
+	}
 
 	/**
 	 * 判断用户是否为指定分类的管理员
 	 * @param categoryId
 	 * @param personName
-	 * @param units
-	 * @param groups
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
 	 * @throws Exception
 	 */
@@ -368,13 +375,13 @@ public class CategoryInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 判断用户是否为指定分类的管理员
 	 * @param categoryInfo
 	 * @param personName
-	 * @param units
-	 * @param groups
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
 	 * @throws Exception
 	 */

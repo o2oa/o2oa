@@ -1,0 +1,1473 @@
+{
+	"com.x.file.core.entity.Attachment": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceImportFileInfo": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceDetail": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceAppealInfo": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceDetailAppeal": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceDetailBakup": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.Script": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.TaskCompleted": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.DataItem": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.file.core.entity.Folder": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Definition": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.WorkCompleted": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.ApplicationDict": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.meeting.core.entity.Building": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Role": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Delay": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Route": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.meeting.core.entity.Attachment": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.ViewCatagory": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Statistic": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Department": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceWorkDayConfig": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.collaboration.core.entity.WebSocketMessage": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Condition": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.End": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Agent": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Company": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.DepartmentDuty": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Manual": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.PersonAttribute": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.StatisticDepartmentForDay": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Cancel": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Message": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.StatisticCompanyForDay": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Identity": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.meeting.core.entity.Meeting": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Application": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Choice": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.View": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.DataItem": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Person": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Parallel": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.Attachment": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.StatisticPersonForMonth": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.Document": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Split": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Device": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.FileInfo": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Process": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Service": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Embed": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Invoke": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.StatisticDepartmentForMonth": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.ViewFieldConfig": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.CompanyAttribute": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Form": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.AppCatagoryPermission": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceSelfHoliday": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.SerialNumber": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.View": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.Review": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.mail.core.entity.Account": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Custom": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.ApplicationDictItem": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceScheduleSetting": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.CatagoryInfo": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.CompanyDuty": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.meeting.core.entity.Room": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Begin": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.StatisticCompanyForMonth": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.AppDict": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceSetting": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.DepartmentAttribute": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.Log": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.ReadCompleted": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.Task": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.AppCatagoryAdmin": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.AppInfo": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.temporary.TriggerWorkRecord": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Merge": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.log.ProcessingError": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.AttachmentLog": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.attendance.entity.AttendanceAdmin": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.Form": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.Read": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.WorkLog": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.temporary.ServiceValue": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.element.Script": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.component.core.entity.Component": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.processplatform.core.entity.content.Work": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.organization.core.entity.Group": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	],
+
+	"com.x.cms.core.entity.element.AppDictItem": 
+	[
+		{
+			"dataServer": "xd01",
+			"order": 1,
+			"toolLevel": "WARN",
+			"runtimeLevel": "WARN",
+			"dataCacheLevel": "WARN",
+			"metaDataLevel": "WARN",
+			"enhanceLevel": "WARN",
+			"queryLevel": "WARN",
+			"sqlLevel": "WARN",
+			"jdbcLevel": "WARN"
+		}
+	]
+}

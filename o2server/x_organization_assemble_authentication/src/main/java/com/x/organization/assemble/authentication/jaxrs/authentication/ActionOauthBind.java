@@ -94,7 +94,7 @@ class ActionOauthBind extends BaseAction {
 			} else {
 				logger.debug("info script:{}.", oauthClient.getInfoScriptText());
 				ScriptEngineManager factory = new ScriptEngineManager();
-				ScriptEngine engine = factory.getEngineByName("nashorn");
+				ScriptEngine engine = factory.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 				engine.put("text", infoBody);
 				credential = engine.eval(oauthClient.getInfoScriptText()).toString();
 			}

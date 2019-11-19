@@ -32,7 +32,7 @@ class ActionManageDelete extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Review.class);
 			}
 			if (!StringUtils.equals(review.getApplication(), application.getId())) {
-				throw new ExceptionReviewNotMatchApplication(id, applicationFlag);
+				throw new ExceptionNotMatchApplication(id, applicationFlag);
 			}
 			// 需要对这个应用的管理权限
 			business.application().allowControl(effectivePerson, application);

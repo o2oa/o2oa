@@ -129,7 +129,7 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 	public static final String statisticTime_FIELDNAME = "statisticTime";
 	@FieldDescribe("统计时间.")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + statisticTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + statisticTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date statisticTime = null;
 
@@ -141,19 +141,19 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 
 	public static final String statisticYear_FIELDNAME = "statisticYear";
 	@FieldDescribe("统计年份")
-	@Column( name = ColumnNamePrefix + statisticYear_FIELDNAME)
+	@Column(name = ColumnNamePrefix + statisticYear_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer statisticYear = null;
 
 	public static final String statisticMonth_FIELDNAME = "statisticMonth";
 	@FieldDescribe("统计月份")
-	@Column( name = ColumnNamePrefix + statisticMonth_FIELDNAME)
+	@Column(name = ColumnNamePrefix + statisticMonth_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer statisticMonth = null;
 
 	public static final String statisticWeek_FIELDNAME = "statisticWeek";
 	@FieldDescribe("统计周数")
-	@Column( name = ColumnNamePrefix + statisticWeek_FIELDNAME)
+	@Column(name = ColumnNamePrefix + statisticWeek_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer statisticWeek = null;
 
@@ -165,55 +165,59 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 
 	public static final String responsibilityEmployeeName_FIELDNAME = "responsibilityEmployeeName";
 	@FieldDescribe("主责人姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityEmployeeName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityEmployeeName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityEmployeeName = "";
 
 	public static final String responsibilityIdentity_FIELDNAME = "responsibilityIdentity";
 	@FieldDescribe("主责人身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityIdentity = "";
 
 	public static final String responsibilityUnitName_FIELDNAME = "responsibilityUnitName";
 	@FieldDescribe("主责人所属组织名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityUnitName = "";
 
 	public static final String responsibilityTopUnitName_FIELDNAME = "responsibilityTopUnitName";
 	@FieldDescribe("主责人所属顶层组织名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + responsibilityTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ responsibilityTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String responsibilityTopUnitName = "";
 
 	public static final String isCompleted_FIELDNAME = "isCompleted";
 	@FieldDescribe("工作是否已完成")
-	@Column( name = ColumnNamePrefix + isCompleted_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isCompleted_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isCompleted = false;
 
 	public static final String isOverTime_FIELDNAME = "isOverTime";
 	@FieldDescribe("工作是否已超期")
-	@Column( name = ColumnNamePrefix + isOverTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isOverTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isOverTime = false;
 
 	public static final String workProcessStatus_FIELDNAME = "workProcessStatus";
 	@FieldDescribe("工作处理状态：草稿|待确认|执行中|已超期|已完成|已撤消")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + workProcessStatus_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workProcessStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workProcessStatus = "草稿";
 
 	public static final String reportStatus_FIELDNAME = "reportStatus";
 	@FieldDescribe("工作汇报状态")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + reportStatus_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + reportStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reportStatus = "未提交汇报";
 
 	public static final String reportDayInCycle_FIELDNAME = "reportDayInCycle";
 	@FieldDescribe("周期汇报时间：每月的几号(1-31)，每周的星期几(1-7)，启动时间由系统配置设定，比如：10:00")
-	@Column( name = ColumnNamePrefix + reportDayInCycle_FIELDNAME)
+	@Column(name = ColumnNamePrefix + reportDayInCycle_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer reportDayInCycle = 0;
 
@@ -221,7 +225,7 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("截止当前完成情况")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + progressDescription_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + progressDescription_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String progressDescription = "";
 
@@ -229,7 +233,7 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("后续工作计划")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + workPlan_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + workPlan_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workPlan = "";
 
@@ -237,7 +241,7 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("工作汇报备注信息")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + memo_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + memo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String memo = "";
 
@@ -245,21 +249,21 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("工作要点及需求")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + workPointAndRequirements_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + workPointAndRequirements_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workPointAndRequirements = "";
 
 	public static final String adminSuperviseInfo_FIELDNAME = "adminSuperviseInfo";
 	@Lob
 	@FieldDescribe("管理员督办信息")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + adminSuperviseInfo_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + adminSuperviseInfo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String adminSuperviseInfo = "";
 
 	public static final String opinion_FIELDNAME = "opinion";
 	@Lob
 	@FieldDescribe("领导处理意见")
-	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + opinion_FIELDNAME)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + opinion_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String opinion = "";
 

@@ -36,6 +36,9 @@ abstract class AbstractJaxrsAction {
 
 	protected <T> T convertToWrapIn(JsonElement jsonElement, Class<T> clz) throws Exception {
 		try {
+			if (null == jsonElement || jsonElement.isJsonNull()) {
+				return clz.newInstance();
+			}
 			return gson.fromJson(jsonElement, clz);
 		} catch (Exception e) {
 			throw new JsonElementConvertToWrapInException(e, clz);
@@ -75,8 +78,7 @@ abstract class AbstractJaxrsAction {
 				DefaultCharset.charset);
 		fileName = FilenameUtils.getName(fileName);
 		return fileName;
-		
+
 	}
 
-	
 }

@@ -81,6 +81,7 @@ class ActionGetWithIdentityWithLevel extends BaseAction {
 	}
 
 	private Wo get(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
+		Wo wo = new Wo();
 		if (StringUtils.isNotEmpty(wi.getIdentity()) && NumberTools.greaterThan(wi.getLevel(), 0)) {
 			Identity identity = business.identity().pick(wi.getIdentity());
 			if (null != identity) {
@@ -93,7 +94,6 @@ class ActionGetWithIdentityWithLevel extends BaseAction {
 					units = business.unit().sort(units);
 					for (Unit o : units) {
 						if (o.getLevel() == wi.getLevel()) {
-							Wo wo = new Wo();
 							wo.setUnit(o.getDistinguishedName());
 							return wo;
 						}
@@ -101,7 +101,7 @@ class ActionGetWithIdentityWithLevel extends BaseAction {
 				}
 			}
 		}
-		return null;
+		return wo;
 	}
 
 }

@@ -118,17 +118,37 @@ public class ShareAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取我共享的文件.", action = ActionListMyShare.class)
+	@JaxrsMethodDescribe(value = "获取我共享的文件QueryParam.", action = ActionListMyShare.class)
 	@GET
 	@Path("list/my")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listMyShare(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("分享类型:密码分享(password)|指定分享(member)") @QueryParam("shareType") String shareType) {
+							@JaxrsParameterDescribe("分享类型:密码分享(password)|指定分享(member)") @QueryParam("shareType") String shareType,
+							@JaxrsParameterDescribe("分享的文件类型:文件(attachment)|目录(folder)") @QueryParam("fileType") String fileType) {
 		ActionResult<List<ActionListMyShare.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListMyShare().execute(effectivePerson, shareType);
+			result = new ActionListMyShare().execute(effectivePerson, shareType, fileType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取我共享的文件2.", action = ActionListMyShare.class)
+	@GET
+	@Path("list/my2/{shareType}/{fileType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMyShare2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("分享类型:密码分享(password)|指定分享(member)|全部({0})") @PathParam("shareType") String shareType,
+							@JaxrsParameterDescribe("分享的文件类型:文件(attachment)|目录(folder)|全部({0})") @PathParam("fileType") String fileType) {
+		ActionResult<List<ActionListMyShare.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListMyShare().execute(effectivePerson, shareType, fileType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -141,11 +161,30 @@ public class ShareAction extends StandardJaxrsAction {
 	@Path("list/to/me")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listShareToMe(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void listShareToMe(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("分享的文件类型:文件(attachment)|目录(folder)") @QueryParam("fileType") String fileType) {
 		ActionResult<List<ActionListShareToMe.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListShareToMe().execute(effectivePerson);
+			result = new ActionListShareToMe().execute(effectivePerson, fileType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取他人共享给我的文件2.", action = ActionListShareToMe.class)
+	@GET
+	@Path("list/to/me2/{fileType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listShareToMe2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("分享的文件类型:文件(attachment)|目录(folder)|全部({0})") @PathParam("fileType") String fileType) {
+		ActionResult<List<ActionListShareToMe.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListShareToMe().execute(effectivePerson, fileType);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

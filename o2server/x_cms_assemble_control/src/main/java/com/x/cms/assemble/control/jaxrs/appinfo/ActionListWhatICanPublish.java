@@ -30,7 +30,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 		String personName = effectivePerson.getDistinguishedName();
 
 		try {
-			isXAdmin = userManagerService.isManager(request, effectivePerson );
+			isXAdmin = userManagerService.isManager( effectivePerson );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
@@ -38,47 +38,36 @@ public class ActionListWhatICanPublish extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( personName,  "all", "publish", isXAdmin);
+		String cacheKey = ApplicationCache.concreteCacheKey( personName,  "all", "publish", isXAdmin, isAnonymous );
 		Element element = cache.get(cacheKey);
 
 		if ((null != element) && (null != element.getObjectValue())) {
+
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
+
 		} else {
 			if (check) {
-				if ( isXAdmin ) { // 如果用户管理系统管理，则获取所有的栏目和分类信息
-					try {
-						wos = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,  "all", "全部", isXAdmin, 1000 );
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new ExceptionAppInfoProcess(e,
-								"系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
-						result.error(exception);
-						logger.error(e, effectivePerson, request, null);
-					}
-				} else {
-					try {
-						wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,  "all", "全部", isXAdmin, 1000 );
-						for( Wo wo : wos_out ) {
-							if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
-								wos.add( wo );
-							}
+				try {
+					wos_out = listPublishAbleAppInfoByPermission( personName, isAnonymous, null,  "all", "全部", isXAdmin, 1000 );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+
+				if( ListTools.isNotEmpty( wos_out )){
+					for( Wo wo : wos_out ) {
+						if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
+							wos.add( wo );
 						}
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new ExceptionAppInfoProcess(e,
-								"系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
-						result.error(exception);
-						logger.error(e, effectivePerson, request, null);
 					}
-				}
-			}
-			if (check) {
-				if(ListTools.isNotEmpty( wos)) {
+					//按appInfoSeq列的值， 排个序
 					SortTools.asc( wos, "appInfoSeq");
+					cache.put(new Element( cacheKey, wos ));
+					result.setData( wos );
 				}
-				cache.put(new Element( cacheKey, wos ));
-				result.setData( wos );
 			}
 		}
 		return result;

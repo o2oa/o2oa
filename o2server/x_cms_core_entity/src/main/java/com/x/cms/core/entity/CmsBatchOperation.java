@@ -58,13 +58,13 @@ public class CmsBatchOperation extends SliceJpaObject {
 	public static final String optType_FIELDNAME = "optType";
 	@FieldDescribe("操作类别")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + optType_FIELDNAME)
-	@CheckPersist( allowEmpty = false )
+	@CheckPersist(allowEmpty = false)
 	private String optType;
-	
+
 	public static final String objType_FIELDNAME = "objType";
 	@FieldDescribe("对象类别")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + objType_FIELDNAME)
-	@CheckPersist( allowEmpty = false )
+	@CheckPersist(allowEmpty = false)
 	private String objType;
 
 	public static final String bundle_FIELDNAME = "bundle";
@@ -78,22 +78,22 @@ public class CmsBatchOperation extends SliceJpaObject {
 	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + oldInfo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String oldInfo;
-	
+
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
 	@Column(length = STRING_VALUE_MAX_LENGTH, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
-	
+
 	public static final String errorCount_FIELDNAME = "errorCount";
 	@FieldDescribe("执行错误次数")
-	@Column( name = ColumnNamePrefix + errorCount_FIELDNAME)
+	@Column(name = ColumnNamePrefix + errorCount_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer errorCount;
-	
+
 	public static final String isRunning_FIELDNAME = "isRunning";
 	@FieldDescribe("是否正在执行中")
-	@Column( name = ColumnNamePrefix + isRunning_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isRunning_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean isRunning;
 
@@ -144,9 +144,9 @@ public class CmsBatchOperation extends SliceJpaObject {
 	public void setErrorCount(Integer errorCount) {
 		this.errorCount = errorCount;
 	}
-	
-	public void addErrorCount( Integer count ) {
-		if( this.errorCount == null ) {
+
+	public void addErrorCount(Integer count) {
+		if (this.errorCount == null) {
 			this.errorCount = 0;
 		}
 		this.errorCount = this.errorCount + count;
@@ -159,14 +159,14 @@ public class CmsBatchOperation extends SliceJpaObject {
 	public void setIsRunning(Boolean isRunning) {
 		this.isRunning = isRunning;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append( "OBJ_TYPE: " ).append( this.objType );
-		sb.append( ", OPT_TYPE: " ).append( this.optType );
-		sb.append( ", BUNDLE: " ).append( this.bundle );
-		sb.append( ", OLDINFO: " ).append( this.oldInfo );
-		sb.append( ", DESCRIPTION: " ).append( this.description );
+		sb.append("OBJ_TYPE: ").append(this.objType);
+		sb.append(", OPT_TYPE: ").append(this.optType);
+		sb.append(", BUNDLE: ").append(this.bundle);
+		sb.append(", OLDINFO: ").append(this.oldInfo);
+		sb.append(", DESCRIPTION: ").append(this.description);
 		return sb.toString();
 	}
 }

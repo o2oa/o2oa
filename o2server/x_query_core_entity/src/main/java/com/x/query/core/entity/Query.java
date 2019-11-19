@@ -107,7 +107,7 @@ public class Query extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ availableIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -119,7 +119,7 @@ public class Query extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ availableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -142,7 +142,7 @@ public class Query extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("查询管理者")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)

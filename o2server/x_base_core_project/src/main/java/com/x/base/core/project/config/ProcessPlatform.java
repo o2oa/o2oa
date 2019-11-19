@@ -14,8 +14,16 @@ import com.x.base.core.project.tools.DefaultCharset;
 public class ProcessPlatform extends ConfigObject {
 
 	public final static Integer DEFAULT_FORMVERSIONPERIOD = 45;
+
 	public final static Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
+
 	public final static Integer DEFAULT_SCRIPTVERSIONPERIOD = 45;
+
+	public final static Integer DEFAULT_FORMVERSIONCOUNT = 30;
+
+	public final static Integer DEFAULT_PROCESSVERSIONCOUNT = 30;
+
+	public final static Integer DEFAULT_SCRIPTVERSIONCOUNT = 30;
 
 	public final static String DEFAULT_DOCTOWORDTYPE = "local";
 
@@ -37,6 +45,9 @@ public class ProcessPlatform extends ConfigObject {
 		this.reorganize = new Reorganize();
 		this.dataMerge = new DataMerge();
 		this.maintenanceIdentity = "";
+		this.formVersionCount = DEFAULT_FORMVERSIONCOUNT;
+		this.processVersionCount = DEFAULT_PROCESSVERSIONCOUNT;
+		this.scriptVersionCount = DEFAULT_SCRIPTVERSIONCOUNT;
 		this.formVersionPeriod = DEFAULT_FORMVERSIONPERIOD;
 		this.processVersionPeriod = DEFAULT_PROCESSVERSIONPERIOD;
 		this.scriptVersionPeriod = DEFAULT_SCRIPTVERSIONPERIOD;
@@ -66,6 +77,15 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
 	private String maintenanceIdentity;
 
+	@FieldDescribe("表单历史版本保留数量,0为不保留.")
+	private Integer formVersionCount;
+
+	@FieldDescribe("流程历史版本保留数量,0为不保留.")
+	private Integer processVersionCount;
+
+	@FieldDescribe("脚本历史版本保留数量,0为不保留.")
+	private Integer scriptVersionCount;
+
 	@FieldDescribe("表单历史版本保留天数.")
 	private Integer formVersionPeriod;
 
@@ -83,6 +103,18 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
 	private String docToWordDefaultSite;
+
+	public Integer getFormVersionCount() {
+		return formVersionCount == null ? DEFAULT_FORMVERSIONCOUNT : this.formVersionCount;
+	}
+
+	public Integer getProcessVersionCount() {
+		return processVersionCount == null ? DEFAULT_PROCESSVERSIONCOUNT : this.processVersionCount;
+	}
+
+	public Integer getScriptVersionCount() {
+		return scriptVersionCount == null ? DEFAULT_SCRIPTVERSIONCOUNT : this.scriptVersionCount;
+	}
 
 	public Integer getFormVersionPeriod() {
 		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD

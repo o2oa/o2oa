@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.common.excel.reader.IRowReader;
 import com.x.okr.assemble.control.ThisApplication;
+import org.apache.commons.lang3.StringUtils;
 
 public class WorkImportExcelReader implements IRowReader{
 	
@@ -72,20 +74,8 @@ public class WorkImportExcelReader implements IRowReader{
 			CacheImportRowDetail cacheImportRowDetail = new CacheImportRowDetail();			
 			if( !colmlist.get(0).isEmpty() && !colmlist.get(2).isEmpty()){				
 				workDateTimeType = "长期工作";  //工作期限类型:短期工作(不需要自动启动定期汇报) | 长期工作（需要自动启动定期汇报）
-				cacheImportRowDetail.setWorkDateTimeType(workDateTimeType);				
-//				if( colmlist != null && colmlist.size() > 0 ){
-//					title = colmlist.get(0).trim();                    //工作标题
-//					cacheImportRowDetail.setTitle(title);
-//				}
-//				if( colmlist != null && colmlist.size() > 1 ){
-//					workType = colmlist.get(1).trim();                 //工作类别
-//					cacheImportRowDetail.setWorkType(workType);
-//				}
-//				if( colmlist != null && colmlist.size() > 2 ){
-//					workLevel = colmlist.get(2).trim();                //工作等级
-//					cacheImportRowDetail.setWorkLevel(workLevel);
-//				}
-				if( colmlist != null && colmlist.size() > 0 ){
+				cacheImportRowDetail.setWorkDateTimeType(workDateTimeType);
+				if(ListTools.isNotEmpty(colmlist) ){
 					completeDateLimitStr = colmlist.get(0).trim();     //工作完成时限-字符串，显示用：yyyy-mm-dd
 					try{
 						completeDateLimit = dateOperation.getDateFromString( completeDateLimitStr );
@@ -97,90 +87,68 @@ public class WorkImportExcelReader implements IRowReader{
 						cacheImportRowDetail.setDescription( "工作完成时限不是正常的日期格式：" + completeDateLimitStr );
 					}
 				}
-				if( colmlist != null && colmlist.size() > 1 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 1 ){
 					reportCycle = colmlist.get(1).trim();              //汇报周期:不需要汇报|每月汇报|每周汇报
 					cacheImportRowDetail.setReportCycle(reportCycle);
 				}
-				if( colmlist != null && colmlist.size() > 2 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 2 ){
 					reportDayInCycleStr = colmlist.get(2).trim();      //周期汇报时间：每月的几号(1-31)，每周的星期几(1-7)，启动时间由系统配置设定，比如：10:00
 				}
-				if( colmlist != null && colmlist.size() > 3 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 3 ){
 					responsibilityIdentity = colmlist.get(3).trim();   //主责人身份
 					cacheImportRowDetail.setResponsibilityIdentity(responsibilityIdentity);
 				}
-				if( colmlist != null && colmlist.size() > 4 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 4 ){
 					cooperateIdentity = colmlist.get(4).trim();        //协助人身份，可能多值，用逗号分隔
 					cacheImportRowDetail.setCooperateIdentity(cooperateIdentity);
 				}
-				if( colmlist != null && colmlist.size() > 5 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 5 ){
 					readLeaderIdentity = colmlist.get(5).trim();       //阅知领导身份，可能多值，用逗号分隔
 					cacheImportRowDetail.setReadLeaderIdentity(readLeaderIdentity);
 				}
-				if( colmlist != null && colmlist.size() > 6 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 6 ){
 					workDetail = colmlist.get(6).trim();               //工作详细描述（山西：事项分解及描述）
 					cacheImportRowDetail.setWorkDetail(workDetail);
 				}
-				if( colmlist != null && colmlist.size() > 7 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 7 ){
 					progressAction = colmlist.get(7).trim();           //具体行动举措
 					cacheImportRowDetail.setProgressAction(progressAction);
 				}
-//				if( colmlist != null && colmlist.size() > 11 ){
-//					dutyDescription = colmlist.get(11).trim();          //职责描述（山西：地市顶层组织职责）
-//					cacheImportRowDetail.setDutyDescription(dutyDescription);
-//				}
-				if( colmlist != null && colmlist.size() > 8 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 8 ){
 					landmarkDescription = colmlist.get(8).trim();     //里程碑标志说明（山西：预期里程碑(阶段性)结果标志）
 					cacheImportRowDetail.setLandmarkDescription(landmarkDescription);
 				}
-//				if( colmlist != null && colmlist.size() > 13 ){
-//					majorIssuesDescription = colmlist.get(13).trim();  //重点事项说明
-//					cacheImportRowDetail.setMajorIssuesDescription(majorIssuesDescription);
-//				}
-				if( colmlist != null && colmlist.size() > 9 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 9 ){
 					progressPlan = colmlist.get(9).trim();            //进展计划时限说明
 					cacheImportRowDetail.setProgressPlan(progressPlan);
 				}
-				if( colmlist != null && colmlist.size() > 10 ){
+				if( ListTools.isNotEmpty(colmlist) && colmlist.size() > 10 ){
 					resultDescription = colmlist.get(10).trim();       //交付成果说明
 					cacheImportRowDetail.setResultDescription(resultDescription);
 				}
 				
 				//检查所有导入的参数的合法性
-//				if( checkSuccess && ( title == null || title.isEmpty() ) ){
-//					checkSuccess = false;
-//					cacheImportRowDetail.setDescription( "工作标题不能为空！" );
-//				}
-//				if( checkSuccess && ( workType == null || workType.isEmpty() ) ){
-//					checkSuccess = false;
-//					cacheImportRowDetail.setDescription( "工作类别不能为空！" );
-//				}
-//				if( checkSuccess && ( workLevel == null || workLevel.isEmpty() ) ){
-//					checkSuccess = false;
-//					cacheImportRowDetail.setDescription( "工作等级不能为空！" );
-//				}
-				if( checkSuccess && ( completeDateLimitStr == null || completeDateLimitStr.isEmpty() ) ){
+				if( checkSuccess && (StringUtils.isEmpty(completeDateLimitStr)) ){
 					checkSuccess = false;
 					cacheImportRowDetail.setDescription( "工作完成时限不能为空！" );
 				}
-				if( checkSuccess && ( reportCycle == null || reportCycle.isEmpty() ) ){
+				if( checkSuccess && ( StringUtils.isEmpty(reportCycle) ) ){
 					checkSuccess = false;
 					cacheImportRowDetail.setDescription( "工作汇报周期不能为空！" );
 				}
-				if( checkSuccess && ( reportDayInCycleStr == null || reportDayInCycleStr.isEmpty() ) ){
+				if( checkSuccess && ( StringUtils.isEmpty( reportDayInCycleStr ) ) ){
 					checkSuccess = false;
 					cacheImportRowDetail.setDescription( "工作汇报日期不能为空！" );
 				}
-				if( checkSuccess && ( responsibilityIdentity == null || responsibilityIdentity.isEmpty() ) ){
+				if( checkSuccess && ( StringUtils.isEmpty( responsibilityIdentity ) ) ){
 					checkSuccess = false;
 					cacheImportRowDetail.setDescription( "工作负责人身份不能为空！" );
 				}
-				if( checkSuccess && ( workDetail == null || workDetail.isEmpty() ) ){
+				if( checkSuccess && ( StringUtils.isEmpty( workDetail ) ) ){
 					checkSuccess = false;
 					cacheImportRowDetail.setDescription( "事项分解及描述不能为空！" );
 				}
-				if( checkSuccess && ( progressAction == null || progressAction.isEmpty() ) ){
-					//checkSuccess = false;
-					//cacheImportRowDetail.setDescription( "具体行动举措不能为空！" );
+				if( checkSuccess && ( StringUtils.isEmpty( progressAction ) ) ){
 					progressAction = "暂无具体行动举措。";
 				}
 				
@@ -227,24 +195,12 @@ public class WorkImportExcelReader implements IRowReader{
 						cacheImportRowDetail.setDescription( "工作汇报周期不正常：" + reportCycle );
 					}
 				}
-				
-//				if( checkSuccess ){
-//					try{
-//						completeDateLimit = dateOperation.getDateFromString( completeDateLimitStr );
-//						cacheImportRowDetail.setCompleteDateLimit(completeDateLimit);
-//					}catch(Exception e){
-//						checkSuccess = false;
-//						cacheImportRowDetail.setDescription( "工作完成时限不是正常的日期格式：" + completeDateLimitStr );
-//					}
-//				}
-				
 				if( checkSuccess ){
 					cacheImportRowDetail.setCheckStatus( "success" );         //设置数据检查状态为正常
 				}else{
 					cacheImportFileStatus.setErrorCount( ( cacheImportFileStatus.getErrorCount() + 1 ) );
 					cacheImportRowDetail.setCheckStatus( "failture" );         //设置数据检查状态为正常
 				}
-				
 				workDataList.add( cacheImportRowDetail );
 			}
 		}

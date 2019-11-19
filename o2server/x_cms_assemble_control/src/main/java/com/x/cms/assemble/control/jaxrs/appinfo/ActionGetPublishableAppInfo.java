@@ -28,7 +28,7 @@ public class ActionGetPublishableAppInfo extends BaseAction {
 		String personName = effectivePerson.getDistinguishedName();
 
 		try {
-			isXAdmin = userManagerService.isManager(request, effectivePerson );
+			isXAdmin = userManagerService.isManager( effectivePerson );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);

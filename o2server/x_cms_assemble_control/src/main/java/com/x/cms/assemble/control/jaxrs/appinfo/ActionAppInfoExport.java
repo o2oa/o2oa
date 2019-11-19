@@ -85,7 +85,6 @@ public class ActionAppInfoExport extends BaseAction {
         //开始查询所有的分类列表
         if( check ){
             List<CategoryInfo> categoryList = null;
-//            List<String> categoryIds = null;
             try{
                 categoryList = categoryInfoServiceAdv.listByAppId( appInfoId );
                 if(ListTools.isNotEmpty(categoryList) ){
@@ -102,7 +101,6 @@ public class ActionAppInfoExport extends BaseAction {
         //开始查询所有的表单列表
         if( check ){
             List<Form> formList = null;
-//            List<String> formIds = null;
             try{
                 formList = formServiceAdv.listByAppId( appInfoId );
                 if(ListTools.isNotEmpty(formList) ){
@@ -119,7 +117,6 @@ public class ActionAppInfoExport extends BaseAction {
         //开始查询所有的脚本列表
         if( check ){
             List<Script> scriptList = null;
-//            List<String> scriptIds = null;
             try{
                 scriptList = scriptServiceAdv.listWithAppId(appInfoId);
                 if(ListTools.isNotEmpty(scriptList) ){

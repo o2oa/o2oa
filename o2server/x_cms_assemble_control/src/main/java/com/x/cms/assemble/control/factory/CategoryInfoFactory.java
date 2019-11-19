@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.tools.ListTools;
@@ -75,42 +76,37 @@ public class CategoryInfoFactory extends AbstractFactory {
 		return em.createQuery( cq.where(p) ).setMaxResults(1000).getResultList();
 	}
 
-	public List<String> listByAppIds( List<String> appIds, String documentType, Boolean manager, Integer maxCount ) throws Exception {
+	/**
+	 * 根据需要过滤的栏目列表和信息类型以及返回最大条目数量列示栏目信息ID列表
+	 * @param appIds
+	 * @param documentType
+	 * @param maxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listByAppIds( List<String> appIds, String documentType, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
-		cq.select(root.get( CategoryInfo_.id));		
 		TypedQuery<String> query = null;
-		if( manager ) {
-			if( ListTools.isEmpty( appIds )) {
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
-					Predicate p = cb.equal( root.get( CategoryInfo_.documentType ), documentType );					
-					query = em.createQuery( cq.where( p ) ).setMaxResults(maxCount);
-				}else {
-					query =  em.createQuery( cq ).setMaxResults(maxCount);
-				}
-			}else {
-				Predicate p = root.get( CategoryInfo_.appId ).in(appIds);
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType) ) {
-					p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
-				}
-				query = em.createQuery( cq.where(p) ).setMaxResults(maxCount);
-			}
-		}else {
-			if( ListTools.isEmpty( appIds )) {
-				return new ArrayList<>();
-			}else {
-				Predicate p = root.get( CategoryInfo_.appId ).in(appIds);
-				if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
-					p = cb.and( p, cb.equal( root.get( CategoryInfo_.documentType ), documentType ));
-				}
-				query = em.createQuery( cq.where(p) ).setMaxResults(maxCount);
-			}
+		Predicate p = null;
+
+		//需要过滤的栏目ID为空
+		if( ListTools.isEmpty( appIds )) {
+			p = CriteriaBuilderTools.predicate_and(cb, null, root.get( CategoryInfo_.appId ).in( appIds ) );
 		}
-		
-		//System.out.println(">>>>>>>>>>>listByAppIds SQL:" +query.toString() );
-		return query.getResultList();
+		//查询指定信息类别下的所有分类信息列表
+		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals(documentType)&& !"all".equalsIgnoreCase(documentType)) {
+			p = CriteriaBuilderTools.predicate_and(cb, null, cb.equal( root.get( CategoryInfo_.documentType ), documentType ) );
+		}
+		if( p != null ){
+			cq.select(root.get( CategoryInfo_.id)).where( p );
+		}else{
+			cq.select(root.get( CategoryInfo_.id));
+		}
+
+		return em.createQuery( cq.where(p) ).setMaxResults(maxCount).getResultList();
 	}
 	
 	public List<CategoryInfo> listCategoryByAppId( String appId, String documentType, Integer maxCount ) throws Exception {

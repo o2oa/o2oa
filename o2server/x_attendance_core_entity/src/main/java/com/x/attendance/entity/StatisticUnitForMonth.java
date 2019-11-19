@@ -63,17 +63,18 @@ public class StatisticUnitForMonth extends SliceJpaObject {
 	public void onPersist() throws Exception {
 		String topUnitName = null;
 		String unitName = null;
-		if(  this.topUnitName != null ) {
+		if (this.topUnitName != null) {
 			topUnitName = this.topUnitName.split("@")[0];
-		}else {
+		} else {
 			topUnitName = this.topUnitName;
 		}
-		if(  this.unitName != null ) {
+		if (this.unitName != null) {
 			unitName = this.unitName.split("@")[0];
-		}else {
+		} else {
 			unitName = this.unitName;
 		}
-		this.setSequence(StringUtils.join(this.statisticYear + this.statisticMonth, topUnitName, unitName, this.getId()));
+		this.setSequence(
+				StringUtils.join(this.statisticYear + this.statisticMonth, topUnitName, unitName, this.getId()));
 	}
 	/*
 	 * =============================================================================

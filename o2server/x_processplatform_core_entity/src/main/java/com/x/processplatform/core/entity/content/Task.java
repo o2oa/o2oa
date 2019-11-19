@@ -48,7 +48,7 @@ import com.x.processplatform.core.entity.element.Route;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Task extends SliceJpaObject {
+public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = -5448210797584958826L;
 	private static final String TABLE = PersistenceProperties.Content.Task.table;
@@ -148,6 +148,7 @@ public class Task extends SliceJpaObject {
 		this.modified = false;
 		this.viewed = false;
 		this.allowRapid = allowRapid;
+		this.copyProjectionFields(work);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -522,20 +523,6 @@ public class Task extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String stringValue10;
 
-	public static final String booleanValue01_FIELDNAME = "booleanValue01";
-	@FieldDescribe("业务数据Boolean值01.")
-	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean booleanValue01;
-
-	public static final String booleanValue02_FIELDNAME = "booleanValue02";
-	@FieldDescribe("业务数据Boolean值02.")
-	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean booleanValue02;
-
 	public static final String doubleValue01_FIELDNAME = "doubleValue01";
 	@FieldDescribe("业务数据Double值01.")
 	@Column(name = ColumnNamePrefix + doubleValue01_FIELDNAME)
@@ -549,21 +536,21 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + doubleValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue02;
-	
+
 	public static final String doubleValue03_FIELDNAME = "doubleValue03";
 	@FieldDescribe("业务数据Double值03.")
 	@Column(name = ColumnNamePrefix + doubleValue03_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + doubleValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue03;
-	
+
 	public static final String doubleValue04_FIELDNAME = "doubleValue04";
 	@FieldDescribe("业务数据Double值04.")
 	@Column(name = ColumnNamePrefix + doubleValue04_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + doubleValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double doubleValue04;
-	
+
 	public static final String doubleValue05_FIELDNAME = "doubleValue05";
 	@FieldDescribe("业务数据Double值05.")
 	@Column(name = ColumnNamePrefix + doubleValue05_FIELDNAME)
@@ -584,21 +571,21 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + longValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue02;
-	
+
 	public static final String longValue03_FIELDNAME = "longValue03";
 	@FieldDescribe("业务数据Long值03.")
 	@Column(name = ColumnNamePrefix + longValue03_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + longValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue03;
-	
+
 	public static final String longValue04_FIELDNAME = "longValue04";
 	@FieldDescribe("业务数据Long值04.")
 	@Column(name = ColumnNamePrefix + longValue04_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + longValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long longValue04;
-	
+
 	public static final String longValue05_FIELDNAME = "longValue05";
 	@FieldDescribe("业务数据Long值05.")
 	@Column(name = ColumnNamePrefix + longValue05_FIELDNAME)
@@ -621,7 +608,7 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue02;
-	
+
 	public static final String dateTimeValue03_FIELDNAME = "dateTimeValue03";
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值03.")
@@ -629,7 +616,7 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue03;
-	
+
 	public static final String dateTimeValue04_FIELDNAME = "dateTimeValue04";
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值04.")
@@ -637,7 +624,7 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue04;
-	
+
 	public static final String dateTimeValue05_FIELDNAME = "dateTimeValue05";
 	@Temporal(TemporalType.TIMESTAMP)
 	@FieldDescribe("业务数据DateTime值05.")
@@ -677,6 +664,20 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public static final String booleanValue01_FIELDNAME = "booleanValue01";
+	@FieldDescribe("业务数据Boolean值01.")
+	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean booleanValue01;
+
+	public static final String booleanValue02_FIELDNAME = "booleanValue02";
+	@FieldDescribe("业务数据Boolean值02.")
+	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean booleanValue02;
 
 	public String getProcess() {
 		return process;
@@ -1034,8 +1035,6 @@ public class Task extends SliceJpaObject {
 	public void setStringValue05(String stringValue05) {
 		this.stringValue05 = stringValue05;
 	}
-
- 
 
 	public String getStringValue06() {
 		return stringValue06;

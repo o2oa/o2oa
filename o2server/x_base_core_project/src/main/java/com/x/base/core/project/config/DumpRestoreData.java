@@ -14,11 +14,13 @@ public class DumpRestoreData extends ConfigObject {
 		return new DumpRestoreData();
 	}
 
+	public static final int default_batchSize = 1000;
+
 	public DumpRestoreData() {
 		this.enable = false;
 		this.includes = new ArrayList<String>();
 		this.excludes = new ArrayList<String>();
-		this.batchSize = 2000;
+		this.batchSize = default_batchSize;
 	}
 
 	@FieldDescribe("是否启用.")

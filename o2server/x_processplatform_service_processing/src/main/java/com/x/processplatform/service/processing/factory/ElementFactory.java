@@ -35,8 +35,6 @@ import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Message;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Projection;
-import com.x.processplatform.core.entity.element.Projection_;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Route_;
 import com.x.processplatform.core.entity.element.Script;
@@ -446,36 +444,36 @@ public class ElementFactory extends AbstractFactory {
 		return ListTools.trim(ids, true, true);
 	}
 
-	public List<Projection> listProjectionEffectiveWithApplicationAndProcess(String application, String process)
-			throws Exception {
-		final List<Projection> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Projection.class);
-		String cacheKey = ApplicationCache.concreteCacheKey(application, process, Application.class.getName(),
-				Process.class.getName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list.addAll((List<Projection>) element.getObjectValue());
-		} else {
-			EntityManager em = this.entityManagerContainer().get(Projection.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Projection> cq = cb.createQuery(Projection.class);
-			Root<Projection> root = cq.from(Projection.class);
-			Predicate p = cb.equal(root.get(Projection_.enable), true);
-			p = cb.and(p, cb.equal(root.get(Projection_.application), application));
-			p = cb.and(p, cb.or(cb.equal(root.get(Projection_.process), process),
-					cb.equal(root.get(Projection_.process), ""), cb.isNull(root.get(Projection_.process))));
-			List<Projection> os = em.createQuery(cq.where(p)).getResultList();
-			os.stream().collect(Collectors.groupingBy(o -> {
-				return o.getApplication() + o.getType();
-			})).forEach((k, v) -> {
-				list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
-			});
-			if (!list.isEmpty()) {
-				cache.put(new Element(cacheKey, list));
-			}
-		}
-		return list;
-	}
+//	public List<Projection> listProjectionEffectiveWithApplicationAndProcess(String application, String process)
+//			throws Exception {
+//		final List<Projection> list = new ArrayList<>();
+//		Ehcache cache = ApplicationCache.instance().getCache(Projection.class);
+//		String cacheKey = ApplicationCache.concreteCacheKey(application, process, Application.class.getName(),
+//				Process.class.getName());
+//		Element element = cache.get(cacheKey);
+//		if (null != element) {
+//			list.addAll((List<Projection>) element.getObjectValue());
+//		} else {
+//			EntityManager em = this.entityManagerContainer().get(Projection.class);
+//			CriteriaBuilder cb = em.getCriteriaBuilder();
+//			CriteriaQuery<Projection> cq = cb.createQuery(Projection.class);
+//			Root<Projection> root = cq.from(Projection.class);
+//			Predicate p = cb.equal(root.get(Projection_.enable), true);
+//			p = cb.and(p, cb.equal(root.get(Projection_.application), application));
+//			p = cb.and(p, cb.or(cb.equal(root.get(Projection_.process), process),
+//					cb.equal(root.get(Projection_.process), ""), cb.isNull(root.get(Projection_.process))));
+//			List<Projection> os = em.createQuery(cq.where(p)).getResultList();
+//			os.stream().collect(Collectors.groupingBy(o -> {
+//				return o.getApplication() + o.getType();
+//			})).forEach((k, v) -> {
+//				list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
+//			});
+//			if (!list.isEmpty()) {
+//				cache.put(new Element(cacheKey, list));
+//			}
+//		}
+//		return list;
+//	}
 
 	public List<Mapping> listMappingEffectiveWithApplicationAndProcess(String application, String process)
 			throws Exception {

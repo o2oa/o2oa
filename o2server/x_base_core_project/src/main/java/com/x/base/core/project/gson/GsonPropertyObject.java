@@ -1,7 +1,5 @@
 package com.x.base.core.project.gson;
 
-import org.apache.commons.beanutils.PropertyUtils;
-
 import com.x.base.core.project.bean.PropertyObject;
 
 public abstract class GsonPropertyObject extends PropertyObject {

@@ -380,10 +380,11 @@ public class StringTools {
 	}
 
 	public static String escapeSqlLikeKey(String str) {
-		if (StringUtils.isEmpty(str)) {
+		String text = StringUtils.replace(str, "\u3000", " ");
+		if (StringUtils.isEmpty(text)) {
 			return str;
 		} else {
-			return StringUtils.trim(StringUtils.replaceEach(str, SQL_LIKE, SQL_LIKE_SHIFT));
+			return StringUtils.trim(StringUtils.replaceEach(text, SQL_LIKE, SQL_LIKE_SHIFT));
 		}
 	}
 
@@ -428,5 +429,12 @@ public class StringTools {
 		} else {
 			return true;
 		}
+	}
+
+	public static boolean isAbsolutePath(String path) {
+		if (path.startsWith("/") || path.indexOf(":") > 0) {
+			return true;
+		}
+		return false;
 	}
 }

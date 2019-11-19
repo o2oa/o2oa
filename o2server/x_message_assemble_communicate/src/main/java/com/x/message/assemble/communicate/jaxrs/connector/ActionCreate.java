@@ -43,6 +43,9 @@ class ActionCreate extends BaseAction {
 					case MessageConnector.CONSUME_PMS:
 						message = this.pmsMessage(effectivePerson, business, wi, instant);
 						break;
+					case MessageConnector.CONSUME_PMS_INNER:
+						message = this.pmsInnerMessage(effectivePerson, business, wi, instant);
+						break;
 					case MessageConnector.CONSUME_DINGDING:
 						message = this.dingdingMessage(effectivePerson, business, wi, instant);
 						break;
@@ -82,6 +85,9 @@ class ActionCreate extends BaseAction {
 			case MessageConnector.CONSUME_PMS:
 				ThisApplication.pmsConsumeQueue.send(message);
 				break;
+			case MessageConnector.CONSUME_PMS_INNER:
+					ThisApplication.pmsInnerConsumeQueue.send(message);
+					break;
 			case MessageConnector.CONSUME_DINGDING:
 				ThisApplication.dingdingConsumeQueue.send(message);
 				break;
@@ -134,6 +140,17 @@ class ActionCreate extends BaseAction {
 		message.setPerson(wi.getPerson());
 		message.setTitle(wi.getTitle());
 		message.setConsumer(MessageConnector.CONSUME_PMS);
+		message.setConsumed(false);
+		message.setInstant(instant.getId());
+		return message;
+	}
+	private Message pmsInnerMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
+		Message message = new Message();
+		message.setBody(Objects.toString(wi.getBody()));
+		message.setType(wi.getType());
+		message.setPerson(wi.getPerson());
+		message.setTitle(wi.getTitle());
+		message.setConsumer(MessageConnector.CONSUME_PMS_INNER);
 		message.setConsumed(false);
 		message.setInstant(instant.getId());
 		return message;

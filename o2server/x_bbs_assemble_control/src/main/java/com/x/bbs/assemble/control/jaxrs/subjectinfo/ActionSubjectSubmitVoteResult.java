@@ -37,6 +37,17 @@ public class ActionSubjectSubmitVoteResult extends BaseAction {
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
+			wrapIn.setHostIp(request.getRemoteHost());
+			if ( wrapIn.getId() == null ) {
+				check = false;
+				Exception exception = new ExceptionSubjectPropertyEmpty("主题ID");
+				result.error(exception);
+			}
+			if ( wrapIn.getOptionGroups() == null || wrapIn.getOptionGroups().isEmpty() ) {
+				check = false;
+				Exception exception = new ExceptionSubjectPropertyEmpty("用户投票选择");
+				result.error(exception);
+			}
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
@@ -44,24 +55,6 @@ public class ActionSubjectSubmitVoteResult extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if (check) {
-			wrapIn.setHostIp(request.getRemoteHost());
-		}
-
-		if (check) {
-			if (wrapIn.getId() == null) {
-				check = false;
-				Exception exception = new ExceptionSubjectPropertyEmpty("主题ID");
-				result.error(exception);
-			}
-		}
-		if (check) {
-			if (wrapIn.getOptionGroups() == null || wrapIn.getOptionGroups().isEmpty()) {
-				check = false;
-				Exception exception = new ExceptionSubjectPropertyEmpty("用户投票选择");
-				result.error(exception);
-			}
-		}
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.get(wrapIn.getId());
@@ -83,15 +76,13 @@ public class ActionSubjectSubmitVoteResult extends BaseAction {
 		}
 
 		if (check) {
-			if ("投票".equals(subjectInfo.getTypeCategory())) {
+			if ( "投票".equals(subjectInfo.getTypeCategory()) ) {
 				try {
 					subjectVoteService.submitVoteResult(effectivePerson, subjectInfo, wrapIn.getOptionGroups());
-					
 					ApplicationCache.notify( BBSSubjectInfo.class );
-					
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionSubjectOperation(e, "系统在保存投票选项信息时发生异常");
+					Exception exception = new ExceptionSubjectOperation(e, "系统在保存投票选项信息时发生异常!");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}

@@ -52,7 +52,7 @@ public class ActionSave extends BaseAction {
 				Business business = new Business(emc);
 
 				// 看看用户是否有权限进行应用信息新增操作
-				if (!business.formEditAvailable(request, effectivePerson)) {
+				if (!business.formEditAvailable( effectivePerson)) {
 					throw new Exception(
 							"person{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理表单模板信息操作的权限！");
 				}

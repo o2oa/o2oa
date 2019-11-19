@@ -49,7 +49,7 @@ public class Application extends GsonPropertyObject {
 		this.scheduleLocalRequestList = scheduleLocalRequestList;
 	}
 
-	public String getUrlRoot() {
+	public String getUrlJaxrsRoot() {
 		StringBuffer buffer = new StringBuffer();
 		if (BooleanUtils.isTrue(this.sslEnable)) {
 			buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
@@ -60,7 +60,19 @@ public class Application extends GsonPropertyObject {
 		}
 		buffer.append(contextPath + "/jaxrs/");
 		return buffer.toString();
+	}
 
+	public String getUrlDescribeApiJson() {
+		StringBuffer buffer = new StringBuffer();
+		if (BooleanUtils.isTrue(this.sslEnable)) {
+			buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
+					.append(port == 443 ? "" : (":" + port));
+		} else {
+			buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
+					.append(port == 80 ? "" : (":" + port));
+		}
+		buffer.append(contextPath + "/describe/api.json");
+		return buffer.toString();
 	}
 
 	public Integer getPort() {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.tools.StringTools;
+import com.x.calendar.core.entity.Calendar_EventComment;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -65,13 +67,12 @@ public class Calendar_EventService {
 			emc.commit();
 		}
 	}
-	
+
 	/**
 	 * 创建日历记录信息
 	 * @param emc
 	 * @param calendar_record
-	 * @param calendar_EventDetail 
-	 * @param autoTransaction - 是否自动提交
+	 * @param autoTransaction
 	 * @return
 	 * @throws Exception
 	 */
@@ -274,5 +275,59 @@ public class Calendar_EventService {
 			}
 			return ids;
 		}
-	}	
+	}
+
+	/**
+	 * 创建一个新的Calendar_EventComment，不检查是否已经存在
+	 * @param emc
+	 * @param calendar_event
+	 * @return
+	 * @throws Exception
+	 */
+	public Calendar_EventComment createNewEventComment( EntityManagerContainer emc, Calendar_Event calendar_event ) throws Exception {
+		Calendar_EventComment calendar_EventComment = null;
+		//先判断commnet的大小，如果过长，则需要存储到Calendar_EventComment表里
+		if( StringUtils.isNotEmpty( calendar_event.getComment() ) && StringTools.utf8Length( calendar_event.getComment() ) > 255 ){
+			emc.beginTransaction( Calendar_EventComment.class );
+			//需要新建一个Calendar_EventComment
+			calendar_EventComment = new Calendar_EventComment();
+			calendar_EventComment.setId( Calendar_EventComment.createId() );
+			calendar_EventComment.setLobValue( calendar_event.getComment() );
+			emc.persist( calendar_EventComment, CheckPersistType.all );
+			emc.commit();
+		}
+		return calendar_EventComment;
+	}
+
+	/**
+	 * 创建或者检查Calendar_EventComment，如果已经存在，则进行更新
+	 * @param emc
+	 * @param calendar_event
+	 * @return
+	 * @throws Exception
+	 */
+	public Calendar_EventComment createOrUpdateEventComment( EntityManagerContainer emc, Calendar_Event calendar_event ) throws Exception {
+		Calendar_EventComment calendar_EventComment = null;
+		//先判断commnet的大小，如果过长，则需要存储到Calendar_EventComment表里
+		if( StringUtils.isNotEmpty( calendar_event.getComment() ) && StringTools.utf8Length( calendar_event.getComment() ) > 255 ){
+			emc.beginTransaction( Calendar_EventComment.class );
+			if( StringUtils.isNotEmpty( calendar_event.getCommentId() )){
+				//根据ID查询出Calendar_EventComment
+				calendar_EventComment = emc.find( calendar_event.getCommentId(), Calendar_EventComment.class );
+			}
+			if( calendar_EventComment == null ){
+				//需要新建一个Calendar_EventComment
+				calendar_EventComment = new Calendar_EventComment();
+				calendar_EventComment.setId( Calendar_EventComment.createId() );
+				calendar_EventComment.setLobValue( calendar_event.getComment() );
+				emc.persist( calendar_EventComment, CheckPersistType.all );
+			}else{
+				//需要更新Calendar_EventComment
+				calendar_EventComment.setLobValue( calendar_event.getComment() );
+				emc.check( calendar_EventComment, CheckPersistType.all );
+			}
+			emc.commit();
+		}
+		return calendar_EventComment;
+	}
 }

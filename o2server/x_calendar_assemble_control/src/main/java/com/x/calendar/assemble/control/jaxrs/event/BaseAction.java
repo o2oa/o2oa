@@ -25,14 +25,15 @@ public class BaseAction extends StandardJaxrsAction{
 	protected Calendar_EventServiceAdv calendar_EventServiceAdv = new Calendar_EventServiceAdv();
 	protected Calendar_EventRepeatMasterServiceAdv calendar_RepeatedMasterServiceAdv = new Calendar_EventRepeatMasterServiceAdv();
 	protected static DateOperation dateOperation = new DateOperation();
-	
+
 	/**
 	 * 对日历事件信息进行验证，给出正确的提示信息
-	 * @param calendar_Event
+	 * @param event
+	 * @param calendar
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	protected PromptException eventValidate(Calendar_Event event, Calendar calendar ) throws Exception {
+	protected PromptException eventValidate( Calendar_Event event, Calendar calendar ) throws Exception {
 		
 		//日历ID不能为空
 		if( StringUtils.isEmpty( event.getCalendarId() ) ){
@@ -148,13 +149,7 @@ public class BaseAction extends StandardJaxrsAction{
 				return new ExceptionTaskEventCanNotRepeatMaster( event.getRepeatMasterId() ) ;
 			}
 		}
-		
-		if( StringUtils.isNotEmpty( event.getRepeatMasterId() ) ) {
-			//是重复主体，但是没有配置重复规则
-			if( StringUtils.isEmpty( event.getRecurrenceRule() )) {
-				return new ExceptionEventPropertyEmpty("重复规则(recurrenceRule)");
-			}
-		}
+
 		//如果有重复规则时，需要验证规则是否正确
 		if( StringUtils.isNotEmpty( event.getRecurrenceRule() )) {
 			//转换为RRule

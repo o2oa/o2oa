@@ -72,7 +72,7 @@ public class Recycle extends SliceJpaObject {
 		this.name = name;
 		this.fileId = fileId;
 		this.fileType = fileType;
-		this.validTime = DateTools.getDateAfterYearAdjust(new Date(),null,null,30);
+		this.validTime = DateTools.getDateAfterYearAdjust(new Date(), null, null, 30);
 	}
 
 	public static final String person_FIELDNAME = "person";
@@ -89,7 +89,7 @@ public class Recycle extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
 	/* 同一个用户同一个名称文件不能多次分享 */
 	@CitationNotExist(fields = { "name", "id" }, type = Recycle.class, equals = {
-			@Equal(property = "person", field = "person")}))
+			@Equal(property = "person", field = "person") }))
 	private String name;
 
 	public static final String fileId_FIELDNAME = "fileId";
@@ -98,7 +98,7 @@ public class Recycle extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
 	/* 同一个用户同一个文件或目录不能多次分享 */
 	@CitationNotExist(fields = { "fileId", "id" }, type = Recycle.class, equals = {
-			@Equal(property = "person", field = "person")}))
+			@Equal(property = "person", field = "person") }))
 	private String fileId;
 
 	public static final String fileType_FIELDNAME = "fileType";

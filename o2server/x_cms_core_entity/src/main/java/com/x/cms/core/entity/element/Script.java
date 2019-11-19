@@ -68,35 +68,40 @@ public class Script extends SliceJpaObject {
 	/* 更新运行方法 */
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@CheckPersist(citationNotExists =
 	/* 检查在同一应用下不能重名 */
-	@CitationNotExist(fields = { "name", "id", "alias" }, type = Script.class, equals = @Equal(property = "appId", field = "appId")))
+	@CitationNotExist(fields = { "name", "id",
+			"alias" }, type = Script.class, equals = @Equal(property = "appId", field = "appId")))
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
 	@FieldDescribe("别名.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ alias_FIELDNAME)
 	@CheckPersist(citationNotExists =
 	/* 检查在同一应用下不能重名 */
-	@CitationNotExist(fields = { "name", "id", "alias" }, type = Script.class, equals = @Equal(property = "appId", field = "appId")))
+	@CitationNotExist(fields = { "name", "id",
+			"alias" }, type = Script.class, equals = @Equal(property = "appId", field = "appId")))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
 	public static final String validated_FIELDNAME = "validated";
 	@FieldDescribe("代码格式是否正确.")
-	@Column( name = ColumnNamePrefix + validated_FIELDNAME)
+	@Column(name = ColumnNamePrefix + validated_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean validated;
 
 	public static final String appId_FIELDNAME = "appId";
 	@FieldDescribe("脚本所属栏目.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + appId_FIELDNAME)
 	@CheckPersist(citationExists = @CitationExist(type = AppInfo.class), allowEmpty = true)
 	private String appId;
@@ -105,7 +110,7 @@ public class Script extends SliceJpaObject {
 	@FieldDescribe("脚本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + text_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + text_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String text;
 
@@ -113,29 +118,33 @@ public class Script extends SliceJpaObject {
 	@FieldDescribe("依赖的函数列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + dependScriptList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + dependScriptList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + dependScriptList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ dependScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + dependScriptList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ dependScriptList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + dependScriptList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> dependScriptList;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者.")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorPerson_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorPerson;
 
 	public static final String lastUpdatePerson_FIELDNAME = "lastUpdatePerson";
 	@FieldDescribe("最后的编辑者.")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + lastUpdatePerson_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ lastUpdatePerson_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String lastUpdatePerson;
 
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后的编辑时间.")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date lastUpdateTime;
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.calendar.core.entity.Calendar_EventComment;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -27,6 +28,7 @@ public class ActionGet extends BaseAction {
 		Wo wrap = null;
 		Calendar calendar = null;
 		Calendar_Event calendar_Event = null;
+		Calendar_EventComment calendar_EventComment = null;
 		Boolean check = true;
 		
 		if( check ){
@@ -66,6 +68,22 @@ public class ActionGet extends BaseAction {
 				Exception exception = new ExceptionEventProcess( e, "系统根据ID查询指定日历信息时发生异常.ID:" + id );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
+			}
+		}
+
+		if( check ){
+			if( StringUtils.equals( "{#CLOB#}", calendar_Event.getComment() ) && StringUtils.isNotEmpty( calendar_Event.getCommentId() )){
+				try {
+					calendar_EventComment = calendar_EventServiceAdv.getCommentWithCommentId( calendar_Event.getCommentId() );
+					if( calendar_EventComment != null ) {
+						calendar_Event.setComment( calendar_EventComment.getLobValue() );
+					}
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionEventProcess( e, "系统根据ID查询指定日历记录信息时发生异常.ID:" + id );
+					result.error( exception );
+					logger.error( e, effectivePerson, request, null);
+				}
 			}
 		}
 		

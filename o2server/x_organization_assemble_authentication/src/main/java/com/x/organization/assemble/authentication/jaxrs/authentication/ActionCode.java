@@ -23,7 +23,7 @@ class ActionCode extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
+			//Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
 				throw new ExceptionDisableCollect();
@@ -41,7 +41,6 @@ class ActionCode extends BaseAction {
 			business.instrument().code().create(o.getMobile());
 			wo.setValue(true);
 			result.setData(wo);
-			audit.log(Objects.toString(wo.getValue(), ""));
 			return result;
 		}
 	}

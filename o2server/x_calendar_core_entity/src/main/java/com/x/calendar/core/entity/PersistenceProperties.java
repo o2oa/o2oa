@@ -19,7 +19,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class Calendar_Event {
 		public static final String table = "CAL_EVENT";
 	}
-	
+
+	public static class Calendar_EventComment {
+		public static final String table = "CAL_EVENT_COMMENT";
+	}
+
 	public static class Calendar_EventRepeatMaster {
 		public static final String table = "CAL_EVENT_REPM";
 	}

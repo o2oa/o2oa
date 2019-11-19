@@ -35,7 +35,7 @@ public class ActionDelete extends BaseAction {
 				logger.warn("viewFieldConfig{id:" + id + "} 应用信息不存在.");
 			}
 			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
-			if (!business.viewEditAvailable(request, effectivePerson)) {
+			if (!business.viewEditAvailable(effectivePerson)) {
 				throw new Exception(
 						"viewFieldConfig{name:" + effectivePerson.getDistinguishedName() + "} 用户没有内容管理应用信息操作的权限！");
 			}

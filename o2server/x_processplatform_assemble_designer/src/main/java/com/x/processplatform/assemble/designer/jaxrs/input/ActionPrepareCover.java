@@ -108,10 +108,12 @@ class ActionPrepareCover extends BaseAction {
 				for (MatchElement<WrapFormField, FormField> _me : this.match(business, m.getW().getFormFieldList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getFormFieldList(), FormField.class),
 								business.formField().listWithFormObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getForm(), _me.getT().getForm())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getForm(), _me.getT().getForm())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 			}
@@ -169,10 +171,12 @@ class ActionPrepareCover extends BaseAction {
 				for (MatchElement<WrapAgent, Agent> _me : this.match(business, m.getW().getAgentList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getAgentList(), Agent.class),
 								business.agent().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapBegin, Begin> _me : this.match(business,
@@ -181,127 +185,155 @@ class ActionPrepareCover extends BaseAction {
 								ListTools.trim(
 										ListTools.toList(business.begin().getWithProcessObject(m.getT().getId())), true,
 										true)))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapCancel, Cancel> _me : this.match(business, m.getW().getCancelList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getCancelList(), Cancel.class),
 								business.cancel().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapChoice, Choice> _me : this.match(business, m.getW().getChoiceList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getChoiceList(), Choice.class),
 								business.choice().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapDelay, Delay> _me : this.match(business, m.getW().getDelayList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getDelayList(), Delay.class),
 								business.delay().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapEmbed, Embed> _me : this.match(business, m.getW().getEmbedList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getEmbedList(), Embed.class),
 								business.embed().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapEnd, End> _me : this.match(business, m.getW().getEndList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getEndList(), End.class),
 								business.end().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapInvoke, Invoke> _me : this.match(business, m.getW().getInvokeList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getInvokeList(), Invoke.class),
 								business.invoke().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapManual, Manual> _me : this.match(business, m.getW().getManualList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getManualList(), Manual.class),
 								business.manual().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapMerge, Merge> _me : this.match(business, m.getW().getMergeList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getMergeList(), Merge.class),
 								business.merge().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapMessage, Message> _me : this.match(business, m.getW().getMessageList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getMessageList(), Message.class),
 								business.message().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapParallel, Parallel> _me : this.match(business, m.getW().getParallelList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getParallelList(), Parallel.class),
 								business.parallel().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapService, Service> _me : this.match(business, m.getW().getServiceList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getServiceList(), Service.class),
 								business.service().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapSplit, Split> _me : this.match(business, m.getW().getSplitList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getSplitList(), Split.class),
 								business.split().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 				for (MatchElement<WrapRoute, Route> _me : this.match(business, m.getW().getRouteList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getRouteList(), Route.class),
 								business.route().listWithProcessObject(m.getT().getId())))) {
-					if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
-						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-					} else {
-						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
 					}
 				}
 			}

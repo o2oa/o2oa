@@ -38,7 +38,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Read extends SliceJpaObject {
+public class Read extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = -1821792646042264572L;
 
@@ -122,6 +122,7 @@ public class Read extends SliceJpaObject {
 		this.unit = unit;
 		this.viewed = false;
 		this.work = work.getId();
+		this.copyProjectionFields(work);
 	}
 
 	public Read(WorkCompleted workCompleted, String identity, String unit, String person) {
@@ -143,8 +144,8 @@ public class Read extends SliceJpaObject {
 		this.setTitle(workCompleted.getTitle());
 		this.setUnit(unit);
 		this.setViewed(false);
-		// this.setWork(workCompleted.getId());
 		this.setWorkCompleted(workCompleted.getId());
+		this.copyProjectionFields(workCompleted);
 	}
 
 	/* 更新运行方法 */

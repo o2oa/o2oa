@@ -55,7 +55,7 @@ public class ReadRemind extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-	
+
 	}
 
 	/* 更新运行方法 */
@@ -63,7 +63,7 @@ public class ReadRemind extends SliceJpaObject {
 
 	}
 
-	public ReadRemind( Document doc, String readerFlagType, String readerFlagName, String remindReader ) {
+	public ReadRemind(Document doc, String readerFlagType, String readerFlagName, String remindReader) {
 		this.title = doc.getTitle();
 		this.appId = doc.getAppId();
 		this.categoryId = doc.getCategoryId();
@@ -100,22 +100,24 @@ public class ReadRemind extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + categoryId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String categoryId;
-	
+
 	public static final String readerFlagType_FIELDNAME = "readerFlagType";
 	@FieldDescribe("标识：需要被提醒的人员|组织|群组")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + readerFlagType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String readerFlagType;
-	
+
 	public static final String readerFlagName_FIELDNAME = "readerFlagName";
 	@FieldDescribe("标识：需要被提醒的人员|组织|群组名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + readerFlagName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ readerFlagName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String readerFlagName;
-	
+
 	public static final String remindReader_FIELDNAME = "remindReader";
 	@FieldDescribe("真正需要被提醒的人员标识")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + remindReader_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ remindReader_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String remindReader;
 
@@ -125,20 +127,20 @@ public class ReadRemind extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + remindTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date remindTime;
-	
+
 	public static final String readTime_FIELDNAME = "readTime";
 	@FieldDescribe("阅读时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + readTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date readTime;
-	
+
 	public static final String reminded_FIELDNAME = "reminded";
 	@FieldDescribe("是否已经提醒.")
 	@Column(name = ColumnNamePrefix + reminded_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + reminded_FIELDNAME)
 	private Boolean reminded = false;
-	
+
 	public static final String readed_FIELDNAME = "readed";
 	@FieldDescribe("是否已经阅读.")
 	@Column(name = ColumnNamePrefix + readed_FIELDNAME)

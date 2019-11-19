@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.bbs.assemble.control.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -273,6 +274,16 @@ public class ActionSave extends BaseAction {
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
+		}
+
+		if ( check ) {
+			//根据论坛(Forum)、版块(Selection)以及主版块(MainSelection)相关配置判断该回帖是否允许消息提醒和邮件提醒发贴人
+			try {
+				ThisApplication.queueNewReplyNotify.send( replyInfo );
+			} catch (Exception e) {
+				logger.error(e, effectivePerson, request, null);
+			}
+
 		}
 		return result;
 	}

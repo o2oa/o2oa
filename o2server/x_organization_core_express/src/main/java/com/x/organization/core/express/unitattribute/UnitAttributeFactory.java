@@ -31,7 +31,7 @@ public class UnitAttributeFactory {
 
 	/** 设置组织属性值 */
 	public boolean setWithUnitWithName(String unit, String name, Collection<String> values) throws Exception {
-		return ActionAppendWithUnitWithName.execute(context, unit, name, values);
+		return ActionSetWithUnitWithName.execute(context, unit, name, values);
 	}
 
 }

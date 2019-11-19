@@ -106,16 +106,18 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + forumVisible_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String forumVisible = "所有人";
-	
+
 	public static final String visiblePermissionList_FIELDNAME = "visiblePermissionList";
 	@FieldDescribe("版块可见范围")
-	@PersistentCollection( fetch = FetchType.EAGER )
-	@OrderColumn( name = ORDERCOLUMNCOLUMN )
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + visiblePermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
-			+ IndexNameMiddle + visiblePermissionList_FIELDNAME + JoinIndexNameSuffix ))
-	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + visiblePermissionList_FIELDNAME )
-	@ElementIndex( name = TABLE + IndexNameMiddle + visiblePermissionList_FIELDNAME + ElementIndexNameSuffix )
-	@CheckPersist( allowEmpty = true )
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ visiblePermissionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ visiblePermissionList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ visiblePermissionList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + visiblePermissionList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
 	private List<String> visiblePermissionList;
 
 	public static final String subjectPublishAble_FIELDNAME = "subjectPublishAble";
@@ -124,16 +126,18 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + subjectPublishAble_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String subjectPublishAble = "所有人";
-	
+
 	public static final String publishPermissionList_FIELDNAME = "publishPermissionList";
 	@FieldDescribe("可发布范围")
-	@PersistentCollection( fetch = FetchType.EAGER )
-	@OrderColumn( name = ORDERCOLUMNCOLUMN )
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + publishPermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
-			+ IndexNameMiddle + publishPermissionList_FIELDNAME + JoinIndexNameSuffix ))
-	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + publishPermissionList_FIELDNAME )
-	@ElementIndex( name = TABLE + IndexNameMiddle + publishPermissionList_FIELDNAME + ElementIndexNameSuffix )
-	@CheckPersist( allowEmpty = true )
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ publishPermissionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ publishPermissionList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ publishPermissionList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + publishPermissionList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
 	private List<String> publishPermissionList;
 
 	public static final String replyPublishAble_FIELDNAME = "replyPublishAble";
@@ -141,16 +145,18 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + replyPublishAble_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String replyPublishAble = "所有人";
-	
+
 	public static final String replyPermissionList_FIELDNAME = "replyPermissionList";
 	@FieldDescribe("可回复范围")
-	@PersistentCollection( fetch = FetchType.EAGER )
-	@OrderColumn( name = ORDERCOLUMNCOLUMN )
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + replyPermissionList_FIELDNAME, joinIndex = @Index( name = TABLE
-			+ IndexNameMiddle + replyPermissionList_FIELDNAME + JoinIndexNameSuffix ))
-	@ElementColumn( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + replyPermissionList_FIELDNAME )
-	@ElementIndex( name = TABLE + IndexNameMiddle + replyPermissionList_FIELDNAME + ElementIndexNameSuffix )
-	@CheckPersist( allowEmpty = true )
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ replyPermissionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ replyPermissionList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ replyPermissionList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + replyPermissionList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
 	private List<String> replyPermissionList;
 
 	public static final String indexListStyle_FIELDNAME = "indexListStyle";
@@ -255,6 +261,32 @@ public class BBSForumInfo extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Integer orderNumber = 1;
+
+	public static final String replyMessageNotify_FIELDNAME = "replyMessageNotify";
+	@FieldDescribe("回复消息通知：true|false")
+	@Column(name = ColumnNamePrefix + replyMessageNotify_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + replyMessageNotify_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean replyMessageNotify = false;
+
+	public static final String replyMessageNotifyType_FIELDNAME = "replyMessageNotifyType";
+	@FieldDescribe("回复消息通知类别：一共3位，第1位是否通知论坛分区管理员，第2位是否通知版主，第3位是否通知发贴人，0-不通知|1-通知")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + replyMessageNotifyType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String replyMessageNotifyType = "0,0,0";
+
+	public static final String subjectMessageNotify_FIELDNAME = "subjectMessageNotify";
+	@FieldDescribe("新主题发布消息通知：true|false")
+	@Column(name = ColumnNamePrefix + subjectMessageNotify_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + subjectMessageNotify_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean subjectMessageNotify = false;
+
+	public static final String subjectMessageNotifyType_FIELDNAME = "subjectMessageNotifyType";
+	@FieldDescribe("新主题发布消息通知类别：一共2位，第1位是否通知论坛分区管理员，第2位是否通知版主，0-不通知|1-通知")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + subjectMessageNotifyType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String subjectMessageNotifyType = "0,0";
 
 	public String getForumName() {
 		return forumName;
@@ -440,6 +472,30 @@ public class BBSForumInfo extends SliceJpaObject {
 		this.typeCategory = typeCategory;
 	}
 
+	public Boolean getReplyMessageNotify() { return this.replyMessageNotify; }
+
+	public void setReplyMessageNotify(final Boolean replyMessageNotify) { this.replyMessageNotify = replyMessageNotify; }
+
+	public String getReplyMessageNotifyType() { return this.replyMessageNotifyType; }
+
+	public void setReplyMessageNotifyType(final String replyMessageNotifyType) { this.replyMessageNotifyType = replyMessageNotifyType; }
+
+	public Boolean getSubjectMessageNotify() {
+		return this.subjectMessageNotify;
+	}
+
+	public void setSubjectMessageNotify(final Boolean subjectMessageNotify) {
+		this.subjectMessageNotify = subjectMessageNotify;
+	}
+
+	public String getSubjectMessageNotifyType() {
+		return this.subjectMessageNotifyType;
+	}
+
+	public void setSubjectMessageNotifyType(final String subjectMessageNotifyType) {
+		this.subjectMessageNotifyType = subjectMessageNotifyType;
+	}
+
 	public long minusSection(Long count) {
 		if (this.sectionTotal == null || this.sectionTotal < 0) {
 			this.sectionTotal = 0L;
@@ -582,7 +638,7 @@ public class BBSForumInfo extends SliceJpaObject {
 	public void setVisiblePermissionList(List<String> visiblePermissionList) {
 		this.visiblePermissionList = visiblePermissionList;
 	}
-	
+
 	public List<String> addVisiblePermission(String permissoin) {
 		if (this.visiblePermissionList == null) {
 			this.visiblePermissionList = new ArrayList<>();
@@ -610,7 +666,7 @@ public class BBSForumInfo extends SliceJpaObject {
 		}
 		return this.publishPermissionList;
 	}
-	
+
 	public List<String> getReplyPermissionList() {
 		return replyPermissionList;
 	}
@@ -618,7 +674,7 @@ public class BBSForumInfo extends SliceJpaObject {
 	public void setReplyPermissionList(List<String> replyPermissionList) {
 		this.replyPermissionList = replyPermissionList;
 	}
-	
+
 	public List<String> addReplyPermission(String permissoin) {
 		if (this.replyPermissionList == null) {
 			this.replyPermissionList = new ArrayList<>();

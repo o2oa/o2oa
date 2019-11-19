@@ -19,14 +19,13 @@ class ActionCaptcha extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, Integer width, Integer height) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Audit audit = logger.audit(effectivePerson);
+			//Audit audit = logger.audit(effectivePerson);
 			Business business = new Business(emc);
 			WoCaptcha wrap = business.instrument().captcha().create(width, height);
 			Wo wo = new Wo();
 			wo.setId(wrap.getId());
 			wo.setImage(wrap.getImage());
 			result.setData(wo);
-			audit.log(wrap.getId());
 			return result;
 		}
 	}

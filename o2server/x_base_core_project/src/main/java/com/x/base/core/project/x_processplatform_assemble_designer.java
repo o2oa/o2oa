@@ -27,9 +27,9 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.End", "com.x.processplatform.core.entity.element.ApplicationDict",
 		"com.x.processplatform.core.entity.element.ApplicationDictItem",
 		"com.x.processplatform.core.entity.element.QueryView", "com.x.processplatform.core.entity.element.QueryStat",
-		"com.x.processplatform.core.entity.element.Projection", "com.x.processplatform.core.entity.element.Mapping",
-		"com.x.query.core.entity.Item", "com.x.query.dynamic.entity.*" }, storeJars = { "x_organization_core_entity",
-				"x_organization_core_express", "x_processplatform_core_entity", "x_query_core_entity" }, dynamicJars = {
+		"com.x.processplatform.core.entity.element.Mapping", "com.x.query.core.entity.Item",
+		"com.x.query.dynamic.entity.*" }, storeJars = { "x_organization_core_entity", "x_organization_core_express",
+				"x_processplatform_core_entity", "x_query_core_entity" }, dynamicJars = {
 						"x_query_dynamic_entity" }, storageTypes = { StorageType.processPlatform })
 public class x_processplatform_assemble_designer extends Deployable {
 

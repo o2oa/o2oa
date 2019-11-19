@@ -21,13 +21,13 @@ public class ThisApplication {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_query_service_processing());
 			if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
-				context.scheduleLocal(CrawlWork.class, Config.query().getCrawlWork().getCron());
+				context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
-				context.scheduleLocal(CrawlWorkCompleted.class, Config.query().getCrawlWorkCompleted().getCron());
+				context.schedule(CrawlWorkCompleted.class, Config.query().getCrawlWorkCompleted().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.query().getCrawlCms().getEnable())) {
-				context.scheduleLocal(CrawlCms.class, Config.query().getCrawlCms().getCron());
+				context.schedule(CrawlCms.class, Config.query().getCrawlCms().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

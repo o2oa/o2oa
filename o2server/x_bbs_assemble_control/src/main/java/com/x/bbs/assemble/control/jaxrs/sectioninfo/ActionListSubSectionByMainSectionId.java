@@ -84,7 +84,7 @@ public class ActionListSubSectionByMainSectionId extends BaseAction {
 			}
 		}		
 		if( check ){
-			if( sectionInfoList != null && sectionInfoList.size() > 0 ){
+			if( ListTools.isNotEmpty( sectionInfoList ) ){
 				try {
 					wraps = Wo.copier.copy( sectionInfoList );
 					if( ListTools.isNotEmpty( wraps )) {

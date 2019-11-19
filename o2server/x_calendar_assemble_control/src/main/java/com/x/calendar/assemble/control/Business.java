@@ -1,10 +1,7 @@
 package com.x.calendar.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.calendar.assemble.control.factory.CalendarFactory;
-import com.x.calendar.assemble.control.factory.Calendar_EventFactory;
-import com.x.calendar.assemble.control.factory.Calendar_EventRepeatMasterFactory;
-import com.x.calendar.assemble.control.factory.Calendar_SettingFactory;
+import com.x.calendar.assemble.control.factory.*;
 import com.x.organization.core.express.Organization;
 
 public class Business {
@@ -50,7 +47,15 @@ public class Business {
 		}
 		return calendar_EventFactory;
 	}
-	
+
+	private Calendar_EventCommentFactory calendar_EventCommentFactory;
+	public Calendar_EventCommentFactory calendar_EventCommentFactory() throws Exception {
+		if (null == this.calendar_EventCommentFactory) {
+			this.calendar_EventCommentFactory = new Calendar_EventCommentFactory( this );
+		}
+		return calendar_EventCommentFactory;
+	}
+
 	private Calendar_EventRepeatMasterFactory calendar_EventRepeatMasterFactory;	
 	public Calendar_EventRepeatMasterFactory calendar_EventRepeatMasterFactory() throws Exception {
 		if (null == this.calendar_EventRepeatMasterFactory) {

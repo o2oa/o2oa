@@ -35,6 +35,10 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 			logger.info("can not send publish notify , document is NULL!" );
 			return;
 		}
+		if( !StringUtils.equalsIgnoreCase( "信息" , document.getDocumentType()) ) {
+			logger.info("can not send publish notify , document is not '信息'!" );
+			return;
+		}
 		logger.info("send publish notify for new document:" + document.getTitle() );	
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
@@ -78,7 +82,6 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 					}
 				}
 				if( ListTools.isNotEmpty( persons )) {
-					
 					//去一下重复
 			        HashSet<String> set = new HashSet<String>( persons );
 			        persons.clear();
@@ -90,9 +93,9 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 							MessageFactory.cms_publish(person, wo);
 						}
 					}
-					logger.info("send total count:" + persons.size()  );
+					logger.debug("cms send total count:" + persons.size()  );
 				}
-				logger.info("send publish notify for new document completed! " );
+				logger.info("cms send publish notify for new document completed! " );
 				//}
 			}
 			logger.info("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );

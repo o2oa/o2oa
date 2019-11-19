@@ -26,7 +26,7 @@ public class ActionIsCategoryInfoManager extends BaseAction {
 		Boolean isXAdmin = false;
 		
 		try {
-			isXAdmin = userManagerService.isManager(request, effectivePerson );
+			isXAdmin = userManagerService.isManager( effectivePerson );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionServiceLogic(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);

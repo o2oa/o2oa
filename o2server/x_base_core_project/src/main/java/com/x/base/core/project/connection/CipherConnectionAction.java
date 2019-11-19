@@ -24,7 +24,7 @@ public class CipherConnectionAction {
 	}
 
 	public static ActionResponse get(Boolean xdebugger, Application application, String... strs) throws Exception {
-		String addr = application.getUrlRoot() + trim(Applications.joinQueryUri(strs));
+		String addr = application.getUrlJaxrsRoot() + trim(Applications.joinQueryUri(strs));
 		return get(xdebugger, addr);
 	}
 
@@ -37,7 +37,7 @@ public class CipherConnectionAction {
 	}
 
 	public static ActionResponse delete(Boolean xdebugger, Application application, String... strs) throws Exception {
-		String addr = application.getUrlRoot() + trim(Applications.joinQueryUri(strs));
+		String addr = application.getUrlJaxrsRoot() + trim(Applications.joinQueryUri(strs));
 		return delete(xdebugger, addr);
 	}
 
@@ -51,7 +51,7 @@ public class CipherConnectionAction {
 
 	public static ActionResponse post(Boolean xdebugger, Object body, Application application, String... strs)
 			throws Exception {
-		String addr = application.getUrlRoot() + trim(Applications.joinQueryUri(strs));
+		String addr = application.getUrlJaxrsRoot() + trim(Applications.joinQueryUri(strs));
 		return post(xdebugger, addr, body);
 	}
 
@@ -65,7 +65,7 @@ public class CipherConnectionAction {
 
 	public static ActionResponse put(Boolean xdebugger, Object body, Application application, String... strs)
 			throws Exception {
-		String addr = application.getUrlRoot() + trim(Applications.joinQueryUri(strs));
+		String addr = application.getUrlJaxrsRoot() + trim(Applications.joinQueryUri(strs));
 		return put(xdebugger, addr, body);
 	}
 

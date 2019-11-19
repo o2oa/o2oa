@@ -99,11 +99,10 @@ public class UserManagerService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据人员姓名获取人员所属的顶层组织名称，如果人员有多个身份，则取组织等级最大的身份
 	 * @param personName
-	 * @param level
 	 * @return
 	 * @throws Exception
 	 */
@@ -162,10 +161,10 @@ public class UserManagerService {
 
 	/**
 	 * 查询当前用户是否有指定的身份信息
-	 * @param name
+	 * @param personName
 	 * @param loginIdentity
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public boolean hasIdentity( String personName, String loginIdentity ) throws Exception {
 		if( loginIdentity == null || loginIdentity.isEmpty() ){
@@ -225,9 +224,8 @@ public class UserManagerService {
 
 	/**
 	 * 判断用户是否有指定的平台角色，比如CMS系统管理员
-	 * 
-	 * @param name
-	 * @param string
+	 * @param personName
+	 * @param roleName
 	 * @return
 	 * @throws Exception
 	 */
@@ -356,7 +354,7 @@ public class UserManagerService {
 
 	/**
 	 * 列示人员所拥有的所有角色信息
-	 * @param name
+	 * @param personName
 	 * @return
 	 * @throws Exception
 	 */
@@ -580,6 +578,26 @@ public class UserManagerService {
 				}
 			}
 			return resultList;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+    public List<String> listPersonListWithGroups(List<String> groups) throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listWithGroup( groups );
+		} catch (Exception e) {
+			throw e;
+		}
+    }
+
+	public List<String> listPersonListWithUnits(List<String> units) throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listWithUnitSubNested( units );
 		} catch (Exception e) {
 			throw e;
 		}

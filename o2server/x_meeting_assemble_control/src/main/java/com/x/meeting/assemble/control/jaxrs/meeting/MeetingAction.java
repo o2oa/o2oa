@@ -175,17 +175,17 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 	
-	@JaxrsMethodDescribe(value = "会议签到二维码", action = ActionCheckinCode.class)
+	@JaxrsMethodDescribe(value = "会议签到二维码", action = ActionCheckInCode.class)
 	@GET
 	@Path("{id}/checkin/code")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void checkInBindCode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@PathParam("id") String id) {
-		ActionResult<ActionCheckinCode.Wo> result = new ActionResult<>();
+		ActionResult<ActionCheckInCode.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCheckinCode().execute(effectivePerson, id);
+			result = new ActionCheckInCode().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

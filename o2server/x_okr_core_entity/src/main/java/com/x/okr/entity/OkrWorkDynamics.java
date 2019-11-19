@@ -127,26 +127,29 @@ public class OkrWorkDynamics extends SliceJpaObject {
 	public static final String dateTime_FIELDNAME = "dateTime";
 	@FieldDescribe("操作时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + dateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + dateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTime = null;
 
 	public static final String operatorName_FIELDNAME = "operatorName";
 	@FieldDescribe("操作者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + operatorName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ operatorName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + operatorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String operatorName = null;
 
 	public static final String targetName_FIELDNAME = "targetName";
 	@FieldDescribe("目标者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetName = null;
 
 	public static final String targetIdentity_FIELDNAME = "targetIdentity";
 	@FieldDescribe("目标者身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + targetIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ targetIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + targetIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetIdentity = null;

@@ -1,5 +1,10 @@
 package com.x.program.center.jaxrs.module;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -71,29 +76,31 @@ public class ActionOutput extends BaseAction {
 						.getData(WrapQuery.class);
 				wo.getQueryList().add(wrap);
 			}
-			wo.setFlag(StringTools.uniqueToken());
+			for (WrapServiceModule wiService : wi.getServiceModuleList()) {
+				WrapServiceModule wrap = CipherConnectionAction.put(false,
+						Config.url_x_program_center_jaxrs("output", wiService.getId(), "select"), wiService)
+						.getData(WrapServiceModule.class);
+				wo.getServiceModuleList().add(wrap);
+			}
+			StorageMapping mapping = ThisApplication.context().storageMappings().random(Structure.class);
+			if (null == mapping) {
+				throw new ExceptionAllocateStorageMaaping();
+			}
+
+			Structure structure = new Structure(mapping.getName(), wi.getName());
+			structure.setDescription(wi.getDescription());
+			structure.setData(gson.toJson(wi));
+			emc.check(structure, CheckPersistType.all);
+			structure.saveContent(mapping, gson.toJson(wo).getBytes(DefaultCharset.charset), wi.getName()+"."+Structure.default_extension);
+			structure.setName(wi.getName());
+			emc.beginTransaction(Structure.class);
+			emc.persist(structure);
+			emc.commit();
+
+			wo.setFlag(structure.getId());
 			CacheObject cacheObject = new CacheObject();
 			cacheObject.setModule(wo);
 			this.cache.put(new Element(wo.getFlag(), cacheObject));
-			emc.beginTransaction(Structure.class);
-			Structure structure = new Structure();
-			if (StringUtils.isEmpty(wi.getStructure())) {
-				structure = new Structure();
-				structure.setName(wi.getName());
-				structure.setDescription(wi.getDescription());
-				structure.setData(gson.toJson(wi));
-				emc.persist(structure, CheckPersistType.all);
-			} else {
-				structure = emc.find(wi.getStructure(), Structure.class);
-				if (null == structure) {
-					throw new ExceptionEntityNotExist(wi.getStructure(), Structure.class);
-				}
-				structure.setName(wi.getName());
-				structure.setDescription(wi.getDescription());
-				structure.setData(gson.toJson(wi));
-				emc.check(structure, CheckPersistType.all);
-			}
-			emc.commit();
 			result.setData(wo);
 			return result;
 		}

@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
+import com.x.cms.core.entity.Document;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -152,5 +153,27 @@ public class CmsBatchOperationPersistService {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * 检查文档是否设置为IsTop，如果isTop为空，则设置为false，避免空值
+	 * @param defaultIsTop 需要设置的默认的值
+	 */
+    public void checkDocumentIsTop( boolean defaultIsTop ) throws Exception {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			DocumentQueryService documentQueryService = new DocumentQueryService();
+			DocumentPersistService documentPersistService = new DocumentPersistService();
+			List<String> ids = documentQueryService.listNULLIsTopDocIds();
+			Document document = null;
+			if( ListTools.isNotEmpty( ids )) {
+				for( String id : ids ) {
+					document = documentQueryService.get( id );
+					if( document != null ){
+						documentPersistService.refreshDocInfoData( document );
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+    }
 }

@@ -29,7 +29,6 @@ import com.x.processplatform.core.entity.content.SerialNumber;
 import com.x.processplatform.core.entity.content.SerialNumber_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.service.processing.jaxrs.work.WorkAction;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class SerialBuilder {
@@ -69,16 +68,11 @@ public class SerialBuilder {
 		if (StringUtils.isNotEmpty(data)) {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
 			if (!list.isEmpty()) {
-				// ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				// ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("nashorn");
-				// scriptEngine.put("serial", this.serial);
-				// scriptEngine.put("work", this.work);
-				// scriptEngine.put("process", this.process);
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
 						new BindingPair("serial", this.serial), new BindingPair("process", this.process));
 				for (SerialTextureItem o : list) {
-					if (!StringUtils.equalsIgnoreCase(o.getKey(), "number")) {
-						// Object v = scriptHelper.eval(this.wrap(o.getScript()));
+					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
+							&& StringUtils.isNotEmpty(o.getScript())) {
 						Object v = scriptHelper.eval(o.getScript());
 						itemResults.add(v);
 					} else {
@@ -87,8 +81,7 @@ public class SerialBuilder {
 				}
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
-					if (StringUtils.equalsIgnoreCase(o.getKey(), "number")) {
-						// Object v = scriptHelper.eval(this.wrap(o.getScript()));
+					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
 						Object v = scriptHelper.eval(o.getScript());
 						itemResults.set(i, v);
 					}
@@ -100,15 +93,6 @@ public class SerialBuilder {
 			}
 		}
 		return buffer.toString();
-	}
-
-	private String wrap(String text) {
-		String str = "(function(){";
-		str += StringUtils.LF;
-		str += text;
-		str += StringUtils.LF;
-		str += "})();";
-		return str;
 	}
 
 	public class Serial {

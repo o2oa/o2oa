@@ -130,8 +130,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
 				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject
-						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
+				jaxrsObject.setAddress(
+						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setBody(body);
 				jaxrsObject.setInternal(invoke.getInternal());
 				jaxrsObject.setMethod("post");
@@ -146,8 +146,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
 				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject
-						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
+				jaxrsObject.setAddress(
+						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setBody(body);
 				jaxrsObject.setInternal(invoke.getInternal());
 				jaxrsObject.setMethod("put");
@@ -161,8 +161,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
 				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject
-						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
+				jaxrsObject.setAddress(
+						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setInternal(invoke.getInternal());
 				jaxrsObject.setMethod("get");
 				jaxrsObject.setContentType(invoke.getJaxrsContentType());
@@ -175,8 +175,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
 				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
-				jaxrsObject
-						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
+				jaxrsObject.setAddress(
+						StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setInternal(invoke.getInternal());
 				jaxrsObject.setMethod("delete");
 				jaxrsObject.setContentType(invoke.getJaxrsContentType());

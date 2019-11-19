@@ -110,38 +110,43 @@ public class OkrWorkReportProcessLog extends SliceJpaObject {
 
 	public static final String processorName_FIELDNAME = "processorName";
 	@FieldDescribe("处理人姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorName = "";
 
 	public static final String processorIdentity_FIELDNAME = "processorIdentity";
 	@FieldDescribe("处理人身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + processorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorIdentity = "";
 
 	public static final String processorUnitName_FIELDNAME = "processorUnitName";
 	@FieldDescribe("处理人所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorUnitName = "";
 
 	public static final String processorTopUnitName_FIELDNAME = "processorTopUnitName";
 	@FieldDescribe("处理人所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processorTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processorTopUnitName = "";
 
 	public static final String processLevel_FIELDNAME = "processLevel";
 	@FieldDescribe("处理层级次序")
-	@Column( name = ColumnNamePrefix + processLevel_FIELDNAME)
+	@Column(name = ColumnNamePrefix + processLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer processLevel = 1;
 
 	public static final String activityName_FIELDNAME = "activityName";
 	@FieldDescribe("处理环节名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + activityName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName = "";
 
@@ -162,7 +167,7 @@ public class OkrWorkReportProcessLog extends SliceJpaObject {
 	public static final String arriveTime_FIELDNAME = "arriveTime";
 	@FieldDescribe("到达时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + arriveTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + arriveTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date arriveTime = null;
 
@@ -175,13 +180,13 @@ public class OkrWorkReportProcessLog extends SliceJpaObject {
 	public static final String processTime_FIELDNAME = "processTime";
 	@FieldDescribe("处理时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + processTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + processTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date processTime = null;
 
 	public static final String stayTime_FIELDNAME = "stayTime";
 	@FieldDescribe("停留时长")
-	@Column( name = ColumnNamePrefix + stayTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + stayTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long stayTime = 0L;
 

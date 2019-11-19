@@ -193,14 +193,24 @@ public class AppInfoService {
 		return business.getAppInfoFactory().listAllAppType();
 	}
 
-	public Long countAppInfoWithAppType(EntityManagerContainer emc, String type) throws Exception {
+//	public Long countAppInfoWithAppType(EntityManagerContainer emc, String type) throws Exception {
+//		Business business = new Business( emc );
+//		return business.getAppInfoFactory().countAppInfoWithAppType( type );
+//	}
+//
+//	public Long countAppInfoWithOutAppType(EntityManagerContainer emc ) throws Exception {
+//		Business business = new Business( emc );
+//		return business.getAppInfoFactory().countAppInfoWithOutAppType( );
+//	}
+
+	public List<String> listAppIdsWithAppType(EntityManagerContainer emc, String type) throws Exception {
 		Business business = new Business( emc );
-		return business.getAppInfoFactory().countAppInfoWithAppType( type );
+		return business.getAppInfoFactory().listAppIdsWithAppType(type);
 	}
-	
-	public Long countAppInfoWithOutAppType(EntityManagerContainer emc ) throws Exception {
+
+	public List<String> listAppIdsWithOutAppType(EntityManagerContainer emc ) throws Exception {
 		Business business = new Business( emc );
-		return business.getAppInfoFactory().countAppInfoWithOutAppType( );
+		return business.getAppInfoFactory().listAppIdsWithOutAppType();
 	}
 	
 }

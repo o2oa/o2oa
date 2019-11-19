@@ -1,43 +1,44 @@
 package com.x.processplatform.assemble.surface.jaxrs.review;
 
+import javax.persistence.criteria.Predicate;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WrapCount;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Review;
 
 class ActionCountWithPerson extends BaseAction {
 
-	ActionResult<Wo> execute(String credential) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, JsonElement jsonElement)
+			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wo wo = new Wo();
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			String person = business.organization().person().get(credential);
 			if (StringUtils.isNotEmpty(person)) {
-				Long count = business.review().countWithPerson(person);
-				wo.setCount(count);
+				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+				wo.setCount(emc.count(Review.class, p));
+			} else {
+				wo.setCount(0L);
 			}
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	public static class Wi extends FilterWi {
 
-		@FieldDescribe("待阅数量")
-		private Long count = 0L;
+	}
 
-		public Long getCount() {
-			return count;
-		}
-
-		public void setCount(Long count) {
-			this.count = count;
-		}
+	public static class Wo extends WrapCount {
 
 	}
 }

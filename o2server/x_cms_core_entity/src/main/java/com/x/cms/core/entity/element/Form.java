@@ -58,31 +58,34 @@ public class Form extends SliceJpaObject {
 	/* 更新运行方法 */
 	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("名称.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
 	@FieldDescribe("表单别名.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ alias_FIELDNAME)
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
-	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
 	public static final String appId_FIELDNAME = "appId";
 	@FieldDescribe("表单所属栏目.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + appId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + appId_FIELDNAME)
 	@CheckPersist(citationExists = @CitationExist(type = AppInfo.class), allowEmpty = true)
 	private String appId;
 
 	public static final String editor_FIELDNAME = "editor";
 	@FieldDescribe("最后的编辑者.")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + editor_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String editor;
 
@@ -90,14 +93,14 @@ public class Form extends SliceJpaObject {
 	@FieldDescribe("文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	private String data;
 
 	public static final String mobileData_FIELDNAME = "mobileData";
 	@FieldDescribe("移动端文本内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	private String mobileData;
 
 	public String getName() {

@@ -10,16 +10,4 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.meeting.core.entity.Attachment" }, storageTypes = { StorageType.meeting }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_meeting_core_entity" })
 public class x_meeting_assemble_control extends Deployable {
-
-//	public x_meeting_assemble_control() {
-//		super();
-//		dependency.containerEntities.add("com.x.meeting.core.entity.Building");
-//		dependency.containerEntities.add("com.x.meeting.core.entity.Room");
-//		dependency.containerEntities.add("com.x.meeting.core.entity.Meeting");
-//		dependency.containerEntities.add("com.x.meeting.core.entity.Attachment");
-//		dependency.storageTypes.add(StorageType.meeting.toString());
-//		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
-//		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
-//		dependency.storeJars.add(x_meeting_core_entity.class.getSimpleName());
-//	}
 }

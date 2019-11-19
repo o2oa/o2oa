@@ -147,6 +147,21 @@ public class Route extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String scriptText;
 
+	public static final String validationScript_FIELDNAME = "validationScript";
+	@IdReference(Script.class)
+	@FieldDescribe("校验脚本")
+	@Column(length = length_255B, name = ColumnNamePrefix + validationScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String validationScript;
+
+	public static final String validationScriptText_FIELDNAME = "validationScriptText";
+	@FieldDescribe("校验脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + validationScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String validationScriptText;
+
 	public static final String passSameTarget_FIELDNAME = "passSameTarget";
 	@FieldDescribe("如何与前一个环节处理人相同那么自动执行.")
 	@CheckPersist(allowEmpty = true)
@@ -459,6 +474,22 @@ public class Route extends SliceJpaObject {
 
 	public void setAppendTaskIdentityScriptText(String appendTaskIdentityScriptText) {
 		this.appendTaskIdentityScriptText = appendTaskIdentityScriptText;
+	}
+
+	public String getValidationScript() {
+		return validationScript;
+	}
+
+	public void setValidationScript(String validationScript) {
+		this.validationScript = validationScript;
+	}
+
+	public String getValidationScriptText() {
+		return validationScriptText;
+	}
+
+	public void setValidationScriptText(String validationScriptText) {
+		this.validationScriptText = validationScriptText;
 	}
 
 }

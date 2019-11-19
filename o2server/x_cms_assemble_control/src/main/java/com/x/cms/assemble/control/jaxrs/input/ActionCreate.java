@@ -15,18 +15,14 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
-import com.x.cms.core.entity.element.wrap.WrapAppDict;
-import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
-import com.x.cms.core.entity.element.wrap.WrapCms;
-import com.x.cms.core.entity.element.wrap.WrapFile;
-import com.x.cms.core.entity.element.wrap.WrapForm;
-import com.x.cms.core.entity.element.wrap.WrapScript;
+import com.x.cms.core.entity.element.wrap.*;
 
 class ActionCreate extends BaseAction {
 
@@ -46,7 +42,14 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
-	private AppInfo create(Business business, Wi wi) throws Exception {
+	/**
+	 * 新建导入
+	 * @param business
+	 * @param wi
+	 * @return
+	 * @throws Exception
+	 */
+	private AppInfo create( Business business, Wi wi ) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		AppInfo appInfo = business.entityManagerContainer().find(wi.getId(), AppInfo.class);
 		if (null != appInfo) {
@@ -103,15 +106,24 @@ class ActionCreate extends BaseAction {
 				persistObjects.add(o);
 			}
 		}
-		
+
+		WrapCategoryExt wrapCategoryExt = null;
 		for (WrapCategoryInfo wrapCategoryInfo : wi.getCategoryInfoList() ) {
-			CategoryInfo categoryInfo = business.entityManagerContainer().find(wrapCategoryInfo.getId(), CategoryInfo.class);
-			if (null != categoryInfo) {
+			if (null != business.entityManagerContainer().find( wrapCategoryInfo.getId(), CategoryInfo.class )) {
 				throw new ExceptionEntityExistForCreate(wrapCategoryInfo.getId(), CategoryInfo.class);
 			}
-			categoryInfo = WrapCategoryInfo.inCopier.copy(wrapCategoryInfo);
-			categoryInfo.setAppId(appInfo.getId());
-			persistObjects.add(categoryInfo);
+			wrapCategoryInfo.setAppId(appInfo.getId());
+			persistObjects.add( WrapCategoryInfo.inCopier.copy( wrapCategoryInfo ) );
+
+			//添加对CategoryExt的解析和持久化
+			wrapCategoryExt = wrapCategoryInfo.getCategoryExt();
+			if( wrapCategoryExt != null ){
+				if (null != business.entityManagerContainer().find( wrapCategoryExt.getId(), CategoryExt.class )) {
+					throw new ExceptionEntityExistForCreate( wrapCategoryExt.getId(), CategoryExt.class);
+				}
+				wrapCategoryExt.setId( wrapCategoryInfo.getId() );
+				persistObjects.add( WrapCategoryExt.inCopier.copy( wrapCategoryExt ) );
+			}
 		}
 		
 		business.entityManagerContainer().beginTransaction(File.class);
@@ -121,6 +133,8 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(AppDict.class);
 		business.entityManagerContainer().beginTransaction(AppDictItem.class);
 		business.entityManagerContainer().beginTransaction(CategoryInfo.class);
+		business.entityManagerContainer().beginTransaction(CategoryExt.class);
+
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}

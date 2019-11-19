@@ -81,21 +81,24 @@
 </script>
 </head>
 
-<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px;border-image: linear-gradient(#ffffff, #e7e7e7 15%, #e7e7e7 100%, #ffffff);box-shadow: inset 15px 0 5px -16px #e7e7e7;background-image: -webkit-radial-gradient(right, #f2f2f2, #ffffff 100%);">
 	<table style="width: 1800px; margin: 0 auto">
 		<tr>
 			<td style="width: 350px;" valign="top">
 				<fieldset>
 					<legend>API Menu</legend>
-					<div id="menu" style="height: 850px; overflow: auto">&nbsp;</div>
+					<div id="menu" style="height: 850px; overflow: auto;">&nbsp;</div>
 				</fieldset>
 			</td>
-			<td valign="top">
-				<fieldset>
-					<legend>API Content</legend>
+			<td valign="top">			
+				<!--<fieldset>
+					<legend>Content</legend>
 					<div id="content"
 						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word">&nbsp;</div>
-				</fieldset>
+				</fieldset> -->
+				
+				<div id="content"
+						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word;border-image: linear-gradient(#ffffff, #e7e7e7 15%, #e7e7e7 100%, #ffffff);box-shadow: inset 15px 0 5px -16px #e7e7e7;background-image: -webkit-radial-gradient(right, #f2f2f2, #ffffff 100%);">&nbsp;</div>
 				<fieldset>
 					<legend>
 						Result&nbsp;<a id="btn_copy" href="javascript:" data-clipboard-target="#result">copy</a>&nbsp;
@@ -103,6 +106,17 @@
 					<div id="result"
 						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; width: 1400px">&nbsp;</div>
 				</fieldset>
+				
+			    <fieldset>
+					<legend>
+						Sample&nbsp;<a  id="btn_copy"  href="javascript:" data-clipboard-target="#Sample">copy</a>&nbsp;
+					</legend><div style="padding-left:12px">
+					<div id="Sample"
+						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; width: 1400px;">&nbsp;</div>
+						</div>
+				</fieldset>		
+						
+
 			</td>
 		</tr>
 	</table>

@@ -11,6 +11,9 @@ class ActionGetWithIdentityWithLevel extends BaseAction {
 		wi.setIdentity(identity);
 		wi.setLevel(level);
 		Wo wo = context.applications().postQuery(applicationClass, "unit/identity/level", wi).getData(Wo.class);
+		if (null == wo) {
+			return "";
+		}
 		return wo.getUnit();
 	}
 

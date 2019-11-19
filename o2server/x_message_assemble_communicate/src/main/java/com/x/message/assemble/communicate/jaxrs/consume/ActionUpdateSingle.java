@@ -19,7 +19,8 @@ class ActionUpdateSingle extends BaseAction {
 			Message message = emc.find(id, Message.class);
 			if (null != message) {
 				emc.beginTransaction(Message.class);
-				emc.remove(message);
+//				emc.remove(message);
+				message.setConsumed(true);
 				emc.commit();
 			}
 			Wo wo = new Wo();

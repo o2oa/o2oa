@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -26,7 +27,7 @@ class ActionOrganizationEval extends BaseAction {
 			Wo wo = new Wo();
 			Business business = new Business(emc);
 			ScriptEngineManager factory = new ScriptEngineManager();
-			ScriptEngine engine = factory.getEngineByName("nashorn");
+			ScriptEngine engine = factory.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 			engine.put("org", business.organization());
 			engine.put("effectivePerson", effectivePerson);
 			logger.warn("eval script: {}", wi.getScript());

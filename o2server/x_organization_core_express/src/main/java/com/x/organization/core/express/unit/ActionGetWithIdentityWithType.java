@@ -11,6 +11,9 @@ class ActionGetWithIdentityWithType extends BaseAction {
 		wi.setIdentity(identity);
 		wi.setType(type);
 		Wo wo = context.applications().postQuery(applicationClass, "unit/identity/type", wi).getData(Wo.class);
+		if (null == wo) {
+			return "";
+		}
 		return wo.getUnit();
 	}
 

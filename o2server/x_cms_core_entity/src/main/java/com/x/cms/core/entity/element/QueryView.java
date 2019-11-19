@@ -73,14 +73,16 @@ public class QueryView extends SliceJpaObject {
 	public static final String name_FIELDNAME = "name";
 	@Flag
 	@FieldDescribe("名称.")
-	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
 	@FieldDescribe("别名.")
-	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+			+ alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String alias;
 
@@ -107,21 +109,21 @@ public class QueryView extends SliceJpaObject {
 	public static final String timingEnable_FIELDNAME = "timingEnable";
 	@FieldDescribe("是否是定时任务.")
 	@CheckPersist(allowEmpty = true)
-	@Column( name = ColumnNamePrefix + timingEnable_FIELDNAME)
+	@Column(name = ColumnNamePrefix + timingEnable_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + timingEnable_FIELDNAME)
 	private Boolean timingEnable;
 
 	public static final String timingTouch_FIELDNAME = "timingTouch";
 	@FieldDescribe("上次运行后触发器触发过的次数,用于判断是否要运行,如果需要运行那么重置为0,避免由于时间往后调导致的不运行.")
 	@CheckPersist(allowEmpty = true)
-	@Column( name = ColumnNamePrefix + timingTouch_FIELDNAME)
+	@Column(name = ColumnNamePrefix + timingTouch_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + timingTouch_FIELDNAME)
 	private Integer timingTouch;
 
 	public static final String timingInterval_FIELDNAME = "timingInterval";
 	@FieldDescribe("运行间隔,分钟.")
 	@CheckPersist(allowEmpty = true)
-	@Column( name = ColumnNamePrefix + timingInterval_FIELDNAME)
+	@Column(name = ColumnNamePrefix + timingInterval_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + timingInterval_FIELDNAME)
 	private Integer timingInterval;
 
@@ -129,14 +131,15 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("icon Base64编码后的文本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + icon_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + icon_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String icon;
-	
+
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("应用的创建者。")
 	@CheckPersist(allowEmpty = false)
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorPerson_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorPerson_FIELDNAME)
 	private String creatorPerson;
 
@@ -144,14 +147,15 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("应用的最后修改时间。")
 	@Temporal(TemporalType.TIMESTAMP)
 	@CheckPersist(allowEmpty = false)
-	@Column( name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lastUpdateTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastUpdateTime_FIELDNAME)
 	private Date lastUpdateTime;
 
 	public static final String lastUpdatePerson_FIELDNAME = "lastUpdatePerson";
 	@FieldDescribe("应用的最后修改者")
 	@CheckPersist(allowEmpty = false)
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + lastUpdatePerson_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ lastUpdatePerson_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastUpdatePerson_FIELDNAME)
 	private String lastUpdatePerson;
 
@@ -159,7 +163,7 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("显示布局.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + layout_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + layout_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String layout;
 
@@ -167,7 +171,7 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("方案文本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
@@ -175,7 +179,7 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("gird生成后运行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + afterGridScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterGridScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String afterGridScriptText;
 
@@ -183,7 +187,7 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("gropuGird生成后运行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + afterGroupGridScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterGroupGridScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String afterGroupGridScriptText;
 
@@ -191,7 +195,7 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("calculateGrid生成后运行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + afterCalculateGridScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + afterCalculateGridScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String afterCalculateGridScriptText;
 
@@ -205,17 +209,19 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("前台运行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + code_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + code_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String code;
-	
+
 	public static final String availablePersonList_FIELDNAME = "availablePersonList";
 	@FieldDescribe("可使用的人.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + availablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + availablePersonList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + availablePersonList_FIELDNAME)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ availablePersonList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ availablePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availablePersonList;
@@ -224,9 +230,11 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("可使用的身份.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + availableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + availableIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + availableIdentityList_FIELDNAME)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ availableIdentityList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ availableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableIdentityList;
@@ -234,10 +242,12 @@ public class QueryView extends SliceJpaObject {
 	public static final String availableUnitList_FIELDNAME = "availableUnitList";
 	@FieldDescribe("允许访问的组织列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + availableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + availableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + availableUnitList_FIELDNAME)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ availableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ availableUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ availableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> availableUnitList;
@@ -245,13 +255,14 @@ public class QueryView extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("栏目管理者。")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + controllerList_FIELDNAME)
+	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ controllerList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	private List<String> controllerList;	
+	private List<String> controllerList;
 
 	public String getName() {
 		return name;

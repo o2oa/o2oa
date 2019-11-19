@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -22,7 +23,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.tools.MainTools;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -231,6 +231,17 @@ public class CheckCore {
 								cls.getName(), field.getName()));
 					}
 				}
+			}
+		}
+	}
+
+	@Test
+	public static void checkIdUnique(List<Class<?>> classes) throws Exception {
+		for (Class<?> cls : classes) {
+			Field idField = FieldUtils.getField(cls, JpaObject.id_FIELDNAME, true);
+			Column column = idField.getAnnotation(Column.class);
+			if (BooleanUtils.isNotTrue(column.unique())) {
+				System.err.println(String.format("checkIdUnique error: class: %s.", cls.getName()));
 			}
 		}
 	}

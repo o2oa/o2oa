@@ -47,7 +47,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Work extends SliceJpaObject {
+public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 7668822947307502058L;
 	private static final String TABLE = PersistenceProperties.Content.Work.table;
@@ -89,12 +89,14 @@ public class Work extends SliceJpaObject {
 	public Work(Work work) throws Exception {
 		Work copy = XGsonBuilder.convert(work, Work.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
+		this.copyProjectionFields(work);
 	}
 
 	public Work(WorkCompleted workCompleted) throws Exception {
 		Work copy = XGsonBuilder.convert(workCompleted, Work.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
 		this.setId(workCompleted.getWork());
+		this.copyProjectionFields(workCompleted);
 	}
 
 	public void setTitle(String title) {

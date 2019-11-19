@@ -46,6 +46,7 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
+
 		if (check) {
 			try {
 				document = documentQueryService.get(id);
@@ -213,7 +214,8 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		ApplicationCache.notify(Document.class);
+
+		ApplicationCache.notify( Document.class );
 
 		return result;
 	}

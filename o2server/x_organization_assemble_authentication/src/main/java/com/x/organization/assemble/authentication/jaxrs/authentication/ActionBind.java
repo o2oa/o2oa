@@ -32,7 +32,7 @@ class ActionBind extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionBind.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
-		Audit audit = logger.audit(effectivePerson);
+		//Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String meta = StringTools.uniqueToken();
@@ -68,7 +68,6 @@ class ActionBind extends BaseAction {
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
-		audit.log();
 		return result;
 	}
 

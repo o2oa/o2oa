@@ -304,7 +304,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				boolean isExists = false;
 				for (FileInfo picture : cloudPictures) {
 					isExists = false;
-					if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
+					if ( wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty() ) {
 						for (String cloudPictureId : wi.getCloudPictures()) {
 							if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
 								isExists = true;
@@ -430,7 +430,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		return attachment;
 	}
 
-public static class Wi extends Document {
+	public static class Wi extends Document {
 		
 		private static final long serialVersionUID = -5076990764713538973L;
 		
@@ -458,7 +458,7 @@ public static class Wi extends Document {
 		
 		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
-		
+
 		@FieldDescribe( "文档编辑者." )
 		private List<PermissionInfo> authorList = null;
 		

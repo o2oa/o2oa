@@ -660,4 +660,42 @@ public class AttachmentAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+
+	@JaxrsMethodDescribe(value = "根据Work或WorkCompleted批量下载附件并压缩,设定是否使用stream输出", action = ActionBatchDownloadWithWorkOrWorkCompletedStream.class)
+	@GET
+	@Path("batch/download/work/{workId}/site/{site}/stream")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void batchDownloadWithWorkOrWorkCompletedStream(@Suspended final AsyncResponse asyncResponse,
+														   @Context HttpServletRequest request,
+														   @JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+														   @JaxrsParameterDescribe("附件框分类,(0)表示全部") @PathParam("site") String site) {
+		ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据Work或WorkCompleted批量下载附件并压缩", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
+	@GET
+	@Path("batch/download/work/{workId}/site/{site}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void batchDownloadWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+													 @Context HttpServletRequest request,
+													 @JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+													 @JaxrsParameterDescribe("附件框分类,(0)表示全部") @PathParam("site") String site) {
+		ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 }
