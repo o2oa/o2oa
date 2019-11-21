@@ -57,6 +57,15 @@ MWF.xApplication.query.TableDesigner.LP = {
     "statusBuild_success": "当前数据表已经发布到编译环境，您需要运行“全部编译”使其生效",
     "statusDraft_success": "当前数据表已从编译环境取消，下次“全部编译”时会删除从数据库中删除表",
     "buildAllViewTitle": "编译所有数据表",
+    "tableExplodeTitle": "导出数据",
+    "tableExplodeInfo": "默认最多导出1000行。确认是否导出？",
+    "tableExplode_success": "导出成功",
+
+    "tableImplodeTitle": "导入数据",
+    "tableImplodeInfo": "导入的数据会覆盖。确认是否导入？",
+    "tableImplode_success": "导入成功",
+
+
     "buildAllViewInfor": "即将编译所有数据表，包括所有数据应用中的数据表，编译后您可能需要重启服务器后才能使用此数据表。您确定要执行此操作吗？",
     "buildAllView_success": "已编译所有数据表，新的更改需要您重启服务器后生效",
     "tableHelp": "数据表能够在系统数据库中自动创建真实表，并生成java实体对象，您可以使用JPQL操作数据表。创建数据表需要以下步骤：<br><br>1、创建数据表，并创建每一列；<br>2、点击工具栏按钮，将数据表发布到编译状态；<br>3、点击工具栏按钮，执行“编译所有数据表”操作<br>4、重启服务器，数据表就可以使用了。"

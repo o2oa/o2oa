@@ -1,0 +1,61 @@
+{
+	"html": "html.png",
+	"htm": "html.png",
+	"jsp": "html.png",
+	"asp": "html.png",
+	"js": "js.png",
+	
+	"avi": "other.png",
+	"mkv": "other.png",
+    "mov": "other.png",
+    "ogg": "other.png",
+    "mp4": "other.png",
+    "mpa": "other.png",
+    "mpe": "other.png",
+    "mpeg": "other.png",
+    "mpg": "other.png",
+    "rmvb": "other.png",
+
+    "doc": "doc.png",
+	"docx": "doc.png",
+	"dotx": "doc.png",
+	"dot": "doc.png",
+	
+	"vsd": "other.png",
+	
+	"xls": "xls.png",
+	"xlsx": "xls.png",
+	"xlsm": "xls.png",
+	"xlt": "xls.png",
+	"xltx": "xls.png",
+	
+	"pptx": "ppt.png",
+	"ppt": "ppt.png",
+	"pot": "ppt.png",
+	"potx": "ppt.png",
+	"potm": "ppt.png",
+	
+	"css": "css.png",
+	"mp3": "other.png",
+	"wav": "other.png",
+	"wma": "other.png",
+	"wmv": "other.png",
+
+    "bmp": "img.png",
+	"gif": "img.png",
+	"png": "img.png",
+	"psd": "img.png",
+	"jpeg": "img.png",
+	"jpg": "img.png",
+    "jpe": "img.png",
+    "ico": "img.png",
+	
+	"pdf": "pdf.png",
+	"rar": "zip.png",
+	"txt": "text.png",
+	"zip": "zip.png",
+	
+	"exe": "other.png",
+	
+	"unknow": "other.png"
+}

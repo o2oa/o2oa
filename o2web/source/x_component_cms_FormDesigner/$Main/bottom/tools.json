@@ -14,25 +14,40 @@
     "text": "数字字段",
     "className": "Number"
   },
-  "personfield": {
+//  "personfield": {
+//    "icon": "personfield.png",
+//    "text": "人员",
+//    "className": "Personfield"
+//  },
+//  "orgfield": {
+//    "icon": "orgfield.png",
+//    "text": "组织",
+//    "className": "Orgfield"
+//  },
+//  "readerfield": {
+//    "icon": "readerfield.png",
+//    "text": "读者",
+//    "className": "Readerfield"
+//  },
+//  "authorfield": {
+//    "icon": "authorfield.png",
+//    "text": "作者",
+//    "className": "Authorfield"
+//  },
+  "org": {
     "icon": "personfield.png",
-    "text": "人员",
-    "className": "Personfield"
+    "text": "人员组织",
+    "className": "Org"
   },
-  "orgfield": {
-    "icon": "orgfield.png",
-    "text": "组织",
-    "className": "Orgfield"
-  },
-  "readerfield": {
+  "reader": {
     "icon": "readerfield.png",
     "text": "读者",
-    "className": "Readerfield"
+    "className": "Reader"
   },
-  "authorfield": {
+  "author": {
     "icon": "authorfield.png",
     "text": "作者",
-    "className": "Authorfield"
+    "className": "Author"
   },
   "calendar": {
     "icon": "calendar.png",

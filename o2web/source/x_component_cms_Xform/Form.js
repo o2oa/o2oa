@@ -264,14 +264,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         var cloudPictures = [];
         var summary = "";
         Object.each(this.forms, function(module, id){
-            if( module.json.type == "Readerfield" ){
+            if( module.json.type == "Readerfield" || module.json.type == "Reader" ){
                 if (module.json.section=="yes"){
                     readers = readers.concat( this.getSectionData(module, data[id]) );
                 }else{
                     readers = readers.concat( module.getData() );
                 }
             }
-            if( module.json.type == "Authorfield" ){
+            if( module.json.type == "Authorfield" || module.json.type == "Author" ){
                 if (module.json.section=="yes"){
                     authors = authors.concat( this.getSectionData(module, data[id]) );
                 }else{

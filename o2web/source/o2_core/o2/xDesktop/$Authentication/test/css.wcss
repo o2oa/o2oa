@@ -264,7 +264,7 @@
 	"border" : "0px"
   },
   "inputResendVerification" : {
-	"margin-left" : "20px",
+	"margin-left" : "10px",
 	"color" : "#666",
 	"font-size" : "14px",
 	"width": "100px",

@@ -43,8 +43,47 @@
 	},
 	"searchElementNode": {
 		"margin-left": "362px",
-		"overflow": "hidden"
+		"overflow": "hidden",
+		"height": "60px"
 	},
+	"categoryElementNode": {
+	    "overflow": "hidden",
+	    "background-color": "#ffffff",
+        "position": "static",
+        "font-size": "14px"
+	},
+	"categoryElementItemAllNode": {
+	    "float": "left",
+	    "cursor": "pointer",
+	    "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu.png') 0 center no-repeat",
+        "height": "38px",
+        "margin-left": "30px",
+        "padding-left": "22px",
+        "line-height":"38px",
+        "color": "#333333",
+        "border-bottom": "2px solid #ffffff"
+    },
+    "categoryElementItemAllNode_current": {
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu_click.png') 0 center no-repeat",
+        "color": "#4a90e2",
+        "border-bottom": "2px solid #4a90e2"
+    },
+	"categoryElementItemNode": {
+	    "float": "left",
+	    "cursor": "pointer",
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_grey.png') 0 center no-repeat",
+        "height": "38px",
+        "margin-left": "30px",
+        "padding-left": "22px",
+        "line-height":"38px",
+        "color": "#333333",
+        "border-bottom": "2px solid #ffffff"
+    },
+    "categoryElementItemNode_current": {
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_click.png') 0 center no-repeat",
+        "color": "#4a90e2",
+        "border-bottom": "2px solid #4a90e2"
+    },
 	"searchElementButtonNode": {
 		"float": "right",
 		"width": "80px",

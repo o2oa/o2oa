@@ -443,7 +443,8 @@ MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Number
 MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Script = new Class({
     Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
     loadProperty: function(){
-        this.code = "";
+        debugger;
+        this.code = (this.data) ? this.data.value: "";
         this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
         this.scriptNode = new Element("div", {"styles": this.css.scriptNode}).inject(this.propertyNode);
         this.scriptNode.set("title", MWF.xApplication.process.ProcessDesigner.LP.serialScriptTitle);

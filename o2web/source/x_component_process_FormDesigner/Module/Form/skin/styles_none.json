@@ -159,6 +159,10 @@
     "styles": {},
     "inputStyles": {}
   },
+  "org": {
+    "styles": {},
+    "inputStyles": {}
+  },
   "select": {
     "styles": {}
   },

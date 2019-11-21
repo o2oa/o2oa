@@ -859,6 +859,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         this.readyFlow = true;
 
         this.explorer.app.confirm("warn", e, lp.flowWorkTitle, text, 380, 130, function(){
+            debugger;
             _self.explorer.actions.flowWork(_self.data.id, {}, function(json){
                 if (json.data.id){
                     _self.explorer.actions.getWork(_self.data.id, function(workJson){

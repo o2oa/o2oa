@@ -1,9 +1,9 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
-MWF.xDesktop.requireApp("process.Xform", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("process.Xform", "lp."+MWF.language, null, false);
 MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP, {
     "dataSaved": "数据保存成功",
-    "documentPublished" : "发布成功",
+    "documentPublished" : "发布成功" ,
 
 
     "noSelectRange": "无法确定选择范围",

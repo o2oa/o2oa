@@ -49,11 +49,12 @@
             var _v = _parList[i];
             var _kv = _v.split("=");
             if (_kv[0].toLowerCase()==="lg") _lp = _kv[1];
+            if (_kv[0].toLowerCase()==="lp") _lp = _kv[1];
         }
     }
     this.o2 = {
         "version": {
-            "v": '2.1.4',
+            "v": '2.2.1',
             "build": "2019.07.31",
             "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
         },
@@ -184,7 +185,7 @@
             "doc": doc,
             "dom": (options && options.dom) || document.body,
             "bind": (options && options.bind) || null,
-            "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
+            "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'debugger
         }
     };
     var _getCssOptions = function(options){

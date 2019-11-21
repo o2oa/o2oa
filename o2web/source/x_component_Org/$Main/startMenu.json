@@ -1,12 +1,12 @@
 [
 	{
-		"title": "组织管理",
+		"title": MWF.xApplication.Org.LP.unitList,
 		"id": "1.1",
 		"action": "orgConfig",
 		"icon": "org"
 	},
 	{
-		"title": "群组管理",
+		"title": MWF.xApplication.Org.LP.groupList,
 		"id": "1.1",
 		"action": "groupConfig",
 		"icon": "group"
@@ -18,7 +18,7 @@
 //		"icon": "role.png"
 //	},
 	{
-		"title": "个人管理",
+		"title": MWF.xApplication.Org.LP.personList,
 		"id": "1.1",
 		"action": "personConfig",
 		"icon": "person"

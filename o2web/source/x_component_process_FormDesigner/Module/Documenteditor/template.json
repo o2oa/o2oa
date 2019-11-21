@@ -4,23 +4,55 @@
 	"type": "Documenteditor",
 	"description": "",
 	"events": {
-		"beforeCommandExec": {
+		"queryLoad": {
 			"code": "",
 			"html": ""
 		},
-		"afterCommandExec": {
+		"postLoad": {
 			"code": "",
 			"html": ""
 		},
-		"blur": {
+		"load": {
 			"code": "",
 			"html": ""
 		},
-		"change": {
+		"click": {
 			"code": "",
 			"html": ""
 		},
-		"destroy": {
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
 			"code": "",
 			"html": ""
 		},
@@ -28,43 +60,7 @@
 			"code": "",
 			"html": ""
 		},
-		"getData": {
-			"code": "",
-			"html": ""
-		},
-		"insertElement": {
-			"code": "",
-			"html": ""
-		},
-		"insertHtml": {
-			"code": "",
-			"html": ""
-		},
-		"insertText": {
-			"code": "",
-			"html": ""
-		},
-		"key": {
-			"code": "",
-			"html": ""
-		},
-		"loaded": {
-			"code": "",
-			"html": ""
-		},
-		"maximize": {
-			"code": "",
-			"html": ""
-		},
-		"paste": {
-			"code": "",
-			"html": ""
-		},
-		"resize": {
-			"code": "",
-			"html": ""
-		},
-		"save": {
+		"blur": {
 			"code": "",
 			"html": ""
 		}
@@ -81,14 +77,20 @@
 		"mainSend": "[主送单位：]",
 		"filetext": "[请在此处编辑正文内容]",
 		"attachmentTitle":"附件：",
-		"attachment":"[附件]",
+		"attachment":"",
 		"issuanceUnit":"[发文机关]",
 		"issuanceDate":"[成文日期]",
 		"annotation":"",
 		"copytoTitle":"抄送：",
 		"copyto":"[抄送]",
 		"editionUnit":"[印发机关]",
-		"editionDate":"[印发日期]"
+		"editionDate":"[印发日期]",
+		"meetingAttendTitle": "出席：",
+		"meetingLeaveTitle": "请假：",
+		"meetingSitTitle": "列席：",
+		"meetingAttend": "",
+		"meetingLeave": "",
+		"meetingSit": ""
 	},
 	"container": ""
 }

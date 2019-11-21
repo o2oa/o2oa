@@ -127,6 +127,8 @@
   "getDuty": {"uri": "/jaxrs/unitduty/list/identity/unit/name/object", "method": "POST"}, //获取组织的职务值
   "getDutyValue": {"uri": "/jaxrs/unitduty/list/identity/unit/name", "method": "POST"}, //获取组织的职务值
 
+  "listDutyWithName" : {"uri": "/jaxrs/unitduty/list/name", "method": "POST"}, //根据职务名称获取职务DN
+
   //data: {"identityList":[]}
   "listDutyNameWithIdentity": {"uri": "/jaxrs/unitduty/list/name/identity", "method": "POST"}, //获取身份所有的职务名称
 
@@ -147,7 +149,10 @@
 
   //data: {"unitList":[]}
   "listUnitAttributeName": {"uri": "/jaxrs/unitattribute/list/name/unit", "method": "POST"}, //列出组织所有属性的名称
-  "listUnitAllAttribute": {"uri": "/jaxrs/unitattribute/list/unit/object", "method": "POST"} //列出组织的所有属性
+  "listUnitAllAttribute": {"uri": "/jaxrs/unitattribute/list/unit/object", "method": "POST"}, //列出组织的所有属性
   //******************************************************************
 
+  //授权情况查询：
+  "listEmpowerWithIdentity" : {"uri": "/jaxrs/empower/list/identity/object", "method": "POST"}
+  //*****
 }

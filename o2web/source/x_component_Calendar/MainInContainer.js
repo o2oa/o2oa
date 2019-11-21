@@ -14,7 +14,7 @@
 //var calendar = new MWF.xApplication.Calendar.MainInContainer2( this.target.app.desktop, {}, container, this.target.app.content , scrollNode );
 //calendar.load();
 
-MWF.xDesktop.requireApp("Calendar", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("Calendar", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Calendar", "Main", null, false);
 MWF.xApplication.Calendar.MainInContainer = new Class({
     Extends: MWF.xApplication.Calendar.Main,
@@ -33,7 +33,7 @@ MWF.xApplication.Calendar.MainInContainer = new Class({
         this.path = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
         this.options.icon = this.path+this.options.style+"/"+this.options.icon;
 
-        this.cssPath =this.path+this.options.style+"/css.wcss";
+        this.cssPath =this.path+this.options.style+"/css.wcss" ;
         this.inBrowser = true;
         this.inContainer = true;
         this._loadCss();

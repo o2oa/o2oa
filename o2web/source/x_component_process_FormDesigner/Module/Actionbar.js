@@ -33,11 +33,15 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 	},
     setTemplateStyles: function(styles){
         this.json.style = styles.style;
+        this.json.iconOverStyle = styles.iconOverStyle || "";
         this.json.customIconStyle = styles.customIconStyle;
+        this.json.customIconOverStyle = styles.customIconOverStyle || "";
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
+        this.json.iconOverStyle = "";
         this.json.customIconStyle = "";
+        this.json.customIconOverStyle = "";
     },
     setAllStyles: function(){
         this._resetActionbar();
@@ -188,6 +192,9 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
+            if( this.json.iconOverStyle ){
+                actionNode.set("MWFButtonImageOver" , this.path+""+this.options.style+"/tools/"+this.json.iconOverStyle+"/"+tool.img );
+            }
             this.systemTools.push(actionNode);
             if (tool.sub){
                 var subNode = node.getLast();
@@ -199,8 +206,9 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         //var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
         var path = "";
         if( this.json.customIconStyle ){
-            path = this.json.customIconStyle + "/";
+            path = this.json.customIconStyle+ "/";
         }
+
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
@@ -209,6 +217,9 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
+            if( this.json.customIconOverStyle ){
+                actionNode.set("MWFButtonImageOver" , this.path+""+this.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
+            }
             this.customTools.push(actionNode);
             if (tool.sub){
                 var subNode = node.getLast();

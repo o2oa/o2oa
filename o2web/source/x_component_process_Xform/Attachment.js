@@ -4,19 +4,21 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     Extends: MWF.widget.ATTER,
     "options": {
         "officeFiles": ["doc","docx","dotx","dot","xls","xlsx","xlsm","xlt","xltx","pptx","ppt","pot","potx","potm","pdf"],
+        "checkTextEnable" : true
     },
     checkAttachmentDeleteAction : function(){
         if (this.options.readonly){
             this.setAttachmentsAction("delete", false );
             return false;
         }
-        if (this.options.isDeleteOption=="y"){
+        if (this.options.isDeleteOption!=="n"){
             if (this.attachments.length){
                 var user = layout.session.user.distinguishedName;
 
                 for (var i=0; i<this.attachments.length; i++){
                     var flag = true;
                     var att = this.attachments[i];
+                    if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
                     if (this.options.isDeleteOption==="o"){
 
                         if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
@@ -57,46 +59,54 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.setActionDisabled(this.min_deleteAction);
             return false;
         }
-        if (this.options.isDeleteOption=="y"){
+        if (this.options.isDeleteOption!=="n"){
             if (this.selectedAttachments.length){
                 var user = layout.session.user.distinguishedName;
                 var flag = true;
                 if (this.options.isDeleteOption==="o"){
                     for (var i=0; i<this.selectedAttachments.length; i++){
-                        if (!this.selectedAttachments[i].data.control.allowEdit && this.selectedAttachments[i].data.person!==user){
+                        var att = this.selectedAttachments[i];
+                        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                        if (!att.data.control.allowEdit && att.data.person!==user){
                             flag = false;
                             break;
                         }
-                        if (this.selectedAttachments[i].data.person!==layout.desktop.session.user.distinguishedName){
+                        if (att.data.person!==layout.desktop.session.user.distinguishedName){
                             flag = false;
                             break;
                         }
                     }
                 }else if (this.options.isDeleteOption==="a"){
                     for (var i=0; i<this.selectedAttachments.length; i++){
-                        if (!this.selectedAttachments[i].data.control.allowEdit && this.selectedAttachments[i].data.person!==user){
+                        var att = this.selectedAttachments[i];
+                        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                        if (!att.data.control.allowEdit && att.data.person!==user){
                             flag = false;
                             break;
                         }
-                        if (this.selectedAttachments[i].data.activity!==this.module.form.businessData.activity.id){
+                        if (att.data.activity!==this.module.form.businessData.activity.id){
                             flag = false;
                             break;
                         }
                     }
                 }else if (this.options.isDeleteOption==="ao"){
                     for (var i=0; i<this.selectedAttachments.length; i++){
-                        if (!this.selectedAttachments[i].data.control.allowEdit && this.selectedAttachments[i].data.person!==user){
+                        var att = this.selectedAttachments[i];
+                        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                        if (!att.data.control.allowEdit && att.data.person!==user){
                             flag = false;
                             break;
                         }
-                        if ((this.selectedAttachments[i].data.activity!==this.module.form.businessData.activity.id) || (this.selectedAttachments[i].data.person!==layout.desktop.session.user.distinguishedName)){
+                        if ((att.data.activity!==this.module.form.businessData.activity.id) || (att.data.person!==layout.desktop.session.user.distinguishedName)){
                             flag = false;
                             break;
                         }
                     }
                 }else{
                     for (var i=0; i<this.selectedAttachments.length; i++){
-                        if (!this.selectedAttachments[i].data.control.allowEdit && this.selectedAttachments[i].data.person!==user){
+                        var att = this.selectedAttachments[i];
+                        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                        if (!att.data.control.allowEdit && att.data.person!==user){
                             flag = false;
                             break;
                         }
@@ -129,6 +139,37 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             // }
         }
     },
+    isAttDeleteAvailable : function( att ){
+        if (this.options.readonly)return false;
+        if( this.options.toolbarGroupHidden.contains("edit") )return false;
+        if (this.options.isDeleteOption==="n")return false;
+
+        var user = layout.session.user.distinguishedName;
+        var flag = true;
+
+        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
+        if (this.options.isDeleteOption==="o"){
+
+            if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+            if (att.data.person!==layout.desktop.session.user.distinguishedName)flag = false;
+
+        }else if (this.options.isDeleteOption==="a"){
+
+            if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+            if (att.data.activity!==this.module.form.businessData.activity.id)flag = false;
+
+        }else if (this.options.isDeleteOption==="ao"){
+
+            if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+            if ((att.data.activity!==this.module.form.businessData.activity.id) || (att.data.person!==layout.desktop.session.user.distinguishedName))flag = false;
+
+        }else{
+            if (!att.data.control.allowEdit && att.data.person!==user)flag = false;
+        }
+
+        return flag;
+    },
     openInOfficeControl: function(att, office){
         if (office){
             if (!office.openedAttachment || office.openedAttachment.id!==att.id){
@@ -155,24 +196,26 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             return false;
         }
 
-        if (this.options.isReplaceOption=="y") {
+        if (this.options.isReplaceOption!=="n") {
             if (this.selectedAttachments.length && this.selectedAttachments.length===1){
+
+                var att = this.selectedAttachments[0];
+                if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
                 var user = layout.session.user.distinguishedName;
-                var flag;
+                var flag = true;
 
                 if (this.options.isReplaceOption==="o"){
-                    flag = this.selectedAttachments[0].data.person === layout.desktop.session.user.distinguishedName;
+                    flag = att.data.person === layout.desktop.session.user.distinguishedName;
                 }
                 if (this.options.isReplaceOption==="a"){
-                    flag = this.selectedAttachments[0].data.activity===this.module.form.businessData.activity.id;
+                    flag = att.data.activity===this.module.form.businessData.activity.id;
                 }
                 if (this.options.isReplaceOption==="ao"){
-                    flag = (this.selectedAttachments[0].data.person === layout.desktop.session.user.distinguishedName && this.selectedAttachments[0].data.activity===this.module.form.businessData.activity.id);
+                    flag = (att.data.person === layout.desktop.session.user.distinguishedName && att.data.activity===this.module.form.businessData.activity.id);
                 }
-                if (!this.selectedAttachments[0].data.control.allowEdit && this.selectedAttachments[0].data.person!==user){
+                if ( flag && !att.data.control.allowEdit && att.data.person!==user){
                     flag = false;
-                }else{
-                    flag = true;
                 }
 
                 if (flag) {
@@ -221,20 +264,75 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }
         }
     },
+    isAttReplaceAvailable : function( att ){
+        if (this.options.readonly)return false;
+        if( this.options.toolbarGroupHidden.contains("edit") )return false;
+
+        if (this.options.isReplaceOption ==="n") return false;
+
+        var user = layout.session.user.distinguishedName;
+        var flag = true;
+
+        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
+        if (this.options.isReplaceOption==="o"){
+            flag = att.data.person === layout.desktop.session.user.distinguishedName;
+        }
+        if (this.options.isReplaceOption==="a"){
+            flag = att.data.activity===this.module.form.businessData.activity.id;
+        }
+        if (this.options.isReplaceOption==="ao"){
+            flag = (att.data.person === layout.desktop.session.user.distinguishedName && att.data.activity===this.module.form.businessData.activity.id);
+        }
+        if (flag && !att.data.control.allowEdit && att.data.person!==user){
+            flag = false;
+        }
+
+        return flag;
+    },
 
     createTopNode: function(){
         if (this.options.title){
             if (!this.titleNode) this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.options.title}).inject(this.node);
         }
-        this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
-        this.createEditGroupActions();
-        this.createReadGroupActions();
-        this.createListGroupActions();
+        if( !this.topNode ){
+            this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
+        }else{
+            this.topNode.empty();
+            this.editActionBoxNode = null;
+            this.editActionsGroupNode=null;
+            this.topNode.setStyle("display","");
+            if( this.isHiddenTop ){
+                //this.container.setStyle("height", this.container.getSize().y + 45 );
+                //this.node.setStyle("height", this.node.getSize().y + 45 );
+                if( this.oldContentScrollNodeHeight && this.contentScrollNode ){
+                    this.contentScrollNode.setStyle("min-height",this.oldContentScrollNodeHeight);
+                    this.oldContentScrollNodeHeight = null;
+                }
+                this.isHiddenTop = false;
+            }
+        }
+        var hiddenGroup = this.options.toolbarGroupHidden;
+        if( hiddenGroup.contains("edit") && hiddenGroup.contains("read") && hiddenGroup.contains("list") &&
+            hiddenGroup.contains("view") && hiddenGroup.contains("config") &&
+            !(this.module.json.isOpenInOffice && this.module.json.officeControlName)
+        ){
+            if( this.contentScrollNode ){
+                this.oldContentScrollNodeHeight = this.contentScrollNode.getStyle("min-height");
+                this.contentScrollNode.setStyle("min-height",this.node.getStyle("min-height"));
+                this.topNode.setStyle("display","none");
+            }
+            this.isHiddenTop = true;
+        }
+        if( !hiddenGroup.contains("edit") )this.createEditGroupActions();
+        if( !hiddenGroup.contains("read") )this.createReadGroupActions();
+        if( !hiddenGroup.contains("list") )this.createListGroupActions();
         if (this.module.json.isOpenInOffice && this.module.json.officeControlName) this.createOfficeGroupActions();
 
-        this.createConfigGroupActions();
+        if( !hiddenGroup.contains("config") )this.createConfigGroupActions();
         
-        this.createViewGroupActions();
+        if( !hiddenGroup.contains("view") )this.createViewGroupActions();
+        this.checkActions();
     },
     checkActions: function(){
         //    if (this.options.readonly){
@@ -262,13 +360,17 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var user = layout.session.user.distinguishedName;
             for (var i=0; i<this.attachments.length; i++){
                 var flag = true;
-                if ((!this.attachments[i].data.control.allowControl || !this.attachments[i].data.control.allowEdit) && this.attachments[i].data.person!==user){
+
+                var att = this.attachments[i];
+                if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
+                if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
                     flag = false;
                 }
                 if (flag){
-                    this.setAttachmentAction(this.attachments[i], "config", true );
+                    this.setAttachmentAction(att, "config", true );
                 }else{
-                    this.setAttachmentAction(this.attachments[i], "config", false );
+                    this.setAttachmentAction(att, "config", false );
                 }
             }
         }
@@ -277,14 +379,16 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkAttachmentConfigAction();
         if (this.options.readonly){
             this.setActionDisabled(this.configAction);
-            this.setActionDisabled(this.checkTextAction);
+            if(this.checkTextAction)this.setActionDisabled(this.checkTextAction);
             return false;
         }
         if (this.selectedAttachments.length){
             var flag = true;
             var user = layout.session.user.distinguishedName;
             for (var i=0; i<this.selectedAttachments.length; i++){
-                if ((!this.selectedAttachments[i].data.control.allowControl || !this.selectedAttachments[i].data.control.allowEdit) && this.selectedAttachments[i].data.person!==user){
+                var att = this.selectedAttachments[i];
+                if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                if ((!att.data.control.allowControl ) && att.data.person!==user){ //|| !att.data.control.allowEdit
                     flag = false;
                     break;
                 }
@@ -300,13 +404,28 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             //this.setActionDisabled(this.min_deleteAction);
         }
 
-        this.setActionDisabled(this.checkTextAction);
-        if (this.selectedAttachments.length && this.selectedAttachments.length===1){
-            var att = this.selectedAttachments[0];
-            if (this.options.images.indexOf(att.data.extension.toLowerCase())!==-1){
-                this.setActionEnabled(this.checkTextAction);
+        if(this.checkTextAction){
+            this.setActionDisabled(this.checkTextAction);
+            if (this.selectedAttachments.length && this.selectedAttachments.length===1){
+                var att = this.selectedAttachments[0];
+                if (this.options.images.indexOf(att.data.extension.toLowerCase())!==-1){
+                    this.setActionEnabled(this.checkTextAction);
+                }
             }
         }
+    },
+    isAttConfigAvailable : function( att ) {
+        if (this.options.readonly)return false;
+        if (this.options.toolbarGroupHidden.contains("config"))return false;
+        var user = layout.session.user.distinguishedName;
+        var flag = true;
+
+        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
+        if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+            flag = false;
+        }
+        return flag;
     },
 
 
@@ -318,11 +437,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.configAttachment(e, node);
         }.bind(this));
 
-        this.createSeparate(this.configActionsGroupNode);
-
-        this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function(e, node){
-            this.checkImageTex(e, node);
-        }.bind(this));
+        if( this.options.checkTextEnable ){
+            this.createSeparate(this.configActionsGroupNode);
+            this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function(e, node){
+                this.checkImageTex(e, node);
+            }.bind(this));
+        }
 
         if (this.configAction) this.setActionDisabled(this.configAction);
         if (this.checkTextAction) this.setActionDisabled(this.checkTextAction);
@@ -338,20 +458,25 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
     },
     loadMinActions: function(){
-        this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function(e, node){
-            this.uploadAttachment(e, node);
-        }.bind(this));
+        var hiddenGroup = this.options.toolbarGroupHidden;
+        if (!hiddenGroup.contains("edit")) {
+            this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function(e, node){
+                this.uploadAttachment(e, node);
+            }.bind(this));
 
-        this.min_deleteAction = this.createAction(this.minActionAreaNode, "delete", MWF.LP.widget["delete"], function(e, node){
-            this.deleteAttachment(e, node);
-        }.bind(this));
+            this.min_deleteAction = this.createAction(this.minActionAreaNode, "delete", MWF.LP.widget["delete"], function(e, node){
+                this.deleteAttachment(e, node);
+            }.bind(this));
 
-        this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", MWF.LP.widget.replace, function(e, node){
-            this.replaceAttachment(e, node);
-        }.bind(this));
-        this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download, function(e, node){
-            this.downloadAttachment(e, node);
-        }.bind(this));
+            this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", MWF.LP.widget.replace, function(e, node){
+                this.replaceAttachment(e, node);
+            }.bind(this));
+        }
+        if (!hiddenGroup.contains("read")) {
+            this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download, function(e, node){
+                this.downloadAttachment(e, node);
+            }.bind(this));
+        }
 
         if (this.module.json.isOpenInOffice && this.module.json.officeControlName){
             this.min_closeOfficeAction = this.createAction(this.minActionAreaNode, "closeOffice", MWF.LP.widget.closeOffice, function(e, node){
@@ -361,13 +486,17 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
 
 
+        if( !hiddenGroup.contains("edit") || !hiddenGroup.contains("read") ) {
+            this.createSeparate(this.minActionAreaNode);
+        }
 
         if (this.options.isSizeChange) {
-            this.createSeparate(this.minActionAreaNode);
-
-            this.sizeAction = this.createAction(this.minActionAreaNode, "max", MWF.LP.widget.min, function () {
-                this.changeControllerSize();
-            }.bind(this));
+            //this.createSeparate(this.minActionAreaNode);
+            if( !hiddenGroup.contains("view")) {
+                this.sizeAction = this.createAction(this.minActionAreaNode, "max", MWF.LP.widget.min, function () {
+                    this.changeControllerSize();
+                }.bind(this));
+            }
         }
     },
     closeAttachmentOffice: function(){
@@ -571,7 +700,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
 	Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["upload", "delete", "afterDelete", "load"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change"]
     },
 
     initialize: function(node, json, form, options){
@@ -594,7 +723,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 "title": "附件区域",
                 "listStyle": this.json.listStyle || "icon",
                 "size": this.json.size || "max",
-                "resize": (this.json.size==="true"),
+                "resize": (this.json.resize ==="y" || this.json.resize==="true"),
                 "attachmentCount": this.json.attachmentCount || 0,
                 "isUpload": (this.json.isUpload==="y" || this.json.isUpload==="true"),
                 "isDelete": (this.json.isDelete==="y" || this.json.isDelete==="true"),
@@ -604,9 +733,13 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 "readonly": (this.json.readonly==="y" || this.json.readonly==="true"),
                 "availableListStyles" : this.json.availableListStyles ? this.json.availableListStyles : ["list","seq","icon","preview"],
                 "isDeleteOption": this.json.isDelete,
-                "isReplaceOption": this.json.isReplace
+                "isReplaceOption": this.json.isReplace,
+                "toolbarGroupHidden" : this.json.toolbarGroupHidden || []
             };
             if (this.readonly) options.readonly = true;
+            if( this.form.json.attachmentStyle ){
+                options  = Object.merge(options, this.form.json.attachmentStyle );
+            }
             //this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
 
             this.attachmentController = new MWF.xApplication.process.Xform.AttachmentController(this.node, this, options);
@@ -616,7 +749,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
                 if (att.site===this.json.id) this.attachmentController.addAttachment(att);
             }.bind(this));
+            this.setAttachmentBusinessData();
         //}.bind(this));
+    },
+    setAttachmentBusinessData: function(){
+	    if (this.attachmentController){
+            if (this.attachmentController.attachments.length){
+                var values = this.attachmentController.attachments.map(function(d){
+                    return d.data.name;
+                });
+                this._setBusinessData(values);
+            }else{
+                this._setBusinessData([]);
+            }
+        }
     },
 
     _loadEvents: function(editorConfig){
@@ -691,7 +837,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                     }
                     this.attachmentController.checkActions();
 
+                    this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
+                    this.fireEvent("change");
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -821,8 +969,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                     }
                 }.bind(this));
             }
-
+            this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
+            this.fireEvent("change");
         }.bind(this));
     },
 

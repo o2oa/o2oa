@@ -79,49 +79,95 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
         var i = (this.combox.editItem) ? this.combox.editItem.getItemPosition() : this.combox.values.length;
         switch (i) {
             case 0: //省
-                MWF.UD.getPublicData("addr_province", function(json){
+                o2.Actions.get("x_general_assemble_control").listProvince(function(json){
                     var list = [];
-                    json.each(function(text){
-                        var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                    json.data.each(function(text){
+                        var k = text.name;
+                        var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
                         }else{
-                            list.push({"text": text, "value": text});
+                            list.push({"text": k, "value": k});
                         }
-
                     }.bind(this));
                     if (list.length) if (callback) callback(list);
-                });
+                }.bind(this));
+                // MWF.UD.getPublicData("addr_province", function(json){
+                //     var list = [];
+                //     json.each(function(text){
+                //         var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                //         if (value){
+                //             if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                //         }else{
+                //             list.push({"text": text, "value": text});
+                //         }
+                //
+                //     }.bind(this));
+                //     if (list.length) if (callback) callback(list);
+                // });
                 break;
             case 1: //市
                 var item = this.combox.getFirst();
-                MWF.UD.getPublicData("addr_city_"+item.data, function(json){
+
+                o2.Actions.get("x_general_assemble_control").listCity(item.data, function(json){
                     var list = [];
-                    json.each(function(text){
-                        var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                    json.data.each(function(text){
+                        var k = text.name;
+                        var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
                         }else{
-                            list.push({"text": text, "value": text});
+                            list.push({"text": k, "value": k});
                         }
                     }.bind(this));
                     if (list.length) if (callback) callback(list);
-                });
+                }.bind(this));
+
+
+                // MWF.UD.getPublicData("addr_city_"+item.data, function(json){
+                //     var list = [];
+                //     json.each(function(text){
+                //         var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                //         if (value){
+                //             if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                //         }else{
+                //             list.push({"text": text, "value": text});
+                //         }
+                //     }.bind(this));
+                //     if (list.length) if (callback) callback(list);
+                // });
                 break;
             case 2: //区
+                var p = this.combox.getFirst().data;
                 var item = this.combox.getFirst().getNextItem();
-                MWF.UD.getPublicData("addr_district_"+item.data, function(json){
+
+                o2.Actions.get("x_general_assemble_control").listDistrict(p, item.data, function(json){
                     var list = [];
-                    json.each(function(text){
-                        var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                    json.data.each(function(text){
+                        var k = text.name;
+                        var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
                         }else{
-                            list.push({"text": text, "value": text});
+                            list.push({"text": k, "value": k});
                         }
                     }.bind(this));
                     if (list.length) if (callback) callback(list);
-                });
+                }.bind(this));
+
+
+                // MWF.UD.getPublicData("addr_district_"+item.data, function(json){
+                //     var list = [];
+                //     json.each(function(text){
+                //         var keyword = text+MWF.widget.PinYin.toPY(text).toLowerCase()+MWF.widget.PinYin.toPYFirst(text).toLowerCase();
+                //         if (value){
+                //             if (keyword.indexOf(value)!==-1) list.push({"text": text, "value": text});
+                //         }else{
+                //             list.push({"text": text, "value": text});
+                //         }
+                //     }.bind(this));
+                //     if (list.length) if (callback) callback(list);
+                // });
                 break;
             default:
                 if (callback) callback([]);

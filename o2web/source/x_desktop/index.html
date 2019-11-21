@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
 <!--    <script src="/o2_lib/htmleditor/ckeditor4/ckeditor.js"></script>-->
-    <script src="../o2_core/o2.js?v=2.1.4"></script>
-    <script src="../o2_core/compatible.min.js?v=2.1.4"></script>
-    <script src="js/x.js?v=2.1.4"></script>
+    <script src="../o2_core/o2.js?v=2.2.1"></script>
+    <script src="../o2_core/compatible.min.js?v=2.2.1"></script>
+    <script src="js/x.js?v=2.2.1"></script>
     <script src="../o2_lib/Decimal.js"></script>
 
     <title>O2</title>
@@ -25,7 +25,7 @@
                         <div id="browser_loading_area" style="height:540px; width: 920px;"></div>
                         <div style="height:540px; width: 920px; position: relative; top: -540px">
                             <div style="background-image: url(img/loading2.gif); background-size: cover; width: 80px; height: 80px; float:left; margin-left: 170px; margin-top: 94px"></div>
-                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 94px; font-size: 28px; line-height: 80px;">正在为您加载系统资源，请稍候......</div>
+                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 94px; font-size: 28px; line-height: 80px;" id="browser_loading_area_text">正在为您加载系统资源，请稍候......</div>
                         </div>
                     </div>
                 </div>
@@ -34,10 +34,10 @@
                         <div id="browser_error_area" style="height:540px; width: 920px;"></div>
                         <div style="height:540px; width: 920px; position: relative; top: -540px">
                             <div style="background-image: url(img/warn1.png); background-repeat: no-repeat;background-size:cover; background-position:center center; width: 103px; height: 80px; float:left; margin-left: 144px; margin-top: 74px"></div>
-                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 74px; font-size: 28px; line-height: 40px;">
+                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 74px; font-size: 28px; line-height: 40px;" id="browser_error_area_text">
                                 您的浏览器版本过低啦！~系统已经不支持IE8及以下版本了!
                             </div>
-                            <div style="color: #ffffff; width: 650px; height: 50px; float:left; margin-left: 144px; margin-top: 100px; font-size: 28px; line-height: 40px; border-bottom: 2px solid #ffffff">
+                            <div style="color: #ffffff; width: 650px; height: 50px; float:left; margin-left: 144px; margin-top: 100px; font-size: 28px; line-height: 40px; border-bottom: 2px solid #ffffff" id="browser_error_area_up_text">
                                 请升级您的浏览器：
                             </div>
                             <div style="width: 100px; height: 140px; float:left; margin-left: 144px; margin-top: 30px">

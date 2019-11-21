@@ -32,7 +32,7 @@
   {
     "name": "AppCenter",
     "path": "AppCenter",
-    "title": "应用导出",
+    "title": "应用管理",
     "iconPath": "appicon.png",
     "allowList": ["xadmin", "Manager"]
   }

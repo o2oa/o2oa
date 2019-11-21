@@ -15,6 +15,12 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectCMSApplication": "选择内容管理应用",
     "selectCMSCategory": "选择内容管理栏目",
 
+    "searchDescription" : "搜索内容",
+
+    "waitingSelect" : "待选",
+    "selected" : "已选",
+    "empty" : "清空",
+
     "identity" : "身份",
     "person" : "个人",
     "application" : "应用",
@@ -29,6 +35,6 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
 
     "cancel": "取消",
     "back": "返回",
-    "ok": "确　定",
+    "ok": "确定",
     "noPerson": "人员“{name}”不存在"
 };

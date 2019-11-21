@@ -153,6 +153,18 @@
     "styles": {},
     "inputStyles": {}
   },
+  "org": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "reader": {
+    "styles": {},
+    "inputStyles": {}
+  },
+  "author": {
+    "styles": {},
+    "inputStyles": {}
+  },
   "select": {
     "styles": {}
   },

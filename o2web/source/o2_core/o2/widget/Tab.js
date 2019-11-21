@@ -51,7 +51,7 @@ o2.widget.Tab = new Class({
                 this.tabMenu = new o2.xDesktop.Menu(this.tabNodeContainerRight, {
                     "style": "tab",
                     "event": "click",
-                    "container": this.node,
+                    "container": this.tabNodeContainerRight,
                     "where": {"x": "right", "y": "bottom"},
                     "onQueryShow": function(){
                         this.loadOverMenu();
@@ -90,7 +90,7 @@ o2.widget.Tab = new Class({
         var _self = this;
 		for (var n=this.showTabIndex; n<this.pages.length; n++){
 			var page = this.pages[n];
-            var menuItem = this.tabMenu.addMenuItem(page.options.title, "click", function(){
+            var menuItem = this.tabMenu.addMenuItem(page.options.title || page.tabNode.get("text"), "click", function(){
 				_self.showOverPage(this);
 			});
             menuItem.tabPage = page;
@@ -195,6 +195,7 @@ o2.widget.TabPage = new Class({
 	},
 	showIm: function(callback){
 		this.fireEvent("queryShow");
+		this.tabNode.setStyle("display","");
 		this.tabNode.set("styles", this.tab.css.tabNodeCurrent);
 		this.textNode.set("styles", this.tab.css.tabTextNodeCurrent);
 		if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNodeCurrent);
@@ -210,6 +211,7 @@ o2.widget.TabPage = new Class({
 	},
 	show: function(callback){
 		this.fireEvent("queryShow");
+		this.tabNode.setStyle("display","");
 		this.tabNode.set("styles", this.tab.css.tabNodeCurrent);
 		this.textNode.set("styles", this.tab.css.tabTextNodeCurrent);
 		if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNodeCurrent);
@@ -265,6 +267,40 @@ o2.widget.TabPage = new Class({
 			this.fireEvent("hide");
 		}
 	},
+	enableTab : function(){
+		this.disabled = false;
+		this.showTab();
+	},
+	disableTab : function( notShowSibling ){
+		this.disabled = true;
+		this.hideTab( notShowSibling );
+	},
+	hideTab: function( notShowSibling ){
+		this.fireEvent("queryHide");
+		this.tabNode.hide();
+		this.contentNodeArea.hide();
+		var tmp = [];
+
+		if( !notShowSibling ){
+			var prevPage = this.getPrevPage();
+			if (prevPage && !prevPage.disabled){
+				prevPage.showTab();
+			}else{
+				if (this.tab.pages.length){
+					for( var i=0; i<this.tab.pages.length;  i++ ){
+						var page = this.tab.pages[i];
+						if( !page.disabled ){
+							page.showTab();
+							break;
+						}
+					}
+					//this.tab.pages[this.tab.pages.length-1].showTab();
+				}
+			}
+		}
+		this.isShow = false;
+		this.fireEvent("hide");
+	},
 	closeTab: function(){
         this.fireEvent("queryClose");
 		var prevPage = this.getPrevPage();
@@ -281,10 +317,19 @@ o2.widget.TabPage = new Class({
 //		});
 //		this.tab.pages = tmp;
 		
-		if (prevPage){
+		if (prevPage && !prevPage.disabled){
 			prevPage.showTab();
 		}else{
-			if (this.tab.pages.length) this.tab.pages[this.tab.pages.length-1].showTab();
+			if (this.tab.pages.length){
+				for( var i=0; i<this.tab.pages.length;  i++ ){
+					var page = this.tab.pages[i];
+					if( !page.disabled ){
+						page.showTab();
+						break;
+					}
+				}
+			}
+			//if (this.tab.pages.length) this.tab.pages[this.tab.pages.length-1].showTab();
 		}
 		this.fireEvent("close");
 	},

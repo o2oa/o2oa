@@ -37,7 +37,7 @@
         "items": {
           "sectionName" : {},
           "forumName": {},
-          "moderatorNames" : { "value" : "function(d){ return d.moderatorNames.split('@')[0] }" },
+          "moderatorNames" : { "value" : "function(d){ var list = []; ( d.moderatorNames || [] ).each( function(n){  list.push(n.split('@')[0])  }); return list;" },
           "createTime" : { "value" : "function(d){ return d.createTime.split(' ')[0] }" },
           "creatorName": { "value" : "function(d){ return d.creatorName.split('@')[0] }" },
           "sectionType": {  },

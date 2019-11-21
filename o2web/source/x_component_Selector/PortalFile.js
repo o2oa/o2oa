@@ -44,7 +44,7 @@ MWF.xApplication.Selector.PortalFile = new Class({
 
     loadSelectNode: function(){
         this.selectNode = new Element("div", {
-            "styles": (this.options.count.toInt()===1) ? this.css.selectNodeSingle : this.css.selectNode
+            "styles": this.css.selectNode, //(this.options.count.toInt()===1) ? this.css.selectNodeSingle : this.css.selectNode
         }).inject(this.contentNode);
 
         this.itemAreaScrollNode = new Element("div", {

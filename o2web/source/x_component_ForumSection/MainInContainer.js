@@ -16,8 +16,8 @@
 
 MWF.xApplication.ForumSection = MWF.xApplication.ForumSection || {};
 MWF.xApplication.ForumSection.options = MWF.xApplication.ForumSection.options || {};
-MWF.xDesktop.requireApp("ForumSection", "lp.zh-cn", null, false);
-MWF.xDesktop.requireApp("ForumSection", "Main", null, false);
+MWF.xDesktop.requireApp("ForumSection", "lp."+MWF.language, null, false);
+MWF.xDesktop.requireApp("ForumSection", "Main", null, false) ;
 MWF.xApplication.ForumSection.MainInContainer = new Class({
     Extends: MWF.xApplication.ForumSection.Main,
     Implements: [Options, Events],

@@ -191,12 +191,16 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             "id": this.json.id,
             "MWFType": this.json.type
         });
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
-            "styles": this.form.css[this.iconStyle],
-            "events": {
-                "click": this.clickSelect.bind(this)
-            }
-        }).inject(this.node, "before");
+        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
+            this.iconNode = new Element("div", {
+                "styles": this.form.css[this.iconStyle],
+                "events": {
+                    "click": this.clickSelect.bind(this)
+                }
+            }).inject(this.node, "before");
+        }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+        }
 
         this.combox.addEvent("change", function(){
             this.validationMode();
@@ -234,14 +238,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 			this.node.addEvents({
 				"click": this.clickSelect.bind(this)
 			});
-            if (this.json.showIcon!='no') this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
-				"styles": {
-					"background": "url("+"/x_component_process_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
-					"width": "18px",
-					"height": "18px",
-					"float": "right"
-				}
-			}).inject(this.node, "before");
+            if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
+                this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
+                    "styles": {
+                        "background": "url(" + "/x_component_process_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
+                        "width": "18px",
+                        "height": "18px",
+                        "float": "right"
+                    }
+                }).inject(this.node, "before");
+            }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+                this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+            }
             if (this.iconNode){
                 this.iconNode.setStyle("cursor" , "pointer");
                 this.iconNode.addEvents({
@@ -548,6 +556,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
 			}.bind(this)
 		};
+        if( this.form.json.selectorStyle )options = Object.merge( options, this.form.json.selectorStyle );
 
 		var selector = new MWF.O2Selector(this.form.app.content, options);
 	},

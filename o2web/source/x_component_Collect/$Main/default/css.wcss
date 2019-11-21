@@ -248,7 +248,25 @@
         "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
         "float": "left"
     },
+    "registerNewNameIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "float": "left"
+    },
     "loginPasswordIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerSecretIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerKeyIconNode": {
         "width": "60px",
         "height": "40px",
         "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",

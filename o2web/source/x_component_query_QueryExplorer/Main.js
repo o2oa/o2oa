@@ -68,9 +68,76 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
         MWF.xDesktop.requireApp("query.QueryExplorer", "Importer", function(){
             (new MWF.xApplication.query.QueryExplorer.Importer(this, e)).load();
         }.bind(this));
+    },
+
+    deleteSelectedElements: function(e){
+        var _self = this;
+        var applicationList = [];
+        this.deleteElements.each(function(app){
+            applicationList.push(app.data.name);
+        });
+        var confirmStr = this.lp.application.deleteElementsConfirm+" ("+applicationList.join("、")+") ";
+        var check = "<div style='display: none'><br/><br/><input type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm+"</div>";
+        confirmStr += check;
+
+        this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 530, 250, function(){
+            confirmStr = _self.lp.application.deleteElementsConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
+            var checkbox = this.content.getElement("#deleteApplicationAllCheckbox");
+
+            var onlyRemoveNotCompleted = true;
+            if (checkbox.checked){
+                onlyRemoveNotCompleted = false;
+                confirmStr = _self.lp.application.deleteElementsAllConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
+            }
+
+            this.close();
+
+            _self.confirm("infor", e, _self.lp.application.deleteElementsTitle, {"html":confirmStr}, 500, 200, function(){
+                var deleted = [];
+                var doCount = 0;
+                var readyCount = _self.deleteElements.length;
+                var errorText = "";
+
+                var complete = function(){
+                    if (doCount == readyCount){
+                        if (errorText){
+                            _self.app.notice(errorText, "error");
+                        }
+                    }
+                };
+                _self.deleteElements.each(function(application){
+                    application["delete"](onlyRemoveNotCompleted, function(){
+                        deleted.push(application);
+                        doCount++;
+                        if (_self.deleteElements.length==doCount){
+                            _self.deleteElements = _self.deleteElements.filter(function(item, index){
+                                return !deleted.contains(item);
+                            });
+                            _self.checkDeleteApplication();
+                        }
+                        complete();
+                    }, function(error){
+                        errorText = (errorText) ? errorText+"<br/><br/>"+error : error;
+                        doCount++;
+                        if (_self.deleteElements.length==doCount){
+                            _self.deleteElements = _self.deleteElements.filter(function(item, index){
+                                return !deleted.contains(item);
+                            });
+                            _self.checkDeleteApplication();
+                        }
+                        complete();
+                    });
+                });
+                this.close();
+            }, function(){
+                this.close();
+            });
+
+            this.close();
+        }, function(){
+            this.close();
+        });
     }
-
-
 
 });
 

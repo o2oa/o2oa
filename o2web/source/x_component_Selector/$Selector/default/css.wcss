@@ -57,6 +57,35 @@
         "z-index":1001
 	},
 
+	"containerNode_embedded": {
+	  "height": "510px",
+	  "width": "700px",
+	  "background-color": "#FFF",
+	  "overflow": "hidden",
+	  "position": "relative"
+	},
+	"containerNode_multiple_embedded": {
+	  "height": "550px",
+	  "width": "700px",
+	  "background-color": "#FFF",
+	  "overflow": "hidden",
+	  "position": "relative"
+	},
+	"containerNodeSingle_embedded": {
+	  "height": "510px",
+	  "width": "355px",
+	  "background-color": "#FFF",
+	  "overflow": "hidden",
+	  "position": "relative"
+	},
+	"containerNodeSingle_multiple_embedded": {
+	  "height": "550px",
+	  "width": "355px",
+	  "background-color": "#FFF",
+	  "overflow": "hidden",
+	  "position": "relative"
+	},
+
 	"titleNode": {
 		"height": "30px",
 		"background-color": "#EEE",
@@ -141,7 +170,6 @@
     	"border-radius": "0px"
 	},
 
-
   "selectedContainerNode": {
 	"width": "331px",
 	"height": "410px",
@@ -167,11 +195,11 @@
 	},
 	"actionNode": {
 		"height": "40px",
-		"width": "310px",
+		"width": "300px",
 		"margin": "auto"
 	},
 	"okActionNode": {
-		"width": "150px",
+		"width": "100px",
 		"height": "30px",
 		"background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
 		"border": "0px",
@@ -182,7 +210,7 @@
 		"cursor": "pointer"
 	},
 	"cancelActionNode": {
-		"width": "100px",
+		"width": "72px",
 		"height": "30px",
 		"background": "url("+"/x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
 		"border": "0px",
@@ -190,13 +218,38 @@
 		"font-size": "18px",
 		"padding-left": "20px",
 		"border-radius": "4px",
-		"margin-left": "10px",
+		"margin-left": "15px",
 		"cursor": "pointer"
 	},
-	
+	"selectedTopNode" : {
+	  "overflow" : "hidden"
+	},
+	"selectedTopTextNode" : {
+	  "float" : "left",
+	  "width" : "40px",
+	  "height": "30px",
+	  "line-height": "30px",
+	  "border-bottom": "1px solid #999"
+	},
+  	"selectedTopActionNode" : {
+	  "color" : "#3C76B7",
+	  "float" : "right",
+	  "cursor" : "pointer",
+	  "height": "30px",
+	  "line-height": "30px"
+	},
+	"selectTopNode" : {
+	  "overflow" : "hidden"
+	},
+	"selectTopTextNode" : {
+	  "float" : "left",
+	  "width" : "40px",
+	  "height": "30px",
+	  "line-height": "30px",
+	  "border-bottom": "1px solid #999"
+	},
 	"searchInputDiv": {
 		"height": "30px",
-
 		"border-bottom": "1px solid #999"
 	},
 	"searchInput": {
@@ -216,7 +269,7 @@
         "padding": "0px 9px",
         "height": "40px",
         "border-bottom": "1px solid #999",
-        "background-color": "#EEE",
+        "background-color": "#EEE"
     },
 	"letterAreaNode": {
 		"width": "312px",
@@ -360,6 +413,12 @@
         "float": "right",
         "background": "url("+"/x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
     },
+  	"selectorItemCategoryActionNode_selectAll": {
+	  "width": "28px",
+	  "height": "28px",
+	  "float": "right",
+	  "background": "url("+"/x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
+	},
 
 	"selectorItemTextNode": {
 		"height": "28px",

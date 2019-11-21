@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
-    <script src="../o2_lib/mootools/mootools-1.6.0.min.js?v=2.1.4"></script>
-    <script src="../o2_core/o2.min.js?v=2.1.4"></script>
-    <script src="../o2_core/compatible.min.js?v=2.1.4"></script>
+    <script src="../o2_lib/mootools/mootools-1.6.0.min.js?v=2.2.1"></script>
+    <script src="../o2_core/o2.min.js?v=2.2.1"></script>
+    <script src="../o2_core/compatible.min.js?v=2.2.1"></script>
     <script src="../o2_lib/Decimal.js"></script>
 
     <title>FORM PREVIEW</title>
@@ -25,47 +25,54 @@
         //layout.desktop = layout;
         o2.addReady(function(){
             o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
-                //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
-                MWF.loadLP("zh-cn");
-                MWF.require("MWF.xDesktop.Layout", function(){
-                    //MWF.require("MWF.xDesktop.Authentication", null, false);
+                MWF.getJSON("res/config/config.json", function(config){
+                    layout.config = config;
+                    if (layout.config.app_protocol=="auto"){
+                        layout.config.app_protocol = window.location.protocol;
+                    }
+                    //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+                    MWF.loadLP(MWF.language);
+                    MWF.require("MWF.xDesktop.Layout", function(){
+                        //MWF.require("MWF.xDesktop.Authentication", null, false);
 
-                    (function(){
-                        layout.load = function(){
-                            //        if (this.isAuthentication()){
-                            var preview = window.frameElement.retrieve("preview");
-                            layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
+                        (function(){
+                            layout.load = function(){
+                                //        if (this.isAuthentication()){
+                                var preview = window.frameElement.retrieve("preview");
+                                layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
 
-                            MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
-                                layout.appForm = new MWF.CMSForm($("layout"), preview.data);
-                                layout.appForm.app = {
-                                    "options" : {
-                                        "name" : "CMSDocument"
-                                    },
-                                    "content": document.body,
-                                    "addEvent" : function(){}
-                                };
-                                MWF.getJSON("res/preview/cmsdoc.json", function(data){
-                                    layout.appForm.businessData = {
-                                        "data": data.data,
-                                        "document": data.document,
-                                        "attachmentList": data.attachmentList,
-                                        "status": {
-                                            //"readonly": (this.options.readonly) ? true : false
-                                            "readonly": true //this.readonly
+                                MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
+                                    layout.appForm = new MWF.CMSForm($("layout"), preview.data);
+                                    layout.appForm.app = {
+                                        "options" : {
+                                            "name" : "CMSDocument"
                                         },
-                                        "control" : data.control
+                                        "content": document.body,
+                                        "addEvent" : function(){}
                                     };
-                                    layout.appForm.load();
+                                    MWF.getJSON("res/preview/cmsdoc.json", function(data){
+                                        layout.appForm.businessData = {
+                                            "data": data.data,
+                                            "document": data.document,
+                                            "attachmentList": data.attachmentList,
+                                            "status": {
+                                                //"readonly": (this.options.readonly) ? true : false
+                                                "readonly": true //this.readonly
+                                            },
+                                            "control" : data.control
+                                        };
+                                        layout.appForm.load();
+                                    });
                                 });
-                            });
-                            //        }
-                        };
+                                //        }
+                            };
 
-                        layout.load();
-                    })();
+                            layout.load();
+                        })();
 
-                });
+                    });
+
+                }.bind(this));
             });
         });
     </script>

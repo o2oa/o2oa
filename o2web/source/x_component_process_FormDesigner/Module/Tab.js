@@ -136,8 +136,13 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 	},
 	
 	_createTabWidget: function(){
+		debugger;
         var style = "form";
         if (this.form.options.mode=="Mobile") style = "mobileForm";
+
+		//debugger;
+		var menuNode = this.node.getElement(".MWFMenu");
+		if (menuNode) menuNode.destroy();
 
 		this.tabWidget = new MWF.widget.Tab(this.node, {"style": style});
         this._loadPageStyle();
@@ -153,8 +158,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
             this.tabWidget.tabNodeContainerLeft = lastNode;
             this.tabWidget.tabNodeContainerArea = lastNode.getFirst();
 
-            var menuNode = this.node.getElement(".MWFMenu");
-            if (menuNode) menuNode.destroy();
             this.tabWidget.load();
             tmpTabDivs = this.tabWidget.tabNodeContainerArea.getChildren("div");
         }else{
@@ -172,7 +175,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 			if (tmpTabDiv){
 				tabPage.tabNode = tmpTabDiv;
 				tabPage.textNode = tmpTabDiv.getFirst();
-				tabPage.closeNode = tabPage.textNode.getFirst();
+				if(tabPage.textNode)tabPage.closeNode = tabPage.textNode.getFirst();
 			}
 			tabPage.load();
 			this.tabWidget.pages.push(tabPage);
@@ -341,10 +344,23 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
     copyComponentJsonData: function(newNode, pid){
 
         var tabNodeContainer = newNode.getFirst();
-        var contentNodeContainer = newNode.getLast();
+        //var contentNodeContainer = newNode.getLast();
+		var contentNodeContainer = tabNodeContainer.getNext();
 
         var tmpContentDivs = contentNodeContainer.getChildren();
-        var tmpTabDivs = tabNodeContainer.getChildren();
+
+		var lastNode = tabNodeContainer.getLast();
+		var tmpTabDivs;
+		if (lastNode && lastNode.hasClass("tabNodeContainerLeft")){
+			var tabNodeContainerArea = lastNode.getFirst();
+			var menuNode = newNode.getElement(".MWFMenu");
+			if (menuNode) menuNode.destroy();
+			tmpTabDivs = tabNodeContainerArea.getChildren("div");
+		}else{
+			tmpTabDivs = tabNodeContainer.getChildren("div");
+		}
+
+       // var tmpTabDivs = tabNodeContainer.getChildren();
 
         tmpContentDivs.each(function(tmpContentDiv, idx){
             var newContainerJson = Object.clone(this.containers[idx].json);

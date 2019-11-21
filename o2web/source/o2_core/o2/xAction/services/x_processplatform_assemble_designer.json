@@ -29,7 +29,7 @@
   "addProcessCategory": {"uri": "/jaxrs/processCategory","method": "POST"},
   "removeProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "DELETE"},
   "updataProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "PUT"},
-
+  "executeProjection": {"uri": "/jaxrs/process/{id}/execute/projection","method": "POST"},
 
   "getProcess": {"uri": "/jaxrs/process/{id}"},
   "addProcess": {"uri": "/jaxrs/process","method": "POST"},

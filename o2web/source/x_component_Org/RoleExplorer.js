@@ -131,13 +131,13 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
         this.loadListCount();
         var _self = this;
         this.personMemberList = this._listMembers("personList", "woPersonList", this.personMemberContentNode, [{
-            "get": function(){
+            "getHtml": function(){
                 var src = _self.explorer.actions.getPersonIcon(this.id);
                 return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
             },
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
-            "get": function(){
+            "getHtml": function(){
                 return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
@@ -157,7 +157,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
         ], this.addPersonMember.bind(this), "personCountNode", this.explorer.app.lp.deletePersonMemeberTitle, this.explorer.app.lp.deletePersonMemeber);
 
         this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName", "description", {
-            "get": function(){
+            "getHtml": function(){
                 return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
@@ -401,6 +401,10 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         this.editContentNode = new Element("div", {"styles": this.style.baseEditNode}).inject(this.node);
 
         this.editContentNode.set("html", this.getContentHtml());
+        this.editContentNode.getElement(".infor_name").set("text", this.data.name || "");
+        this.editContentNode.getElement(".infor_unique").set("text", this.data.unique || "");
+        this.editContentNode.getElement(".infor_description").set("text", this.data.description || "");
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -408,9 +412,9 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
     },
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleName+":</td><td class='inforContent'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.roleUnique+":</td><td class='inforContent'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleDescription+":</td><td colspan='3' class='inforContent'>"+(this.data.description || "")+"</td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleName+":</td><td class='inforContent infor_name'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.roleUnique+":</td><td class='inforContent infor_unique'></td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.roleDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
         return html;
@@ -511,9 +515,9 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
     cancel: function(){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("html", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("html", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("html", this.data.description || "");
+            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
 
             this.mode = "read";
 

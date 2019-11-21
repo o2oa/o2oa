@@ -19,6 +19,7 @@ var MTooltips = new Class({
         hasArrow : true,
         isAutoShow : true,
         isAutoHide : true,
+        hasMask : true,
         hasCloseAction : false,
         overflow : "hidden" //弹出框高宽超过container的时候怎么处理，hidden 表示超过的隐藏，scroll 表示超过的时候显示滚动条
     },
@@ -46,49 +47,54 @@ var MTooltips = new Class({
     setTargetEvents : function(){
         if( this.options.event == "click" ){
             if( this.options.isAutoShow ){
+                this.targetClickFun = function( ev ){
+                    this.load();
+                    ev.stopPropagation();
+                }.bind(this);
                 this.target.addEvents({
-                    "click": function( ev ){
-                        this.load();
-                        ev.stopPropagation();
-                    }.bind(this)
+                    "click": this.targetClickFun
                 });
             }
         }else{
             if( this.options.isAutoHide || this.options.isAutoShow ){
+                this.targetMouseenterFun = function(){
+                    if( this.timer_hide ){
+                        clearTimeout(this.timer_hide);
+                    }
+                }.bind(this);
                 this.target.addEvents({
-                    "mouseenter": function(){
-                        if( this.timer_hide ){
-                            clearTimeout(this.timer_hide);
-                        }
-                    }.bind(this)
+                    "mouseenter": this.targetMouseenterFun
                 });
             }
             if( this.options.isAutoShow ){
+                this.targetMouseenterFun2 = function(){
+                    if( this.status != "display" ){
+                        this.timer_show = setTimeout( this.load.bind(this),this.options.displayDelay );
+                    }
+                }.bind(this);
                 this.target.addEvents({
-                    "mouseenter": function(){
-                        if( this.status != "display" ){
-                            this.timer_show = setTimeout( this.load.bind(this),this.options.displayDelay );
-                        }
-                    }.bind(this)
+                    "mouseenter": this.targetMouseenterFun2
                 });
             }
 
             if( this.options.isAutoHide || this.options.isAutoShow ){
+                this.targetMouseleaveFun = function(){
+                    if( this.timer_show ){
+                        clearTimeout(this.timer_show);
+                    }
+                }.bind(this);
                 this.target.addEvents({
-                    "mouseleave" : function(){
-                        if( this.timer_show ){
-                            clearTimeout(this.timer_show);
-                        }
-                    }.bind(this)
+                    "mouseleave" : this.targetMouseleaveFun
                 });
             }
             if( this.options.isAutoHide ){
+                this.targetMouseleaveFun2 = function(){
+                    if( this.status == "display" ){
+                        this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
+                    }
+                }.bind(this);
                 this.target.addEvents({
-                    "mouseleave" : function(){
-                        if( this.status == "display" ){
-                            this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
-                        }
-                    }.bind(this)
+                    "mouseleave" : this.targetMouseleaveFun2
                 });
             }
         }
@@ -101,6 +107,20 @@ var MTooltips = new Class({
             }else{
                 this.create();
             }
+
+            if( this.options.event == "click" ) {
+                if( this.options.isAutoHide ){
+                    if( !this.options.hasMask ){
+                        this.containerClickFun = function(e){
+                            if( this.status === "display" ){
+                                this.hide();
+                            }
+                            e.stopPropagation();
+                        }.bind(this);
+                        this.container.addEvent("click", this.containerClickFun )
+                    }
+                }
+            }
         }
         this.fireEvent("postLoad",[this]);
     },
@@ -111,6 +131,12 @@ var MTooltips = new Class({
             if( this.maskNode ){
                 this.maskNode.setStyle("display","none");
             }
+
+            if( this.containerClickFun ){
+                this.container.removeEvent("click", this.containerClickFun );
+                this.containerClickFun = null;
+            }
+
             this.fireEvent("hide",[this]);
         }
     },
@@ -121,6 +147,7 @@ var MTooltips = new Class({
         }
         this.node.setStyle("display","");
         this.setCoondinates();
+
         this.fireEvent("show",[this]);
     },
     create: function(){
@@ -164,21 +191,24 @@ var MTooltips = new Class({
 
         if( this.options.event == "click" ) {
             if( this.options.isAutoHide ){
-                this.maskNode = new Element("div.maskNode", {
-                    "styles": this.maskStyles,
-                    "events": {
-                        "mouseover": function (e) {
-                            e.stopPropagation();
-                        },
-                        "mouseout": function (e) {
-                            e.stopPropagation();
-                        },
-                        "click": function (e) {
-                            this.hide();
-                            e.stopPropagation();
-                        }.bind(this)
-                    }
-                }).inject( this.container );
+                if( this.options.hasMask ){
+                    this.maskNode = new Element("div.maskNode", {
+                        "styles": this.maskStyles,
+                        "events": {
+                            "mouseover": function (e) {
+                                e.stopPropagation();
+                            },
+                            "mouseout": function (e) {
+                                e.stopPropagation();
+                            },
+                            "click": function (e) {
+                                this.hide();
+                                e.stopPropagation();
+                            }.bind(this)
+                        }
+                    }).inject( this.container );
+                }
+
                 if( this.app ){
                     this.hideFun_resize = this.hide.bind(this);
                     this.app.addEvent( "resize" , this.hideFun_resize );
@@ -700,6 +730,13 @@ var MTooltips = new Class({
         if( this.options.event == "click" && this.app && this.hideFun_resize ){
             this.app.removeEvent("resize",this.hideFun_resize );
         }
+
+        if( this.targetClickFun )this.target.removeEvent( "click", this.targetClickFun );
+        if( this.targetMouseenterFun )this.target.removeEvent( "mouseenter", this.targetMouseenterFun );
+        if( this.targetMouseenterFun2 )this.target.removeEvent( "mouseenter", this.targetMouseenterFun2 );
+        if( this.targetMouseleaveFun )this.target.removeEvent( "mouseleave", this.targetMouseleaveFun );
+        if( this.targetMouseleaveFun2 )this.target.removeEvent( "mouseleave", this.targetMouseleaveFun2 );
+
         if( this.node ){
             this.node.destroy();
             this.node = null;

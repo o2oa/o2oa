@@ -5,7 +5,7 @@
 	"viewTitleNode": {
         "height": "40px",
         "background-color": "#EEE",
-        "border-bottom": "1px solid #999",
+        "border-bottom": "1px solid #bbbbbb",
         "cursor": "pointer"
     },
     "viewTitleNode_run": {
@@ -20,15 +20,15 @@
         "overflow": "hidden"
     },
     "contentLeftNode": {
-        "width": "30px",
+        "width": "29px",
         "background-color": "#EEE",
-        "border-right": "1px solid #999",
+        "border-right": "1px solid #bbbbbb",
         "float": "left"
     },
     "contentRightNode": {
         "width": "30px",
         "background-color": "#EEE",
-        "border-left": "1px solid #999",
+        "border-left": "1px solid #bbbbbb",
         "float": "right"
     },
     "viewContentBodyNode": {
@@ -68,7 +68,7 @@
     },
 
     "refreshNode": {
-        "width": "30px",
+        "width": "29px",
         "height": "40px",
         "background": "url("+"/x_component_query_ViewDesigner/$View/default/icon/refresh.png) center center no-repeat",
         "float": "left"
@@ -93,8 +93,8 @@
     "viewTitleTableNode": {
         "width": "100%",
         "height": "30px",
-        "border-left": "1px solid #BBB",
-        "border-right": "1px solid #BBB"
+        "border-left": "0px solid #BBB",
+        "border-right": "0px solid #BBB"
     },
     "viewTitleTrNode": {
         "height": "40px",
@@ -406,14 +406,16 @@
         "background-color": "#ffffff"
     },
     "tableRunNode": {
-        "width": "30px",
+        "width": "29px",
+        "border-right": "1px solid #bbbbbb",
         "height": "40px",
         "background": "url("+"/x_component_query_TableDesigner/$Table/default/icon/play.png) center center no-repeat",
         "float": "left"
     },
     "tableRunNode_run": {
-        "width": "30px",
+        "width": "29px",
         "height": "140px",
+        "border-right": "1px solid #bbbbbb",
         "background-position-y": "10px",
         "float": "left"
     },

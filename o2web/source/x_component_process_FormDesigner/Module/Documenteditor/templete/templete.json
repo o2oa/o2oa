@@ -1,0 +1,14 @@
+{
+  "standard": {
+    "name": "标准公文类",
+    "file": "standard.html",
+    "layouts": {
+    }
+  },
+  "meeting": {
+    "name": "纪要通报类",
+    "file": "meeting.html",
+    "layouts": {
+    }
+  }
+}

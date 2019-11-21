@@ -9,10 +9,34 @@ if( !MWF.CMSProperty_Process ){
         loadEventsEditor : MWF.xApplication.process.FormDesigner.Property.prototype.loadEventsEditor.$origin,
         loadValidation : MWF.xApplication.process.FormDesigner.Property.prototype.loadValidation.$origin,
         loadFormFieldInput : MWF.xApplication.process.FormDesigner.Property.prototype.loadFormFieldInput.$origin,
-        loadPersonInput : MWF.xApplication.process.FormDesigner.Property.prototype.loadPersonInput.$origin
+        loadPersonInput : MWF.xApplication.process.FormDesigner.Property.prototype.loadPersonInput.$origin,
+        loadProcessApplictionSelect : MWF.xApplication.process.FormDesigner.Property.prototype.loadProcessApplictionSelect.$origin
     };
 
     MWF.xApplication.process.FormDesigner.Property.implement({
+        loadProcessApplictionSelect : function(node, appNodeName, callback){
+            var isCMS= this.designer.options.name.toLowerCase().contains("cms");
+            if( isCMS ){
+                this.loadProcessApplictionSelect_CMS(node, appNodeName, callback);
+            }else{
+                this.loadProcessApplictionSelect_Process(node, appNodeName, callback);
+            }
+        },
+        loadProcessApplictionSelect_Process : MWF.CMSProperty_Process.loadProcessApplictionSelect,
+        loadProcessApplictionSelect_CMS : function(node, appNodeName, callback){
+            var application = appNodeName ? this.data[appNodeName] : "";
+            MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "title" : this.form.designer.lp.selectApplication,
+                    "type": "CMSApplication",
+                    "count" : 1,
+                    "names": application ? [ {id : application} ] : [],
+                    "onChange": function (apps) {
+                        callback(apps)
+                    }.bind(this)
+                });
+            }.bind(this))
+        },
         loadFormFieldInput: function(){
             //var isCMS = layout.desktop.currentApp.options.name.toLowerCase().contains("cms");
             var isCMS= this.designer.options.name.toLowerCase().contains("cms");

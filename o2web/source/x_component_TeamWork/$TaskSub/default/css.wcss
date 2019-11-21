@@ -1,0 +1,121 @@
+{
+    topLayout:{
+        "height":"40px",
+        "line-height":"40px",
+        "width":"100%",
+        "color":"#383838",
+        "font-size":"16px",
+        "font-weight":"bold",
+        "text-align":"center",
+        "border-bottom":"1px solid #dedede"
+    },
+    contentLayout:{
+        "width":"100%"
+    },
+    "searchDiv":{
+        "height":"30px",
+        "width":"90%",
+        "border":"1px solid #a6a6a6",
+        "border-radius":"2px",
+        "margin":"10px auto 0px auto"
+    },
+    "searchInput":{
+        "outline":"none",
+        "height":"28px",
+        "width":"95%",
+        "text-indent":"5px",
+        "border":"0px",
+        "font-size":"14px",
+        "color":"#666666"
+    },
+    "searchReset":{
+        "display":"none",
+        "margin-top":"5px",
+        "margin-right":"5px",
+        "float":"right",
+        "cursor":"pointer",
+        "width":"20px",
+        "height":"20px",
+        "background": "url(/x_component_TeamWork/$TaskSub/default/icon/icon_off.png) no-repeat center"
+    },
+    taskListLayout:{
+        "width":"90%",
+        "height":"280px",
+        "margin":"10px auto",
+        "border":"1px solid #dedede",
+        "overflow-y":"auto",
+        "color":"#666666"
+    },
+    taskItem:{
+        "height":"40px",
+        "width":"100%",
+        "font-size":"14px",
+        "cursor":"pointer",
+        "border-bottom":"1px solid #dedede"
+    },
+    taskName:{
+        "width":"450px",
+        "height":"40px",
+        "line-height":"40px",
+        "margin-left":"10px",
+        "float":"left",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis"
+    },
+    taskPerson:{
+        "width":"25px",
+        "height":"25px",
+        "line-height":"25px",
+        "float":"right",
+        "margin-top":"8px",
+        "margin-right":"10px",
+        "background-color":"#4A90E2",
+        "color":"#ffffff",
+        "font-size":"12px",
+        "border-radius":"12px",
+        "text-align":"center"
+    },
+    bottomLayout:{
+        "height":"40px",
+        "width":"100%"
+    },
+    okAction:{
+        "float":"right",
+        "cursor":"not-allowed",
+        "width":"60px",
+        "height":"35px",
+        "line-height":"35px",
+        "text-align":"center",
+        "margin-right":"30px",
+        "margin-top":"10px",
+        "color":"#ffffff",
+        "font-size":"14px",
+        "border-radius":"2px",
+        "background-color":"#cccccc"
+    },
+
+    "formMaskNode": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0.5,
+        "position": "absolute",
+        "background-color": "#999999",
+        "top": "0px",
+        "left": "0px"
+    },
+    "formAreaNode": {
+        "position": "absolute",
+        "opacity": 0,
+        "top": "0px"
+    },
+    "formNode": {
+        "background-color": "#FFF",
+        "box-shadow": "0px 0px 10px #999",
+        "border-radius": "5px",
+        "margin": "auto",
+        "border": "1px solid #fff",
+        "overflow": "hidden",
+        "color":"#333333"
+    }
+}

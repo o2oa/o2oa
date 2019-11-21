@@ -12,18 +12,18 @@
 		"action": "workConfig",
 		"icon": "work.png"
 	},
-    {
-      "title": "视图",
-      "id": "1.1",
-      "action": "viewConfig",
-      "icon": "view.png"
-    },
-    {
-      "title": "统计",
-      "id": "1.1",
-      "action": "statConfig",
-      "icon": "stat.png"
-    },
+//    {
+//      "title": "视图",
+//      "id": "1.1",
+//      "action": "viewConfig",
+//      "icon": "view.png"
+//    },
+//    {
+//      "title": "统计",
+//      "id": "1.1",
+//      "action": "statConfig",
+//      "icon": "stat.png"
+//    },
 	{
 		"title": "数据配置",
 		"id": "1.1",

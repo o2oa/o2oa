@@ -176,7 +176,8 @@
         "height":"32px",
         "line-height":"32px",
         "font-size":"14px",
-        "color":"#999999"
+        "color":"#999999",
+        "outline":"none"
     },
     naviTopTaskContainer:{
         "height":"40px",
@@ -335,37 +336,46 @@
         "background":"url(/x_component_TeamWork/$Project/default/icon/icon_renwu_yyq.png) no-repeat center "
     },
 
-    naviViewTipLayout:{
-
+    menuTipLayout:{
+        "width":"200px"
     },
-    naviViewTipContainer:{
+    menuTipTitle:{
+        "width":"100%",
+        "height":"40px",
+        "line-height":"40px",
+        "text-align":"center",
+        "font-size":"16px",
+        "color":"#333333",
+        "border-bottom":"1px solid #bebebe"
+    },
+    menuTipContainer:{
         "cursor":"pointer",
-        "width":"135px",
-        "height":"30px"
+        "width":"100%",
+        "height":"40px"
     },
-    naviViewTipEditIcon:{
+    menuTipEditIcon:{
         "float":"left",
         "width":"16px",
         "height":"16px",
-        "margin-left":"6px",
-        "margin-top":"6px",
+        "margin-left":"20px",
+        "margin-top":"12px",
         "background":"url(/x_component_TeamWork/$Project/default/icon/icon_bianjishitu.png) no-repeat center "
     },
-    naviViewTipRemoveIcon:{
+    menuTipRemoveIcon:{
         "float":"left",
         "width":"16px",
         "height":"16px",
-        "margin-left":"6px",
-        "margin-top":"6px",
+        "margin-left":"20px",
+        "margin-top":"12px",
         "background":"url(/x_component_TeamWork/$Project/default/icon/icon_delete_grey.png) no-repeat center "
     },
-    naviViewTipText:{
+    menuTipText:{
         "float":"left",
-        "height":"30px",
-        "line-height":"30px",
+        "height":"40px",
+        "line-height":"40px",
         "color":"#808080",
         "font-size":"13px",
-        "margin-left":"6px"
+        "margin-left":"10px"
     },
 
 	taskContentLayout:{
@@ -373,7 +383,7 @@
 	    "overflow-x":"auto",
 	    "overflow-y":"hidden",
         "padding-left":"10px",
-        "padding-right":"10px",
+        //"padding-right":"10px",
         "width":"100%",
         "height":"99%",
         "display":"flex"
@@ -435,19 +445,36 @@
         "width":"290px",
         "overflow":"hidden",
         "background-color":"#fff",
-        "padding-bottom":"10px"
+        "padding-bottom":"10px",
+        //"position":"absolute"
+    },
+    taskItemContainerDrag:{
+        "width":"290px",
+        "min-height":"80px",
+        "margin-bottom":"10px"
+    },
+    taskItemInsertLine:{
+        "width":"250px",
+        "height":"3px",
+        "border":"0px dashed #999999",
+        "margin":"10px auto",
+        "border-radius":"1px",
+        "background-color":"#4A90E2"
     },
     taskItemContainer:{
         "width":"260px",
-        "min-height":"80px",
+        "overflow":"hidden",
+        "height":"80px",
+        //"min-height":"80px",
         "cursor":"pointer",
         "border":"1px solid #E6E6E6",
         "border-radius":"4px",
+        "background-color":"#ffffff",
         "margin":"10px auto"
     },
     taskItemHover:{
         "float":"left",
-        "width":"0px",
+        "width":"5px",
         "height":"100%",
         "border-top-left-radius":"4px",
         "border-bottom-left-radius":"4px",
@@ -461,9 +488,31 @@
     taskItemTitle:{
         "font-size":"14px"
     },
-
-
-
+    newTaskGroupContainer:{
+        "cursor":"pointer",
+        //"display":"inline-table",
+        "flex-shrink":"0",
+        "float":"left",
+        "width":"300px",
+        "height":"60px",
+        "margin-top":"10px",
+        "margin-left":"10px",
+        "margin-right":"10px",
+        "background-color":"",
+        "border-radius":"4px"
+    },
+    newTaskGroupIcon:{
+        "float":"left",
+        "height":"100%",
+        "width":"24px",
+        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
+    },
+    newTaskGroupText:{
+        "float":"left",
+        "height":"100%",
+        "line-height":"60px",
+        "color":"#999999"
+    },
 
     titleContainer:{
         "height":"40px",
@@ -519,6 +568,65 @@
         "box-shadow": "0px 0px 3px #f0f0f0"
     },
 
+    viewContainer:{
+        "width":"100%",
+        "height":"100%",
+        "overflow-y":"auto"
+    },
+    viewListContainer:{
+        "width":"1000px",
+        "margin":"10px auto",
+        "font-size":"14px",
+        "color":"#666666"
+    },
+    viewItem:{
+        "height":"50px",
+        "width":"100%",
+        "cursor":"pointer",
+        "background-color":"#ffffff",
+        "border-bottom":"1px solid #EEEEEE"
+    },
+    viewName:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"800px",
+        "margin-left":"20px",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    viewStatus:{
+        "float":"left",
+        "line-height":"50px",
+        "width":"100px",
+        "text-align":"center"
+    },
+    viewDuty:{
+        "width":"50px",
+        "height":"100%",
+        "float":"right",
+        "margin-right":"20px"
+    },
+    viewDutyIcon:{
+        "width":"25px",
+        "height":"25px",
+        "line-height":"25px",
+        "margin-top":"12px",
+        "text-align":"center",
+        "color":"#ffffff",
+        "font-size":"13px",
+        "border-radius":"20px",
+        "background-color":"#4A90E2"
+    },
+    viewNext:{
+        "height":"50px",
+        "line-height":"50px",
+        "background-color":"#4a90e2",
+        "text-align":"center",
+        "color":"#ffffff",
+        "font-size":"14px",
+        "cursor":"pointer"
+    },
 
     "formMaskNode": {
         "width": "100%",

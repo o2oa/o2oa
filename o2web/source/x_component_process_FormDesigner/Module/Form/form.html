@@ -13,6 +13,10 @@
                 <td class="editTableTitle">描述:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">分类:</td>
+                <td class="editTableValue"><input type="text" name="category" value="text{$.category}" class="editTableInput"/></td>
+            </tr>
             <!--<tr>-->
                 <!--<td class="editTableTitle">标题字段</td>-->
                 <!--<td class="editTableValue">-->
@@ -45,20 +49,6 @@
                 </td>
             </tr>
         </table>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
-                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
-                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-                </td>
-            </tr>
-        </table>
         <table style="display: text{($.isPrompt!==false)?'block':'none'}" id="text{$.pid}promptArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td colspan="2" class="editTableValue"><b>提示框位置:</b>
@@ -84,6 +74,21 @@
                         <option value="9" text{($.promptCloseTime==9)?'selected':''}>9</option>
                     </select>
                     秒后自动关闭</b></td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
+                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
+                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
             </tr>
         </table>
 		

@@ -23,17 +23,23 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
             });
         }
     },
-    getValue: function(){
+    getValue: function(isDate){
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
-        if (value) value = Date.parse(value).format(this.json.format);
-        return value || "";
+        var d = (!!value) ? Date.parse(value) : "";
+        if (isDate){
+            return d || null;
+        }else{
+            //if (d) value = Date.parse(value).format(this.json.format);
+            return (d) ? d.format(this.json.format) : "";
+        }
     },
 	clickSelect: function(){
         if (!this.calendar){
             MWF.require("MWF.widget.Calendar", function(){
-                this.calendar = new MWF.widget.Calendar(this.node.getFirst(), {
+                var options = {
                     "style": "xform",
+                    "secondEnable" : this.json.isSelectSecond,
                     "isTime": (this.json.selectType==="datetime" || this.json.selectType==="time"),
                     "timeOnly": (this.json.selectType === "time"),
                     //"target": this.form.node,
@@ -59,10 +65,22 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                     "onHide": function(){
                         if (!this.node.getFirst().get("value")) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
                     }.bind(this)
-                });
+                };
+                var value = this.getValue(true);
+                if( value ){
+                    options.baseDate = value;
+                }
+                this.calendar = new MWF.widget.Calendar(this.node.getFirst(), options);
                 this.calendar.show();
             }.bind(this));
         }else{
+            var options = {};
+            var value = this.getValue(true);
+            if( value ){
+                options.baseDate = value;
+            }
+            this.calendar.setOptions(options);
+            //this.calendar.show();
             this.node.getFirst().focus();
         }
 	}

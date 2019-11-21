@@ -536,6 +536,8 @@ MWF.xDesktop.Actions.RestActions.Callback = new Class({
                         errorText = "request json error: "+xhr.responseText;
                     }
                 }
+                errorText = errorText.replace(/\</g, "&lt;");
+                errorText = errorText.replace(/\</g, "&gt;");
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             }
 		//	throw "request error: "+errorText;

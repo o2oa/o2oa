@@ -5,6 +5,7 @@ MWF.APPPD.LP = {
 		"newPage": "新建页面",
 		"property": "属性",
 		"tools": "工具",
+        "all": "全部",
 		
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
@@ -193,6 +194,8 @@ MWF.APPPD.LP = {
         "iframeScript": "iframe脚本",
         "labelScript": "文本值",
         "rangeKey": "组织范围",
+        "identityRangeKey": "身份组织范围",
+        "unitRangeKey": "组织选择范围",
         "rangeDutyKey": "职务范围",
         "exclude": "选择排除脚本",
         "cookies": "数据源请求cookies",

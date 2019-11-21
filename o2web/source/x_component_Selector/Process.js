@@ -42,6 +42,7 @@ MWF.xApplication.Selector.Process = new Class({
         return false;
     },
     _getItem: function(callback, failure, id, async){
+        if( !id )return;
         this.processAction.getProcess(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : (typeOf(id)=="string") ? id : id.id), async);

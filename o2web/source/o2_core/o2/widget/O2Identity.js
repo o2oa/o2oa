@@ -29,7 +29,7 @@ o2.widget.O2Identity = new Class({
         //o2.widget.O2Identity.iditems.push(this);
 	},
     setText: function(){
-        this.node.set("text", this.data.name+"("+this.data.unitName+")");
+        this.node.set("text", this.data.displayName || (this.data.name+"("+this.data.unitName+")"));
     },
     load: function(){
         if (!this.options.lazy) this.getPersonData();
@@ -206,7 +206,7 @@ o2.widget.O2Person = new Class({
         return this.data;
     },
     setText: function(){
-        this.node.set("text", this.data.name);
+        this.node.set("text", this.data.displayName || this.data.name);
     }
 });
 o2.widget.O2Unit = new Class({
@@ -235,7 +235,7 @@ o2.widget.O2Unit = new Class({
         });
     },
     setText: function(){
-        this.node.set("text", this.data.name);
+        this.node.set("text", this.data.displayName || this.data.name);
     }
 });
 o2.widget.O2Duty = new Class({
@@ -264,7 +264,7 @@ o2.widget.O2Duty = new Class({
         });
     },
     setText: function(){
-        this.node.set("text", this.data.name);
+        this.node.set("text", this.data.displayName || this.data.name);
     }
 });
 o2.widget.O2Group = new Class({
@@ -278,7 +278,7 @@ o2.widget.O2Group = new Class({
         }
     },
     setText: function(){
-        this.node.set("text", this.data.name);
+        this.node.set("text", this.data.displayName || this.data.name);
     },
     createInforNode: function(){
         return false;
@@ -498,6 +498,34 @@ o2.widget.O2Other = new Class({
         return this.data;
     }
 });
+
+/**
+ * @return {null}
+ */
+o2.widget.O2Org = function(value, container, options){
+    var v = (o2.typeOf(value)==="string") ? {"name": value} : value.distinguishedName;
+    var t = v.distinguishedName || v.name || "";
+    if (t) {
+        var flag = t.substr(t.length - 1, 1);
+        switch (flag.toLowerCase()) {
+            case "i":
+                return new o2.widget.O2Identity(v, container, options);
+            case "p":
+                return new o2.widget.O2Person(v, container, options);
+            case "u":
+                return new o2.widget.O2Unit(v, container, options);
+            case "g":
+                return new o2.widget.O2Group(v, container, options);
+            case "r":
+                return new o2.widget.O2Role(v, container, options);
+            case "d":
+                return new o2.widget.O2Duty(v, container, options);
+            default:
+                return new o2.widget.O2Other(v, container, options);
+        }
+    }
+    return null;
+};
 
 // o2.widget.O2Identity.iditems = o2.widget.O2Identity.iditems || [];
 // o2.widget.O2Identity.intervalId = window.setInterval(function(){

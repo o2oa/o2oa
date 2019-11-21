@@ -106,19 +106,22 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                     var activitys = [];
                     var routes = [];
                     this.process.selectedActivitys.each(function (activity) {
-                        activitys.push(Object.clone(activity.data));
+                        //if (activity.data.type.toLowerCase()!=="begin"){
+                            activitys.push(Object.clone(activity.data));
 
-                        activity.routes.each(function (route) {
-                            if (route.toActivity) {
-                                //if (this.process.selectedActivitys.indexOf(route.toActivity) != -1){
+                            activity.routes.each(function (route) {
+                                if (route.toActivity) {
+                                    //if (this.process.selectedActivitys.indexOf(route.toActivity) != -1){
                                     routes.push(Object.clone(route.data));
-                                //}else{
-                                //    activity.routes = null;
-                                //}
-                            } else {
-                                routes.push(Object.clone(route.data));
-                            }
-                        }.bind(this));
+                                    //}else{
+                                    //    activity.routes = null;
+                                    //}
+                                } else {
+                                    routes.push(Object.clone(route.data));
+                                }
+                            }.bind(this));
+                        //}
+
                         //activity.routes = activity.routes.clean();
                     }.bind(this));
                     MWF.clipboard.data = {
@@ -130,14 +133,16 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                     };
                 } else if (this.process.currentSelected) {
                     if (this.process.currentSelected.type) {
-                        var data = Object.clone(this.process.currentSelected.data);
-                        MWF.clipboard.data = {
-                            "type": "process",
-                            "data": {
-                                "activitys": [data],
-                                "routes": []
-                            }
-                        };
+                        //if (this.process.currentSelected.data.type.toLowerCase()!=="begin"){
+                            var data = Object.clone(this.process.currentSelected.data);
+                            MWF.clipboard.data = {
+                                "type": "process",
+                                "data": {
+                                    "activitys": [data],
+                                    "routes": []
+                                }
+                            };
+                        //}
                     } else {
                         MWF.clipboard.data = null;
                     }
@@ -146,95 +151,131 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
             }
         }
     },
+    pasteModuleError: function(bakData){
+        this.notice(this.lp.notice.processCopyError, "error");
+        this.process.reload(bakData);
+        MWF.clipboard.data = null;
+    },
     pasteModule: function(){
         if (this.process){
             //        if (this.process.isFocus){
             if (MWF.clipboard.data){
                 if (MWF.clipboard.data.type=="process"){
-                    this.process.unSelectedAll();
+                    var bakData = Object.clone(this.process.process);
 
+                    this.process.unSelectedAll();
                     var activitys = MWF.clipboard.data.data.activitys;
                     var routes = MWF.clipboard.data.data.routes;
                     var checkUUIDs;
                     this.actions.getId(activitys.length+routes.length, function(ids) {
-                        checkUUIDs = ids.data;
-                        var idReplace = {};
-                        var processId = this.process.process.id;
-
-                        activitys.each(function(d){
-                            var id = checkUUIDs.pop().id;
-                            idReplace[d.id] = id;
-                            d.id = id;
-                            d.process = processId;
-                        });
-
-                        routes.each(function(d){
-                            var id = checkUUIDs.pop().id;
-                            idReplace[d.id] = id;
-                            d.id = id;
-                            d.process = processId;
-                            d.activity = idReplace[d.activity];
-                        });
-
-                        activitys.each(function(d){
-                            if (d.route){
-                                d.route = idReplace[d.route];
-                            }
-                            if (d.routeList){
-                                d.routeList.each(function(r, i){
-                                    d.routeList[i] = idReplace[r]
-                                });
-                            }
-                        });
-
-                        var loadRoutes = function(){
-                            routes.each(function(item){
-                                this.process.process.routeList.push(Object.clone(item));
-                                this.process.routes[item.id] = new MWF.APPPD.Route(item, this.process);
-                                this.process.routeDatas[item.id] = item;
-                                //	this.routes[item.id].load();
-                            }.bind(this));
+                        try {
+                            checkUUIDs = ids.data;
+                            var idReplace = {};
+                            var processId = this.process.process.id;
 
                             activitys.each(function(d){
-                                this.process[d.type+"s"][d.id].loadRoutes();
-                                if (activitys.length>1){
-                                    this.process[d.type+"s"][d.id].selectedMulti();
-                                }else{
-                                    this.process[d.type+"s"][d.id].selected();
+                                var id = checkUUIDs.pop().id;
+                                idReplace[d.id] = id;
+                                d.id = id;
+                                d.process = processId;
+                            });
+
+                            routes.each(function(d){
+                                var id = checkUUIDs.pop().id;
+                                idReplace[d.id] = id;
+                                d.id = id;
+                                d.process = processId;
+                                d.activity = idReplace[d.activity];
+                            });
+
+                            activitys.each(function(d){
+                                if (d.route){
+                                    d.route = idReplace[d.route];
                                 }
+                                if (d.routeList){
+                                    d.routeList.each(function(r, i){
+                                        d.routeList[i] = idReplace[r]
+                                    });
+                                }
+                            });
 
+                            var loadRoutes = function(){
+                                try{
+                                    routes.each(function(item){
+                                        this.process.process.routeList.push(Object.clone(item));
+                                        this.process.routes[item.id] = new MWF.APPPD.Route(item, this.process);
+                                        this.process.routeDatas[item.id] = item;
+                                        //	this.routes[item.id].load();
+                                    }.bind(this));
+
+                                    activitys.each(function(d){
+                                        //this.process[d.type+"s"][d.id].loadRoutes();
+                                        (this.process[d.type] || this.process[d.type+"s"][d.id]).loadRoutes();
+                                        if (activitys.length>1){
+                                            (this.process[d.type] || this.process[d.type+"s"][d.id]).selectedMulti();
+                                        }else{
+                                            this.process[d.type+"s"][d.id].selected();
+                                        }
+
+
+                                    }.bind(this));
+
+                                    routes.each(function(item){
+                                        var route = this.process.routes[item.id];
+                                        if (!route.loaded) route.load();
+                                    }.bind(this));
+
+                                    MWF.clipboard.data = null;
+                                }catch(e){
+                                    this.pasteModuleError(bakData);
+                                }
+                            };
+
+                            var loadedCount = 0;
+                            activitys.each(function(activity){
+                                //if (activity.type.toLowerCase()!=="begin"){
+                                var data = Object.clone(activity);
+                                var type = data.type;
+                                if (type.toLowerCase()=="begin"){
+                                    if (!this.process.begin){
+                                        this.process.process.begin = data;
+                                        this.process.loadBegin(function(){
+                                            loadedCount++;
+                                            if (loadedCount==activitys.length) loadRoutes.apply(this);
+                                        }.bind(this));
+                                    }else{
+                                        //loadedCount++;
+                                        activitys.erase(activity);
+                                        if (loadedCount==activitys.length) loadRoutes.apply(this);
+                                    }
+                                }else{
+                                    if (!this.process.process[type+"List"]) this.process.process[type+"List"] = [];
+                                    this.process.process[type+"List"].push(data);
+                                    var c = type.capitalize();
+                                    // if (type==="begin") {
+                                    //     if (!this.process.begin){
+                                    //         this.process.loadActivity(c, data, this.process.begin, function(){
+                                    //             loadedCount++;
+                                    //             if (loadedCount==activitys.length) loadRoutes.apply(this);
+                                    //         }.bind(this));
+                                    //     }
+                                    // }else{
+                                    this.process.loadActivity(c, data, this.process[type+"s"], function(){
+                                        loadedCount++;
+                                        if (loadedCount==activitys.length) loadRoutes.apply(this);
+                                    }.bind(this));
+                                    // }
+
+                                }
+                                // }
 
                             }.bind(this));
-
-                            routes.each(function(item){
-                                var route = this.process.routes[item.id];
-                                if (!route.loaded) route.load();
-                            }.bind(this));
-                        };
-
-                        var loadedCount = 0;
-                        activitys.each(function(activity){
-
-                            var data = Object.clone(activity);
-                            var type = data.type;
-                            if (type=="begin" && !this.process.begin){
-                                this.process.process.begin = data;
-                                this.process.loadBegin(function(){
-                                    loadedCount++;
-                                    if (loadedCount==activitys.length) loadRoutes.apply(this);
-                                }.bind(this));
-                            }else{
-                                if (!this.process.process[type+"List"]) this.process.process[type+"List"] = [];
-                                this.process.process[type+"List"].push(data);
-                                var c = type.capitalize();
-                                this.process.loadActivity(c, data, this.process[type+"s"], function(){
-                                    loadedCount++;
-                                    if (loadedCount==activitys.length) loadRoutes.apply(this);
-                                }.bind(this));
-                            }
-                        }.bind(this));
+                        }catch(e){
+                            this.pasteModuleError(bakData)
+                        }
 
                     }.bind(this));
+
                 }
             }
             //         }

@@ -70,6 +70,8 @@ MWF.xApplication.Collect.Main = new Class({
         this.checkContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.loginContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.modifyContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
+        this.modifyPwdContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
+        this.deleteContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.registerContentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
 
         this.check = new MWF.xApplication.Collect.Check(this);
@@ -79,6 +81,8 @@ MWF.xApplication.Collect.Main = new Class({
         this.checkContentNode.setStyle("display", "none");
         this.loginContentNode.setStyle("display", "none");
         this.modifyContentNode.setStyle("display", "none");
+        this.modifyPwdContentNode.setStyle("display", "none");
+        this.deleteContentNode.setStyle("display", "none");
         this.registerContentNode.setStyle("display", "none");
         this[node].setStyle("display", "block");
     },
@@ -137,7 +141,13 @@ MWF.xApplication.Collect.Check = new Class({
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.connectedAndLogin}).inject(this.actionsNode);
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.modifyAccount}).inject(this.actionsNode);
         this.modifyAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyAccountAction}).inject(this.actionsNode);
+
+        this.modifyPwdAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyPwdAccountAction}).inject(this.actionsNode);
+
+        this.deleteAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.deleteAccountAction}).inject(this.actionsNode);
         this.modifyAccountAction.addEvent("click", this.showModifyForm.bind(this));
+        this.modifyPwdAccountAction.addEvent("click", this.showModifyPwdForm.bind(this));
+        this.deleteAccountAction.addEvent("click", this.showDeleteForm.bind(this));
 
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.loginAccount}).inject(this.actionsNode);
         this.loginAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.login}).inject(this.actionsNode);
@@ -252,6 +262,18 @@ MWF.xApplication.Collect.Check = new Class({
             this.collect.modifyForm = new MWF.xApplication.Collect.ModifyForm(this.collect);
         }
         this.collect.modifyForm.show();
+    },
+    showModifyPwdForm: function(){
+        if (!this.collect.modifyPwdForm){
+            this.collect.modifyPwdForm = new MWF.xApplication.Collect.ModifyPwdForm(this.collect);
+        }
+        this.collect.modifyPwdForm.show();
+    },
+    showDeleteForm: function(){
+        if (!this.collect.deleteForm){
+            this.collect.deleteForm = new MWF.xApplication.Collect.DeleteForm(this.collect);
+        }
+        this.collect.deleteForm.show();
     },
     showLoginForm: function(){
         if (!this.collect.loginForm){
@@ -397,6 +419,7 @@ MWF.xApplication.Collect.LoginForm = new Class({
             }.bind(this),
             "selectstart": function(e){e.stopPropagation();}
         });
+
         this.passwordInput.addEvents({
             "focus": function(){
                 this.errorPassword("");
@@ -415,6 +438,7 @@ MWF.xApplication.Collect.LoginForm = new Class({
             }.bind(this),
             "selectstart": function(e){e.stopPropagation();}
         });
+
     },
     setDefaultValue: function(){
         this.action.getCollectConfig(function(json){
@@ -653,9 +677,10 @@ MWF.xApplication.Collect.RegisterForm = new Class({
         }
         var flag = "";
         this.action.passwordValidate({"password": password}, function(json){
-            if (json.data.value<4){
-                flag = this.lp.errorPasswordRule;
-            }
+            //if (json.data.value<4){
+            //    flag = this.lp.errorPasswordRule;
+            //}
+            flag = json.data.value || "";
         }.bind(this), function(xhr, text, error){
 
         }.bind(this), false);
@@ -721,6 +746,231 @@ MWF.xApplication.Collect.ModifyForm = new Class({
         this.lp = this.collect.lp;
         this.css = this.collect.css;
         this.contentNode = this.collect.modifyContentNode;
+        this.action = this.collect.action;
+        this.load();
+    },
+    load: function(){
+        this.contentNode.setStyle("padding-top", "30px");
+        this.usernameNode = this.createNode("registerUsernameIconNode", "username");
+        this.usernameInput = this.usernameNode.getElement("input");
+
+        this.mobileNode = this.createNode("registerMobileIconNode", "mobile");
+        this.mobileInput = this.mobileNode.getElement("input");
+
+        this.codeNode = this.createNode("registerCodeIconNode", "code");
+        this.codeInput = this.codeNode.getElement("input");
+
+        this.newNameNode = this.createNode("registerNewNameIconNode");
+        this.newNameInput = this.newNameNode.getElement("input");
+
+        this.secretNode = this.createNode("registerSecretIconNode", "secret");
+        this.secretInput = this.secretNode.getElement("input");
+
+        this.keyNode = this.createNode("registerKeyIconNode", "key");
+        this.keyInput = this.keyNode.getElement("input");
+
+        this.setInputEvent();
+
+        this.nextActionNode = new Element("div", {"styles": this.css.registerActionNode, "text": this.lp.modifyNextStep}).inject(this.contentNode);
+        this.nextActionNode.addEvent("click", this.nextStep.bind(this));
+
+        this.errorNode = new Element("div", {"styles": this.css.registerErrorNode}).inject(this.contentNode);
+
+        this.newNameNode.setStyle("display", "none");
+        this.newNameNode.getNext().setStyle("display", "none");
+
+        this.secretNode.setStyle("display", "none");
+        this.secretNode.getNext().setStyle("display", "none");
+
+        this.keyNode.setStyle("display", "none");
+        this.keyNode.getNext().setStyle("display", "none");
+
+        this.setDefaultValue();
+    },
+    setDefaultValue: function(){
+        this.action.getCollectConfig(function(json){
+            if (json.data.name) this.usernameInput.set("value", json.data.name);
+            if (json.data.name) this.newNameInput.set("value", json.data.name);
+            if (json.data.key) this.keyInput.set("value", json.data.key);
+            if (json.data.secret) this.secretInput.set("value", json.data.secret);
+        }.bind(this));
+    },
+    nextStepWait: function(){
+        this.nextActionNode.removeEvents("click");
+        this.nextActionNode.set("text", this.lp.nextStepWait);
+        this.errorNode.empty();
+    },
+    setInputEvent: function(){
+
+        this.setInputNodeEvent(this.usernameNode, this.usernameInput, this.lp.username, this.lp.errorUsername, "username");
+
+        this.setInputNodeEvent(this.newNameNode, this.newNameInput, this.lp.username, this.lp.errorUsername, "newName");
+        this.setInputNodeEvent(this.secretNode, this.secretInput, this.lp.secret, this.lp.errorSecret, "secret");
+        this.setInputNodeEvent(this.keyNode, this.keyInput, this.lp.key, this.lp.errorKey, "key");
+
+        this.setInputNodeEvent(this.mobileNode, this.mobileInput, this.lp.mobile, this.lp.errorMobile, "mobile");
+        this.setInputNodeEvent(this.codeNode, this.codeInput, this.lp.code, this.lp.errorCode, "code");
+        this.resetCodeNode();
+    },
+    nextStepWaited: function(){
+        this.nextActionNode.addEvent("click", this.nextStep.bind(this));
+        this.nextActionNode.set("text", this.lp.modifyNextStep);
+    },
+    firstStep: function(){
+        this.nextActionNode.addEvent("click", this.nextStep.bind(this));
+        this.nextActionNode.set("text", this.lp.modifyNextStep);
+
+        this.newNameNode.setStyle("display", "none");
+        this.newNameNode.getNext().setStyle("display", "none");
+
+        this.secretNode.setStyle("display", "none");
+        this.secretNode.getNext().setStyle("display", "none");
+
+        this.keyNode.setStyle("display", "none");
+        this.keyNode.getNext().setStyle("display", "none");
+
+        this.usernameNode.setStyle("display", "block");
+        this.usernameNode.getNext().setStyle("display", "block");
+
+        this.mobileNode.setStyle("display", "block");
+        this.mobileNode.getNext().setStyle("display", "block");
+
+        this.codeNode.getParent().setStyle("display", "block");
+        this.codeNode.getNext().setStyle("display", "block");
+
+        this.errorNode.empty();
+    },
+    nextStep: function(){
+        var user = this.usernameInput.get("value");
+        var mobile = this.mobileInput.get("value");
+        var code = this.codeInput.get("value");
+
+        if (this.usernameVerification() & this.mobileVerification() & this.codeVerification()){
+            this.nextStepWait();
+            this.action.codeValidate({"codeAnswer": code, "mobile": mobile}, function(json){
+                if (json.data.value){
+                    this.nextActionNode.removeEvents("click");
+                    this.nextActionNode.set("text", this.lp.modifyUnit);
+                    this.nextActionNode.addEvent("click", this.modifyUnit.bind(this));
+
+                    this.newNameNode.setStyle("display", "block");
+                    this.newNameNode.getNext().setStyle("display", "block");
+
+                    this.secretNode.setStyle("display", "block");
+                    this.secretNode.getNext().setStyle("display", "block");
+
+                    this.keyNode.setStyle("display", "block");
+                    this.keyNode.getNext().setStyle("display", "block");
+
+                    this.usernameNode.setStyle("display", "none");
+                    this.usernameNode.getNext().setStyle("display", "none");
+
+                    this.mobileNode.setStyle("display", "none");
+                    this.mobileNode.getNext().setStyle("display", "none");
+
+                    this.codeNode.getParent().setStyle("display", "none");
+                    this.codeNode.getNext().setStyle("display", "none");
+
+                    this.errorNode.empty();
+                }else{
+                    this.errorInput(this.codeNode, this.lp.errorCode);
+                }
+            }.bind(this), function(xhr, text, error){
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    this.errorInput(this.codeNode, json.message);
+                }else{
+                    var errorText = error+":"+text;
+                    MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+                }
+                this.nextStepWaited();
+            }.bind(this));
+        }
+
+
+    },
+    modifyUnit: function(){
+        var user = this.usernameInput.get("value");
+        var newName = this.newNameInput.get("value");
+        var code = this.codeInput.get("value");
+        var secret = this.secretInput.get("value");
+        var key = this.keyInput.get("value");
+        var mobile = this.mobileInput.get("value");
+
+        if (this.newNameVerification()){
+            this.nextStepWait();
+            var data = {
+                mobile: mobile,
+                codeAnswer: code,
+                newName: newName,
+                secret: secret,
+                key: key,
+                name: user
+            };
+            this.action.updateUnitCollect(data, function(json){
+                this.firstStep();
+                this.collect.showContent("checkContentNode");
+                this.collect.backNode.setStyle("display", "none");
+                this.check.recheck();
+            }.bind(this), function(xhr, text, error){
+                var errorText = error+":"+text;
+                if (xhr) errorText = xhr.responseText;
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+                this.firstStep();
+            }.bind(this));
+        }
+    },
+    usernameVerification: function(){
+        var user = this.usernameInput.get("value");
+        if (!user || user==this.lp.username){
+            this.errorInput(this.usernameNode, this.lp.errorUsername);
+            return false;
+        }
+        return true;
+    },
+    newNameVerification: function(){
+        var user = this.usernameInput.get("value");
+        if (!user || user==this.lp.username){
+            this.errorInput(this.usernameNode, this.lp.errorUsername);
+            return false;
+        }
+        return true;
+    },
+    keyVerification: function(){
+        var user = this.usernameInput.get("value");
+        if (!user || user==this.lp.username){
+            this.errorInput(this.usernameNode, this.lp.errorUsername);
+            return false;
+        }
+        return true;
+    },
+    secretVerification: function(){
+        var user = this.usernameInput.get("value");
+        if (!user || user==this.lp.username){
+            this.errorInput(this.usernameNode, this.lp.errorUsername);
+            return false;
+        }
+        return true;
+    },
+    show: function(){
+        this.collect.showContent("modifyContentNode");
+        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.removeEvents("click");
+        this.collect.backNode.addEvent("click", function(){
+            this.firstStep();
+            this.collect.showContent("checkContentNode");
+            this.collect.backNode.setStyle("display", "none");
+        }.bind(this));
+    }
+});
+
+MWF.xApplication.Collect.ModifyPwdForm = new Class({
+    Extends: MWF.xApplication.Collect.RegisterForm,
+    initialize: function(collect){
+        this.collect = collect;
+        this.lp = this.collect.lp;
+        this.css = this.collect.css;
+        this.contentNode = this.collect.modifyPwdContentNode;
         this.action = this.collect.action;
         this.load();
     },
@@ -842,6 +1092,7 @@ MWF.xApplication.Collect.ModifyForm = new Class({
                 name: user,
                 password: password
             };
+            debugger;
             this.action.resetPassword(data, function(){
                 this.action.updateCollect({"name": user, "password": password, "enable": true}, function(json){
                     this.firstStep();
@@ -874,9 +1125,104 @@ MWF.xApplication.Collect.ModifyForm = new Class({
         }
         return true;
     },
-
     show: function(){
-        this.collect.showContent("modifyContentNode");
+        this.collect.showContent("modifyPwdContentNode");
+        this.collect.backNode.setStyle("display", "block");
+        this.collect.backNode.removeEvents("click");
+        this.collect.backNode.addEvent("click", function(){
+            this.firstStep();
+            this.collect.showContent("checkContentNode");
+            this.collect.backNode.setStyle("display", "none");
+        }.bind(this));
+    }
+});
+
+
+MWF.xApplication.Collect.DeleteForm = new Class({
+    Extends: MWF.xApplication.Collect.RegisterForm,
+    initialize: function(collect){
+        this.collect = collect;
+        this.lp = this.collect.lp;
+        this.css = this.collect.css;
+        this.contentNode = this.collect.deleteContentNode;
+        this.action = this.collect.action;
+        this.load();
+    },
+    load: function(){
+        this.contentNode.setStyle("padding-top", "30px");
+        this.usernameNode = this.createNode("registerUsernameIconNode", "username");
+        this.usernameInput = this.usernameNode.getElement("input");
+
+        this.mobileNode = this.createNode("registerMobileIconNode", "mobile");
+        this.mobileInput = this.mobileNode.getElement("input");
+
+        this.codeNode = this.createNode("registerCodeIconNode", "code");
+        this.codeInput = this.codeNode.getElement("input");
+
+        this.passwordNode = this.createNode("registerPasswordIconNode", "password", "password");
+        this.passwordInput = this.passwordNode.getElement("input");
+
+        this.setInputEvent();
+
+        this.nextActionNode = new Element("div", {"styles": this.css.registerActionNode, "text": this.lp.confirmDelete}).inject(this.contentNode);
+        this.nextActionNode.addEvent("click", this.deleteCollect.bind(this));
+
+        this.errorNode = new Element("div", {"styles": this.css.registerErrorNode}).inject(this.contentNode);
+
+        this.passwordNode.setStyle("display", "none");
+        this.passwordNode.getNext().setStyle("display", "none");
+
+        this.setDefaultValue();
+    },
+    setDefaultValue: function(){
+        this.action.getCollectConfig(function(json){
+            if (json.data.name) this.usernameInput.set("value", json.data.name);
+        }.bind(this));
+    },
+    deleteCollect:function(){
+
+        var user = this.usernameInput.get("value");
+        var mobile = this.mobileInput.get("value");
+        var code = this.codeInput.get("value");
+
+        if (this.usernameVerification() & this.mobileVerification() & this.codeVerification() ){
+            this.action.deleteCollect(user,mobile,code, function(json){
+                this.collect.showContent("checkContentNode");
+                this.collect.backNode.setStyle("display", "none");
+            }.bind(this), function(xhr, text, error){
+                var errorText = error+":"+text;
+                if (xhr) errorText = xhr.responseText;
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+                this.firstStep();
+            }.bind(this));
+        }
+    },
+    usernameVerification: function(){
+        var user = this.usernameInput.get("value");
+        if (!user || user==this.lp.username){
+            this.errorInput(this.usernameNode, this.lp.errorUsername);
+            return false;
+        }
+        return true;
+    },
+    firstStep: function(){
+
+        this.passwordNode.setStyle("display", "none");
+        this.passwordNode.getNext().setStyle("display", "none");
+
+        this.usernameNode.setStyle("display", "block");
+        this.usernameNode.getNext().setStyle("display", "block");
+
+        this.mobileNode.setStyle("display", "block");
+        this.mobileNode.getNext().setStyle("display", "block");
+
+        this.codeNode.getParent().setStyle("display", "block");
+        this.codeNode.getNext().setStyle("display", "block");
+
+        this.errorNode.empty();
+    },
+    show: function(){
+        this.collect.showContent("deleteContentNode");
         this.collect.backNode.setStyle("display", "block");
         this.collect.backNode.removeEvents("click");
         this.collect.backNode.addEvent("click", function(){

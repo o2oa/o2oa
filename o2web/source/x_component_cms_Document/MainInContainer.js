@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("cms.Document", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("cms.Document", "lp."+o2.language, null, false);
 MWF.xDesktop.requireApp("cms.Document", "Main", null, false);
 MWF.xApplication.cms.Document.MainInContainer = new Class({
     Extends: MWF.xApplication.cms.Document.Main,

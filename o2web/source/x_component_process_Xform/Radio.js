@@ -211,6 +211,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 				}
 			}
 		}
+        this.fireEvent("setData");
 	},
 
     notValidationMode: function(text){

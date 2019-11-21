@@ -11,21 +11,27 @@ MWF.xScript.Macro = MWF.Macro = {
         var returnValue;
         //try{
             if (!bind) bind = window;
-            //try {
+            if (o2.session.isDebugger){
+                try {
+                    var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                    returnValue = f.apply(bind);
+                }catch(e){
+                    console.log(o2.LP.script.error);
+                    if (code.length>500){
+                        var t = code.substr(0,500)+"\n...\n";
+                        console.log(t);
+                    }else{
+                        console.log(code);
+                    }
+
+                    console.log(e);
+                    //throw e;
+                }
+            }else{
                 var f = eval("(function(){return function(){\n"+code+"\n}})();");
                 returnValue = f.apply(bind);
-            // }catch(e){
-            //     console.log(o2.LP.script.error);
-            //     if (code.length>500){
-            //         var t = code.substr(0,500)+"\n...\n";
-            //         console.log(t);
-            //     }else{
-            //         console.log(code);
-            //     }
-            //
-            //     console.log(e);
-            //     throw e;
-            // }
+            }
+
         //}catch(e){}//
 
 

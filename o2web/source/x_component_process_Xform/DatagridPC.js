@@ -16,6 +16,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
     },
 
 	_loadUserInterface: function(){
+		this.fireEvent("queryLoad");
+
 		this.editModules = [];
         this.node.setStyle("overflow-x", "auto");
         this.node.setStyle("overflow-y", "hidden");
@@ -34,12 +36,18 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this._addTitleActionColumn();
 
 			this._loadEditDatagrid();
+
+			this.fireEvent("postLoad");
+			this.fireEvent("load");
 			//this._loadReadDatagrid();
 		}else{
             this._loadDatagridDataModules();
             this._getDatagridEditorTr();
 			this._loadReadDatagrid();
 			if(this.editorTr)this.editorTr.setStyle("display", "none");
+
+			this.fireEvent("postLoad");
+			this.fireEvent("load");
 		}
 	},
 	_loadStyles: function(){
@@ -157,6 +165,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				break;
 			case "Orgfield":
 			case "Personfield":
+			case "Org":
                 //var v = module.getTextData();
 				//return v.text[0];
 

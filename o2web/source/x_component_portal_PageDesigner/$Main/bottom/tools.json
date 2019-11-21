@@ -59,10 +59,15 @@
     "text": "文本字段",
     "className": "Textfield"
   },
-  "personfield": {
+//  "personfield": {
+//    "icon": "personfield.png",
+//    "text": "人员",
+//    "className": "Personfield"
+//  },
+  "org": {
     "icon": "personfield.png",
-    "text": "人员",
-    "className": "Personfield"
+    "text": "人员组织",
+    "className": "Org"
   },
   "calendar": {
     "icon": "calendar.png",
@@ -88,15 +93,15 @@
     "icon": "checkbox.png",
     "text": "多选框",
     "className": "Checkbox"
- }
-//  "widget": {
-//    "icon": "subpage.png",
-//    "text": "部件",
-//    "className": "Widget"
-//  },
-//  "widgetmodules": {
-//    "icon": "subpage.png",
-//    "text": "部件元素",
-//    "className": "Widgetmodules"
-//  }
+ },
+  "widget": {
+    "icon": "subpage.png",
+    "text": "部件",
+    "className": "Widget"
+  },
+  "widgetmodules": {
+    "icon": "subpage.png",
+    "text": "部件元素",
+    "className": "Widgetmodules"
+  }
 }

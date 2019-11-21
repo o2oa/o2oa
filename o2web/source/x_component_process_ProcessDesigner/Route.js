@@ -1126,6 +1126,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
                 this.loadScriptText();
                 this.loadConditionInput();
                 this.loadFormSelect();
+                this.loadOrgEditor();
             }else{
                 this.propertyContent.setStyle("display", "block");
             }

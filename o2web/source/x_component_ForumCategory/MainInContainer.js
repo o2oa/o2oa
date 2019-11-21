@@ -16,17 +16,17 @@
 
 MWF.xApplication.ForumCategory = MWF.xApplication.ForumCategory || {};
 MWF.xApplication.ForumCategory.options = MWF.xApplication.ForumCategory.options || {};
-MWF.xDesktop.requireApp("ForumCategory", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("ForumCategory", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("ForumCategory", "Main", null, false);
 MWF.xApplication.ForumCategory.MainInContainer = new Class({
     Extends: MWF.xApplication.ForumCategory.Main,
     Implements: [Options, Events],
     options: {
-        "style": "default",
+        "style": "default" ,
         "name": "ForumCategory",
         "naviMode" : false
     },
-    initialize: function(desktop, options, container, content, scrollNode){
+    initialize: function(desktop, options, container, content, scrollNode ){
         this.setOptions(options);
         this.desktop = desktop;
         this.container = container;

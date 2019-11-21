@@ -30,11 +30,21 @@
 		  <tr>
 		    <td class="editTableTitle">选择类型:</td>
 		    <td class="editTableValue">
-		    	<input type="radio" name="selectType" value="datetime" text{($.selectType=='datetime')?'checked':''}/>日期时间
-		    	<input type="radio" name="selectType" value="date" text{($.selectType=='date')?'checked':''}/>仅日期
-		    	<input type="radio" name="selectType" value="time" text{($.selectType=='time')?'checked':''}/>仅时间
+		    	<input type="radio" name="selectType" text{($.selectType=='datetime')?'checked':''} value="datetime"
+                       onclick="if (this.checked){ $('text{$.pid}isSelectSecondTr').setStyle('display', '')}"/>日期时间
+		    	<input type="radio" name="selectType"  text{($.selectType=='date')?'checked':''} value="date"
+                       onclick="if (this.checked){ $('text{$.pid}isSelectSecondTr').setStyle('display', 'none')}"/>仅日期
+		    	<input type="radio" name="selectType" text{($.selectType=='time')?'checked':''} value="time"
+                       onclick="if (this.checked){ $('text{$.pid}isSelectSecondTr').setStyle('display', '')}"/>仅时间
 		    </td>
 		  </tr>
+        <tr id="text{$.pid}isSelectSecondTr" style="display: text{($.selectType=='date')?'none':''};">
+            <td class="editTableTitle">是否选择秒: </td>
+            <td class="editTableValue">
+                <input type="radio" name="isSelectSecond" value="true" text{($.isSelectSecond)?'checked':''}/>是
+                <input type="radio" name="isSelectSecond" value="false" text{(!$.isSelectSecond)?'checked':''}/>否
+            </td>
+        </tr>
 		  <tr>
 		    <td class="editTableTitle">格式化:</td>
 		    <td class="editTableValue"><input type="text" name="format" value="text{$.format}" class="editTableInput"/></td>

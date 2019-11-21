@@ -294,14 +294,15 @@
         });
 
         res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.setHeader("Accept", "text/html,application/json,*/*");
         if (window.layout) {
             if (layout["debugger"]){
                 res.setHeader("x-debugger", "true");
             }
-            if (layout.session){
-                if (layout.session.token) {
-                    res.setHeader("x-token", layout.session.token);
-                    res.setHeader("authorization", layout.session.token);
+            if (layout.session && layout.session.user){
+                if (layout.session.user.token) {
+                    res.setHeader("x-token", layout.session.user.token);
+                    res.setHeader("authorization", layout.session.user.token);
                 }
             }
         }
@@ -382,6 +383,11 @@
         }
         return obj;
     };
+    var _txt = function(v){
+        var t = v.replace(/\</g, "&lt;");
+        t = t.replace(/\</g, "&gt;");
+        return t;
+    };
 
     this.o2.Class = _Class;
     this.o2.require = _require;
@@ -391,6 +397,7 @@
     this.o2.restful = _restful;
     this.o2.release = _release;
     this.o2.defineProperties = _defineProperties;
+    this.o2.txt = _txt;
 
     Object.repeatArray = function(o, count){
         var arr = [];

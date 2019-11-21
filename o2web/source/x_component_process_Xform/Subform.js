@@ -123,20 +123,36 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
     getSubform: function(callback){
         if (this.json.subformType==="script"){
             if (this.json.subformScript.code){
-                var formNome = this.form.Macro.exec(this.json.subformScript.code, this);
-                if (formNome){
-                    var app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
-                    MWF.Actions.get("x_processplatform_assemble_surface").getForm(formNome, app, function(json){
-                        this.getSubformData(json.data);
+                var data = this.form.Macro.exec(this.json.subformScript.code, this);
+                if (data){
+                    var formName, app;
+                    if( typeOf( data ) === "string" ){
+                        formName = data;
+                    }else{
+                        if( data.application )app = data.application;
+                        if( data.subform )formName = data.subform;
+                    }
+                    if( formName ){
+                        if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                        MWF.Actions.get("x_processplatform_assemble_surface").getForm(formName, app, function(json){
+                            this.getSubformData(json.data);
+                            if (callback) callback();
+                        }.bind(this));
+                    }else{
                         if (callback) callback();
-                    }.bind(this));
+                    }
                 }else{
                     if (callback) callback();
                 }
             }
         }else{
             if (this.json.subformSelected && this.json.subformSelected!=="none"){
-                var app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                var app;
+                if( this.json.subformAppSelected ){
+                    app = this.json.subformAppSelected;
+                }else{
+                    app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                }
                 MWF.Actions.get("x_processplatform_assemble_surface").getForm(this.json.subformSelected, app, function(json){
                     this.getSubformData(json.data);
                     if (callback) callback();
@@ -147,6 +163,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
         }
     },
     getSubformData: function(data){
+        if( !data || typeOf(data)!=="object" )return;
         var subformDataStr = null;
         if (this.form.options.mode !== "Mobile"){
             subformDataStr = data.data;

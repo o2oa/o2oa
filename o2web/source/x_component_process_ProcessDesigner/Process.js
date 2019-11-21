@@ -25,6 +25,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		
 		this.designer = designer;
 		this.process = process;
+		this.process.projectionData = (process.project) ? JSON.parse(process.project) : null;
 		this.paper = paper;
 
 		if(this.designer.application) this.process.applicationName = this.designer.application.name;
@@ -704,16 +705,45 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
     loadActivity: function(c, data, children, callback){
         activity = new MWF.APPPD.Activity[c](data, this);
         activity.load(callback);
-        children[data.id] = activity;
+		if (c==="begin"){
+			this.begin = activity;
+		}else{
+			children[data.id] = activity;
+		}
+
         this.activitys.push(activity);
     },
 	destroy: function(){
 		this.paper.remove();
 	},
-	
+	checkActivityEmptyRouteList: function(activitys){
+		if (activitys && activitys.length){
+			activitys.each(function(a){
+				if (a.routeList) a.routeList = a.routeList.filter(function(n){return !!n;});
+			});
+		}
+	},
+	checkEmptyRouteList: function(){
+		this.checkActivityEmptyRouteList(this.process.endList);
+		this.checkActivityEmptyRouteList(this.process.cancelList);
+		this.checkActivityEmptyRouteList(this.process.manualList);
+		this.checkActivityEmptyRouteList(this.process.conditionList);
+		this.checkActivityEmptyRouteList(this.process.choiceList);
+		this.checkActivityEmptyRouteList(this.process.splitList);
+		this.checkActivityEmptyRouteList(this.process.parallelList);
+		this.checkActivityEmptyRouteList(this.process.mergeList);
+		this.checkActivityEmptyRouteList(this.process.embedList);
+		this.checkActivityEmptyRouteList(this.process.delayList);
+		this.checkActivityEmptyRouteList(this.process.invokeList);
+		this.checkActivityEmptyRouteList(this.process.serviceList);
+		this.checkActivityEmptyRouteList(this.process.agentList);
+		this.checkActivityEmptyRouteList(this.process.messageList);
+	},
 	save: function(callback){
         if (!this.isSave){
             this.isSave = true;
+            //check empty routeList
+			this.checkEmptyRouteList();
             this.designer.actions.saveProcess(this.process, function(responseJSON){
                 this.isSave = false;
                 this.process.isNewProcess = false;

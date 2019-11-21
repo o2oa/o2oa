@@ -1085,7 +1085,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
     options: {
         "style": "default",
         "popupStyle" : "o2platformSignup",
-        "width": "900",
+        "width": "910",
         "height": "620",
         "hasTop": true,
         "hasIcon": false,
@@ -1097,6 +1097,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         "closeAction": true
     },
     _createTableContent: function () {
+        var self = this;
 
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
 
@@ -1106,7 +1107,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         }.bind(this), null ,false);
 
         this.formTableContainer.setStyles({
-            "width" : "900px",
+            "width" : "890px",
             "margin-top" : "50px"
         });
 
@@ -1150,7 +1151,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         if( signUpMode === "captcha" ){
             this.setCaptchaPic();
         }
-        this.createPasswordStrengthNode();
+        //this.createPasswordStrengthNode();
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
@@ -1197,12 +1198,14 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
                     password : { text: this.lp.password, type : "password", className : "inputPassword",
                         notEmpty : true, defaultValueAsEmpty: true, emptyTip: this.lp.inputYourPassword,
                         validRule : { passwordIsWeak: function( value, it ){
-                            if( this.getPasswordLevel( it.getValue() ) > 3 )return true;
+                            return !this.getPasswordRule( it.getValue() );
                         }.bind(this)},
-                        validMessage : { passwordIsWeak : this.lp.passwordIsSimple },
+                        validMessage : { passwordIsWeak : function(){
+                            return self.getPasswordRule( this.getValue() );
+                        }}, //this.lp.passwordIsSimple
                         event : {
                             focus : function( it ){  if( "password" === it.getValue() )it.setValue(""); if( !it.warningStatus )it.getElements()[0].setStyles( this.css.inputActive ); }.bind(this),
-                            keyup : function(it){ this.pwStrength(it.getValue()) }.bind(this),
+                            //keyup : function(it){ this.pwStrength(it.getValue()) }.bind(this),
                             blur: function (it) { it.verify( true ) }.bind(this)
                         }, onEmpty : function( it ){
                             it.getElements()[0].setStyles( this.css.inputEmpty );
@@ -1391,65 +1394,72 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
             }
         }.bind(this), 1000 )
     },
-    createPasswordStrengthNode : function(){
-        var passwordStrengthArea = this.formTableArea.getElement("[item='passwordStrengthArea']");
-
-        var lowNode = new Element( "div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.lowColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( lowNode );
-        this.lowTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.weak }).inject( lowNode );
-
-        var middleNode = new Element( "div" , {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.middleColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( middleNode );
-        this.middleTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.middle }).inject( middleNode );
-
-        var highNode = new Element("div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.highColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( highNode );
-        this.highTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.high }).inject( highNode );
-    },
-    getPasswordLevel: function( password ){
-        // Level（级别）
-        //  •0-3 : [easy]
-        //  •4-6 : [midium]
-        //  •7-9 : [strong]
-        //  •10-12 : [very strong]
-        //  •>12 : [extremely strong]
-        var level = 0;
+    getPasswordRule: function( password ){
+        var str = "";
         this.actions.checkRegisterPassword( password, function( json ){
-            level = json.data.value;
+            str = json.data.value || "";
         }.bind(this), null, false );
-        return level;
+        return str;
     },
-    pwStrength: function(pwd){
-        this.lowColorNode.setStyles( this.css.passwordStrengthColor );
-        this.lowTextNode.setStyles( this.css.passwordStrengthText );
-        this.middleColorNode.setStyles( this.css.passwordStrengthColor );
-        this.middleTextNode.setStyles( this.css.passwordStrengthText );
-        this.highColorNode.setStyles( this.css.passwordStrengthColor );
-        this.highTextNode.setStyles( this.css.passwordStrengthText );
-        if (!pwd){
-        }else{
-            //var level = this.checkStrong(pwd);
-            var level = this.getPasswordLevel(pwd);
-            switch(level) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
-                    this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
-                    break;
-                case 4:
-                case 5:
-                case 6:
-                    this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
-                    this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
-                    break;
-                default:
-                    this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
-                    this.highTextNode.setStyles( this.css.passwordStrengthText_current );
-            }
-        }
-    },
+    //createPasswordStrengthNode : function(){
+    //    var passwordStrengthArea = this.formTableArea.getElement("[item='passwordStrengthArea']");
+    //
+    //    var lowNode = new Element( "div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.lowColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( lowNode );
+    //    this.lowTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.weak }).inject( lowNode );
+    //
+    //    var middleNode = new Element( "div" , {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.middleColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( middleNode );
+    //    this.middleTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.middle }).inject( middleNode );
+    //
+    //    var highNode = new Element("div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.highColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( highNode );
+    //    this.highTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.high }).inject( highNode );
+    //},
+    //getPasswordLevel: function( password ){
+    //    // Level（级别）
+    //    //  •0-3 : [easy]
+    //    //  •4-6 : [midium]
+    //    //  •7-9 : [strong]
+    //    //  •10-12 : [very strong]
+    //    //  •>12 : [extremely strong]
+    //    var level = 0;
+    //    this.actions.checkRegisterPassword( password, function( json ){
+    //        level = json.data.value;
+    //    }.bind(this), null, false );
+    //    return level;
+    //},
+    //pwStrength: function(pwd){
+    //    this.lowColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.lowTextNode.setStyles( this.css.passwordStrengthText );
+    //    this.middleColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.middleTextNode.setStyles( this.css.passwordStrengthText );
+    //    this.highColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.highTextNode.setStyles( this.css.passwordStrengthText );
+    //    if (!pwd){
+    //    }else{
+    //        //var level = this.checkStrong(pwd);
+    //        var level = this.getPasswordLevel(pwd);
+    //        switch(level) {
+    //            case 0:
+    //            case 1:
+    //            case 2:
+    //            case 3:
+    //                this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
+    //                this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
+    //                break;
+    //            case 4:
+    //            case 5:
+    //            case 6:
+    //                this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
+    //                this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
+    //                break;
+    //            default:
+    //                this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
+    //                this.highTextNode.setStyles( this.css.passwordStrengthText_current );
+    //        }
+    //    }
+    //},
     gotoLogin: function(){
         this.explorer.openLoginForm( {}, function(){ window.location.reload(); } );
         this.close();
@@ -1508,7 +1518,7 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
     options: {
         "style": "default",
         "popupStyle" : "o2platformSignup",
-        "width": "700",
+        "width": "710",
         "height": "450",
         "hasTop": true,
         "hasIcon": false,
@@ -1633,6 +1643,8 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         }.bind(this), true);
     },
     loadStepForm_2 : function(){
+        var self = this;
+
         html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableTitle' lable='password' width='80'></td>" +
             "   <td styles='formTableValue' item='password' width='350'></td>" +
@@ -1657,13 +1669,16 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
                     password : { text: this.lp.setNewPassword, type : "password", className : "inputPassword",
                         notEmpty : true, defaultValueAsEmpty: true, emptyTip: this.lp.inputYourPassword,
                         validRule : { passwordIsWeak: function( value, it ){
-                            if( this.getPasswordLevel( it.getValue() ) > 3 )return true;
+                            return !this.getPasswordRule( it.getValue() );
                         }.bind(this)},
-                        validMessage : { passwordIsWeak : this.lp.passwordIsWeak },
+                        validMessage : { passwordIsWeak : function(){
+                            return self.getPasswordRule( this.getValue() );
+                        }},
                         event : {
                             focus : function( it ){  if( "password" === it.getValue() )it.setValue(""); if( !it.warningStatus )it.getElements()[0].setStyles( this.css.inputActive ); }.bind(this),
-                            blur : function( it ){ if( !it.warningStatus )it.getElements()[0].setStyles( this.css.inputPassword ); }.bind(this),
-                            keyup : function(it){ this.pwStrength(it.getValue()) }.bind(this)
+                            blur : function( it ){ it.verify(true); }.bind(this)
+                            //if( !it.warningStatus )it.getElements()[0].setStyles( this.css.inputPassword );
+                            //keyup : function(it){ this.pwStrength(it.getValue()) }.bind(this)
                         }, onEmpty : function( it ){
                             it.getElements()[0].setStyles( this.css.inputEmpty );
                         }.bind(this), onUnempty : function( it ){
@@ -1692,7 +1707,7 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
             this.stepForm_2.load();
         }.bind(this), true);
 
-        this.createPasswordStrengthNode();
+        //this.createPasswordStrengthNode();
     },
     loadStepForm_3: function(){
         this.stepNode_3 = new Element("div", {
@@ -1849,66 +1864,73 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
             }
         }.bind(this), 1000 )
     },
-    createPasswordStrengthNode : function(){
-        var passwordStrengthArea = this.formTableArea.getElement("[item='passwordStrengthArea']");
-
-        var lowNode = new Element( "div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.lowColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( lowNode );
-        this.lowTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.weak }).inject( lowNode );
-
-        var middleNode = new Element( "div" , {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.middleColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( middleNode );
-        this.middleTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.middle }).inject( middleNode );
-
-        var highNode = new Element("div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
-        this.highColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( highNode );
-        this.highTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.high }).inject( highNode );
-    },
-    getPasswordLevel: function( password ){
-        /*Level（级别）
-         •0-3 : [easy]
-         •4-6 : [midium]
-         •7-9 : [strong]
-         •10-12 : [very strong]
-         •>12 : [extremely strong]
-         */
-        var level = 0;
+    getPasswordRule: function( password ){
+        var str = "";
         this.actions.checkRegisterPassword( password, function( json ){
-            level = json.data.value;
+            str = json.data.value || "";
         }.bind(this), null, false );
-        return level;
+        return str;
     },
-    pwStrength: function(pwd){
-        this.lowColorNode.setStyles( this.css.passwordStrengthColor );
-        this.lowTextNode.setStyles( this.css.passwordStrengthText );
-        this.middleColorNode.setStyles( this.css.passwordStrengthColor );
-        this.middleTextNode.setStyles( this.css.passwordStrengthText );
-        this.highColorNode.setStyles( this.css.passwordStrengthColor );
-        this.highTextNode.setStyles( this.css.passwordStrengthText );
-        if (!pwd){
-        }else{
-            //var level = this.checkStrong(pwd);
-            var level = this.getPasswordLevel(pwd);
-            switch(level) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
-                    this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
-                    break;
-                case 4:
-                case 5:
-                case 6:
-                    this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
-                    this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
-                    break;
-                default:
-                    this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
-                    this.highTextNode.setStyles( this.css.passwordStrengthText_current );
-            }
-        }
-    },
+    //createPasswordStrengthNode : function(){
+    //    var passwordStrengthArea = this.formTableArea.getElement("[item='passwordStrengthArea']");
+    //
+    //    var lowNode = new Element( "div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.lowColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( lowNode );
+    //    this.lowTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.weak }).inject( lowNode );
+    //
+    //    var middleNode = new Element( "div" , {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.middleColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( middleNode );
+    //    this.middleTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.middle }).inject( middleNode );
+    //
+    //    var highNode = new Element("div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+    //    this.highColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( highNode );
+    //    this.highTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.high }).inject( highNode );
+    //},
+    //getPasswordLevel: function( password ){
+    //    /*Level（级别）
+    //     •0-3 : [easy]
+    //     •4-6 : [midium]
+    //     •7-9 : [strong]
+    //     •10-12 : [very strong]
+    //     •>12 : [extremely strong]
+    //     */
+    //    var level = 0;
+    //    this.actions.checkRegisterPassword( password, function( json ){
+    //        level = json.data.value;
+    //    }.bind(this), null, false );
+    //    return level;
+    //},
+    //pwStrength: function(pwd){
+    //    this.lowColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.lowTextNode.setStyles( this.css.passwordStrengthText );
+    //    this.middleColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.middleTextNode.setStyles( this.css.passwordStrengthText );
+    //    this.highColorNode.setStyles( this.css.passwordStrengthColor );
+    //    this.highTextNode.setStyles( this.css.passwordStrengthText );
+    //    if (!pwd){
+    //    }else{
+    //        //var level = this.checkStrong(pwd);
+    //        var level = this.getPasswordLevel(pwd);
+    //        switch(level) {
+    //            case 0:
+    //            case 1:
+    //            case 2:
+    //            case 3:
+    //                this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
+    //                this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
+    //                break;
+    //            case 4:
+    //            case 5:
+    //            case 6:
+    //                this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
+    //                this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
+    //                break;
+    //            default:
+    //                this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
+    //                this.highTextNode.setStyles( this.css.passwordStrengthText_current );
+    //        }
+    //    }
+    //},
     gotoLogin: function(){
         this.explorer.openLoginForm(  {}, function(){ window.location.reload(); }  );
         this.close();

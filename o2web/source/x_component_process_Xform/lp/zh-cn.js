@@ -13,6 +13,9 @@ MWF.xApplication.process.Xform.LP = {
     "workProcess": "继续流转",
     "close": "关闭",
 
+    "noIdentitySelectRange" : "无法确定身份的选择范围",
+    "noIdentityDutySelectRange" : "无法确定职务的选择范围",
+    "noUnitSelectRange" : "无法确定组织的选择范围",
     "noSelectRange": "无法确定选择范围",
     "noSelectType": "未设置选择类型",
     "selectRoute": "选择路由",
@@ -139,6 +142,12 @@ MWF.xApplication.process.Xform.LP = {
 
     "subformUniqueError" : "该表单重复嵌入了同一子表单，请联系管理员！",
     "moduleUniqueError" : "该表单存在重名的字段，请联系管理员！",
+
+    "selectEmpower" : "授权人员替换选择",
+    "empowerDlgText" : "下列人员对工作进行了授权，选择后文件将发送给被授权人，取消选择后文件将发送给授权者本人",
+    "empowerTo" : "授权给",
+    "selectAll" : "全选",
+    "computePage": "正在计算分页，请稍候……",
 
     "documentEditor": {
         "copies": "",

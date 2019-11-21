@@ -40,7 +40,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         //this.dragCategory = false;
         //this.currentCategory = null;
         //this.loadCategoryQueue = 0;
-
+        this.categoryList = [];
         this.deleteMarkItems = [];
         this.selectMarkItems = [];
     },
@@ -64,7 +64,9 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
 
         this.createTitleElementNode();
         this.createSearchElementNode();
+
         this.toolbarNode.inject(this.node);
+        this.createCategoryElementNode();
     },
     createIconElementNode: function(){
         this.iconElementNode = new Element("div", {
@@ -136,6 +138,11 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         //});
         //this.searchElementButtonNode.addEvent("click", function(){this.searchElement();}.bind(this));
     },
+    createCategoryElementNode: function(){
+        this.categoryElementNode = new Element("div", {
+            "styles": this.css.categoryElementNode
+        }).inject(this.node);
+    },
     searchElement: function(){
         //-----------------------------------------
         //-----------------------------------------
@@ -194,8 +201,12 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         this._loadItemDataList(function(json){
             if (json.data.length){
                 json.data.each(function(item){
-                    var itemObj = this._getItemObject(item);
-                    itemObj.load()
+                    if (this.categoryList.indexOf(item.category) === -1) if (item.category) this.categoryList.push(item.category);
+                    if (!this.elementCategory || (item.category === this.elementCategory)){
+                        var itemObj = this._getItemObject(item);
+                        itemObj.load();
+                    }
+
                 }.bind(this));
             }else{
                 var noElementNode = new Element("div.noElementNode", {
@@ -206,9 +217,29 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
                     this._createElement(e);
                 }.bind(this));
             }
+            this.loadCategoryList();
         }.bind(this));
     },
-
+    loadCategoryList: function(){
+        this.categoryElementNode.empty();
+        var node = new Element("div", {"styles": this.css.categoryElementItemAllNode, "text": MWF.xApplication.process.ProcessManager.LP.all}).inject(this.categoryElementNode);
+        if (!this.elementCategory) node.setStyles(this.css.categoryElementItemAllNode_current);
+        this.categoryList.each(function(category){
+            node = new Element("div", {"styles": this.css.categoryElementItemNode, "text": category}).inject(this.categoryElementNode);
+            if (this.elementCategory===category){
+                node.setStyles(this.css.categoryElementItemNode_current);
+            }
+        }.bind(this));
+        var categoryItems = this.categoryElementNode.getChildren();
+        categoryItems.addEvent("click", function(e){
+            var text = e.target.get("text");
+            this.elementCategory = (text===MWF.xApplication.process.ProcessManager.LP.all) ? "" : text;
+            // categoryItems.setStyles(this.css.categoryElementItemNode);
+            // this.categoryElementNode.getFirst().setStyles(this.css.categoryElementItemAllNode);
+            // e.target.setStyles((this.elementCategory) ? this.css.categoryElementItemNode_current : this.css.categoryElementItemAllNode_current);
+            this.reload();
+        }.bind(this));
+    },
     showDeleteAction: function(){
         if (!this.deleteItemsAction){
             this.deleteItemsAction = new Element("div", {

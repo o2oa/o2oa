@@ -1,5 +1,5 @@
-MWF.xDesktop.notice = function(type, where, content, target, offset){
-	var noticeTarget = target || layout.desktop.desktopNode;
+MWF.xDesktop.notice = function(type, where, content, target, offset, option){
+    var noticeTarget = target || layout.desktop.desktopNode;
 
     var off = offset;
     if (!off){
@@ -9,14 +9,18 @@ MWF.xDesktop.notice = function(type, where, content, target, offset){
         };
     }
 
-	new mBox.Notice({
-		type: type,
-		position: where,
-		move: false,
-		target: noticeTarget,
-		offset: off,
-		content: content
-	});
+    var options = {
+        type: type,
+        position: where,
+        move: false,
+        target: noticeTarget,
+        offset: off,
+        content: content
+    };
+    if( option && typeOf(option) === "object" ){
+        options = Object.merge( options, option );
+    }
+    new mBox.Notice(options);
 };
 MWF.xDesktop.loadPortal =  function(portalId){
     layout.desktop.openApplication(null, "portal.Portal", {
@@ -40,7 +44,7 @@ MWF.xDesktop.loadPortal =  function(portalId){
             });
         }
     }, null, true);
-},
+};
 MWF.name = {
     "cns": function(names){
         var n = [];
@@ -83,12 +87,13 @@ MWF.name = {
 };
 MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel, callback, mask, style){
     MWF.require("MWF.xDesktop.Dialog", function(){
-        var size = layout.desktop.node.getSize();
+        var container = layout.desktop.node || $(document.body);
+        var size = container.getSize();
         var x = 0;
         var y = 0;
 
         if (typeOf(e)=="element"){
-            var position = e.getPosition(layout.desktop.node);
+            var position = e.getPosition(container);
             x = position.x;
             y = position.y;
         }else{
@@ -101,7 +106,7 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
             }
 
             if (e.target){
-                var position = e.target.getPosition(layout.desktop.node);
+                var position = e.target.getPosition(container);
                 x = position.x;
                 y = position.y;
             }
@@ -428,14 +433,17 @@ MWF.org = {
         };
         var woPerson = data.woPerson;
         if (!data.woPerson){
-            MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-            this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control_alpha");
-            var uri = "/jaxrs/person/{flag}";
-            uri = uri.replace("{flag}", data.person);
+            //MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+            //this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control");
+            //var uri = "/jaxrs/person/{flag}";
+            //uri = uri.replace("{flag}", data.person);
 
-            this.action.invoke({"uri": uri, "success": function(json){
-                woPerson = json.data;
-            }.bind(this)});
+            //this.action.invoke({"uri": uri, "success": function(json){
+            //    woPerson = json.data;
+            //}.bind(this), "async":false});
+            MWF.Actions.get("x_organization_assemble_control").getPerson(data.person, function(json){
+                woPerson = json.data
+            }, null, false);
         }
         rData.personName = woPerson.name;
         rData.personEmployee = woPerson.employee;

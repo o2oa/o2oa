@@ -44,6 +44,7 @@
   "listAllForm" : {"uri":"/jaxrs/form/list/all"},
   "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
   "getForm": {"uri": "/jaxrs/form/{id}"},
+  "getFormWithColumn": {"uri": "/jaxrs/form/{formFlag}/appinfo/{appFlag}"},
   "addForm": {"uri": "/jaxrs/form","method": "POST"},
   "removeForm": {"uri": "/jaxrs/form/{id}","method": "DELETE"},
   "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
@@ -137,6 +138,7 @@
 
   //---document--
   "getDocument" : {"uri" : "/jaxrs/document/{id}"},
+  "getDocumentControl" : {"uri" : "/jaxrs/document/{id}/control"},
   "viewDocument" : {"uri" : "/jaxrs/document/{id}/view"},
   "getDocumentByAnonymous" : {"uri" : "/jaxrs/anonymous/document/{id}/view"},
   "addDocument": {"uri" : "/jaxrs/document", "method": "POST"},
@@ -159,8 +161,11 @@
 
   //attachment为文档中的附件
   "listAttachment" : {"uri":"/jaxrs/fileinfo/list/document/{documentid}"},
+  "listAttachmentByAnonymous" : {"uri":"/jaxrs/anonymous/fileinfo/list/document/{documentId}"},
   "getAttachment": {"uri": "/jaxrs/fileinfo/{id}/document/{documentid}"},
   "deleteAttachment": {"uri": "/jaxrs/fileinfo/{id}", "method": "DELETE"},
+
+  "configAttachment": {"uri": "/jaxrs/fileinfo/edit/{id}/doc/{docId}", "method": "PUT"},
 
   "uploadAttachment": {"uri": "/jaxrs/fileinfo/upload/document/{id}", "method": "POST", "enctype": "formData"},
   "replaceAttachment": {"uri": "/jaxrs/fileinfo/update/document/{documentid}/attachment/{id}", "method": "POST", "enctype": "formData"},

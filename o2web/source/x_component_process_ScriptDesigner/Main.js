@@ -474,6 +474,13 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
         MWF.require("MWF.widget.Tab", function(){
             this.scriptTab = new MWF.widget.Tab(this.designNode, {"style": "script"});
             this.scriptTab.load();
+
+            this.addEvent("queryClose", function(){
+                debugger;
+                while (this.scriptTab.pages.length){
+                    this.scriptTab.pages[0].closeTab();
+                }
+            }.bind(this));
         }.bind(this), false);
 
 

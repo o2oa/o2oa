@@ -146,9 +146,19 @@
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>允许
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
-                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
-                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
-                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">操作条:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>隐藏编辑操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('read')!=-1)?'checked':''} type="checkbox" value="read"/>隐藏阅读操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('list')!=-1)?'checked':''} type="checkbox" value="list"/>隐藏布局操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('config')!=-1)?'checked':''} type="checkbox" value="config"/>隐藏设置操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>隐藏模式操作<br/>
                 </td>
             </tr>
         </table>

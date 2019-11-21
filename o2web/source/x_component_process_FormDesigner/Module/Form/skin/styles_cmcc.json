@@ -3,9 +3,7 @@
   "form": {
     "styles":{
       "background-color": "#f0f0f0"
-    },
-    "confirmStyle" : "cmcc_confirm",
-    "dialogStyle" : "cmcc"
+    }
   },
   "label": {
     "banner": {
@@ -74,7 +72,7 @@
       }
     },
     "section": {
-      "name": "区段",
+      "name": "区段标题",
       "styles": {
         "background-color": "#f7f7f7",
         "height": "35px",
@@ -362,6 +360,23 @@
     }
   },
   "orgfield": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "30px",
+      "line-height": "30px"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "min-height": "30px",
+      "color": "#666",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "org": {
     "styles": {
       "border-bottom": "0px solid #ccc",
       "border-top": "0px",

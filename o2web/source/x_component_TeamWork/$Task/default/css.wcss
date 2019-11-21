@@ -6,7 +6,6 @@
         "border-bottom":"1px solid #bebebe"
     },
     topImage:{
-
         "float": "left",
         "background": "url(/x_component_TeamWork/$Task/default/icon/document.png) no-repeat center"
     },
@@ -17,7 +16,7 @@
         "max-width":"700px",
         "overflow": "hidden",
         "white-space": "nowrap",
-        "text-overflow": "ellipsis",
+        "text-overflow": "ellipsis"
     },
     topIconContainer:{
         "float":"right",
@@ -41,8 +40,38 @@
         "margin-top":"8px",
         "background":"url(/x_component_TeamWork/$Task/default/icon/icon_more.png) no-repeat center"
     },
-    contentLayout:{
+    topMoreTitle:{
+        "height":"40px",
+        "line-height":"40px",
+        "width":"100%",
+        "text-align":"center",
+        "font-size":"16px",
+        "color":"#333333",
+        "border-bottom":"1px solid #bebebe"
+    },
+    topMoreItem:{
+        "cursor":"pointer",
+        "height":"40px",
+        "width":"100%",
+        "font-size":"14px",
+        "color":"#666666"
+    },
+    topMoreItemIcon:{
+        "float":"left",
+        "height":"30px",
+        "width":"30px",
+        "margin-top":"5px",
+        "margin-left":"10px"
+    },
+    topMoreItemText:{
+        "float":"left",
+        "height":"40px",
+        "line-height":"40px"
+    },
 
+
+
+    contentLayout:{
         "width":"100%",
         "position":"absolute",
         "top":"40px",
@@ -51,14 +80,52 @@
         "overflow-y":"hidden"
     },
     taskInforContainer:{
+        "position":"relative",
         "float":"left",
         "height":"100%",
+        "overflow":"hidden",
         "width":"650px",
+        "font-size":"14px",
         "border-right":"1px solid #bebebe"
     },
+    taskInforLayout:{
+        "height":"100%"
+    },
+    taskInforContent:{
+        "overflow":"hidden",
+        "position":"absolute",
+        "top":"30px",
+        "left":"0px",
+        "right":"0px",
+        "bottom":"0px"
+    },
     taskActionBar:{
-        "height":"50px",
+        "height":"30px",
         "width":"100%"
+    },
+    taskActionParentContent:{
+        "float":"left",
+        "height":"100%",
+        "font-size":"14px",
+        "color":"#333333"
+    },
+    taskActionParentIcon:{
+        "float":"left",
+        "width":"30px",
+        "height":"40px",
+        "margin-left":"10px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_belong.png) no-repeat center"
+    },
+    taskActionParentText:{
+        "float":"left",
+        "margin-right":"10px",
+        "line-height":"40px"
+    },
+    taskActionParentValue:{
+        "float":"left",
+        "line-height":"40px",
+        "color":"#4A90E2",
+        "cursor":"pointer"
     },
     taskActionSave:{
         "float":"right",
@@ -90,7 +157,9 @@
         "color":"#666",
         "border":"1px solid #f5f5f5",
         "background-color":"#f5f5f5",
-        "border-radius":"4px"
+        "border-radius":"4px",
+        "outline":"none",
+        "resize":"none"
     },
     taskStatusContainer:{
         "width":"100%",
@@ -125,7 +194,6 @@
         "float":"left",
         "width":"24px",
         "height":"24px",
-        //"margin-top":"2px",
         "background":"url(/x_component_TeamWork/$Task/default/icon/icon_draft.png) no-repeat center"
     },
     taskStatusValueText:{
@@ -161,7 +229,6 @@
         "float":"left",
         "width":"24px",
         "height":"24px",
-        //"margin-top":"2px",
         "background":"url(/x_component_TeamWork/$Task/default/icon/icon_wcyd_xm_click.png) no-repeat center"
     },
     taskDutyAddText:{
@@ -217,25 +284,56 @@
         "border-radius":"4px"
     },
     taskRemarkContainer:{
+        "display":"flex",
         "width":"100%",
-        "height":"50px"
+        "min-height":"30px",
+        "margin-top":"10px"
     },
     taskRemarkIcon:{
         "float":"left",
         "width":"48px",
-        "height":"48px",
+        //"height":"48px",
         "margin-top":"2px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_remark.png) no-repeat center"
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_remark.png) no-repeat top center"
     },
     taskRemarkText:{
         "float":"left",
-        "line-height":"50px",
         "width":"80px"
     },
     taskRemarkValue:{
         "float":"left",
-        "line-height":"50px"
+        "border-radius":"4px",
+        //"min-height":"50px",
+        "width":"490px",
+        "height":"100%"
+    },
+    taskRemarkActionContainer:{
+        "width":"480px",
+        "height":"50px",
+    },
+    taskRemarkActionOk:{
+        "float":"right",
+        "width":"60px",
+        "height":"25px",
+        "line-height":"25px",
+        "margin-top":"10px",
+        "margin-left":"20px",
+        "color":"#ffffff",
+        "text-align":"center",
+        "cursor":"pointer",
+        "background-color":"#4A90E2",
+        "border-radius":"2px"
+    },
+    taskRemarkActionCancel:{
+        "float":"right",
+        "width":"60px",
+        "height":"25px",
+        "line-height":"25px",
+        "margin-top":"10px",
+        "color":"#999999",
+        "text-align":"center",
+        "cursor":"pointer"
     },
     taskPriorityContainer:{
         "width":"100%",
@@ -258,21 +356,402 @@
         "float":"left",
         "line-height":"50px"
     },
+    taskPriorityValueText:{
+        "width":"50px",
+        "height":"25px",
+        "line-height":"25px",
+        "text-align":"center",
+        "font-size":"14px",
+        "margin-top":"12px",
+        "color":"#999999",
+        "border":"1px solid #999999",
+        "border-radius":"4px",
+        "cursor":"pointer"
+    },
+    taskTagContainer:{
+        "margin-top":"10px",
+        "width":"100%",
+        "overflow":"auto",
+        "min-height":"50px"
+    },
+    taskTagIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_tag.png) no-repeat center top"
+    },
+    taskTagText:{
+        "cursor":"arrow",
+        "float":"left",
+        "width":"80px"
+    },
+    taskTagValue:{
+        "float":"left",
+        "width":"490px"
+    },
+    tagItemContainer:{
+        "float":"left",
+        "height":"25px",
+        "min-widht":"30px",
+        "color":"#ffffff",
+        "margin-right":"6px",
+        "margin-bottom":"6px",
+        "border-radius":"12px"
+    },
+    tagItemText:{
+        "float":"left",
+        "height":"25px",
+        "line-height":"25px",
+        "margin":"0 10px",
+        "max-width":"100px",
+        "overflow":"hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    tagItemClose:{
+        "float":"left",
+        "width":"20px",
+        "height":"20px",
+        "margin-top":"2px",
+        "cursor":"pointer",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_off_round_grey.png) no-repeat center"
+    },
+    taskTagAddText:{
+        "color":"#666666",
+        "cursor":"pointer"
+    },
+    taskTagAdd:{
+        "float":"left",
+        "width":"20px",
+        "height":"20px",
+        "cursor":"pointer",
+        "margin-top":"4px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_jia.png) no-repeat center"
+    },
+    taskExtFieldContainer:{
 
+    },
+    taskExtFieldItem:{
+        "width":"100%",
+        "height":"50px"
+    },
+    taskExtFieldIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"2px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_extend.png) no-repeat center"
+    },
+    taskExtFieldText:{
+        "float":"left",
+        "height":"50px",
+        "width":"80px"
+    },
 
+    taskAttachmentContainer:{
+        "width":"100%",
+        "min-height":"50px",
+        "margin-top":"10px",
+        "display":"flex"
+    },
+    taskAttachmentIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-top":"10px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_attachment.png) no-repeat top"
+    },
+    taskAttachmentText:{
+        "float":"left",
+        "margin-top":"10px",
+        "width":"80px"
+    },
+    taskAttachmentValue:{
+        "float":"left",
+        "width":"482px",
+        "line-height":"50px"
+    },
+    taskAttachmentListContainer:{
+        "color":"#666666",
+        "font-size":"14px",
+        "margin-top":"10px"
+    },
+    subTaskContainer:{
+        "color":"#666666",
+        "font-size":"14px",
+        "margin-top":"10px"
+    },
+    subTaskTitleContent:{
+        "height":"50px",
+        "width":"100%"
+    },
+    subTaskTitleIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_subtask.png) no-repeat center"
+    },
+    subTaskTitleText:{
+        "float":"left",
+        "height":"100%",
+        "line-height":"50px"
+    },
+    subTaskValueContent:{
+        "width":"588px",
+        "margin-left":"40px",
+        "border":"1px solid #dedede",
+        "border-radius":"4px",
+        "min-height":"40px"
+    },
+    subTaskItemContainer:{
+        "margin-top":"2px",
+        "width":"100%",
+        "height":"40px"
+    },
+    subTaskItemText:{
+        "float":"left",
+        "cursor":"pointer",
+        "border-radius":"4px",
+        "padding-left":"5px",
+        "height":"40px",
+        "line-height":"40px",
+        "width":"500px",
+        "margin-left":"15px",
+        "overflow":"hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    subTaskItemPerson:{
+        "float":"right",
+        "width":"30px",
+        "height":"30px",
+        "cursor":"pointer",
+        "margin-top":"5px",
+        "margin-right":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_wcyd_xm_click.png) no-repeat center"
+    },
+    subTaskAddContainer:{
+        "width":"100%"
+    },
+    subTaskNewContent:{
+        "cursor":"pointer",
+        "width":"100%",
+        "height":"40px"
+    },
+    subTaskNewIcon:{
+        "float":"left",
+        "width":"40px",
+        "height":"40px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_subtask_add.png) no-repeat center"
+    },
+    subTaskNewText:{
+        "float":"left",
+        "color":"#4A90E2",
+        "line-height":"40px"
+    },
+    subTaskNewContainer:{
 
-
+    },
+    subTaskNewValue:{
+        "width":"100%",
+        "height":"40px"
+    },
+    subTaskNewInput:{
+        "float":"left",
+        "width":"500px",
+        "height":"30px",
+        "color":"#666666",
+        "margin-top":"4px",
+        "margin-left":"12px",
+        "border":"1px solid #dedede",
+        "border-radius":"4px",
+        "text-indent":"5px"
+    },
+    subTaskNewPerson:{
+        "cursor":"pointer",
+        "float":"right",
+        "width":"30px",
+        "height":"30px",
+        "margin-top":"5px",
+        "margin-right":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_wcyd_xm_click.png) no-repeat center"
+    },
+    subTaskNewAction:{
+        "width":"100%",
+        "height":"40px"
+    },
+    subTaskNewOK:{
+        "cursor":"pointer",
+        "float":"left",
+        "height":"30px",
+        "line-height":"30px",
+        "color":"#ffffff",
+        "width":"75px",
+        "margin-top":"4px",
+        "margin-left":"20px",
+        "text-align":"center",
+        "border-radius":"2px",
+        "background-color":"#4A90E2"
+    },
+    subTaskNewCancel:{
+        "cursor":"pointer",
+        "float":"left",
+        "height":"30px",
+        "margin-top":"4px",
+        "margin-left":"346px",
+        "line-height":"30px",
+        "width":"75px",
+        "text-align":"center",
+        "border-radius":"2px"
+    },
 
     taskDetailLayout:{
         "float":"left",
         "height":"100%",
-        "width":"340px"
+        "width":"340px",
+        "position":"relative"
     },
-
-    bottomLayout:{
+    taskParticipateContainer:{
+        "display":"inline-block",
+        "width":"100%",
+        "font-size":"14px",
+        "color":"#666666",
+        "border-bottom":"1px solid #bebebe"
+    },
+    participateTitle:{
+        "margin-left":"20px",
+        "height":"50px"
+    },
+    participateTitleText:{
+        "float":"left",
+        "height":"50px",
+        "line-height":"50px"
+    },
+    participateTitleIcon:{
+        "float":"left",
+        "width":"24px",
+        "height":"24px",
+        "margin-top":"13px",
+        "margin-left":"10px",
+        "cursor":"pointer",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_wcyd_xm_click.png) no-repeat center"
+    },
+    participateValue:{
+        "margin-left":"20px",
+        "height":"50px",
+        "overflow":"hidden"
+    },
+    taskDynamicContainer:{
+        "position":"absolute",
+        "left":"0px",
+        "top":"100px",
+        "bottom":"120px",
+        "width":"100%"
+    },
+    dynamicBar:{
+        "cursor":"pointer",
+        "width":"120px",
         "height":"40px"
     },
+    dynamicText:{
+        "margin-left":"20px",
+        "float":"left",
+        "line-height":"40px"
+    },
+    dynamicIcon:{
+        "float":"left",
+        "margin-top":"10px",
+        "margin-left":"4px",
+        "width":"24px",
+        "height":"24px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_dw.png) no-repeat center"
+    },
+    dynamicContent:{
+        "font-size":"12px",
+        "position":"absolute",
+        "top":"40px",
+        "left":"0px",
+        "bottom":"0px",
+        "right":"0px",
+        "margin-bottom":"10px",
+        "overflow-y":"auto"
+    },
+    dynamicItem:{
+        "color":"#999999",
+        "min-height":"10px",
+        "margin-top":"25px"
+    },
+    dynamicItemIcon:{
+        "width":"30px",
+        "height":"30px",
+        "margin-left":"10px",
+        "margin-top":"2px",
+        "margin-right":"10px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_attachment.png) no-repeat center top",
+        "float":"left"
+    },
+    dynamicItemText:{
+        "float":"left",
+        "width":"200px"
+    },
+    dynamicItemTime:{
+        "width":"60px",
+        "float":"right"
+    },
+    taskChatContainer:{
+        "position":"absolute",
+        "left":"0px",
+        //"top":"140px",
+        "bottom":"0px",
+        "width":"100%",
+        "height":"120px",
+        "border-top":"1px solid #dedede"
+    },
+    chatContent:{
+        "width":"100%",
+        "height":"80px"
+    },
+    chatTextarea:{
+        "color":"#999999",
+        "width":"330px",
+        "height":"70px",
+        "margin-top":"10px",
+        "margin-left":"10px",
+        "padding":"0",
+        "border":"0px",
+        "overflow":"auto",
+        "outline":"none",
+        "resize":"none"
+    },
 
+    chatBarContent:{
+        "height":"40px",
+        "width":"100%"
+    },
+    chatBarTool:{
+        "float":"left"
+    },
+    chatBarEmoji:{
+        "height":"24px",
+        "width":"24px",
+        "cursor":"pointer",
+        "margin-top":"8px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$Task/default/icon/icon_emoji.png) no-repeat center"
+    },
+    chatBarSend:{
+        "float":"right",
+        "cursor":"pointer",
+        "height":"40px",
+        "line-height":"40px",
+        "color":"#4a90e2",
+        "margin-right":"20px"
+    },
 
     "formMaskNode": {
         "width": "100%",

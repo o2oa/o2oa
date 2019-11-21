@@ -355,7 +355,7 @@
         "margin": "5px 5px",
         "-webkit-user-select": "text",
         "-moz-user-select": "text",
-        "width" : "47%",
+        "width" : "46%",
         "border-right" : "1px dashed #dcdcdc"
     },
     "minAttachmentSepNode_list" : {

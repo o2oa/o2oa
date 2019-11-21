@@ -12,7 +12,8 @@ MWF.xApplication.Selector.Unit = new Class({
         "zIndex": 1000,
         "expand": true,
         "exclude" : [],
-        "expandSubEnable" : true //是否允许展开下一层
+        "expandSubEnable" : true, //是否允许展开下一层
+        "selectAllEnable" : true //分类是否允许全选下一层
     },
 
     loadSelectItems: function(addToNext){
@@ -39,9 +40,13 @@ MWF.xApplication.Selector.Unit = new Class({
                         if (json.data.length){
                             json.data.each( function(data){
                                 if( this.options.expandSubEnable ){
-                                    if (data.subDirectUnitCount) var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                                    if (data.subDirectUnitCount){
+                                        var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                                        this.subCategorys.push(category);
+                                    }
                                 }else{
                                     var item = this._newItem( data, this, this.itemAreaNode);
+                                    this.subItems.push(item);
                                 }
                             }.bind(this));
                         }
@@ -54,9 +59,13 @@ MWF.xApplication.Selector.Unit = new Class({
                         if (json.data.length){
                             json.data.each( function(data){
                                 if( this.options.expandSubEnable ) {
-                                    if (data.subDirectUnitCount) var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                                    if (data.subDirectUnitCount){
+                                        var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                                        this.subCategorys.push(category);
+                                    }
                                 }else{
                                     var item = this._newItem(data, this, this.itemAreaNode);
+                                    this.subItems.push(item);
                                 }
                             }.bind(this));
                         }
@@ -77,6 +86,7 @@ MWF.xApplication.Selector.Unit = new Class({
                     // if (flag){
                     if( !this.isExcluded( data ) ) {
                         var unit = this._newItem(data, this, this.itemAreaNode, 1);
+                        this.subItems.push(unit);
                     }
                     //unit.loadSubItem();
                     // }else{
@@ -94,8 +104,8 @@ MWF.xApplication.Selector.Unit = new Class({
     _getChildrenItemIds: function(){
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level){
-        return new MWF.xApplication.Selector.Unit[type](data, selector, item, level)
+    _newItemCategory: function(type, data, selector, item, level, category){
+        return new MWF.xApplication.Selector.Unit[type](data, selector, item, level, category)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -141,8 +151,8 @@ MWF.xApplication.Selector.Unit = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Selector.Unit.Item(data, selector, container, level);
+    _newItem: function(data, selector, container, level, category){
+        return new MWF.xApplication.Selector.Unit.Item(data, selector, container, level, category);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Unit.SearchItem(data, selector, container, level);
@@ -183,11 +193,126 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 }
                 e.stopPropagation();
             }.bind(this));
+
+            if( this.selector.css.selectorItemLevelNode_expand_over && this.selector.css.selectorItemLevelNode_collapse_over ){
+                this.levelNode.addEvents({
+                    mouseover : function(e){
+                        var styles = this.isExpand ? this.selector.css.selectorItemLevelNode_expand_over : this.selector.css.selectorItemLevelNode_collapse_over;
+                        this.levelNode.setStyles(styles);
+                    }.bind(this),
+                    mouseout : function(e){
+                        var styles = this.isExpand ? this.selector.css.selectorItemLevelNode_expand : this.selector.css.selectorItemLevelNode_collapse;
+                        this.levelNode.setStyles(styles);
+                    }.bind(this)
+                })
+            }
+
+            if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 && this.selector.options.style!=="blue_flat" ){
+                this.selectAllNode = new Element("div", {
+                    "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
+                    "title" : "全选下级"
+                }).inject(this.textNode, "before");
+                this.selectAllNode.addEvent( "click", function(ev){
+                    if( this.isSelectedAll ){
+                        this.unselectAll(ev);
+                        this.selector.fireEvent("unselectCatgory",[this])
+                    }else{
+                        this.selectAll(ev);
+                        this.selector.fireEvent("selectCatgory",[this])
+                    }
+                    ev.stopPropagation();
+                }.bind(this));
+                if( this.selector.css.selectorItemCategoryActionNode_selectAll_over ){
+                    this.selectAllNode.addEvents( {
+                        "mouseover" : function(ev){
+                            if( !this.isSelectedAll )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_over );
+                            //ev.stopPropagation();
+                        }.bind(this),
+                        "mouseout" : function(ev){
+                            if( !this.isSelectedAll )this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+                            //ev.stopPropagation();
+                        }.bind(this)
+                    })
+                }
+            }
         }
 
         //this.actionNode.setStyles((this.selector.options.expand) ? this.selector.css.selectorItemCategoryActionNode_expand : this.selector.css.selectorItemCategoryActionNode_collapse);
     },
-    loadSubItems: function(){
+    unselectAll : function(ev, exclude){
+        //( this.subItems || [] ).each( function(item){
+        //    if(item.isSelected)item.unSelected();
+        //}.bind(this));
+        var excludeList = exclude || [];
+        if( exclude && typeOf(exclude) !== "array"  )excludeList = [exclude];
+        ( this.subItems || [] ).each( function(item){
+            if(item.isSelected && !excludeList.contains(item) ){
+                item.unSelected();
+            }
+        }.bind(this));
+        if( this.selectAllNode && this.selector.css.selectorItemCategoryActionNode_selectAll ){
+            this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+        }
+        this.isSelectedAll = false;
+    },
+    unselectAllNested : function( ev, exclude ){
+        this.unselectAll(ev, exclude );
+        if( this.subCategorys && this.subCategorys.length ){
+            this.subCategorys.each( function( category ){
+                if(category.unselectAllNested)category.unselectAllNested( ev, exclude )
+            })
+        }
+        if( this.subItems && this.subItems.length ){
+            this.subItems.each( function( item ){
+                if(item.unselectAllNested)item.unselectAllNested( ev, exclude )
+            })
+        }
+    },
+    selectAllNested : function(){
+        this.selectAll();
+        if( this.subCategorys && this.subCategorys.length ){
+            this.subCategorys.each( function( category ){
+                if(category.selectAllNested)category.selectAllNested()
+            })
+        }
+        if( this.subItems && this.subItems.length ){
+            this.subItems.each( function( item ){
+                if(item.selectAllNested)item.selectAllNested()
+            })
+        }
+    },
+    selectAll: function(ev){
+        if( this.loaded ){
+            this._selectAll( ev )
+        }else{
+            this.loadSubItems(function(){
+                this._selectAll( ev )
+            }.bind(this));
+            this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
+            this.isExpand = true;
+        }
+    },
+    _selectAll : function( ev ){
+        if( !this.subItems || !this.subItems.length )return;
+        var count = this.selector.options.maxCount || this.selector.options.count;
+        if (!count) count = 0;
+        var selectedSubItemCount = 0;
+        this.subItems.each( function(item){
+            if(item.isSelected)selectedSubItemCount++
+        }.bind(this));
+        if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
+            this.subItems.each( function(item){
+                if(!item.isSelected)item.selected();
+            }.bind(this))
+            if( this.selectAllNode && this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
+                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+            }
+            this.isSelectedAll = true;
+        }else{
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
+        }
+    },
+    loadSubItems: function( callback ){
         if (!this.loaded){
             if (!this.children){
                 this.children = new Element("div", {
@@ -200,10 +325,13 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             this.selector.orgAction.listSubUnitDirect(function(subJson){
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
-                        var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1);
+                        var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                        if( !this.subItems )this.subItems = [];
+                        this.subItems.push( category );
                     }
                 }.bind(this));
                 this.loaded = true;
+                if(callback)callback();
             }.bind(this), null, this.data.distinguishedName);
         }else{
             this.children.setStyle("display", "block");
@@ -211,6 +339,17 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     },
     getData: function(callback){
         if (callback) callback();
+    },
+    postLoad : function(){
+        if( this.selector.options.style === "blue_flat" ){
+            if( this.level === 1 ){
+                var indent = 26;
+                this.levelNode.setStyle("width", ""+indent+"px");
+            }else{
+                var indent = 26 + ( this.level -1 ) * this.selector.options.indent ;
+                this.levelNode.setStyle("width", ""+indent+"px");
+            }
+        }
     }
 });
 MWF.xApplication.Selector.Unit.SearchItem = new Class({
@@ -244,7 +383,9 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
             this.selector.orgAction.listSubUnitDirect(function(subJson){
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
-                        var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                        var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        if(this.subItems)this.subItems.push( category );
+                        this.subCategorys.push( category );
                     }
                     //var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1);
                 }.bind(this));
@@ -260,6 +401,10 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
     _hasChild: function(){
         var uCount = (this.data.subDirectUnitCount) ? this.data.subDirectUnitCount : 0;
         //var iCount = (this.data.subDirectIdentityCount) ? this.data.subDirectIdentityCount : 0;
+        return uCount;
+    },
+    _hasChildItem: function(){
+        var uCount = (this.data.subDirectUnitCount) ? this.data.subDirectUnitCount : 0;
         return uCount;
     }
 });

@@ -28,6 +28,24 @@
         "float": "right",
         "cursor": "pointer"
     },
+    "orgIcon": {
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/selectperson.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        "float": "right"
+    },
+    "readerIcon": {
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectreader.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        "float": "right"
+    },
+    "authorIcon": {
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectauthor.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        "float": "right"
+    },
 	"textFieldIcon": {
 	    "background": "url("+"/x_component_cms_Xform/$Form/default/icon/inputtext.png) center center no-repeat",
         "width": "18px",
@@ -271,6 +289,82 @@
     "mobileGridHelpContentNode": {
         "font-size": "14px",
         "color": "#999"
+    },
+    "attachmentPermissionNode": {
+        "overflow": "hidden",
+        "width": "500px",
+        "padding": "0px 40px",
+    },
+    "attachmentPermissionNamesNode": {
+        "overflow": "hidden",
+    },
+    "attachmentPermissionNamesTitleNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "height": "30px",
+        "font-weight": "bold",
+        "line-height": "30px"
+    },
+    "attachmentPermissionNamesAreaNode": {
+        "overflow": "hidden",
+        "padding": "0px",
+        "color": "#0000ff",
+        "margin-bottom": "20px"
+    },
+
+
+    "attachmentPermissionAttNode": {
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "attachmentPermissionTitleNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "height": "26px",
+        "line-height": "26px"
+    },
+    "attachmentPermissionInputNode": {
+        "min-height": "24px",
+        "overflow": "hidden",
+        "line-height": "24px",
+        "border": "1px solid #3C76B7",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "margin-bottom": "10px",
+        "background-color": "#ffffff"
+    },
+
+    "attachmentOCRNode": {
+        "width": "500px",
+        "height": "450px",
+        "padding": "20px 20px 10px 20px"
+    },
+    "attachmentOCRInputAreaNode": {
+        "height": "242px",
+        //"width": "398px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "padding": "5px",
+        "background-color": "#ffffff"
+    },
+    "attachmentOCRInputNode": {
+        "height": "230px",
+        "width": "490px",
+        "border": "0px",
+        "font-size": "14px",
+        "font-family": "'Microsoft YaHei','Î¢ÈíÑÅºÚ','SimSun','ËÎÌå'",
+        "overflow": "auto"
+    },
+    "attachmentOCRImageAreaNode": {
+        "height": "190px",
+        "margin-bottom": "10px",
+        "text-align": "center"
+    },
+    "attachmentOCRImageNode": {
+        "max-height": "190px",
+        "max-height": "190px",
+        "max-width": "498px",
+        "margin": "auto"
     }
 
 }

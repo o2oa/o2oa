@@ -304,7 +304,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 	styleBrush: function(){
 		//@todo
-		this.form.styleBrushContent = Object.clone(this.json.style);
+		this.form.styleBrushContent = Object.clone(this.json.styles);
+		if (this.json.inputStyles) this.form.inputStyleBrushContent = Object.clone(this.json.inputStyles);
 	},
 
 	_setNodeEvent: function(){
@@ -403,6 +404,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.form.brushStyle){
 			this.json.styles = Object.clone(this.form.brushStyle);
 			this.setPropertiesOrStyles("styles");
+			if (this.property) this.property.loadMaplist();
+		}
+		if (this.form.brushInputStyle){
+			this.json.inputStyles = Object.clone(this.form.brushInputStyle);
+			this.setPropertiesOrStyles("inputStyles");
 			if (this.property) this.property.loadMaplist();
 		}
 		this.showProperty();

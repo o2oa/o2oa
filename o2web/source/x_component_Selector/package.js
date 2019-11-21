@@ -65,28 +65,52 @@ MWF.O2SelectorFilter = new Class({
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
         this.setOptions(options);
         this.value = value;
-        var type = this.options.type.capitalize();
+        //var type = this.options.type.capitalize();
 
-        if (type){
-            if ((type.toLowerCase()==="unit") && (this.options.unitType)){
-                MWF.xDesktop.requireApp("Selector", "UnitWithType", function(){
-                    this.selector = new MWF.xApplication.Selector.UnitWithType.Filter(this.container, options);
-                    this.selector.load();
-                }.bind(this));
-            }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
-                MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", function(){
-                    this.selectFilter = new MWF.xApplication.Selector.IdentityWidthDuty.Filter(this.value, options);
-                }.bind(this), false);
-            }else{
-                MWF.xDesktop.requireApp("Selector", type, function(){
-                    this.selectFilter = new MWF.xApplication.Selector[type].Filter(this.value, options);
-                }.bind(this), false);
-             }
-        }else{
+        if( this.options.types && typeOf(this.options.types) === "array" && this.options.types.length > 0 ){
             MWF.xDesktop.requireApp("Selector", "MultipleSelector", function() {
                 this.selectFilter = new MWF.xApplication.Selector.MultipleSelector.Filter(this.container, this.options );
             }.bind(this), false);
+        }else{
+            var type = typeOf(this.options.type) === "string" ? this.options.type.capitalize() : this.options.type;
+            if (type){
+                if ((type.toLowerCase()==="unit") && (this.options.unitType)){
+                    MWF.xDesktop.requireApp("Selector", "UnitWithType", function(){
+                        this.selector = new MWF.xApplication.Selector.UnitWithType.Filter(this.container, options);
+                        this.selector.load();
+                    }.bind(this));
+                }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
+                    MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", function(){
+                        this.selectFilter = new MWF.xApplication.Selector.IdentityWidthDuty.Filter(this.value, options);
+                    }.bind(this), false);
+                }else{
+                    MWF.xDesktop.requireApp("Selector", type, function(){
+                        this.selectFilter = new MWF.xApplication.Selector[type].Filter(this.value, options);
+                    }.bind(this), false);
+                }
+            }
         }
+
+        //if (type){
+        //    if ((type.toLowerCase()==="unit") && (this.options.unitType)){
+        //        MWF.xDesktop.requireApp("Selector", "UnitWithType", function(){
+        //            this.selector = new MWF.xApplication.Selector.UnitWithType.Filter(this.container, options);
+        //            this.selector.load();
+        //        }.bind(this));
+        //    }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
+        //        MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", function(){
+        //            this.selectFilter = new MWF.xApplication.Selector.IdentityWidthDuty.Filter(this.value, options);
+        //        }.bind(this), false);
+        //    }else{
+        //        MWF.xDesktop.requireApp("Selector", type, function(){
+        //            this.selectFilter = new MWF.xApplication.Selector[type].Filter(this.value, options);
+        //        }.bind(this), false);
+        //     }
+        //}else{
+        //    MWF.xDesktop.requireApp("Selector", "MultipleSelector", function() {
+        //        this.selectFilter = new MWF.xApplication.Selector.MultipleSelector.Filter(this.container, this.options );
+        //    }.bind(this), false);
+        //}
 
     },
     filter: function(value, callback){
@@ -125,7 +149,7 @@ MWF.O2SelectorFilter = new Class({
     Element.prototype.setSelectPerson = function(container, options){
         if (options.types) options.type = "";
         options.onComplete = function(items){
-            debugger;
+
             o2.require("o2.widget.O2Identity", function(){
                 options.values = [];
                 this.empty();

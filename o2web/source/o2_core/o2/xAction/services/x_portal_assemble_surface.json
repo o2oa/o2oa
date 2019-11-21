@@ -15,7 +15,8 @@
   "getPageByNameMobile": {"uri": "/jaxrs/page/{name}/portal/{id}/mobile"},
   "getSource": {"uri": "/jaxrs/source/{id}"},
   "getScript": {"uri": "/jaxrs/script/{id}"},
-  "getScriptByName": {"uri": "/jaxrs/script/portal/{applicationId}/name/{name}"},
+  //"getScriptByName": {"uri": "/jaxrs/script/portal/{applicationId}/name/{name}"},
+  "getScriptByName": {"uri": "/jaxrs/script/portal/{portal}/name/{name}","method": "POST"},
   "getMenu": {"uri": "/jaxrs/menu/{id}"},
 
   "getWidget": {"uri": "/jaxrs/widget/{id}"},

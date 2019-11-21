@@ -25,7 +25,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.deleteElements = [];
 	},
 	loadApplication: function(callback){
-	    this.loadControl();
+		this.loadControl();
 		this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp, "control": this.control}}, function(){
 			if (!this.options.isRefresh){
 				this.maxSize(function(){
@@ -71,15 +71,86 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.bottomNode = this.content.getElement(".o2_process_AppExp_bottom");
 		if (this.importNode){
 			this.importNode.addEvent("click", function(e){
-				this.importApplication(e);
+				this.importApplicationNew(e);
 			}.bind(this));
 		}
 	},
-	importApplication: function(e){
+	importApplicationNew: function(e){
+		MWF.xDesktop.requireApp("AppCenter", "", function(){
+			if (!this.uploadFileAreaNode){
+				this.uploadFileAreaNode = new Element("div");
+				var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+				this.uploadFileAreaNode.set("html", html);
+				this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+				this.fileUploadNode.addEvent("change", this.importLocalFile.bind(this));
+			}else{
+				if (this.fileUploadNode) this.fileUploadNode.destroy();
+				this.uploadFileAreaNode.empty();
+				var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+				this.uploadFileAreaNode.set("html", html);
+				this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+				this.fileUploadNode.addEvent("change", this.importLocalFile.bind(this));
+			}
+			this.fileUploadNode.click();
+		}.bind(this));
+		return ;
+		//老版导出
 		MWF.xDesktop.requireApp("process.ApplicationExplorer", "Importer", function(){
 			(new MWF.xApplication.process.ApplicationExplorer.Importer(this, e)).load();
 		}.bind(this));
 	},
+	importLocalFile: function(){
+		var files = this.fileUploadNode.files;
+		if (files.length){
+			var file = files[0];
+			var position = this.topNode.getPosition(this.node);
+			var size = this.contentArea.getSize();
+			var width = size.x*0.9;
+			if (width>600) width = 600;
+			var height = size.y*0.9;
+			var x = (size.x-width)/2;
+			var y = (size.y-height)/2;
+
+			var setupModule = null;
+			var appCenter = new MWF.xApplication.AppCenter.Main();
+			appCenter.inBrowser = true;
+			appCenter.load(true);
+			MWF.require("MWF.xDesktop.Dialog", function(){
+				var dlg = new MWF.xDesktop.Dialog({
+					"title": this.lp.setupTitle,
+					"style": "appMarket",
+					"top": y+20,
+					"left": x,
+					"fromTop":position.y,
+					"fromLeft": position.x,
+					"width": width,
+					"height": height,
+					"html": "",
+					"maskNode": this.node,
+					"container": this.node,
+					"buttonList": [
+						{
+							"text": appCenter.lp.ok,
+							"action": function(){
+								if (setupModule) setupModule.setup();
+								this.close();
+							}
+						},
+						{
+							"text": appCenter.lp.cancel,
+							"action": function(){this.close();}
+						}
+					]
+				});
+				dlg.show();
+
+				setupModule = new MWF.xApplication.AppCenter.Module.SetupLocal(file, dlg, appCenter);
+
+				debugger
+			}.bind(this));
+		}
+	},
+
 	createApplication: function(){
 		this.createApplicationCreateMarkNode();
 		this.createApplicationCreateAreaNode();
@@ -281,7 +352,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	loadApplicationCategoryList: function(){
 		if (this.control.canCreate){
 			this.restActions.listApplicationCategory(function(json){
-				debugger;
+
 				var emptyCategory = null;
 				json.data.each(function(category){
 					var categoryName = category.applicationCategory || category.portalCategory || category.protalCategory || category.name;
@@ -297,7 +368,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		}
 	},
 	createCategoryItemNode: function(text, count){
-		debugger;
+
 		var categoryName = text;
 
 		var itemNode = new Element("div.o2_process_AppExp_categoryItem", {
@@ -335,7 +406,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	},
 
 	getApplicationDimension: function(){
-		debugger;
+
 		if (!this.dimension) this.dimension = {};
 		this.dimension.count = 2;
 		this.dimension.width = this.options.maxWidth;
@@ -372,6 +443,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		var name = "";
 		if (item){name = item.retrieve("categoryName", "")};
 		this.restActions.listApplicationSummary(name, function(json){
+
 			this.contentNode.empty();
 			if (json.data.length){
 				this.getApplicationDimension();
@@ -680,6 +752,14 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 		}.bind(this));
 
 		this.actionExport.addEvent("click", function(e){
+			MWF.xDesktop.requireApp("AppCenter", "", function(){
+				var appCenter = new MWF.xApplication.AppCenter.Main();
+				appCenter.inBrowser = true;
+				appCenter.load(true);
+				appCenter.createApplication(this.app.content,this.data.id);
+			}.bind(this));
+			return;
+			//老版本导出
 			this.exportApplication(e);
 			e.stopPropagation();
 		}.bind(this));
@@ -700,6 +780,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 	},
 
 	exportApplication: function(){
+
 		MWF.xDesktop.requireApp("process.ApplicationExplorer", "Exporter", function(){
 			(new MWF.xApplication.process.ApplicationExplorer.Exporter(this.app, this.data)).load();
 		}.bind(this));

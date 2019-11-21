@@ -682,13 +682,15 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             _self.selectAllCol(this);
         });
 
-        this.statGridData[0].list.each(function(d){
-            var title = d.displayName;
-            selectTd = (this.headTr.insertCell()).setStyles(this.css.statColSelectTd);
-            selectTd.addEvent("click", function(){
-                _self.selectCol(this);
-            });
-        }.bind(this));
+        if(this.statGridData.length){
+            this.statGridData[0].list.each(function(d){
+                var title = d.displayName;
+                selectTd = (this.headTr.insertCell()).setStyles(this.css.statColSelectTd);
+                selectTd.addEvent("click", function(){
+                    _self.selectCol(this);
+                });
+            }.bind(this));
+        }
 
         this.titleTr = this.table.insertRow();
         this.selectGroupTd = (this.titleTr.insertCell()).setStyles(this.css.statAllRowSelectTd).set("title", this.lp.selecteAllRow);
@@ -698,13 +700,15 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         }).inject(this.titleTr);
         this.categoryTitleTd.setStyle("width", "160px");
 
-        this.statGridData[0].list.each(function(d){
-            var title = d.displayName;
-            var th = new Element("th", {
-                "styles": this.css.statHeadTh,
-                "text": title
-            }).inject(this.titleTr);
-        }.bind(this));
+        if(this.statGridData.length) {
+            this.statGridData[0].list.each(function (d) {
+                var title = d.displayName;
+                var th = new Element("th", {
+                    "styles": this.css.statHeadTh,
+                    "text": title
+                }).inject(this.titleTr);
+            }.bind(this));
+        }
     },
 
     createTableData: function(){

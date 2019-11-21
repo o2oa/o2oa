@@ -172,6 +172,12 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     buildAllView: function(){
         this.view.buildAllView();
     },
+    tableExplode: function(){
+        this.view.tableExplode();
+    },
+    tableImplode: function(){
+        this.view.tableImplode();
+    },
     tableHelp: function(){
         var content = new Element("div", {"styles": {"margin": "20px"}});
         content.set("html", this.lp.tableHelp);

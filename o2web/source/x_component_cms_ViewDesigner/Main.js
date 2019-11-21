@@ -399,7 +399,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
                 "events" : null,
                 "columns" :[],
                 "jsheader" : null,
-                "sortType" : "ASC"
+                "sortType" : "DESC"
             }
         };
         this.createListViewItem(data, true); 

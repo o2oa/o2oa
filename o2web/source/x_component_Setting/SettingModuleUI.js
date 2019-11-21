@@ -558,7 +558,10 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy.Select = new Class({
     setList: function(data){
         this.list = data;
         this.list.each(function(personName){
-            if (personName) new MWF.widget.O2Person({"name": personName}, this.listNode, {"style": "application"});
+            if (personName) {
+                o2.widget.O2Org(personName, this.listNode, {"style": "application"});
+            }
+
         }.bind(this));
     }
 });

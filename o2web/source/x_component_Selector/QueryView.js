@@ -69,7 +69,15 @@ MWF.xApplication.Selector.QueryView.Item = new Class({
     },
     checkSelectedSingle: function(){
         var selectedItem = this.selector.options.values.filter(function(item, index){
-            if (typeOf(item)==="object") return (this.data.id === item.id) || (this.data.name === item.name) ;
+            if (typeOf(item)==="object"){
+                if( this.data.id && item.id ){
+                    return this.data.id === item.id;
+                }else{
+                    return this.data.name === item.name;
+                }
+                //return (this.data.id === item.id) || (this.data.name === item.name) ;
+            }
+            //if (typeOf(item)==="object") return (this.data.id === item.id) || (this.data.name === item.name) ;
             if (typeOf(item)==="string") return (this.data.id === item) || (this.data.name === item);
             return false;
         }.bind(this));
@@ -80,7 +88,12 @@ MWF.xApplication.Selector.QueryView.Item = new Class({
     checkSelected: function(){
 
         var selectedItem = this.selector.selectedItems.filter(function(item, index){
-            return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+            if( item.data.id && this.data.id){
+                return item.data.id === this.data.id;
+            }else{
+                return item.data.name === this.data.name;
+            }
+            //return (item.data.id === this.data.id) || (item.data.name === this.data.name);
         }.bind(this));
         if (selectedItem.length){
             //selectedItem[0].item = this;

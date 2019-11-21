@@ -17,6 +17,10 @@
                 <td class="editTableTitle">描述:</td>
                 <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">状态:</td>
+                <td class="editTableValue"><div>text{$.status==='draft'?'草稿':'已发布'}</div></td>
+            </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">选择视图:</td>-->
             <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->

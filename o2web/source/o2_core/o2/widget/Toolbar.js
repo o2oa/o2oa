@@ -9,7 +9,7 @@ o2.widget.Toolbar = new Class({
 		this.setOptions(options);
 		this.bindObject = bindObject;
 
-		this.items = [];
+		this.items = {};
 		this.children = [];
 		this.childrenButton = [];
 		this.childrenMenu = [];
@@ -154,6 +154,9 @@ o2.widget.ToolbarButton = new Class({
 			var buttonImage = this.node.get("MWFButtonImage");
 			if (buttonImage) this.options.pic = buttonImage;
 
+			var buttonImageOver = this.node.get("MWFButtonImageOver");
+			if (buttonImageOver) this.options.pic_over = buttonImageOver;
+
 			var buttonDisable = this.node.get("MWFButtonDisable");
 			if (buttonDisable) this.options.disable = true;
 			
@@ -223,7 +226,7 @@ o2.widget.ToolbarButton = new Class({
 	_createImageNode: function(src){
 		if (src){
 			var div = new Element("span", {"styles": this.toolbar.css.buttonImgDiv}).inject(this.node);
-			var img = new Element("img", {
+			var img = this.imgNode = new Element("img", {
 				"styles": this.toolbar.css.buttonImg,
 				"src": src
 			}).inject(div);
@@ -256,9 +259,11 @@ o2.widget.ToolbarButton = new Class({
 	},
 	_buttonMouseOver: function(){
 		if (this.modifiyStyle) if (!this.options.disable){this.node.set("styles", this.toolbar.css.buttonOver);};
+		if( this.options.pic_over )if (!this.options.disable && this.imgNode){this.imgNode.set("src", this.options.pic_over);};
 	},
 	_buttonMouseOut: function(){
 		if (this.modifiyStyle) if (!this.options.disable){this.node.set("styles", this.toolbar.css.buttonOut);};
+		if( this.options.pic_over )if (!this.options.disable && this.imgNode){this.imgNode.set("src", this.options.pic);};
 	},
 	_buttonMouseDown: function(){
 		if (this.modifiyStyle) if (!this.options.disable){this.node.set("styles", this.toolbar.css.buttonDown);};

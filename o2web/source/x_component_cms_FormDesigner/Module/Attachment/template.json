@@ -4,14 +4,6 @@
   "type": "Attachment",
   "description": "",
   "events": {
-    "queryLoad": {
-      "code": "",
-      "html": ""
-    },
-    "postLoad": {
-      "code": "",
-      "html": ""
-    },
     "load" : {
       "code": "",
       "html": ""
@@ -55,14 +47,6 @@
     "mouseup": {
       "code": "",
       "html": ""
-    },
-    "upload": {
-      "code": "",
-      "html": ""
-    },
-    "delete": {
-      "code": "",
-      "html": ""
     }
   },
   "size": "max", //max, min
@@ -78,7 +62,6 @@
   "toolbarGroupHidden" : [],
   "availableListStyles" : ["list","seq","icon","preview"],
 
-  "downloadEvent" : "",
 
   "class": "",
   "styles": {},

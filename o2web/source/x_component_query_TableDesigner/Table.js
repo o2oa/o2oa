@@ -461,6 +461,79 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
+
+    buildAllView: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, MWF.APPDTBD.LP.buildAllViewInfor, 480, 120, function(){
+            _self.designer.actions.buildAllTable(function(json){
+                this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+
+    tableImplode: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.tableImplodeTitle, MWF.APPDTBD.LP.tableImplodeInfo, 480, 120, function(){
+            _self.implodeLocal();
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    implodeLocal: function(){
+        if (!this.uploadFileAreaNode){
+            this.uploadFileAreaNode = new Element("div");
+            var html = "<input name=\"file\" type=\"file\" accept=\".json\"/>";
+            this.uploadFileAreaNode.set("html", html);
+            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
+        }else{
+            if (this.fileUploadNode) this.fileUploadNode.destroy();
+            this.uploadFileAreaNode.empty();
+            var html = "<input name=\"file\" type=\"file\" accept=\".json\"/>";
+            this.uploadFileAreaNode.set("html", html);
+            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
+        }
+        this.fileUploadNode.click();
+    },
+    implodeLocalFile: function(){
+        var files = this.fileUploadNode.files;
+        if (files.length){
+            var file = files[0];
+            var reader = new FileReader();
+            reader.readAsText(file);
+            var _self = this;
+            reader.onload = function(){
+                var data = JSON.parse(this.result);
+
+                _self.designer.actions.rowSave(_self.data.id,data,function(json){
+                    this.designer.notice(this.designer.lp.tableImplode_success, "success", this.node, {"x": "left", "y": "bottom"});
+                }.bind(_self));
+
+            };
+        }
+    },
+    tableExplode: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.tableExplodeTitle, MWF.APPDTBD.LP.tableExplodeInfo, 480, 120, function(){
+
+            var url =  _self.designer.actions.action.address + _self.designer.actions.action.actions.exportRow.uri
+
+            url = url.replace("{tableFlag}",_self.data.id);
+            url = url.replace("{count}",1000);
+            window.open(url)
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
     setContentHeight: function(){
         var size = this.areaNode.getSize();
         var titleSize = this.viewTitleNode.getSize()
@@ -563,18 +636,18 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
     Extends:MWF.xApplication.query.ViewDesigner.View.Column,
-	initialize: function(json, view, next){
+    initialize: function(json, view, next){
         this.propertyPath = "/x_component_query_TableDesigner/$Table/column.html";
-		this.view = view;
+        this.view = view;
         this.json = json;
         this.next = next;
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
         this.load();
-	},
+    },
     createDomListItem: function(){
-	    //this.view.columnListEditTr;
+        //this.view.columnListEditTr;
         var idx = this.view.columnListTable.rows.length;
         this.listNode = this.view.columnListTable.insertRow(idx-1).setStyles(this.css.cloumnListNode);
         this.listNode.insertCell().setStyles(this.css.columnListTd).set("text", this.json.name);

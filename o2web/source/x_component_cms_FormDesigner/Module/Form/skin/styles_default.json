@@ -330,6 +330,39 @@
       "color": "#666"
     }
   },
+  "org": {
+    "styles": {
+      "border": "1px solid #ccc",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666"
+    }
+  },
+  "reader": {
+    "styles": {
+      "border": "1px solid #ccc",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666"
+    }
+  },
+  "author": {
+    "styles": {
+      "border": "1px solid #ccc",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666"
+    }
+  },
   "select": {
     "styles": {
       "border": "1px solid #ccc",

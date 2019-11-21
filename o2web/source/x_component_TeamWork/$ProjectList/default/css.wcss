@@ -1,0 +1,555 @@
+{
+    "naviTable":{
+        "height":"100%",
+        "width":"300px"
+    },
+    "columnGray":{
+        "width":"10px",
+        "height":"100%"
+    },
+    "rowGray":{
+        "height":"10px",
+        "width":"100%",
+        "background-color":"#eeeeee"
+    },
+    "contentTable":{
+        "flex":1,
+        "height":"100%",
+        "display":"flex"
+    },
+
+    naviTitle:{
+        "height":"50px",
+        "line-height":"50px",
+        "font-size":"18px",
+        "padding-left":"20px",
+        "border-bottom":"1px solid #E6E6E6",
+        "color":"#333333"
+    },
+    "naviMenu":{
+        "background-color":"",
+        "cursor":"pointer",
+        "padding-left":"20px",
+        "height":"40px",
+        "line-height":"40px",
+        "font-size":"15px"
+    },
+    "allItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "allItemCount":{
+        "float":"left",
+        "font-size":"14px",
+        "color":"#999999"
+    },
+    "allItemAdd":{
+        "width":"24px",
+        "height":"24px",
+        "cursor":"pointer",
+        "float":"right",
+        "margin-right":"12px",
+        "margin-top":"8px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_jia.png) no-repeat center "
+    },
+    "naviItem":{
+        "color":"#666666",
+        "background-color":"",
+        "padding-left":"22px",
+        "height":"40px",
+        "cursor":"pointer",
+        "line-height":"40px"
+    },
+
+    "starItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1.png) no-repeat center "
+    },
+    "starItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "starItemIcon":{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png) no-repeat center "
+    },
+    "starItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+    "myItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxm_xm.png) no-repeat center "
+    },
+    "myItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "myItemIcon":{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png) no-repeat center "
+    },
+    "myItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+
+    "historyItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_lsck_xm.png) no-repeat center "
+    },
+    "historyItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "historyItemIcon":{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png) no-repeat center "
+    },
+    "historyItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+
+    "unGroupItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wfzxm_xm.png) no-repeat center "
+    },
+    "unGroupItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "unGroupItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+
+    "completeItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_renwu_ywc.png) no-repeat center "
+    },
+    "completeItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "completeItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+
+    "removeItemImg":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_grey.png) no-repeat center "
+    },
+    "removeItemText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "removeItemCount":{
+        "font-size":"12px",
+        "float":"right",
+        "margin-right":"20px"
+    },
+
+    "groupMenuText":{
+        "color":"#666666",
+        "float":"left"
+    },
+    "groupMenuAdd":{
+        "width":"24px",
+        "height":"24px",
+        "cursor":"pointer",
+        "float":"right",
+        "margin-right":"12px",
+        "margin-top":"8px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_jia.png) no-repeat center "
+    },
+
+
+    "customGroup":{
+        "width":"100%"
+    },
+    "customGroupItemContainer":{
+        "background-color":"",
+        "color":"#666666",
+        "cursor":"pointer",
+        "padding-left":"36px",
+        "padding-right":"10px",
+        "height":"40px",
+        "line-height":"40px"
+    },
+    "customGroupItem":{
+        "float":"left",
+        "height":"40px",
+        "line-height":"40px",
+        "width":"190px",
+        "overflow":"hidden",
+        "text-overflow":"ellipsis",
+        "white-space":"nowrap"
+    },
+    "customGroupItemEdit":{
+        "display":"none",
+        "cursor":"pointer",
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin-left":"5px",
+        "margin-top":"12px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_bianjishitu_click.png) no-repeat center "
+    },
+    "customGroupItemRemove":{
+        "display":"none",
+        "cursor":"pointer",
+        "float":"right",
+        "margin-left":"5px",
+        "margin-top":"12px",
+        "width":"16px",
+        "height":"16px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_blue_click.png) no-repeat center "
+    },
+    "groupAdd":{
+        "background-color":"",
+        "height":"40px",
+        "color":"#4A90E2",
+        "cursor":"pointer",
+        "font-size":"14px"
+    },
+    "groupAddIcon":{
+        "width":"16px",
+        "height":"16px",
+        "float":"left",
+        "margin-top":"12px",
+        "margin-left":"22px",
+        "margin-right":"10px",
+        "background": "url(/x_component_TeamWork/$ProjectList/default/icon/icon_zengjia_blue2_click.png) no-repeat center "
+    },
+    "groupAddText":{
+        "float":"left",
+        "line-height":"40px"
+    },
+
+
+
+
+
+
+
+    "naviContent":{
+        "background-color":"#ffffff",
+        "color":"#666666",
+        "font-size":"14px",
+        "width":"300px",
+        "height":"100%",
+        "overflow-y":"auto",
+        "box-shadow":" 0 2px 4px 0 "
+    },
+
+    "projectContent":{
+        "background-color":"#ffffff",
+        "flex":1,
+        "display":"flex",
+        "height":"100%",
+        "width":"100%",
+        "border-radius":"5px",
+        "position":"relative"
+    },
+    menuContainer:{
+        "height":"60px",
+        "width":"100%",
+        "position":"absolute",
+        "left":"0px",
+        "top":"10px"
+    },
+    menuTitle:{
+        "float":"left",
+        "margin-left":"50px",
+        "line-height":"60px",
+        "font-size":"20px",
+        "color":"#333333"
+    },
+    menuCount:{
+        "float":"left",
+        "line-height":"60px",
+        "margin-left":"10px",
+        "color":"#333333",
+        "font-size":"16px"
+    },
+    menuSetting:{
+        "float":"right",
+        "margin-top":"20px",
+        "margin-right":"20px"
+    },
+    menuSettingList:{
+        "float":"left",
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "margin-right":"12px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_liebiao.png) no-repeat center "
+    },
+    menuSettingBlock:{
+        "float":"left",
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_tubiao.png) no-repeat center "
+    },
+
+
+    layoutListContainer:{
+        "width":"100%",
+        "position":"absolute",
+        "top":"60px",
+        "left":"0px",
+        "bottom":"0px",
+        "flex":1,
+        "overflow-y":"auto"
+    },
+    layoutList:{
+        "margin-left":"40px",
+        "margin-right":"20px"
+    },
+    projectBlockItem:{
+        "cursor":"pointer",
+        "float":"left",
+        "width":"220px",
+        "height":"120px",
+        "border-radius":"4px",
+        "margin":"10px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/pic_morentu_220.png) no-repeat center ",
+        "background-size":"cover",
+        "position":"relative"
+    },
+    projectBlockItemCover:{
+        "position":"absolute",
+        "left":"0px",
+        "right":"0px",
+        "top":"0px",
+        "bottom":"0px",
+        "background":"rgba(255,255,255,0.3)"
+    },
+    projectBlockItemIconContainer:{
+        "height":"20px",
+        "padding-top":"10px"
+    },
+    projectBlockItemIconFav:{
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "float":"right",
+        "margin-right":"10px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_2.png) no-repeat center "
+    },
+    projectBlockItemIconFavTrue:{
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "float":"right",
+        "margin-right":"10px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png) no-repeat center "
+    },
+    projectBlockItemIconSetting:{
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "float":"right",
+        "margin-right":"10px",
+        "display":"",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_shezhi.png) no-repeat center "
+    },
+    projectBlockItemIconRemove:{
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "float":"right",
+        "margin-right":"10px",
+        "display":"",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_white.png) no-repeat center "
+    },
+    projectBlockItemName:{
+        "width":"200px",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis",
+        "font-size":"15px",
+        "color":"#ffffff",
+        //"margin-top":"20px",
+        "margin-left":"20px"
+    },
+    projectBlockItemDes:{
+        "width":"200px",
+        "height":"50px",
+        "overflow": "hidden",
+        "font-size":"12px",
+        "color":"#ffffff",
+        //"margin-top":"10px",
+        "margin-left":"20px"
+    },
+    projectListItem:{
+        "float":"left",
+        "width":"220px",
+        "height":"120px",
+        "border":"1px solid #dddddd",
+        "margin":"10px"
+    },
+    addProjectBlock:{
+        "cursor":"pointer",
+        "float":"left",
+        "width":"220px",
+        "height":"120px",
+        "background-color":"#F5F5F5",
+        "border-radius":"4px",
+        "margin":"10px"
+    },
+    addProjectBlockIcon:{
+        "width":"20px",
+        "height":"20px",
+        "margin":"36px auto 6px auto",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_jia_20.png) no-repeat center ",
+        "background-size":"cover"
+    },
+    addProjectBlockText:{
+        "font-size":"14px",
+        "color":"#999999",
+        "text-align":"center"
+    },
+    projectListItem:{
+        "display":"flex",
+        "height":"80px",
+        "cursor":"pointer"
+    },
+    projectListItemImgContainer:{
+        "width":"60px",
+        "height":"100%"
+    },
+    projectListItemImg:{
+        "float":"left",
+        "width":"40px",
+        "height":"40px",
+        "margin-top":"20px",
+        "margin-left":"10px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/pic_morentu_40.png) no-repeat center ",
+        "background-size":"cover"
+    },
+    projectListItemContainer:{
+        "flex":1,
+        "float":"left",
+        "height":"80px",
+        "width":"100%",
+        "border-bottom":"1px solid #E6E6E6"
+    },
+
+
+    projectListItemInforContainer:{
+        "float":"left",
+        "margin-left":"10px",
+        "max-width":"60%"
+    },
+    projectListItemTitle:{
+        "height":"50px",
+        //"line-height":"60px",
+        "font-size":"15px",
+        "color":"#333333",
+        "display":"table-cell",
+        "vertical-align":"bottom"
+    },
+    projectListItemDes:{
+        "height":"20px",
+        "line-height":"20px",
+        "font-size":"12px",
+        "color":"#666666",
+        "overflow":"hidden"
+    },
+    projectListItemIconContainer:{
+        "float":"right",
+        "width":"120px"
+    },
+    projectListItemRemoveIcon:{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin":"30px 5px",
+        "display":"",
+        background: "url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_grey.png) no-repeat center "
+    },
+    projectListItemSettingIcon:{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin":"30px 5px",
+        "display":"",
+        background: "url(/x_component_TeamWork/$ProjectList/default/icon/icon_shezhi_grey.png) no-repeat center "
+    },
+    projectListItemFavIcon:{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin":"30px 5px",
+        background: "url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1.png) no-repeat center "
+    },
+    addProjectList:{
+        "width":"100%",
+        "height":"80px",
+        "cursor":"pointer",
+        "display":"flex"
+    },
+    addProjectListImgContainer:{
+        "width":"60px",
+        "height":"100%"
+    },
+    addProjectListImg:{
+        "width":"40px",
+        "height":"40px",
+        "margin-top":"20px",
+        "margin-left":"10px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_cjxxm.png) no-repeat center "
+    },
+    addProjectListText:{
+        "line-height":"80px",
+        "color":"#999999",
+        "flex":"1",
+        "font-size":"14px"
+    }
+
+}

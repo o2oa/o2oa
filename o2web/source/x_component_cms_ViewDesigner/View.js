@@ -566,6 +566,8 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
             }).inject(obj);
             if( this.data.sortField == field.name ){
                 opt.selected = true;
+            }else if( field.name === "createTime" ){
+                opt.selected = true;
             }
         }.bind(this));
         return obj;

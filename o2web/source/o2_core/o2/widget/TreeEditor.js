@@ -377,14 +377,14 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		
 		var p = e.target.getPosition();
 		var tmpe = {"event": {"x": p.x+40, "y": p.y}};
-		
-		layout.confirm("warn", tmpe, o2.LP.process.notice.deleteTreeNodeTitle, o2.LP.process.notice.deleteTreeNode, 300, 120, function(){
+
+		MWF.xDesktop.confirm("warn", tmpe, o2.LP.process.notice.deleteTreeNodeTitle, o2.LP.process.notice.deleteTreeNode, 300, 120, function(){
 			treeNode.destroy();
 			treeNode.tree.editor.fireEvent("change");
     		this.close();
 		}, function(){
 			this.close();
-		}, null);
+		}, null, null, "o2");
 	},
 	editItem: function(node, okCallBack){
 		var text = node.get("text");

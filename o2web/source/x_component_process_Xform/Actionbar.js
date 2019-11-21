@@ -1,5 +1,6 @@
 //MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.require("MWF.widget.Tree", null, false);
+//MWF.require("MWF.widget.Tree", null, false);
+//MWF.require("MWF.widget.Toolbar", null, false);
 MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	Extends: MWF.APP$Module,
     options: {
@@ -59,33 +60,6 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                     }
                 }
 
-
- //               if (this.readonly){
- //                   this.setToolbars(this.json.sysTools.readTools, this.toolbarNode);
- ////                   this.setToolbars(this.json.tools.readTools, this.toolbarNode);
- //               }else{
- //                   this.setToolbars(this.json.sysTools.editTools, this.toolbarNode);
- ////                   this.setToolbars(this.json.tools.editTools, this.toolbarNode);
- //               }
- //               this.setCustomToolbars(this.json.tools, this.toolbarNode);
- //
- //
- //               this.toolbarWidget.load();
-
-                //   var size = this.toolbarNode.getSize();
-                //   this.node.setStyle("height", ""+size.y+"px");
-                //   var nodeSize = this.toolbarNode.getSize();
-                //   this.toolbarNode.setStyles({
-                //       "width": ""+nodeSize.x+"px",
-                ////       "position": "absolute",
-                //       "z-index": 50000
-                //   });
-                //   this.toolbarNode.position({"relativeTo": this.node, "position": "upperLeft", "edge": "upperLeft"});
-                //
-                //   this.form.node.addEvent("scroll", function(){
-                //       alert("ddd")
-                //   }.bind(this));
-
             }.bind(this));
         // }
 	},
@@ -121,6 +95,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
                     }).inject(node);
+                    if( this.json.customIconOverStyle ){
+                        actionNode.set("MWFButtonImageOver" , path+""+this.form.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
+                    }
                     if( tool.properties ){
                         actionNode.set(tool.properties);
                     }
@@ -163,6 +140,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
             }).inject(node);
+            if( this.json.iconOverStyle ){
+                actionNode.set("MWFButtonImageOver" , path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+tool.img );
+            }
             if( tool.properties ){
                 actionNode.set(tool.properties);
             }

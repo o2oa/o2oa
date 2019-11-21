@@ -32,6 +32,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">显示序号:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence==='yes')?'checked':''} type="radio" value="yes"/>是
+                    <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>否
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">最大行数:</td>
                 <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
             </tr>
@@ -146,7 +153,7 @@
                     <td class="editTableValue">
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
-                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部
+<!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
                     </td>
                 </tr>
                 <tr>
@@ -167,19 +174,19 @@
             <tr>
                 <td class="editTableTitle">拟稿组织:</td>
                 <td class="editTableValue">
-                    <div class="MWFSelectUnit" name="data.where.unitList"></div>
+                    <div class="MWFSelectUnit" name="data.where.creatorUnitList"></div>
                 </td>
             </tr>
             <tr>
                 <td class="editTableTitle">拟稿人员:</td>
                 <td class="editTableValue">
-                    <div class="MWFSelectPerson" name="data.where.personList"></div>
+                    <div class="MWFSelectPerson" name="data.where.creatorPersonList"></div>
                 </td>
             </tr>
             <tr>
                 <td class="editTableTitle">拟稿身份:</td>
                 <td class="editTableValue">
-                    <div class="MWFSelectIdentity" name="data.where.identityList"></div>
+                    <div class="MWFSelectIdentity" name="data.where.creatorIdentityList"></div>
                 </td>
             </tr>
         </table>

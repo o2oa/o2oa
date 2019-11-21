@@ -101,7 +101,6 @@ MWF.xApplication.process.Work.Main = new Class({
         //     "getWorkControl": false,
         //     "getForm": false
         // };
-        debugger;
         if (id){
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
@@ -123,7 +122,6 @@ MWF.xApplication.process.Work.Main = new Class({
         }
     },
     parseData: function(workData, controlData, formData, logData, attData){
-        debugger;
         var title = workData.work.title;
         this.setTitle(this.options.title+"-"+title);
 
@@ -334,7 +332,6 @@ MWF.xApplication.process.Work.Main = new Class({
                 };
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
-                debugger;
                 this.appForm.load(function(){
                     if (window.o2android && window.o2android.appFormLoaded){
                         layout.appForm = this.appForm;

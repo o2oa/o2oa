@@ -89,6 +89,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadLabelScript(v); break;
             case "Personfield":
                 this.loadPersonfieldScript(v); break;
+            case "Org":
+                this.loadOrgScript(v); break;
             case "Radio":
                 this.loadRadioScript(v); break;
             case "Select":
@@ -233,6 +235,16 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.rangeKey, "code", data, "rangeKey");
+        this.addScriptItem(data.rangeDutyKey, "code", data, "rangeDutyKey");
+        this.addScriptItem(data.exclude, "code", data, "exclude");
+        this.addScriptItem(data.rangeKey, "code", data, "sectionByScript");
+        this.loadEventsScript(data);
+    },
+    loadOrgScript: function(data){
+        this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.identityRangeKey, "code", data, "identityRangeKey");
+        this.addScriptItem(data.unitRangeKey, "code", data, "unitRangeKey");
         this.addScriptItem(data.rangeDutyKey, "code", data, "rangeDutyKey");
         this.addScriptItem(data.exclude, "code", data, "exclude");
         this.addScriptItem(data.rangeKey, "code", data, "sectionByScript");

@@ -21,6 +21,12 @@
         "height": "18px",
         "float": "right"
     },
+    "orgIcon": {
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/selectperson.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        "float": "right"
+    },
 	"textFieldIcon": {
 	    "background": "url("+"/x_component_process_Xform/$Form/default/icon/inputtext.png) center center no-repeat",
         "width": "18px",
@@ -663,6 +669,115 @@
         "max-width": "498px",
         "margin": "auto"
     },
+
+    "empowerAreaNode": {
+        "padding": "0 30px",
+        "font-size": "14px",
+        "overflow": "hidden"
+    },
+    "empowerSelectAllItemNode" : {
+        "height": "40px",
+        "line-height": "40px",
+        "padding-left" : "5px",
+        "font-size" : "16px",
+        "width": "50px",
+        "margin-left" : "30px",
+        "float": "left",
+        "overflow": "hidden",
+        "color" : "inherit",
+        "cursor" : "pointer",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat left center"
+    },
+    "empowerSelectAllItemNode_over" : {
+        "color" : "#3C76B7",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat left center"
+    },
+    "empowerSelectAllItemNode_selected" : {
+        "color" : "#3C76B7",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/empower_check.png) no-repeat left center"
+    },
+    "empowerItemOddNode": {
+        "float" : "left",
+        "width" : "250px",
+        "height": "20px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "background-color": "#ffffff",
+        "margin-right" : "10px"
+    },
+    "empowerItemEvenNode": {
+        "float" : "left",
+        "width" : "250px",
+        "height": "20px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "background-color": "#ffffff"
+    },
+    "empowerItemOddNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "empowerItemEvenNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "empowerItemOddNode_selected": {
+        "background-color": "#6196d1"
+    },
+    "empowerItemEvenNode_selected": {
+        "background-color": "#6196d1"
+    },
+    "empowerItemIconNode": {
+        "height": "20px",
+        "width": "30px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+    },
+    "empowerItemIconNode_selected": {
+        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+    },
+    "empowerItemContentNode": {
+        "height": "20px"
+    },
+    "empowerItemTitleNode": {
+        "float": "left",
+        "height": "20px",
+        "margin-left": "5px",
+        "line-height": "20px",
+        "font-size": "14px",
+        "color": "#666666"
+    },
+    "empowerItemTitleNode_selected":{
+        "color": "#ffffff"
+    },
+    "empowerItemPersonNode": {
+        "float": "left",
+        "margin-left": "5px",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "14px",
+        "color": "#0000ff"
+    },
+    "empowerItemPersonNode_selected": {
+        "color": "#ffffff"
+    },
+
+    "rollbackItemIconNode": {
+        "height": "46px",
+        "width": "30px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+    },
+    "rollbackItemIconNode_current": {
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+    },
+    "rollbackItemContentNode": {
+        "margin-right": "30px",
+        "height": "46px"
+    },
+
     "rollbackAreaNode": {
         "padding": "0 30px",
         "font-size": "14px",
@@ -828,6 +943,20 @@
     },
     "html5ActionButton_up": {
         "background": "#ffffff"
+    },
+    "waitSplitPageNode": {
+        "width": "260px",
+        "height": "60px",
+        "line-height": "60px",
+        "background-color": "#333333",
+        "position": "absolute",
+        "font-size": "16px",
+        "color": "#ffffff",
+        "border-radius": "10px",
+        "text-align": "center",
+        "opacity": 0.9,
+        "z-index": 20000,
+        "border": "1px solid #333333",
+        "box-shadow": "3px 3px 20px #333333"
     }
-
 }

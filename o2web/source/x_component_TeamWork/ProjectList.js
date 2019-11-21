@@ -57,7 +57,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     styles:this.css.naviContent
                 }).inject(this.naviTable);
 
-                new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
+                var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
 
                 //全部项目
                 if(resData.hasOwnProperty("allCount")){
@@ -517,7 +517,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         }
                     },
                     click:function(){
-                        alert(this.get("text"))
+                        //alert(this.get("text"))
                     }
                 });
                 var customGroupItem = new Element("div.customGroupItem",{styles:this.css.customGroupItem,text:d.name}).inject(customGroupItemContainer);
@@ -709,6 +709,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         this.actions[typeAction](id, count, filter,function(json){
             this.layoutList.empty();
             var projectItemData = json.data;
+
             if(options && options.type && options.type=="all"){
                 this.menuTitle.set("text","全部项目");
             }else if(options && options.type && options.type=="star"){
@@ -734,9 +735,10 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             this.menuCount.set("text","("+json.count+")");
             //debugger;
             if(this.currentListType=="list"){
+                if(!projectItemData) return;
                 projectItemData.each(function(d){
                     var projectListItem = new Element("div.projectListItem",{styles:this.css.projectListItem}).inject(this.layoutList);
-
+                    projectListItem.set("id",d.id);
                     projectListItem.addEvents({
                         click:function(){
                             _self.openProject(d);
@@ -783,8 +785,10 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 this.addProjectListText = new Element("div.addProjectListText",{styles:this.css.addProjectListText,text:this.lp.content.addProjectListText}).inject(this.addProjectList);
 
             }else{
+                if(!projectItemData) return;
                 projectItemData.each(function(d){
                     var projectBlockItem = new Element("div.projectBlockItem",{styles:this.css.projectBlockItem}).inject(this.layoutList);
+                    projectBlockItem.set("id",d.id);
                     if(d.icon && d.icon!=""){
                         projectBlockItem.setStyles({
                             "background-image":"url('"+MWF.xDesktop.getImageSrc( d.icon )+"')"
@@ -870,7 +874,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             click:function(e){
                 MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
                     var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": 700,"height": 600,
+                        {"width": "800","height": "80%",
                             onPostOpen:function(){
                                 ps.formAreaNode.setStyles({"top":"10px"});
                                 var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
@@ -880,7 +884,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 // _self.actions.projectGet(d.id,function(json){
                                 //     _self.loadSingleBlockItem(container,json.data)
                                 // });
-                                _self.reload();
+                                //_self.reload();
 
                             }
                         },{
@@ -916,7 +920,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         });
 
          var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemCover);
-         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:(d.projectDetail && d.projectDetail.description)||""}).inject(projectBlockItemCover);
+         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemCover);
     },
     loadSingleListItem:function(container,d){
         if(container) container.empty();
@@ -932,7 +936,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectListItemInforContainer = new Element("div.projectListItemInforContainer",{styles:this.css.projectListItemInforContainer}).inject(projectListItemContainer);
 
         var projectListItemTitle = new Element("div.projectListItemTitle",{styles:this.css.projectListItemTitle,text:d.title}).inject(projectListItemInforContainer);
-        var projectListItemDes = new Element("div.projectListItemDes",{styles:this.css.projectListItemDes,text:(d.projectDetail && d.projectDetail.description)||""}).inject(projectListItemInforContainer);
+        var projectListItemDes = new Element("div.projectListItemDes",{styles:this.css.projectListItemDes,text:d.description||""}).inject(projectListItemInforContainer);
         var projectListItemIconContainer = new Element("div.projectListItemIconContainer",{styles:this.css.projectListItemIconContainer}).inject(projectListItemContainer);
 
         var projectListItemFavIcon = new Element("div.projectListItemFavIcon",{styles:this.css.projectListItemFavIcon}).inject(projectListItemIconContainer);
@@ -966,9 +970,10 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
         projectListItemSettingIcon.addEvents({
             click:function(e){
+
                 MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
                     var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": 700,"height": 600,
+                        {"width": "800","height": "80%",
                             onPostOpen:function(){
                                 ps.formAreaNode.setStyles({"top":"10px"});
                                 var fx = new Fx.Tween(ps.formAreaNode,{duration:200});

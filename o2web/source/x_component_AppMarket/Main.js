@@ -1,20 +1,20 @@
 MWF.require("MWF.widget.MaskNode", null, false);
 MWF.xApplication.AppMarket.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "AppMarket",
-		"icon": "icon.png",
-		"width": "1000",
-		"height": "700",
-		"title": MWF.xApplication.AppMarket.LP.title
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.AppMarket.LP;
+    options: {
+        "style": "default",
+        "name": "AppMarket",
+        "icon": "icon.png",
+        "width": "1000",
+        "height": "700",
+        "title": MWF.xApplication.AppMarket.LP.title
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.AppMarket.LP;
         this.actions = MWF.Actions.get("x_program_center");
-	},
+    },
     mask: function(){
         if (!this.maskNode){
             this.maskNode = new MWF.widget.MaskNode(this.contentNode, {"style": "bam"});
@@ -27,8 +27,8 @@ MWF.xApplication.AppMarket.Main = new Class({
             this.maskNode = null;
         }.bind(this));
     },
-	loadApplication: function(callback){
-	    this.components = [];
+    loadApplication: function(callback){
+        this.components = [];
         this.loadTitle();
 
         this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
@@ -36,36 +36,39 @@ MWF.xApplication.AppMarket.Main = new Class({
         this.setContentSize();
         this.addEvent("resize", this.setContentSize);
 
-        this.mask();
+        //this.mask();
         this.loadCloudAppsContent();
-	},
+    },
 
     loadTitle: function(){
         this.titleBar = new Element("div", {"styles": this.css.titleBar}).inject(this.content);
         this.titleActionNode = new Element("div", {"styles": this.css.titleActionNode,"text": this.lp.implodeLocal}).inject(this.titleBar);
         this.taskTitleTextNode = new Element("div", {"styles": this.css.titleTextNode,"text": this.lp.title}).inject(this.titleBar);
         this.titleActionNode.addEvent("click", function(){
+            //this.implodeLocal();
             this.implodeLocal();
         }.bind(this));
     },
-    implodeLocal: function(){
-        if (!this.uploadFileAreaNode){
-            this.uploadFileAreaNode = new Element("div");
-            var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
-            this.uploadFileAreaNode.set("html", html);
-            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
-        }else{
-            if (this.fileUploadNode) this.fileUploadNode.destroy();
-            this.uploadFileAreaNode.empty();
-            var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
-            this.uploadFileAreaNode.set("html", html);
-            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
-        }
-        this.fileUploadNode.click();
+    implodeLocal: function(e){
+        MWF.xDesktop.requireApp("AppCenter", "", function(){
+            if (!this.uploadFileAreaNode){
+                this.uploadFileAreaNode = new Element("div");
+                var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+                this.uploadFileAreaNode.set("html", html);
+                this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+                this.fileUploadNode.addEvent("change", this.importLocalFile.bind(this));
+            }else{
+                if (this.fileUploadNode) this.fileUploadNode.destroy();
+                this.uploadFileAreaNode.empty();
+                var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+                this.uploadFileAreaNode.set("html", html);
+                this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+                this.fileUploadNode.addEvent("change", this.importLocalFile.bind(this));
+            }
+            this.fileUploadNode.click();
+        }.bind(this));
     },
-    implodeLocalFile: function(){
+    importLocalFile: function(){
         var files = this.fileUploadNode.files;
         if (files.length){
             var file = files[0];
@@ -78,6 +81,9 @@ MWF.xApplication.AppMarket.Main = new Class({
             var y = (size.y-height)/2;
 
             var setupModule = null;
+            var appCenter = new MWF.xApplication.AppCenter.Main();
+            appCenter.inBrowser = true;
+            appCenter.load(true);
             MWF.require("MWF.xDesktop.Dialog", function(){
                 var dlg = new MWF.xDesktop.Dialog({
                     "title": this.lp.setupTitle,
@@ -89,24 +95,26 @@ MWF.xApplication.AppMarket.Main = new Class({
                     "width": width,
                     "height": height,
                     "html": "",
-                    "maskNode": this.content,
-                    "container": this.content,
+                    "maskNode": this.node,
+                    "container": this.node,
                     "buttonList": [
                         {
-                            "text": this.lp.ok,
+                            "text": appCenter.lp.ok,
                             "action": function(){
                                 if (setupModule) setupModule.setup();
                                 this.close();
                             }
                         },
                         {
-                            "text": this.lp.cancel,
+                            "text": appCenter.lp.cancel,
                             "action": function(){this.close();}
                         }
                     ]
                 });
                 dlg.show();
-                setupModule = new MWF.xApplication.AppMarket.Module.SetupLocal(file, dlg, this);
+
+                setupModule = new MWF.xApplication.AppCenter.Module.SetupLocal(file, dlg, appCenter);
+
             }.bind(this));
         }
     },
@@ -127,10 +135,10 @@ MWF.xApplication.AppMarket.Main = new Class({
         this.contentModuleArea.setStyle("width", ""+x+"px");
     },
     loadCloudAppsContent: function(){
-		this.loadCloudApps(function(){
+        this.loadCloudApps(function(){
             if (MWF.AC.isAdministrator()) this.loadNewApp();
         }.bind(this));
-	},
+    },
     loadCloudApps: function(callback){
         this.categoryList = [];
         this.itemList = [];
@@ -145,6 +153,20 @@ MWF.xApplication.AppMarket.Main = new Class({
             }.bind(this));
 
             this.unmask();
+        }.bind(this), function(xhr, text, error){
+            this.unmask();
+            if (xhr.status!=0){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+            }
         }.bind(this));
     }
 });

@@ -5,7 +5,7 @@
 		"position": "absolute",
 		
 		"background-color": "#FFF",
-		"z-index": "99",
+		"z-index": "20001",
 		"font-size": "12px",
 		"overflow": "hidden"
 	},
@@ -164,7 +164,7 @@
 		"width": "8px",
 		"background-color": "#999",
 		"position": "absolute",
-		"z-index": "99",
+		"z-index": "20001",
 		"border-top": "1px solid #DDD",
 		"border-left": "1px solid #DDD",
 		"border-bottom": "1px solid #777",

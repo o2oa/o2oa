@@ -12,7 +12,7 @@ MWF.xApplication.Selector.Role = new Class({
     },
 
     _listItemByKey: function(callback, failure, key){
-        if (this.options.units.length || this.options.units.roles) key = {"key": key, "groupList": this.options.groupList, "roleList": this.options.roleList};
+        if (this.options.units.length || this.options.roles.length) key = this.getLikeKey(key);
         this.orgAction.listRoleByKey(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
@@ -26,7 +26,7 @@ MWF.xApplication.Selector.Role = new Class({
         return new MWF.xApplication.Selector.Role.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
-        if (this.options.units.length || this.options.units.roles) key = {"key": key, "groupList": this.options.groupList, "roleList": this.options.roleList};
+        if (this.options.units.length || this.options.roles.length) key = this.getLikeKey(key);
         this.orgAction.listRoleByPinyin(function(json){
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
@@ -41,6 +41,22 @@ MWF.xApplication.Selector.Role = new Class({
     },
     _getChildrenItemIds: function(data){
         return data.roleList;
+    },
+    getLikeKey : function( key ){
+        var result = key;
+        if (this.options.groups.length || this.options.roles.length){
+            var array = [];
+            this.options.groups.each( function(d){
+                array.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+
+            var array2 = [];
+            this.options.roles.each( function(d){
+                array2.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+            result = {"key": key || "", "groupList": array, "roleList": array2};
+        }
+        return result;
     }
 });
 MWF.xApplication.Selector.Role.Item = new Class({

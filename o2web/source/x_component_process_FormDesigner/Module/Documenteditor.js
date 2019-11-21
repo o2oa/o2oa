@@ -43,30 +43,47 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 			e.preventDefault();
 		});
 	},
-	
-	_setEditStyle_custom: function(name){
+	_setEditStyle_custom: function(name, obj, oldValue){
+		debugger;
+		if (name=="documentTempleteName"){
+			if (this.json.documentTempleteName!=oldValue){
+				this._resetContent();
+			}
+		}
 	},
-
-	_initModule: function(){
+	// _setEditStyle_custom: function(name){
+	// },
+	_resetContent: function(){
+		if (!this.json.documentTempleteType) this.json.documentTempleteType = "sys";
+		if (!this.json.documentTempleteName) this.json.documentTempleteName = "standard";
 		this.node.empty();
-
 		var pageNode = new Element("div.doc_layout_page", {"styles": this.css.doc_page}).inject(this.node);
 		var pageContentNode = new Element("div.doc_layout_page_content", {"styles": this.css.doc_layout_page_content}).inject(pageNode);
+		o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+			var o = json[this.json.documentTempleteName];
+			if (o){
+				pageContentNode.loadHtml("/x_component_process_FormDesigner/Module/Documenteditor/templete/"+o.file, function(){
+					// if (this.attachmentTemplete){
+					// 	var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
+					// 	if (attNode) attNode.empty();
+					// }
+					// if (callback) callback(control);
+				}.bind(this));
 
-		var html = '<div class="doc_block doc_layout_redHeader">文件红头</div>' +
-			"<div class=\"doc_block doc_layout_fileno\">[文号]</div>" +
-			"<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>" +
-			"<div class=\"doc_block doc_layout_subject\">[文件标题]</div>" +
-			"<div class=\"doc_block doc_layout_mainSend\">[主送单位：]</div>"+
-			"<div class=\"doc_block doc_layout_filetext\">　　[正文内容]</div>";
-		pageContentNode.set("html", html);
+			}
+		}.bind(this));
+	},
+	_initModule: function(){
+		this._resetContent();
 
-		pageContentNode.getElement(".doc_layout_redHeader").setStyles(this.css.doc_layout_redHeader);
-		pageContentNode.getElement(".doc_layout_fileno").setStyles(this.css.doc_layout_fileno);
-		pageContentNode.getElement(".doc_layout_redline").setStyles(this.css.doc_layout_redline);
-		pageContentNode.getElement(".doc_layout_subject").setStyles(this.css.doc_layout_subject);
-		pageContentNode.getElement(".doc_layout_mainSend").setStyles(this.css.doc_layout_mainSend);
-		pageContentNode.getElement(".doc_layout_filetext").setStyles(this.css.doc_layout_filetext);
+		debugger;
+		var templateJson = this.form.dataTemplate["Documenteditor"];
+		if (!templateJson){
+			var templateUrl = "/x_component_process_FormDesigner/Module/Documenteditor/template.json";
+			templateJson = MWF.getJSON(templateUrl, null, false);
+		}
+		if (templateJson) this.json.defaultValue = Object.merge(templateJson.defaultValue, this.json.defaultValue);
+
 
 		this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction() ;

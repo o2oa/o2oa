@@ -29,14 +29,15 @@
         "width": "24px",
         "height": "24px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+        "background": "url("
+        +
+        "/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
     },
     "routeTextNode": {
         "margin-left": "24px",
         "line-height": "24px",
         "color": "#000"
     },
-
     "routeOpinionTile": {
         "overflow": "hidden",
         "height": "30px",
@@ -51,7 +52,6 @@
         "height": "129px",
         "border-bottom": "1px solid #6681a5",
     },
-
     "inputOpinionNode": {
         "height": "129px",
         "width": "328px",
@@ -83,12 +83,10 @@
     "selectIdeaItemNode_over": {
         "background-color": "#e6ecf8"
     },
-
     "buttonsArea": {
         "height": "50px",
         "overflow": "hidden",
     },
-
     "okButton": {
         "height": "30px",
         "width": "100px",
@@ -104,14 +102,15 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url("
+        +
+        "/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
         "font-size": "14px",
         "margin-left": "40px",
         "line-height": "28px"
     },
-
     "cancelButton": {
         "height": "28px",
         "width": "78px",
@@ -128,7 +127,9 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url("
+        +
+        "/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -145,7 +146,6 @@
         "color": "#666",
         "background": "#FFF",
     },
-
     "inputOpinionMediaActionArea": {
         "position": "relative",
         "height": "25px",
@@ -153,7 +153,6 @@
         "top": "-30px",
         "margin-right": "5px"
     },
-
     "inputOpinionHandwritingAction": {
         "float": "right",
         "border": "1px solid #6681a5",
@@ -163,7 +162,9 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url("
+        +
+        "/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -186,7 +187,6 @@
         "font-size": "16px",
         "cursor": "pointer"
     },
-
     "inputOpinionAudioRecordAction": {
         "float": "right",
         "border": "1px solid #6681a5",
@@ -196,8 +196,39 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url(/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+    },
+    "orgsTitle": {
+        "overflow": "hidden",
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "background-color": "#6681a5",
+        "color": "#FFF",
+        "padding-left": "20px"
+    },
+    "routeOrgTable": {
+    },
+    "routeOrgOddTd": {
+        "width": "50%"
+    },
+    "routeOrgEvenTd": {
+        "width": "50%",
+        "border-left": "5px solid #ffffff"
+    },
+    "selectorTitle": {
+        "height": "26px",
+        "line-height": "26px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "selectorTitleText": {
+        "float": "left"
+    },
+    "selectorContent": {
+        "overflow": "hidden",
+        "margin-bottom": "10px"
     }
-
-
 }

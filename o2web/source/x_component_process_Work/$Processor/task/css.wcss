@@ -192,5 +192,39 @@
         "margin-left": "5px",
         "cursor": "pointer",
         "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+    },
+    "orgsTitle": {
+        "overflow": "hidden",
+        "height": "30px",
+        "line-height": "36px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "color": "#333",
+        "width": "80px",
+        "float": "left",
+        "margin-left": "20px"
+    },
+    "routeOrgTable": {
+    },
+    "routeOrgOddTd": {
+        "width": "50%"
+    },
+    "routeOrgEvenTd": {
+        "width": "50%",
+        "border-left": "5px solid #ffffff"
+    },
+    "selectorTitle": {
+        "height": "26px",
+        "line-height": "26px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "selectorTitleText": {
+        "float": "left"
+    },
+    "selectorContent": {
+        "overflow": "hidden",
+        "margin-bottom": "10px"
     }
 }

@@ -165,7 +165,7 @@ MWF.xApplication.Org.List.Item = new Class({
                 var at = this.attr[i-1];
                 if (typeOf(at)==="object"){
                     if (at.get){
-                        td.set("html", at.get.apply(this.data));
+                        td.set("text", at.get.apply(this.data));
                     }else{
                         td.set("text", "");
                     }
@@ -193,7 +193,14 @@ MWF.xApplication.Org.List.Item = new Class({
         this.attr.each(function(n){
             if (typeOf(n)==="object"){
                 if (n.get){
-                    rows.push(n.get.apply(this.data));
+                    var v = n.get.apply(this.data) || "";
+
+                    v = v.replace(/\</g, "&lt;");
+                    v = v.replace(/\</g, "&gt;");
+                    rows.push(v);
+                }else if(n.getHtml){
+                    var v = n.getHtml.apply(this.data);
+                    rows.push(v);
                 }else{
                     rows.push("");
                 }
@@ -217,11 +224,11 @@ MWF.xApplication.Org.List.Item = new Class({
             if (i>0){
                 if (this.list.options.action || this.list.options.canEdit){
                     td.store("attr", this.attr[i-1]);
-                    //if (this.list.options.canEdit){
+                    if (this.list.options.canEdit){
                         td.addEvent("click", function(){
                             _self.edit(this);
                         });
-                    //}
+                    }
                 }
                 var at = this.attr[i-1];
                 if (at.events){

@@ -13,7 +13,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         }
 	},
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();

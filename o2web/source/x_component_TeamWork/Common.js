@@ -178,13 +178,14 @@ MWF.xApplication.TeamWork.Common.ToolTips = new Class({
         hasArrow:false,
         event:"click"
     },
-    initialize : function( container, target, app, data, options, targetCoordinates ){
+    initialize : function( container, target, app, data, options, targetCoordinates, explorer ){
         //可以传入target 或者 targetCoordinates，两种选一
         //传入target,表示触发tooltip的节点，本类根据 this.options.event 自动绑定target的事件
         //传入targetCoordinates，表示 出发tooltip的位置，本类不绑定触发事件
         if( options ){
             this.setOptions(options);
         }
+        if(explorer) this.explorer = explorer;
         this.container = container;
         this.target = target;
         this.targetCoordinates = targetCoordinates;
@@ -201,6 +202,11 @@ MWF.xApplication.TeamWork.Common.ToolTips = new Class({
             this.setTargetEvents();
         }
         this.fireEvent("postInitialize",[this]);
+    },
+    load: function(){
+        this.fireEvent("queryLoad",[this]);
+        this.create();
+        this.fireEvent("postLoad",[this]);
     },
     _loadCustom : function( callback ){
         // new Element("div.aaa",{styles:{"background-color":"#ff0000",width:"500px","height":"800px",position:"absolute",

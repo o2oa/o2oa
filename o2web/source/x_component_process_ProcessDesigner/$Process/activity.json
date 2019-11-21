@@ -55,6 +55,7 @@
     "reviewScriptText": "",
 
     "manualMode":"single",
+    "manualMergeSameJobActivity": false,
 
 //    "canOpinion": true,
     "allowDeleteWork": false,
