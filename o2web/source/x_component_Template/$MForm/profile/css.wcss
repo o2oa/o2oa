@@ -1,0 +1,102 @@
+{
+  "inputText": {
+    //"width": "99%",
+    //"border":"1px solid #999",
+    //"background-color":"#FFF",
+    //"border-radius": "3px",
+    //"box-shadow": "0px 0px 6px #CCC",
+    //"height": "26px"
+    "border": "1px solid #999",
+    "box-shadow": "0 0 0 #999",
+    "width": "99%",
+    "height": "20px",
+    "line-height": "20px",
+    "background-color": "#FFF",
+    "margin-top": "4px",
+    "color": "#666",
+    "overflow": "hidden",
+    "font-size": "16px",
+    "background-color": "white"
+  },
+  "inputTime" : {
+    //"width": "99%",
+    //"border":"1px solid #999",
+    //"background-color":"#FFF",
+    //"border-radius": "3px",
+    //"box-shadow": "0px 0px 6px #CCC",
+    //"height": "26px",
+    //"background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    "border": "1px solid #999",
+    "box-shadow": "0 0 0 #999",
+    "width": "99%",
+    "height": "20px",
+    "line-height": "20px",
+    "background-color": "#FFF",
+    "margin-top": "4px",
+    "color": "#666",
+    "overflow": "hidden",
+    "font-size": "16px",
+    "background-color": "white"
+  },
+  "inputPerson" : {
+    //"width": "99%",
+    //"border":"1px solid #999",
+    //"background-color":"#FFF",
+    //"border-radius": "3px",
+    //"box-shadow": "0px 0px 6px #CCC",
+    //"min-height": "26px",
+    //"overflow" : "hidden",
+    //"background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+    "border": "1px solid #999",
+    "box-shadow": "0 0 0 #999",
+    "width": "99%",
+    "height": "20px",
+    "line-height": "20px",
+    "background-color": "#FFF",
+    "margin-top": "4px",
+    "color": "#666",
+    "overflow": "hidden",
+    "font-size": "16px",
+    "background-color": "white"
+  },
+  "inputTextarea" : {
+    //"width": "99%",
+    //"border":"1px solid #999",
+    //"background-color":"#FFF",
+    //"border-radius": "3px",
+    //"box-shadow": "0px 0px 6px #CCC",
+    //"height": "40px"
+    "border": "1px solid #999",
+    "box-shadow": "0 0 0 #999",
+    "width": "99%",
+    "height": "20px",
+    "line-height": "20px",
+    "background-color": "#FFF",
+    "margin-top": "4px",
+    "color": "#666",
+    "overflow": "hidden",
+    "font-size": "16px",
+    "background-color": "white"
+  },
+
+  "formTable" : {
+
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align": "left"
+  },
+  "formTableValue" : {
+    "text-align": "left"
+  }
+}
+

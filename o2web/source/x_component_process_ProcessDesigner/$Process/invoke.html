@@ -105,7 +105,7 @@
                 </tr>
             </table>
 
-            <div id="text{$.id}webserviceInvokeInternalProjectJaxrs">
+            <div id="text{$.id}webserviceInvokeInternalProjectJaxrs" style="display: text{($.internal===true) ? 'block': 'none'} ">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">服务应用:</td>
@@ -158,6 +158,17 @@
             </table>
             <div class="MWFScriptText" name="jaxrsBodyScriptText"></div>
             <div style="margin-left: 10px; line-height:20px">设置消息体内容：<font style="color: #e40000">this</font><font style="color: #666666">.body.set( value )</font></div>
+            <hr />
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">消息头脚本:</td>
+                    <td class="editTableValue"><div class="MWFScript" name="jaxrsHeadScript"></div></td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="jaxrsHeadScriptText"></div>
+            <div style="margin-left: 10px; line-height:20px">增加http头信息：<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put( key, value )</font><br>或<br><font style="color: #e40000">this</font><font style="color: #666666">.headers.put({"key1": "value1", "key2": "value2"})</font></div>
+
+            <div style="margin-left: 10px; line-height:20px">删除http头信息：<font style="color: #e40000">this</font><font style="color: #666666">.headers.remove( key )</font></div>
             <hr />
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>

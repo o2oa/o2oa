@@ -8,12 +8,45 @@ MWF.xApplication.Selector.Group = new Class({
         "groups": [],
         "roles": [],
         "values": [],
-        "names": []
+        "names": [],
+        "include" : []
+    },
+    checkLoadSelectItems: function(){
+        if( this.options.include && this.options.include.length ){
+            this.loadInclude();
+        }else if (!this.options.groups.length && !this.options.roles.length){
+            this.loadSelectItems();
+        }else{
+            this.loadSelectItemsByCondition();
+        }
     },
 
+    loadInclude: function(){
+        if( !this.options.include || this.options.include.length === 0 )return;
+        this.includeGroup = [];
+        this.options.include.each( function( d ){
+            var key = typeOf(d)==="object" ? d.distinguishedName : d;
+            this.orgAction.listGroupByKey(function(json){
+                if( !json.data )return;
+                var array = typeOf( json.data ) === "array" ? json.data : [json.data];
+                array.each(function(data){
+                    if( !this.isExcluded( data ) ) {
+                        this.includeGroup.push( data.distinguishedName );
+                        var item = this._newItem(data, this, this.itemAreaNode, 1);
+                        this.items.push(item);
+                    }
+                }.bind(this));
+            }.bind(this), null, key);
+        }.bind(this))
+    },
     _listItemByKey: function(callback, failure, key){
-        if (this.options.groups.length || this.options.roles.length) key = {"key": key, "groupList": this.options.groups, "roleList": this.options.roles};
+        if (this.options.groups.length || this.options.roles.length) key = this.getLikeKey( key );
         this.orgAction.listGroupByKey(function(json){
+            if( this.includeGroup && this.includeGroup.length > 0 ){
+                json.data = json.data.filter( function(d){
+                    return this.includeGroup.contains(d.distinguishedName);
+                }.bind(this))
+            }
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
@@ -26,8 +59,13 @@ MWF.xApplication.Selector.Group = new Class({
         return new MWF.xApplication.Selector.Group.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
-        if (this.options.groups.length || this.options.roles.length) key = {"key": key, "groupList": this.options.groups, "roleList": this.options.roles};
+        if (this.options.groups.length || this.options.roles.length) key = this.getLikeKey( key );
         this.orgAction.listGroupByPinyin(function(json){
+            if( this.includeGroup && this.includeGroup.length > 0 ){
+                json.data = json.data.filter( function(d){
+                    return this.includeGroup.contains(d.distinguishedName);
+                }.bind(this))
+            }
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
@@ -42,6 +80,22 @@ MWF.xApplication.Selector.Group = new Class({
     },
     _getChildrenItemIds: function(data){
         return data.groupList;
+    },
+    getLikeKey : function( key ){
+        var result = key;
+        if (this.options.groups.length || this.options.roles.length){
+            var array = [];
+            this.options.groups.each( function(d){
+                array.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+
+            var array2 = [];
+            this.options.roles.each( function(d){
+                array2.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+            result = {"key": key || "", "groupList": array, "roleList": array2};
+        }
+        return result;
     }
 });
 MWF.xApplication.Selector.Group.Item = new Class({
@@ -120,7 +174,7 @@ MWF.xApplication.Selector.Group.Filter = new Class({
     options: {
         "style": "default",
         "groups": [],
-        "roles": [],
+        "roles": []
     },
     initialize: function(value, options){
         this.setOptions(options);
@@ -131,10 +185,26 @@ MWF.xApplication.Selector.Group.Filter = new Class({
         this.value = value;
         var key = this.value;
 
-        if (this.options.groups.length || this.options.roles.length) key = {"key": key, "groupList": this.options.groupList, "roleList": this.options.roleList};
+        if (this.options.groups.length || this.options.roles.length) key = this.getLikeKey(key);
         this.orgAction.listGroupByKey(function(json){
             data = json.data;
             if (callback) callback(data)
         }.bind(this), null, key);
+    },
+    getLikeKey : function( key ){
+        var result = key;
+        if (this.options.groups.length || this.options.roles.length){
+            var array = [];
+            this.options.groups.each( function(d){
+                array.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+
+            var array2 = [];
+            this.options.roles.each( function(d){
+                array2.push( typeOf(d)==="object" ? d.distinguishedName : d );
+            }.bind(this));
+            result = {"key": key || "", "groupList": array, "roleList": array2};
+        }
+        return result;
     }
 });

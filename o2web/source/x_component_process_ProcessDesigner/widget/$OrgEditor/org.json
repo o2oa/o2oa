@@ -1,0 +1,66 @@
+{
+	"id": "",
+	"name": "",
+	"description": "",
+	"identityRange": "all",
+  	"identityResultType" : "identity",
+  	"identityRangeNextLevel" : "1",
+  	"unitRange": "all",
+	"identityCount": 0,
+  	"unitCount": 0,
+  	"unitRangeNextLevel" : "1",
+  	"groupCount": 0,
+  	"selectType": ["identity"], //"unit","group"
+    "compute": "create", //create, show, save
+    "section": "no",
+    "sectionBy": "person",
+    "sectionByScript": {
+      "code": "",
+      "html": ""
+    },
+	"events": {
+	  "queryLoadSelector" : {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoadSelector" : {
+		"code": "",
+		"html": ""
+	  },
+	  "queryLoadCategory" : {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoadCategory" : {
+		"code": "",
+		"html": ""
+	  },
+	  "selectCategory": {
+		"code": "",
+		"html": ""
+	  },
+	  "unselectCategory": {
+		"code": "",
+		"html": ""
+	  },
+	  "queryLoadItem" : {
+		"code": "",
+		"html": ""
+	  },
+	  "postLoadItem" : {
+		"code": "",
+		"html": ""
+	  },
+	  "selectItem" : {
+		"code": "",
+		"html": ""
+	  },
+	  "unselectItem" : {
+		"code": "",
+		"html": ""
+	  }
+	},
+	"properties": {},
+	"class": "",
+	"styles": {}
+}

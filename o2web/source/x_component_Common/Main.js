@@ -382,7 +382,6 @@ MWF.xApplication.Common.Main = new Class({
                 y: where.y.toString().toLowerCase()=="bottom" ? 10 : 10
             };
         }
-
 		new mBox.Notice({
 			type: type,
 			position: where,

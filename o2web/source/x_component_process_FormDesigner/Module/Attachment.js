@@ -57,7 +57,11 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
             }else{
                 this.attachmentController.changeControllerSizeToMax();
             }
-		};
+		}else if(name=="toolbarGroupHidden"){
+			this.attachmentController.resetToolbarGroupHidden( this.json[name] );
+		}else if( name=="availableListStyles" ){
+			this.attachmentController.resetToolbarAvailableListStyle( this.json[name] );
+		}
 	},
 
 	_initModule: function(){
@@ -69,7 +73,12 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 	},
     loadAttachmentController: function(){
         MWF.require("MWF.widget.AttachmentController", function(){
-            this.attachmentController = new MWF.widget.ATTER(this.node, this, {"readonly": true, "size": this.json.size});
+            this.attachmentController = new MWF.widget.ATTER(this.node, this, {
+				"readonly": true,
+				"size": this.json.size,
+				"toolbarGroupHidden" : this.json.toolbarGroupHidden || [],
+				"availableListStyles" : this.json.availableListStyles || ["list","seq","icon","preview"]
+            });
             this.attachmentController.load();
         }.bind(this));
     }

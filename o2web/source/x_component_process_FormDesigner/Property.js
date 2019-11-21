@@ -68,6 +68,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadHTMLArea();
                     this.loadJSONArea();
                     this.loadFormSelect();
+                    this.loadSubformSelect();
                     //this.loadPageSelect();
                     this.loadWidgetSelect();
                     this.loadANNModelSelect();
@@ -83,6 +84,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSourceTestRestful();
                     this.loadSidebarPosition();
                     this.loadViewFilter();
+                    this.loadDocumentTempleteSelect();
                     //this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
@@ -256,16 +258,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             this.getFormList(function(){
                 formNodes.each(function(node){
                     var select = new Element("select").inject(node);
+
                     select.addEvent("change", function(e){
                         var value = e.target.options[e.target.selectedIndex].value;
-                        //if( !this.module.checkSubformNested( value ) ){
-                        //    this.designer.notice(MWF.APPPD.LP.checkSubformNestedError, "error", e.target, {
-                        //        x: "right",
-                        //        y: "bottom"
-                        //    });
-                        //}else {
-                            this.setValue(e.target.getParent("div").get("name"), value, select);
-                        //}
+                        this.setValue(e.target.getParent("div").get("name"), value, select);
                     }.bind(this));
                     this.setFormSelectOptions(node, select);
 
@@ -306,6 +302,93 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             if (callback) callback();
         }
     },
+
+
+    loadSubformSelect: function(){
+        var subformContainers = this.propertyContent.getElements(".MWFSubFormSelectContainer");
+        if (subformContainers.length){
+            subformContainers.each( function( container ){
+                var appSelectNode = container.getElement(".MWFSubformAppSelect");
+                var formSelectNode = container.getElement(".MWFSubformSelect");
+                var formSelect;
+
+                var appNodeName = appSelectNode.get("name");
+                var formNodeName = formSelectNode.get("name");
+
+                this.loadProcessApplictionSelect( appSelectNode, appNodeName, function( apps ){
+                    var oldValue = this.data[appNodeName] || "";
+                    this.data[appNodeName] = !apps.length ? "" : apps[0].data.id;
+                    if( oldValue !== this.data[appNodeName] ){
+                        this.getSubFormList(function(){
+                            this.setSubformSelectOptions(formSelectNode, formSelect);
+                            formSelect.fireEvent("change");
+                        }.bind(this), true, appNodeName);
+                    }
+                }.bind(this));
+                formSelect = this._loadSubformSelect( formSelectNode, formNodeName,  appNodeName ) ;
+            }.bind(this))
+        }
+    },
+    loadProcessApplictionSelect : function( node, appNodeName, callback ){
+        var application = appNodeName ? this.data[appNodeName] : "";
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+            new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                "title" : this.form.designer.lp.selectApplication,
+                "type": "application",
+                "count" : 1,
+                "names": application ? [ {id : application} ] : [],
+                "onChange": function (apps) {
+                    callback(apps)
+                }.bind(this)
+            });
+        }.bind(this))
+    },
+    _loadSubformSelect : function( node, formNodeName, appNodeName ){
+        var select;
+        this.getSubFormList(function(){
+            select = new Element("select").inject(node);
+
+            select.addEvent("change", function(e){
+                var value = select.options[select.selectedIndex].value;
+                this.setValue(formNodeName, value, select);
+            }.bind(this));
+            this.setSubformSelectOptions(node, select);
+
+            var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+            refreshNode.addEvent("click", function(e){
+                this.getSubFormList(function(){
+                    this.setSubformSelectOptions(node, select);
+                }.bind(this), true, appNodeName);
+            }.bind(this));
+        }.bind(this), false, appNodeName );
+        return select;
+    },
+    setSubformSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.subforms.each(function(subforms){
+            if( this.form.json.id !== subforms.id ){
+                var option = new Element("option", {
+                    "text": subforms.name,
+                    "value": subforms.id,
+                    "selected": (this.data[name]==subforms.id)
+                }).inject(select);
+            }
+        }.bind(this));
+    },
+    getSubFormList: function(callback, refresh, appNodeName){
+        var application = appNodeName ? this.data[appNodeName] : "";
+        if (!this.subforms || refresh){
+            this.form.designer.actions.listForm( application || this.form.designer.application.id, function(json){
+                this.subforms = json.data;
+                if (callback) callback();
+            }.bind(this), null, false);
+        }else{
+            if (callback) callback();
+        }
+    },
+
 
     loadPageSelect: function(){
         var pageNodes = this.propertyContent.getElements(".MWFPageSelect");
@@ -409,6 +492,30 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 //			subNode = subNode.getNext();
 //		}
 //	},
+    loadDocumentTempleteSelect: function(){
+        var nodes = this.propertyContent.getElements(".MWFDocumentTempleteSelect");
+        if (nodes.length){
+            o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+                nodes.each(function(node){
+                    var name = node.get("name");
+                    Object.each(json, function(o, k){
+                        new Element("option", {
+                            "text": o.name,
+                            "value": k,
+                            "selected": (this.data[name]==k)
+                        }).inject(node);
+                    }.bind(this));
+                    node.addEvent("change", function(e){
+                        var oldValue = this.data[name];
+                        var value = e.target.options[e.target.selectedIndex].value;
+                        var name = e.target.options[e.target.selectedIndex].get("text");
+                        this.changeJsonDate([name], value);
+                        this.changeData(name, node, oldValue);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+    },
     loadViewFilter: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
         var filtrData = this.data.filterList;
@@ -1430,35 +1537,99 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			}.bind(this));
 		}.bind(this));
 	},
-	loadPropertyTab: function(){
-		var tabNodes = this.propertyContent.getElements(".MWFTab");
-		if (tabNodes.length){
-			var tmpNode = this.propertyContent.getFirst();
-			var tabAreaNode = new Element("div", {
-				"styles": this.form.css.propertyTabNode
-			}).inject(tmpNode, "before");
-			
-			MWF.require("MWF.widget.Tab", function(){
-				var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
-				tab.load();
-				var tabPages = [];
-				tabNodes.each(function(node){
-				    if (node.getStyle("display")!="none"){
+	//loadPropertyTab: function(){
+	//	var tabNodes = this.propertyContent.getElements(".MWFTab");
+	//	if (tabNodes.length){
+	//		var tmpNode = this.propertyContent.getFirst();
+	//		var tabAreaNode = new Element("div", {
+	//			"styles": this.form.css.propertyTabNode
+	//		}).inject(tmpNode, "before");
+	//
+	//		MWF.require("MWF.widget.Tab", function(){
+	//			var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
+	//			tab.load();
+	//			var tabPages = [];
+	//			tabNodes.each(function(node){
+	//			    if (node.getStyle("display")!="none"){
+     //                   var page = tab.addTab(node, node.get("title"), false);
+     //                   tabPages.push(page);
+     //                   page.contentScrollNode = new Element("div", {"styles": {"height": "100%", "overflow": "hidden"}}).inject(page.contentNodeArea);
+     //                   node.inject(page.contentScrollNode);
+     //                   this.setScrollBar(page.contentScrollNode, "small", null, null);
+     //               }
+	//			}.bind(this));
+	//			tabPages[0].showTab();
+	//
+	//			this.propertyTab = tab;
+	//
+	//			this.designer.resizeNode();
+	//		}.bind(this), false);
+	//	}
+	//},
+    loadPropertyTab: function(){
+        var tabNodes = this.propertyContent.getElements(".MWFTab");
+        var groupObject = {};  //data-group 属性可以表示不同的分组
+        if (tabNodes.length){
+            tabNodes.each( function(node){
+                var group = node.get("data-group") || "default";
+                groupObject[group] = groupObject[group] || [];
+                groupObject[group].push( node );
+            }.bind(this))
+        }
+        for( var group in groupObject ){
+            if( group === "default" ){
+                var tmpNode = this.propertyContent.getFirst();
+                var tabAreaNode = new Element("div", {
+                    "styles": this.form.css.propertyTabNode
+                }).inject(tmpNode, "before");
+
+                MWF.require("MWF.widget.Tab", function(){
+                    var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
+                    tab.load();
+                    var tabPages = [];
+                    groupObject["default"].each(function(node){
+                        if (node.getStyle("display")!="none"){
+                            var page = tab.addTab(node, node.get("title"), false);
+                            tabPages.push(page);
+                            page.contentScrollNode = new Element("div", {"styles": {"height": "100%", "overflow": "hidden"}}).inject(page.contentNodeArea);
+                            node.inject(page.contentScrollNode);
+                            this.setScrollBar(page.contentScrollNode, "small", null, null);
+                        }
+                    }.bind(this));
+                    tabPages[0].showTab();
+
+                    this.propertyTab = tab;
+
+                    this.designer.resizeNode();
+                }.bind(this), false);
+            }else{
+                var tmpNode = groupObject[group][0];
+                var tabAreaNode = new Element("div", {
+                    "styles": this.form.css.propertyTabNode
+                }).inject(tmpNode, "before");
+                MWF.require("MWF.widget.Tab", function(){
+                    var tab = new MWF.widget.Tab(tabAreaNode, {"style": tmpNode.get("data-style") || "formPropertyList"});
+                    tab.load();
+                    var tabPages = [];
+                    groupObject[group].each(function(node) {
                         var page = tab.addTab(node, node.get("title"), false);
                         tabPages.push(page);
-                        page.contentScrollNode = new Element("div", {"styles": {"height": "100%", "overflow": "hidden"}}).inject(page.contentNodeArea);
-                        node.inject(page.contentScrollNode);
-                        this.setScrollBar(page.contentScrollNode, "small", null, null);
+                        node.store("tab", page);
+                        if (node.getStyle("display") === "none"){
+                            page.disableTab( true );
+                            node.show();
+                        }
+                    }.bind(this));
+                    for( var i=0; i<tabPages.length; i++ ){
+                        if( !tabPages[i].disabled ){
+                            tabPages[i].showTab();
+                            break
+                        }
                     }
-				}.bind(this));
-				tabPages[0].showTab();
-				
-				this.propertyTab = tab;
-				
-				this.designer.resizeNode();
-			}.bind(this), false);
-		}
-	},
+                }.bind(this), false);
+            }
+        }
+    },
 	
 	setEditNodeEvent: function(){
 		var property = this;

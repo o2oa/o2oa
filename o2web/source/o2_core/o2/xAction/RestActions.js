@@ -3,6 +3,7 @@ MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 
 MWF.xAction.RestActions = MWF.Actions = {
     "actions": {},
+    "loadedActions": {},
     "get": function(root){
         if (this.actions[root]) return this.actions[root];
 
@@ -15,6 +16,33 @@ MWF.xAction.RestActions = MWF.Actions = {
 
         this.actions[root] = new MWF.xAction.RestActions.Action[root](root, actions);
         return this.actions[root];
+    },
+    "load": function(root){
+        if (this.loadedActions[root]) return this.loadedActions[root];
+        var jaxrs = null;
+        //var url = this.getHost(root)+"/"+root+"/describe/describe.json";
+        var url = this.getHost(root)+"/"+root+"/describe/api.json";
+        //var url = "/o2_core/o2/xAction/temp.json";
+        MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
+        if (jaxrs){
+            var actionObj = {};
+            jaxrs.each(function(o){
+                if (o.methods && o.methods.length){
+                    var actions = {};
+                    o.methods.each(function(m){
+                        var o = {"uri": "/"+m.uri};
+                        if (m.method) o.method = m.method;
+                        if (m.enctype) o.enctype = m.enctype;
+                        actions[m.name] = o;
+                    }.bind(this));
+                    actionObj[o.name] = new MWF.xAction.RestActions.Action(root, actions);
+                    //actionObj[o.name] = new MWF.xAction.RestActions.Action(root, o.methods);
+                }
+            }.bind(this));
+            this.loadedActions[root] = actionObj;
+            return actionObj;
+        }
+        return null;
     },
     "getHost": function(root){
         var addressObj = layout.desktop.serviceAddressList[root];
@@ -161,5 +189,15 @@ MWF.xAction.RestActions.Action = new Class({
             }
             return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
         }.bind(this);
+    }
+});
+
+Date.implement({
+    "getFromServer": function(){
+        var d;
+        o2.Actions.get("x_program_center").echo(function(json){
+            d = Date.parse(json.data.serverTime);
+        }, null, false);
+        return d;
     }
 });

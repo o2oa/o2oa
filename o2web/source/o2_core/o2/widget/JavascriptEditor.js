@@ -81,7 +81,8 @@ o2.widget.JavascriptEditor = new Class({
             this.editor.setOptions({
                 enableBasicAutocompletion: true,
                 enableSnippets: true,
-                enableLiveAutocompletion: true
+                enableLiveAutocompletion: true,
+                lineNumbers: this.options.option.lineNumbers
             });
             if (this.options.option.value) this.editor.setValue(this.options.option.value);
 

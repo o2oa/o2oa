@@ -12,7 +12,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
         "zIndex": 1000,
         "expand": true,
         "exclude" : [],
-        "expandSubEnable" : true //是否允许展开下一层
+        "expandSubEnable" : true, //是否允许展开下一层
+        "selectAllEnable" : true //分类是否允许全选下一层
     },
 
     loadSelectItems: function(addToNext){
@@ -34,8 +35,12 @@ MWF.xApplication.Selector.UnitWithType = new Class({
                     if( !this.isExcluded( data ) ) {
                         if ( !this.options.expandSubEnable || (!this.options.unitType) || data.typeList.indexOf(this.options.unitType)!==-1){
                             var unit = this._newItem(data, this, this.itemAreaNode, 1);
+                            this.subItems.push(unit);
                         }else{
-                            if (data.woSubDirectUnitList.length) var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                            if (data.woSubDirectUnitList.length){
+                                var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode);
+                                this.subCategorys.push(category);
+                            }
                         }
                     }
                 }.bind(this));
@@ -49,8 +54,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
     _getChildrenItemIds: function(){
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level){
-        return new MWF.xApplication.Selector.UnitWithType[type](data, selector, item, level)
+    _newItemCategory: function(type, data, selector, item, level, category){
+        return new MWF.xApplication.Selector.UnitWithType[type](data, selector, item, level, category)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -100,8 +105,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Selector.UnitWithType.Item(data, selector, container, level);
+    _newItem: function(data, selector, container, level, category){
+        return new MWF.xApplication.Selector.UnitWithType.Item(data, selector, container, level, category);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.UnitWithType.SearchItem(data, selector, container, level);
@@ -142,9 +147,28 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 }
                 e.stopPropagation();
             }.bind(this));
+
+            if( !this.selectAllNode ){
+                this.selectAllNode = new Element("div", {
+                    "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
+                    "title" : "全选下级"
+                }).inject(this.textNode, "before");
+                //this.selectAllNode.addEvent( "click", function(ev){
+                //    this.selectAll(ev);
+                //    ev.stopPropagation();
+                //}.bind(this))
+                if( this.isSelectedAll ){
+                    this.unselectAll(ev);
+                    this.selector.fireEvent("unselectCatgory",[this])
+                }else{
+                    this.selectAll(ev);
+                    this.selector.fireEvent("selectCatgory",[this])
+                }
+                ev.stopPropagation();
+            }
         }
     },
-    loadSubItems: function(){
+    loadSubItems: function(callback){
         if (!this.loaded){
             if (!this.children){
                 this.children = new Element("div", {
@@ -155,18 +179,27 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
             this.data.woSubDirectUnitList.each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
-                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1);
+                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                        if( !this.subItems )this.subItems = [];
+                        this.subItems.push( unit );
                     } else {
-                        if (data.woSubDirectUnitList.length) var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children);
+                        if (data.woSubDirectUnitList.length){
+                            var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
+                            this.subCategorys.push( category );
+                        }
                     }
                 }
+                if(callback)callback()
             }.bind(this));
             this.loaded = true;
         }else{
             this.children.setStyle("display", "block");
         }
+    },
+    postLoad : function(){
     }
 });
+
 MWF.xApplication.Selector.UnitWithType.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Unit.Item,
     _getShowName: function(){
@@ -198,9 +231,18 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
             this.data.woSubDirectUnitList.each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
-                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        if(this.subItems)this.subItems.push( unit );
                     }else{
-                        if (subData.woSubDirectUnitList.length) var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1);
+                        if (subData.woSubDirectUnitList.length){
+                            var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
+                            this.subCategorys.push(category);
+                        }
+                    }
+                }
+                if( !this.subItems || !this.subItems.length ){
+                    if( this.selectAllNode ){
+                        this.selectAllNode.destroy();
                     }
                 }
             }.bind(this));
@@ -210,7 +252,22 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
             if (callback) callback();
         }
     },
+    afterLoad: function(){
+        if (this.level===1) this.clickItem();
+        var flag = false;
+        this.data.woSubDirectUnitList.each(function(subData) {
+            if (!this.selector.isExcluded(subData)) {
+                if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
+                    flag = true;
+                }
+            }
+            if (!flag && this.selectAllNode)this.selectAllNode.destroy();
+        }.bind(this));
+    },
     _hasChild: function(){
+        return this.data.woSubDirectUnitList.length;
+    },
+    _hasChildItem: function(){
         return this.data.woSubDirectUnitList.length;
     }
 });

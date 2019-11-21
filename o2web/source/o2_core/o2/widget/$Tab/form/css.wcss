@@ -1,6 +1,7 @@
 {
 	"tabNodeContainer": {
 		"height": "30px",
+		"overflow": "hidden",
 		"border-bottom": "1px solid #999"
 	},
 	"contentNodeContainer": {
@@ -15,7 +16,7 @@
 		"opacity": 0
 	},
 	"tabNode": {
-		"position": "relative",
+		"position": "static",
 		"margin-left": "2px",
 		"margin-top": "4px",
 		"margin-right": "0px",
@@ -72,5 +73,23 @@
 		"height": "30px",
 		"width": "20px",
 		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
-	}
+	},
+     	"tabNodeContainerRight": {
+     	    "width": "10px",
+     	    "height": "22px",
+     	    "margin-top": "3px",
+     	    "border": "1px solid #eeeeee",
+     	    "margin-right": "3px",
+     	    "float": "right",
+     	    "background": "url("+o2.session.path+"/widget/$Tab/script/down.png) center center no-repeat",
+             "cursor": "pointer"
+     	},
+     	"tabNodeContainerRight_over": {
+     	    "border": "1px solid #cccccc",
+     	},
+
+     	"tabNodeContainerLeft": {
+     	    "margin-right": "15px",
+             "height": "30px"
+     	}
 }

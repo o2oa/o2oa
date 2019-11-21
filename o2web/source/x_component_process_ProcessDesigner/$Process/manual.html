@@ -31,6 +31,14 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">合并待办:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="manualMergeSameJobActivity" text{($.manualMergeSameJobActivity)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="manualMergeSameJobActivity" text{(!$.manualMergeSameJobActivity)?'checked':''} type="radio" value="false"/>否
+                    <div style="color: #999999">（ 如果选“是”，同一身份在此节点上的待办会被合并 ）</div>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">表单:</td>
                 <td class="editTableValue">
                     <div class="MWFFormSelect" name="form"></div></td>

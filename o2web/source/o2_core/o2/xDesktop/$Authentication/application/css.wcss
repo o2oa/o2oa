@@ -265,7 +265,7 @@
 	"margin-left" : "20px",
 	"color" : "#fff",
 	"font-size" : "14px",
-	"width": "100px",
+	"width": "90px",
 	"height": "42px",
 	"line-height": "42px",
 	"background-color":"#3c75b7",
@@ -273,10 +273,10 @@
 	"border" : "0px"
   },
   "inputResendVerification" : {
-	"margin-left" : "20px",
+	"margin-left" : "10px",
 	"color" : "#666",
 	"font-size" : "14px",
-	"width": "100px",
+	"width": "90px",
 	"height": "42px",
 	"line-height": "42px",
 	"background-color":"#fff",

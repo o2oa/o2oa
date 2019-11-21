@@ -112,6 +112,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
     resetOption: function(){
         this.node.empty();
         this.setOptions();
+		this.fireEvent("resetOption")
     },
 	getOptions: function(){
 		if (this.json.itemType == "values"){
@@ -135,6 +136,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 					"text": text
 				}).inject(this.node);
 			}.bind(this));
+			this.fireEvent("setOptions", [optionItems])
 		}
 	},
 	addOption: function(text, value){
@@ -142,6 +144,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
             "value": value || text,
             "text": text
         }).inject(this.node);
+		this.fireEvent("addOption", [text, value])
 	},
 	_setValue: function(value){
         if (!this.readonly) {
@@ -208,6 +211,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 				}
 			}
 		});
+		this.fireEvent("setData", [data]);
 	}
 	
 }); 

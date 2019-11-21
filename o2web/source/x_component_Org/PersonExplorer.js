@@ -280,7 +280,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                     }
                 }
             }, {
-                "get": function(){
+                "getHtml": function(){
                     if (this.major){
                         return "<div style='width:24px; height:24px; background:url(/x_component_Org/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/mainid.png) center center no-repeat'></div>";
@@ -297,7 +297,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                     }
                 }
             },{
-                "get": function(){
+                "getHtml": function(){
                     if (_self.data.control.allowEdit){
                         return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/edit.png) center center no-repeat'></div>";
@@ -306,6 +306,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                 },
                 "events": {
                     "click": function(){
+                        debugger;
                         if (_self.data.control.allowEdit){_self.editIdentity(this.data, this.td, this.item);}
                     }
                 }
@@ -384,10 +385,15 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
             var node = dlg.content.getFirst();
             var html = "<table width='90%' cellpadding='0px' cellspacing='5px' align='center' style='margin-top:10px'>" +
                 "<tr><th width='30%'>"+this.explorer.app.lp.IdentityName+"</th><th>"+this.explorer.app.lp.personUnique+"</th><th>"+this.explorer.app.lp.IdentityMain+"</th></tr>" +
-                "<tr><td style='text-align: center'><input value='"+data.name+"' type='type' style='padding: 0px 3px; width: 95%; border: 1px solid #cccccc; height: 24px; border-radius: 3px; line-height: 24px;'/></td>" +
-                "<td style='text-align: center'><input value='"+data.unique+"' type='type' style='padding: 0px 3px; width: 95%; border: 1px solid #cccccc; height: 24px; border-radius: 3px; line-height: 24px;'/></td>" +
+                "<tr><td style='text-align: center'><input value='' type='type' style='padding: 0px 3px; width: 95%; border: 1px solid #cccccc; height: 24px; border-radius: 3px; line-height: 24px;'/></td>" +
+                "<td style='text-align: center'><input value='' type='type' style='padding: 0px 3px; width: 95%; border: 1px solid #cccccc; height: 24px; border-radius: 3px; line-height: 24px;'/></td>" +
                 "<td style='text-align: center'><input value='yes' type='checkbox' "+((data.major) ? "checked" : "")+"/></td></tr></table>";
+
             node.set("html", html);
+            var inputs = node.getElements("input");
+            if (inputs[0]) inputs[0].set("value", data.name);
+            if (inputs[1]) inputs[1].set("value", data.unique);
+            //if (inputs[2]) inputs[2].set("value", data.major)
 
         }.bind(this));
     },
@@ -564,6 +570,40 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.editContentNode = new Element("div", {"styles": this.style.baseEditNode}).inject(this.node);
 
         this.editContentNode.set("html", this.getContentHtml());
+
+        var n = this.editContentNode.getElement(".infor_name");
+        if (n) n.set("text", this.data.name || "");
+
+        var n = this.editContentNode.getElement(".infor_employee");
+        if (n) n.set("text", this.data.employee || "");
+
+        var n = this.editContentNode.getElement(".infor_mobile");
+        if (n) n.set("text", this.data.mobile || "");
+
+        var n = this.editContentNode.getElement(".infor_unique");
+        if (n) n.set("text", this.data.unique || "");
+
+        var n = this.editContentNode.getElement(".infor_gender");
+        if (n) n.set("text", this.getGenderType());
+
+        var n = this.editContentNode.getElement(".infor_mail");
+        if (n) n.set("text", this.data.mail || "");
+
+        var n = this.editContentNode.getElement(".infor_weixin");
+        if (n) n.set("text", this.data.weixin || "");
+
+        var n = this.editContentNode.getElement(".infor_qq");
+        if (n) n.set("text", this.data.qq || "");
+
+        var n = this.editContentNode.getElement(".infor_officePhone");
+        if (n) n.set("text", this.data.officePhone || "");
+
+        var n = this.editContentNode.getElement(".infor_boardDate");
+        if (n) n.set("text", this.data.boardDate || "");
+
+        var n = this.editContentNode.getElement(".infor_birthday");
+        if (n) n.set("text", this.data.birthday || "");
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -575,18 +615,18 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
     },
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent'>"+(this.data.employee || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent'>"+(this.data.mobile || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent'>"+this.getGenderType()+"</td>" +
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.personEmployee+":</td><td class='inforContent infor_employee'>"+(this.data.employee || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMobile+":</td><td class='inforContent infor_mobile'>"+(this.data.mobile || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personGender+":</td><td class='inforContent infor_gender'>"+this.getGenderType()+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.personSuperior+":</td><td class='inforContent'>"+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent'>"+(this.data.mail || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent'>"+(this.data.weixin || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent'>"+(this.data.qq || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent'>"+(this.data.officePhone || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent'>"+(this.data.boardDate || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent'>"+(this.data.birthday || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personMail+":</td><td class='inforContent infor_mail'>"+(this.data.mail || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.personWeixin+":</td><td class='inforContent infor_weixin'>"+(this.data.weixin || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personQQ+":</td><td class='inforContent infor_qq'>"+(this.data.qq || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.personOfficePhone+":</td><td class='inforContent infor_officePhone'>"+(this.data.officePhone || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personBoardDate+":</td><td class='inforContent infor_boardDate'>"+(this.data.boardDate || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -801,20 +841,20 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
     cancel: function(){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("html", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("html", this.data.employee || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("html", this.data.mobile || "");
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("html", this.data.unique || "");
-            tdContents[4].setStyles(this.style.baseInforContentNode).set("html", this.getGenderType());
-            tdContents[5].setStyles(this.style.baseInforContentNode).set("html", "");
+            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.employee || "");
+            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", this.data.mobile || "");
+            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+            tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.getGenderType());
+            tdContents[5].setStyles(this.style.baseInforContentNode).set("text", "");
             if (this.data.superior) new MWF.widget.O2Person({"name": this.data.superior}, tdContents[5], {"style": "xform"});
 
-            tdContents[6].setStyles(this.style.baseInforContentNode).set("html", this.data.mail || "");
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("html", this.data.weixin || "");
-            tdContents[8].setStyles(this.style.baseInforContentNode).set("html", this.data.qq || "");
-            tdContents[9].setStyles(this.style.baseInforContentNode).set("html", this.data.officePhone || "");
-            tdContents[10].setStyles(this.style.baseInforContentNode).set("html", this.data.boardDate || "");
-            tdContents[11].setStyles(this.style.baseInforContentNode).set("html", this.data.birthday || "");
+            tdContents[6].setStyles(this.style.baseInforContentNode).set("text", this.data.mail || "");
+            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", this.data.weixin || "");
+            tdContents[8].setStyles(this.style.baseInforContentNode).set("text", this.data.qq || "");
+            tdContents[9].setStyles(this.style.baseInforContentNode).set("text", this.data.officePhone || "");
+            tdContents[10].setStyles(this.style.baseInforContentNode).set("text", this.data.boardDate || "");
+            tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
 
             this.mode = "read";
 

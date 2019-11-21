@@ -79,7 +79,13 @@ CKEDITOR.plugins.add( 'ecnet', {
 
         if (!node.ecnetAreaNodes) node.ecnetAreaNodes = [];
         var _self = this;
-        var editorFrame = editor.document.$.defaultView.frameElement;
+        var editorFrame;
+        if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE){
+            editorFrame = editor.element.$;
+        }else{
+            editorFrame = editor.document.$.defaultView.frameElement;
+        }
+
         var spans = newNode.getElementsByTagName("span");
         if (spans.length){
             for (var i = 0; i<spans.length; i++){
@@ -109,7 +115,8 @@ CKEDITOR.plugins.add( 'ecnet', {
                             "mousedown": function(){
                                 var ecnetNode = this.getParent();
                                 var node = ecnetNode.node;
-                                var item = ecnetNode.node.ecnets[ecnetNode.idx];
+                                //var item = ecnetNode.node.ecnets[ecnetNode.idx];
+                                var item = ecnetNode.item;
                                 var textNode = node.node.ownerDocument.createTextNode(item.correct);
                                 ecnetNode.span.parentNode.replaceChild(textNode, ecnetNode.span);
                                 ecnetNode.destroy();
@@ -135,7 +142,8 @@ CKEDITOR.plugins.add( 'ecnet', {
                             "mousedown": function(){
                                 var ecnetNode = this.getParent();
                                 var node = ecnetNode.node;
-                                var item = ecnetNode.node.ecnets[ecnetNode.idx];
+                                //var item = ecnetNode.node.ecnets[ecnetNode.idx];
+                                var item = ecnetNode.item;
                                 var textNode = node.node.ownerDocument.createTextNode(ecnetNode.span.innerText);
                                 ecnetNode.span.parentNode.replaceChild(textNode, ecnetNode.span);
                                 ecnetNode.destroy();
@@ -150,26 +158,38 @@ CKEDITOR.plugins.add( 'ecnet', {
                     }).inject(ecnetNode);
                     ecnetNode.node = node;
                     ecnetNode.idx = i;
+                    ecnetNode.item = node.ecnets[i];
 
                     span.ecnetNode = ecnetNode;
                     ecnetNode.span = span;
                     span.addEventListener("click", function(){
                         var ecnetNode = this.ecnetNode;
                         ecnetNode.show();
-                        var y = this.offsetTop;
-                        var x = this.offsetLeft;
-                        var w = this.offsetWidth;
-                        var h = this.offsetHeight;
-                        var p = editorFrame.getPosition();
-                        var s = ecnetNode.getSize();
-                        var pos = editor.window.getScrollPosition();
+                        if (editor.elementMode !== CKEDITOR.ELEMENT_MODE_INLINE){
+                            var y = this.offsetTop;
+                            var x = this.offsetLeft;
+                            var w = this.offsetWidth;
+                            var h = this.offsetHeight;
+                            var p = editorFrame.getPosition();
+                            var s = ecnetNode.getSize();
+                            var pos = editor.window.getScrollPosition();
 
-                        var top = y+p.y+h+5-pos.y;
-                        var left = x+p.x-((s.x-w)/2)-pos.x;
+                            var top = y+p.y+h+5-pos.y;
+                            var left = x+p.x-((s.x-w)/2)-pos.x;
 
-                        ecnetNode.style.left = ""+left+"px";
-                        ecnetNode.style.top = ""+top+"px";
-
+                            ecnetNode.style.left = ""+left+"px";
+                            ecnetNode.style.top = ""+top+"px";
+                        }else{
+                            ecnetNode.position({
+                                "relativeTo": this,
+                                "position": "bottomCenter",
+                                "edge": "topCenter",
+                                "offset": {
+                                    "x": 0,
+                                    "y": 5
+                                }
+                            })
+                        }
                         var _span = this;
                         var hideEcnetNode = function(){
                             ecnetNode.hide();
@@ -185,9 +205,15 @@ CKEDITOR.plugins.add( 'ecnet', {
     },
     ecnet: function(editor){
         //this.editor.document.$.body.innerText
-        var editorFrame = editor.document.$.defaultView.frameElement;
-        //var data = this.editor.getData();
-        var body = editor.document.$.body;
+        var body;
+        if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE){
+            body = editor.element.$;
+        }else{
+            var editorFrame = editor.document.$.defaultView.frameElement;
+            //var data = this.editor.getData();
+            body = editor.document.$.body;
+        }
+
 
         if (!this.ecnetNodes) this.ecnetNodes = [];
         if (this.ecnetNodes.length) this.clearEcnetNodes();

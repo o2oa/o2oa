@@ -21,6 +21,7 @@
   "getViewExcel": {"uri": "/jaxrs/view/excel/result/{flag}"},
 
   "search": {"uri": "/jaxrs/segment/key/{key}"},
+  "listSearchEntry": {"uri": "/jaxrs/segment/list/entry", "method": "POST"},
 
   "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute/page/{page}/size/{size}", "method": "POST" },
 

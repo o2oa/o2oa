@@ -175,7 +175,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                                 e.stopPropagation();
                             });
                             if (input.hasClass("editTableInputDate")){
-                                this.loadCalendar(input);
+                                this.loadCalendar(input, jsondata);
                             }
                     }
                 }
@@ -210,7 +210,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 		}.bind(this));
 		
 	},
-    loadCalendar: function(node){
+    loadCalendar: function(node, jsondata){
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(node, {
                 "style": "xform",
@@ -218,6 +218,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 "target": this.module.designer.content,
                 "format": "%Y-%m-%d",
                 "onComplate": function(){
+                    this.setValue(jsondata, node.value, node);
                     //this.validationMode();
                     //this.validation();
                     //this.fireEvent("complete");
@@ -249,7 +250,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             var i = name.indexOf("*");
             var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
 
-			var value = input.value;
+            var value = input.value;
 			if (value=="false") value = false;
 			if (value=="true") value = true;
 
@@ -289,9 +290,24 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 		if (options[idx]){
 			value = options[idx].get("value");
 		}
-		var oldValue = this.data[name];
+
+        var i = name.indexOf("*");
+        var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
+
+        //var oldValue = this.data[name];
+        var oldValue = this.data;
+        for (var idx = 0; idx<names.length; idx++){
+            if (!oldValue[names[idx]]){
+                oldValue = null;
+                break;
+            }else{
+                oldValue = oldValue[names[idx]];
+            }
+        }
+
+		//var oldValue = this.data[name];
 		//this.data[name] = value;
-        this.changeJsonDate(name, value);
+        this.changeJsonDate(names, value);
         this.changeData(name, select, oldValue);
 	},
 	

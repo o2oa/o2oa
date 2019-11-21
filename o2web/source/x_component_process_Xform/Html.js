@@ -3,10 +3,12 @@ MWF.xApplication.process.Xform.Html = MWF.APPHtml =  new Class({
 	Extends: MWF.APP$Module,
 
 	load: function(){
+	    debugger;
         this.source = this._getSource();
         if (this.source){
             this._loadJsonData();
         }else{
+            debugger;
             this.node.appendHTML(this.json.text, "after");
             this.node.destory();
         }

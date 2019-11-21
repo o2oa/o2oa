@@ -141,17 +141,19 @@ var MSelector = new Class({
     },
     loadEdit:function( callback ){
         this.initPara();
-        if( this.options.containerIsTarget ){
-            this.node = this.container
-        }else{
-            this.node = new Element("div.selectNode", {
-                styles : this.css.selectNode
-            }).inject( this.container );
+        if( !this.node ){
+            if( this.options.containerIsTarget ){
+                this.node = this.container
+            }else{
+                this.node = new Element("div.selectNode", {
+                    styles : this.css.selectNode
+                }).inject( this.container );
 
-            this.node.setStyles({
-                "width":this.options.width,
-                "height":this.options.height
-            });
+                this.node.setStyles({
+                    "width":this.options.width,
+                    "height":this.options.height
+                });
+            }
         }
 
         if( this.data ){
@@ -174,6 +176,61 @@ var MSelector = new Class({
 
         if(callback)callback();
 
+    },
+    resetOptions : function(){
+        if( this.contentTooltip ){
+            this.contentTooltip.destroy();
+            this.contentTooltip = null;
+        }
+        if( this.node ){
+            this.node.empty()
+        }
+        //if( this.node && this.options.containerIsTarget ){
+        //    var node = this.node;
+        //
+        //    this.node = new Element("div.selectNode", {
+        //        styles : this.css.selectNode
+        //    }).inject( node, "after" );
+        //
+        //    this.node.setStyles({
+        //        "width":this.options.width,
+        //        "height":this.options.height
+        //    });
+        //
+        //    node.destroy();
+        //}
+        this.data = null;
+        this.load();
+    },
+    addOption : function(text, value){
+        var obj = {};
+        obj[this.textField] = text;
+        obj[this.valueField] = value;
+        this.data.push( obj );
+        if( this.contentTooltip ){
+            this.contentTooltip.createItem(obj);
+        }
+    },
+    deleteOption : function(value){
+        for( var i=0; i<this.itemNodeList.length; i++ ){
+            var listItemNode = this.itemNodeList[i];
+            var data = listItemNode.retrieve("data");
+            if( data[this.valueField] == value ){
+                this.itemNodeList.erase(listItemNode);
+                listItemNode.destroy();
+                break;
+            }
+        }
+        if(this.itemNodeObject[ value ])delete this.itemNodeObject[ value ];
+
+        if(this.data){
+            for( var i=0; i<this.data.length; i++ ) {
+                var d = this.data[i];
+                if( d[this.valueField] == value ){
+                    this.data.erase(d);
+                }
+            }
+        }
     },
     loadContent : function( data ){
         if( !this.contentTooltip ){
@@ -201,6 +258,25 @@ var MSelector = new Class({
             this.contentTooltip = new MSelector.Tootips( this.dropdownContainer || this.app.content, this.node, this.app, data, options );
             this.contentTooltip.selector = this;
         }
+    },
+    setWidth : function( width ){
+        this.options.width = width;
+        if( this.contentTooltip ){
+            this.contentTooltip.options.nodeStyles.width = width;
+            this.contentTooltip.options.nodeStyles["max-width"] = width;
+            if( this.contentTooltip.nodeStyles ){
+                this.contentTooltip.nodeStyles.width = width;
+                this.contentTooltip.nodeStyles["max-width"] = width;
+            }
+            if(this.contentTooltip.node){
+                this.contentTooltip.node.setStyle("width",width);
+                this.contentTooltip.node.setStyle("max-width",width);
+            }
+        }
+        if( this.node ){
+            this.node.setStyle("width",width);
+        }
+        this.selectValueNode.setStyle("width",parseInt(width)-25);
     },
     createDefaultItem:function(){
         if( this.options.containerIsTarget )return;
@@ -340,6 +416,12 @@ var MSelector = new Class({
                 }else{
                     this.inputNode.set("value", value );
                 }
+            }else{
+                if( this.options.isSetSelectedValue && this.selectValueNode ){
+                    var d = this._getData( value );
+                    this.selectValueNode.set("text", d[ this.textField ] );
+                    this.value = value;
+                }
             }
         }else{
             var d = this._getData( value );
@@ -421,7 +503,7 @@ var MSelector = new Class({
         return null;
     },
     _selectItem : function( itemNode, itemData ){
-
+        this.fireEvent("selectItem", [itemNode, itemData] );
     },
     _loadData : function( callback ){
         //if(callback)callback();
@@ -480,10 +562,14 @@ MSelector.Tootips = new Class({
     },
     createItem: function( data ){
         var _selector = this.selector;
+
+        if( !_selector.listNode )return;
+
         var listItemNode = new Element("div.listItemNode",{
             "styles":this.css.listItemNode,
             "text": data[ _selector.textField ]
         }).inject(_selector.listNode);
+
         listItemNode.setStyles({
             "height":_selector.options.height,
             "line-height":_selector.options.height
@@ -513,6 +599,7 @@ MSelector.Tootips = new Class({
             }.bind( {obj : this, itemNode : listItemNode })
         });
         _selector.itemNodeList.push( listItemNode );
+
         _selector.itemNodeObject[ data[ _selector.valueField ] ] = listItemNode;
 
         var isCurrent = false;

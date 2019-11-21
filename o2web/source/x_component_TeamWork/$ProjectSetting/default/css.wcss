@@ -1,0 +1,299 @@
+{
+    "projectSettingTop":{
+        "height":"40px",
+        "width":"100%",
+        "border-bottom":"1px solid #E6E6E6"
+    },
+    "projectSettingTopText":{
+        "float":"left",
+        "height":"100%",
+        "line-height":"40px",
+        "width":"90%",
+        "font-size":"16px",
+        "margin-left":"10px",
+        "color":"#333333"
+    },
+    "projectSettingTopClose":{
+        "cursor":"pointer",
+        "float":"right",
+        "margin-right":"12px",
+        "margin-top":"12px",
+        "width":"16px",
+        "height":"16px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+    },
+    projectSettingContent:{
+        "position":"absolute",
+        "top":"40px",
+        "bottom":"0px"
+    },
+    projectSettingNaviLayout:{
+        "float":"left",
+        "width":"200px",
+        "height":"100%",
+        "border-right":"1px solid #dedede"
+    },
+    naviItem:{
+        "cursor":"pointer",
+        "width":"100%",
+        "height":"60px",
+        "border-bottom":"1px solid #dedede"
+    },
+    naviItemHover:{
+        "background-color":"#ffffff",
+        "float":"left",
+        "width":"5px",
+        "height":"100%",
+        //"margin-top":"2px"
+    },
+    naviItemIcon:{
+        "float":"left",
+        "width":"40px",
+        "height":"20px",
+        "margin-left":"10px",
+        "margin-top":"20px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+    },
+    naviItemText:{
+        "float":"left",
+        "height":"100%",
+        "margin-top":"1px",
+        "line-height":"60px",
+        "color":"",
+        "font-size":"14px"
+    },
+
+    projectSettingLayout:{
+        "float":"left",
+        "width":"599px",
+        "height":"100%",
+        "overflow-y":"auto"
+    },
+
+
+
+
+    projectSettingAction:{
+        "text-align":"center",
+        "font-size":"16px",
+        "color":"#666666",
+        "width":"80%",
+        "margin":"20px auto",
+        "height":"40px",
+        "line-height":"40px",
+        "background-color":"#F0F0F0",
+        "border-radius":"10px",
+        "margin":"20px auto"
+    },
+    projectSettingBgText:{
+        "margin-left":"50px",
+        "margin-top":"20px",
+        "color":"#333333",
+        "font-size":"15px"
+    },
+    projectSettingBgContainer:{
+        "margin-top":"10px",
+        "height":"120px"
+    },
+    projectSettingBgImg:{
+        "float":"left",
+        "margin-left":"50px",
+        "height":"120px",
+        "width":"220px",
+        "background":"url(/x_component_TeamWork/$ProjectSetting/default/icon/pic_morentu_220.png) no-repeat center ",
+        "background-size":"cover"
+    },
+    projectSettingBgUpload:{
+        "float":"left",
+        "margin-left":"20px",
+        "height":"36px",
+        "line-height":"36px",
+        "width":"100px",
+        "text-align":"center",
+        "cursor":"pointer",
+        "font-size":"14px",
+        "color":"#4A90E2",
+        "border":"1px solid #4A90E2",
+        "border-radius":"100px"
+    },
+    projectSettingContainer:{
+        "margin-top":"10px",
+        "height":"90px"
+
+    },
+    projectSettingTitleContainer:{
+        "float":"left",
+        "width":"200px",
+        "height":"70px",
+        "margin-left":"50px",
+        "margin-top":"10px"
+    },
+    projectSettingTitleText:{
+        "color":"#333333",
+        "font-size":"15px"
+    },
+    projectSettingTitleDiv:{
+        "height":"36px",
+        "margin-top":"10px"
+    },
+    projectSettingTitleIn:{
+        "width":"100%",
+        "height":"100%",
+        "line-height":"36px",
+        "color":"#666666",
+        "font-size":"14px",
+        "border":"1px solid #dedede",
+        "padding-left":"5px",
+        "border-radius":"10px"
+    },
+    projectSettingGroupContainer:{
+        "float":"left",
+        "width":"200px",
+        "height":"70px",
+        "margin-left":"50px",
+        "margin-top":"10px"
+    },
+    projectSettingGroupText:{
+        "color":"#333333",
+        "font-size":"15px"
+    },
+    projectSettingGroupDiv:{
+        "cursor":"pointer",
+        "height":"36px",
+        "margin-top":"10px",
+        "border":"1px solid #dedede",
+        "border-radius":"10px"
+    },
+    projectSettingGroupValue:{
+        "float":"left",
+        "line-height":"36px",
+        "margin-left":"10px",
+        "width":"160px",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    projectSettingGroupIcon:{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin-top":"12px",
+        "margin-right":"5px",
+        "background":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_triangle_down.png) no-repeat center "
+    },
+    projectSettingDesText:{
+        "color":"#333333",
+        "font-size":"15px",
+        "margin-left":"50px"
+    },
+    projectSettingDesContainer:{
+        "height":"70px",
+        "margin-top":"10px",
+        "margin-left":"50px"
+    },
+    projectSettingDesIn:{
+        "border":"1px solid #dedede",
+        "overflow":"auto",
+        "width":"440px",
+        "border-radius":"10px",
+        "padding":"5px",
+        "height":"70px",
+        "color":"#999999",
+        "font-size":"14px",
+        "outline":"none",
+        "resize":"none"
+    },
+    projectSettingConfirm:{
+        "cursor":"pointer",
+        "float":"left",
+        "font-size":"16px",
+        "margin-left":"50px",
+        "margin-top":"20px",
+        "width":"460px",
+        "background-color":"#4A90E2",
+        "color":"#ffffff",
+        "height":"40px",
+        "line-height":"40px",
+        "text-align":"center",
+        "border-radius":"100px"
+    },
+     projectSettingClose:{
+        "cursor":"pointer",
+         "float":"left",
+         "font-size":"16px",
+         "margin-left":"50px",
+         "margin-top":"20px",
+         "width":"200px",
+         "background-color":"#f0f0f0",
+         "color":"#666666",
+         "height":"40px",
+         "line-height":"40px",
+         "text-align":"center",
+         "border-radius":"100px"
+     },
+
+     customTopLayout:{
+        "height":"40px",
+        "width":"100%"
+     },
+    customTopText:{
+        "height":"40px",
+        "line-height":"40px",
+        "float":"left",
+        "color":"",
+        "margin-left":"20px",
+        "font-size":"16px"
+    },
+    customTopNew:{
+        "cursor":"pointer",
+        "height":"40px",
+        "line-height":"40px",
+        "float":"right",
+        "color":"#4a90e2",
+        "margin-right":"20px",
+        "font-size":"14px"
+    },
+    customContent:{
+        "width":"100%"
+    },
+    customExtItem:{
+        "color":"#999999",
+        "font-size":"12px",
+        "border-bottom":"1px dashed #dedede",
+        "padding-bottom":"10px"
+    },
+    customExtItemTop:{
+        "padding":"0px 20px",
+        "height":"40px"
+    },
+    customExtName:{
+        "float":"left",
+        "height":"40px",
+        "line-height":"40px",
+        "color":"#333333",
+        "font-size":"14px"
+    },
+    customExitItemAction:{
+        "float":"right",
+        "height":"40px",
+        "line-height":"40px",
+        "cursor":"pointer",
+        "color":"#4a90e2",
+        "display":"none",
+        "margin":"0px 5px"
+    },
+    customExtValueList:{
+        "height":"25px",
+        "line-height":"25px",
+        "padding":"0px 20px"
+    },
+
+    formNode:{
+        "border-left-width":"0px",
+        "border-right-width":"0px"
+    },
+    formTableContainer:{
+        "margin-left":"0px",
+        "margin-right":"0px"
+    }
+}

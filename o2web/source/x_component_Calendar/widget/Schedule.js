@@ -1,6 +1,6 @@
 var MWFCalendar = MWF.xApplication.Calendar  = MWF.xApplication.Calendar || {};
 //MWF.xApplication.Calendar.widget = MWF.xApplication.Calendar.widget || {};
-MWF.xDesktop.requireApp("Calendar", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("Calendar", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Calendar", "Common", null, false);
 o2.widget.Schedule = o2.Schedule = new Class({
 	Implements: [Options, Events],
@@ -23,7 +23,7 @@ o2.widget.Schedule = o2.Schedule = new Class({
 		this._loadCss();
 		this.fireEvent("init");
 
-		this.load();
+		this.load() ;
 
 	},
 	load: function(){

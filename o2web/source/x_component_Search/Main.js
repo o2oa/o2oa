@@ -100,14 +100,17 @@ MWF.xApplication.Search.Main = new Class({
             var t = endDate.getTime()-startDate.getTime();
             t = ((t/1000)*100).toInt()/100;
             var text = this.lp.searchInfor;
-            text = text.replace("{count}", json.size||0);
+            text = text.replace("{count}", json.data.count||0);
             text = text.replace("{time}", t);
             this.resultInfor.set("text", text);
             this.resultInfor.setStyles(this.css.searchResultInfor);
-
-            this.result = json.data;
-            this.createPages();
-            this.showResult();
+            this.resultPageArea.empty();
+            this.resultContent.empty();
+            this.result = json.data.valueList;
+            if (json.data.count){
+                this.createPages();
+                this.showResult();
+            }
         }.bind(this));
     },
     createPages: function(){
@@ -140,10 +143,21 @@ MWF.xApplication.Search.Main = new Class({
 
         this.resultContent.empty();
         var n = Math.min(this.result.length-1, endIdx);
-        for (var i=startIdx; i<=n; i++){
-            var d = this.result[i];
-            new MWF.xApplication.Search.ResaultItem(this, d);
-        }
+
+        var ids = this.result.slice(startIdx, n+1);
+        MWF.Actions.get("x_query_assemble_surface").listSearchEntry({
+            "entryList": ids
+        }, function(json){
+            var datas = json.data;
+            datas.each(function(d){
+                new MWF.xApplication.Search.ResaultItem(this, d);
+            }.bind(this));
+        }.bind(this));
+
+        // for (var i=startIdx; i<=n; i++){
+        //     var d = this.result[i];
+        //     new MWF.xApplication.Search.ResaultItem(this, d);
+        // }
     }
 });
 
@@ -161,7 +175,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
     checkPermission: function(callback){
         if (!this.data.permission){
             if (this.data.type==="work"){
-                MWF.Actions.get("x_processplatform_assemble_surface").getWork(this.data.reference, function(){
+                MWF.Actions.get("x_processplatform_assemble_surface").getWorkControl(this.data.reference, function(){
                     this.data.permission = "y";
                     if (callback) callback();
                 }.bind(this), function(){
@@ -170,7 +184,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
                 }.bind(this))
             }
             if (this.data.type==="workCompleted"){
-                MWF.Actions.get("x_processplatform_assemble_surface").getWorkCompleted(this.data.reference, function(){
+                MWF.Actions.get("x_processplatform_assemble_surface").getWorkControl(this.data.reference, function(){
                     this.data.permission = "y";
                     if (callback) callback();
                 }.bind(this), function(){
@@ -179,8 +193,14 @@ MWF.xApplication.Search.ResaultItem = new Class({
                 }.bind(this))
             }
             if (this.data.type==="cms"){
-                MWF.Actions.get("x_cms_assemble_control").getDocument(this.data.reference, function(){
-                    this.data.permission = "y";
+                //getDocumentControl
+                MWF.Actions.get("x_cms_assemble_control").getDocumentControl(this.data.reference, function(){
+                    if (json.data.control.allowVisit){
+                        this.data.permission = "y";
+                    }else{
+                        this.data.permission = "n";
+                    }
+                    //this.data.permission = "y";
                     if (callback) callback();
                 }.bind(this), function(){
                     this.data.permission = "n";

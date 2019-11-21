@@ -88,7 +88,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         }.bind(this));
         this.page.addEvent("queryClose", function(){
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-            this.saveSilence();
+            //this.saveSilence();
             if (this.lisNode) this.lisNode.setStyles(this.designer.css.listInvokeItem);
         }.bind(this));
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));

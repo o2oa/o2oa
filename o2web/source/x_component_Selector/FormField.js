@@ -9,6 +9,7 @@ MWF.xApplication.Selector.FormField = new Class({
         "fieldType": "",
         "values": [],
         "application": "",
+        "include" : [], //增加的可选项
         "expand": false
     },
 
@@ -17,8 +18,9 @@ MWF.xApplication.Selector.FormField = new Class({
             this.designerAction.listFormField(this.options.application, function(json){
                 this.fieldData = json.data;
                 if (this.options.fieldType){
-                    if (json.data[this.options.fieldType]){
-                        json.data[this.options.fieldType].each(function(data){
+                    var array = ( json.data[this.options.fieldType] || [] ).concat( this.options.include );
+                    if ( array && array.length ){
+                        array.each(function(data){
                             data.id = data.name;
                             var item = this._newItem(data, this, this.itemAreaNode);
                         }.bind(this));

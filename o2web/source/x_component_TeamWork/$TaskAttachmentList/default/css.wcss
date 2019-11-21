@@ -1,0 +1,111 @@
+{
+    
+    titleContent:{
+        "height":"50px",
+        "width":"100%"
+    },
+    titleIcon:{
+        "float":"left",
+        "width":"48px",
+        "height":"48px",
+        "margin-left":"20px",
+        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_attachment.png) no-repeat center"
+    },
+    titleText:{
+        "float":"left",
+        "height":"100%",
+        "line-height":"50px"
+    },
+    valueContent:{
+        "width":"588px",
+        "margin-left":"40px",
+        "border":"1px solid #dedede",
+        "border-radius":"4px",
+        "min-height":"40px"
+    },
+    attachmentListContainer:{
+        "width":"100%"
+    },
+    attachmentItem:{
+        "height":"40px",
+        "width":"100%"
+    },
+    attachmentIcon:{
+        "float":"left",
+        "margin-left":"10px",
+        "height":"40px",
+        "width":"20px",
+        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_unknow.png) no-repeat center"
+    },
+    attachmentName:{
+        "cursor":"pointer",
+        "float":"left",
+        "width":"450px",
+        "overflow":"hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap",
+        "margin-left":"10px",
+        "line-height":"40px"
+    },
+    attachmentSize:{
+        "float":"left",
+        "width":"100px",
+        "margin-left":"10px",
+        "line-height":"40px",
+        "width":"40px"
+    },
+    attachmentMore:{
+        "cursor":"pointer",
+        "float":"right",
+        "margin-right":"10px",
+        "margin-top":"5px",
+        "height":"30px",
+        "width":"30px",
+        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down.png) no-repeat center"
+    },
+    addContainer:{
+        "width":"100%",
+        "height":"40px",
+        "cursor":"pointer"
+    },
+    addIcon:{
+        "float":"left",
+        "width":"40px",
+        "height":"40px",
+        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_subtask_add.png) no-repeat center"
+    },
+    addText:{
+        "float":"left",
+        "color":"#4A90E2",
+        "line-height":"40px"
+    },
+    topMoreTitle:{
+        "height":"40px",
+        "line-height":"40px",
+        "width":"100%",
+        "text-align":"center",
+        "font-size":"16px",
+        "color":"#333333",
+        "border-bottom":"1px solid #bebebe"
+    },
+    topMoreItem:{
+        "cursor":"pointer",
+        "height":"40px",
+        "width":"100%",
+        "font-size":"14px",
+        "color":"#666666"
+    },
+    topMoreItemIcon:{
+        "float":"left",
+        "height":"30px",
+        "width":"30px",
+        "margin-top":"5px",
+        "margin-left":"10px"
+    },
+    topMoreItemText:{
+        "float":"left",
+        "margin-left":"10px",
+        "height":"40px",
+        "line-height":"40px"
+    }
+}

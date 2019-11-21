@@ -1,0 +1,113 @@
+{
+    topLayout:{
+        "width":"100%",
+        "height":"40px",
+        "line-height":"40px",
+        "text-align":"center",
+        "font-size":"16px",
+        "color":"#666666",
+        "border-bottom":"1px solid #dedede"
+    },
+    contentLayout:{
+        "border-bottom":"0px solid #dedede"
+    },
+    titleText:{
+        "height":"40px",
+        "line-height":"40px",
+        "color":"#666666",
+        "margin-left":"10px",
+        "font-size":"14px"
+    },
+    valueLayout:{
+        "cursor":"pointer",
+        "margin":"0px 10px",
+        "border":"1px solid #dedede",
+        "border-radius":"2px",
+        "height":"40px"
+    },
+    nameValue:{
+        "border":"0px",
+        "height":"36px",
+        "width":"98%",
+        "text-indent":"5px",
+        "color":"#666666",
+        "font-size":"14px",
+        "outline":"none"
+    },
+    typeValue:{
+        "color":"#666666",
+        "font-size":"14px",
+        "line-height":"40px",
+        "margin-left":"10px",
+        "outline":"none",
+        "float":"left"
+    },
+    typeArrow:{
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "margin-top":"10px",
+        "margin-right":"6px",
+        "background":"url(/x_component_TeamWork/$ExtField/default/icon/icon_dw.png) no-repeat center"
+    },
+    optionLayout:{
+
+    },
+    optionText:{
+        "height":"40px",
+        "line-height":"40px",
+        "margin-left":"10px",
+        "color":"#666666",
+        "font-size":"14px"
+    },
+    optionValue:{
+        "height":"40px",
+        "border":"1px solid #dedede",
+        "border-radius":"2px",
+        "margin":"0px 10px"
+    },
+    optionName:{
+        "border":"0px",
+        "height":"35px",
+        "margin-left":"10px",
+        "float":"left",
+        "color":"#666666",
+        "font-size":"14px",
+        "outline":"none"
+    },
+    optionClose:{
+        "display":"none",
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "margin-top":"10px",
+        "margin-right":"5px",
+        "cursor":"pointer",
+        "background":"url(/x_component_TeamWork/$ExtField/default/icon/icon_off.png) no-repeat center"
+    },
+
+    inValid:{
+        "height":"30px",
+        "line-height":"30px",
+        "color":"#ff0000",
+        "margin-left":"10px"
+    },
+    bottomLayout:{
+        "margin-top":"10px",
+        "width":"100%",
+        "height":"60px",
+        "border-top":"1px solid #dedede"
+    },
+    confirm:{
+        "cursor":"not-allowed",
+        "width":"90%",
+        "height":"40px",
+        "line-height":"40px",
+        "text-align":"center",
+        "margin":"10px auto",
+        "color":"#ffffff",
+        "font-size":"14px",
+        "border-radius":"2px",
+        "background-color":"#cccccc"
+    }
+}

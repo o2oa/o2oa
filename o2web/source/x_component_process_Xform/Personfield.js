@@ -302,7 +302,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             case "":
         }
 
-        debugger;
 
         var selectUnits = this.getSelectRange();
         if (this.json.selectType=="identity"){
@@ -330,7 +329,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             exclude = typeOf(v)==="array" ? v : [v];
         }
 
-        return {
+        var options = {
             "type": this.json.selectType,
             "unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
             "values": (this.json.isInput) ? [] : values,
@@ -347,6 +346,9 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "onLoad": this.selectOnLoad.bind(this),
             "onClose": this.selectOnClose.bind(this)
         };
+        if( this.form.json.selectorStyle )options = Object.merge( options, this.form.json.selectorStyle );
+
+        return options;
     },
     selectOnComplete: function(items){
         var values = [];
@@ -470,17 +472,17 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             if (callback) callback(data);
         });
     },
-    _loadNodeInputEdit: function(){
-        var input=null;
-        MWF.require("MWF.widget.Combox", function(){
+    _loadNodeInputEdit: function() {
+        var input = null;
+        MWF.require("MWF.widget.Combox", function () {
             this.combox = input = new MWF.widget.Combox({
                 "count": this.json.count || 0,
                 "splitShow": this.json.splitShow || ", ",
-                "onCommitInput": function(item){
+                "onCommitInput": function (item) {
                     this._searchConfirmPerson(item);
                     //this.fireEvent("change");
                 }.bind(this),
-                "onChange": function(){
+                "onChange": function () {
                     this._setBusinessData(this.getInputData());
                     this.fireEvent("change");
                 }.bind(this),
@@ -494,11 +496,13 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         });
         input.set(this.json.properties);
 
-        var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            //"position": "relative",
-            "margin-right": "20px"
-        }}).inject(this.node, "after");
+        var node = new Element("div", {
+            "styles": {
+                "overflow": "hidden",
+                //"position": "relative",
+                "margin-right": "20px"
+            }
+        }).inject(this.node, "after");
         input.inject(node);
         //this.combox = input;
 
@@ -508,12 +512,16 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "id": this.json.id,
             "MWFType": this.json.type
         });
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
-            "styles": this.form.css[this.iconStyle],
-            "events": {
-                "click": this.clickSelect.bind(this)
-            }
-        }).inject(this.node, "before");
+        if (this.json.showIcon != 'no' && !this.form.json.hideModuleIcon){
+            this.iconNode = new Element("div", {
+                "styles": this.form.css[this.iconStyle],
+                "events": {
+                    "click": this.clickSelect.bind(this)
+                }
+            }).inject(this.node, "before");
+        }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+        }
 
         this.combox.addEvent("change", function(){
             this.validationMode();
@@ -548,7 +556,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 "click": this.clickSelect.bind(this)
             }
         });
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
+        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) this.iconNode = new Element("div", {
             "styles": this.form.css[this.iconStyle],
             "events": {
                 "click": this.clickSelect.bind(this)

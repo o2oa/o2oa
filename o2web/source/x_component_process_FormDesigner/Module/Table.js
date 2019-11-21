@@ -442,6 +442,10 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		}
 		if (name=="properties"){
 			this.node.getFirst().setProperties(this.json.properties);
+			if (this.json.properties.cellspacing==="0"){
+				this.node.getFirst().setProperties({"cellspacing": "1"});
+			}
+
             //if (this.json.properties.width){
             //    if (this.json.properties.width!="100%"){
             //        this.node.setStyle("width", this.json.properties.width);

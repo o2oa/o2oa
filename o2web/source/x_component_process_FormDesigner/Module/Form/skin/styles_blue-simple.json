@@ -356,6 +356,21 @@
       "border-bottom": "1px solid #ccc"
     }
   },
+  "org": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
   "select": {
     "styles": {
       "border-bottom": "0px solid #999",

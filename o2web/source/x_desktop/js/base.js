@@ -4,6 +4,7 @@ var locate = window.location;
 layout.protocol = locate.protocol;
 layout.session = layout.session || {};
 layout.debugger = (locate.href.toString().indexOf("debugger")!==-1);
+layout.anonymous = (locate.href.toString().indexOf("anonymous")!==-1);
 o2.xApplication = o2.xApplication || {};
 
 o2.xDesktop = o2.xDesktop || {};
@@ -58,13 +59,11 @@ o2.addReady(function(){
     };
 
     var _load = function(){
-        //先判断用户是否登录
-        MWF.Actions.get("x_organization_assemble_authentication").getAuthentication(function(json){
+        var _loadApp = function(json){
             //用户已经登录
             layout.user = json.data;
             layout.session = {};
             layout.session.user = json.data;
-
             (function(layout){
                 var _loadResource = function(callback){
                     var isLoadedA = false;
@@ -114,46 +113,63 @@ o2.addReady(function(){
 
                 _loadContent();
             })(layout);
-        }, function(){
-            //用户未经登录
-            //打开登录页面
-            var _loadResource = function(callback){
-                var isLoadedA = false;
-                var isLoadedB = false
-                //var isLoadedC = false;
-
-                var lp = o2.session.path+"/lp/"+o2.language+".js";
-                var modules = [
-                    "o2.xDesktop.Dialog",
-                    "MWF.xDesktop.UserData",
-                    "MWF.xDesktop.Access",
-                    "MWF.widget.UUID",
-                    "MWF.xDesktop.Menu",
-                    "MWF.xDesktop.shortcut",
-                    "MWF.widget.PinYin",
-                    "MWF.xDesktop.Access",
-                    "MWF.xDesktop.MessageMobile"
-                ];
-                //MWF.xDesktop.requireApp("Common", "", null, false);
-                var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
-
-                o2.load(["/o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
-                o2.require("MWF.widget.Common", function(){
-                    _loadProgressBar();
-                    o2.require(modules, {
-                        "onSuccess":function(){
-                            o2.requireApp("Common", "", function(){isLoadedB = true; _check();})
-                        },
-                        "onEvery": function(){
-                            _loadProgressBar();
+        };
+        //先判断用户是否登录
+        MWF.Actions.get("x_organization_assemble_authentication").getAuthentication( function(json){
+            //已经登录
+            _loadApp( json );
+        }.bind(this), function( json ){
+            //允许匿名访问
+            if( layout.anonymous ){
+                _loadApp({
+                    user : "anonymous",
+                    session : {
+                        user : {
+                            name : "anonymous",
+                            roleList : []
                         }
-                    });
+                    }
                 });
-            };
-            _loadResource(function(){
-                layout.openLogin();
-            });
+            }else{
+                //用户未经登录
+                //打开登录页面
+                var _loadResource = function(callback){
+                    var isLoadedA = false;
+                    var isLoadedB = false;
+                    //var isLoadedC = false;
 
+                    var lp = o2.session.path+"/lp/"+o2.language+".js";
+                    var modules = [
+                        "o2.xDesktop.Dialog",
+                        "MWF.xDesktop.UserData",
+                        "MWF.xDesktop.Access",
+                        "MWF.widget.UUID",
+                        "MWF.xDesktop.Menu",
+                        "MWF.xDesktop.shortcut",
+                        "MWF.widget.PinYin",
+                        "MWF.xDesktop.Access",
+                        "MWF.xDesktop.MessageMobile"
+                    ];
+                    //MWF.xDesktop.requireApp("Common", "", null, false);
+                    var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
+
+                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js",lp], function(){_loadProgressBar(); isLoadedA = true; _check();});
+                    o2.require("MWF.widget.Common", function(){
+                        _loadProgressBar();
+                        o2.require(modules, {
+                            "onSuccess":function(){
+                                o2.requireApp("Common", "", function(){isLoadedB = true; _check();})
+                            },
+                            "onEvery": function(){
+                                _loadProgressBar();
+                            }
+                        });
+                    });
+                };
+                _loadResource(function(){
+                    layout.openLogin();
+                });
+            }
         });
 
         layout.openLogin = function(){
@@ -285,7 +301,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication){
             window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
         }else{
-            window.location = "appMobile.html?app="+par + ((layout.debugger)? "&debugger":"");
+            window.location = "appMobile.html?"+par + ((layout.debugger)? "&debugger":"");
         }
     };
     var _openMeeting = function(appNames, options, statusObj){
@@ -295,7 +311,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting){
             window.webkit.messageHandlers.openO2Meeting.postMessage("");
         }else{
-            window.location = "appMobile.html?app="+par + ((layout.debugger)? "&debugger":"");
+            window.location = "appMobile.html?"+par + ((layout.debugger)? "&debugger":"");
         }
     };
 
@@ -306,7 +322,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar){
             window.webkit.messageHandlers.openO2Calendar.postMessage("");
         }else{
-            window.location = "appMobile.html?app="+par + ((layout.debugger)? "&debugger":"");
+            window.location = "appMobile.html?"+par + ((layout.debugger)? "&debugger":"");
         }
     };
     var _openTaskCenter = function(appNames, options, statusObj){
@@ -320,7 +336,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace){
             window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);
         }else{
-            window.location = "appMobile.html?app="+par + ((layout.debugger)? "&debugger":"");
+            window.location = "appMobile.html?"+par + ((layout.debugger)? "&debugger":"");
         }
     };
 
@@ -345,6 +361,9 @@ o2.addReady(function(){
                 _openTaskCenter(appNames, options, statusObj);
                 break;
             default:
+                var uri = new URI(window.location.href);
+                var optionsStr = uri.getData("option");
+                var statusStr = uri.getData("status");
                 window.location = "appMobile.html?app="+appNames+"&option="+(optionsStr || "")+"&status="+(statusStr || "") + ((layout.debugger)? "&debugger":"");
         }
     };

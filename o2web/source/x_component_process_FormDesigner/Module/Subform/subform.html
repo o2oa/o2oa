@@ -27,12 +27,18 @@
 			</tr>
 		</table>
 
-		<div id="text{$.pid}selectSubform" style="display: text{($.subformType!='script')?'block':'none'}">
+		<div id="text{$.pid}selectSubform" class="MWFSubFormSelectContainer" style="display: text{($.subformType!='script')?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">应用:</td>
+					<td class="editTableValue">
+						<div class="MWFSubformAppSelect" name="subformAppSelected"></div>
+					</td>
+				</tr>
 				<tr>
 					<td class="editTableTitle">子表单:</td>
 					<td class="editTableValue">
-						<div class="MWFFormSelect" name="subformSelected"></div>
+						<div class="MWFSubformSelect" name="subformSelected"></div>
 					</td>
 				</tr>
 				<!--<tr>-->
@@ -44,6 +50,10 @@
 			</table>
 		</div>
 		<div id="text{$.pid}scriptSubform" style="display: text{($.subformType=='script')?'block':'none'}">
+			<div style="padding: 5px;">跨应用：<br/>return { <br/>
+				&nbsp;&nbsp;"application" : "应用名称", //应用名称、别名、id <br/>
+				&nbsp;&nbsp;"subform" : "表单名称" //表单、id<br/>
+				}; <br/> 本应用：<br/>return "表单名称"; </div>
 			<div class="MWFScriptArea" name="subformScript" title="子表单脚本 (S)"></div>
 		</div>
 

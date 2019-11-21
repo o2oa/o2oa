@@ -54,7 +54,7 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
                     }
                 }
             }
-        }.bind(this), 6000);
+        }.bind(this), 60000);
 
     },
 
@@ -88,14 +88,16 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
 
             if (this.editor.editor){
                 this.editor.editor.focus();
-                this.editor.editor.navigateFileStart();
+                //this.editor.editor.navigateFileStart();
             }
         }.bind(this));
+        var _self = this;
         this.page.addEvent("queryClose", function(){
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-            this.saveSilence();
-            if (this.lisNode) this.lisNode.setStyles(this.designer.css.listScriptItem);
-        }.bind(this))
+            this.showIm();
+            //_self.saveSilence();
+            if (_self.lisNode) _self.lisNode.setStyles(_self.designer.css.listScriptItem);
+        });
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
 
 

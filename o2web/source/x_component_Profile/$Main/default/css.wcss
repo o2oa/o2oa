@@ -225,6 +225,42 @@
         "font-size": "18px",
         "font-weight": "bold",
         "color": "#666666"
+    },
+    "o2_profile_emPower_Add":{
+        "height":"30px",
+        "line-height":"30px",
+        "text-align":"center",
+        "width":"50px",
+        "border-radius":"5px",
+        "background-color":"#5f6b80",
+        "border":"1px solid #FFF",
+        "color":"#FFF",
+        "cursor":"pointer",
+        "margin":"0px 0px"
+    },
+    "o2_profile_emPower_Cancel":{
+         "height":"30px",
+         "line-height":"30px",
+         "text-align":"center",
+         "width":"50px",
+         "border-radius":"5px",
+         "background-color":"#5f6b80",
+         "border":"1px solid #FFF",
+         "color":"#FFF",
+         "cursor":"pointer",
+         "margin":"0px 0px"
+     },
+     "o2_profile_emPower_bn":{
+        "height":"25px",
+        "line-height":"25px",
+        "text-align":"center",
+        "width":"40px",
+        "border-radius":"5px",
+        "background-color":"#5f6b80",
+        "border":"1px solid #FFF",
+        "color":"#FFF",
+        "cursor":"pointer",
+        "float":"left"
     }
 }
 

@@ -7,13 +7,13 @@
 //var meeting = new MWF.xApplication.Meeting.MainInContainer( this.form.getApp().desktop, {}, container, this.form.getApp().content , scrollNode );
 //meeting.load();
 
-MWF.xDesktop.requireApp("Meeting", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("Meeting", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Meeting", "Main", null, false);
 MWF.xApplication.Meeting.MainInContainer = new Class({
     Extends: MWF.xApplication.Meeting.Main,
     Implements: [Options, Events],
     options: {
-        "style": "default",
+        "style": "default" ,
         "name": "Meeting",
         "sideBarEnable" : false
     },

@@ -7,7 +7,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		"style": "default",
 		"propertyPath": "/x_component_portal_PageDesigner/Module/Page/page.html",
         "mode": "PC",
-        "fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
+        "fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
 			{
 				"name" : "top",

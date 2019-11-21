@@ -76,9 +76,11 @@
 	},
 
 	"buttonOver": {
+	  "color" : "#fff",
 		"background-color": "#43ccf6"
 	},
 	"buttonOut": {
+	  "color" : "#fff",
 		"background-color": "#0b82ff"
 	},
 	"buttonDown": {

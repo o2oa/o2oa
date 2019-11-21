@@ -45,6 +45,15 @@
   "cmcc": {
     "name": "集团样式",
     "file": "styles_cmcc.json",
+    "extendFile": "styles_cmcc_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
+  "blue-flat": {
+    "name": "蓝白扁平",
+    "file": "styles_blue-flat.json",
+    "extendFile": "styles_blue-flat_extend.json",
     "mode": [
       "pc"
     ]

@@ -16,6 +16,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     },
 
 	_loadUserInterface: function(){
+        this.fireEvent("queryLoad");
+
 		this.editModules = [];
         this.node.setStyle("overflow-x", "hidden");
         this.node.setStyle("overflow-y", "hidden");
@@ -37,9 +39,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             //this._addTitleActionColumn();
 			this._loadEditDatagrid();
 			//this._loadReadDatagrid();
+            this.fireEvent("postLoad");
+            this.fireEvent("load");
 		}else{
             this._loadDatagridDataModules();
 			this._loadReadDatagrid();
+            this.fireEvent("postLoad");
+            this.fireEvent("load");
 		}
 	},
     createMobileTable: function(){
@@ -128,6 +134,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 				break;
             case "Orgfield":
             case "Personfield":
+            case "Org":
                 //var v = module.getTextData();
                 //return v.text[0];
 

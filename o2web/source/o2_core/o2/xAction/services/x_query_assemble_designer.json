@@ -94,6 +94,8 @@
   "countRowWhere" : { "uri": "/jaxrs/table/{tableFlag}/row/count/where/{where}"},//通过where 统计数量
   "deleteRow" : { "uri": "/jaxrs/table/{tableFlag}/row/{id}", "method": "DELETE" }, //更新指定表中指定行数据.
   "deleteAllRow" : { "uri": "/jaxrs/table/{tableFlag}/row/delete/all", "method": "DELETE"}, //通过where 统计数量
+  "exportRow" : { "uri": "/jaxrs/table/export/{tableFlag}/count/{count}", "method": "GET"}, //导出行对象。
+  "rowSave":{ "uri": "/jaxrs/table/{tableFlag}/row/save", "method": "POST" }, //指定表中批量保存或更新数据
 
   "clazz": "x_query_assemble_designer"
 }

@@ -4,6 +4,9 @@
   "collectValidate": {"uri": "/jaxrs/collect/validate"},
 
   "updateCollect": {"uri": "/jaxrs/collect", "method": "PUT"},
+  "updateUnitCollect": {"uri": "/jaxrs/collect/updateUnit", "method": "PUT"},
+
+  "deleteCollect": {"uri": "/jaxrs/collect/name/{name}/mobile/{mobile}/code/{code}", "method": "DELETE"},
   "createCollect": {"uri": "/jaxrs/collect", "method": "POST"},
   "collectValidateInput": {"uri": "/jaxrs/collect/validate/direct", "method": "PUT"},
 
@@ -21,6 +24,7 @@
   "compareUpload": {"uri": "/jaxrs/module/compare/upload", "method": "PUT", "enctype": "formData"},
 
   "outputStructure": {"uri": "/jaxrs/module/output/structure"},
+  "removeStructure": {"uri": "/jaxrs/module/remove/structure/{id}", "method": "DELETE"},
   "outputCreate": {"uri": "/jaxrs/module/output", "method": "PUT"},
   "output": {"uri": "/jaxrs/module/output", "method": "PUT"},
   "download": {"uri": "/jaxrs/module/output/{flag}/file"},
@@ -88,7 +92,10 @@
   "listUnexpectedErrorLog" : {"uri": "/jaxrs/unexpectederrorlog/list/{id}/next/{count}"},
   "listUnexpectedErrorLogWithDate" : {"uri": "/jaxrs/unexpectederrorlog/list/{id}/next/{count}/date/{date}"},
   "listWarnLog" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}"},
-  "listWarnLogWithDate" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}/date/{date}"}
+  "listWarnLogWithDate" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}/date/{date}"},
+
+  "echo" : {"uri": "/jaxrs/echo"}
+
 
 
 }

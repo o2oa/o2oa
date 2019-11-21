@@ -1051,7 +1051,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication){
             window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
         }else{
-            window.location = "appMobile.html?app="+par;
+            window.location = "appMobile.html?"+par;
         }
     };
     var _openMeeting = function(appNames, options, statusObj){
@@ -1061,7 +1061,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting){
             window.webkit.messageHandlers.openO2Meeting.postMessage("");
         }else{
-            window.location = "appMobile.html?app="+par;
+            window.location = "appMobile.html?"+par;
         }
     };
 
@@ -1072,7 +1072,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar){
             window.webkit.messageHandlers.openO2Calendar.postMessage("");
         }else{
-            window.location = "appMobile.html?app="+par;
+            window.location = "appMobile.html?"+par;
         }
     };
     var _openTaskCenter = function(appNames, options, statusObj){
@@ -1086,7 +1086,7 @@ o2.addReady(function(){
         }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace){
             window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);
         }else{
-            window.location = "appMobile.html?app="+par;
+            window.location = "appMobile.html?"+par;
         }
     };
 

@@ -244,6 +244,7 @@
 
   "getForm": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}"},
   "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}"},
+  "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
 
   "sendReaderByWork" : {"uri":"/jaxrs/read/work/{workId}", "method": "POST"},
   "sendReaderByWorkCompleted" : {"uri":"/jaxrs/read/workcompleted/{workCompletedId}", "method": "POST"},
@@ -294,6 +295,12 @@
 
   "manageListWorkFilterByPage": {"uri": "/jaxrs/work/list/filter/{page}/size/{pageSize}/manage", "method": "POST"},
   "manageListWorkCompletedFilterByPage": {"uri": "/jaxrs/workcompleted/list/filter/{page}/size/{pageSize}/manage", "method": "POST"},
+
+  "docToWord": {"uri": "/jaxrs/attachment/doc/to/word/work/{workId}", "method": "POST"},
+
+  "getRouteSelectConfig" : {"uri":"/jaxrs/route/{id}/selectconfig"},
+  "listRoute" : {"uri":"/jaxrs/route/list", "method":"PUT"},
+  "getRoute" : {"uri":"/jaxrs/route/{id}"},
 
   "clazz": "x_processplatform_assemble_surface"
 

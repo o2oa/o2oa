@@ -295,7 +295,7 @@ MWF.xScript.PageEnvironment = function(ev){
 
         //人员属性************
         //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-        appendPersonAttribute: function(person, attr, values){
+        appendPersonAttribute: function(person, attr, values, success, failure){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
@@ -310,7 +310,7 @@ MWF.xScript.PageEnvironment = function(ev){
             }, false);
         },
         //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-        setPersonAttribute: function(person, attr, values){
+        setPersonAttribute: function(person, attr, values, success, failure){
             getOrgActions();
             var personFlag = (typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
             var data = {"attributeList":values,"name":attr,"person":personFlag};
@@ -524,13 +524,13 @@ MWF.xScript.PageEnvironment = function(ev){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
             var v = null;
-            orgActions.listUnitAllDuty(data, function(json){v = json.data.nameList;}, null, false);
+            orgActions.listUnitAllDuty(data, function(json){v = json.data;}, null, false);
             return v;
         },
 
         //组织属性**************
         //添加组织属性值(在属性中添加values值，如果没有此属性，则创建一个)
-        appendUnitAttribute: function(unit, attr, values){
+        appendUnitAttribute: function(unit, attr, values, success, failure){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
@@ -545,7 +545,7 @@ MWF.xScript.PageEnvironment = function(ev){
             }, false);
         },
         //设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
-        setUnitAttribute: function(unit, attr, values){
+        setUnitAttribute: function(unit, attr, values, success, failure){
             getOrgActions();
             var unitFlag = (typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
             var data = {"attributeList":values,"name":attr,"unit":unitFlag};
@@ -854,11 +854,13 @@ MWF.xScript.PageEnvironment = function(ev){
             _form.printWork(application, form);
         },
 
-        "confirm": function(type, e, title, text, width, height, ok, cancel, callback){
-            _form.confirm(type, e, title, text, width, height, ok, cancel, callback);
+        "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
+            var p = MWF.getCenter({"x": width, "y": height});
+            e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
+            _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
         },
-        "notice": function(content, type, target, where){
-            _form.notice(content, type, target, where);
+        "notice": function(content, type, target, where, offset, option){
+            _form.notice(content, type, target, where, offset, option);
         },
         "addEvent": function(e, f){_form.addEvent(e, f);},
         "openWindow": function(form, app){
@@ -876,25 +878,30 @@ MWF.xScript.PageEnvironment = function(ev){
             op.workCompletedId = completedId;
             op.docTitle = title;
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
-            layout.desktop.openApplication(this.event, "process.Work", op);
+            return layout.desktop.openApplication(this.event, "process.Work", op);
         },
         "openJob": function(id, choice, options){
+            var workData = null;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
-                var len = json.data.workList.length + json.data.workCompletedList.length;
+                if (json.data) workData = json.data;
+            }.bind(this), null, false);
+
+            if (workData){
+                var len = workData.workList.length + workData.workCompletedList.length;
                 if (len){
                     if (len>1 && choice){
 
                     }else{
-                        if (json.data.workList.length){
-                            var work =  json.data.workList[0];
-                            this.openWork(work.id, null, work.title, options);
+                        if (workData.workList.length){
+                            var work =  workData.workList[0];
+                            return this.openWork(work.id, null, work.title, options);
                         }else{
-                            var work =  json.data.workCompletedList[0];
-                            this.openWork(null, work.id, work.title, options);
+                            var work =  workData.workCompletedList[0];
+                            return this.openWork(null, work.id, work.title, options);
                         }
                     }
                 }
-            }.bind(this));
+            }
         },
         "openDocument": function(id, title, options){
             var op = options || {};

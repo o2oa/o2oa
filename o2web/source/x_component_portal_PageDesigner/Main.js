@@ -1364,7 +1364,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
     getFieldList: function(){
         dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
-            "person": ["personfield"],
+            "person": ["personfield","org"],
             "date": ["calender"],
             "number": ["number"],
             "array": ["checkbox"]

@@ -271,9 +271,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
         }
-        if( !this.data.tableType ){
-            this.data.tableType = "dynamic";
-        }
+        //if( !this.data.tableType ){
+        //    this.data.tableType = "dynamic";
+        //}
 
         this.designer.actions.saveStatement(this.data, function(json){
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});

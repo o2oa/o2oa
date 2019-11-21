@@ -104,15 +104,42 @@ o2.addReady(function(){
 
                 layout.loadDocument = function(options){
                     // this.action.viewDocument( options.id, function(document){
-                    this.action.getDocument( options.id, function(document){
+
+                    o2.Actions.invokeAsync([
+                        {"action": this.action, "name": "getDocument"},
+                        {"action": this.action, "name": "listAttachment" }
+                    ], {"success": function(json_document, json_att){
                         if (this.mask) this.mask.hide();
-                        this.parseData(document.data);
-                        if( !this.formId || this.formId==="" ){
-                            this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
+                        if (json_document ){
+                            if( json_att && typeOf( json_att.data ) === "array" ){
+                                json_document.data.attachmentList = json_att.data ;
+                            }else{
+                                json_document.data.attachmentList = [];
+                            }
+                            this.parseData(json_document.data);
+                            if( !this.formId || this.formId==="" ){
+                                this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
+                            }else{
+                                this.loadForm( this.formId );
+                            }
                         }else{
-                            this.loadForm( this.formId );
+                            this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                            this.close();
                         }
-                    }.bind(this), null);
+                    }.bind(this), "failure": function(){
+                        this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                        this.close();
+                    }.bind(this)}, options.id);
+
+                    //this.action.getDocument( options.id, function(document){
+                    //    if (this.mask) this.mask.hide();
+                    //    this.parseData(document.data);
+                    //    if( !this.formId || this.formId==="" ){
+                    //        this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
+                    //    }else{
+                    //        this.loadForm( this.formId );
+                    //    }
+                    //}.bind(this), null);
                 };
 
                 //layout.loadDocument = function(options){

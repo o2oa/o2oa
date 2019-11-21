@@ -1,6 +1,6 @@
 MWF.xApplication.Forum = MWF.xApplication.Forum || {};
 MWF.xApplication.Forum.options = MWF.xApplication.Forum.options || {};
-MWF.xDesktop.requireApp("Forum", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false) ;
 MWF.xDesktop.requireApp("Forum", "Main", null, false);
 MWF.xApplication.Forum.MainInContainer = new Class({
     Extends: MWF.xApplication.Forum.Main,
@@ -10,7 +10,7 @@ MWF.xApplication.Forum.MainInContainer = new Class({
         "name": "Forum",
         "naviMode" : false
     },
-    initialize: function(desktop, options, container, content, scrollNode){
+    initialize: function(desktop, options, container, content, scrollNode ){
         this.setOptions(options);
         this.desktop = desktop;
         this.container = container;

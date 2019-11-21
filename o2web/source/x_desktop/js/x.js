@@ -9,6 +9,12 @@ layout.session = layout.session || {};
 layout["debugger"] = o2.session.isDebugger;
 
 o2.addReady(function(){
+    o2.loadLP(o2.language);
+
+    $("browser_loading_area_text").set("text", o2.LP.desktop.loadding);
+    $("browser_error_area_text").set("text", o2.LP.desktop.lowBrowser);
+    $("browser_error_area_up_text").set("text", o2.LP.desktop.upgradeBrowser);
+
     var loadingNode = $("browser_loadding");
     var errorNode = $("browser_error");
 
@@ -41,8 +47,6 @@ o2.addReady(function(){
                 layout.config.systemTitle = layout.config.systemTitle || layout.config.title;
 
                 document.title = layout.config.title || layout.config.systemTitle || layout.config.footer || layout.config.systemName;
-
-                o2.loadLP(o2.language);
 
                 MWF.require("MWF.xDesktop.Layout", function(){
                     layout.desktop = new MWF.xDesktop.Layout("layout", {

@@ -215,7 +215,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 		
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
-		
+
+		this.unSelected();
+
 		if (tr.cells.length<=1){
 			this.parentContainer.destroy();
 		}else{
@@ -233,7 +235,6 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 				tdModule.parentContainer.containers.erase(tdModule);
 				tdModule.destroy();
 			}
-			
 		}
 	},
 	_setEditStyle_custom: function(name){

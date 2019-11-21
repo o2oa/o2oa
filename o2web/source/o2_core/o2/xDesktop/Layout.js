@@ -291,11 +291,13 @@ MWF.xDesktop.Layout = new Class({
     },
     openWebSocket: function(){
         this.socket = new MWF.xDesktop.WebSocket();
-        window.setTimeout(this.checkWebSocket.bind(this), 30000);
+        //window.setTimeout(this.checkWebSocket.bind(this), 30000);
     },
     checkWebSocket: function(){
         if (!this.socket || this.socket.webSocket.readyState !== 1) {
             this.socket = new MWF.xDesktop.WebSocket();
+        }else{
+            this.socket.heartbeat("heartbeat");
         }
         window.setTimeout(this.checkWebSocket.bind(this), 30000);
     },
@@ -597,17 +599,23 @@ MWF.xDesktop.Layout = new Class({
             if (select.toString()!=="text" && select.toString()!=="auto") e.preventDefault();
         });
         window.onunload = function(e){
-            if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
-                this.socket.webSocket.close();
-            }
+            //if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {\
+            // if (this.socket && this.socket.webSocket) {
+            //     console.log("websocket is onunload close ...");
+            //     this.socket.webSocket.close();
+            // }
         }.bind(this);
 
         window.onbeforeunload = function(e){
             if (!this.isLogout){
                 if (!this.notRecordStatus) this.recordDesktopStatus();
-                // if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
-                //     this.socket.webSocket.close();
-                // }
+                if (this.socket && this.socket.webSocket) {
+                    //console.log("websocket is onbeforeunload close ...");
+                    debugger;
+                    this.socket.reConnect = false;
+                    this.socket.webSocket.close();
+                    //return false;
+                }
                 this.fireEvent("unload");
                 e = e || window.event;
                 e.returnValue = MWF.LP.desktop.notice.unload;

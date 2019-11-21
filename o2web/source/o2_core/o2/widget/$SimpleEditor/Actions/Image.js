@@ -1,4 +1,4 @@
-o2.widget.SimpleEditor.Actions = o2.widget.SimpleEditor.Actions || {};
+﻿o2.widget.SimpleEditor.Actions = o2.widget.SimpleEditor.Actions || {};
 o2.widget.SimpleEditor.Actions.Image = new Class({
     Implements: [Options, Events],
     options: {

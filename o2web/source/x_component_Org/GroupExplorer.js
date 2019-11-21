@@ -130,17 +130,18 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.unitMemberPage = this.propertyTab.addTab(this.unitMemberContentNode, this.explorer.app.lp.unitMemberGroupText);
     },
     _loadContent: function(){
+        debugger;
         this._listBaseInfor();
         this.loadListCount();
         var _self = this;
         this.personMemberList = this._listMembers("personList", "woPersonList", this.personMemberContentNode, [{
-            "get": function(){
+            "getHtml": function(){
                 var src = _self.explorer.actions.getPersonIcon(this.id);
                 return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
             },
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
-            "get": function(){
+            "getHtml": function(){
                 return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
@@ -160,7 +161,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
 
         this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName",  //"description",
             {
-                "get": function(){
+                "getHtml": function(){
                     return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
@@ -179,7 +180,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
 
         this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", //"typeList",
             {
-            "get": function(){
+            "getHtml": function(){
                 return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
@@ -432,9 +433,9 @@ MWF.xApplication.Org.GroupExplorer.GroupContent.BaseInfor = new Class({
 
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupName+":</td><td class='inforContent'>"+(this.data.name || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.groupUnique+":</td><td class='inforContent'>"+(this.data.unique || "")+"</td></tr>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupDescription+":</td><td colspan='3' class='inforContent'>"+(this.data.description || "")+"</td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupName+":</td><td class='inforContent infor_name'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.groupUnique+":</td><td class='inforContent infor_unique'></td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.groupDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
         return html;

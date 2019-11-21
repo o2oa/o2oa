@@ -732,14 +732,14 @@ this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
     }
     var multiple = c&&c.multiple ? c.multiple : false;
     var maxNumber = c&&c.maxNumber ? c.maxNumber : 0;
-    var pickedPersonList = c&&c.pickedPersonList ? c.pickedPersonList : [];
+    var pickedUsers = c&&c.pickedUsers ? c.pickedUsers : [];
     var body = {
       type: "contact.personPicker",
       callback: "o2m.biz.contact.PersonPickerSuccess",
       data: {
         multiple: multiple,
         maxNumber: maxNumber,
-        pickedPersonList: pickedPersonList,
+        pickedUsers: pickedUsers,
       }
     };
     _biz_post(body, onFail);
@@ -763,7 +763,10 @@ this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
     var topList = c&&c.topList ? c.topList : [];
     var orgType = c&&c.orgType ? c.orgType : "";
     var duty = c&&c.duty ? c.duty : [];
-    var pickedList = c&&c.pickedList ? c.pickedList : [];
+    var pickedGroups = c&&c.pickedGroups ? c.pickedGroups : [];
+    var pickedUsers = c&&c.pickedUsers ? c.pickedUsers : [];
+    var pickedIdentities = c&&c.pickedIdentities ? c.pickedIdentities : [];
+    var pickedDepartments = c&&c.pickedDepartments ? c.pickedDepartments : [];
     var body = {
       type: "contact.complexPicker",
       callback: "o2m.biz.contact.ComplexPickerSuccess",
@@ -774,7 +777,10 @@ this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
         topList: topList,
         orgType: orgType,
         duty: duty,
-        pickedList: pickedList,
+        pickedGroups: pickedGroups,
+        pickedUsers: pickedUsers,
+        pickedIdentities: pickedIdentities,
+        pickedDepartments: pickedDepartments,
       }
     };
     _biz_post(body, onFail);

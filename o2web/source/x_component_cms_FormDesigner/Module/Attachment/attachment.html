@@ -54,6 +54,30 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许上传类型:</td>
+                <td class="editTableValue">
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('word')!=-1)?'checked':''} value="word">WORD文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('excel')!=-1)?'checked':''} value="excel">EXCEL文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('ppt')!=-1)?'checked':''} value="ppt">PPT文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('ppt')!=-1)?'checked':''} value="txt">文本文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('pic')!=-1)?'checked':''} value="pic">图片文件
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('pdf')!=-1)?'checked':''} value="pdf">PDF文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('zip')!=-1)?'checked':''} value="zip">压缩文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('audio')!=-1)?'checked':''} value="audio">音频文档
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('video')!=-1)?'checked':''} value="video">视频文档<br/>
+                    <input type="checkbox" name="attachmentExtType" text{(!$.attachmentExtType || $.attachmentExtType.indexOf('other')!=-1)?'checked':''} value="other">其他
+                    <input type="text" name="attachmentExtOtherType" value="text{$.attachmentExtOtherType}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许上传大小（M）:</td>
+                <td class="editTableValue">
+                    <input type="text" name="attachmentSize" value="text{$.attachmentSize || 0}" class="editTableInput"/>
+                    <br />
+                    <div style="text-align:center">“0”表示上传大小没有限制</div>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许上传数量:</td>
                 <td class="editTableValue">
                     <input type="text" name="attachmentCount" value="text{$.attachmentCount}" class="editTableInput"/>
@@ -78,7 +102,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">附件样式:</td>
+                <td class="editTableTitle">默认附件样式:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="listStyle" text{($.listStyle=='list')?'checked':''} type="radio" value="list"/>列表 </br>
                     <input class="editTableRadio" name="listStyle" text{($.listStyle=='icon')?'checked':''} type="radio" value="icon"/>图标 </br>
@@ -101,13 +125,18 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许下载:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload=='n')?'checked':''} type="radio" value="n"/>不允许
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许删除:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='y')?'checked':''} type="radio" value="y"/>允许
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
-                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
-                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
                 </td>
             </tr>
             <tr>
@@ -116,8 +145,6 @@
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>允许
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
                     <input class="editTableRadio" name="isReplace" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
-                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
-                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
                 </td>
             </tr>
             <tr>
@@ -126,16 +153,10 @@
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>隐藏编辑操作组<br/>
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('read')!=-1)?'checked':''} type="checkbox" value="read"/>隐藏阅读操作组<br/>
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('list')!=-1)?'checked':''} type="checkbox" value="list"/>隐藏布局操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('config')!=-1)?'checked':''} type="checkbox" value="config"/>隐藏设置操作组<br/>
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>隐藏模式操作<br/>
                 </td>
             </tr>
-            <!--<tr>-->
-                <!--<td class="editTableTitle">下载附件:</td>-->
-                <!--<td class="editTableValue">-->
-                    <!--<input class="editTableRadio" name="downloadEvent" text{($.downloadEvent!='click')?'checked':''} type="radio" value="dblclick"/>双击附件下载-->
-                    <!--<input class="editTableRadio" name="downloadEvent" text{($.downloadEvent=='click')?'checked':''} type="radio" value="click"/>单击附件下载-->
-                <!--</td>-->
-            <!--</tr>-->
         </table>
     </div>
 
@@ -144,5 +165,8 @@
     </div>
     <div title="HTML"  class="MWFTab">
         <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
     </div>
 </div>

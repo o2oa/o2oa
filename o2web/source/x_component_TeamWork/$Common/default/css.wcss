@@ -135,7 +135,7 @@
                 "float":"left",
                 "cursor":"pointer",
                 "margin-top":"8px",
-                "margin-left":"20px",
+                "margin-left":"10px",
                 "margin-right":"10px",
                 "width":"16px",
                 "height":"16px",
@@ -156,7 +156,7 @@
                 "width":"16px",
                 "height":"16px",
                 "margin-top":"8px",
-                "margin-left":"20px",
+                "margin-left":"10px",
                 "margin-right":"10px",
                 "background": "url(/x_component_TeamWork/$Common/default/icon/icon_zengjia_blue2_click.png) no-repeat center "
             },
@@ -174,7 +174,7 @@
                 "line-height":"40px",
                 "background-color":"#4A90E2",
                 "border-radius":"10px",
-                "margin":"20px auto"
+                "margin":"10px auto"
             }
         }
     },

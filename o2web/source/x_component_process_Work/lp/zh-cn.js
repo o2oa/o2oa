@@ -4,6 +4,7 @@ MWF.xApplication.process.Work.LP = {
 	"title": "工作",
     "selectRoute": "选择决策",
     "inputOpinion": "填写意见",
+    "selectPerson" : "选择人员",
     "cancel": "取 消",
     "ok": "提 交",
     "close": "关　闭",
@@ -11,6 +12,7 @@ MWF.xApplication.process.Work.LP = {
     "inputText": "请在此处填写流程意见",
 
     "mustSelectRoute": "请先选择决策",
+    "opinionRequired" : "请填写意见",
 
     "searchKey": "请输入关键字",
 
@@ -29,6 +31,10 @@ MWF.xApplication.process.Work.LP = {
     "process": "继续流转",
     "handwriting": "手写",
     "audioRecord": "录音",
+
+    "noAppendTaskIdentityConfig" : "没有配置转交人，请联系管理员",
+    "selectAppendTaskIdentityNotice" : "请选择转交人",
+    "routeValidFailure" : "路由校验失败",
 
     "taskCompletedPerson": "办理人",
     "readPerson": "阅读人",

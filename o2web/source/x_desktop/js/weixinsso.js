@@ -20,6 +20,7 @@ o2.addReady(function(){
             (function(){
                 layout.load = function(){
                     var uri = href.toURI();
+                    var redirect = uri.getData("redirect");
                     MWF.require("MWF.xDesktop.Actions.RestActions", function(){
                         var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                         action.getActions = function(actionCallback){
@@ -27,10 +28,17 @@ o2.addReady(function(){
                             if (actionCallback) actionCallback();
                         };
                         action.invoke({"name": "sso","async": true, "parameter": {"code": uri.getData("code")},"success": function(json){
-                            "appMobile.html?app=process.TaskCenter".toURI().go();
+                                if (redirect){
+                                    redirect.toURI().go();
+                                }else{
+                                    "appMobile.html?app=process.TaskCenter".toURI().go();
+                                }
+
+                            //"appMobile.html?app=process.TaskCenter".toURI().go();
                             //window.loaction = "app.html?app=process.TaskCenter";
                         }.bind(this), "failure": function(xhr, text, error){
-                            "appMobile.html?app=process.TaskCenter".toURI().go();
+                            document.id("layout").set("html", "<div></div>")
+                            //"appMobile.html?app=process.TaskCenter".toURI().go();
                             //window.loaction = "app.html?app=process.TaskCenter";
                         }.bind(this)});
                     });

@@ -34,6 +34,17 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "read.png",
+    "title": "标记为已阅",
+    "action": "readedWork",
+    "text": "已阅",
+    "id": "action_readed",
+    "control": "allowReadProcessing",
+    "condition": "",
+    "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "del.png",
     "title": "删除文件",
     "action": "deleteWork",

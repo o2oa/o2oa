@@ -308,7 +308,6 @@
       "min-height": "20px"
     },
     "inputStyles": {
-      "height": "26px",
       "color": "#666"
     }
   },
@@ -347,6 +346,51 @@
     },
     "inputStyles": {
       "color": "#666"
+    }
+  },
+  "org": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "reader": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666",
+      "border-bottom": "1px solid #ccc"
+    }
+  },
+  "author": {
+    "styles": {
+      "border-bottom": "0px solid #ccc",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "min-height": "20px",
+      "line-height": "26px"
+    },
+    "inputStyles": {
+      "min-height": "26px",
+      "color": "#666",
+      "border-bottom": "1px solid #ccc"
     }
   },
   "select": {

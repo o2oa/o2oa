@@ -229,7 +229,9 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.nameInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationName"), this.data.name, this.app.css.formInput);
         this.aliasInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationAlias"), this.data.alias, this.app.css.formInput);
         this.descriptionInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
-        this.typeInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
+        //2019年11月15日--ji 接口是queryCategory字段
+        //this.typeInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
+        this.typeInput = new MWF.xApplication.query.QueryManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.queryCategory, this.app.css.formInput);
         // this.firstPageInput = new MWF.xApplication.query.QueryManager.Select(this.propertyContentNode.getElement("#formApplicationFirstPage"), this.data.firstPage, this.app.css.formInput, function(){
         //     var pages = {};
         //     debugger;
@@ -262,7 +264,9 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
         this.data.name = this.nameInput.input.get("value");
         this.data.alias = this.aliasInput.input.get("value");
         this.data.description = this.descriptionInput.input.get("value");
-        this.data.applicationCategory = this.typeInput.input.get("value");
+        //2019年11月15日--ji 接口是queryCategory字段
+        //this.data.applicationCategory = this.typeInput.input.get("value");
+        this.data.queryCategory = this.typeInput.input.get("value");
         //this.data.firstPage = this.firstPageInput.input.get("value");
 
         this.app.restActions.saveApplication(this.data, function (json) {

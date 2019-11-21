@@ -216,6 +216,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 				}
 			});
 		}
+        this.fireEvent("setData");
 	},
 
     notValidationMode: function(text){

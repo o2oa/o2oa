@@ -1323,7 +1323,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         //fieldTypes = ["calender", "checkbox", "datagrid", "htmledit", "number", "personfield", "radio", "select", "textarea", "textfield"];
         dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
-            "person": ["personfield","orgfield"],
+            "person": ["personfield","orgfield","org"],
             "date": ["calender"],
             "number": ["number"],
             "array": ["checkbox"]
@@ -1684,6 +1684,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             var module = this.form.currentSelectedModule;
             if (module && module.json.type!=="Form"){
                 this.form.brushStyle = module.json.styles;
+                if (module.json.inputStyles) this.form.brushInputStyle = Object.clone(module.json.inputStyles);
                 this.brushCursor = new Element("div", {"styles": {
                     "position": "absolute",
                     "width": "16px",
@@ -1701,6 +1702,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             }
         }else{
             this.form.brushStyle = null;
+            this.form.brushInputStyle = null;
             if (this.brushCursorMoveFun) this.content.removeEvent("mousemove", this.brushCursorMoveFun);
             if (this.brushCursor){
                 this.brushCursor.destroy();

@@ -11,6 +11,11 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectView": "Select View",
     "selectCMSApplication": "Select CMS Application",
     "selectCMSCategory": "Select CMS Category",
+    "searchDescription" : "search",
+
+    "waitingSelect" : "Waiting Select",
+    "selected" : "Selected",
+    "empty" : "<Empty",
 
     "identity" : "Identity",
     "person" : "Person",

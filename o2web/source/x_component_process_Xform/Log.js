@@ -35,6 +35,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             this.categoryList.each( function( key, idx ){
                 var list = this.categoryJson[key];
                 if( list && list.length ){
+
                     var tr = new Element("tr").inject( this.table );
                     if( this.expandCount && (idx + 1) > this.expandCount ){
                         tr.setStyle("display","none");
@@ -45,7 +46,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                     }
                     new Element("td", {
                         styles : this.json.titleTdStyles,
-                        text : text + MWF.xApplication.process.Xform.LP.idea
+                        text : text
                     }).inject( tr );
 
                     var td = new Element("td", {
@@ -56,14 +57,50 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                         styles : this.json.contentDivStyles || {}
                     }).inject( td );
 
+                    var sortedList = list;
+                    if( this.json.sortTypeInCategory === "completedTimeAsc" || this.json.sortTypeInCategory === "completedTimeDesc" ){
+                        sortedList = [];
+                        list.each( function( log ){
+                            if (log.taskCompletedList.length) {
+                                log.taskCompletedList.each(function (t) {
+                                    var copyLog = Object.clone( log );
+                                    copyLog.readList = [];
+                                    copyLog.readCompletedList = [];
+                                    copyLog.taskList = [];
+                                    copyLog.taskCompletedList = [t];
+                                    sortedList.push( copyLog );
+                                }.bind(this));
+                            }
+                        }.bind(this));
+                        sortedList.sort(function(a, b){
+                            if( this.json.sortTypeInCategory === "completedTimeAsc" ) {
+                                return Date.parse(a.taskCompletedList[0].completedTime) - Date.parse(b.taskCompletedList[0].completedTime);
+                            }else if( this.json.sortTypeInCategory === "completedTimeDesc" ) {
+                                return Date.parse(b.taskCompletedList[0].completedTime) - Date.parse(a.taskCompletedList[0].completedTime);
+                            }
+                        }.bind(this));
+                        list.each( function( log ) {
+                            if (log.taskList.length) {
+                                log.taskList.each(function (t) {
+                                    var copyLog = Object.clone(log);
+                                    copyLog.readList = [];
+                                    copyLog.readCompletedList = [];
+                                    copyLog.taskCompletedList = [];
+                                    copyLog.taskList = [t];
+                                    sortedList.push(copyLog);
+                                }.bind(this));
+                            }
+                        })
+                    }
+
                     if (this.json.mode==="table"){
-                        this.loadWorkLogTable( list, div );
+                        this.loadWorkLogTable( sortedList, div );
                     }else if (this.json.mode==="text"){
-                        this.loadWorkLogText( list, div );
+                        this.loadWorkLogText( sortedList, div );
                     }else if (this.json.mode==="media"){
-                        this.loadWorkLogMedia( list, div );
+                        this.loadWorkLogMedia( sortedList, div );
                     }else{
-                        this.loadWorkLogDefault( list, div );
+                        this.loadWorkLogDefault( sortedList, div );
                     }
 
                     this._loadTableStyles();
@@ -126,6 +163,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         this.workLog.each( function(log, idx){
             var key;
             if( this.json.category === "activityGroup" ){
+
                 if( log.fromOpinionGroup ){
                     var arr = log.fromOpinionGroup.split("#");
                     key = arr[arr.length-1]
@@ -361,12 +399,12 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             if (atts.length) this.loadMediaOpinion_show(atts, task, container);
         }
     },
-    loadMediaOpinion_show: function(atts, task, container){
+    loadMediaOpinion_show: function(atts, task, container, noName){
         atts.each(function(att){
             //if (!att.contentType) att.contentType = "image";
             if (att.type){
                 if (att.type.indexOf("image")!==-1){
-                    this.loadMediaOpinion_image_show(att, task, container);
+                    this.loadMediaOpinion_image_show(att, task, container, noName);
                 }else if(att.type.indexOf("video")!==-1){
                     this.loadMediaOpinion_video_show(att, task, container);
                 }else if(att.type.indexOf("audio")!==-1){
@@ -377,16 +415,19 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
         }.bind(this));
     },
-    loadMediaOpinion_image_show: function(att, task, container){
+    loadMediaOpinion_image_show: function(att, task, container, noName){
         var url = this.getMediaOpinionUrl(att);
         var node = new Element("div", {"styles": {"overflow": "hidden"}}).inject( container || this.node);
-        var textNode = new Element("div", {
-            "styles": {
-                "line-height": "28px",
-                "height": "28px"
-            },
-            "text": task.person.substring(0, task.person.indexOf("@"))+"("+task.completedTime+")"
-        }).inject(node);
+        if (!noName){
+            var textNode = new Element("div", {
+                "styles": {
+                    "line-height": "28px",
+                    "height": "28px"
+                },
+                "text": task.person.substring(0, task.person.indexOf("@"))+"("+task.completedTime+")"
+            }).inject(node);
+        }
+
         //var img = new Element("img", {"src": url, "styles": {"background-color": "#ffffff"}}).inject(node);
         //
         //var height = 200;
@@ -412,7 +453,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
         var img = new Element("img", {
             "src": url,
-            "styles" : { width : width+"px" }, //×î¿ªÊ¼ÏÞ¶¨Ò»ÏÂ¿í¶È£¬²»ÒªÈÃÒ³Ãæ¶¶¶¯
+            "styles" : { width : width+"px" },
             "events" : {
                 load : function(ev){
                     var nh=ev.target.naturalHeight;
@@ -423,12 +464,16 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                         imgNode.setStyles(size);
                     }else{
                         var x = Math.min(nw, width);
-                        img.setStyles({"width": ""+ x +"px"}); //×îÖÕµÄ¿í¶È
+                        img.setStyles({"width": ""+ x +"px"}); //ï¿½ï¿½ï¿½ÕµÄ¿ï¿½ï¿½
                         imgNode.setStyles({"width": ""+ x +"px"});
                     }
                 }.bind(this)
             }
         }).inject(imgNode);
+
+
+
+
 
         // var size = img.getSize();
         // var x_y = size.x/size.y;
@@ -843,11 +888,14 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = html.replace(/\{startDate\}/g, new Date().parse(task.startTime).format("%Y-%m-%d"));
             html = html.replace(/\{activity\}/g, log.fromActivityName);
             html = html.replace(/\{arrivedActivity\}/g, log.arrivedActivityName);
+            html = html.replace(/\{img\}/g, "<span class='mwf_log_img'></span>");
+
             //var html = MWF.xApplication.process.Xform.LP.nextUser + task.person+"("+task.department+")" +", "+
             //    MWF.xApplication.process.Xform.LP.selectRoute + ": [" + task.routeName + "], " +
             //    MWF.xApplication.process.Xform.LP.submitAt + ": " + task.completedTime+ ", " +
             //    MWF.xApplication.process.Xform.LP.idea + ": <font style=\"color: #00F\">" + (task.opinion || "")+"</font>";
             textNode.set("html", html);
+            var imgNode = textNode.getElement(".mwf_log_img");
             if (task.mediaOpinion){
                 var mediaIds = task.mediaOpinion.split(",");
                 var atts = [];
@@ -858,7 +906,17 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                         }
                     }.bind(this));
                 }
-                if (atts.length) this.loadMediaOpinion(atts, textNode, "default");
+                if (atts.length){
+                    if (imgNode){
+                        this.loadMediaOpinion_show(atts, task, imgNode, true);
+                        // atts.each(function(att){
+                        //     this.loadMediaOpinion_image_show(att, task, imgNode);
+                        // }.bind(this));
+
+                    }else{
+                        this.loadMediaOpinion(atts, textNode, "default");
+                    }
+                }
             }
         }else{
             //company = task.unitList[task.unitList.length-1];
@@ -973,7 +1031,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 var img = new Element("img", {
                     "src": url,
-                    "styles" : { width : width+"px" }, //×î¿ªÊ¼ÏÞ¶¨Ò»ÏÂ¿í¶È£¬²»ÒªÈÃÒ³Ãæ¶¶¶¯
+                    "styles" : { width : width+"px" }, //ï¿½î¿ªÊ¼ï¿½Þ¶ï¿½Ò»ï¿½Â¿ï¿½È£ï¿½ï¿½ï¿½Òªï¿½ï¿½Ò³ï¿½æ¶¶ï¿½ï¿½
                     "events" : {
                         load : function(ev){
                             var nh = ev.target.naturalHeight;
@@ -984,7 +1042,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                                 imgNode.setStyles(size);
                             }else{
                                 var x = Math.min(nw, width);
-                                img.setStyles({"width": ""+ x +"px"}); //×îÖÕµÄ¿í¶È
+                                img.setStyles({"width": ""+ x +"px"}); //ï¿½ï¿½ï¿½ÕµÄ¿ï¿½ï¿½
                                 imgNode.setStyles({"width": ""+ x +"px"});
                             }
                         }.bind(this)

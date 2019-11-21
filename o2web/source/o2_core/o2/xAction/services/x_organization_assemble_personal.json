@@ -30,6 +30,16 @@
   "getPublicUserData": {"uri": "/jaxrs/definition/{name}"},
   "putPublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "PUT"},
   "deletePublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "DELETE"},
+  //外出授权
+  "getMyEmPower": {"uri": "/jaxrs/empower/list/currentperson", "method": "GET"},
+  "getReceiveEmPower": {"uri": "/jaxrs/empower/list/to", "method": "GET"},
+  "createEmPower": {"uri": "/jaxrs/empower", "method": "POST"},
+  "editEmPower": {"uri": "/jaxrs/empower/{id}", "method": "PUT"},
+  "deleteEmPower": {"uri": "/jaxrs/empower/{id}", "method": "DELETE"},
+
+
+  "getMyEmPowerLog": {"uri": "/jaxrs/empowerlog/list/currentperson", "method": "GET"},
+  "getReceiveEmPowerLog": {"uri": "/jaxrs/empowerlog/list/to", "method": "GET"},
 
   "clazz": "x_organization_assemble_personal"
 }

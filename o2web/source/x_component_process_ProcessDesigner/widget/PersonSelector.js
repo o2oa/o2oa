@@ -17,6 +17,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         this.node = $(node);
         this.app = app;
 
+        debugger;
+
         this.path = "/x_component_process_ProcessDesigner/widget/$PersonSelector/";
         this.cssPath = "/x_component_process_ProcessDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
@@ -58,7 +60,11 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     this.identitys.push(dutyItem);
                 }.bind(this));
             }else{
-                this.options.names.each(function(name){
+                var names = this.options.names;
+                if( typeOf(names) === "string" ){
+                    names = JSON.parse( names );
+                }
+                names.each(function(name){
                     if (name){
                         var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
                         MWF.require("MWF.widget.O2Identity", function(){
@@ -90,6 +96,22 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
     createAddNode: function(){
         this.addNode = new Element("div", {"styles": this.css.addPersonNode}).inject(this.node, "before");
         this.addNode.addEvent("click", function(e){
+            debugger;
+
+            var include = [];
+            if( this.options.type.toLowerCase()==="formfield" ){
+                if( this.app.process && this.app.process.routes ){
+                    Object.each( this.app.process.routes, function(route){
+                        if(route.data.selectConfig){
+                            var array = JSON.parse( route.data.selectConfig );
+                            ( array || [] ).each( function( d ){
+                                include.push( { name : d.name, id : d.id, form: "routeSelectConfig" } );
+                            })
+                        }
+                    });
+                }
+            }
+
             var selecteds = [];
             this.identitys.each(function(id){selecteds.push(id.data)});
             var options = {
@@ -100,6 +122,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                 "values": selecteds,
                 "zIndex": 20000,
                 "isImage": this.options.isImage,
+                "include" : include,
                 "onComplete": function(items){
                     this.identitys = [];
                     if (this.options.type.toLowerCase()!=="duty") this.node.empty();
@@ -133,6 +156,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     }.bind(this));
                 }.bind(this)
             };
+            if( this.options.title )options.title = this.options.title;
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
     }

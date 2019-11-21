@@ -20,6 +20,13 @@
                     <input type="radio" name="showIcon" value="no" text{($.showIcon=='no')?'checked':''}/>否
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">是否只读:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
+                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+                </td>
+            </tr>
             <!--<tr>-->
                 <!--<td class="editTableTitle">标题字段</td>-->
                 <!--<td class="editTableValue" id="text{$.pid}isTitleArea">-->

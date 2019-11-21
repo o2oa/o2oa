@@ -148,9 +148,13 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                 "click": this.clickSelect.bind(this)
             }
         });
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
-            "styles": this.form.css[this.iconStyle]
-        }).inject(this.node, "before");
+        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
+            this.iconNode = new Element("div", {
+                "styles": this.form.css[this.iconStyle]
+            }).inject(this.node, "before");
+        }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+        }
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();

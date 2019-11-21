@@ -212,6 +212,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             "hasMobile": false,
             "description": formData.json.description,
             "application": formData.json.application,
+            "category": formData.json.category,
             "icon": formData.json.formIcon,
             "formFieldList": fieldList
         };
@@ -245,6 +246,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
                     "hasMobile": false,
                     "description": formData.json.description,
                     "application": formData.json.application,
+                    "category": formData.json.category,
                     "icon": formData.json.formIcon,
                     "formFieldList": fieldList
                 };
@@ -273,7 +275,8 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
                 "alias": formData.json.name,
                 "hasMobile": false,
                 "description": formData.json.description,
-                "application": formData.json.application
+                "application": formData.json.application,
+                "category": formData.json.category
             };
             if (mobileData && mobileData.json.moduleList){
                 if (Object.keys(mobileData.json.moduleList).length){
@@ -432,6 +435,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             this.action.invoke({"name": "addScript","data": data,"success": success,"failure": failure});
         }
     },
+
     deleteScript: function(id, success, failure, async){
         this.action.invoke({"name": "removeScript", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
     },

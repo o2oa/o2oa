@@ -7,7 +7,8 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		"style": "default",
 		"propertyPath": "/x_component_cms_FormDesigner/Module/Form/form.html",
 		"mode": "PC",
-		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Radio", "Select", "Textarea", "Textfield"],
+		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office",
+			"Orgfield", "Personfield", "Readerfield", "Authorfield", "Org", "Reader", "Author", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
 			{
 				"name" : "top",
@@ -54,20 +55,61 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	},
 
 
-	loadTemplateStyles : function( file, callback ){
+	//loadTemplateStyles : function( file, callback ){
+	//	debugger;
+	//	if( !file ){
+	//		if (callback) callback({});
+	//		return;
+	//	}
+	//	this.templateStylesList = this.templateStylesList || {};
+	//	if( this.templateStylesList[file] ){
+	//		if (callback) callback(this.templateStylesList[file]);
+	//		return;
+	//	}
+	//	var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+file;
+	//	MWF.getJSON(stylesUrl,{
+	//			"onSuccess": function(responseJSON){
+	//				this.templateStylesList[file] = responseJSON;
+	//				if (callback) callback(responseJSON);
+	//			}.bind(this),
+	//			"onRequestFailure": function(){
+	//				if (callback) callback({});
+	//			}.bind(this),
+	//			"onError": function(){
+	//				if (callback) callback({});
+	//			}.bind(this)
+	//		}
+	//	);
+	//},
+	loadTemplateStyleFile : function(file, callback ){
 		if( !file ){
 			if (callback) callback({});
-			return;
-		}
-		this.templateStylesList = this.templateStylesList || {};
-		if( this.templateStylesList[file] ){
-			if (callback) callback(this.templateStylesList[file]);
 			return;
 		}
 		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+file;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
-					this.templateStylesList[file] = responseJSON;
+					//this.templateStylesList[file] = responseJSON;
+					if (callback) callback(responseJSON);
+				}.bind(this),
+				"onRequestFailure": function(){
+					if (callback) callback({});
+				}.bind(this),
+				"onError": function(){
+					if (callback) callback({});
+				}.bind(this)
+			}
+		);
+	},
+	loadTemplateExtendStyleFile : function(extendFile, callback ){
+		if( !extendFile ){
+			if (callback) callback({});
+			return;
+		}
+		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+extendFile;
+		MWF.getJSON(stylesUrl,{
+				"onSuccess": function(responseJSON){
+					//this.templateStylesList[file] = responseJSON;
 					if (callback) callback(responseJSON);
 				}.bind(this),
 				"onRequestFailure": function(){
@@ -277,21 +319,25 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		if (name=="formStyleType"){
 
 			var file = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].file : null;
-			this.loadTemplateStyles( file, function( templateStyles ){
+			var extendFile = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].extendFile : null;
+			this.loadTemplateStyles( file, extendFile, function( templateStyles ){
 				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 				this.templateStyles = templateStyles;
 
-				var oldFile;
+				var oldFile, oldExtendFile;
 				if( oldValue && this.stylesList[oldValue] ){
 					oldFile = this.stylesList[oldValue].file;
+					oldExtendFile = this.stylesList[oldValue].extendFile;
 				}
-				this.loadTemplateStyles( oldFile, function( oldTemplateStyles ){
+				this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
 					//if (oldValue) {
 					//	var oldTemplateStyles = this.stylesList[oldValue];
 					//	if (oldTemplateStyles){
 					//		if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
 					//	}
 					//}
+
+					this.json.styleConfig = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 
 					if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
 					if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);

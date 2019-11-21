@@ -274,6 +274,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 this.process = new MWF.APPPD.Process(this.paper, this.processData, this, {"style":"flat", "isView": true,
                     "onPostLoad": function(){
                         this.loadWorkLog();
+                        this.fireEvent("postLoad");
                     }.bind(this)
                 });
                 this.process.load();

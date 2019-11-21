@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("MinderEditor", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("MinderEditor", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("MinderEditor", "Main", null, false);
 MWF.xApplication.MinderEditor.MainInContainer = new Class({
     Extends: MWF.xApplication.MinderEditor.Main,
@@ -20,6 +20,7 @@ MWF.xApplication.MinderEditor.MainInContainer = new Class({
         this.inBrowser = true;
         this.inContainer = true;
         this._loadCss();
+        debugger;
     },
     loadInBrowser: function(){
         this.window = {

@@ -126,6 +126,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
 
         if (process.begin) process.begin.process = process.id;
         if (process.endList) process.endList.each(function(a){a.process = process.id;});
+        if (process.agentList) process.agentList.each(function(a){a.process = process.id;});
         if (process.manualList) process.manualList.each(function(a){a.process = process.id;});
         if (process.conditionList) process.conditionList.each(function(a){a.process = process.id;});
         if (process.choiceList) process.choiceList.each(function(a){a.process = process.id;});
@@ -147,6 +148,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         }.bind(this));
     },
     saveItemAsNew: function(processJson, process, success, failure){
+	    debugger;
         var item = this.app.options.application;
         var id = item.id;
         var name = item.name;
@@ -166,6 +168,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         oldIds.push(process.id);
         if (process.begin) oldIds.push(process.begin.id);
         if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
+        if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
         if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
         if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
         if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});
@@ -360,6 +363,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer.Process = new Class({
                 oldIds.push(process.id);
                 if (process.begin) oldIds.push(process.begin.id);
                 if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
+                if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
                 if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
                 if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
                 if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});

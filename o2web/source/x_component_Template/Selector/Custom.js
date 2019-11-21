@@ -22,7 +22,6 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         this.container = $(container);
         this.selectedItems = [];
         this.items = [];
-        debugger;
     },
     loadSelectItems: function(addToNext){
         if(!this.options.category){
@@ -54,16 +53,52 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         return new MWF.xApplication.Template.Selector.Custom.ItemCategory(data, selector, item, level)
     },
     _listItemByKey: function(callback, failure, key){
-        return false;
+        if (key){
+            this.initSearchArea(true);
+            this.searchInItems(key);
+        }else{
+            this.initSearchArea(false);
+        }
     },
     _newItemSelected: function(data, selector, item){
         return new MWF.xApplication.Template.Selector.Custom.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
-        return false;
+        if (key){
+            this.initSearchArea(true);
+            this.searchInItems(key);
+        }else{
+            this.initSearchArea(false);
+        }
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level);
+    },
+    createItemsSearchData: function(callback){
+        if (!this.itemsSearchData){
+            this.itemsSearchData = [];
+            MWF.require("MWF.widget.PinYin", function(){
+                var initIds = [];
+                this.items.each(function(item){
+                    if (initIds.indexOf(item.data.name)==-1){
+                        var text = item._getShowName().toLowerCase();
+                        var pinyin = text.toPY().toLowerCase();
+                        var firstPY = text.toPYFirst().toLowerCase();
+                        this.itemsSearchData.push({
+                            "text": text,
+                            "pinyin": pinyin,
+                            "firstPY": firstPY,
+                            "data": item.data
+                        });
+                        initIds.push(item.data.name);
+                    }
+                }.bind(this));
+                delete initIds;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
     }
 });
 MWF.xApplication.Template.Selector.Custom.Item = new Class({

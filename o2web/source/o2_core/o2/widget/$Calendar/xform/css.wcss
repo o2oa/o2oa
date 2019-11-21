@@ -197,25 +197,25 @@
 	"calendarTimeShow": {
 		"overflow": "hidden",
 		"text-align": "center",
-		"margin-top": "20px",
-		"padding-left": "38px",
+		"margin-top": "12px",
+		"padding-left": "28px",
 		"cursor": "pointer"
 	},
 	"calendarTimeShowItem": {
 		"border": "3px solid #CCC",
 		"background": "#666",
 		"color": "#FFF",
-		"font-size": "28px",
+		"font-size": "24px",
 		"font-weight": "bolder",
 		"float": "left",
-		"width": "46px",
+		"width": "40px",
 		"height": "30px",
 		"line-height": "30px",
 		"margin-left": "3px"
 	},
 	"calendarActionShow": {
 	    "overflow": "hidden",
-		"margin-top": "20px",
+		"margin-top": "12px",
 		"text-align": "center",
 		"overflow": "hidden"
 	},

@@ -10,6 +10,7 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Number"],
         ["process.Xform", "Personfield"],
         ["process.Xform", "Orgfield"],
+        ["process.Xform", "Org"],
         ["process.Xform", "Calendar"],
         ["process.Xform", "Textarea"],
         ["process.Xform", "Opinion"],
@@ -176,6 +177,7 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
 MWF.xApplication.process.Xform.Html = MWF.APPHtml =  new Class({
 	Extends: MWF.APP$Module,
 	load: function(){
+	    debugger;
 		this.node.insertAdjacentHTML("beforebegin", this.json.text);
 		this.node.destroy();
 	}

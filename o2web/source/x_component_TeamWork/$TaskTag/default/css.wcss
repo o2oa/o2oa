@@ -1,0 +1,159 @@
+{
+    selectContainer:{
+
+    },
+    selectTop:{
+        "width":"100%",
+        "height":"40px",
+        "border-bottom":"1px solid #dedede"
+    },
+    searchIn:{
+        "float":"left",
+        "color":"#999999",
+        "height":"35px",
+        "width":"170px",
+        "border":"0px",
+        "font-size":"14px",
+        "outline":"none",
+        "margin-left":"10px"
+    },
+    addTag:{
+        "cursor":"pointer",
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "margin":"10px 5px",
+        "background":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_zengjia_blue2_click.png) no-repeat center"
+    },
+    selectList:{
+        "width":"100%",
+        "height":"200px"
+    },
+    selectListContainer:{
+        "height":"200px",
+        "overflow":"hidden"
+    },
+    tagNoneContainer:{
+        "width":"80px",
+        "height":"100px",
+        "position":"absolute",
+        "left":"30%",
+        "top":"30%"
+    },
+    tagNoneIcon:{
+        "width":"100%",
+        "height":"80px",
+        "background":"url(/x_component_TeamWork/$TaskTag/default/icon/tagNone.png) no-repeat center"
+    },
+    tagNoneText:{
+        "color":"#999999",
+        "width":"100%",
+        "text-align":"center",
+        "font-size":"14px"
+    },
+    tagItem:{
+        "width":"100%",
+        "height":"40px",
+        "cursor":"pointer"
+    },
+    tagColor:{
+        "float":"left",
+        "width":"5px",
+        "height":"5px",
+        "border-radius":"2px",
+        "margin":"20px 10px 0px 10px"
+    },
+    tagText:{
+        "float":"left",
+        "width":"170px",
+        "height":"40px",
+        "line-height":"40px",
+        "font-size":"14px",
+        "color":"#666666",
+        "overflow":"hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    tagEdit:{
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "margin-top":"10px",
+        "margin-left":"5px",
+        "background":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_edit.png) no-repeat center"
+    },
+    tagSelect:{
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "margin-top":"10px",
+        "margin-left":"5px",
+        "background":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_dagou.png) no-repeat center"
+    },
+
+    addContainer:{
+        "width":"100%",
+        "height":"120px",
+        "margin-top":"20px"
+    },
+    addColorContainer:{
+        "height":"50px",
+        "width":"100%"
+    },
+    colorItem:{
+        "float":"left",
+        "width":"25px",
+        "height":"25px",
+        "cursor":"pointer",
+        "margin-left":"9px",
+        "border-radius":"20px"
+    },
+    colorGet:{
+        "width":"100%",
+        "height":"100%",
+        "background-repeat":"no-repeat",
+        "background-position":"center"
+    },
+    tagAction:{
+        "height":"50px",
+        "width":"100%"
+    },
+    "tagRemove":{
+        "float":"left",
+        "margin-left":"15px",
+        "cursor":"pointer",
+        "height":"35px",
+        "line-height":"35px",
+        "width":"80px",
+        "text-align":"center",
+        "color":"#ff0000",
+        "border":"1px solid #ff0000",
+        "border-radius":"4px"
+    },
+    "tagSave":{
+        "float":"left",
+        "margin-left":"15px",
+        "cursor":"pointer",
+        "height":"35px",
+        "line-height":"35px",
+        "width":"80px",
+        "text-align":"center",
+        "color":"#ffffff",
+        "background-color":"#3696dc",
+        "border":"1px solid #3696dc",
+        "border-radius":"4px"
+    },
+    "tagAdd":{
+        "float":"left",
+        "margin-left":"15px",
+        "cursor":"pointer",
+        "height":"35px",
+        "line-height":"35px",
+        "width":"175px",
+        "text-align":"center",
+        "color":"#ffffff",
+        "background-color":"#3696dc",
+        "border":"1px solid #3696dc",
+        "border-radius":"4px"
+    }
+}

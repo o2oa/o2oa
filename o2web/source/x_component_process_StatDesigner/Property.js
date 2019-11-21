@@ -274,15 +274,30 @@ MWF.xApplication.process.StatDesigner.Property = MWF.FVProperty = new Class({
         this.changeData(name, input, oldValue);
 	},
 	setSelectValue: function(name, select){
-		var idx = select.selectedIndex;
-		var options = select.getElements("option");
-		var value = "";
-		if (options[idx]){
-			value = options[idx].get("value");
-		}
-		var oldValue = this.data[name];
-		//this.data[name] = value;
-        this.changeJsonDate(name, value);
+        var idx = select.selectedIndex;
+        var options = select.getElements("option");
+        var value = "";
+        if (options[idx]){
+            value = options[idx].get("value");
+        }
+
+        var i = name.indexOf("*");
+        var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
+
+        //var oldValue = this.data[name];
+        var oldValue = this.data;
+        for (var idx = 0; idx<names.length; idx++){
+            if (!oldValue[names[idx]]){
+                oldValue = null;
+                break;
+            }else{
+                oldValue = oldValue[names[idx]];
+            }
+        }
+
+        //var oldValue = this.data[name];
+        //this.data[name] = value;
+        this.changeJsonDate(names, value);
         this.changeData(name, select, oldValue);
 	},
 	

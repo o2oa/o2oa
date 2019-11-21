@@ -7,6 +7,12 @@ MWF.xApplication.Org.LP = {
     "group" : "群组",
 	"org": "组织",
 
+    "unitList": "组织架构",
+    "groupList": "群组管理",
+    "roleList": "角色管理",
+    "personList": "个人管理",
+    "personImport": "人员导入",
+
 	"application" : "应用",
 	"CMSApplication" : "应用",
 	"CMSCategory" : "分类",

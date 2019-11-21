@@ -120,6 +120,10 @@ o2.LP.process={
     }
 };
 o2.LP.desktop = {
+    "loadding": "正在为您加载系统资源，请稍候......",
+    "lowBrowser": "您的浏览器版本过低啦！~系统已经不支持IE8及以下版本了!",
+    "upgradeBrowser": "请升级您的浏览器：",
+
     "menuAction": "菜单",
     "configAction": "配置您的工作台",
     "userMenu": "用户选项",
@@ -172,6 +176,7 @@ o2.LP.desktop = {
         "attendanceAppealRejectMessage" : "考勤申述未通过",
         "attendanceAppealReject": "{subject}",
 
+        "customMessageTitle": "消息提醒：",
         "customMessage": "您收到一条消息："
     },
     "styleMenu": {
@@ -296,6 +301,7 @@ o2.LP.widget = {
     "office": "在文档控件中打开",
     "closeOffice": "关闭附件",
     "configAttachment": "设置附件权限",
+    "configAttachmentText": "设置",
     "checkOcrText": "纠正自动识别的图片中的文字",
 
     "record": "录音",

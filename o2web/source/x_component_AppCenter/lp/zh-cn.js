@@ -1,8 +1,10 @@
 MWF.xApplication.AppCenter.LP = {
-	"title": "应用中心",
+    "title": "应用中心",
     "export": "导出应用",
     "exportTitle": "创建并导出应用",
     "output": "导出",
+    "outputView": "查看",
+    "delete": "删除",
 
     "emptyModuleManagerInfo": "系统中尚未创建应用模块，您可以点击此处创建并导出一个新应用。",
     "emptyModuleInfo": "系统中尚未创建应用模块",
@@ -14,6 +16,8 @@ MWF.xApplication.AppCenter.LP = {
     "portal": "门户管理",
     "cms": "内容管理",
     "query": "数据中心",
+
+    "service": "服务管理",
 
     "processPlatformList": "流程平台",
     "portalList": "门户管理",
@@ -37,24 +41,34 @@ MWF.xApplication.AppCenter.LP = {
     "scriptList": "脚本",
     "fileList": "资源文件",
 
+    "serviceModuleList":"服务管理",
+    "invokeList":"接口",
+    "agentList":"代理",
+
     "pageList": "页面",
-    "scriptList": "脚本",
     "widgetList": "部件",
 
     "categoryInfoList": "分类",
-    "formList": "表单",
     "appDictList": "数据字典",
-    "scriptList": "脚本",
 
     "viewList": "视图",
     "statList": "统计",
     "revealList": "展示",
-
+    "tableList" : "数据表",
+    "statementList" :"查询配置",
 
     "selectAll": "全选",
     "inverse": "反选",
     "noNameError": "请您输入模块名称",
     "noModuleError": "请您选择要导出的模块",
 
-    "selected": "您已选择了以下内容"
+    "selected": "您已选择了以下内容",
+    "setup": "导入应用",
+    "conflict": "冲突",
+
+    "ignore": "忽略",
+    "create": "新建",
+    "cover": "覆盖",
+    "setupSuccess": "应用导入成功！",
+    "localApp": "本地应用"
 };

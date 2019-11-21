@@ -540,7 +540,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
             var category = itemNode.retrieve("category");
             if( !category.options.isNew ){
                 var data = category.data;
-                var index = "000" + (itemNodes.length - i);
+                var index = "000" + i; //(itemNodes.length - i);
                 data.categorySeq = index.substr( index.length-3 ,3);
                 actions.saveCategory(  data, null, null, async === false ? false : true );
             }

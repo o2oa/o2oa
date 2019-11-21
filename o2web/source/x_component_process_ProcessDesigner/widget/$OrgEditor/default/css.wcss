@@ -1,0 +1,102 @@
+{
+    "titleNode": {
+        "margin": "0px",
+        "height": "20px",
+        "padding": "5px",
+        "background-color": "#F6F6F6",
+        "line-height": "20px",
+        "text-align": "center"
+    },
+
+    "upNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "cursor" : "pointer",
+        "text-align" : "center",
+        "color" : "#ffa200",
+        "background": "url(/x_component_process_ProcessDesigner/widget/$OrgEditor/default/icon/up.png) no-repeat 35% center"
+    },
+
+
+    "toolbarNode": {
+        "min-height": "20px",
+        "line-height": "20px",
+        "background-color": "#F6F6F6",
+        "overflow": "hidden"
+    },
+    "previewNode": {
+        "float": "left",
+        "margin-left" : "10px",
+        "height": "20px",
+        "width": "20px",
+        "cursor" : "pointer",
+        "background": "url(/x_component_process_ProcessDesigner/widget/$OrgEditor/default/icon/preview.png) no-repeat center center"
+    },
+    "copyNode": {
+        "float": "left",
+        "margin-left" : "10px",
+        "height": "20px",
+        "width": "20px",
+        "cursor" : "pointer",
+        "background": "url(/x_component_process_ProcessDesigner/widget/$OrgEditor/default/icon/copy.png) no-repeat center center"
+    },
+
+    "propertyNode":{
+        "margin": "0px 0px 10px 0px",
+        "padding": "5px",
+        "background": "#F6F6F6",
+        "overflow": "hidden",
+        "border-top": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC"
+    },
+
+    "selectedNode" : {
+        "overflow" : "hidden",
+        "border" : "1px solid #CCC",
+        "min-height" : "20px"
+    },
+    "selectedItemNode": {
+        "line-height": "20px",
+        "margin": "2px",
+        "background": "#FFF",
+        "border": "1px solid #999",
+        "cursor": "pointer",
+        "color": "#333",
+        "box-shadow": "1px 1px 1px #666",
+        "position" : "relative"
+    },
+    "selectedItemTitleNode": {
+        "height": "20px",
+        "padding": "0px 2px 0px 5px",
+        "font-weight" : "normal"
+    },
+    "selectedItemTextNode": {
+        "height": "20px",
+        "padding": "0px 2px 0px 5px",
+        "font-weight" : "normal",
+        "font-size" : "12px"
+    },
+    "selectedItemLabelNode" : {
+        "height": "20px",
+        "padding": "0px 2px 0px 5px",
+        "font-weight" : "300",
+        "font-size" : "12px"
+    },
+    "selectedItemCloseNode": {
+        "position": "absolute",
+        "top" : "0px",
+        "right" : "7px",
+        "height": "20px",
+        "width": "14px",
+        "cursor" : "pointer",
+        "background": "url(/x_component_process_ProcessDesigner/widget/$SerialEditor/default/delete.png) no-repeat center center"
+    },
+    "selectedItemNode_over": {
+        "background": "#F1F1F1",
+        "box-shadow": "1px 1px 2px #999"
+    },
+    "selectedItemNode_check": {
+        "background": "#e1e9ff",
+        "box-shadow": "0px 0px 3px #999 inset"
+    }
+}

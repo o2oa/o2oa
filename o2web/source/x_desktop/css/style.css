@@ -1,18 +1,38 @@
 @CHARSET "UTF-8";
+/*@font-face {*/
+/*	font-family: 'o2font';*/
+/*	!*src:url('../font/alfont.eot');*!*/
+/*	src:*/
+/*			!*url('../font/alfont.eot?#iefix') format('embedded-opentype'),*!*/
+/*			!*url('../font/alfont.woff') format('woff'),*!*/
+/*			url('../font/alfont.ttf') format('truetype');*/
+/*			!*url('../font/alfont.otf') format('opentype');*!*/
+/*			!*url('/x_desktop/font/font.eot?#font-spider') format('embedded-opentype'),*!*/
+
+/*			!*url('/x_desktop/font/font.svg') format('svg');*!*/
+/*	font-weight: normal;*/
+/*	font-style: normal;*/
+/*}*/
 html{
 	overflow: hidden;
 	height: 100%;
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 }
 body {
-	margin:0px;
-	padding:0px;
+	margin:0;
+	padding:0;
 	height: 100%;
-	font-family: "Microsoft YaHei","微软雅黑","SimSun","宋体";
+	font-family: "微软雅黑", "SimSun", "宋体", serif;
     font-size:14px;
 	-webkit-overflow-scrolling: touch;
 	/*background-color: #F1F1F1;*/
+}
+#appContent *{
+	box-sizing: content-box!important;
+}
+#layout *{
+	box-sizing: content-box!important;
 }
 /*
 .table-tr-selected {

@@ -44,7 +44,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.fireEvent("load");
     },
     loadMobile: function(){
-        this.container.mask({
+        this.maskRelativeNode = $(document.body);
+        this.maskRelativeNode.mask({
             "destroyOnHide": true,
             "style": this.css.maskNode
         });
@@ -81,7 +82,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.contentNode = new Element("div", {
             "styles": this.css.contentNode
         }).inject(this.node);
-        debugger;
+
         var size = document.body.getSize();
         //var height = size.y-40;
         var height = size.y;
@@ -116,7 +117,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         });
         //  this.container.setStyle("z-index", this.options.zIndex);
         this.node = new Element("div", {
-            "styles": (this.options.count.toInt()==1) ? this.css.containerNodeSingle_multiple : this.css.containerNode_multiple
+            "styles": this.css.containerNode_multiple //this.isSingle() ? this.css.containerNodeSingle_multiple : this.css.containerNode_multiple
         });
         this.node.setStyle("z-index", this.options.zIndex.toInt()+1);
         this.titleNode = new Element("div", {
@@ -135,15 +136,20 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
 
-        this.loadContent();
-
         this.actionNode = new Element("div", {
             "styles": this.css.actionNode
         }).inject(this.node);
-        if (this.options.count.toInt()==1) this.actionNode.setStyle("text-align", "center");
+        //if ( this.isSingle() ) this.actionNode.setStyle("text-align", "center");
         this.loadAction();
 
         this.node.inject(this.container);
+
+        if( this.options.width || this.options.height ){
+            this.setSize()
+        }
+
+        this.loadContent();
+
         this.node.position({
             relativeTo: this.container,
             position: "center",
@@ -162,8 +168,21 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         this.setEvent();
     },
-
-
+    isSingle : function(){
+        var single = true;
+        var flag = true;
+        this.options.types.each( function( type, index ){
+            var opt = this.options[ type + "Options" ];
+            if( opt ){
+                if( Number.convert(opt.count) !== 1 )single = false;
+                flag = false;
+            }
+        }.bind(this));
+        if( flag ){
+            single = Number.convert( this.options.count ) === 1;
+        }
+        return single;
+    },
     setEvent: function(){
         if (this.titleActionNode){
             this.titleActionNode.addEvent("click", function(){
@@ -185,18 +204,18 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     close: function(){
         this.fireEvent("close");
         this.node.destroy();
-        this.container.unmask();
+        (this.maskRelativeNode || this.container).unmask();
         MWF.release(this);
         delete this;
     },
     loadAction: function(){
         this.okActionNode = new Element("button", {
             "styles": this.css.okActionNode,
-            "text": "确　定"
+            "text": "确定"
         }).inject(this.actionNode);
         this.cancelActionNode = new Element("button", {
             "styles": this.css.cancelActionNode,
-            "text": "取 消"
+            "text": "取消"
         }).inject(this.actionNode);
         this.okActionNode.addEvent("click", function(){
             this.fireEvent("complete", [this.getSelectedItems(), this.getSelectedItemsObject() ]);
@@ -226,26 +245,47 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }.bind(this), false);
         }else{
             MWF.require("MWF.widget.Tab", function(){
-                this.tab = new MWF.widget.Tab(this.contentNode, {"style": "default" });
+                this.tab = new MWF.widget.Tab(this.contentNode, {"style": this.options.tabStyle || "default" });
                 this.tab.load();
             }.bind(this), false);
         }
+
+        var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
+
         this.options.types.each( function( type, index ){
+
+            var options = Object.clone( this.options );
+            if( type.toLowerCase()==="identity" ){
+                options.expand = false;
+            }
+
+            if( this.options[ type + "Options" ] ){
+                options = Object.merge( options, this.options[ type + "Options" ] );
+            }
+
             var pageNode = new Element( "div" ).inject( this.contentNode );
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
 
+            if( index === 0 && this.contentHeight ){
+                //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabNode ) - tab.tabNode.getStyle("height").toInt();
+                this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+            }
+
             var t = type.capitalize();
-            if ((type.toLowerCase()==="unit") && (this.options.unitType)){
+            if ((type.toLowerCase()==="unit") && ( options.unitType)){
                 t = "UnitWithType";
             }
-            if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
+            if ((type.toLowerCase()==="identity") && (( options.dutys) && options.dutys.length && options.categoryType.toLowerCase()==="duty")){
                 t = "IdentityWidthDuty";
             }
 
             MWF.xDesktop.requireApp("Selector", t, function(){
-                var options = Object.clone( this.options );
-                options.values = this.getValueByType( this.options.values, type );
+                if( type.toLowerCase()==="identity" && options.resultType && options.resultType === "person" ){
+                    options.values = this.getValueByType( options.values, [ type, "person" ] );
+                }else{
+                    options.values = this.getValueByType( options.values, type );
+                }
 
                 //options.values = [];
                 //if( options.multipleValues[type] ){
@@ -263,16 +303,35 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 //    options.names = options.names.concat( options[type+"Names"] )
                 //}
 
+                if( this.contentWidth )options.width = this.contentWidth;
+                if( this.contentHeight )options.height = this.contentHeight;
                 this.selectors[t] = new MWF.xApplication.Selector[t](this.container, options );
                 this.selectors[t].loadContent( pageNode );
+                this.selectors[t].setSize();
                 if( layout.mobile ){
 
-                    var size = this.container.getSize();
-                    var height = size.y-40-20-6 - 20; //80;
+                    var containerSize = this.container.getSize();
+                    var bodySize = $(document.body).getSize();
+
+                    var size = {
+                        "x" : Math.min( containerSize.x, bodySize.x ),
+                        "y" : Math.min( containerSize.y, bodySize.y )
+                    };
+
+                    var height;
+                    if( isFormWithAction ){
+                        height = size.y-40-20-6-20;
+                    }else{
+                        height = size.y;
+                    }
                     if(this.selectors[t].selectNode){
                         this.selectors[t].selectNode.setStyle("height", ""+height+"px");
                     }
-                    height = size.y-40-20-78 - 20; //80;
+                    if( isFormWithAction ){
+                        height = size.y-40-20-78 - 20;
+                    }else{
+                        height = size.y-42-31-40;
+                    }
                     var itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
                     if( itemAreaScrollNode ){
                         itemAreaScrollNode.setStyle("height", ""+height+"px");
@@ -299,6 +358,14 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                             }.bind(this)
                         })
                     }
+                }else{
+                    //if( !this.isSingle() && Number.convert( options.count ) === 1 ){
+                    //    this.selectors[t].selectNode.setStyles({
+                    //        "float" : "none",
+                    //        "margin-left" : "auto",
+                    //        "margin-right" : "auto"
+                    //    })
+                    //}
                 }
                 if( index == 0 )tab.showIm();
             }.bind(this));
@@ -307,6 +374,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     getValueByType : function( values, type ){
         var result = [];
         values = typeOf( values == "array" ) ?  values : [values];
+        var types = typeOf( type == "array" ) ?  type : [type];
         values.each( function( data ){
             if( typeOf( data ) == "string" ){
                 var dn = data;
@@ -317,10 +385,10 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 var flag = dn.substr(dn.length-1, 1);
                 switch (flag.toLowerCase()){
                     case "i":
-                        if( type == "identity" )result.push( data );
+                        if( type == "identity" || types.contains( "identity" ) )result.push( data );
                         break;
                     case "p":
-                        if( type == "person" )result.push( data );
+                        if( type == "person" || types.contains( "person" ) )result.push( data );
                         break;
                     case "u":
                         if( type == "unit" )result.push( data );
@@ -361,6 +429,59 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             }
         }
         return this.selectedItemsObject;
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 )+
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 ) +
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
+    },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    setSize : function(){
+        if( !this.options.width && !this.options.height )return;
+
+        if( this.options.width && this.options.width === "auto" ){
+            //if (this.options.count.toInt() !== 1){
+            this.node.setStyle("width", "auto");
+            this.contentWidth = "auto";
+
+        }else if( this.options.width && typeOf( this.options.width.toInt() ) === "number" ){
+            var nodeWidth = this.options.width.toInt() - this.getOffsetX(this.node);
+            this.node.setStyle("width", nodeWidth);
+
+            if( this.contentNode ){
+                nodeWidth = nodeWidth - this.getOffsetX( this.contentNode );
+            }
+
+            this.contentWidth = nodeWidth;
+        }
+        if( this.options.height && typeOf( this.options.height.toInt() ) === "number" ){
+            var nodeHeight = this.options.height.toInt() - this.getOffsetY(this.node);
+            this.node.setStyle("height", nodeHeight);
+
+            if( this.titleNode ){
+                nodeHeight = nodeHeight - this.getOffsetY( this.titleNode ) - this.titleNode.getStyle("height").toInt();
+            }
+
+            if( this.actionNode ){
+                nodeHeight = nodeHeight - this.getOffsetY( this.actionNode ) - this.actionNode.getStyle("height").toInt();
+            }
+
+            if( this.contentNode ){
+                nodeHeight = nodeHeight - this.getOffsetY( this.contentNode );
+            }
+
+            this.contentHeight = nodeHeight;
+        }
     }
 });
 
@@ -379,16 +500,22 @@ MWF.xApplication.Selector.MultipleSelector.Filter = new Class({
         this.selectors = {};
 
         this.options.types.each( function( type, index ){
+
+            var opt = Object.clone( this.options );
+            if( this.options[ type + "Options" ] ){
+                opt = Object.merge( opt, this.options[ type + "Options" ] );
+            }
+
             var t = type.capitalize();
-            if ((type.toLowerCase()==="unit") && (this.options.unitType)){
+            if ((type.toLowerCase()==="unit") && ( opt.unitType)){
                 t = "UnitWithType";
             }
-            if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length)){
+            if ((type.toLowerCase()==="identity") && ((opt.dutys) && opt.dutys.length)){
                 t = "IdentityWidthDuty";
             }
 
             MWF.xDesktop.requireApp("Selector", t, function(){
-                this.selectors[t] = new MWF.xApplication.Selector[t].Filter(this.value, options);
+                this.selectors[t] = new MWF.xApplication.Selector[t].Filter(this.value, opt);
             }.bind(this), false);
         }.bind(this));
     },

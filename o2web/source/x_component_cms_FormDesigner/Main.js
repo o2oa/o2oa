@@ -13,7 +13,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "template": "template.json",
+        "template": "form.json",
         "templateId": "",
         "name": "cms.FormDesigner",
         "icon": "icon.png",
@@ -1280,7 +1280,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
 
                 this.setTitle(this.options.appTitle + "-"+this.formData.json.name);
-                this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
+                if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
                 this.options.appTitle = this.options.appTitle + "-"+this.formData.json.name;
 
                 if (!this.application){
@@ -1303,7 +1303,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         //fieldTypes = ["calender", "checkbox", "datagrid", "htmledit", "number", "personfield", "radio", "select", "textarea", "textfield"];
         dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
-            "person": ["personfield","readerfield","authorfield"],
+            "person": ["personfield", "readerfield","authorfield", "org", "reader","author"],
             "date": ["calender"],
             "number": ["number"],
             "array": ["checkbox"]

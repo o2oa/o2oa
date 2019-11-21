@@ -34,6 +34,50 @@
                 <td class="editTableValue"><input type="text" name="opinion" value="text{$.opinion}" class="editTableInput"/></td>
             </tr>
             <tr>
+                <td class="editTableTitle">意见必填:</td>
+                <td class="editTableValue" id="text{$.id}opinionRequired" >
+                    <input class="editTableRadio" name="opinionRequired" text{($.opinionRequired)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="opinionRequired" text{(!$.opinionRequired)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">路由类型:</td>
+                <td class="editTableValue" id="text{$.id}opinionRequired" >
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'none');}" name="type" text{($.type!='appendTask')?'checked':''} type="radio" value="normal"/>默认路由
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'block');}" name="type" text{($.type=='appendTask')?'checked':''} type="radio" value="appendTask"/>转交（仅指向同活动时生效）
+                    <div style="color:#999999">转交活动不触发活动事件</div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.id}appendTaskArea" style="display: text{($.type=='appendTask') ? 'block': 'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">转交人员:</td>
+                    <td class="editTableValue" id="text{$.id}opinionRequired" >
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskScriptArea').setStyle('display', 'none');}" name="appendTaskIdentityType" text{($.appendTaskIdentityType !='script')?'checked':''} type="radio" value="select"/>根据路由选择
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskScriptArea').setStyle('display', 'block');}" name="appendTaskIdentityType" text{($.appendTaskIdentityType =='script')?'checked':''} type="radio" value="script"/>根据脚本
+                    </td>
+                </tr>
+            </table>
+            <div id="text{$.id}appendTaskScriptArea" style="display: text{($.appendTaskIdentityType=='script') ? 'block': 'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">转交人脚本:</td>
+                        <td class="editTableValue">
+                            <div class="MWFScript" name="appendTaskIdentityScript"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="MWFScriptText" name="appendTaskIdentityScriptText"></div><hr />
+            </div>
+        </div>
+    </div>
+    <div title="扩展" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
                 <td class="editTableTitle">决策组:</td>
                 <td class="editTableValue">
                     <input type="text" name="decisionOpinion" value="text{$.decisionOpinion}" class="editTableInput"/>
@@ -56,7 +100,29 @@
                 <td class="editTableValue" id="text{$.id}passSameTarget" colspan="2"><b>与上一活动处理人相同时自动流转：</b><input class="editTableRadio" name="passSameTarget" text{($.passSameTarget)?'checked':''} type="radio" value="true"/>是
                     <input class="editTableRadio" name="passSameTarget" text{(!$.passSameTarget)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <div style="height: 24px; line-height: 24px; font-size: 12px; font-weight: bold;">路由校验：<span style="font-weight: normal;">(返回true通过，返回string为错误提示)</span></div>
+                    <div class="MWFScriptText" name="validationScriptText"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <div style="height: 24px; line-height: 24px; font-size: 12px; font-weight: bold;">显示名称：</div>
+                    <div class="MWFScriptText" name="displayNameScriptText"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <div style="height: 24px; line-height: 24px; font-size: 12px; font-weight: bold;">隐藏条件：<span style="font-weight: normal;">(返回true隐藏)</span></div>
+                    <div class="MWFScriptText" name="hiddenScriptText"></div>
+                </td>
+            </tr>
+
         </table>
+    </div>
+    <div title="选择" class="MWFTab">
+        <div class="MWFOrgEditor"></div>
     </div>
     <!--<div title="条件" class="MWFTab MWFRouteCondition" style="display: none">-->
 

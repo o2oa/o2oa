@@ -117,12 +117,29 @@ MWF.xApplication.process.ProcessManager.LP = {
         "create": "新建数据映射",
         "search": "搜索数据映射",
         "searchText": "请输入关键字",
+        "createProjectionType": "数据映射类型",
+        "createProjectionProcess": "选择映射流程",
+
+        "noProjectionType": "请先选择数据映射类型",
+        "noProjectionProcess": "请先选择映射流程",
 
         "noDictionaryNoticeText": "此应用现在还没有数据映射，您可以点击此处创建一个新数据映射",
         "noDictionaryNoCreateNoticeText": "此应用现在没有数据映射",
         "loaded": "数据映射加载完毕",
         "deleteFormTitle": "删除数据映射确认",
-        "deleteForm": "是否确定要删除当前数据映射？"
+        "deleteForm": "是否确定要删除当前数据映射？",
+        "disabled": "禁用",
+
+        "work": "映射业务数据到流转中实例",
+        "workCompleted": "映射业务数据到已完成实例",
+        "task": "映射业务数据到待办",
+        "taskCompleted": "映射业务数据到已办",
+        "read": "映射业务数据到待阅",
+        "readCompleted": "映射业务数据到已办",
+        "review": "映射业务数据到阅读表",
+        "createElementInfor": "请先选择一个数据映射类型",
+        "noProcessInfor": "您已为所有流程创建了{type}类型的数据映射"
+
     },
     
     "application": {

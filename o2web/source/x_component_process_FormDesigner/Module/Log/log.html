@@ -1,28 +1,119 @@
 <div style="background-color: #FFF; overflow: hidden">
 	<div title="基本" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-		  <tr>
-		    <td class="editTableTitle">标识:</td>
-		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">名称:</td>
-		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">描述:</td>
-		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">Class:</td>
-		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
-		  </tr>
+			<tr>
+				<td class="editTableTitle">标识:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">Class:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
 		</table>
-		
+
 		<div class="MWFMaplist" name="styles" title="样式"></div>
 
 		<div class="MWFMaplist" name="properties" title="属性"></div>
 
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">样式:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+		    	}" name="mode" text{($.mode=='default')?'checked':''} type="radio" value="default"/>默认
+					<input class="editTableRadio" onclick="if (this.checked){
+		    	 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', 'none');
+		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>文本
+					<input class="editTableRadio" onclick="if (this.checked){
+                 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+                 }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>表格<br>
+					<input class="editTableRadio" onclick="if (this.checked){
+				 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
+		    		$('text{$.pid}handwritingSize').setStyle('display', '');
+				 }"  name="mode" text{($.mode=='media')?'checked':''} type="radio" value="media"/>多媒体（手写或语音）
+				</td>
+			</tr>
+		</table>
+
+		<table id="text{$.pid}handwritingSize" style=""
+			   width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue"><b>手写意见宽度:</b>
+					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableValue"><b>手写意见高度:</b>
+					<input type="text" name="handwritingHeight" value="text{$.handwritingHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}labelTextStyleValue" title="格式" style="display: text{( !$.mode || ($.mode=='text') || ($.mode=='default')) ?'block':'none'}">
+			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>
+			<div class="MWFScriptArea" name="textStyleScript" title="格式脚本(S)" collapse="true"></div>
+		</div>
+
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">当前<br/>处理人:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isTask" text{($.isTask)?'checked':''} type="radio" value="true"/>显示
+					<input class="editTableRadio" name="isTask" text{(!$.isTask)?'checked':''} type="radio" value="false"/>不显示
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">待阅已阅:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isShowRead" text{($.isShowRead!==false)?'checked':''} type="radio" value="true"/>显示
+					<input class="editTableRadio" name="isShowRead" text{($.isShowRead===false)?'checked':''} type="radio" value="false"/>不显示
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">待阅标题:</td>
+				<td class="editTableValue"><input type="text" name="showReadTitle" value="text{$.showReadTitle}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">已阅标题:</td>
+				<td class="editTableValue"><input type="text" name="showReadCompletedTitle" value="text{$.showReadCompletedTitle}" class="editTableInput"/></td>
+			</tr>
+		</table>
+
+	</div>
+	<div title="过滤" class="MWFTab">
+		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px">活动过滤</div>
+		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>
+
+		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">活动别名过滤</div>
+		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivityAlias">text{$.filterActivityAlias}</textarea></div>
+
+		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">处理人过滤</div>
+		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>
+
+		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">路由过滤</div>
+		<div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>
+
+		<div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>
+	</div>
+	<div title="分类" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
 				<td class="editTableTitle">分类:</td>
@@ -30,22 +121,50 @@
 					<input class="editTableRadio" name="category" text{(!$.category || $.category=='none')?'checked':''} type="radio" value="none" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'none');
 						$('text{$.pid}expandArea').setStyle('display', 'none');
+						$('text{$.pid}sortInCategory').setStyle('display', 'none');
 					}" />无
 					<input class="editTableRadio" name="category" text{( $.category=='activity')?'checked':''} type="radio" value="activity" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
 					}"/>活动
 					<input class="editTableRadio" name="category" text{( $.category=='activityGroup')?'checked':''} type="radio" value="activityGroup" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
 					}"/>意见组
 					<input class="editTableRadio" name="category" text{( $.category=='unit')?'checked':''} type="radio" value="unit" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
+						$('text{$.pid}sortInCategory').setStyle('display', 'block');
 					}"/>组织
 				</td>
 			</tr>
 		</table>
+
+		<div id="text{$.pid}sortInCategory" title="分类内排序" style="display: text{($.category && $.category!='none') ?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">分类内排序:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="sortTypeInCategory" text{(!$.sortTypeInCategory || $.sortTypeInCategory=='default')?'checked':''} type="radio" value="default" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}" />按活动排序
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeAsc') } type="radio" value="completedTimeAsc" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}" />按时间顺序
+						<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory && $.sortTypeInCategory=='completedTimeDesc')?'checked':''} type="radio" value="completedTimeDesc" onclick="if (this.checked){
+							//$('text{$.pid}sortInCategoryScript').setStyle('display', 'none');
+						}"/>按时间倒序
+						<!--<input class="editTableRadio" name="sortTypeInCategory" text{( $.sortTypeInCategory=='script')?'checked':''} type="radio" value="script" onclick="if (this.checked){-->
+						<!--$('text{$.pid}sortInCategoryScript').setStyle('display', 'block');-->
+						<!--}"/>脚本-->
+					</td>
+				</tr>
+			</table>
+			<!--<div class="MWFScriptArea" name="sortInCategoryScript" title="分类内排序脚本(S)" collapse="true" style="display: text{($.sortTypeInCategory && $.sortTypeInCategory=='script') ?'block':'none'}"></div>-->
+		</div>
+
 		<div title="分类表格"  id="text{$.pid}tableStyleArea" style="display: text{($.category && $.category!=='none') ?'block':'none'}">
 			<div class="MWFMaplist" name="tableProperties" collapse="true" title="分类表格属性"></div>
 			<div class="MWFMaplist" name="tableStyles" collapse="true" title="分类表格样式"></div>
@@ -86,97 +205,7 @@
 				</table>
 			</div>
 		</div>
-
-		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-		  <tr>
-		    <td class="editTableTitle">样式:</td>
-		    <td class="editTableValue">
-		    	<input class="editTableRadio" onclick="if (this.checked){
-		    		$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
-		    		$('text{$.pid}handwritingSize').setStyle('display', '');
-		    	}" name="mode" text{($.mode=='default')?'checked':''} type="radio" value="default"/>默认
-		    	<input class="editTableRadio" onclick="if (this.checked){
-		    	 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'block');
-		    		$('text{$.pid}handwritingSize').setStyle('display', 'none');
-		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>文本
-                <input class="editTableRadio" onclick="if (this.checked){
-                 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
-		    		$('text{$.pid}handwritingSize').setStyle('display', '');
-                 }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>表格<br>
-				<input class="editTableRadio" onclick="if (this.checked){
-				 	$('text{$.pid}labelTextStyleValue').setStyle('display', 'none');
-		    		$('text{$.pid}handwritingSize').setStyle('display', '');
-				 }"  name="mode" text{($.mode=='media')?'checked':''} type="radio" value="media"/>多媒体（手写或语音）
-		    </td>
-		  </tr>
-		</table>
-
-		<table id="text{$.pid}handwritingSize" style="display: text{ ($.mode!=='text') ?'':'none'}"
-			   width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableValue"><b>手写意见宽度:</b>
-					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
-					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableValue"><b>手写意见高度:</b>
-					<input type="text" name="handwritingHeight" value="text{$.handwritingHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
-					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-				</td>
-			</tr>
-		</table>
-
-		<div id="text{$.pid}labelTextStyleValue" title="格式" style="display: text{( !$.mode || ($.mode=='text') || ($.mode=='default')) ?'block':'none'}">
-			<textarea  name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>
-			<div class="MWFScriptArea" name="textStyleScript" title="格式脚本(S)" collapse="true"></div>
-		</div>
-
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">当前<br/>处理人:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="isTask" text{($.isTask)?'checked':''} type="radio" value="true"/>显示
-                    <input class="editTableRadio" name="isTask" text{(!$.isTask)?'checked':''} type="radio" value="false"/>不显示
-                </td>
-            </tr>
-        </table>
-
-		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableTitle">待阅已阅:</td>
-				<td class="editTableValue">
-					<input class="editTableRadio" name="isShowRead" text{($.isShowRead!==false)?'checked':''} type="radio" value="true"/>显示
-					<input class="editTableRadio" name="isShowRead" text{($.isShowRead===false)?'checked':''} type="radio" value="false"/>不显示
-				</td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">待阅标题:</td>
-				<td class="editTableValue"><input type="text" name="showReadTitle" value="text{$.showReadTitle}" class="editTableInput"/></td>
-			</tr>
-			<tr>
-				<td class="editTableTitle">已阅标题:</td>
-				<td class="editTableValue"><input type="text" name="showReadCompletedTitle" value="text{$.showReadCompletedTitle}" class="editTableInput"/></td>
-			</tr>
-		</table>
-		
 	</div>
-    <div title="过滤" class="MWFTab">
-        <div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px">活动过滤</div>
-        <div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivity">text{$.filterActivity}</textarea></div>
-
-		<div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">活动别名过滤</div>
-		<div><textarea style="height:40px; width:98%; border:1px solid #DDD;" name="filterActivityAlias">text{$.filterActivityAlias}</textarea></div>
-
-        <div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">处理人过滤</div>
-        <div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterPerson">text{$.filterPerson}</textarea></div>
-
-        <div style="height:24px; line-height:24px; background-color:#EEE; padding-left:10px; border-top:1px solid #999;">路由过滤</div>
-        <div><textarea style="height: 40px; width:98%; border:1px solid #DDD;" name="filterRoute">text{$.filterRoute}</textarea></div>
-
-        <div><div id="labelEditScriptValue" class="MWFScriptArea" name="filterScript" title="通过脚本过滤(S)"></div></div>
-    </div>
 	<div title="事件"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>

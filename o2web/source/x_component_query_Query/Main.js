@@ -107,7 +107,9 @@ MWF.xApplication.query.Query.Main = new Class({
         this.action.listView(this.options.id, function(json){
             if (json.data){
                 json.data.each(function(view){
-                    this.createViewNaviItem(view);
+                    if(view.display) {
+                        this.createViewNaviItem(view);
+                    }
                 }.bind(this));
             }
         }.bind(this));

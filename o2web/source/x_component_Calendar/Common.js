@@ -71,6 +71,11 @@ MWFCalendar.EventForm = new Class({
         this.fireEvent("postEdit");
     },
     _createTableContent : function(){
+        this.getEventData( function(){
+            this.loadEventContent()
+        }.bind(this))
+    },
+    loadEventContent : function(){
         var path = "/o2_lib/rrule/";
         COMMON.AjaxModule.load(path+"rrule.js", function () {
             this.app.actions.listMyCalendar( function( json ){
@@ -679,8 +684,8 @@ MWFCalendar.EventForm = new Class({
         return weekDay;
     },
     _createBottomContent : function(){
-        var html = "<div style='width:700px;margin:0px auto;'><table width='700' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableValue' width='100'></td>" +
+        var html = "<div style='width:724px;margin:0px auto;'><table width='724' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            "<tr><td styles='formTableValue' width='80'></td>" +
             "    <td styles='formTableValue' style='padding-top: 15px;'>"+
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "none" : "") +";'></div>"+
@@ -1190,8 +1195,8 @@ MWFCalendar.CalendarForm = new Class({
         }.bind(this))
     },
     _createBottomContent : function(){
-        var html = "<div style='width:700px;margin:0px auto;'><table width='700' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableValue' width='100'></td>" +
+        var html = "<div style='width:724px;margin:0px auto;'><table width='724' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+            "<tr><td styles='formTableValue' width='80'></td>" +
             "    <td styles='formTableValue' style='padding-top: 15px;'>"+
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( this.editEnable ? "" : "none") +";'></div>"+

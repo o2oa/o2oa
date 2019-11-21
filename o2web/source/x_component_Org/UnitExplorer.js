@@ -67,12 +67,16 @@ MWF.xApplication.Org.UnitExplorer = new Class({
         }else{
             if (layout.session.user.identityList.length){
                 var json = {"data": []};
+                var unitNames = [];
                 layout.session.user.identityList.each(function(id){
                     var idFlag = (id.distinguishedName || id.id || id.unique || id.name);
                     o2.Actions.get("x_organization_assemble_express").getUnitWithIdentityAndLevel({"identity": idFlag, "level": 1}, function(o){
                         if (o.data){
                             this.actions.getUnit(o.data.distinguishedName, function(u){
-                                json.data.push(u.data);
+                                if (unitNames.indexOf(u.data.distinguishedName)==-1){
+                                    unitNames.push(u.data.distinguishedName);
+                                    json.data.push(u.data);
+                                }
                             }.bind(this),null, false);
                         }
                     }.bind(this), null, false);
@@ -742,7 +746,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             "deleteItemText": this.explorer.app.lp.deleteIdentityMemeber,
             "data": {},
             "attr": [{
-                "get": function(){
+                "getHtml": function(){
                     var src = _self.explorer.actions.getPersonIcon(this.woPerson.id);
                     return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
                 },
@@ -756,7 +760,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             }, {
                 "get": function(){return this.woPerson.mail}
             }, {
-                "get": function(){
+                "getHtml": function(){
                     return "<div style='width:24px; height:24px; background:url(/x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
@@ -766,7 +770,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                     }
                 }
             }, {
-                "get": function(){
+                "getHtml": function(){
                     return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(/x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/move.png) center center no-repeat'></div>";
                 },
@@ -1010,6 +1014,26 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.editContentNode = new Element("div", {"styles": this.style.baseEditNode}).inject(this.node);
 
         this.editContentNode.set("html", this.getContentHtml());
+
+        var n = this.editContentNode.getElement(".infor_name");
+        if (n) n.set("text", this.data.name || "");
+
+        var n = this.editContentNode.getElement(".infor_unique");
+        if (n) n.set("text", this.data.unique || "");
+
+        var n = this.editContentNode.getElement(".infor_type");
+        if (n) n.set("text", this.data.typeList.join(", ") || "");
+
+        var n = this.editContentNode.getElement(".infor_shortName");
+        if (n) n.set("text", this.data.shortName || "");
+
+        var n = this.editContentNode.getElement(".infor_description");
+        if (n) n.set("text", this.data.description || "");
+
+        var n = this.editContentNode.getElement(".infor_orderNumber");
+        if (n) n.set("text", this.data.orderNumber || "");
+
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -1030,18 +1054,18 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
     getContentHtml: function(){
         debugger;
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent'>"+(this.data.name || "")+"</td>";
-        if (this.data.control.allowEdit) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent'>"+(this.data.unique || "")+"</td>";
-        html += "</tr><tr><td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent'>"+(this.data.typeList.join(", ") || "")+"</td>" +
-            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent'>"+(this.data.shortName || "")+"</td></tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
+        if (this.data.control.allowEdit) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
+        html += "</tr><tr><td class='inforTitle'>"+this.explorer.app.lp.unitTypeList+":</td><td class='inforContent infor_type'></td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.unitShortName+":</td><td class='inforContent infor_shortName'></td></tr>";
         // html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitLevel+":</td><td class='inforContent'>"+this.data.level+"</td>" +
         //     "<td class='inforTitle'>"+this.explorer.app.lp.unitLevelName+":</td><td class='inforContent'>"+(this.data.levelName || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent'>"+(this.data.description || "")+"</td>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitDescription+":</td><td colspan='3' class='inforContent infor_description'></td>";
         if (this.data.control.allowEdit){
             html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitControllerList+":</td><td class='inforContent'></td>" +
                 "<td class='inforTitle'>"+this.explorer.app.lp.unitSuperUnit+":</td><td class='inforContent'></td></tr>";
-            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent'>"+(this.data.orderNumber || "")+"</td></tr>";
+            html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.orderNumber+":</td><td colspan='3' class='inforContent infor_orderNumber'></td></tr>";
         }
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
@@ -1282,15 +1306,15 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
     cancel: function(){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
-            tdContents[0].setStyles(this.style.baseInforContentNode).set("html", this.data.name || "");
-            tdContents[1].setStyles(this.style.baseInforContentNode).set("html", this.data.unique || "");
-            tdContents[2].setStyles(this.style.baseInforContentNode).set("html", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
-            tdContents[3].setStyles(this.style.baseInforContentNode).set("html", this.data.shortName || "");
-            tdContents[4].setStyles(this.style.baseInforContentNode).set("html", this.data.description || "");
-            //tdContents[5].setStyles(this.style.baseInforContentNode).set("html", ((this.data.controllerList.length) ? this.data.controllerList.join(", "): ""));
+            tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
+            tdContents[1].setStyles(this.style.baseInforContentNode).set("text", this.data.unique || "");
+            tdContents[2].setStyles(this.style.baseInforContentNode).set("text", ((this.data.typeList.length) ? this.data.typeList.join(", "): ""));
+            tdContents[3].setStyles(this.style.baseInforContentNode).set("text", this.data.shortName || "");
+            tdContents[4].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+            //tdContents[5].setStyles(this.style.baseInforContentNode).set("text", ((this.data.controllerList.length) ? this.data.controllerList.join(", "): ""));
             tdContents[5].setStyles(this.style.baseInforContentNode).empty();
             tdContents[6].setStyles(this.style.baseInforContentNode).empty();
-            tdContents[7].setStyles(this.style.baseInforContentNode).set("html", this.data.orderNumber || "");
+            tdContents[7].setStyles(this.style.baseInforContentNode).set("text", this.data.orderNumber || "");
 
             if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;
             if (this.data.oldControllerList) this.data.controllerList = this.data.oldControllerList;

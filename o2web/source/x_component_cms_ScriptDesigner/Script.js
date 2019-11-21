@@ -87,12 +87,12 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
 
             if (this.editor.editor){
                 this.editor.editor.focus();
-                this.editor.editor.navigateFileStart();
+                //this.editor.editor.navigateFileStart();
             }
         }.bind(this));
         this.page.addEvent("queryClose", function(){
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-            this.saveSilence();
+            //this.saveSilence();
             if (this.lisNode) this.lisNode.setStyles(this.designer.css.listScriptItem);
         }.bind(this));
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));

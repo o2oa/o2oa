@@ -465,6 +465,7 @@ MWFCalendarDayView.Calendar = new Class({
 
         this.dataTable_wholeDay = new Element("table.dataTable", {
             "styles": this.css.calendarTable,
+            "height" : "0",
             "border": "0",
             "cellPadding": "0",
             "cellSpacing": "0"
@@ -496,7 +497,7 @@ MWFCalendarDayView.Calendar = new Class({
 
         this.dataTable = new Element("table.dataTable", {
             "styles": this.css.calendarTable,
-            "height": "100%",
+            "height": "0",
             "border": "0",
             "cellPadding": "0",
             "cellSpacing": "0"
@@ -1099,8 +1100,17 @@ MWFCalendarDayView.Calendar.Document = new Class({
     getCoordinate : function(){
         var data = this.data;
         var range = this.range;
-        var height = Math.floor( ( ( range.endTime - range.startTime ) / MWFCalendarDayView.DayMsec ) * MWFCalendarDayView.DayHeight)-4;
-        var top = Math.floor( ( ( range.startTime - this.day.startTime ) / MWFCalendarDayView.DayMsec ) * MWFCalendarDayView.DayHeight)+2;
+        var width_div = 8;
+        var top_div = 0;
+        if(Browser.name === "ie" ){
+            width_div = 4;
+            top_div = -2
+        }
+        var height = Math.floor( ( ( range.endTime - range.startTime ) / MWFCalendarDayView.DayMsec ) * MWFCalendarDayView.DayHeight)-width_div;
+
+        if(height < 16) height = 16;
+
+        var top = Math.floor( ( ( range.startTime - this.day.startTime ) / MWFCalendarDayView.DayMsec ) * MWFCalendarDayView.DayHeight)-top_div;
         //var width = Math.floor(  MWFCalendarDayView.DayWidth / length )-2;
         //var left = ( width + 2)* index + 1;
 

@@ -32,6 +32,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 	reload : function(){
 		this.scrollNode.destroy();
 		this.loadContent();
+		this.setCurrentAppType( this.currentAppType, this.currentAppTypeNode  );
 	},
 	createNode: function(){
 		this.content.setStyle("overflow", "hidden");

@@ -13,7 +13,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         }
 	},
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -43,6 +43,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                     "click": function(){
                         this.descriptionNode.setStyle("display", "none");
                         this.node.getFirst().focus();
+                        this.node.getFirst().fireEvent("click");
                     }.bind(this)
                 });
             }else if (COMMON.Browser.Platform.name==="android"){
@@ -50,6 +51,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                     "click": function(){
                         this.descriptionNode.setStyle("display", "none");
                         this.node.getFirst().focus();
+                        this.node.getFirst().fireEvent("click");
                     }.bind(this)
                 });
             }else{
@@ -57,6 +59,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                     "click": function(){
                         this.descriptionNode.setStyle("display", "none");
                         this.node.getFirst().focus();
+                        this.node.getFirst().fireEvent("click");
                     }.bind(this)
                 });
             }
@@ -102,9 +105,13 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                 "click": this.clickSelect.bind(this)
             }
         });
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
-            "styles": this.form.css[this.iconStyle]
-        }).inject(this.node, "before");
+        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon){
+            this.iconNode = new Element("div", {
+                "styles": this.form.css[this.iconStyle]
+            }).inject(this.node, "before");
+        }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+        }
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
@@ -157,11 +164,16 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         new Element("div", {"styles": this.form.css.modelNodeContent, "text": MWF.xApplication.process.Xform.LP.ANNInput}).inject(this.modelNode);
     },
 
+
     getInputData: function(){
-        var v = this.node.getElement("input").get("value");
-        if (this.json.dataType=="number"){
-            var n = v.toFloat();
-            return (isNaN(n)) ? 0 : n;
+        if (this.node.getFirst()){
+            var v = this.node.getElement("input").get("value");
+            if (this.json.dataType=="number"){
+                var n = v.toFloat();
+                return (isNaN(n)) ? 0 : n;
+            }
+        }else{
+            return this._getBusinessData();
         }
         return v;
     }

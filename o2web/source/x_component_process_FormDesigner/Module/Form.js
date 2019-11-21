@@ -7,7 +7,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		"style": "default",
 		"propertyPath": "/x_component_process_FormDesigner/Module/Form/form.html",
         "mode": "PC",
-		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
+		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
 			{
 				"name" : "top",
@@ -85,6 +85,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selected();
     },
 	load : function(data){
+		debugger;
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
@@ -114,7 +115,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				}
 			}
 
-			this.loadTemplateStyles( this.stylesList[this.json.formStyleType].file, function( templateStyles ){
+			this.loadTemplateStyles( this.stylesList[this.json.formStyleType].file, this.stylesList[this.json.formStyleType].extendFile, function( templateStyles ){
 				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 				this.templateStyles = templateStyles;
 				this.loadDomModules();
@@ -162,15 +163,17 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         }
 		if( this.json.confirmStyle )delete this.json.confirmStyle;
 		if( this.json.dialogStyle )delete this.json.dialogStyle;
+		if( this.json.selectorStyle )delete this.json.selectorStyle;
     },
     setTemplateStyles: function(styles){
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
 		if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
 		if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;
+		if( styles.selectorStyle )this.json.selectorStyle = styles.selectorStyle;
     },
 
-	loadTemplateStyles : function( file, callback ){
+	loadTemplateStyles : function( file, extendFile, callback ){
 		if( !file ){
 			if (callback) callback({});
 			return;
@@ -180,10 +183,43 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (callback) callback(this.templateStylesList[file]);
 			return;
 		}
+		this.loadTemplateStyleFile( file, function( json_file ){
+			this.loadTemplateExtendStyleFile( extendFile, function( json_extend ){
+				this.templateStylesList[file] = Object.merge( json_file, json_extend );
+				if (callback) callback(this.templateStylesList[file]);
+			}.bind(this))
+		}.bind(this))
+
+	},
+	loadTemplateStyleFile : function(file, callback ){
+		if( !file ){
+			if (callback) callback({});
+			return;
+		}
 		var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/"+file;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
-					this.templateStylesList[file] = responseJSON;
+					//this.templateStylesList[file] = responseJSON;
+					if (callback) callback(responseJSON);
+				}.bind(this),
+				"onRequestFailure": function(){
+					if (callback) callback({});
+				}.bind(this),
+				"onError": function(){
+					if (callback) callback({});
+				}.bind(this)
+			}
+		);
+	},
+	loadTemplateExtendStyleFile : function(extendFile, callback ){
+		if( !extendFile ){
+			if (callback) callback({});
+			return;
+		}
+		var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/"+extendFile;
+		MWF.getJSON(stylesUrl,{
+				"onSuccess": function(responseJSON){
+					//this.templateStylesList[file] = responseJSON;
 					if (callback) callback(responseJSON);
 				}.bind(this),
 				"onRequestFailure": function(){
@@ -305,7 +341,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	getDomjson: function(dom){
 		var mwfType = dom.get("MWFtype");
 		switch (mwfType) {
-			case "form": 
+			case "form":
 				return this.json;
 			case "":
 				return null;
@@ -320,7 +356,19 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 	
 	loadModule: function(json, dom, parent){
-		if( MWF["FC"+json.type] ){
+		if( !json ){
+			debugger;
+			var module;
+			var className = ( dom.get("MWFType") || "div" ).capitalize();
+			this.getTemplateData(className, function(data){
+				var moduleData = Object.clone(data);
+				moduleData.id = dom.get("id");
+				this.json.moduleList[dom.get("id")] = moduleData;
+				module = new MWF["FC"+className](this);
+				module.load(moduleData, dom, parent);
+			}.bind(this), false);
+			return module;
+		}else if( MWF["FC"+json.type] ){
 			var module = new MWF["FC"+json.type](this);
 			module.load(json, dom, parent);
 			//this.moduleList.push(module);
@@ -696,11 +744,25 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
         this._clearNoId(copy);
         var html = copy.outerHTML;
+		//this._clearNoDomModule();
 		copy.destroy();
 
         this.data.json.mode = this.options.mode;
 		this.data.html = html;
 		return this.data;
+	},
+	_clearNoDomModule : function(){
+		debugger;
+		var existModuleList = {};
+		Object.each(  this.moduleList, function( module ){
+			existModuleList[ module.json.id ] = true;
+		});
+		Object.each( this.data.json.moduleList , function( module, key ){
+			//if( !this.node.getElement( "#" + module.id ) && !existModuleList[ module.id ] ){
+			if( !existModuleList[ module.id ] ){
+				delete this.data.json.moduleList[key];
+			}
+		}.bind(this));
 	},
 	preview: function(){
 
@@ -779,60 +841,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         MWF.xDesktop.requireApp("portal.PageDesigner", "Import", function(){
             MWF.FormImport.create("O2", this);
         }.bind(this));
-        // MWF.require("MWF.widget.Panel", function(){
-        //     var node = new Element("div");
-        //     var size = this.designer.formNode.getSize();
-        //     var position = this.designer.formNode.getPosition(this.designer.formNode.getOffsetParent());
-        //
-        //     var textarea = new Element("textarea", {
-        //         "styles": {
-        //             "border": "1px solid #999",
-        //             "width": "770px",
-        //             "margin-left": "14px",
-        //             "margin-top": "14px",
-        //             "height": "540px"
-        //         }
-        //     }).inject(node);
-        //     var button = new Element("div", {
-        //         "styles": {
-        //             "margin": "10px auto",
-        //             "width": "100px",
-        //             "border-radius": "8px",
-        //             "height": "30px",
-        //             "line-height": "30px",
-        //             "text-align": "center",
-        //             "cursor": "pointer",
-        //             "color": "#ffffff",
-        //             "background-color": "#4c6b87"
-        //         },
-        //         "text": "OK"
-        //     }).inject(node);
-        //     button.addEvent("click", function(e){
-        //         var _self = this;
-        //         this.designer.confirm("warn", e, this.designer.lp.implodeConfirmTitle, this.designer.lp.implodeConfirmText, 300, 120, function(){
-        //             var str = textarea.get("value");
-        //             _self.implodeJsonData(str);
-        //             this.close();
-        //         }, function(){
-        //             this.close();
-        //         });
-        //     }.bind(this));
-        //
-        //     this.implodePanel = new MWF.widget.Panel(node, {
-        //         "style": "page",
-        //         "isResize": false,
-        //         "isMax": false,
-        //         "title": "",
-        //         "width": 800,
-        //         "height": 660,
-        //         "top": position.y,
-        //         "left": position.x+3,
-        //         "isExpand": false,
-        //         "target": this.designer.node
-        //     });
-        //
-        //     this.implodePanel.load();
-        // }.bind(this));
+
     },
     // implodeJsonData: function(str){
     //     if (str){
@@ -909,21 +918,25 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         if (name=="formStyleType"){
 
 			var file = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].file : null;
-			this.loadTemplateStyles( file, function( templateStyles ){
+			var extendFile = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType].extendFile : null;
+			this.loadTemplateStyles( file, extendFile, function( templateStyles ){
 				//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 				this.templateStyles = templateStyles;
 
-				var oldFile;
+				var oldFile, oldExtendFile;
 				if( oldValue && this.stylesList[oldValue] ){
 					oldFile = this.stylesList[oldValue].file;
+					oldExtendFile = this.stylesList[oldValue].extendFile;
 				}
-				this.loadTemplateStyles( oldFile, function( oldTemplateStyles ){
+				this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
 					//if (oldValue) {
 					//	var oldTemplateStyles = this.stylesList[oldValue];
 					//	if (oldTemplateStyles){
 					//		if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
 					//	}
 					//}
+
+					this.json.styleConfig = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 
 					if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
 					if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
@@ -1049,10 +1062,17 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     saveAsTemplete: function(){
 
     },
+	isModuleExited : function( id ){
+		for( var i=0; i<this.moduleList.length; i++ ){
+			if(this.moduleList[i].json.id === id)return true;
+		}
+		return false;
+	},
 	checkModuleId: function(id, type, currentSubform){
     	var fieldConflict = false;
         var elementConflict = false;
-        if (this.json.moduleList[id]){
+        //if (this.json.moduleList[id]){
+		if( this.isModuleExited(id) ){
             elementConflict = true;
         	if (this.options.fields.indexOf(type)!=-1 || this.options.fields.indexOf(this.json.moduleList[id].type)!=-1){
                 fieldConflict = true;

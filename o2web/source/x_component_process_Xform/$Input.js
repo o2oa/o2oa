@@ -139,12 +139,16 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 				"click": this.clickSelect.bind(this)
 			}
 		});
-        if (this.json.showIcon!='no') this.iconNode = new Element("div", {
-			"styles": this.form.css[this.iconStyle],
-			"events": {
-				"click": this.clickSelect.bind(this)
-			}
-		}).inject(this.node, "before");
+        if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+            this.iconNode = new Element("div", {
+                "styles": this.form.css[this.iconStyle],
+                "events": {
+                    "click": this.clickSelect.bind(this)
+                }
+            }).inject(this.node, "before");
+        }else if( this.form.json.nodeStyleWithhideModuleIcon ){
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+        }
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
@@ -237,7 +241,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 	},
 
     createErrorNode: function(text){
-        var node = new Element("div");
+
         //var size = this.node.getFirst().getSize();
         //var w = size.x-3;
         //if (COMMON.Browser.safari) w = w-20;
@@ -248,25 +252,43 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //    "position": "absolute",
         //    "top": "0px"
         //});
-
-        var iconNode = new Element("div", {
-            "styles": {
-                "width": "20px",
-                "height": "20px",
-                "float": "left",
-                "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+        var node;
+        if( this.form.json.errorStyle ){
+            node = new Element("div",{
+                "styles" : this.form.json.errorStyle.node,
+                "text": text
+            });
+            if( this.form.json.errorStyle.close ){
+                var closeNode = new Element("div",{
+                    "styles" : this.form.json.errorStyle.close ,
+                    "events": {
+                        "click" : function(){
+                            this.destroy();
+                        }.bind(node)
+                    }
+                }).inject(node);
             }
-        }).inject(node);
-        var textNode = new Element("div", {
-            "styles": {
-                "height": "20px",
-                "line-height": "20px",
-                "margin-left": "20px",
-                "color": "red",
-                "word-break": "keep-all"
-            },
-            "text": text
-        }).inject(node);
+        }else{
+            node = new Element("div");
+            var iconNode = new Element("div", {
+                "styles": {
+                    "width": "20px",
+                    "height": "20px",
+                    "float": "left",
+                    "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                }
+            }).inject(node);
+            var textNode = new Element("div", {
+                "styles": {
+                    "height": "20px",
+                    "line-height": "20px",
+                    "margin-left": "20px",
+                    "color": "red",
+                    "word-break": "keep-all"
+                },
+                "text": text
+            }).inject(node);
+        }
         return node;
     },
     notValidationMode: function(text){

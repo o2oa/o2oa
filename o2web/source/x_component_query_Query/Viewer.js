@@ -546,6 +546,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.selectTitleCell.setStyle("width", "10px");
                 if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
+
+            //序号
+            if (this.viewJson.isSequence==="yes"){
+                this.sequenceTitleCell = new Element("td", {
+                    "styles": this.css.viewTitleCellNode
+                }).inject(this.viewTitleLine);
+                this.sequenceTitleCell.setStyle("width", "10px");
+                if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
+            }
+
             this.entries = {};
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
@@ -661,7 +671,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     if (this.bundleItems.length){
                         this.loadCurrentPageData();
                     }else{
-                        this._loadPageNode();
+                        //this._loadPageNode();
                         if (this.loadingAreaNode){
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
@@ -762,8 +772,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
 
         if (this.gridJson.length){
+            var i = 0;
             this.gridJson.each(function(data){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.ItemCategory(this, data));
+                this.items.push(new MWF.xApplication.query.Query.Viewer.ItemCategory(this, data, i));
+                i += data.list.length;
             }.bind(this));
 
             if (this.json.isExpand=="yes") this.expandOrCollapseAll();
@@ -909,6 +921,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.css = this.view.css;
         this.isSelected = false;
         this.prev = prev;
+        this.idx = i;
         this.load();
     },
     load: function(){
@@ -924,6 +937,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.selectTd.setStyles({"cursor": "pointer"});
             if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
+
+        //序号
+        if (this.view.viewJson.isSequence==="yes"){
+            this.sequenceTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+            this.sequenceTd.setStyle("width", "10px");
+            var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
+            this.sequenceTd.set("text", s);
+        }
 
         Object.each(this.view.entries, function(c, k){
             var cell = this.data.data[k];
@@ -1065,6 +1086,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         return worksAreaNode;
     },
     showWorksArea: function(node, e){
+        MWF.require("MWF.widget.Mask", null, false);
         this.mask = new MWF.widget.Mask({"style": "desktop", "loading": false});
         this.mask.loadNode(this.view.container);
 
@@ -1167,12 +1189,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 });
 
 MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
-    initialize: function(view, data){
+    initialize: function(view, data, i){
         this.view = view;
         this.data = data;
         this.css = this.view.css;
         this.items = [];
         this.loadChild = false;
+        this.idx = i;
         this.load();
     },
     load: function(){
@@ -1183,7 +1206,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //}
         this.categoryTd = new Element("td", {
             "styles": this.css.viewContentCategoryTdNode,
-            "colspan": this.view.viewJson.selectList.length
+            "colspan": this.view.viewJson.selectList.length+1
         }).inject(this.node);
 
         this.groupColumn = null;
@@ -1233,8 +1256,10 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
         if (!this.loadChild){
             //window.setTimeout(function(){
-            this.data.list.each(function(line){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this.view, line, this));
+            this.data.list.each(function(line, i){
+                var s = this.idx+i;
+                this.lastItem = new MWF.xApplication.query.Query.Viewer.Item(this.view, line, (this.lastItem || this), s);
+                this.items.push(this.lastItem);
             }.bind(this));
             this.loadChild = true;
             //}.bind(this), 10);

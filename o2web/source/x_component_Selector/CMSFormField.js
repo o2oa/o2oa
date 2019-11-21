@@ -16,7 +16,7 @@ MWF.xApplication.Selector.CMSFormField = new Class({
     getFields : function(){
         var dataTypes = {
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
-            "person": ["personfield"],
+            "person": ["personfield","org","orgfield"],
             "date": ["calender"],
             "number": ["number"],
             "array": ["checkbox"]

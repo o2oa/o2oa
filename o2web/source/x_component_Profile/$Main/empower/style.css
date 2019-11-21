@@ -1,0 +1,237 @@
+.o2_profile_titleBar {
+    overflow: hidden;
+    height: 50px;
+    background-color: #4c6b87;
+}
+.o2_profile_titleUserNode {
+    width: 80px;
+    float: right;
+}
+.o2_profile_titleUserIconNode {
+    background: url(/x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
+    width: 24px;
+    height: 24px;
+    margin-top: 13px;
+    float: left;
+}
+.o2_profile_titleUserTextNode {
+    margin-left: 24px;
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 50px;
+}
+.o2_profile_titleTextNode {
+    padding-left: 20px;
+    color: #FFFFFF;
+    font-size: 18px;
+    line-height: 50px;
+    font-weight: bold;
+    width: 160px;
+    float: left;
+}
+.o2_profile_contentNode {
+    overflow: hidden;
+}
+.o2_profile_configNode {
+    height: 440px;
+}
+.o2_profile_inforConfigArea {
+    height: 360px;
+    margin: 40px 80px;
+    color: #666;
+    border: 0 solid red;
+}
+.o2_profile_inforLine {
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.o2_profile_inforIconTitle {
+    width: 80px;
+    height: 72px;
+    font-size: 14px;
+    line-height: 72px;
+    color: #da7429;
+    float: left;
+}
+.o2_profile_inforIconContent {
+    float: left;
+    width: 72px;
+    height: 72px;
+}
+
+.o2_profile_inforIconContentImg {
+    border: 0px;
+    width: 72px;
+    height: 72px;
+}
+
+.o2_profile_inforIconChange {
+    margin: 22px 10px;
+    cursor: pointer;
+    float: left;
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 3px 5px;
+}
+.o2_profile_inforContent {
+    margin-left: 80px;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+}
+
+.o2_profile_inforTitle {
+    width: 80px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 30px;
+    color: #da7429;
+    float: left;
+}
+
+.o2_profile_inforContentInput {
+    border: 1px solid #999;
+    box-shadow: 0 0 0 #999;
+    width: 90%;
+    height: 20px;
+    line-height: 20px;
+    background-color: #FFF;
+    margin-top: 4px;
+    color: #666;
+}
+.o2_profile_inforContentInput_focus {
+    border: 1px solid #da7429;
+    box-shadow: 0 0 8px #fab37e;
+}
+.o2_profile_inforContentInput_error {
+    border: 1px solid #F00;
+    box-shadow: 0 0 8px #F00;
+}
+.o2_profile_saveInforAction, .o2_profile_savePasswordAction {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    width: 140px;
+    border-radius: 5px;
+    background-color: #5f6b80;
+    border: 1px solid #FFF;
+    color: #FFF;
+    cursor: pointer;
+    margin: 10px auto;
+}
+.o2_profile_layoutTitle {
+    color: #da7429;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    margin: 20px 30px 20px 30px;
+    border-bottom: 1px solid #da7429;
+}
+
+.o2_profile_layoutButtonArea {
+    margin: 20px 30px 20px 30px;
+    overflow: hidden;
+}
+.o2_profile_layoutClearDataAction {
+    height: 30px;
+    width: 140px;
+    border-radius: 3px;
+    background-color: #FFF;
+    border: 1px solid #666;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px auto;
+    margin-right: 20px;
+    float: left;
+}
+
+.o2_profile_ideasArea {
+    width: 590px;
+    height: 350px;
+    margin-top: 40px;
+    margin-left: 100px;
+    border: 1px solid #999;
+    overflow: auto;
+}
+
+.o2_profile_ideasSave {
+    height: 30px;
+    width: 140px;
+    border-radius: 3px;
+    background-color: #FFF;
+    border: 1px solid #666;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    float: left;
+    margin: 10px 10px 10px 100px;
+}
+
+.o2_profile_passwordStrength {
+    margin-top: 6px;
+    float: left;
+    padding-left: 2px;
+    width: 35px;
+    overflow: hidden;
+}
+
+.o2_profile_passwordStrengthColor {
+    background-color: #b3b3b3;
+    height: 5px;
+}
+.o2_profile_passwordStrengthColor_low {
+    background-color: #e6772e;
+}
+.o2_profile_passwordStrengthColor_middle {
+    background-color: #3c75b7;
+}
+.o2_profile_passwordStrengthColor_high {
+    background-color: #33c025;
+}
+
+.o2_profile_passwordStrengthText {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    line-height: 16px;
+    margin-top: 5px;
+}
+
+.o2_profile_passwordStrengthText_current {
+    color: #666;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.o2_profile_passwordRemindNode {
+    float: left;
+    padding-left: 10px;
+    padding-top: 10px;
+    font-size: 12px;
+    line-height: 27px;
+    color: #999;
+}
+.o2_profile_ssoConfigTitle {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #666666;
+}
+.o2_profile_ssoConfigArea{
+    padding: 10px 40px;
+}
+
+.o2_profile_ssoItemLink{
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+}
+.o2_profile_previewBackground{
+    width: 90px;
+    height: 50px;
+    float: left;
+    border: 4px solid #eeeeee;
+    margin: 10px 10px 0 0;
+}

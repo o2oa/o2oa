@@ -104,6 +104,17 @@
 
     </div>
 
+
+    <div class="o2_profile_configNode" title="{{$.lp.emPowerConfig}}">
+        <!--<div class="o2_profile_emPower_Add" >{{ $.lp.addEmPower }}</div>-->
+        <div class="o2_profile_emPower_content">
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPowerLog }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPowerLog }}"></div>
+        </div>
+    </div>
+
     <div class="o2_profile_configNode" title="{{$.lp.passwordConfig}}">
         <div class="o2_profile_inforConfigArea">
             <div class="o2_profile_inforLine">
@@ -120,24 +131,25 @@
                 </div>
             </div>
 
-            <div class="o2_profile_inforLine o2_profile_passwordStrengthArea">
+            <div class="o2_profile_inforLine o2_profile_passwordStrengthArea" style="display: none;">
                 <div class="o2_profile_inforTitle"></div>
-                <div class="o2_profile_inforContent">
-                    <div class="o2_profile_passwordStrength">
-                        <div class="o2_profile_passwordStrengthColor"></div>
-                        <div class="o2_profile_passwordStrengthText">{{ $.lp.weak }}</div>
-                    </div>
-                    <div class="o2_profile_passwordStrength">
-                        <div class="o2_profile_passwordStrengthColor"></div>
-                        <div class="o2_profile_passwordStrengthText">{{ $.lp.middle }}</div>
-                    </div>
-                    <div class="o2_profile_passwordStrength">
-                        <div class="o2_profile_passwordStrengthColor"></div>
-                        <div class="o2_profile_passwordStrengthText">{{ $.lp.high }}</div>
-                    </div>
-                    <div class="o2_profile_passwordRemindNode">{{ $.lp.paswordRule }}</div>
-                </div>
+                <!--<div class="o2_profile_inforContent">-->
+                    <!--<div class="o2_profile_passwordStrength">-->
+                        <!--<div class="o2_profile_passwordStrengthColor"></div>-->
+                        <!--<div class="o2_profile_passwordStrengthText">{{ $.lp.weak }}</div>-->
+                    <!--</div>-->
+                    <!--<div class="o2_profile_passwordStrength">-->
+                        <!--<div class="o2_profile_passwordStrengthColor"></div>-->
+                        <!--<div class="o2_profile_passwordStrengthText">{{ $.lp.middle }}</div>-->
+                    <!--</div>-->
+                    <!--<div class="o2_profile_passwordStrength">-->
+                        <!--<div class="o2_profile_passwordStrengthColor"></div>-->
+                        <!--<div class="o2_profile_passwordStrengthText">{{ $.lp.high }}</div>-->
+                    <!--</div>-->
+                    <div class="o2_profile_passwordRemindNode"></div>
+                <!--</div>-->
             </div>
+
 
             <div class="o2_profile_inforLine">
                 <div class="o2_profile_inforTitle">{{ $.lp.morePassword }}</div>
@@ -150,12 +162,6 @@
                 <div class="o2_profile_savePasswordAction">{{ $.lp.passwordConfig }}</div>
             </div>
 
-        </div>
-    </div>
-    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">
-        <div class="o2_profile_ssoConfigTitle">{{ $.lp.bindOauth }}</div>
-        <div class="o2_profile_ssoConfigArea">
-            <!--<a class="o2_profile_ssoItemLink" target="_blank" href="/x_desktop/oauth.html?oauth=eachText{encodeURIComponent($.name)}&redirect=&method=oauthBind">{{$.displayName}}</a>-->
         </div>
     </div>
     <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">

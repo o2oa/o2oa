@@ -14,15 +14,20 @@
     "text": "数字字段",
     "className": "Number"
   },
-  "personfield": {
+//  "personfield": {
+//    "icon": "personfield.png",
+//    "text": "人员",
+//    "className": "Personfield"
+//  },
+//  "orgfield": {
+//    "icon": "orgfield.png",
+//    "text": "组织",
+//    "className": "Orgfield"
+//  },
+  "org": {
     "icon": "personfield.png",
-    "text": "人员",
-    "className": "Personfield"
-  },
-  "orgfield": {
-    "icon": "orgfield.png",
-    "text": "组织",
-    "className": "Orgfield"
+    "text": "人员组织",
+    "className": "Org"
   },
   "calendar": {
     "icon": "calendar.png",

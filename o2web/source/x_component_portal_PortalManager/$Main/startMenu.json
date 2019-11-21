@@ -15,15 +15,14 @@
 //    "expand": false,
 //    "sub": []
 //  },
-
-//  {
-//    "title": "部件配置",
-//    "id": "1.1",
-//    "action": "widgetConfig",
-//    "icon": "portal_widget.png",
-//    "expand": false,
-//    "sub": []
-//  },
+  {
+    "title": "部件配置",
+    "id": "1.1",
+    "action": "widgetConfig",
+    "icon": "portal_widget.png",
+    "expand": false,
+    "sub": []
+  },
   {
     "title": "脚本配置",
     "id": "1.1",

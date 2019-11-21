@@ -123,7 +123,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 	_getWidgetFieldList: function( moduleList ){
 		var dataTypes = {
 			"string": ["htmledit", "radio", "select", "textarea", "textfield"],
-			"person": ["personfield"],
+			"person": ["personfield","org"],
 			"date": ["calender"],
 			"number": ["number"],
 			"array": ["checkbox"]

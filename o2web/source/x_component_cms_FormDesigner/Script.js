@@ -96,6 +96,12 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadAuthorfieldScript(v); break;
             case "Readerfield":
                 this.loadReaderfieldScript(v); break;
+            case "Org":
+                this.loadOrgScript(v); break;
+            case "Author":
+                this.loadAuthorScript(v); break;
+            case "Reader":
+                this.loadReaderScript(v); break;
         }
         this.bindDataId(v);
     },
@@ -111,6 +117,26 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
         this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.rangeKey, "code", data, "rangeKey");
+        this.addScriptItem(data.exclude, "code", data, "exclude");
+        this.addScriptItem(data.rangeKey, "code", data, "sectionByScript");
+        this.loadEventsScript(data);
+    },
+    loadAuthorScript: function(data){
+        this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.identityRangeKey, "code", data, "identityRangeKey");
+        this.addScriptItem(data.unitRangeKey, "code", data, "unitRangeKey");
+        this.addScriptItem(data.rangeDutyKey, "code", data, "rangeDutyKey");
+        this.addScriptItem(data.exclude, "code", data, "exclude");
+        this.addScriptItem(data.rangeKey, "code", data, "sectionByScript");
+        this.loadEventsScript(data);
+    },
+    loadReaderScript: function(data){
+        this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
+        this.addScriptItem(data.validation, "code", data, "validation");
+        this.addScriptItem(data.identityRangeKey, "code", data, "identityRangeKey");
+        this.addScriptItem(data.unitRangeKey, "code", data, "unitRangeKey");
+        this.addScriptItem(data.rangeDutyKey, "code", data, "rangeDutyKey");
         this.addScriptItem(data.exclude, "code", data, "exclude");
         this.addScriptItem(data.rangeKey, "code", data, "sectionByScript");
         this.loadEventsScript(data);

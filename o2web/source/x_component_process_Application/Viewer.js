@@ -2,7 +2,7 @@ MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Application = MWF.xApplication.process.Application || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
-MWF.xDesktop.requireApp("process.Application", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("process.Application", "lp."+o2.language, null, false);
 MWF.xApplication.process.Application.Viewer = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,

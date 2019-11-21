@@ -8,7 +8,16 @@ MWF.xDesktop.WebSocket = new Class({
     initialize: function(options){
         debugger;
         var addressObj = layout.desktop.serviceAddressList["x_message_assemble_communicate"];
-        this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+        var uri = new URI(window.location.href);
+        var scheme = uri.get("scheme");
+        var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
+        this.ws = wsScheme+"://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+
+        this.reConnect = true;
+        this.checking = false;
+        this.heartTimeout = 30000;
+        this.checkingTimeout = 10000;
+        this.heartMsg = "heartbeat";
 
         // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
         // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
@@ -26,36 +35,48 @@ MWF.xDesktop.WebSocket = new Class({
 
         ///*暂时不启用WebSocket了------------
         //this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
-        this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
 
-        try{
-            this.webSocket = new WebSocket(this.ws);
-        }catch(e){
-            //WebSocket.close();
-            //this.webSocket = new WebSocket(this.ws);
-            if (this.webSocket){
-                this.close();
+        if (layout.config.webSocketEnable){
+            this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+
+            try{
                 this.webSocket = new WebSocket(this.ws);
+            }catch(e){
+                //WebSocket.close();
+                //this.webSocket = new WebSocket(this.ws);
+                if (this.webSocket){
+                    this.close();
+                    //this.webSocket = new WebSocket(this.ws);
+                }
             }
+            //this.webSocket = new WebSocket(this.ws);
+            this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
+            this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
+            this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
+            this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
+            //---------------------------------*/\
+            this.heartbeat();
         }
-        //this.webSocket = new WebSocket(this.ws);
-        this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
-        this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
-        this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
-        this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
-        //---------------------------------*/
+
     },
     onOpen: function(e){
         console.log("websocket is open ...");
-        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
+        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
     },
     onClose: function(e){
+        debugger;
         console.log("websocket is closed ...");
-        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
+        if (this.reConnect) this.initialize();
+        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
     onMessage: function(e){
         if (e.data){
             try{
+                if (e.data===this.heartMsg){
+                    this.heartbeat();
+                    //console.log("get heartbeat...");
+                    return true;
+                }
                 var data = JSON.decode(e.data);
                 switch (data.category){
                     case "dialog":
@@ -132,23 +153,51 @@ MWF.xDesktop.WebSocket = new Class({
     },
     onError: function(e){
         console.log("websocket is error ...");
-        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
+        //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
+    },
+    retry: function(){
+        if (this.webSocket){
+            this.close();
+        }else{
+            this.initialize();
+        }
     },
     close: function(){
         if (this.webSocket) this.webSocket.close();
         //WebSocket.close();
     },
     send: function(msg){
-        // if (!this.webSocket || this.webSocket.readyState != 1) {
-        //     this.initialize();
-        // }
-        // try{
-        //     this.webSocket.send(JSON.encode(msg));
-        // }catch(e){
-        //     this.initialize();
-        //     this.webSocket.send(JSON.encode(msg));
-        // }
-
+        if (!this.webSocket || this.webSocket.readyState != 1) {
+            this.initialize();
+        }
+        try{
+            this.webSocket.send(JSON.encode(msg));
+        }catch(e){
+            this.initialize();
+            this.webSocket.send(JSON.encode(msg));
+        }
+    },
+    heartbeat: function(){
+        if (this.serverCheck) window.clearTimeout(this.serverCheck);
+        if (this.heartbeatCheck) window.clearTimeout(this.heartbeatCheck);
+        this.heartbeatCheck = window.setTimeout(function(){
+            this.sendHeartbeat(this.heartMsg);
+        }.bind(this), this.heartTimeout);
+    },
+    sendHeartbeat: function(msg){
+        if (!this.webSocket || this.webSocket.readyState != 1) {
+            this.retry();
+        }
+        try{
+            //console.log("send heartbeat ...");
+            this.webSocket.send(msg);
+            this.serverCheck = window.setTimeout(function(){
+                this.retry();
+            }.bind(this), this.checkingTimeout);
+        }catch(e){
+            this.retry();
+            //this.initialize();
+        }
     },
 
     receiveChatMessage: function(data){
@@ -215,7 +264,7 @@ MWF.xDesktop.WebSocket = new Class({
     receiveCustomMessage: function(data){
         var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"</font>"+data.body;
         var msg = {
-            "subject": MWF.LP.desktop.messsage.readMessage,
+            "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
         };
         var messageItem = layout.desktop.message.addMessage(msg);
@@ -314,12 +363,11 @@ MWF.xDesktop.WebSocket = new Class({
             });
         });
     },
-    getMeeting: function(id, callback){
+    getMeeting: function(data, callback){
         //this.action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_meeting_assemble_control", "x_component_Meeting");
         //var action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_meeting_assemble_control", "x_component_Meeting");
-
-        MWF.Actions.get("x_meeting_assemble_control").getMeeting(id, function(json){
-            var data = json.data;
+        if( data.body && typeOf( data.body ) === "object" ){
+            var data = data.body;
             MWF.Actions.get("x_meeting_assemble_control").getRoom(data.room, function(roomJson){
                 data.roomName = roomJson.data.name;
                 MWF.Actions.get("x_meeting_assemble_control").getBuilding(roomJson.data.building, function(buildingJson){
@@ -327,11 +375,22 @@ MWF.xDesktop.WebSocket = new Class({
                     if (callback) callback(data);
                 }.bind(this));
             }.bind(this));
-        }.bind(this));
-
+        }else{
+            MWF.Actions.get("x_meeting_assemble_control").getMeeting(data.metting, function(json){
+                var data = json.data;
+                MWF.Actions.get("x_meeting_assemble_control").getRoom(data.room, function(roomJson){
+                    data.roomName = roomJson.data.name;
+                    MWF.Actions.get("x_meeting_assemble_control").getBuilding(roomJson.data.building, function(buildingJson){
+                        data.buildingName = buildingJson.data.name;
+                        if (callback) callback(data);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
     },
     receiveMeetingInviteMessage: function(data){
-        this.getMeeting(data.meeting, function(meeting){
+        debugger;
+        this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingInvite;
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
@@ -358,7 +417,8 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingCancelMessage: function(data){
-        this.getMeeting(data.meeting, function(meeting){
+        debugger;
+        this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingCancel;
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
@@ -385,7 +445,8 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingAcceptMessage: function(data){
-        this.getMeeting(data.meeting, function(meeting){
+        debugger;
+        this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingAccept;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             content = content.replace(/{person}/g, MWF.name.cn(data.person));
@@ -413,7 +474,8 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveMeetingRejectMessage: function(data){
-        this.getMeeting(data.meeting, function(meeting){
+        debugger;
+        this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingReject;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             content = content.replace(/{person}/g, MWF.name.cn(data.person));

@@ -94,71 +94,68 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
     getDocument : function( callback ){
         var id = this.options.documentId;
+        //if( this.options.anonymousAccess ){
+        //    this.action.getDocumentByAnonymous(id, function(json){
+        //        callback(json)
+        //    }.bind(this), function( error ){
+        //        this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+        //        this.close();
+        //    }.bind(this));
+        //}else if( this.options.readonly ){
+        //    this.action.viewDocument(id, function(json){
+        //        callback(json)
+        //    }.bind(this), function( error ){
+        //        this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+        //        this.close();
+        //    }.bind(this));
+        //}else{
+        //    this.action.getDocument(id, function(json){
+        //        callback(json)
+        //    }.bind(this), function( error ){
+        //        this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+        //        this.close();
+        //    }.bind(this));
+        //}
+
+        var documentMethod = "getDocument";
         if( this.options.anonymousAccess ){
-            this.action.getDocumentByAnonymous(id, function(json){
-                callback(json)
-            }.bind(this), function( error ){
-                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-                this.close();
-            }.bind(this));
+            documentMethod = "getDocumentByAnonymous"
         }else if( this.options.readonly ){
-            this.action.viewDocument(id, function(json){
-                callback(json)
-            }.bind(this), function( error ){
-                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-                this.close();
-            }.bind(this));
-        }else{
-            this.action.getDocument(id, function(json){
-                callback(json)
-            }.bind(this), function( error ){
-                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-                this.close();
-            }.bind(this));
+            documentMethod = "viewDocument";
         }
+
+        var attachmentMethod = "listAttachment";
+        if( this.options.anonymousAccess ){
+            attachmentMethod = "listAttachmentByAnonymous"
+        }
+
+        o2.Actions.invokeAsync([
+            {"action": this.action, "name": documentMethod},
+            {"action": this.action, "name": attachmentMethod }
+        ], {"success": function(json_document, json_att){
+            if (json_document ){
+                if( json_att && typeOf( json_att.data ) === "array" ){
+                    json_document.data.attachmentList = json_att.data ;
+                }else{
+                    json_document.data.attachmentList = [];
+                }
+                callback(json_document)
+            }else{
+                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                this.close();
+            }
+        }.bind(this), "failure": function(){
+            this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+            this.close();
+        }.bind(this)}, id);
     },
     loadDocument: function(){
         this.getDocument( function(json){
-            //if (this.mask) this.mask.hide();
-            //this.openDocument();
-            //this.loadController( json.data.document, function(){
             json.data = json.data || [];
             this.parseData(json.data);
             this.loadForm( this.formId );
-                //this.action.getCategory( json.data.document.categoryId, function( js ){
-                //    this.categoryData = js.data;
-                //    var formId = this.categoryData.formId || this.categoryData.readFormId;
-                //    if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
-                //        formId = this.categoryData.readFormId
-                //    }
-                //    if( !formId || formId=="" ){
-                //        this.notice(  json.data.document.categoryName + this.lp.formNotSetted , "error");
-                //    }else{
-                //        this.loadForm( formId );
-                //    }
-                //}.bind(this))
-            //}.bind(this))
         }.bind(this) );
     },
-    //loadController: function(document, callback){
-    //    this.controllers =[];
-    //    this.action.listColumnController(document.appId, function( json ){
-    //        json.data = json.data || [];
-    //        json.data.each(function(item){
-    //            this.controllers.push(item.adminUid);
-    //        }.bind(this));
-    //        this.action.listCategoryController( document.categoryId, function( j ){
-    //            j.data = j.data || [];
-    //            j.data.each(function(item){
-    //                this.controllers.push(item.adminUid);
-    //            }.bind(this));
-    //            if(callback)callback(json);
-    //        }.bind(this) )
-    //    }.bind(this), function(error){
-    //        this.notice(  this.lp.controllerGettedError + ":" + error.responseText , "error");
-    //        this.close();
-    //    }.bind(this));
-    //},
     errorDocument: function(){
         if (this.mask) this.mask.hide();
         this.node.set("text", "openError");

@@ -162,34 +162,34 @@
 	"selectedNode": {
 		//"overflow": "hidden"
 	},
-	"actionNode": {
-		"height": "40px",
-		"width": "310px",
-		"margin": "auto"
-	},
-	"okActionNode": {
-		"width": "150px",
-		"height": "30px",
-		"background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
-		"border": "0px",
-		"color": "#FFF",
-		"font-size": "18px",
-		"padding-left": "35px",
-		"border-radius": "4px",
-		"cursor": "pointer"
-	},
-	"cancelActionNode": {
-		"width": "100px",
-		"height": "30px",
-		"background": "url("+"/x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
-		"border": "0px",
-		"color": "#FFF",
-		"font-size": "18px",
-		"padding-left": "20px",
-		"border-radius": "4px",
-		"margin-left": "10px",
-		"cursor": "pointer"
-	},
+  "actionNode": {
+	"height": "40px",
+	"width": "300px",
+	"margin": "auto"
+  },
+  "okActionNode": {
+	"width": "100px",
+	"height": "30px",
+	"background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
+	"border": "0px",
+	"color": "#FFF",
+	"font-size": "18px",
+	"padding-left": "35px",
+	"border-radius": "4px",
+	"cursor": "pointer"
+  },
+  "cancelActionNode": {
+	"width": "72px",
+	"height": "30px",
+	"background": "url("+"/x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
+	"border": "0px",
+	"color": "#FFF",
+	"font-size": "18px",
+	"padding-left": "20px",
+	"border-radius": "4px",
+	"margin-left": "15px",
+	"cursor": "pointer"
+  },
 	
 	"searchInputDiv": {
 		"height": "30px",
@@ -241,7 +241,8 @@
 		"background": "#FFF"
 	},
 	"itemAreaScrollNode": {
-		"overflow": "auto",
+		"overflow-x": "auto",
+		"overflow-y": "auto",
 		"height": "338px"
 	},
 	"itemAreaNode": {
@@ -355,6 +356,12 @@
         "float": "right",
         "background": "url("+"/x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
     },
+	"selectorItemCategoryActionNode_selectAll": {
+	  "width": "28px",
+	  "height": "28px",
+	  "float": "right",
+	  "background": "url("+"/x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
+	},
 
 	"selectorItemTextNode": {
 		"height": "28px",

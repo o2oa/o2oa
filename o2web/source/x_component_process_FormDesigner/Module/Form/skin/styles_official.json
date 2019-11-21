@@ -396,6 +396,23 @@
       "font-family": "宋体"
     }
   },
+  "org": {
+    "styles": {
+      "border-bottom": "0px",
+      "height": "auto",
+      "line-height": "30px",
+      "font-size": "18px",
+      "border": "0px solid #999999"
+    },
+    "inputStyles": {
+      "border": "1px solid #999999",
+      "height": "30px",
+      "line-height": "30px",
+      "color": "#666",
+      "font-size": "18px",
+      "font-family": "宋体"
+    }
+  },
   "select": {
     "styles": {
       "border-bottom": "0px",

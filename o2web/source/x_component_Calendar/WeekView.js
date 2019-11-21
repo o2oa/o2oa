@@ -182,7 +182,7 @@ MWFCalendarWeekView.Calendar = new Class({
         this.titleNode = new Element("div", {"styles": this.css.calendarTitleNode}).inject(this.container);
 
 
-        this.titleTable = new Element("table", {
+        this.titleTable = new Element("table.titleTable", {
             "styles": this.css.titleTable,
             "border": "0",
             "cellPadding": "0",
@@ -422,7 +422,7 @@ MWFCalendarWeekView.Calendar = new Class({
 
 
     loadBodyTable: function(){
-        this.calendarTable = new Element("table", {
+        this.calendarTable = new Element("table.dragTable", {
             "styles": this.css.calendarTable,
             "height": "100%",
             "border": "0",
@@ -617,6 +617,7 @@ MWFCalendarWeekView.Calendar = new Class({
             "styles": this.css.calendarTable,
             "border": "0",
             "cellPadding": "0",
+            "height" : "0",
             "cellSpacing": "0"
         }).inject(this.container);
         this.dataTable_WholeDay.setStyles({
@@ -654,7 +655,7 @@ MWFCalendarWeekView.Calendar = new Class({
 
         this.dataTable = new Element("table.dataTable", {
             "styles": this.css.calendarTable,
-            "height": "100%",
+            "height": "0",
             "border": "0",
             "cellPadding": "0",
             "cellSpacing": "0"
@@ -1461,8 +1462,16 @@ MWFCalendarWeekView.Calendar.Document = new Class({
     getCoordinate : function(){
         var data = this.data;
         var range = this.range;
-        var height = Math.floor( ( ( range.endTime - range.startTime ) / MWFCalendarWeekView.DayMsec ) * MWFCalendarWeekView.DayHeight)-4;
-        var top = Math.floor( ( ( range.startTime - this.day.startTime ) / MWFCalendarWeekView.DayMsec ) * MWFCalendarWeekView.DayHeight)+2;
+        var width_div = 8;
+        var top_div = 0;
+        if(Browser.name === "ie" ){
+            width_div = 4;
+            top_div = -2
+        }
+        var height = Math.floor( ( ( range.endTime - range.startTime ) / MWFCalendarWeekView.DayMsec ) * MWFCalendarWeekView.DayHeight)-width_div;
+
+        if(height < 16) height = 16;
+        var top = Math.floor( ( ( range.startTime - this.day.startTime ) / MWFCalendarWeekView.DayMsec ) * MWFCalendarWeekView.DayHeight)-top_div;
         //var width = Math.floor(  MWFCalendarWeekView.DayWidth / length )-2;
         //var left = ( width + 2)* index + 1;
 
