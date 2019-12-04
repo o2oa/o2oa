@@ -4,7 +4,7 @@ import com.x.base.core.entity.JpaObject;
 
 /**
  * 
- * @author zhour 定义流转的操作 在 TaskCompleted 和WorkLog中记录操作类型用于判断
+ * @author zhour 定义流转的操作在 TaskCompleted 中记录操作类型用于判断
  */
 public enum ProcessingType {
 	/* 继续流转 */
@@ -24,7 +24,11 @@ public enum ProcessingType {
 	/* 管理员流转 */
 	control,
 	/* 添加处理人 */
-	appendTask;
+	appendTask,
+	/* 被添加处理人 */
+	beAppendedTask,
+	/* 授权,授权给他人处理 */
+	empower;
 
 	public static final int length = JpaObject.length_16B;
 }

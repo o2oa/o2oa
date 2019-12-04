@@ -1,17 +1,10 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -27,10 +20,16 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class ActionPersistPublishAndNotify extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishAndNotify.class);
 
+	@AuditLog(operation = "发布一个文档")
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<FileInfo> cloudPictures = null;
@@ -192,17 +191,17 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 			try {
 				CategoryInfo categoryInfo = categoryInfoServiceAdv.getWithFlag( document.getCategoryId() );
 				if( categoryInfo != null ){
-					Boolean notify = false;
-					if( categoryInfo.getSendNotify() == null ) {
-						if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
-							notify = true;
-						}						
-					}else {
-						if( categoryInfo.getSendNotify() ) {
-							notify = true;
-						}
-					}
-					if( notify ){
+//					Boolean notify = false;
+//					if( categoryInfo.getSendNotify() == null ) {
+//						if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
+//							notify = true;
+//						}
+//					}else {
+//						if( categoryInfo.getSendNotify() ) {
+//							notify = true;
+//						}
+//					}
+					if( categoryInfo.getSendNotify() ){
 						logger.info("try to add notify object to queue for document:" + document.getTitle() );
 						ThisApplication.queueSendDocumentNotify.send( document );
 					}

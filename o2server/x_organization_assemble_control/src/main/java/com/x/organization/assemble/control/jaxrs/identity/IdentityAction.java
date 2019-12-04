@@ -49,7 +49,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建身份.", action = ActionCreate.class)
@@ -66,7 +66,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新身份.", action = ActionEdit.class)
@@ -84,7 +84,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除身份,同时删除职务.", action = ActionDelete.class)
@@ -102,7 +102,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示身份,下一页.", action = ActionListNext.class)
@@ -121,7 +121,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示身份,上一页.", action = ActionListPrev.class)
@@ -140,7 +140,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据给定的人员,列示其所有的身份.", action = ActionListWithPerson.class)
@@ -158,7 +158,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据给定的组织,列示其所有的身份.", action = ActionListWithUnit.class)
@@ -176,7 +176,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据给定的组织职务名称,列示其所有的身份.", action = ActionListWithUnitDutyName.class)
@@ -194,7 +194,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据给定的组织和组织职务名称,列示其所有的身份.", action = ActionListWithUnitWithUnitDutyName.class)
@@ -213,7 +213,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取拼音首字母开始的身份.", action = ActionListPinyinInitial.class)
@@ -231,7 +231,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据拼音或者首字母搜索.", action = ActionListLikePinyin.class)
@@ -249,7 +249,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "进行模糊查询.", action = ActionListLike.class)
@@ -267,7 +267,7 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新身份.", action = ActionOrder.class)
@@ -286,6 +286,6 @@ public class IdentityAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

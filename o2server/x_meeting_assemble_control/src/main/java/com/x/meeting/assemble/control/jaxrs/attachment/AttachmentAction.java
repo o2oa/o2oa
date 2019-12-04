@@ -53,7 +53,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "将流程平台中的work附带的附件作为会议的附件.", action = ActionCreateFormProcessPlatform.class)
@@ -71,7 +71,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示Attachment对象,下一页.仅管理员可用", action = ActionListNext.class)
@@ -90,7 +90,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示Attachment对象,上一页.仅管理员可用", action = ActionListPrev.class)
@@ -109,7 +109,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定会议的附件.", action = ActionListWithMeeting.class)
@@ -127,7 +127,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除Attachment.", action = ActionDelete.class)
@@ -145,7 +145,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "下载附件内容.", action = ActionDownload.class)
@@ -163,7 +163,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建会议附件.", action = ActionUpload.class)
@@ -184,7 +184,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/** callback方法与前台ie低版本兼容使用post方法 */
@@ -208,7 +208,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新会议附件内容", action = ActionUpdate.class)
@@ -227,7 +227,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/** callback方法与前台ie低版本兼容使用post方法 */
@@ -249,6 +249,6 @@ public class AttachmentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

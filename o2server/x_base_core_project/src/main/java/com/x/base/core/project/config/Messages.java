@@ -101,18 +101,18 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 
 		/* 社区新贴发布消息通知 */
 		o.put(MessageConnector.TYPE_BBS_SUBJECTCREATE,
-				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 
 		/* 社区新回复发布消息通知 */
 		o.put(MessageConnector.TYPE_BBS_REPLYCREATE,
-				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 		/* 脑图分享消息通知 */
 		o.put(MessageConnector.TYPE_MIND_FILESHARE,
-				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 
 		/* 脑图发送消息通知 */
 		o.put(MessageConnector.TYPE_MIND_FILESEND,
-				new Message( MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS ));
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 
 		return o;
 	}

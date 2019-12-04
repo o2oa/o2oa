@@ -47,7 +47,7 @@ public class ScheduleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示统一排程的任务.", action = ActionListSchedule.class)
@@ -64,7 +64,7 @@ public class ScheduleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示本地任务.", action = ActionListScheduleLocal.class)
@@ -81,7 +81,7 @@ public class ScheduleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示任务日志.", action = ActionListScheduleLog.class)
@@ -99,7 +99,7 @@ public class ScheduleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "触发定时任务.", action = ActionFire.class)
@@ -117,7 +117,7 @@ public class ScheduleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

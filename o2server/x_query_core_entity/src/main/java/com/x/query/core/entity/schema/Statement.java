@@ -2,6 +2,7 @@ package com.x.query.core.entity.schema;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,7 +21,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -49,8 +49,12 @@ public class Statement extends SliceJpaObject {
 	public static final String TYPE_UPDATE = "update";
 	public static final String TYPE_INSERT = "insert";
 
-//	public static final String TABLETYPE_OFFICIAL = "official";
-//	public static final String TABLETYPE_DYNAMIC = "dynamic";
+	public static final String FORMAT_JPQL = "jpql";
+	public static final String FORMAT_SCRIPT = "script";
+
+	public static final String ENTITYCATEGORY_DYNAMIC = "dynamic";
+	public static final String ENTITYCATEGORY_OFFICIAL = "official";
+	public static final String ENTITYCATEGORY_CUSTOM = "custom";
 
 	public String getId() {
 		return id;
@@ -71,7 +75,13 @@ public class Statement extends SliceJpaObject {
 
 	}
 
-	/* 更新运行方法 */
+	public String getEntityCategory() {
+		return entityCategory;
+	}
+
+	public String getFormat() {
+		return Objects.toString(this.format, FORMAT_JPQL);
+	}
 
 	public static final String name_FIELDNAME = "name";
 	@Flag
@@ -88,6 +98,13 @@ public class Statement extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String alias;
+
+	public static final String format_FIELDNAME = "format";
+	@FieldDescribe("格式,jpql或者script.")
+	@Column(length = length_32B, name = ColumnNamePrefix + format_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + format_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String format;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
@@ -140,21 +157,13 @@ public class Statement extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String data;
 
-//	public static final String beforeScriptText_FIELDNAME = "beforeScriptText";
-//	@FieldDescribe("执行前脚本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + beforeScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String beforeScriptText;
-
-	public static final String afterScriptText_FIELDNAME = "afterScriptText";
-	@FieldDescribe("执行后脚本.")
+	public static final String scriptText_FIELDNAME = "scriptText";
+	@FieldDescribe("类型为script的执行脚本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + afterScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + scriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String afterScriptText;
+	private String scriptText;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者")
@@ -178,17 +187,39 @@ public class Statement extends SliceJpaObject {
 	@FieldDescribe("执行的表")
 	@Column(length = length_id, name = ColumnNamePrefix + table_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + table_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Table.class) })
+	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Table.class) })
 	private String table;
 
-//	public static final String tableType_FIELDNAME = "tableType";
-//	@FieldDescribe("表类型,official,dynamic")
-//	@Column(length = length_16B, name = ColumnNamePrefix + tableType_FIELDNAME)
-//	@CheckPersist(allowEmpty = false)
-//	private String tableType;
+	public static final String entityClassName_FIELDNAME = "entityClassName";
+	@FieldDescribe("custom,official时使用的类名.")
+	@CheckPersist(allowEmpty = true)
+	@Column(length = length_255B, name = ColumnNamePrefix + entityClassName_FIELDNAME)
+	private String entityClassName;
+
+	public static final String entityCategory_FIELDNAME = "entityCategory";
+	@FieldDescribe("表类型,official,dynamic,custom")
+	@Column(length = length_16B, name = ColumnNamePrefix + entityCategory_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String entityCategory;
+
+	public void setEntityCategory(String entityCategory) {
+		this.entityCategory = entityCategory;
+	}
 
 	public String getName() {
 		return name;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getScriptText() {
+		return scriptText;
+	}
+
+	public void setScriptText(String scriptText) {
+		this.scriptText = scriptText;
 	}
 
 	public void setName(String name) {
@@ -213,6 +244,14 @@ public class Statement extends SliceJpaObject {
 
 	public String getCreatorPerson() {
 		return creatorPerson;
+	}
+
+	public String getEntityClassName() {
+		return entityClassName;
+	}
+
+	public void setEntityClassName(String entityClassName) {
+		this.entityClassName = entityClassName;
 	}
 
 	public void setCreatorPerson(String creatorPerson) {
@@ -267,14 +306,6 @@ public class Statement extends SliceJpaObject {
 		this.table = table;
 	}
 
-	public String getAfterScriptText() {
-		return afterScriptText;
-	}
-
-	public void setAfterScriptText(String afterScriptText) {
-		this.afterScriptText = afterScriptText;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -290,13 +321,5 @@ public class Statement extends SliceJpaObject {
 	public void setQuery(String query) {
 		this.query = query;
 	}
-
-//	public String getTableType() {
-//		return tableType;
-//	}
-//
-//	public void setTableType(String tableType) {
-//		this.tableType = tableType;
-//	}
 
 }

@@ -39,7 +39,9 @@ public class Area extends BaseAction {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			if (pirmaryCenter()) {
-				area();
+				if (Config.collect().getEnable()) {
+					area();
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e);

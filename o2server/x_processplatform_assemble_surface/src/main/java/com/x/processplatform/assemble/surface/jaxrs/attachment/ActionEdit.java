@@ -71,7 +71,8 @@ class ActionEdit extends BaseAction {
 		static WrapCopier<Wi, Attachment> copier = WrapCopierFactory.wi(Wi.class, Attachment.class,
 				Arrays.asList(Attachment.readIdentityList_FIELDNAME, Attachment.readUnitList_FIELDNAME,
 						Attachment.editIdentityList_FIELDNAME, Attachment.editUnitList_FIELDNAME,
-						Attachment.controllerIdentityList_FIELDNAME, Attachment.controllerUnitList_FIELDNAME),
+						Attachment.controllerIdentityList_FIELDNAME, Attachment.controllerUnitList_FIELDNAME,
+						Attachment.divisionList_FIELDNAME),
 				null);
 
 	}

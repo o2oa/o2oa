@@ -1,11 +1,7 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -15,13 +11,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.mind.assemble.control.ThisApplication;
-import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderWrapInConvert;
-import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindNotExists;
-import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindQuery;
-import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindShare;
-import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindShareTargetEmpty;
+import com.x.mind.assemble.control.jaxrs.exception.*;
 import com.x.mind.entity.MindBaseInfo;
 import com.x.mind.entity.MindShareRecord;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 将脑图信息分享给其他用户或者组织
@@ -31,7 +27,8 @@ import com.x.mind.entity.MindShareRecord;
 public class ActionMindShare extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionMindShare.class );
-	
+
+	@AuditLog(operation = "分享脑图文件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String mindId, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

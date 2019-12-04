@@ -250,6 +250,8 @@ class ActionAssignCreate extends BaseAction {
 		Work work = new Work();
 		/* 标识工作数据未修改 */
 		work.setDataChanged(false);
+		work.setWorkThroughManual(false);
+		work.setWorkCreateType(Work.WORKCREATETYPE_ASSIGN);
 		work.setApplication(application.getId());
 		work.setApplicationName(application.getName());
 		work.setApplicationAlias(application.getAlias());
@@ -258,7 +260,6 @@ class ActionAssignCreate extends BaseAction {
 		work.setProcessAlias(process.getAlias());
 		work.setJob(StringTools.uniqueToken());
 		work.setStartTime(now);
-		// work.setExecuted(false);
 		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.start);
 		work.setDestinationActivity(begin.getId());

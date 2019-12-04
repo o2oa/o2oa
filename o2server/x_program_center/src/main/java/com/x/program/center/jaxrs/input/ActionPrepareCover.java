@@ -10,13 +10,6 @@ import com.x.base.core.project.jaxrs.WrapPair;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.element.AppDict;
-import com.x.cms.core.entity.element.File;
-import com.x.cms.core.entity.element.Form;
-import com.x.cms.core.entity.element.Script;
-import com.x.cms.core.entity.element.wrap.*;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
@@ -133,8 +126,8 @@ class ActionPrepareCover extends BaseAction {
 			if (!findWs.contains(w)) {
 				for (T t : ListTools.nullToEmpty(ts)) {
 					if (!findTs.contains(t)) {
-						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "appName")) && StringUtils
-								.equals(BeanUtils.getProperty(w, "appName"), BeanUtils.getProperty(t, "appName"))) {
+						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "name")) && StringUtils
+								.equals(BeanUtils.getProperty(w, "name"), BeanUtils.getProperty(t, "name"))) {
 							MatchElement<W, T> m = new MatchElement<>();
 							m.setW(w);
 							m.setT(t);
@@ -151,8 +144,8 @@ class ActionPrepareCover extends BaseAction {
 			if (!findWs.contains(w)) {
 				for (T t : ListTools.nullToEmpty(ts)) {
 					if (!findTs.contains(t)) {
-						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "appAlias")) && StringUtils
-								.equals(BeanUtils.getProperty(w, "appAlias"), BeanUtils.getProperty(t, "appAlias"))) {
+						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "alias")) && StringUtils
+								.equals(BeanUtils.getProperty(w, "alias"), BeanUtils.getProperty(t, "alias"))) {
 							MatchElement<W, T> m = new MatchElement<>();
 							m.setW(w);
 							m.setT(t);

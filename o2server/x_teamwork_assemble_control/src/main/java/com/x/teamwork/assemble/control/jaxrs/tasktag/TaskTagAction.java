@@ -48,7 +48,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID查询工作任务标签信息.", action = ActionGet.class)
@@ -67,7 +67,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询用户对在项目里添加的所有标签信息列表.", action = ActionListWithProject.class)
@@ -86,7 +86,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询用户对工作任务添加的标签信息列表.", action = ActionListWithTask.class)
@@ -105,7 +105,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 		
 	@JaxrsMethodDescribe(value = "为工作任务添加标签.", action = ActionAddTagRele.class)
@@ -125,7 +125,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "为工作任务删除标签.", action = ActionRemoveTagRele.class)
@@ -145,7 +145,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据标识删除工作任务标签信息.", action = ActionDelete.class)
@@ -164,6 +164,6 @@ public class TaskTagAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

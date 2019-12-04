@@ -6,9 +6,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.service.processing.ExecutorServiceFactory;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public abstract class AbstractEmbedProcessor extends AbstractProcessor {

@@ -89,12 +89,12 @@ class ActionListWithUnitSubNestedLikeObject extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", '\\');
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", '\\'));
+		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		p = cb.and(p, cb.isMember(root.get(Person_.id), cb.literal(ids)));
 		List<String> list = em.createQuery(cq.select(root.get(Person_.id)).where(p).distinct(true)).getResultList();
 		for (Person o : business.person().pick(list)) {

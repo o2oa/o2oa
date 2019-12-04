@@ -18,61 +18,6 @@ public class WrapCopierFactory {
 	private static String SET_PREFIX = "set";
 	private static String IS_PREFIX = "is";
 
-	// public static <T> WrapCopier<T, T> wo(Class<T> origClass, List<String>
-	// includes, List<String> excludes,
-	// boolean ingoreNull) {
-	// try {
-	// List<String> origFieldNames = getAllFieldNames(origClass);
-	// List<String> copyFieldNames = new ArrayList<>();
-	// ListTools.includesExcludes(origFieldNames, includes,
-	// excludes).stream().forEach(s -> {
-	// try {
-	// Field origField = FieldUtils.getField(origClass, s, true);
-	// if (null != origField) {
-	// if (null != MethodUtils.getAccessibleMethod(origClass,
-	// getGetterName(origField),
-	// new Class<?>[] {})) {
-	// if (null != MethodUtils.getAccessibleMethod(origClass,
-	// getSetterName(origField),
-	// new Class<?>[] { origField.getType() })) {
-	// copyFieldNames.add(s);
-	// }
-	// }
-	// }
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// });
-	// List<String> eraseFieldNames = new ArrayList<>();
-	// ListUtils.subtract(origFieldNames, copyFieldNames).stream().forEach(s ->
-	// {
-	// try {
-	// Field origField = FieldUtils.getField(origClass, s, true);
-	// if (null != origField) {
-	// if (null != MethodUtils.getAccessibleMethod(origClass,
-	// getGetterName(origField),
-	// new Class<?>[] {})) {
-	// if (null != MethodUtils.getAccessibleMethod(origClass,
-	// getSetterName(origField),
-	// new Class<?>[] { origField.getType() })) {
-	// eraseFieldNames.add(s);
-	// }
-	// }
-	// }
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// });
-	// WrapCopier<T, T> copier = new WrapCopier<T, T>(new PropertyUtilsBean(),
-	// origClass, origClass,
-	// copyFieldNames, eraseFieldNames, ingoreNull);
-	// return copier;
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// return null;
-	// }
-	// }
-
 	public static <T, W> WrapCopier<T, W> wo(Class<T> origClass, Class<W> destClass, List<String> includes,
 			List<String> excludes) {
 		return wo(origClass, destClass, includes, excludes, true);

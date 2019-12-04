@@ -17,10 +17,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
-import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
-import com.x.query.core.entity.wrap.WrapStat;
-import com.x.query.core.entity.wrap.WrapView;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.wrap.*;
 
 class ActionList extends BaseAction {
 
@@ -37,9 +36,15 @@ class ActionList extends BaseAction {
 
 			List<WrapReveal> revealList = emc.fetchAll(Reveal.class, revealCopier);
 
+			List<WrapTable> tableList = emc.fetchAll(Table.class, tableCopier);
+
+			List<WrapStatement> statementList = emc.fetchAll(Statement.class, statementCopier);
+
 			ListTools.groupStick(wos, viewList, "id", "query", "viewList");
 			ListTools.groupStick(wos, statList, "id", "query", "statList");
 			ListTools.groupStick(wos, revealList, "id", "query", "revealList");
+			ListTools.groupStick(wos, tableList, "id", "query", "tableList");
+			ListTools.groupStick(wos, statementList, "id", "query", "statementList");
 
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAlias, Comparator.nullsLast(String::compareTo))
@@ -58,6 +63,12 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<Reveal, WrapReveal> revealCopier = WrapCopierFactory.wo(Reveal.class, WrapReveal.class,
 			JpaObject.singularAttributeField(Reveal.class, true, true), null);
+
+	public static WrapCopier<Table, WrapTable> tableCopier = WrapCopierFactory.wo(Table.class, WrapTable.class,
+			JpaObject.singularAttributeField(Table.class, true, true), null);
+
+	public static WrapCopier<Statement, WrapStatement> statementCopier = WrapCopierFactory.wo(Statement.class, WrapStatement.class,
+			JpaObject.singularAttributeField(Statement.class, true, true), null);
 
 	public static class Wo extends WrapQuery {
 

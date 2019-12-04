@@ -69,8 +69,8 @@ public class Audit {
 	}
 
 	/**
-	 * 移动集团审计日志格式：
-	 * 默认时间戳之类的信息|日志版本号|请求ID|请求深度|请求链|OA账号（OA&合同不为空）|员工工号（报账不为空）
+	 * 审计日志格式：
+	 * 默认时间戳之类的信息|日志版本号|请求ID|请求深度|请求链|登录账号|员工工号
 	 * |系统归属|系统名称|模块名称|表单类型|操作名称|是否统计上报|扩展信息|时间戳|耗时|请求结果|主机IP
 	 * |主机名|终端类型|终端IP |终端型号|终端IMEI|错误堆栈
 	 * @throws Exception
@@ -97,16 +97,16 @@ public class Audit {
 				String system = Objects.toString(Config.logLevel().audit().getSystem(), "OA");
 				String systemName = Objects.toString(Config.logLevel().audit().getSystemName(), "OA系统");
 				String companycode = Objects.toString(Config.logLevel().audit().getCompanycode(), "");
-				String mode = this.uri;
+				/*String mode = this.uri;
 				if(this.uri!=null) {
 					String[] uris = this.uri.split("/");
 					if (uris.length > 1) {
 						mode = uris[1];
 					}
-				}
+				}*/
 				PrintStream stream = (PrintStream) Config.resource(Config.RESOURCE_AUDITLOGPRINTSTREAM);
 				stream.printf("%tF %tT|2.0||1||%s|%s|%s|%s|%s||%s|true|%s|%d|%d|true|%s|%s|%s|%s|%s||", end, end, this.userId,
-						this.userId, systemName, system, mode, op, this.getParameter(op, system, companycode), end.getTime(), elapsed, hostAddress, hostName,
+						this.userId, systemName, system, this.uri, op, this.getParameter(op, system, companycode), end.getTime(), elapsed, hostAddress, hostName,
 						getTerminal(), this.remoteAddress, this.userAgent);
 				stream.println();
 			}

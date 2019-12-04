@@ -1,10 +1,5 @@
 package com.x.calendar.assemble.control.jaxrs.calendar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -17,6 +12,10 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.ThisApplication;
 import com.x.calendar.core.entity.Calendar;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 列示所有我能访问到的日历信息
  * 
@@ -26,7 +25,7 @@ import com.x.calendar.core.entity.Calendar;
 public class ActionListWhatICanView extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionListWhatICanView.class );
-	
+
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

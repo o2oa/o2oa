@@ -1,12 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
@@ -21,6 +14,11 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
 import com.x.cms.core.entity.tools.filter.term.InTerm;
 import com.x.cms.core.entity.tools.filter.term.NotInTerm;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionQueryListNextWithFilter extends BaseAction {
 
@@ -210,29 +208,31 @@ public class ActionQueryListNextWithFilter extends BaseAction {
 		if (check) {
 			if ( searchResultList != null ) {
 				Wo wo = null;
-				for( Document document : searchResultList ) {					
-					try {
-						wo = Wo.copier.copy( document );						
-						if( wo.getCreatorPerson() != null && !wo.getCreatorPerson().isEmpty() ) {
-							wo.setCreatorPersonShort( wo.getCreatorPerson().split( "@" )[0]);
+				for( Document document : searchResultList ) {
+					if( document != null ){
+						try {
+							wo = Wo.copier.copy( document );
+							if( wo.getCreatorPerson() != null && !wo.getCreatorPerson().isEmpty() ) {
+								wo.setCreatorPersonShort( wo.getCreatorPerson().split( "@" )[0]);
+							}
+							if( wo.getCreatorUnitName() != null && !wo.getCreatorUnitName().isEmpty() ) {
+								wo.setCreatorUnitNameShort( wo.getCreatorUnitName().split( "@" )[0]);
+							}
+							if( wo.getCreatorTopUnitName() != null && !wo.getCreatorTopUnitName().isEmpty() ) {
+								wo.setCreatorTopUnitNameShort( wo.getCreatorTopUnitName().split( "@" )[0]);
+							}
+							if( wi.getNeedData() ) {
+								//需要组装数据
+								wo.setData( documentQueryService.getDocumentData( document ) );
+							}
+						} catch (Exception e) {
+							check = false;
+							Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档数据内容信息时发生异常。Id:" + document.getCategoryId());
+							result.error(exception);
+							logger.error(e, effectivePerson, request, null);
 						}
-						if( wo.getCreatorUnitName() != null && !wo.getCreatorUnitName().isEmpty() ) {
-							wo.setCreatorUnitNameShort( wo.getCreatorUnitName().split( "@" )[0]);
-						}
-						if( wo.getCreatorTopUnitName() != null && !wo.getCreatorTopUnitName().isEmpty() ) {
-							wo.setCreatorTopUnitNameShort( wo.getCreatorTopUnitName().split( "@" )[0]);
-						}
-						if( wi.getNeedData() ) {
-							//需要组装数据
-							wo.setData( documentQueryService.getDocumentData( document ) );
-						}
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档数据内容信息时发生异常。Id:" + document.getCategoryId());
-						result.error(exception);
-						logger.error(e, effectivePerson, request, null);
+						wos.add( wo );
 					}
-					wos.add( wo );
 				}
 			}
 		}

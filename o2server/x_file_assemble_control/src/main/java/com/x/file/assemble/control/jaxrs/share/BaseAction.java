@@ -1,7 +1,10 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Unit;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.service.FileCommonService;
@@ -19,6 +22,20 @@ import java.util.List;
 abstract class BaseAction extends StandardJaxrsAction {
 
     protected FileCommonService fileCommonService = new FileCommonService();
+
+    protected void message_send_attachment_share(Share share, String person) throws Exception {
+        String title = "收到来自(" + OrganizationDefinition.name(share.getPerson()) + ")的共享文件:" + share.getName()
+                + ".";
+        MessageConnector.send(MessageConnector.TYPE_ATTACHMENT_SHARE, title, person,
+                XGsonBuilder.convert(share, Share.class));
+    }
+
+    protected void message_send_attachment_shareCancel(Share share, String person) throws Exception {
+        String title = "(" + OrganizationDefinition.name(share.getPerson()) + ")取消了对:" + share.getName()
+                + ",文件的共享.";
+        MessageConnector.send(MessageConnector.TYPE_ATTACHMENT_SHARECANCEL, title, person,
+                XGsonBuilder.convert(share, Share.class));
+    }
 
     protected boolean exist(Business business, EffectivePerson effectivePerson, String name,
                             String excludeId) throws Exception {

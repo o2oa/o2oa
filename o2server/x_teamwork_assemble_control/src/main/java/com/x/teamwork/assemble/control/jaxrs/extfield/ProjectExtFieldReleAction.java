@@ -48,7 +48,7 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据指定ID查询项目扩展属性关联信息.", action = ActionGet.class)
@@ -66,7 +66,7 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据项目ID，需要的扩展属性类别获取下一个可用的属性名称.", action = ActionGetNextUseableExtFieldName.class)
@@ -86,7 +86,7 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询用户创建的所有项目扩展属性关联信息列表.", action = ActionListWithProject.class)
@@ -105,7 +105,7 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "创建或者更新一个项目扩展属性关联信息.", action = ActionSave.class)
@@ -124,7 +124,7 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据标识删除项目扩展属性关联信息.", action = ActionDelete.class)
@@ -143,6 +143,6 @@ public class ProjectExtFieldReleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

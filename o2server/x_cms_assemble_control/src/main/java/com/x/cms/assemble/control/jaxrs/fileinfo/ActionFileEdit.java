@@ -1,10 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.Arrays;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -18,6 +15,9 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+
 /**
  * 对附件的访问权限进行调整
  * @author O2LEE
@@ -27,6 +27,7 @@ class ActionFileEdit extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionFileEdit.class);
 
+	@AuditLog(operation = "编辑附件")
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id, String docId, JsonElement jsonElement) {
 		logger.debug("receive id:{}, jsonElement:{}.", id, jsonElement);
 		ActionResult<Wo> result = new ActionResult<>();

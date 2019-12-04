@@ -10,7 +10,7 @@ public class ExceptionEntityFieldEmpty extends PromptException {
 		
 		
 		
-		super("实体类: {} , 字段: {} 不能为空.", cls.getName(), field);
+		super("实体类: {} , 字段: {} 值无效.", cls.getName(), field);
 	}
 
 }

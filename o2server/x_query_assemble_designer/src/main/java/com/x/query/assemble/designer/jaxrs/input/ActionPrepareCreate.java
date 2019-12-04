@@ -17,10 +17,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
-import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
-import com.x.query.core.entity.wrap.WrapStat;
-import com.x.query.core.entity.wrap.WrapView;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.wrap.*;
 
 class ActionPrepareCreate extends BaseAction {
 
@@ -59,6 +58,18 @@ class ActionPrepareCreate extends BaseAction {
 		}
 		for (WrapReveal wrap : wi.getRevealList()) {
 			Reveal _o = business.entityManagerContainer().find(wrap.getId(), Reveal.class);
+			if (null != _o) {
+				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+			}
+		}
+		for (WrapTable wrap : wi.getTableList()) {
+			Table _o = business.entityManagerContainer().find(wrap.getId(), Table.class);
+			if (null != _o) {
+				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+			}
+		}
+		for (WrapStatement wrap : wi.getStatementList()) {
+			Statement _o = business.entityManagerContainer().find(wrap.getId(), Statement.class);
 			if (null != _o) {
 				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 			}

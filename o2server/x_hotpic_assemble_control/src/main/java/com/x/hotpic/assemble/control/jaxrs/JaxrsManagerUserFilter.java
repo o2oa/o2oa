@@ -9,6 +9,6 @@ import com.x.base.core.project.jaxrs.AnonymousCipherManagerUserJaxrsFilter;
  * 
  * @author liyi *
  */
-@WebFilter(urlPatterns = { "/jaxrs/user/*", "/jaxrs/manager/*" })
+@WebFilter(urlPatterns = { "/jaxrs/user/*", "/jaxrs/manager/*" }, asyncSupported = true)
 public class JaxrsManagerUserFilter extends AnonymousCipherManagerUserJaxrsFilter {
 }

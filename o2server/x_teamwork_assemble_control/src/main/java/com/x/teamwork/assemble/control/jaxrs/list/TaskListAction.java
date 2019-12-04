@@ -51,7 +51,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据工作任务组查询工作列表信息列表.", action = ActionListWithTaskGroup.class)
@@ -70,7 +70,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据工作任务组查询工作列表信息列表.", action = ActionListWithTaskGroupWithTask.class)
@@ -90,7 +90,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "创建或者更新一个工作任务列表信息.", action = ActionSave.class)
@@ -108,7 +108,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "重新指定列表中所有的任务（删除原来的关联，添加新的关联）.", action = ActionRefreshTaskList.class)
@@ -128,7 +128,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "将一个工作任务添加到指定的列表中.", action = ActionAddTask2ListWithOrderNumber.class)
@@ -148,7 +148,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "将一个工作任务添加到指定的列表中.", action = ActionAddTask2ListWithBehindTask.class)
@@ -168,7 +168,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "将一个工作任务从指定的列表中移除.", action = ActionRemoveTaskFromList.class)
@@ -188,7 +188,7 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "删除工作任务列表信息.", action = ActionDelete.class)
@@ -207,6 +207,6 @@ public class TaskListAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

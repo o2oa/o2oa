@@ -12,6 +12,7 @@
 	<artifactId>x_base_core_project</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
+
 	</dependencies>
 	<build>
 		<plugins>

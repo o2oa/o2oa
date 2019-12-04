@@ -48,6 +48,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				throw new ExceptionTypeProcessExist(empower.getFromIdentity(), empower.getProcess());
 			}
 			break;
+		case Empower.TYPE_FILTER:
+			if (StringUtils.isEmpty(empower.getProcess()) || StringUtils.isEmpty(empower.getFilterListData())) {
+				throw new ExceptionTypeFilter(empower.getFromIdentity(), empower.getProcess(),
+						empower.getFilterListData());
+			}
+			break;
 		default:
 			throw new ExceptionEntityFieldEmpty(Empower.class, Empower.type_FIELDNAME);
 		}

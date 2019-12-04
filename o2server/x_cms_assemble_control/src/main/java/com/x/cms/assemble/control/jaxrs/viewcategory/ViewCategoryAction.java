@@ -48,7 +48,7 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定分类的全部视图分类关联信息信息列表.", action = ActionListByCategory.class)
@@ -67,7 +67,7 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定视图的全部视图分类关联信息信息列表.", action = ActionListByView.class)
@@ -86,7 +86,7 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取列表信息对象.", action = ActionGet.class)
@@ -105,7 +105,7 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建列表信息对象.", action = ActionSave.class)
@@ -126,7 +126,7 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 				logger.error(e, currentPerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除列表信息对象.", action = ActionDelete.class)
@@ -145,6 +145,6 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

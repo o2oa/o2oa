@@ -3,6 +3,8 @@ package com.x.base.core.project.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.annotation.WebFilter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -29,6 +31,16 @@ public class CheckService {
 			Class<?> cls = Class.forName(info.getName());
 			if (FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class).isEmpty()) {
 				System.err.println(String.format("%s not set FieldDescribe", info.getName()));
+			}
+		}
+		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAllInfo().scan()) {
+			ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(WebFilter.class.getName());
+			for (ClassInfo info : classInfoList) {
+				Class cls = Class.forName(info.getName());
+				WebFilter webFilter = (WebFilter) cls.getAnnotation(WebFilter.class);
+				if (webFilter.asyncSupported() == false) {
+					System.err.println("webFilter not set asyncSupported:" + info.getName());
+				}
 			}
 		}
 	}

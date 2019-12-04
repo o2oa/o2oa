@@ -10,9 +10,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -37,7 +38,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("中心工作信息ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionDeleteAdmin.Wo> result = new ActionResult<>();
@@ -47,7 +48,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取中心工作数据对象", action = ActionGetAdmin.class)
@@ -55,7 +56,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("中心工作信息ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGetAdmin.Wo> result = new ActionResult<>();
@@ -65,7 +66,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的中心工作数据对象,下一页", action = ActionListNextWithFilterAdmin.class)
@@ -73,7 +74,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListNextWithFilter(@Context HttpServletRequest request, 
+	public void filterListNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
 			JsonElement jsonElement) {
@@ -85,7 +86,7 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的中心工作数据对象,上一页", action = ActionListPrevWithFilterAdmin.class)
@@ -93,7 +94,8 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 	@Path("filter/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListPrevWithFilter(@Context HttpServletRequest request, 
+	public void filterListPrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
 			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
 			JsonElement jsonElement) {
@@ -105,6 +107,6 @@ public class OkrCenterWorkInfoAdminAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			logger.error( e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -36,7 +36,7 @@ public class DistributeAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@GET
@@ -53,6 +53,6 @@ public class DistributeAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -10,6 +10,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,113 +35,114 @@ import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionRoleInfoProc
 @Path("user/reply")
 @JaxrsDescribe("主量回复服务")
 public class ReplyInfoManagerUserAction extends StandardJaxrsAction {
-	private static  Logger logger = LoggerFactory.getLogger( ReplyInfoManagerUserAction.class );
-	
-	@JaxrsMethodDescribe( value = "创建新的回贴信息或者更新回贴信息.", action = ActionSave.class )
+	private static Logger logger = LoggerFactory.getLogger(ReplyInfoManagerUserAction.class);
+
+	@JaxrsMethodDescribe(value = "创建新的回贴信息或者更新回贴信息.", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
-		if(check){
+
+		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionReplyInfoProcess( e, "创建新的回贴信息或者更新回贴信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionReplyInfoProcess(e, "创建新的回贴信息或者更新回贴信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
-	@JaxrsMethodDescribe( value = "采纳回复信息.", action = ActionAcceptReply.class )
+
+	@JaxrsMethodDescribe(value = "采纳回复信息.", action = ActionAcceptReply.class)
 	@Path("accept")
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response accept( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public void accept(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionAcceptReply().execute( request, effectivePerson, jsonElement );
+				result = new ActionAcceptReply().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionRoleInfoProcess( e, "采纳回复信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionRoleInfoProcess(e, "采纳回复信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	/**
-	 * 用户只有自己的回复可以删除
-	 * 管理员和版主可以删除其他回复内容
+	 * 用户只有自己的回复可以删除 管理员和版主可以删除其他回复内容
+	 * 
 	 * @param request
 	 * @param id
 	 * @return
 	 */
-	@JaxrsMethodDescribe( value = "根据ID删除指定的回贴信息.", action = ActionDelete.class )
+	@JaxrsMethodDescribe(value = "根据ID删除指定的回贴信息.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete( @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("回复信息ID") @PathParam("id") String id ) {
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("回复信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;		
-		if( check ){
-			if( id == null || id.isEmpty() ){
+		Boolean check = true;
+		if (check) {
+			if (id == null || id.isEmpty()) {
 				check = false;
 				Exception exception = new ExceptionReplyIdEmpty();
-				result.error( exception );
+				result.error(exception);
 			}
-		}			
-		if(check){
+		}
+		if (check) {
 			try {
-				result = new ActionDelete().execute( request, effectivePerson, id );
+				result = new ActionDelete().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionReplyInfoProcess( e, "根据ID删除指定的回贴信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionReplyInfoProcess(e, "根据ID删除指定的回贴信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
-	@JaxrsMethodDescribe( value = "列示我发表的回贴,下一页.", action = ActionListMyReplyForPages.class )
+
+	@JaxrsMethodDescribe(value = "列示我发表的回贴,下一页.", action = ActionListMyReplyForPages.class)
 	@PUT
-	@Path( "my/list/page/{page}/count/{count}" )
-	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
-	@Consumes( MediaType.APPLICATION_JSON )
-	public Response listMyReplyForPage( @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("前一页最后一条记录ID") @PathParam("page") Integer page, 
-			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count, 
-			JsonElement jsonElement ) {
+	@Path("my/list/page/{page}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMyReplyForPage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("前一页最后一条记录ID") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<ActionListMyReplyForPages.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionListMyReplyForPages().execute( request, effectivePerson, page , count );
+				result = new ActionListMyReplyForPages().execute(request, effectivePerson, page, count);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionReplyInfoProcess( e, "列示我发表的回贴下一页时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionReplyInfoProcess(e, "列示我发表的回贴下一页时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

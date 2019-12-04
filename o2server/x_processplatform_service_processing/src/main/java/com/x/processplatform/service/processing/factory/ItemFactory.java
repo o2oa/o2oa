@@ -21,6 +21,20 @@ public class ItemFactory extends AbstractFactory {
 		super(business);
 	}
 
+	public Long countWithJobWithPath(String job, String... paths) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Item.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Item> root = cq.from(Item.class);
+		Predicate p = cb.equal(root.get(Item_.bundle), job);
+		p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
+		for (int i = 0; (i < paths.length && i < 8); i++) {
+			p = cb.and(p, cb.equal(root.get(("path" + i)), paths[i]));
+		}
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+
 	public List<Item> listWithJobWithPath(String job, String... paths) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Item.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

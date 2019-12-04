@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -49,6 +50,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		@FieldDescribe("结束时间")
 		private List<String> completedTimeMonthList;
+
+		@FieldDescribe("是否已经结束")
+		private Boolean completed;
+
+		public Boolean getCompleted() {
+			return completed;
+		}
+
+		public void setCompleted(Boolean completed) {
+			this.completed = completed;
+		}
 
 		@FieldDescribe("关键字")
 		private String key;
@@ -157,6 +169,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
 			p = cb.and(p, root.get(Review_.completedTimeMonth).in(wi.getCompletedTimeMonthList()));
+		}
+		if (null != wi.getCompleted()) {
+			if (BooleanUtils.isTrue(wi.getCompleted())) {
+				p = cb.and(p, cb.equal(root.get(Review_.completed), true));
+			} else {
+				p = cb.and(p,
+						cb.or(cb.isNull(root.get(Review_.completed)), cb.equal(root.get(Review_.completed), false)));
+			}
 		}
 		String key = StringTools.escapeSqlLikeKey(wi.getKey());
 		if (StringUtils.isNotEmpty(key)) {

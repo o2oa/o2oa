@@ -32,14 +32,25 @@ class ActionCreate extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Statement statement = Wi.copier.copy(wi);
-			Table table = emc.flag(wi.getTable(), Table.class);
-			if (null == table) {
-				throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
-			}
 			Query query = emc.flag(wi.getQuery(), Query.class);
 			if (null == query) {
-				throw new ExceptionEntityNotExist(table.getQuery(), Query.class);
+				throw new ExceptionEntityNotExist(wi.getQuery(), Query.class);
 			}
+			statement.setQuery(query.getId());
+			if (StringUtils.equals(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+				Table table = emc.flag(wi.getTable(), Table.class);
+				if (null == table) {
+					throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
+				}
+				statement.setTable(table.getId());
+			} else {
+				try {					
+				Class.forName(statement.getEntityClassName());
+				} catch (Exception e) {
+					throw new ExceptionEntityClass(statement.getEntityClassName());
+				}
+			}
+
 			if (!business.editable(effectivePerson, query)) {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
@@ -50,8 +61,7 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
 			}
 			emc.beginTransaction(Statement.class);
-			statement.setTable(table.getId());
-			statement.setQuery(table.getQuery());
+
 			statement.setCreatorPerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdateTime(new Date());

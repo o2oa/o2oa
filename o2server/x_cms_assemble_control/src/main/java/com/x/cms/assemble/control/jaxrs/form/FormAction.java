@@ -1,39 +1,30 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.http.WrapOutId;
-import com.x.base.core.project.http.WrapOutMap;
+import com.x.base.core.project.http.*;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("form")
 @JaxrsDescribe("表单信息管理")
 public class FormAction extends StandardJaxrsAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( FormAction.class );
 
 	@JaxrsMethodDescribe(value = "获取全部的表单模板列表.", action = ActionListAll.class)
@@ -45,14 +36,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListAll().execute( request, effectivePerson );
+			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定栏目的全部表单模板信息列表.", action = ActionListByApp.class)
@@ -65,14 +56,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListByApp.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListByApp().execute( request, effectivePerson, appId );
+			result = ((ActionListByApp)proxy.getProxy(ActionListByApp.class)).execute( request, effectivePerson, appId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据栏目ID查询表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取表单对象.", action = ActionGet.class)
@@ -85,14 +76,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, effectivePerson, id );
+			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID查询表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据表单标识和栏目标识获取表单.", action = ActionGetWithAppInfo.class)
@@ -106,12 +97,12 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<ActionGetWithAppInfo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetWithAppInfo().execute(request, effectivePerson, appFlag, formFlag);
+			result = ((ActionGetWithAppInfo)proxy.getProxy(ActionGetWithAppInfo.class)).execute(request, effectivePerson, appFlag, formFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存表单信息对象.", action = ActionSave.class)
@@ -125,14 +116,14 @@ public class FormAction extends StandardJaxrsAction {
 		
 		if( check ){
 			try {
-				result = new ActionSave().execute( request, effectivePerson, null, jsonElement );
+				result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute( request, effectivePerson, null, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新表单信息对象.", action = ActionSave.class)
@@ -148,14 +139,14 @@ public class FormAction extends StandardJaxrsAction {
 
 		if( check ){
 			try {
-				result = new ActionSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除表单信息对象.", action = ActionDelete.class)
@@ -168,14 +159,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		try {
-			result = new ActionDelete().execute( request, effectivePerson, id );
+			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在根据ID删除表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件的表单信息,下一页.", action = ActionListNextWithFilter.class)
@@ -191,14 +182,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListNextWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
+			result = ((ActionListNextWithFilter)proxy.getProxy(ActionListNextWithFilter.class)).execute( request, effectivePerson, id, count, appId, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件的表单信息,上一页.", action = ActionListPrevWithFilter.class)
@@ -214,14 +205,14 @@ public class FormAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListPrevWithFilter().execute( request, effectivePerson, id, count, appId, jsonElement );
+			result = ((ActionListPrevWithFilter)proxy.getProxy(ActionListPrevWithFilter.class)).execute( request, effectivePerson, id, count, appId, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionServiceLogic( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据指定的栏目获取栏目下所有表单包含的字段字段信息.", action = ActionListFormFieldWithAppInfo.class)
@@ -235,12 +226,12 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListFormFieldWithAppInfo().execute(applicationId);
+			result = ((ActionListFormFieldWithAppInfo)proxy.getProxy(ActionListFormFieldWithAppInfo.class)).execute(applicationId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据指定的Form获取所有包含的字段信息.", action = ActionListFormFieldWithForm.class)
@@ -253,11 +244,11 @@ public class FormAction extends StandardJaxrsAction {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListFormFieldWithForm().execute(id);
+			result = ((ActionListFormFieldWithForm)proxy.getProxy(ActionListFormFieldWithForm.class)).execute(id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

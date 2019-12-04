@@ -1,5 +1,16 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -18,10 +29,12 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Attachment_;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionUpload extends BaseAction {
@@ -35,11 +48,10 @@ class ActionUpload extends BaseAction {
 			Business business = new Business(emc);
 			/* 后面要重新保存 */
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			/* 判断work是否存在 */
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			/** 统计待办数量判断用户是否可以上传附件 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
@@ -47,6 +59,9 @@ class ActionUpload extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
+			/* 调整可能的附件名称 */
+			fileName = this.adjustFileName(business, work.getJob(), fileName);
+
 			/* 天印扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);

@@ -11,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -35,14 +36,14 @@ import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.Exceptio
 @JaxrsDescribe("工作汇报信息管理服务")
 public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(OkrWorkReportBaseInfoAction.class);
+	private static Logger logger = LoggerFactory.getLogger(OkrWorkReportBaseInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取工作汇报信息", action = ActionDraftReport.class)
 	@GET
 	@Path("draft/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response draft(@Context HttpServletRequest request, 
+	public void draft(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("具体工作信息ID") @PathParam("workId") String workId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionDraftReport.Wo> result = new ActionResult<>();
@@ -53,14 +54,15 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteDraftReport got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "新建或者更新工作汇报信息", action = ActionDraftReport.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		WiOkrWorkReportBaseInfo wrapIn = null;
@@ -83,13 +85,12 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 			}
 		}
 
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/**
 	 * 确定汇报工作流 1、先确定工作汇报工作流执行方式：1）工作管理员督办 - 中心工作阅知领导审阅； 2）工作部署者审阅 2、如果是方式1）
-	 * a.判断系统设置中是否有设置工作管理员
-	 * b.如果有设置工作管理员，那么下一步处理者为工作管理员，如果没有设置工作管理员，那么判断中心工作是否有设置阅知领导
+	 * a.判断系统设置中是否有设置工作管理员 b.如果有设置工作管理员，那么下一步处理者为工作管理员，如果没有设置工作管理员，那么判断中心工作是否有设置阅知领导
 	 * c.如果中心工作没有设置阅知领导，那么下一步处理者为工作部署者审阅，并且在汇报的descript中说明原因 3、汇报工作流执行方式生效工作层级
 	 * 
 	 * @param request
@@ -101,21 +102,22 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response submit(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void submit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<Wo> result = new ActionResult<>();
 		Boolean check = true;
 
 		if (check) {
 			try {
-				result = new ActionSubmit().execute( request, effectivePerson, jsonElement );
+				result = new ActionSubmit().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error(e);
 				logger.warn("system excute ExcuteSubmit got an exception. ");
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除工作汇报信息", action = ActionDelete.class)
@@ -123,7 +125,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作汇报信息ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -134,7 +136,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteDelete got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID将工作汇报信息调度到结束", action = ActionDispatchToOver.class)
@@ -142,7 +144,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("dispatch/{id}/over")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response dispatchOver(@Context HttpServletRequest request, 
+	public void dispatchOver(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作汇报信息ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -153,7 +155,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteDispatchToOver got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取工作汇报信息", action = ActionGet.class)
@@ -161,7 +163,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作汇报信息ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
@@ -172,7 +174,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据工作ID获取工作汇报信息", action = ActionListByWork.class)
@@ -180,18 +182,18 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("list/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByWork(@Context HttpServletRequest request, 
+	public void listByWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("具体工作信息ID") @PathParam("workId") String workId) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrWorkReportBaseInfo>> result = new ActionResult<>();
 		try {
-			result = new ActionListByWork().execute(request, effectivePerson, workId );
+			result = new ActionListByWork().execute(request, effectivePerson, workId);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[草稿],下一页", action = ActionListDraftNextWithFilter.class)
@@ -199,20 +201,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("draft/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyDraftNextWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyDraftNextWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrWorkReportBaseInfo>> result = new ActionResult<>();
 		try {
-			result = new ActionListDraftNextWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListDraftNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[草稿],上一页", action = ActionListDraftPrevWithFilter.class)
@@ -220,18 +221,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("draft/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyDraftPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, JsonElement jsonElement) {
+	public void listMyDraftPrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @PathParam("id") String id, @PathParam("count") Integer count,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrWorkReportBaseInfo>> result = new ActionResult<>();
 		try {
-			result = new ActionListDraftPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListDraftPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[处理中（待办）],下一页", action = ActionListMyTaskNextWithFilter.class)
@@ -239,20 +241,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("task/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyTaskNextWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyTaskNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyTaskNextWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyTaskNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[处理中（待办）],上一页", action = ActionListMyTaskPrevWithFilter.class)
@@ -260,20 +261,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("task/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyTaskPrevWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyTaskPrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyTaskPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyTaskPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyTaskPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[已处理（已办）],下一页", action = ActionListMyProcessNextWithFilter.class)
@@ -281,20 +281,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("process/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyProcessNextWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyProcessNextWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyProcessNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyProcessNextWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyProcessNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[已处理（已办）],上一页", action = ActionListMyProcessPrevWithFilter.class)
@@ -302,20 +301,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("process/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyProcessPrevWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyProcessPrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyProcessPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyProcessPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyProcessPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[已归档],下一页", action = ActionListMyArchiveNextWithFilter.class)
@@ -323,20 +321,19 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("archive/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyArchiveNextWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyArchiveNextWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyArchiveNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyArchiveNextWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyArchiveNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示满足过滤条件查询的工作汇报信息，[已归档],上一页", action = ActionListMyArchivePrevWithFilter.class)
@@ -344,19 +341,18 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction {
 	@Path("archive/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMyArchivePrevWithFilter(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
+	public void listMyArchivePrevWithFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyArchivePrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyArchivePrevWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = new ActionListMyArchivePrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error(e);
 			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -9,6 +9,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -31,15 +33,15 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectId
 @Path("subjectattach")
 @JaxrsDescribe("主贴附件管理服务")
 public class SubjectAttachmentAction extends StandardJaxrsAction {
-	private static  Logger logger = LoggerFactory.getLogger(SubjectAttachmentAction.class);
-	
-	@JaxrsMethodDescribe( value = "根据指定ID获取附件信息.", action = ActionAttachmentGet.class )
+	private static Logger logger = LoggerFactory.getLogger(SubjectAttachmentAction.class);
+
+	@JaxrsMethodDescribe(value = "根据指定ID获取附件信息.", action = ActionAttachmentGet.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id ) {
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id) {
 		ActionResult<ActionAttachmentGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -51,25 +53,25 @@ public class SubjectAttachmentAction extends StandardJaxrsAction {
 				logger.error(exception, effectivePerson, request, null);
 			}
 		}
-		if(check){
+		if (check) {
 			try {
-				result = new ActionAttachmentGet().execute( request, effectivePerson, id );
+				result = new ActionAttachmentGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionRoleInfoProcess( e, "根据指定ID获取版块信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionRoleInfoProcess(e, "根据指定ID获取版块信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "根据ID删除BBSSubjectAttachment数据对象.", action = ActionAttachmentDelete.class )
+	@JaxrsMethodDescribe(value = "根据ID删除BBSSubjectAttachment数据对象.", action = ActionAttachmentDelete.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件信息ID") @PathParam("id") String id) {
 		ActionResult<ActionAttachmentDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -80,25 +82,25 @@ public class SubjectAttachmentAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(exception, effectivePerson, request, null);
 		}
-		if(check){
+		if (check) {
 			try {
-				result = new ActionAttachmentDelete().execute( request, effectivePerson, id );
+				result = new ActionAttachmentDelete().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionRoleInfoProcess( e, "根据指定ID获取版块信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionRoleInfoProcess(e, "根据指定ID获取版块信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "根据主题ID获取BBSSubjectAttachment列表.", action = ActionAttachmentListBySubjectId.class )
+	@JaxrsMethodDescribe(value = "根据主题ID获取BBSSubjectAttachment列表.", action = ActionAttachmentListBySubjectId.class)
 	@GET
 	@Path("list/subject/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listBySubjectId(@Context HttpServletRequest request, 
+	public void listBySubjectId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id) {
 		ActionResult<List<ActionAttachmentListBySubjectId.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -109,26 +111,26 @@ public class SubjectAttachmentAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(exception, effectivePerson, request, null);
 		}
-		if( check ){
+		if (check) {
 			try {
-				result = new ActionAttachmentListBySubjectId().execute( request, effectivePerson, id );
+				result = new ActionAttachmentListBySubjectId().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionRoleInfoProcess( e, "根据主题ID获取BBSSubjectAttachment列表时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionRoleInfoProcess(e, "根据主题ID获取BBSSubjectAttachment列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "将图片附件转为base64编码.", action = ActionImageToBase64.class )
+	@JaxrsMethodDescribe(value = "将图片附件转为base64编码.", action = ActionImageToBase64.class)
 	@GET
 	@Path("{id}/binary/base64/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response imageToBase64(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("图片文件ID") @PathParam("id") String id, 
+	public void imageToBase64(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("图片文件ID") @PathParam("id") String id,
 			@JaxrsParameterDescribe("最大高宽值") @PathParam("size") String size) {
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -141,16 +143,16 @@ public class SubjectAttachmentAction extends StandardJaxrsAction {
 				logger.error(exception, effectivePerson, request, null);
 			}
 		}
-		if(check){
+		if (check) {
 			try {
-				result = new ActionImageToBase64().execute( request, effectivePerson, id, size );
+				result = new ActionImageToBase64().execute(request, effectivePerson, id, size);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionRoleInfoProcess( e, "根据指定ID获取版块信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionRoleInfoProcess(e, "根据指定ID获取版块信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -1,9 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -14,16 +11,16 @@ import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.element.AppDict;
-import com.x.cms.core.entity.element.AppDictItem;
-import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.element.ViewCategory;
-import com.x.cms.core.entity.element.ViewFieldConfig;
+import com.x.cms.core.entity.element.*;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionDelete extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionDelete.class );
-	
+
+	@AuditLog(operation = "删除栏目信息")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		AppInfo appInfo = null;

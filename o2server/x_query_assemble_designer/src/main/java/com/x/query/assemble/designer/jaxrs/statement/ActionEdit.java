@@ -40,27 +40,38 @@ class ActionEdit extends BaseAction {
 			if (null == statement) {
 				throw new ExceptionEntityNotExist(flag, Statement.class);
 			}
-			Table table = emc.flag(wi.getTable(), Table.class);
-			if (null == table) {
-				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
-			}
-			Query query = emc.flag(table.getQuery(), Query.class);
+			Wi.copier.copy(wi, statement);
+			Query query = emc.flag(statement.getQuery(), Query.class);
 			if (null == query) {
-				throw new ExceptionEntityNotExist(table.getQuery(), Query.class);
+				throw new ExceptionEntityNotExist(wi.getQuery(), Query.class);
 			}
+			statement.setQuery(query.getId());
 			if (!business.editable(effectivePerson, query)) {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
-			Wi.copier.copy(wi, statement);
+
+			if (StringUtils.equals(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+				Table table = emc.flag(wi.getTable(), Table.class);
+				if (null == table) {
+					throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
+				}
+				statement.setTable(table.getId());
+			} else {
+				try {
+					Class.forName(statement.getEntityClassName());
+				} catch (Exception e) {
+					throw new ExceptionEntityClass(statement.getEntityClassName());
+				}
+			}
+
 			if (StringUtils.isEmpty(statement.getName())) {
 				throw new ExceptionEntityFieldEmpty(Statement.class, Statement.name_FIELDNAME);
 			}
 			if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
 				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
 			}
+
 			emc.beginTransaction(Statement.class);
-			statement.setTable(table.getId());
-			statement.setQuery(query.getId());
 			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdateTime(new Date());
 			emc.check(statement, CheckPersistType.all);

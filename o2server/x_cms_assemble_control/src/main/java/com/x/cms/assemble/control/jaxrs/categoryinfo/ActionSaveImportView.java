@@ -1,10 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
@@ -15,6 +12,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.query.core.entity.View;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 单独更新分类绑定的导入列表ID
@@ -24,7 +24,8 @@ import com.x.query.core.entity.View;
 public class ActionSaveImportView extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger( ActionSaveImportView.class );
-	
+
+	@AuditLog(operation = "修改分类文档导入视图")
 	protected ActionResult<Wo> execute(  HttpServletRequest request, EffectivePerson effectivePerson, String categoryId, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		CategoryInfo categoryInfo = null;

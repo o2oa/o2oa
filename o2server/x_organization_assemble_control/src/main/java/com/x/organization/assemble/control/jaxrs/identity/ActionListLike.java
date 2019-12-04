@@ -107,11 +107,11 @@ class ActionListLike extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.like(cb.lower(root.get(Identity_.name)), "%" + str + "%", '\\');
-		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.unique)), "%" + str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyinInitial)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.distinguishedName)), str + "%", '\\'));
+		Predicate p = cb.like(cb.lower(root.get(Identity_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Identity_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
 			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());
 			List<String> unitDutyIdentities = new ArrayList<>();

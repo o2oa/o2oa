@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -90,18 +91,24 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		switch (this.processingType) {
 		case appendTask:
-			this.joinInquire = false;
-			break;
+		case beAppendedTask:
 		case reroute:
-			this.joinInquire = false;
-			break;
 		case retract:
+		case empower:
 			this.joinInquire = false;
 			break;
 		default:
 			this.joinInquire = true;
 			break;
 		}
+	}
+
+	public Boolean getJoinInquire() {
+		return BooleanUtils.isNotFalse(this.joinInquire);
+	}
+
+	public Boolean getLatest() {
+		return BooleanUtils.isNotFalse(this.latest);
 	}
 
 	public void setOpinion(String opinion) {
@@ -130,7 +137,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	}
 
 	/* 用于相同处理人流转时使用的创建TaskCompleted */
-	public TaskCompleted(Work work, Manual manual, Route route, TaskCompleted taskCompleted) {
+	public TaskCompleted(Work work, Route route, TaskCompleted taskCompleted) {
 		Date now = new Date();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -161,6 +168,45 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = route.getName();
+		this.opinion = "";
+		this.task = "";
+		this.duration = 0L;
+		// this.manualMode = manual.getManualMode();
+		this.processingType = ProcessingType.sameTarget;
+		this.retractTime = null;
+		this.latest = true;
+		this.copyProjectionFields(work);
+	}
+
+	/* 用于相同处理人流转时使用的创建TaskCompleted */
+	public TaskCompleted(Work work) {
+		Date now = new Date();
+		this.job = work.getJob();
+		this.setTitle(work.getTitle());
+		this.startTime = now;
+		this.completedTime = now;
+		this.work = work.getId();
+		this.completed = false;
+		this.workCompleted = "";
+		this.application = work.getApplication();
+		this.applicationName = work.getApplicationName();
+		this.applicationAlias = work.getApplicationAlias();
+		this.process = work.getProcess();
+		this.processName = work.getProcessName();
+		this.processAlias = work.getProcessAlias();
+		this.serial = work.getSerial();
+		this.activity = work.getActivity();
+		this.activityName = work.getActivityName();
+		this.activityAlias = work.getActivityAlias();
+		this.activityDescription = work.getActivityDescription();
+		this.activityType = work.getActivityType();
+		this.activityToken = work.getActivityToken();
+		this.creatorPerson = work.getCreatorPerson();
+		this.creatorIdentity = work.getCreatorIdentity();
+		this.creatorUnit = work.getCreatorUnit();
+		this.expireTime = null;
+		this.expired = false;
+		this.routeName = "";
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
@@ -348,6 +394,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + identity_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String identity;
+
+	public static final String empowerToIdentity_FIELDNAME = "empowerToIdentity";
+	@FieldDescribe("授权给谁处理,在processType=empower时记录授权对象")
+	@Column(length = length_255B, name = ColumnNamePrefix + empowerToIdentity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + empowerToIdentity_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String empowerToIdentity;
 
 	public static final String unit_FIELDNAME = "unit";
 	@FieldDescribe("当前处理人所在部门.")
@@ -781,10 +834,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.startTime = startTime;
 	}
 
-	public Boolean getJoinInquire() {
-		return joinInquire;
-	}
-
 	public void setJoinInquire(Boolean joinInquire) {
 		this.joinInquire = joinInquire;
 	}
@@ -1059,10 +1108,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setActivityDescription(String activityDescription) {
 		this.activityDescription = activityDescription;
-	}
-
-	public Boolean getLatest() {
-		return latest;
 	}
 
 	public void setLatest(Boolean latest) {

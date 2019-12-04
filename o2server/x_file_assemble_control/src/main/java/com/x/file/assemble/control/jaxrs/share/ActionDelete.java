@@ -7,15 +7,20 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Share;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
 			Share share = emc.find(id, Share.class);
 			if (null == share) {
 				throw new ExceptionAttachmentNotExist(id);
@@ -27,6 +32,20 @@ class ActionDelete extends BaseAction {
 			EntityManager em = emc.beginTransaction(Share.class);
 			emc.delete(Share.class, share.getId());
 			em.getTransaction().commit();
+			if(!"password".equals(share.getShareType())){
+				List<String> shareCancels = new ArrayList<>();
+				shareCancels.addAll(share.getShareUserList());
+				if(!share.getShareOrgList().isEmpty()){
+					shareCancels.addAll(business.organization().person().listWithUnitSubNested( share.getShareOrgList() ));
+				}
+				ListOrderedSet<String> set = new ListOrderedSet<>();
+				set.addAll(shareCancels);
+				shareCancels = set.asList();
+				/* 发送取消共享通知 */
+				for (String str : shareCancels) {
+					this.message_send_attachment_shareCancel(share, str);
+				}
+			}
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

@@ -1,9 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,11 +13,15 @@ import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.ViewCategory;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionDelete extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
+	@AuditLog(operation = "删除分类")
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		CategoryInfo categoryInfo = null;

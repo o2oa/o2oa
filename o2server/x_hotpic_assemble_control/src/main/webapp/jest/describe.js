@@ -183,23 +183,31 @@ Describe.createSampleMootools = function(m) {
 		        strSample =  "var data = {};" + "\n";
 			if (m.ins && m.ins.length > 0) {
 				$.each(m.ins, function(ii, i) {
-					switch (i.type) {
-					default:
-						if (i.isBaseType) {
-							if (i.isCollection) {
-								  strSample += 'data["'+i.name+'"] = ["参数1"];' + "\n";
-							} else {
-								  strSample += 'data["'+i.name+'"] = "参数";' + "\n";
-							}
-						} else {
-							     // strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
-								 if(i.isCollection){
-									strSample += 'data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
-								}else{
-									strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+							switch (i.type) {
+						default:
+							if (i.isBaseType) {
+								if (i.isCollection) {
+									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+								} else {
+									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
 								}
+							} else {
+									if(i.isCollection){
+										if(i.fieldValue){
+										  if(i.fieldType =='enum'){
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+										  }else{
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+										  }
+										  
+										}else{
+										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										}
+									}else{
+										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+									}
+							}
 						}
-					}
 				});
 			} else if (m.useJsonElementParameter) {
 				strSample += 'data = {"参数1":"value1","参数2":"value2"};' +"\n";
@@ -285,22 +293,30 @@ Describe.createSampleJSO2= function(m) {
 			if (m.ins && m.ins.length > 0) {
 				$.each(m.ins, function(ii, i) {
 					switch (i.type) {
-					default:
-						if (i.isBaseType) {
-							if (i.isCollection) {
-								  strSample += 'data["'+i.name+'"] = ["参数1"];' + "\n";
-							} else {
-								  strSample += 'data["'+i.name+'"] = "参数";' + "\n";
-							}
-						} else {
-							           // strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
-								if(i.isCollection){
-									strSample += 'data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
-								}else{
-									strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+						default:
+							if (i.isBaseType) {
+								if (i.isCollection) {
+									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+								} else {
+									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
 								}
+							} else {
+									if(i.isCollection){
+										if(i.fieldValue){
+										  if(i.fieldType =='enum'){
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+										  }else{
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+										  }
+										  
+										}else{
+										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										}
+									}else{
+										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+									}
+							}
 						}
-					}
 				});
 			} else if (m.useJsonElementParameter) {
 				strSample += 'data = {"参数1":"value1","参数2":"value2"};' +"\n";
@@ -365,23 +381,31 @@ Describe.createSampleO2= function(m) {
 		  strSample =  "var data = {};" + "\n";
 			if (m.ins && m.ins.length > 0) {
 				$.each(m.ins, function(ii, i) {
-					switch (i.type) {
-					default:
-						if (i.isBaseType) {
-							if (i.isCollection) {
-								  strSample += 'data["'+i.name+'"] = ["参数1"];' + "\n";
-							} else {
-								  strSample += 'data["'+i.name+'"] = "参数";' + "\n";
-							}
-						} else {
-							           // strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
-								if(i.isCollection){
-									strSample += 'data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
-								}else{
-									strSample += 'data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+						switch (i.type) {
+						default:
+							if (i.isBaseType) {
+								if (i.isCollection) {
+									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+								} else {
+									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
 								}
+							} else {
+									if(i.isCollection){
+										if(i.fieldValue){
+										  if(i.fieldType =='enum'){
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+										  }else{
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+										  }
+										  
+										}else{
+										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										}
+									}else{
+										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+									}
+							}
 						}
-					}
 				});
 			} else if (m.useJsonElementParameter) {
 				strSample += 'data = {"参数1":"value1","参数2":"value2"};' +"\n";
@@ -449,24 +473,31 @@ Describe.createSample= function(m) {
 			if (m.ins && m.ins.length > 0) {
 				strSample =  "var data = {};" + "\n";
 				$.each(m.ins, function(ii, i) {
-					switch (i.type) {
-					default:
-						if (i.isBaseType) {
-							if (i.isCollection) {
-								  strSample += '   data["'+i.name+'"] = ["参数1"];' + "\n";
-							} else {
-								  strSample += '   data["'+i.name+'"] = "参数";' + "\n";
-							}
-						} else {
-								if(i.isCollection){
-									strSample += '   data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
-								}else{
-									strSample += '   data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+						switch (i.type) {
+						default:
+							if (i.isBaseType) {
+								if (i.isCollection) {
+									  strSample += '       data["'+i.name+'"] = ["参数1"];' + "\n";
+								} else {
+									  strSample += '       data["'+i.name+'"] = "参数";' + "\n";
 								}
-														
-						
+							} else {
+									if(i.isCollection){
+										if(i.fieldValue){
+										  if(i.fieldType =='enum'){
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+										  }else{
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+										  }
+										  
+										}else{
+										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										}
+									}else{
+										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+									}
+							}
 						}
-					}
 				});
 			} else if (m.useJsonElementParameter) {
 				strSample += '    data = {"参数1":"value1","参数2":"value2"};' +"\n";
@@ -561,12 +592,21 @@ Describe.createSampleCommon= function(m,className) {
 								}
 							} else {
 									if(i.isCollection){
-										body += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										if(i.fieldValue){
+										  if(i.fieldType =='enum'){
+											   body += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
+										  }else{
+											   body += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
+										  }
+										  
+										}else{
+										  body += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
+										}
 									}else{
 										body += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
 									}
-															
-							
 							}
 						}
 					});
@@ -627,14 +667,16 @@ Describe.createSampleCommon= function(m,className) {
 		} 
    return  strSample ;		
    }
+   
 Describe.prototype = {
 	"load" : function() {
 		var str = '<ul>';
 		$.getJSON('../describe/describe.json?rd=' + Math.random(), function(json) {
+			Describe.json = json;
 			$.each(json.jaxrs, function(ji, j) {
 				str += '<li xtype="menu" ' + 'style="margin-top: 30px;font-size:14px;font-weight:bold;"title="' +'" >' + j.name + ' <span style="font-style:italic">(' + j.description+ ')</span>';
 				$.each(j.methods, function(mi, m) {
-					str += '<ul><li xtype="li"  style="margin-top: 10px;margin-left:-24px;font-size:12px; font-weight:normal;line-height:18px" ><a id ="' + j.name + '_' + m.name + '" href="#"><b>' + m.name+'</b><br/><span style="color: #666666;">-'+ m.description + '</span>' + '</a></li></ul>';
+					str += '<ul><li xtype="li"  style="margin-top: 10px;margin-left:-24px;font-size:12px; font-weight:normal;line-height:18px" ><a  title="' + m.path + '"id ="' + j.name + '_' + m.name + '" href="#"><b>' + m.name+'</b><br/><span style="color: #666666;">-'+ m.description + '</span>' + '</a></li></ul>';
 				});
 				str += '</li>'
 			});
@@ -712,12 +754,13 @@ Describe.prototype = {
 									txt += '</fieldset>';
 								}
 								
-								if (m.ins && m.ins.length > 0) {
+							  if (m.ins && m.ins.length > 0) {
 									txt += '<fieldset id="ins"><legend>In</legend>';
 									txt += '<table>';
 									$.each(m.ins, function(ii, i) {
 										if (i.isCollection) {
-											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description
+											
+											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
 											'</td></tr>';
 										} else {
 											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
@@ -728,6 +771,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
+								
 								
 								
 								if (m.useJsonElementParameter) {
@@ -898,10 +942,7 @@ Describe.prototype = {
 								
 								debugger;
 							$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n前台脚本样例</span>\n\n"+ Describe.createSampleJSO2(m)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\nmootools样例</span>\n\n"+Describe.createSampleMootools(m)+"</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
-							
-							 /*
-							 $('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n前台脚本样例</span>\n\n"+ Describe.createSampleJSO2(m)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\nmootools样例</span>\n\n"+Describe.createSampleMootools(m)+"</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
-							 */
+
 							});
 				});
 			});
@@ -932,7 +973,7 @@ Describe.prototype = {
 			if(i!=0){
 			  // $(this).children().toggle();
 			  $(this).children().each(function(i){
-							debugger;
+					
 							if(this.tagName != "SPAN"){
 							$(this).toggle();
 							}
@@ -941,7 +982,338 @@ Describe.prototype = {
 			}
 			);
 		});
-		
-	
+	},
+  "search":function(strKey) {
+	var str = '<ul>';
+	var strTemp = "";
+	    $.each(Describe.json.jaxrs, function(ji, j) {
+			    var flag = false;
+				strTemp = '<li xtype="menu" ' + 'style="margin-top: 30px;font-size:14px;font-weight:bold;"title="' +'" >' + j.name + ' <span style="font-style:italic">(' + j.description+ ')</span>';
+				$.each(j.methods, function(mi, m) {
+					if((m.name.toUpperCase().indexOf(strKey.toUpperCase())>-1) || (m.description.toUpperCase().indexOf(strKey.toUpperCase())>-1) || (m.path.toUpperCase().indexOf(strKey.toUpperCase())>-1)){
+					flag = true;
+					
+					var tempKey =  strKey;
+					var tempReplace = "<span style='color: #f31313'>"+ strKey + "</span>";
+					 debugger;
+					var strDescripthion = m.description.replace(tempKey, tempReplace);
+					var strName = m.name.replace(tempKey, tempReplace);
+					var strPath = m.path;
+					var startPost = m.name.toUpperCase().indexOf(strKey.toUpperCase());
+					if(startPost>-1){
+						tempReplace = m.name.substr(startPost,tempKey.length);
+						tempKey = tempReplace;
+						tempReplace = "<span style='color: #f31313'>"+ tempReplace + "</span>";
+						strName = m.name.replace(tempKey, tempReplace);
+					}
+					tempKey =  strKey;
+					startPost = m.description.toUpperCase().indexOf(strKey.toUpperCase());
+					if(startPost>-1){
+						tempReplace = m.description.substr(startPost,tempKey.length);
+						tempKey =  tempReplace;
+						tempReplace = "<span style='color: #f31313'>"+ tempReplace + "</span>";
+						strDescripthion = m.description.replace(tempKey, tempReplace);
+					}
+					
+					
+					strTemp += '<ul><li xtype="li"  style="margin-top: 10px;margin-left:-24px;font-size:12px; font-weight:normal;line-height:18px" ><a title = "' + strPath+ '"  id ="' + j.name + '_' + m.name + '" href="#"><b>' + strName+'</b><br/><span style="color: #666666;">-'+strDescripthion + '</span>' + '</a></li></ul>';
+					}
+				});
+				strTemp += '</li>';
+				
+				if(flag == true){
+				   str += strTemp;
+				}
+			});
+			str += '</ul>';
+			$("#menu").html(str);
+			this.display(Describe.json);
+  },
+   "display":function(json) {
+			$.each(json.jaxrs, function(ji, j) {
+				$.each(j.methods, function(mi, m) {
+					$('#' + j.name + '_' + m.name).click(
+							function() {
+								$('#result').html('');
+								var sample = "";
+								var txt = '<fieldset id="method"><legend>Method</legend>';
+								txt += '<table>';
+								txt += '<tr><td style="width:100px;">name:</td><td><a href="../describe/sources/' + m.className.replace(/\./g, '/') + '.java">' + m.name + '</a></td></tr>';
+								txt += '<tr><td>path:</td><td>' + m.path + '</td></tr>';
+								txt += '<tr><td>type:</td><td>' + m.type + '</td></tr>';
+								txt += '<tr><td>description:</td><td>' + m.description + '</td></tr>';
+								txt += '</table>';
+								txt += '<button id="' + m.name + "_" + m.type + '">' + m.type + '</button>';
+								txt += '<div id="url">&nbsp;</div>';
+								txt += '</fieldset>';
+								if (m.pathParameters && m.pathParameters.length > 0) {
+									txt += '<fieldset id="pathParameters"><legend>Path Parameter</legend>';
+									txt += '<table >';
+									$.each(m.pathParameters, function(pi, p) {
+										if (m.name == 'listNext' || m.name == 'listPrev') {
+											switch (p.name) {
+											case 'flag':
+											case 'id':
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid" value="(0)"/></td><td>' + p.name
+														+ ':' + p.description + '</td></tr>';
+												break;
+											case 'count':
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid" value="20"/></td><td>' + p.name + ':'
+														+ p.description + '</td></tr>';
+												break;
+											default:
+												txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+														+ p.description + '</td></tr>';
+												break
+											}
+										} else {
+											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+													+ p.description + '</td></tr>';
+										}
+									});
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								if (m.formParameters && m.formParameters.length > 0) {
+									txt += '<fieldset id="formParameters"><legend>Form Parameter</legend>';
+									txt += '<table >';
+									$.each(m.formParameters, function(pi, p) {
+										if (p.type == "File") {
+											txt += '<tr><td><input type="file" name="' + p.name + '" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>'
+													+ p.name + ':' + p.description + '</td></tr>';
+										} else {
+											txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':'
+													+ p.description + '</td></tr>';
+										}
+									});
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								if (m.queryParameters && m.queryParameters.length > 0) {
+									txt += '<fieldset id="queryParameters"><legend>Query Parameter</legend>';
+									txt += '<table >';
+									$.each(m.queryParameters, function(pi, p) {
+										txt += '<tr><td><input type="text" id="' + p.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + p.name + ':' + p.description
+												+ '</td></tr>';
+									});
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+							  if (m.ins && m.ins.length > 0) {
+									txt += '<fieldset id="ins"><legend>In</legend>';
+									txt += '<table>';
+									$.each(m.ins, function(ii, i) {
+										if (i.isCollection) {
+											
+											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
+											'</td></tr>';
+										} else {
+											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
+													+ i.description
+											'</td></tr>';
+										}
+									});
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								
+								
+								if (m.useJsonElementParameter) {
+									txt += '<fieldset><legend>JsonElement</legend>';
+									txt += '<table><tr><td>';
+									txt += '<textarea id="jsonElement" style="height:300px; width:600px; padding:1px; border:1px #000000 solid"/>';
+									txt += '</td><td>json</td></tr>';
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								if (m.useStringParameter) {
+									txt += '<fieldset><legend>String</legend>';
+									txt += '<table><tr><td>';
+									txt += '<textarea id="string" style="height:300px; width:600px; padding:1px; border:1px #000000 solid"/>';
+									txt += '</td><td>string</td></tr>';
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								if (m.outs && m.outs.length > 0) {
+									txt += '<fieldset id="outs"><legend>Out</legend>';
+									txt += '<table>';
+									$.each(m.outs, function(oi, o) {
+										txt += '<tr><td style="width: 160px;">' + o.name + '</td><td style="width: 90px;">' + o.type + '</td><td style="width: 90px;">' + (o.isCollection ? 'multi' : 'single') + '</td><td style="width: 90px;">' + o.description + '</td><td id="out_'
+												+ o.name + '_out">&nbsp;</td></tr>';
+									});
+									txt += '</table>';
+									txt += '</fieldset>';
+								}
+								
+								$('#content').html(txt);
+								
+								$('#' + m.name + '_' + m.type, '#method').click(function() {
+									var address = '../' + m.path;
+									if (m.pathParameters && m.pathParameters.length > 0) {
+										$.each(m.pathParameters, function(pi, p) {
+											address = address.replace('{' + p.name + '}', encodeURIComponent($('#' + p.name, '#pathParameters').val()));
+										});
+									}
+									if (m.queryParameters && m.queryParameters.length > 0) {
+										$.each(m.queryParameters, function(pi, p) {
+											var query = p.name + '=' + encodeURIComponent($('#' + p.name, '#queryParameters').val());
+											if (address.indexOf("?") > 0) {
+												address += '&' + query;
+											} else {
+												address += '?' + query;
+											}
+										});
+									}
+									if (m.contentType.indexOf('application/json') > -1) {
+										switch (m.type) {
+										case 'POST':
+											var data = {};
+											if (m.ins && m.ins.length > 0) {
+												$.each(m.ins, function(ii, i) {
+													switch (i.type) {
+													default:
+														if (i.isBaseType) {
+															if (i.isCollection) {
+																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															} else {
+																data[i.name] = $('#' + i.name, '#ins').val();
+															}
+														} else {
+															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															if($('#' + i.name, '#ins').val() == ""){
+																if(i.isCollection){
+																	data[i.name] = [{}];
+																}else{
+																	data[i.name] = {};
+																}
+															}else{
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
+														}
+													}
+												});
+											} else if (m.useJsonElementParameter) {
+												data = $.parseJSON($('#jsonElement').val());
+											} else if (m.useStringParameter) {
+												data = $('#string').val();
+											}
+											Describe.doPost(address, m, data);
+											break;
+										case 'PUT':
+											var data = {};
+											if (m.ins && m.ins.length > 0) {
+												$.each(m.ins, function(ii, i) {
+													switch (i.type) {
+													default:
+														if (i.isBaseType) {
+															if (i.isCollection) {
+																data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															} else {
+																data[i.name] = $('#' + i.name, '#ins').val();
+															}
+														} else {
+															if($('#' + i.name, '#ins').val() == ""){
+																if(i.isCollection){
+																	data[i.name] = [{}];
+																}else{
+																	data[i.name] = {};
+																}
+															}else{
+																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															}
+														
+														}
+													}
+												});
+											} else if (m.useJsonElementParameter) {
+												data = $.parseJSON($('#jsonElement').val());
+											} else if (m.useStringParameter) {
+												data = $('#string').val();
+											}
+											Describe.doPut(address, m, data);
+											break;
+										case 'GET':
+											Describe.doGet(address, m);
+											break;
+										case 'DELETE':
+											Describe.doDelete(address, m);
+											break;
+										default:
+											break;
+										}
+										
+									} else {
+										switch (m.type) {
+										case 'POST':
+											var formData = new FormData();
+											if (m.formParameters && m.formParameters.length > 0) {
+												$.each(m.formParameters, function(pi, p) {
+													if (p.type == "File") {
+														formData.append(p.name, $('input[type=file]', '#formParameters')[0].files[0]);
+													} else {
+														formData.append(p.name, $('#' + p.name, '#formParameters').val());
+													}
+												});
+											}
+											Describe.doPost(address, m, formData);
+											break;
+										case 'PUT':
+											var formData = new FormData();
+											if (m.formParameters && m.formParameters.length > 0) {
+												$.each(m.formParameters, function(pi, p) {
+													if (p.type == "File") {
+														formData.append(p.name, $('input[type=file]', '#formParameters')[0].files[0]);
+													} else {
+														formData.append(p.name, $('#' + p.name, '#formParameters').val());
+													}
+												});
+											}
+											Describe.doPut(address, m, formData);
+											break;
+										case 'GET':
+											Describe.doGet(address, m);
+											break;
+										case 'DELETE':
+											Describe.doDelete(address, m);
+											break;
+										default:
+											break;
+										}
+									}
+								})
+								
+								debugger;
+							$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n前台脚本样例</span>\n\n"+ Describe.createSampleJSO2(m)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\nmootools样例</span>\n\n"+Describe.createSampleMootools(m)+"</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
+							});
+				});
+			});
+		 
+		  $("[xtype='menu']").click(
+				  function(event) {
+					    if(event.stopPropagation){
+						    event.stopPropagation();
+						  }else{
+						     event.cancelBubble = true;
+						  }
+						$(this).children().each(function(i){
+							debugger;
+							if(this.tagName != "SPAN"){
+							$(this).toggle();
+							}
+						});
+					});
+		  $("[xtype='li']").click( function(event) {
+			    if(event.stopPropagation){
+				    event.stopPropagation();
+				  }else{
+				     event.cancelBubble = true;
+				  }
+			})
 	}
 }

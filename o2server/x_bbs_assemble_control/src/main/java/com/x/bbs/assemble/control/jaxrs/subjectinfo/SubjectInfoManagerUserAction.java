@@ -11,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -40,7 +41,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get( @Context HttpServletRequest request, 
+	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -63,7 +64,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "设置为精华主题.", action = ActionSubjectSetCream.class )
@@ -71,7 +72,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("setCream/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setCream( @Context HttpServletRequest request, 
+	public void setCream( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectSetCream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -93,7 +94,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消精华主题.", action = ActionSubjectNonCream.class )
@@ -101,7 +102,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonCream/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonCream( @Context HttpServletRequest request, 
+	public void nonCream( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonCream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -124,7 +125,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "设置为原创主题.", action = ActionSubjectSetOriginal.class )
@@ -132,7 +133,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("setOriginal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setOriginal( @Context HttpServletRequest request, 
+	public void setOriginal( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectSetOriginal.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -154,7 +155,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消原创主题.", action = ActionSubjectNonOriginal.class )
@@ -162,7 +163,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonOriginal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonOriginal( @Context HttpServletRequest request, 
+	public void nonOriginal( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonOriginal.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -185,7 +186,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "锁定主题: 状态修改为'启用', 属性stopReply = false.", action = ActionSubjectUnLock.class )
@@ -193,7 +194,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("unlock/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unlock( @Context HttpServletRequest request, 
+	public void unlock( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectUnLock.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -215,7 +216,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "锁定主题: 状态修改为'已锁定', 属性stopReply = true", action = ActionSubjectLock.class )
@@ -223,7 +224,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("lock/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response lock( @Context HttpServletRequest request, 
+	public void lock( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectLock.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -245,7 +246,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消完成主题: 属性isCompleted = false.", action = ActionSubjectUnComplete.class )
@@ -253,7 +254,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("uncomplete/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unComplete( @Context HttpServletRequest request, 
+	public void unComplete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectUnComplete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -275,7 +276,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "完成主题: 属性isCompleted = true", action = ActionSubjectCompleted.class )
@@ -283,7 +284,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("complete/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response complete( @Context HttpServletRequest request, 
+	public void complete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -305,7 +306,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消问题贴采纳回复", action = ActionSubjectUnAcceptReply.class )
@@ -313,7 +314,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("unacceptreply/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unAcceptReply( @Context HttpServletRequest request, 
+	public void unAcceptReply( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectUnAcceptReply.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -335,7 +336,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}	
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "问题贴采纳回复", action = ActionSubjectAcceptReply.class )
@@ -343,7 +344,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("acceptreply/{id}/{replyId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response acceptReply( @Context HttpServletRequest request, 
+	public void acceptReply( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("回帖信息ID") @PathParam("replyId") String replyId ) {
 		ActionResult<ActionSubjectAcceptReply.Wo> result = new ActionResult<>();
@@ -366,7 +367,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "版块置顶", action = ActionSubjectTopToMainSection.class )
@@ -374,7 +375,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("topToSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response topToSection( @Context HttpServletRequest request, 
+	public void topToSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectTopToMainSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -396,7 +397,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}	
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消版块置顶", action = ActionSubjectNonTopToSection.class )
@@ -404,7 +405,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonTopToSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonTopToSection( @Context HttpServletRequest request, 
+	public void nonTopToSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonTopToSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -427,7 +428,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "主版块置顶", action = ActionSubjectTopToMainSection.class )
@@ -435,7 +436,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("topToMainSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response topToMainSection( @Context HttpServletRequest request, 
+	public void topToMainSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectTopToMainSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -457,7 +458,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消主版块置顶", action = ActionSubjectNonTopToMainSection.class )
@@ -465,7 +466,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonTopToMainSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonTopToMainSection( @Context HttpServletRequest request, 
+	public void nonTopToMainSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonTopToMainSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -488,7 +489,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "论坛置顶", action = ActionSubjectTopToForum.class )
@@ -496,7 +497,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("topToForum/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response topToForum( @Context HttpServletRequest request, 
+	public void topToForum( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectTopToForum.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -519,7 +520,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消论坛置顶.", action = ActionSubjectNonTopToForum.class )
@@ -527,7 +528,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonTopToForum/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonTopToForum( @Context HttpServletRequest request, 
+	public void nonTopToForum( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonTopToForum.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -550,7 +551,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "全局置顶.", action = ActionSubjectTopToBBS.class )
@@ -558,7 +559,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("topToBBS/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response topToBBS( @Context HttpServletRequest request, 
+	public void topToBBS( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectTopToBBS.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -580,7 +581,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "推荐到BBS首页.", action = ActionSubjectSetRecommendToBBSIndex.class )
@@ -588,7 +589,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("setRecommendToBBSIndex/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setRecommendToBBSIndex( @Context HttpServletRequest request, 
+	public void setRecommendToBBSIndex( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectSetRecommendToBBSIndex.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -610,7 +611,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消推荐到BBS首页.", action = ActionSubjectNonRecommendToBBSIndex.class )
@@ -618,7 +619,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonRecommendToBBSIndex/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonRecommendToBBSIndex( @Context HttpServletRequest request, 
+	public void nonRecommendToBBSIndex( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonRecommendToBBSIndex.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -641,7 +642,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "取消全局置顶.", action = ActionSubjectNonTopToBBS.class )
@@ -649,7 +650,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("nonTopToBBS/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response nonTopToBBS( @Context HttpServletRequest request, 
+	public void nonTopToBBS( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id ) {
 		ActionResult<ActionSubjectNonTopToBBS.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -672,14 +673,14 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
     
 	@JaxrsMethodDescribe( value = "创建新的主题信息或者更新主题信息.", action = ActionSubjectSave.class )
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionSubjectSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		Boolean check = true;
@@ -694,7 +695,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "根据ID删除指定的主题信息.", action = ActionSubjectDelete.class )
@@ -702,7 +703,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("主贴信息ID") @PathParam("id") String id) {
 		ActionResult<ActionSubjectDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -724,7 +725,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "将指定ID的主贴转移到其他的版块中.", action = ActionSubjectChangeSection.class )
@@ -732,7 +733,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("change/section")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response changeSection( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public void changeSection( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<ActionSubjectChangeSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -746,7 +747,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "列示投票记录.", action = ActionVoteRecordListMyForPage.class )
@@ -754,7 +755,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("voterecord/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listVoteRecordForPage( @Context HttpServletRequest request, 
+	public void listVoteRecordForPage( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("显示页码") @PathParam("page") Integer page, 
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement ) {
@@ -772,7 +773,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "提交投票信息.", action = ActionSubjectSubmitVoteResult.class )
@@ -780,7 +781,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response voteSubmit(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void voteSubmit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionSubjectSubmitVoteResult.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		Boolean check = true;
@@ -795,7 +796,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "列示我发布的主题.", action = ActionSubjectListMyForPage.class )
@@ -803,7 +804,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("my/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMySubjectForPage( @Context HttpServletRequest request, 
+	public void listMySubjectForPage( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("显示页码") @PathParam("page") Integer page, 
 			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count, 
 			JsonElement jsonElement ) {
@@ -821,7 +822,7 @@ public class SubjectInfoManagerUserAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 }

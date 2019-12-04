@@ -47,7 +47,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "记录UnexpectedException错误.", action = ActionCreate.class)
@@ -63,7 +63,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示UnexpectedExceptionLog,下一页.", action = ActionListNext.class)
@@ -81,7 +81,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示UnexpectedExceptionLog,上一页.", action = ActionListPrev.class)
@@ -99,7 +99,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示UnexpectedExceptionLog,指定日期,下一页.", action = ActionListNextWithDate.class)
@@ -118,7 +118,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示UnexpectedExceptionLog,指定日期,上一页.", action = ActionListPrevWithDate.class)
@@ -137,7 +137,7 @@ public class UnexpectedErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

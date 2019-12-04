@@ -1,33 +1,36 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
-import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.scripting.ScriptingEngine;
+import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.webservices.WebservicesClient;
+import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.statement.Runtime;
 
 class ActionExecute extends BaseAction {
-
-	private ScriptingEngine scriptingEngine;
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -42,90 +45,56 @@ class ActionExecute extends BaseAction {
 			if (!business.executable(effectivePerson, statement)) {
 				throw new ExceptionAccessDenied(effectivePerson, statement);
 			}
-			Map<String, Object> parameter = XGsonBuilder.instance().fromJson(jsonElement,
-					new TypeToken<Map<String, Object>>() {
-					}.getType());
 
-			Runtime runtime = this.runtime(effectivePerson, business, parameter, this.adjustPage(page),
-					this.adjustSize(size));
+			Runtime runtime = this.runtime(effectivePerson, jsonElement, business, page, size);
 
 			Object data = null;
 
-//			if (StringUtils.equalsIgnoreCase(statement.getTableType(), Statement.TABLETYPE_OFFICIAL)) {
-//				data = official(effectivePerson, business, statement, runtime);
-//			} else {
-//				data = dynamic(effectivePerson, business, statement, runtime);
-//			}
-
-			data = dynamic(effectivePerson, business, statement, runtime);
-
-			if (StringUtils.isNotBlank(statement.getAfterScriptText())) {
-				this.initScriptingEngine(business, effectivePerson);
-				scriptingEngine.bindingData(data);
-				data = scriptingEngine.eval(statement.getAfterScriptText());
+			switch (Objects.toString(statement.getFormat(), "")) {
+			case Statement.FORMAT_SCRIPT:
+				data = this.script(effectivePerson, business, statement, runtime);
+				break;
+			default:
+				data = this.jpql(effectivePerson, business, statement, runtime);
+				break;
 			}
 			result.setData(data);
 			return result;
 		}
 	}
 
-//	private Object official(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
-//			throws Exception {
-//		Object data = null;
-//		Class<? extends JpaObject> cls = null;
-//		switch (Objects.toString(statement.getTable())) {
-//		case "Work":
-//			cls = Work.class;
-//			break;
-//		case "WorkCompleted":
-//			cls = WorkCompleted.class;
-//			break;
-//		case "Task":
-//			cls = Task.class;
-//			break;
-//		case "TaskCompleted":
-//			cls = TaskCompleted.class;
-//			break;
-//		case "Read":
-//			cls = Read.class;
-//			break;
-//		case "ReadCompleted":
-//			cls = ReadCompleted.class;
-//			break;
-//		case "Review":
-//			cls = Review.class;
-//			break;
-//		default:
-//			cls = (Class<JpaObject>) Class.forName(statement.getTable());
-//			break;
-//		}
-//		EntityManager em = business.entityManagerContainer().get(cls);
-//		Query query = em.createQuery(statement.getData());
-//		for (Parameter<?> p : query.getParameters()) {
-//			if (runtime.hasParameter(p.getName())) {
-//				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
-//			}
-//		}
-//		query.setFirstResult((runtime.page - 1) * runtime.size);
-//		query.setMaxResults(runtime.size);
-//		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-//			data = query.getResultList();
-//		} else {
-//			throw new ExceptionModifyOfficialTable();
-//		}
-//		return data;
-//	}
-
-	private Object dynamic(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
+	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
 			throws Exception {
 		Object data = null;
-		Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
-		if (null == table) {
-			throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
+		ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
+		ScriptFactory.initialServiceScriptText().eval(scriptContext);
+		Object o = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(statement.getScriptText()),
+				scriptContext);
+		String text = ScriptFactory.asString(o);
+		Class<? extends JpaObject> cls = this.clazz(business, statement);
+		EntityManager em = business.entityManagerContainer().get(cls);
+		Query query = em.createQuery(text);
+		for (Parameter<?> p : query.getParameters()) {
+			if (runtime.hasParameter(p.getName())) {
+				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+			}
 		}
-		DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-		@SuppressWarnings("unchecked")
-		Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+		query.setFirstResult((runtime.page - 1) * runtime.size);
+		query.setMaxResults(runtime.size);
+		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+			data = query.getResultList();
+		} else {
+			business.entityManagerContainer().beginTransaction(cls);
+			data = query.executeUpdate();
+			business.entityManagerContainer().commit();
+		}
+		return data;
+	}
+
+	private Object jpql(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
+			throws Exception {
+		Object data = null;
+		Class<? extends JpaObject> cls = this.clazz(business, statement);
 		EntityManager em = business.entityManagerContainer().get(cls);
 		Query query = em.createQuery(statement.getData());
 		for (Parameter<?> p : query.getParameters()) {
@@ -145,10 +114,50 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private void initScriptingEngine(Business business, EffectivePerson effectivePerson) {
-		if (null == this.scriptingEngine) {
-			this.scriptingEngine = business.createScriptEngine().bindingEffectivePerson(effectivePerson);
+	private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
+		Class<? extends JpaObject> cls = null;
+		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
+				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
+			cls = (Class<? extends JpaObject>) Class.forName(statement.getEntityClassName());
+		} else {
+			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
+			if (null == table) {
+				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
+			}
+			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
+			cls = (Class<? extends JpaObject>) Class.forName(dynamicEntity.className());
 		}
+		return cls;
+	}
+
+	private ScriptContext scriptContext(EffectivePerson effectivePerson, Business business, Runtime runtime)
+			throws Exception {
+		ScriptContext scriptContext = new SimpleScriptContext();
+		Resources resources = new Resources();
+		resources.setEntityManagerContainer(business.entityManagerContainer());
+		resources.setContext(ThisApplication.context());
+		resources.setApplications(ThisApplication.context().applications());
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setOrganization(new Organization(ThisApplication.context()));
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptFactory.BINDING_NAME_EFFECTIVEPERSON, effectivePerson);
+		bindings.put(ScriptFactory.BINDING_NAME_PARAMETERS, gson.toJson(runtime.getParameters()));
+		return scriptContext;
+	}
+
+	public static class Resources extends AbstractResources {
+
+		private Organization organization;
+
+		public Organization getOrganization() {
+			return organization;
+		}
+
+		public void setOrganization(Organization organization) {
+			this.organization = organization;
+		}
+
 	}
 
 }

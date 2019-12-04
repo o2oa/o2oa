@@ -60,6 +60,8 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
+			/* 调整可能的附件名称 */
+			fileName = this.adjustFileName(business, workCompleted.getJob(), fileName);
 			/* 天印扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);

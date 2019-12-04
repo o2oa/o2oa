@@ -17,6 +17,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,10 +57,18 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			}else{
 				attachmentList = emc.listEqualAndEqual(Attachment.class, Attachment.job_FIELDNAME, job, Attachment.site_FIELDNAME, site);
 			}
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			List<Attachment> readableAttachmentList = new ArrayList<>();
+			for (Attachment attachment : attachmentList) {
+				if (this.read(attachment, effectivePerson, identities, units)) {
+					readableAttachmentList.add(attachment);
+				}
+			}
 			String zipName = title + DateTools.format(new Date(),DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 			logger.info("batchDown to {}，att size {}, from work {}",zipName, attachmentList.size(), workId);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				business.downToZip(attachmentList, os);
+				business.downToZip(readableAttachmentList, os);
 				byte[] bs = os.toByteArray();
 				Wo wo = new Wo(bs, this.contentType(true, zipName),
 						this.contentDisposition(true, zipName));

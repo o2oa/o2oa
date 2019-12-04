@@ -2,11 +2,14 @@ package com.x.organization.core.entity.accredit;
 
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -37,6 +40,8 @@ public class Empower extends SliceJpaObject {
 	public static final String TYPE_APPLICATION = "application";
 
 	public static final String TYPE_PROCESS = "process";
+
+	public static final String TYPE_FILTER = "filter";
 
 	public String getId() {
 		return id;
@@ -127,15 +132,15 @@ public class Empower extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
-//	public static final String whole_FIELDNAME = "whole";
-//	@FieldDescribe("全部进行授权,如果启用全部授权,那么指定身份的待办全部进行授权.")
-//	@Column(name = ColumnNamePrefix + whole_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + whole_FIELDNAME)
-//	@CheckPersist(allowEmpty = false)
-//	private Boolean whole;
+	public static final String filterListData_FIELDNAME = "filterListData";
+	@FieldDescribe("过滤条件.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + filterListData_FIELDNAME)
+	private String filterListData;
 
 	public static final String type_FIELDNAME = "type";
-	@FieldDescribe("授权类型:all,application,process.")
+	@FieldDescribe("授权类型:all,application,process,filter.")
 	@Column(name = ColumnNamePrefix + type_FIELDNAME, length = length_32B)
 	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -161,6 +166,14 @@ public class Empower extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + enable_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean enable;
+
+	public String getFilterListData() {
+		return filterListData;
+	}
+
+	public void setFilterListData(String filterListData) {
+		this.filterListData = filterListData;
+	}
 
 	public String getFromPerson() {
 		return fromPerson;
@@ -273,4 +286,5 @@ public class Empower extends SliceJpaObject {
 	public void setType(String type) {
 		this.type = type;
 	}
+
 }

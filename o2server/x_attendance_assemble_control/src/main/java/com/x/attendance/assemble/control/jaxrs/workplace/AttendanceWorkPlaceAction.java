@@ -10,9 +10,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.jaxrs.ExceptionAttendanceProcess;
@@ -31,98 +32,100 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("工作区域信息管理服务")
 public class AttendanceWorkPlaceAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(AttendanceWorkPlaceAction.class);
-	
-	@JaxrsMethodDescribe( value = "新建或者更新工作区域信息", action = ActionSave.class )
+	private static Logger logger = LoggerFactory.getLogger(AttendanceWorkPlaceAction.class);
+
+	@JaxrsMethodDescribe(value = "新建或者更新工作区域信息", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "新建或者更新工作区域信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "新建或者更新工作区域信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "获取所有工作区域信息列表", action = ActionListAll.class )
+	@JaxrsMethodDescribe(value = "获取所有工作区域信息列表", action = ActionListAll.class)
 	@GET
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllAttendanceWorkPlace(@Context HttpServletRequest request) {
+	public void listAllAttendanceWorkPlace(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionListAll().execute( request, effectivePerson );
+				result = new ActionListAll().execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "获取所有工作区域信息列表时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "获取所有工作区域信息列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "根据ID获取指定工作区域信息", action = ActionGet.class )
+	@JaxrsMethodDescribe(value = "根据ID获取指定工作区域信息", action = ActionGet.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作区域配置信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionGet().execute( request, effectivePerson, id );
+				result = new ActionGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "根据ID获取指定工作区域信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "根据ID获取指定工作区域信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "根据ID删除指定工作区域信息", action = ActionDelete.class )
+	@JaxrsMethodDescribe(value = "根据ID删除指定工作区域信息", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作区域配置信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionDelete().execute( request, effectivePerson, id );
+				result = new ActionDelete().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "根据ID删除指定工作区域信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "根据ID删除指定工作区域信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

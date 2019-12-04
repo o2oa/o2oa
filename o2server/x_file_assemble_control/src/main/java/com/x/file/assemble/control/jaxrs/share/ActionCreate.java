@@ -10,16 +10,24 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ActionCreate extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger( ActionCreate.class );
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -34,10 +42,14 @@ public class ActionCreate extends BaseAction {
 			}
 			Share share = business.share().getShareByFileId(wi.getFileId(),effectivePerson.getDistinguishedName());
 			boolean isExist = true;
+			List<String> oldUserList = new ArrayList<>();
+			List<String> oldOrgList = new ArrayList<>();
 			if(share == null) {
 				share = Wi.copier.copy(wi);
 				isExist = false;
 			}else{
+				oldUserList.addAll(share.getShareUserList());
+				oldOrgList.addAll(share.getShareOrgList());
 				share.setPassword(wi.getPassword());
 				share.setShareUserList(wi.getShareUserList());
 				share.setShareOrgList(wi.getShareOrgList());
@@ -90,6 +102,24 @@ public class ActionCreate extends BaseAction {
 				emc.persist(share, CheckPersistType.all);
 			}
 			emc.commit();
+			if(!"password".equals(wi.getShareType())){
+				if(!oldOrgList.isEmpty()){
+					oldUserList.addAll(business.organization().person().listWithUnitSubNested( oldOrgList ));
+				}
+				List<String> newUserList = new ArrayList<>();
+				newUserList.addAll(share.getShareUserList());
+				if(!share.getShareOrgList().isEmpty()){
+					newUserList.addAll(business.organization().person().listWithUnitSubNested( share.getShareOrgList() ));
+				}
+				List<String> shareAdds = ListUtils.subtract(newUserList, oldOrgList);
+				ListOrderedSet<String> set = new ListOrderedSet<>();
+				set.addAll(shareAdds);
+				shareAdds = set.asList();
+				/* 发送共享通知 */
+				for (String str : shareAdds) {
+					this.message_send_attachment_share(share, str);
+				}
+			}
 			Wo wo = new Wo();
 			wo.setId(share.getId());
 			result.setData(wo);

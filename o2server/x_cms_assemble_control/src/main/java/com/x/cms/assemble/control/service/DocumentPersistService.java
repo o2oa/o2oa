@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,7 +13,11 @@ import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.content.Data;
-import com.x.query.core.entity.Item;	
+import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 对文档信息进行持久化服务类
@@ -263,6 +262,10 @@ public class DocumentPersistService {
 			if( document != null ) {
 				emc.beginTransaction( Document.class );
 				document.setIsTop( false );
+				DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
+				Data data = documentDataHelper.get();
+				data.setDocument( document );
+				documentDataHelper.update( data );
 				emc.commit();
 			}
 			

@@ -52,6 +52,9 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	private static final long serialVersionUID = 7668822947307502058L;
 	private static final String TABLE = PersistenceProperties.Content.Work.table;
 
+	public static final String WORKCREATETYPE_SURFACE = "surface";
+	public static final String WORKCREATETYPE_ASSIGN = "assign";
+
 	public String getId() {
 		return id;
 	}
@@ -111,6 +114,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		}
 	}
 
+	public String getWorkCreateType() {
+		return StringUtils.equals(workCreateType, WORKCREATETYPE_ASSIGN) ? WORKCREATETYPE_ASSIGN
+				: WORKCREATETYPE_SURFACE;
+	}
+
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;
 		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
@@ -161,14 +169,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	private String startTimeMonth;
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
-	@FieldDescribe("创建人，可能为空，如果由系统创建。")
+	@FieldDescribe("创建人，可能为空，如果由系统创建.")
 	@Column(length = length_255B, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorPerson_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorPerson;
 
 	public static final String creatorIdentity_FIELDNAME = "creatorIdentity";
-	@FieldDescribe("创建人Identity,可能为空,如果由系统创建。")
+	@FieldDescribe("创建人Identity,可能为空,如果由系统创建.")
 	@Column(length = length_255B, name = ColumnNamePrefix + creatorIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -295,6 +303,20 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean dataChanged;
 
+	public static final String workThroughManual_FIELDNAME = "workThroughManual";
+	@FieldDescribe("是否已经经过人工节点,用于判断是否是草稿.在到达环节进行判断.")
+	@Column(name = ColumnNamePrefix + workThroughManual_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workThroughManual_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean workThroughManual;
+
+	public static final String workCreateType_FIELDNAME = "workCreateType";
+	@FieldDescribe("工作创建类型,surface,assgin")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workCreateType_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workCreateType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String workCreateType;
+
 	public static final String workStatus_FIELDNAME = "workStatus";
 	@FieldDescribe("工作状态")
 	@Enumerated(EnumType.STRING)
@@ -327,18 +349,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manualTaskIdentityList;
-
-//	public static final String manualReadIdentityList_FIELDNAME = "manualReadIdentityList";
-//	@FieldDescribe("预期的待阅人")
-//	@PersistentCollection(fetch = FetchType.EAGER)
-//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-//			+ manualReadIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-//					+ manualReadIdentityList_FIELDNAME + JoinIndexNameSuffix))
-//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualReadIdentityList_FIELDNAME)
-//	@ElementIndex(name = TABLE + IndexNameMiddle + manualReadIdentityList_FIELDNAME + ElementIndexNameSuffix)
-//	@CheckPersist(allowEmpty = true)
-//	private List<String> manualReadIdentityList;
 
 	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
@@ -1252,6 +1262,18 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public Boolean getWorkThroughManual() {
+		return workThroughManual;
+	}
+
+	public void setWorkThroughManual(Boolean workThroughManual) {
+		this.workThroughManual = workThroughManual;
+	}
+
+	public void setWorkCreateType(String workCreateType) {
+		this.workCreateType = workCreateType;
 	}
 
 }

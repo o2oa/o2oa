@@ -30,7 +30,7 @@ public class FireScheduleAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("运行类") @PathParam("className") String className) throws Exception {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionExecute.Wo> result = new ActionExecute().execute(effectivePerson, servletContext, className);
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	public static class Wo extends WrapBoolean {

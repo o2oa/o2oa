@@ -1,21 +1,5 @@
 package com.x.mind.assemble.control.jaxrs.folder;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -24,13 +8,24 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.mind.assemble.control.ThisApplication;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("folder")
 @JaxrsDescribe("脑图目录信息管理服务")
 public class MindFolderInfoAction extends BaseAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private Logger logger = LoggerFactory.getLogger(MindFolderInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "保存(创建或者更新)一个目录信息", action = ActionFolderSave.class)
@@ -42,12 +37,13 @@ public class MindFolderInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionFolderSave.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionFolderSave().execute(request, effectivePerson, jsonElement);
+			result =  ((ActionFolderSave)proxy.getProxy( ActionFolderSave.class ))
+					.execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "将指定的脑图和文件夹移动到指定的文件夹内", action = ActionMoveToFolder.class)
@@ -62,12 +58,13 @@ public class MindFolderInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionMoveToFolder.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionMoveToFolder().execute(request, effectivePerson, folderId, jsonElement);
+			result =  ((ActionMoveToFolder)proxy.getProxy( ActionMoveToFolder.class ))
+					.execute(request, effectivePerson, folderId, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列出用户自己的个人脑图文件夹（所有文件夹，按上下级树型组织信息）", action = ActionListMyFolder.class)
@@ -79,12 +76,13 @@ public class MindFolderInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListMyFolder.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListMyFolder().execute(request, effectivePerson);
+			result =  ((ActionListMyFolder)proxy.getProxy( ActionListMyFolder.class ))
+					.execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID删除一个目录，如果目录是非空目录，则无法删除）", action = ActionFolderDelete.class)
@@ -97,12 +95,13 @@ public class MindFolderInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionFolderDelete.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionFolderDelete().execute(request, effectivePerson,  id);
+			result =  ((ActionFolderDelete)proxy.getProxy( ActionFolderDelete.class ))
+					.execute(request, effectivePerson,  id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID强制删除一个目录，包括下级目录以及文件", action = ActionFolderDeleteForce.class)
@@ -115,11 +114,12 @@ public class MindFolderInfoAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionFolderDeleteForce.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionFolderDeleteForce().execute(request, effectivePerson,  id);
+			result =  ((ActionFolderDeleteForce)proxy.getProxy( ActionFolderDeleteForce.class ))
+					.execute(request, effectivePerson,  id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

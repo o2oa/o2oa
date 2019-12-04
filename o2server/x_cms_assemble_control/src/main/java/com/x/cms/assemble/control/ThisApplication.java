@@ -1,20 +1,14 @@
 package com.x.cms.assemble.control;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.x.base.core.project.Context;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.cms.assemble.control.queue.DataImportStatus;
-import com.x.cms.assemble.control.queue.QueueBatchOperation;
-import com.x.cms.assemble.control.queue.QueueDataRowImport;
-import com.x.cms.assemble.control.queue.QueueDocumentDelete;
-import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
-import com.x.cms.assemble.control.queue.QueueDocumentViewCountUpdate;
-import com.x.cms.assemble.control.queue.QueueSendDocumentNotify;
+import com.x.cms.assemble.control.queue.*;
 import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
 import com.x.cms.assemble.control.timertask.Timertask_CheckDocumentReviewStatus;
 import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
 import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ThisApplication {
 
@@ -65,6 +59,12 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			queueBatchOperation.stop();
+			queueDocumentDelete.stop();
+			queueDataRowImport.stop();
+			queueDocumentUpdate.stop();
+			queueDocumentViewCountUpdate.stop();
+			queueSendDocumentNotify.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

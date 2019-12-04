@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -14,6 +15,8 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.Storage;
@@ -69,7 +72,10 @@ public class ResourceFactory {
 	}
 
 	private static void external() throws Exception {
+		external_druid_c3p0();
+	}
 
+	private static void external_dbcp2() throws Exception {
 		for (ExternalDataSource ds : Config.externalDataSources()) {
 			BasicDataSource dataSource = new BasicDataSource();
 			dataSource.setDriverClassName(ds.getDriverClassName());
@@ -87,10 +93,64 @@ public class ResourceFactory {
 			String name = Config.externalDataSources().name(ds);
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 		}
+	}
 
+	private static void external_druid_c3p0() throws Exception {
+		for (ExternalDataSource ds : Config.externalDataSources()) {
+			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
+			dataSource.setJdbcUrl(ds.getUrl());
+			dataSource.setDriverClass(ds.getDriverClassName());
+			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
+			dataSource.setUser(ds.getUsername());
+			dataSource.setPassword(ds.getPassword());
+			dataSource.setMaxPoolSize(ds.getMaxTotal());
+			dataSource.setMinPoolSize(ds.getMaxIdle());
+			dataSource.setAcquireIncrement(0);
+			if (ds.getStatEnable()) {
+				dataSource.setFilters(ds.getStatFilter());
+				Properties properties = new Properties();
+				// property name="connectionProperties" value="druid.stat.slowSqlMillis=5000
+				properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlMillis().toString());
+				dataSource.setProperties(properties);
+			}
+			String name = Config.externalDataSources().name(ds);
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+		}
 	}
 
 	private static void internal() throws Exception {
+		internal_driud_c3p0();
+		// internal_driud();
+		// internal_dbcp2();
+	}
+
+	private static void internal_driud_c3p0() throws Exception {
+		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
+			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/X;JMX="
+					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
+					+ (entry.getValue().getCacheSize() * 1024);
+			dataSource.setJdbcUrl(url);
+			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
+			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
+			dataSource.setUser("sa");
+			dataSource.setPassword(Config.token().getPassword());
+			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
+			dataSource.setMinPoolSize(entry.getValue().getMaxIdle());
+			dataSource.setAcquireIncrement(0);
+			if (entry.getValue().getStatEnable()) {
+				dataSource.setFilters(entry.getValue().getStatFilter());
+				Properties properties = new Properties();
+				// property name="connectionProperties" value="druid.stat.slowSqlMillis=5000
+				properties.setProperty("druid.stat.slowSqlMillis", entry.getValue().getSlowSqlMillis().toString());
+				dataSource.setProperties(properties);
+			}
+			String name = Config.nodes().dataServers().name(entry.getValue());
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+		}
+	}
+
+	private static void internal_dbcp2() throws Exception {
 
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 
@@ -115,7 +175,29 @@ public class ResourceFactory {
 			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
 
 		}
+	}
 
+	private static void internal_driud() throws Exception {
+		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
+			DruidDataSource dataSource = new DruidDataSource();
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/X;JMX="
+					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
+					+ (entry.getValue().getCacheSize() * 1024);
+			dataSource.setDriverClassName(SlicePropertiesBuilder.driver_h2);
+			dataSource.setUrl(url);
+			dataSource.setInitialSize(0);
+			dataSource.setMinIdle(0);
+			dataSource.setMaxActive(50);
+			dataSource.setUsername("sa");
+			dataSource.setTestWhileIdle(false);
+			dataSource.setTestOnReturn(false);
+			dataSource.setTestOnBorrow(false);
+			dataSource.setFilters("stat");
+			dataSource.setPassword(Config.token().getPassword());
+			dataSource.init();
+			String name = Config.nodes().dataServers().name(entry.getValue());
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+		}
 	}
 
 	private static void containerEntityNames(ScanResult sr) throws Exception {

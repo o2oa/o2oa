@@ -8,6 +8,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,10 +31,11 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoPr
 @JaxrsDescribe("论坛信息管理")
 public class ForumInfoAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( ForumInfoAction.class );
-	
+	private static Logger logger = LoggerFactory.getLogger(ForumInfoAction.class);
+
 	/**
 	 * 访问论坛信息，匿名用户可以访问
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -41,22 +44,23 @@ public class ForumInfoAction extends StandardJaxrsAction {
 	@Path("view/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response viewAllWithMyPermission( @Context HttpServletRequest request ) {
+	public void viewAllWithMyPermission(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
 		ActionResult<List<ActionGetAllWithPermission.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionGetAllWithPermission().execute( request, effectivePerson );
+				result = new ActionGetAllWithPermission().execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "获取登录者可以访问到的所有ForumInfo的信息列表时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "获取登录者可以访问到的所有ForumInfo的信息列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据指定ID获取论坛信息.", action = ActionGet.class)
@@ -64,28 +68,28 @@ public class ForumInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get( @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id ) {
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		if( check ){
-			if( id == null || id.isEmpty() ){
+		if (check) {
+			if (id == null || id.isEmpty()) {
 				check = false;
 				Exception exception = new ExceptionForumInfoIdEmpty();
-				result.error( exception );
+				result.error(exception);
 			}
 		}
-		if(check){
+		if (check) {
 			try {
-				result = new ActionGet().execute( request, effectivePerson, id );
+				result = new ActionGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "根据指定ID获取论坛信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "根据指定ID获取论坛信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

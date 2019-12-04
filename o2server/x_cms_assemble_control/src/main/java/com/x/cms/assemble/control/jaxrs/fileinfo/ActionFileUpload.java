@@ -1,15 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
@@ -23,11 +14,20 @@ import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.UUID;
 
 public class ActionFileUpload extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger(ActionFileUpload.class);
 
+	@AuditLog(operation = "上传附件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
 			String docId, String site, byte[] bytes, FormDataContentDisposition disposition) {
 		ActionResult<Wo> result = new ActionResult<>();

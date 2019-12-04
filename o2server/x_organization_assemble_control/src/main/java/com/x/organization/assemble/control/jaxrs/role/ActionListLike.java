@@ -108,10 +108,10 @@ class ActionListLike extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
-		Predicate p = cb.like(cb.lower(root.get(Role_.name)), "%" + str + "%", '\\');
-		p = cb.or(p, cb.like(cb.lower(root.get(Role_.pinyin)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Role_.pinyinInitial)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Role_.distinguishedName)), str + "%", '\\'));
+		Predicate p = cb.like(cb.lower(root.get(Role_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(cb.lower(root.get(Role_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Role_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Role_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(roleIds)) {
 			p = cb.and(p, root.get(Role_.id).in(roleIds));
 		}

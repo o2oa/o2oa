@@ -62,6 +62,7 @@ public class Config {
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_CONFIG_SLICE = "config/slice.json";
+	public static final String PATH_CONFIG_CLIENTINIT = "config/clientInit.json";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
@@ -1087,6 +1088,23 @@ public class Config {
 			}
 		}
 		return instance().logLevel;
+	}
+
+	private ClientInit clientInit;
+
+	public static ClientInit clientInit() throws Exception {
+		if (null == instance().clientInit) {
+			synchronized (Config.class) {
+				if (null == instance().clientInit) {
+					ClientInit obj = BaseTools.readConfigObject(PATH_CONFIG_CLIENTINIT, ClientInit.class);
+					if (null == obj) {
+						obj = ClientInit.defaultInstance();
+					}
+					instance().clientInit = obj;
+				}
+			}
+		}
+		return instance().clientInit;
 	}
 
 	private byte[] bindLogo;

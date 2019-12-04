@@ -68,8 +68,9 @@
 </style>
 	
 <script>
+    var describe;
     $.getScript('./describe.js?rd=' + Math.random()).then(function() {
-		var describe = new Describe();
+		describe = new Describe();
 		describe.load();
     }).catch( function() {
 		alert('get describe error.'); 
@@ -77,6 +78,19 @@
 	
 	$(document).ready(function(){
         var clipboard = new Clipboard("#btn_copy");
+		$('#butSearch').click(function() {
+		var  strKey = $('#inpSearch').val();
+		  if(strKey == ""){
+		  window.location.reload();
+		  }else{
+		   describe.search(strKey);
+		  }
+		})
+		$('#inpSearch').bind('keyup', function(event) {
+　　     if (event.keyCode == "13") {
+　　　　     $('#butSearch').click();
+　　       }
+       });
 	});	
 </script>
 </head>
@@ -85,6 +99,10 @@
 	<table style="width: 1800px; margin: 0 auto">
 		<tr>
 			<td style="width: 350px;" valign="top">
+				<fieldset>
+					<legend>search</legend>
+					<div><input id="inpSearch" style="width:70%;height: 23px; overflow: auto;"/>&nbsp; <button id="butSearch">search</button></div>
+				</fieldset>
 				<fieldset>
 					<legend>API Menu</legend>
 					<div id="menu" style="height: 850px; overflow: auto;">&nbsp;</div>

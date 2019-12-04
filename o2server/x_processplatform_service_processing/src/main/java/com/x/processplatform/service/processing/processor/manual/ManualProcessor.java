@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -37,7 +36,6 @@ import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.TranslateTaskIdentityTools;
 
 public class ManualProcessor extends AbstractManualProcessor {
 
@@ -50,31 +48,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Manual manual) throws Exception {
 		/* 根据manual计算出来的活动处理人 */
-		List<String> identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
-
-		if (identities.isEmpty()) {
-			/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
-			String effectiveCreatorIdentity = aeiObjects.business().organization().identity()
-					.get(aeiObjects.getWork().getCreatorIdentity());
-			if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
-				logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 强制指定处理人为活动的创建身份:{}.", aeiObjects.getWork().getTitle(),
-						aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-				identities.add(effectiveCreatorIdentity);
-			} else {
-				effectiveCreatorIdentity = aeiObjects.business().organization().identity()
-						.get(Config.processPlatform().getMaintenanceIdentity());
-				if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
-					logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 也没有能找到活动创建人,  强制指定处理人为系统维护身份:{}.",
-							aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-					identities.add(effectiveCreatorIdentity);
-				} else {
-					throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
-							manual.getName(), manual.getId());
-				}
-			}
-			aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
-		}
-
+		TaskIdentities taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+		this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, taskIdentities);
+		this.empower(aeiObjects, taskIdentities);
 		/* 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作. */
 		if (BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
 			List<String> exists = this.arriving_sameJobActivityExistIdentities(aeiObjects, manual);
@@ -85,8 +61,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 							&& (!Objects.equals(aeiObjects.getWork(), o));
 				}).findFirst().orElse(null);
 				if (null != other) {
-					identities = ListUtils.subtract(identities, exists);
-					if (ListTools.isEmpty(identities)) {
+					taskIdentities.removeIdentities(exists);
+					if (ListTools.isEmpty(taskIdentities)) {
 						this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
@@ -109,7 +85,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 		}
 
-		aeiObjects.getWork().setManualTaskIdentityList(identities);
+		aeiObjects.getWork().setManualTaskIdentityList(taskIdentities.identities());
 		/* 查找是否有passSameTarget设置 */
 		Route passSameTargetRoute = aeiObjects.getRoutes().stream()
 				.filter(o -> BooleanUtils.isTrue(o.getPassSameTarget())).findFirst().orElse(null);
@@ -125,7 +101,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 						.filter(o -> aeiObjects.getWork().getManualTaskIdentityList().contains(o.getIdentity())
 								&& StringUtils.equals(o.getActivityToken(), arriveActivityToken))
 						.forEach(o -> {
-							TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), manual, passSameTargetRoute, o);
+							TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), passSameTargetRoute, o);
 							try {
 								obj.setProcessingType(ProcessingType.sameTarget);
 								obj.setRouteName(passSameTargetRoute.getName());
@@ -147,6 +123,53 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 		}
 		return aeiObjects.getWork();
+	}
+
+	/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
+	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, TaskIdentities taskIdentities)
+			throws Exception {
+		if (taskIdentities.isEmpty()) {
+			String identity = aeiObjects.business().organization().identity()
+					.get(aeiObjects.getWork().getCreatorIdentity());
+			if (StringUtils.isNotEmpty(identity)) {
+				logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 强制指定处理人为活动的创建身份:{}.", aeiObjects.getWork().getTitle(),
+						aeiObjects.getWork().getId(), identity);
+				taskIdentities.addIdentity(identity);
+			} else {
+				identity = aeiObjects.business().organization().identity()
+						.get(Config.processPlatform().getMaintenanceIdentity());
+				if (StringUtils.isNotEmpty(identity)) {
+					logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 也没有能找到工作创建人,  强制指定处理人为系统维护身份:{}.",
+							aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), identity);
+					taskIdentities.addIdentity(identity);
+				} else {
+					throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
+							aeiObjects.getActivity().getName(), aeiObjects.getActivity().getId());
+				}
+			}
+			aeiObjects.createHint(
+					Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), (Manual) aeiObjects.getActivity()));
+		}
+	}
+
+	/*
+	 * 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
+	 * 进行授权替换,并产生授权的TaskCompleted
+	 */
+	private void empower(AeiObjects aeiObjects, TaskIdentities taskIdentities) throws Exception {
+		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
+			taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
+					aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
+					aeiObjects.getWork().getId(), taskIdentities.identities()));
+			for (TaskIdentity taskIdentity : taskIdentities) {
+				if (StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
+					TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
+					empowerTaskCompleted.setProcessingType(ProcessingType.empower);
+					aeiObjects.createTaskCompleted(empowerTaskCompleted);
+				}
+			}
+		}
 	}
 
 	private WorkLog findPassSameTargetWorkLog(AeiObjects aeiObjects) throws Exception {
@@ -187,40 +210,45 @@ public class ManualProcessor extends AbstractManualProcessor {
 		TaskIdentities taskIdentities = new TaskIdentities(
 				aeiObjects.business().organization().identity().list(aeiObjects.getWork().getManualTaskIdentityList()));
 		if (taskIdentities.isEmpty()) {
-			List<String> identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
-			taskIdentities.addIdentities(identities);
+			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
-					aeiObjects.getWork().getId(), identities);
-		}
-		if (taskIdentities.isEmpty()) {
-			/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
-			String effectiveCreatorIdentity = aeiObjects.business().organization().identity()
-					.get(aeiObjects.getWork().getCreatorIdentity());
-			if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
-				logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为工作的创建身份:{}.", aeiObjects.getWork().getTitle(),
-						aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-				taskIdentities.addIdentity(effectiveCreatorIdentity);
-			} else {
-				effectiveCreatorIdentity = aeiObjects.business().organization().identity()
-						.get(Config.processPlatform().getMaintenanceIdentity());
-				if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
-					logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为系统维护身份:{}.", aeiObjects.getWork().getTitle(),
-							aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-					taskIdentities.addIdentity(effectiveCreatorIdentity);
-				} else {
-					throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
-							manual.getName(), manual.getId());
-				}
+					aeiObjects.getWork().getId(), taskIdentities.identities());
+			if (taskIdentities.isEmpty()) {
+				taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+				this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, taskIdentities);
+				this.empower(aeiObjects, taskIdentities);
 			}
-			aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
+//				/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
+//				String effectiveCreatorIdentity = aeiObjects.business().organization().identity()
+//						.get(aeiObjects.getWork().getCreatorIdentity());
+//				if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
+//					logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为工作的创建身份:{}.", aeiObjects.getWork().getTitle(),
+//							aeiObjects.getWork().getId(), effectiveCreatorIdentity);
+//					taskIdentities.addIdentity(effectiveCreatorIdentity);
+//				} else {
+//					effectiveCreatorIdentity = aeiObjects.business().organization().identity()
+//							.get(Config.processPlatform().getMaintenanceIdentity());
+//					if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
+//						logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为系统维护身份:{}.", aeiObjects.getWork().getTitle(),
+//								aeiObjects.getWork().getId(), effectiveCreatorIdentity);
+//						taskIdentities.addIdentity(effectiveCreatorIdentity);
+//					} else {
+//						throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
+//								manual.getName(), manual.getId());
+//					}
+//				}
+//				aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
+//			}
+//			/* 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权. */
+//			if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+//					&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
+//				taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
+//						aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
+//						aeiObjects.getWork().getId(), taskIdentities.identities()));
+//			}
 		}
 
 		aeiObjects.getWork().setManualTaskIdentityList(taskIdentities.identities());
-
-		/* 更新授权 */
-		taskIdentities.update(aeiObjects.business().organization().empower().listWithIdentityObject(
-				aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
-				aeiObjects.getWork().getManualTaskIdentityList()));
 
 		switch (manual.getManualMode()) {
 		case single:

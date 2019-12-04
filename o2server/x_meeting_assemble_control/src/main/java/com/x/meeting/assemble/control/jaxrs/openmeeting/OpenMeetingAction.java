@@ -33,7 +33,7 @@ public class OpenMeetingAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取openmeeting的room.", action = ActionListRoom.class)
@@ -49,7 +49,7 @@ public class OpenMeetingAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

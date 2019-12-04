@@ -1,10 +1,5 @@
 package com.x.attendance.assemble.control.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.AppealConfig;
@@ -16,6 +11,10 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 public class AttendanceAppealInfoServiceAdv {
 	
@@ -58,7 +57,9 @@ public class AttendanceAppealInfoServiceAdv {
 
 	/**
 	 * 根据打卡信息以及系统相关配置，获取申诉信息处理人
-	 * @param attendanceAppealInfo
+	 * @param personName
+	 * @param personUnitName
+	 * @param identity
 	 * @return
 	 * @throws Exception
 	 */
@@ -88,10 +89,12 @@ public class AttendanceAppealInfoServiceAdv {
 		}
 		return getAppealProcessPerson( personName, appeal_auditor_type, appeal_auditor_value, personUnitName, identity );
 	}
-	
+
 	/**
 	 * 根据打卡信息以及系统相关配置，获取申诉信息复核人
-	 * @param attendanceAppealInfo
+	 * @param personName
+	 * @param personUnitName
+	 * @param identity
 	 * @return
 	 * @throws Exception
 	 */
@@ -121,10 +124,14 @@ public class AttendanceAppealInfoServiceAdv {
 		}
 		return getAppealProcessPerson( personName, appeal_checker_type, appeal_checker_value, personUnitName, identity );
 	}
-	
+
 	/**
 	 * 根据打卡信息以及系统相关配置，获取申诉信息处理人
-	 * @param attendanceAppealInfo
+	 * @param personName
+	 * @param auditorType
+	 * @param auditorTypeValue
+	 * @param personUnitName
+	 * @param identity
 	 * @return
 	 * @throws Exception
 	 */

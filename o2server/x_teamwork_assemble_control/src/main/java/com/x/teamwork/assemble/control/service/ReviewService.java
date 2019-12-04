@@ -1,10 +1,5 @@
 package com.x.teamwork.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -16,6 +11,10 @@ import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewService {
 
@@ -112,11 +111,11 @@ public class ReviewService {
 								}else {
 									//只取一个，对比一下，把数据更新一下
 									if( taskInfoChanged( task, reviews_tmp.get(0))) {
-										System.out.println("任务内容变更过了，需要更新所有的Review");
+//										System.out.println("任务内容变更过了，需要更新所有的Review");
 										 updateWithTask( reviews_tmp.get(0), task );
 										 emc.check( reviews_tmp.get(0), CheckPersistType.all );
 									}else {
-										System.out.println("任务内容没有变更，不需要更新Review");
+//										System.out.println("任务内容没有变更，不需要更新Review");
 									}
 								}
 							}
@@ -163,8 +162,7 @@ public class ReviewService {
 		emc.beginTransaction( Project.class );
 		emc.check( projectEntity, CheckPersistType.all);
 		emc.commit();
-		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>refreshTaskReview over!");
+//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>refreshTaskReview over!");
 	}
 	
 	/**

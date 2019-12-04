@@ -71,6 +71,10 @@ public class Process extends SliceJpaObject {
 
 	}
 
+	public Boolean getProjectionFully() {
+		return BooleanUtils.isTrue(this.projectionFully);
+	}
+
 	public String getBeforeArriveScript() {
 		return (null == beforeArriveScript) ? "" : this.beforeArriveScript;
 	}
@@ -359,6 +363,12 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String projection;
 
+	public static final String projectionFully_FIELDNAME = "projectionFully";
+	@FieldDescribe("执行完全映射,在每次流转时会将所有的工作,待办,已办,待阅,已阅,参阅执行全部字段映射,默认false")
+	@Column(name = ColumnNamePrefix + projectionFully_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean projectionFully;
+
 	public static final String routeNameAsOpinion_FIELDNAME = "routeNameAsOpinion";
 	@FieldDescribe("如果没有默认意见那么将路由名称作为默认意见.")
 	@Column(name = ColumnNamePrefix + routeNameAsOpinion_FIELDNAME)
@@ -459,6 +469,10 @@ public class Process extends SliceJpaObject {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setProjectionFully(Boolean projectionFully) {
+		this.projectionFully = projectionFully;
 	}
 
 	public void setName(String name) {

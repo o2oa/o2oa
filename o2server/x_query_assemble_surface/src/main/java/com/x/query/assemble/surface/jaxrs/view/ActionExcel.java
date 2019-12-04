@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -66,6 +67,7 @@ class ActionExcel extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("过滤")
+		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",fieldValue="{title='',value='',otherValue='',path='',formatType='',logic='',comparison=''}")
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")

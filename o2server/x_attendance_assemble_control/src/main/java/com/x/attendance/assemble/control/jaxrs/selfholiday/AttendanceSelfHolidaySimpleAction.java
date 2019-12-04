@@ -7,9 +7,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.jaxrs.ExceptionAttendanceProcess;
@@ -27,50 +28,52 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("员工休假申请信息管理服务")
 public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(AttendanceSelfHolidaySimpleAction.class);
+	private static Logger logger = LoggerFactory.getLogger(AttendanceSelfHolidaySimpleAction.class);
 
-	@JaxrsMethodDescribe( value = "新建或者更新员工休假申请信息", action = ActionSave.class )
+	@JaxrsMethodDescribe(value = "新建或者更新员工休假申请信息", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "新建或者更新员工休假申请信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "新建或者更新员工休假申请信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe( value = "根据流程文档ID删除员工休假申请数据对象", action = ActionDeleteByWfDocId.class )
+	@JaxrsMethodDescribe(value = "根据流程文档ID删除员工休假申请数据对象", action = ActionDeleteByWfDocId.class)
 	@DELETE
 	@Path("docId/{docId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteByWfDocId(@Context HttpServletRequest request, @PathParam("docId") String docId) {
+	public void deleteByWfDocId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("docId") String docId) {
 		ActionResult<ActionDeleteByWfDocId.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
-		if(check){
+		if (check) {
 			try {
-				result = new ActionDeleteByWfDocId().execute( request, effectivePerson, docId );
+				result = new ActionDeleteByWfDocId().execute(request, effectivePerson, docId);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceProcess( e, "根据流程文档ID删除员工休假申请信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionAttendanceProcess(e, "根据流程文档ID删除员工休假申请信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -135,79 +135,88 @@ public class CrawlCms extends Crawl {
 		for (Entry entry : this.listWait(business)) {
 			Document document = emc.find(entry.getReference(), Document.class);
 			if (null != document) {
-				logger.debug("正在处理:{}.", document.getTitle());
-				entry.setTitle(document.getTitle());
-				entry.setBundle(document.getId());
-				entry.setAppId(document.getAppId());
-				entry.setAppName(document.getAppName());
-				entry.setCategoryId(document.getCategoryId());
-				entry.setCategoryName(document.getCategoryName());
-				entry.setCreatorPerson(document.getCreatorPerson());
-				entry.setCreatorUnit(document.getCreatorUnitName());
-				emc.beginTransaction(Entry.class);
-				emc.beginTransaction(Word.class);
-				emc.deleteEqual(Word.class, Word.entry_FIELDNAME, entry.getId());
-				String title = document.getTitle();
-				String body = converter.text(emc.listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
-						ItemCategory.cms, Item.bundle_FIELDNAME, document.getId()), true, true, true, true, true, ",");
-				String attachment = this.attachmentToText(business, document);
-				title = StringUtils.deleteWhitespace(title);
-				body = StringUtils.deleteWhitespace(body);
-				attachment = StringUtils.deleteWhitespace(attachment);
-				String text = body + attachment;
-				String summary = StringUtils.join(HanLP.extractSummary(text, 10), ",");
-				entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
-				Word word = null;
-				if (StringUtils.isNotEmpty(title)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(title)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_TITLE);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+				try {
+					try {
+						logger.debug("正在处理:{}.", document.getTitle());
+						entry.setTitle(document.getTitle());
+						entry.setBundle(document.getId());
+						entry.setAppId(document.getAppId());
+						entry.setAppName(document.getAppName());
+						entry.setCategoryId(document.getCategoryId());
+						entry.setCategoryName(document.getCategoryName());
+						entry.setCreatorPerson(document.getCreatorPerson());
+						entry.setCreatorUnit(document.getCreatorUnitName());
+						emc.beginTransaction(Entry.class);
+						emc.beginTransaction(Word.class);
+						emc.deleteEqual(Word.class, Word.entry_FIELDNAME, entry.getId());
+						String title = document.getTitle();
+						String body = converter.text(emc.listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
+								ItemCategory.cms, Item.bundle_FIELDNAME, document.getId()), true, true, true, true,
+								true, ",");
+						String attachment = this.attachmentToText(business, document);
+						title = StringUtils.deleteWhitespace(title);
+						body = StringUtils.deleteWhitespace(body);
+						attachment = StringUtils.deleteWhitespace(attachment);
+						String text = body + attachment;
+						String summary = StringUtils.join(HanLP.extractSummary(text, 10), ",");
+						entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
+						Word word = null;
+						if (StringUtils.isNotEmpty(title)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(title)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_TITLE);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
-					}
-				}
-				if (StringUtils.isNotEmpty(body)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(body)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_BODY);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+						if (StringUtils.isNotEmpty(body)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(body)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_BODY);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
-					}
-				}
-				if (StringUtils.isNotEmpty(attachment)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(attachment)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_ATTACHMENT);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+						if (StringUtils.isNotEmpty(attachment)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(attachment)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_ATTACHMENT);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
+						entry.setWait(false);
+						emc.commit();
+					} catch (Exception e) {
+						throw new ExceptionCrawlCms(e, document);
 					}
+				} catch (Exception e) {
+					logger.error(e);
 				}
-				entry.setWait(false);
-				emc.commit();
 			}
 		}
 	}

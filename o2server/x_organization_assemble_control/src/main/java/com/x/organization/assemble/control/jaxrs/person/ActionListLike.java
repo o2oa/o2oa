@@ -98,12 +98,12 @@ class ActionListLike extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", '\\');
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", '\\'));
-		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", '\\'));
+		Predicate p = cb.like(cb.lower(root.get(Person_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.mobile)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		}

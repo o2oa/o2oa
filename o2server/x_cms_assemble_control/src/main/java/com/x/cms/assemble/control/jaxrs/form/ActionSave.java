@@ -1,15 +1,11 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -25,10 +21,15 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
+	@AuditLog(operation = "保存表单")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
 			JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

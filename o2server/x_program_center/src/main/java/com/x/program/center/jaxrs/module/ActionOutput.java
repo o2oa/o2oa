@@ -91,13 +91,14 @@ public class ActionOutput extends BaseAction {
 			structure.setDescription(wi.getDescription());
 			structure.setData(gson.toJson(wi));
 			emc.check(structure, CheckPersistType.all);
+
+			wo.setFlag(structure.getId());
 			structure.saveContent(mapping, gson.toJson(wo).getBytes(DefaultCharset.charset), wi.getName()+"."+Structure.default_extension);
 			structure.setName(wi.getName());
 			emc.beginTransaction(Structure.class);
 			emc.persist(structure);
 			emc.commit();
 
-			wo.setFlag(structure.getId());
 			CacheObject cacheObject = new CacheObject();
 			cacheObject.setModule(wo);
 			this.cache.put(new Element(wo.getFlag(), cacheObject));

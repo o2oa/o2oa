@@ -1,19 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.image;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -23,13 +9,25 @@ import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutString;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 @Path("image")
 @JaxrsDescribe("附件信息管理")
 public class ImageAction extends StandardJaxrsAction{
-	
+
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( ImageAction.class );
 	
 	@JaxrsMethodDescribe(value = "将上传的图片传为base64.", action = ActionImageBase64Encode.class)
@@ -45,12 +43,12 @@ public class ImageAction extends StandardJaxrsAction{
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageBase64Encode().execute(request, effectivePerson, size, bytes, disposition);
+			result = ((ActionImageBase64Encode)proxy.getProxy(ActionImageBase64Encode.class)).execute(request, effectivePerson, size, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "修改指定图片附件的尺寸大小.", action = ActionImageChangeSize.class)
@@ -66,11 +64,11 @@ public class ImageAction extends StandardJaxrsAction{
 		ActionResult<ActionImageChangeSize.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageChangeSize().execute(request, effectivePerson, id, width, height);
+			result = ((ActionImageChangeSize)proxy.getProxy(ActionImageChangeSize.class)).execute(request, effectivePerson, id, width, height);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

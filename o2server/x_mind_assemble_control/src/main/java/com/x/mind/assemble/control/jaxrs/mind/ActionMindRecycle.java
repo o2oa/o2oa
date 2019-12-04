@@ -1,7 +1,6 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -12,6 +11,8 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindNotExists;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindQuery;
 import com.x.mind.entity.MindBaseInfo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 将脑图信息放入回收站
  * @author O2LEE
@@ -20,7 +21,8 @@ import com.x.mind.entity.MindBaseInfo;
 public class ActionMindRecycle extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionMindRecycle.class );
-	
+
+	@AuditLog(operation = "将脑图文件放入回收站")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String mindId ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

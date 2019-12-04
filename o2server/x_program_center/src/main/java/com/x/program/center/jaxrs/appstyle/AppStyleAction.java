@@ -45,7 +45,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取当前生效的移动客户端样式最后修改时间,如果默认那么返回2018-01-01 00:00:00.", action = ActionCurrentUpdate.class)
@@ -62,7 +62,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新指定的移动客户端样式.", action = ActionEdit.class)
@@ -79,7 +79,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:首页底部菜单中间主页的按钮(不选中),114x114", action = ActionImageMenuLogoBlur.class)
@@ -98,7 +98,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:首页底部菜单中间主页的按钮(选中),114x114", action = ActionImageMenuLogoFocus.class)
@@ -117,7 +117,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:启动页的logo,195x195.", action = ActionImageLaunchLogo.class)
@@ -136,7 +136,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:登陆页面默认头像图片,225x225.", action = ActionImageLoginAvatar.class)
@@ -155,7 +155,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 //	@JaxrsMethodDescribe(value = "设置图片:所有应用中出现的人员头像默认图片,120x120.", action = ActionImagePeopleAvatarDefault.class)
@@ -174,7 +174,7 @@ public class AppStyleAction extends BaseAction {
 //			logger.error(e, effectivePerson, request, null);
 //			result.error(e);
 //		}
-//		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 //	}
 
 	@JaxrsMethodDescribe(value = "设置图片:流程、应用的默认图片,90x90.", action = ActionImageProcessDefault.class)
@@ -193,7 +193,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:设置页面“关于”项的图标,66x66.", action = ActionImageSetupAboutLogo.class)
@@ -212,7 +212,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除图片:首页底部菜单中间主页的按钮(不选中).", action = ActionImageMenuLogoBlurErase.class)
@@ -230,7 +230,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除图片:首页底部菜单中间主页的按钮(选中)..", action = ActionImageMenuLogoFocusErase.class)
@@ -248,7 +248,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:启动页的logo.", action = ActionImageLaunchLogoErase.class)
@@ -266,7 +266,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:登陆页面默认头像图片.", action = ActionImageLoginAvatarErase.class)
@@ -284,7 +284,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 //	@JaxrsMethodDescribe(value = "设置图片:所有应用中出现的人员头像默认图片.", action = ActionImagePeopleAvatarDefaultErase.class)
@@ -302,7 +302,7 @@ public class AppStyleAction extends BaseAction {
 //			logger.error(e, effectivePerson, request, null);
 //			result.error(e);
 //		}
-//		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 //	}
 
 	@JaxrsMethodDescribe(value = "设置图片:流程、应用的默认图片.", action = ActionImageProcessDefaultErase.class)
@@ -320,7 +320,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "设置图片:设置页面“关于”项的图标.", action = ActionImageSetupAboutLogoErase.class)
@@ -338,7 +338,7 @@ public class AppStyleAction extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

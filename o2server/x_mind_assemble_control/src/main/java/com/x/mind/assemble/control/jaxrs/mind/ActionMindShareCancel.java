@@ -1,7 +1,6 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -12,6 +11,8 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindQuery;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindShareRecordNotExists;
 import com.x.mind.entity.MindShareRecord;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 根据指定的分享记录取消脑图分享
  * @author O2LEE
@@ -20,7 +21,8 @@ import com.x.mind.entity.MindShareRecord;
 public class ActionMindShareCancel extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionMindShareCancel.class );
-	
+
+	@AuditLog(operation = "取消分享脑图文件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String shareRecordId ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

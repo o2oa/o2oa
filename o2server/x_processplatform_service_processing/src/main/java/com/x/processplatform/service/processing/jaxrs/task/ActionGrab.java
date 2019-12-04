@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,6 +17,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ExecutorServiceFactory;
 import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionGrab extends BaseAction {
@@ -41,28 +43,36 @@ class ActionGrab extends BaseAction {
 				throw new ExceptionWorkNotAtManual(work.getId());
 			}
 
-			Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+			Callable<String> callable = new Callable<String>() {
+				public String call() throws Exception {
+					Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
 
-			if (!Objects.equals(manual.getManualMode(), ManualMode.grab)) {
-				throw new ExceptionWorkNotGrab(work.getId());
-			}
+					if (!Objects.equals(manual.getManualMode(), ManualMode.grab)) {
+						throw new ExceptionWorkNotGrab(work.getId());
+					}
 
-			emc.beginTransaction(Task.class);
-			emc.beginTransaction(Work.class);
+					emc.beginTransaction(Task.class);
+					emc.beginTransaction(Work.class);
 
-			for (Task o : this.listTask(business, work)) {
-				if (o != task) {
-					emc.remove(o);
-					MessageFactory.task_delete(o);
+					for (Task o : listTask(business, work)) {
+						if (o != task) {
+							emc.remove(o);
+							MessageFactory.task_delete(o);
+						}
+					}
+
+					work.setManualTaskIdentityList(ListTools.toList(task.getIdentity()));
+
+					emc.commit();
+					Wo wo = new Wo();
+					wo.setId(task.getId());
+					result.setData(wo);
+					return "";
 				}
-			}
+			};
 
-			work.setManualTaskIdentityList(ListTools.toList(task.getIdentity()));
+			ExecutorServiceFactory.get(task.getJob()).submit(callable).get();
 
-			emc.commit();
-			Wo wo = new Wo();
-			wo.setId(task.getId());
-			result.setData(wo);
 			return result;
 		}
 	}

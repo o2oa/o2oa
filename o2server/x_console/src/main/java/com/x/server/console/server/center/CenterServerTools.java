@@ -1,6 +1,9 @@
 package com.x.server.console.server.center;
 
 import java.io.File;
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,8 +12,11 @@ import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
@@ -47,6 +53,14 @@ public class CenterServerTools extends JettySeverTools {
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+			/* stat */
+			if (centerServer.getStatEnable()) {
+				FilterHolder holder = new FilterHolder(new WebStatFilter());
+				holder.setInitParameter("exclusions", centerServer.getStatExclusions());
+				webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
+				webApp.addServlet(StatViewServlet.class, "/druid/*");
+			}
+			/* stat end */
 			handlers.addHandler(webApp);
 		} else {
 			throw new Exception("centerServer war not exist.");

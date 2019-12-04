@@ -22,18 +22,21 @@ public class WsConsumeQueue extends AbstractQueue<Message> {
 	private static Logger logger = LoggerFactory.getLogger(WsConsumeQueue.class);
 
 	private static final String TASK_FIRST = "first";
+	private static final String WORKCREATETYPE = "workCreateType";
+	private static final String SURFACE = "surface";
 
-	protected void execute( Message message ) throws Exception {	
+	protected void execute(Message message) throws Exception {
 		WsMessage ws = new WsMessage();
 		ws.setType(message.getType());
 		ws.setPerson(message.getPerson());
 		ws.setTitle(message.getTitle());
 		JsonElement jsonElement = XGsonBuilder.instance().fromJson(message.getBody(), JsonElement.class);
-		ws.setBody( jsonElement);
+		ws.setBody(jsonElement);
 		Boolean result = false;
 		/* 跳过第一条待办的提醒 */
 		if (StringUtils.equalsIgnoreCase(ws.getType(), MessageConnector.TYPE_TASK_CREATE)
-				&& BooleanUtils.isTrue(XGsonBuilder.extractBoolean( jsonElement, TASK_FIRST))) {
+				&& BooleanUtils.isTrue(XGsonBuilder.extractBoolean(jsonElement, TASK_FIRST))
+				&& StringUtils.equals(XGsonBuilder.extractString(jsonElement, WORKCREATETYPE), SURFACE)) {
 			result = true;
 		} else {
 			for (Application app : ThisApplication.context().applications().get(x_message_assemble_communicate.class)) {
@@ -47,7 +50,7 @@ public class WsConsumeQueue extends AbstractQueue<Message> {
 				Message messageEntityObject = emc.find(message.getId(), Message.class);
 				if (null != messageEntityObject) {
 					emc.beginTransaction(Message.class);
-					messageEntityObject.setConsumed(true);	
+					messageEntityObject.setConsumed(true);
 					emc.commit();
 				}
 			}

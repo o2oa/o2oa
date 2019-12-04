@@ -63,6 +63,8 @@ class ActionCreate extends BaseAction {
 		Work work = new Work();
 		/* 标识工作数据未修改 */
 		work.setDataChanged(false);
+		work.setWorkThroughManual(false);
+		work.setWorkCreateType(Work.WORKCREATETYPE_SURFACE);
 		work.setApplication(application.getId());
 		work.setApplicationName(application.getName());
 		work.setApplicationAlias(application.getAlias());

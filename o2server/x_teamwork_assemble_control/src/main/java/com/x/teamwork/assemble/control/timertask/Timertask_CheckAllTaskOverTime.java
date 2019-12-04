@@ -49,7 +49,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 							for( String taskId : taskIds ) {
 								task = emc.find( taskId, Task.class );
 								if( task != null ) {
-									logger.info("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());									
+									logger.debug("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
 									
 									if( task.getEndTime()  != null ) {
 										if( task.getEndTime().before( now ) && !task.getOvertime()) {
@@ -88,6 +88,6 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 				}
 			}
 		}
-		logger.info("Timertask_BatchOperationTask -> batch operations timer task excute completed.");
+		logger.debug("Timertask_BatchOperationTask -> batch operations timer task excute completed.");
 	}
 }

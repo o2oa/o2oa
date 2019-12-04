@@ -10,6 +10,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -46,7 +47,7 @@ public class FormAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		/* 修改过的方法 */
-		asyncResponse.resume(ResponseFactory.getMaxAgeActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
@@ -66,7 +67,7 @@ public class FormAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		/* 修改过的方法 */
-		asyncResponse.resume(ResponseFactory.getMaxAgeActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取表单.", action = ActionGet.class)
@@ -84,7 +85,7 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取移动端表单.", action = ActionGetMobile.class)
@@ -102,7 +103,7 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据标识和应用标识获取表单.", action = ActionGetWithApplication.class)
@@ -121,6 +122,6 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -45,6 +45,6 @@ public class FormAnonymousAction extends StandardJaxrsAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

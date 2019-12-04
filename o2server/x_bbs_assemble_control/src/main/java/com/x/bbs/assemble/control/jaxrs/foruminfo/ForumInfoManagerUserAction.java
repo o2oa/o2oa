@@ -10,6 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,10 +34,11 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoPr
 @JaxrsDescribe("论坛信息查询（匿名）")
 public class ForumInfoManagerUserAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( ForumInfoManagerUserAction.class );	
+	private static Logger logger = LoggerFactory.getLogger(ForumInfoManagerUserAction.class);
 
 	/**
 	 * 访问论坛信息，登录用户访问
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -44,53 +47,56 @@ public class ForumInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAll( @Context HttpServletRequest request ) {
+	public void listAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<List<ActionGetAll.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
-		if(check){
+
+		if (check) {
 			try {
-				result = new ActionGetAll().execute( request, effectivePerson );
+				result = new ActionGetAll().execute(request, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "获取所有ForumInfo的信息列表时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "获取所有ForumInfo的信息列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		
-		return ResponseFactory.getDefaultActionResultResponse(result);
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/**
 	 * 保存论坛信息，登录用户访问
+	 * 
 	 * @param request
 	 * @return
 	 */
 	@JaxrsMethodDescribe(value = "创建新的论坛信息或者更新论坛信息.", action = ActionSave.class)
 	@POST
-	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post( @Context HttpServletRequest request, JsonElement jsonElement ) {
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		Boolean check = true;
-		EffectivePerson effectivePerson = this.effectivePerson( request );
-		if(check){
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "创建新的论坛信息或者更新论坛信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "创建新的论坛信息或者更新论坛信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	/**
 	 * 删除论坛信息，登录用户访问
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -99,29 +105,29 @@ public class ForumInfoManagerUserAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		Boolean check = true;
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		
-		if( check ){
-			if( id == null || id.isEmpty() ){
+
+		if (check) {
+			if (id == null || id.isEmpty()) {
 				check = false;
 				Exception exception = new ExceptionForumInfoIdEmpty();
-				result.error( exception );
+				result.error(exception);
 			}
 		}
-		if(check){
+		if (check) {
 			try {
-				result = new ActionDelete().execute( request, effectivePerson, id );
+				result = new ActionDelete().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "系统在删除论坛信息时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "系统在删除论坛信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse( result );
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

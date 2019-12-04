@@ -6,9 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,20 +18,30 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.Applications;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoSeeOther;
 import com.x.base.core.project.jaxrs.WoTemporaryRedirect;
 import com.x.base.core.project.jaxrs.WoValue;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.script.ScriptFactory;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
-import com.x.program.center.Context;
 import com.x.program.center.ThisApplication;
-import com.x.program.center.WebservicesClient;
 import com.x.program.center.core.entity.Invoke;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 class ActionExecute extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+
+	public static Ehcache CACHE = ApplicationCache.instance().getCache(Invoke.class);
 
 	ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag,
 			JsonElement jsonElement) throws Exception {
@@ -51,44 +60,40 @@ class ActionExecute extends BaseAction {
 					throw new ExceptionInvalidRemoteAddr(request.getRemoteAddr(), invoke.getName());
 				}
 			}
+			emc.beginTransaction(Invoke.class);
 			invoke.setLastStartTime(new Date());
-			ScriptEngineManager manager = new ScriptEngineManager();
-			ScriptEngine engine = manager.getEngineByName("JavaScript");
-			ScriptContext newContext = new SimpleScriptContext();
-			Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			emc.commit();
+
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), invoke.getId());
+
+			CompiledScript compiledScript = null;
+
+			Element element = CACHE.get(cacheKey);
+
+			if ((null != element) && (null != element.getObjectValue())) {
+				compiledScript = (CompiledScript) element.getObjectValue();
+			} else {
+				compiledScript = ScriptFactory.compile(invoke.getText());
+				CACHE.put(new Element(cacheKey, compiledScript));
+			}
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			Resources resources = new Resources();
 			resources.setEntityManagerContainer(emc);
 			resources.setContext(ThisApplication.context());
 			resources.setOrganization(new Organization(ThisApplication.context()));
 			resources.setWebservicesClient(new WebservicesClient());
 			resources.setApplications(ThisApplication.context().applications());
-			engineScope.put(Resources.RESOURCES_BINDING_NAME, resources);
-			engineScope.put("requestText", gson.toJson(jsonElement));
-			engineScope.put("request", request);
-			engineScope.put("effectivePerson", effectivePerson);
+			bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
+			bindings.put("requestText", gson.toJson(jsonElement));
+			bindings.put("request", request);
+			bindings.put("effectivePerson", effectivePerson);
 			CustomResponse customResponse = new CustomResponse();
-			engineScope.put("customResponse", customResponse);
+			bindings.put("customResponse", customResponse);
 			Wo wo = new Wo();
 			try {
-				engine.eval(Config.initialServiceScriptText(), newContext);
-				StringBuffer sb = new StringBuffer();
-
-				// sb.append(Config.initialServiceScriptText()).append(System.lineSeparator());
-				sb.append(invoke.getText()).append(System.lineSeparator());
-				// sb.append("return (function(){").append(System.lineSeparator());
-//				if (StringUtils.isNotEmpty(scriptName)) {
-//					List<Script> list = business.element().listScriptNestedWithApplicationWithUniqueName(application,
-//							scriptName);
-//					for (Script o : list) {
-//						sb.append(o.getText()).append(SystemUtils.LINE_SEPARATOR);
-//					}
-//				}
-//				if (StringUtils.isNotEmpty(invoke.getText())) {
-//					sb.append(invoke.getText()).append(System.lineSeparator());
-//				}
-				// sb.append("}).apply(bind);");
-				Object o = engine.eval(sb.toString(), newContext);
-
+				ScriptFactory.initialServiceScriptText().eval(scriptContext);
+				Object o = compiledScript.eval(scriptContext);
 				if (StringUtils.equals("seeOther", customResponse.type)) {
 					WoSeeOther woSeeOther = new WoSeeOther(Objects.toString(customResponse.value, ""));
 					result.setData(woSeeOther);
@@ -139,39 +144,8 @@ class ActionExecute extends BaseAction {
 
 	}
 
-	public static class Resources {
-		private EntityManagerContainer entityManagerContainer;
-		private Context context;
+	public static class Resources extends AbstractResources {
 		private Organization organization;
-		private WebservicesClient webservicesClient;
-		private String input;
-		private Applications applications;
-
-		public static String RESOURCES_BINDING_NAME = "resources";
-
-		public EntityManagerContainer getEntityManagerContainer() {
-			return entityManagerContainer;
-		}
-
-		public void setEntityManagerContainer(EntityManagerContainer entityManagerContainer) {
-			this.entityManagerContainer = entityManagerContainer;
-		}
-
-		public Context getContext() {
-			return context;
-		}
-
-		public void setContext(Context context) {
-			this.context = context;
-		}
-
-		public Applications getApplications() {
-			return applications;
-		}
-
-		public void setApplications(Applications applications) {
-			this.applications = applications;
-		}
 
 		public Organization getOrganization() {
 			return organization;
@@ -181,21 +155,5 @@ class ActionExecute extends BaseAction {
 			this.organization = organization;
 		}
 
-		public String getInput() {
-			return input;
-		}
-
-		public void setInput(String input) {
-			this.input = input;
-		}
-
-		public WebservicesClient getWebservicesClient() {
-			return webservicesClient;
-		}
-
-		public void setWebservicesClient(WebservicesClient webservicesClient) {
-			this.webservicesClient = webservicesClient;
-		}
 	}
-
 }

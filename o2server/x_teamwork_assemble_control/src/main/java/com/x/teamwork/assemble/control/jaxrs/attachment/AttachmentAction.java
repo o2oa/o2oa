@@ -50,7 +50,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据项目ID获取项目所有附件信息过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据工作ID获取工作附件信息列表", action = ActionListWithTask.class)
@@ -69,7 +69,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据工作ID获取工作所有附件信息过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID删除附件信息对象", action = ActionDelete.class)
@@ -88,7 +88,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据ID删除附件信息对象过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取附件信息对象", action = ActionGet.class)
@@ -107,7 +107,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.warn( "系统根据ID获取附件信息对象过程发生异常。" );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据ID下载指定附件", action = ActionDownload.class)
@@ -125,7 +125,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "下载指定附件,设定是否使用stream输出", action = ActionDownloadStream.class)
@@ -144,7 +144,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "上传项目信息附件.", action = ActionProjectAttachmentUpload.class)
@@ -166,7 +166,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "为工作信息上传附件.", action = ActionTaskAttachmentUpload.class)
@@ -188,6 +188,6 @@ public class AttachmentAction extends StandardJaxrsAction{
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

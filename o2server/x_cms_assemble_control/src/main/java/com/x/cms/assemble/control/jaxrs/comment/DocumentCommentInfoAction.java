@@ -1,21 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.comment;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -25,13 +9,24 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("comment")
 @JaxrsDescribe("评论信息管理")
 public class DocumentCommentInfoAction extends StandardJaxrsAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private Logger logger = LoggerFactory.getLogger(DocumentCommentInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "根据标识获取评论信息对象.", action = ActionGet.class)
@@ -43,14 +38,14 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, effectivePerson, id );
+			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCommentQuery(e, "根据指定ID查询评论信息对象时发生异常。id:" + id );
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示评论信息,按页码分页.", action = ActionListPageWithFilter.class)
@@ -65,12 +60,12 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPageWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListPageWithFilter().execute(request, effectivePerson, page, size, jsonElement );
+			result = ((ActionListPageWithFilter)proxy.getProxy(ActionListPageWithFilter.class)).execute(request, effectivePerson, page, size, jsonElement );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示评论信息,上一页.", action = ActionListPrevWithFilter.class)
@@ -85,12 +80,12 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
+			result = ((ActionListPrevWithFilter)proxy.getProxy(ActionListPrevWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示评论信息,下一页.", action = ActionListNextWithFilter.class)
@@ -105,12 +100,12 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
+			result = ((ActionListNextWithFilter)proxy.getProxy(ActionListNextWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "创建或者更新一个评论信息.", action = ActionSave.class)
@@ -123,12 +118,12 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionSave().execute(request, effectivePerson, jsonElement);
+			result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据标识删除评论信息.", action = ActionDelete.class)
@@ -142,12 +137,12 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDelete().execute(request, effectivePerson, id);
+			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "文档评论点赞.", action = ActionPersistCommend.class)
@@ -162,14 +157,14 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionPersistCommend().execute( request, id, effectivePerson );
+				result = ((ActionPersistCommend)proxy.getProxy(ActionPersistCommend.class)).execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "取消文档评论点赞.", action = ActionPersistUnCommend.class)
@@ -184,13 +179,13 @@ public class DocumentCommentInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionPersistUnCommend().execute( request, id, effectivePerson );
+				result = ((ActionPersistUnCommend)proxy.getProxy(ActionPersistUnCommend.class)).execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

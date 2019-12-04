@@ -14,14 +14,13 @@ public class ThisApplication{
 	
 	public static void init() {
 		queueShareNotify = new QueueShareNotify();
-
 		MessageConnector.start(context());
-
 		context().startQueue( queueShareNotify );
 	}
 
 	public static void destroy() {
 		try {
+			queueShareNotify.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

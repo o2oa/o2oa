@@ -1,27 +1,15 @@
 package com.x.program.center;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.internal.LinkedTreeMap;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.program.center.schedule.Area;
-import com.x.program.center.schedule.CleanupCode;
-import com.x.program.center.schedule.CleanupPromptErrorLog;
-import com.x.program.center.schedule.CleanupScheduleLog;
-import com.x.program.center.schedule.CleanupUnexpectedErrorLog;
-import com.x.program.center.schedule.CleanupWarnLog;
-import com.x.program.center.schedule.CollectLog;
-import com.x.program.center.schedule.CollectPerson;
-import com.x.program.center.schedule.DingdingSyncOrganization;
-import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
-import com.x.program.center.schedule.FireSchedule;
-import com.x.program.center.schedule.QiyeweixinSyncOrganization;
-import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
-import com.x.program.center.schedule.RefreshApplications;
-import com.x.program.center.schedule.TriggerAgent;
-import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
-import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
+import com.x.program.center.schedule.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ThisApplication {
 
@@ -42,6 +30,8 @@ public class ThisApplication {
 	public static List<Object> zhengwuDingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
 	public static List<Object> qiyeweixinSyncOrganizationCallbackRequest = new ArrayList<>();
+
+	public static Map<String, Map<String, LinkedTreeMap>> metricsReportMap = new ConcurrentHashMap<>();
 
 	public static void init() {
 		try {
@@ -96,6 +86,7 @@ public class ThisApplication {
 		try {
 			centerQueue.stop();
 			logQueue.stop();
+			//ApplicationCache.shutdown();
 			// codeTransferQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();

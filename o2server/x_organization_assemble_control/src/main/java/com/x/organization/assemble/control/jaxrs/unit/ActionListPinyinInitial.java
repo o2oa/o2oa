@@ -144,7 +144,7 @@ class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
 		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.like(root.get(Unit_.pinyinInitial), str + "%", '\\');
+		Predicate p = cb.like(root.get(Unit_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(unitIds)) {
 			p = cb.and(p, root.get(Unit_.id).in(unitIds));
 		}

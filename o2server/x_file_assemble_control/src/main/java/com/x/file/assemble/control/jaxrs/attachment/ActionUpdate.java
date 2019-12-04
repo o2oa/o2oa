@@ -37,6 +37,10 @@ class ActionUpdate extends BaseAction {
 			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), attachment.getPerson())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			List<String> oldShareList = new ArrayList<>();
+			List<String> oldEditorList = new ArrayList<>();
+			oldShareList.addAll(attachment.getShareList());
+			oldEditorList.addAll(attachment.getEditorList());
 			List<String> shareList = new ArrayList<>();
 			List<String> editorList = new ArrayList<>();
 			if (null != wi.getShareList()) {
@@ -57,10 +61,10 @@ class ActionUpdate extends BaseAction {
 			attachment.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			emc.check(attachment, CheckPersistType.all);
 			emc.commit();
-			List<String> shareAdds = ListUtils.subtract(shareList, attachment.getShareList());
-			List<String> editorAdds = ListUtils.subtract(editorList, attachment.getEditorList());
-			List<String> shareCancels = ListUtils.subtract(attachment.getShareList(), shareList);
-			List<String> editorCancels = ListUtils.subtract(attachment.getEditorList(), editorList);
+			List<String> shareAdds = ListUtils.subtract(shareList, oldShareList);
+			List<String> editorAdds = ListUtils.subtract(editorList, oldEditorList);
+			List<String> shareCancels = ListUtils.subtract(oldShareList, shareList);
+			List<String> editorCancels = ListUtils.subtract(oldEditorList, editorList);
 			/* 发送共享通知 */
 			for (String str : shareAdds) {
 				this.message_send_attachment_share(attachment, str);

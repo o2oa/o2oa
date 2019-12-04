@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -300,6 +301,14 @@ class ActionCover extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Split.class);
 		business.entityManagerContainer().beginTransaction(Route.class);
 		business.entityManagerContainer().commit();
+
+		ApplicationCache.notify(ApplicationDictItem.class);
+		ApplicationCache.notify(ApplicationDict.class);
+		ApplicationCache.notify(FormField.class);
+		ApplicationCache.notify(Form.class);
+		ApplicationCache.notify(Script.class);
+		ApplicationCache.notify(Process.class);
+		ApplicationCache.notify(Application.class);
 	}
 
 	private <T extends JpaObject, W extends JpaObject> List<T> orphanFormElement(Business business, List<W> list,
