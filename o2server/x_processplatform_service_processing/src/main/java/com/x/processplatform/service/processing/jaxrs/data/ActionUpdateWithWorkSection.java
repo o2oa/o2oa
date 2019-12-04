@@ -43,11 +43,9 @@ class ActionUpdateWithWorkSection extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			System.out.println("3333!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing ActionUpdateWithWorkSection");
 			Callable<String> callable = new Callable<String>() {
 				public String call() throws Exception {
 					/* 进行区段数据合并 */
-					System.out.println("5555!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing call");
 					SectionData sectionData = gson.fromJson(jsonElement, SectionData.class);
 					JsonElement merged;
 					if (sectionData.hasSection()) {
@@ -66,13 +64,10 @@ class ActionUpdateWithWorkSection extends BaseAction {
 					updateTitleSerial(business, work, merged);
 					updateData(business, work, merged);
 					/* updateTitleSerial 和 updateData 方法内进行了提交 */
-					System.out.println("6666!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing call");
 					return "";
 				}
 			};
-			System.out.println("4444!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing call");
 			ExecutorServiceFactory.get(work.getJob()).submit(callable).get();
-			System.out.println("7777!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing call");
 
 			Wo wo = new Wo();
 			wo.setId(work.getId());

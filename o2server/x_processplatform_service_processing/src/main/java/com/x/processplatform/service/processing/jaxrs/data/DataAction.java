@@ -853,7 +853,6 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkSection.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			System.out.println("2222!!!!!!!!!!!!!!!!!!!!!!!!!!!!!processing DataAction:updateWithWorkSection");
 			result = new ActionUpdateWithWorkSection().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
