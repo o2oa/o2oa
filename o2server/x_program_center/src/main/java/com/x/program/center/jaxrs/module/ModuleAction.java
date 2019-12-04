@@ -45,7 +45,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示云服务器上模块及其数量.", action = ActionListCategory.class)
@@ -62,7 +62,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取云端模块,并和本地模块进行对比.", action = ActionCompare.class)
@@ -80,7 +80,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "上传模块文件,并和本地模块进行对比.", action = ActionCompareUpload.class)
@@ -99,7 +99,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	// @JaxrsMethodDescribe(value = "上传模块文件.", action = ActionUpload.class)
@@ -119,7 +119,7 @@ public class ModuleAction extends StandardJaxrsAction {
 	// logger.error(e, effectivePerson, request, null);
 	// result.error(e);
 	// }
-	// asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	// asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	// }
 
 	@JaxrsMethodDescribe(value = "写入模块.", action = ActionWrite.class)
@@ -137,7 +137,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "导出本地模块.", action = ActionOutput.class)
@@ -155,7 +155,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "导出本地模块.", action = ActionOutputFile.class)
@@ -172,7 +172,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示本地存储的导出模块结构.", action = ActionListStructure.class)
@@ -189,7 +189,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "本地模块结构.", action = ActionOutputStructure.class)
@@ -206,7 +206,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除模块结构.", action = ActionRemoveStructure.class)
@@ -224,7 +224,7 @@ public class ModuleAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

@@ -1,4 +1,5 @@
 package com.x.okr.assemble.control.jaxrs.okrworkdynamics;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -26,101 +28,101 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path( "okrworkdynamics" )
+@Path("okrworkdynamics")
 @JaxrsDescribe("系统动态信息管理服务")
-public class OkrWorkDynamicsAction extends StandardJaxrsAction{
-	
-	private static  Logger logger = LoggerFactory.getLogger( OkrWorkDynamicsAction.class );	
+public class OkrWorkDynamicsAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(OkrWorkDynamicsAction.class);
 
 	@JaxrsMethodDescribe(value = "新建或者更新系统动态信息", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		Boolean check = true;
-		
-		if( check ){
+
+		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				logger.warn( "system excute ExcuteListWithFilterPrev got an exception." );
-				logger.error( e, effectivePerson, request, null);
+				logger.warn("system excute ExcuteListWithFilterPrev got an exception.");
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除系统动态信息", action = ActionDelete.class)
 	@DELETE
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("工作动态信息ID") @PathParam( "id" ) String id) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作动态信息ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		Boolean check = true;
-		
-		if( check ){
+
+		if (check) {
 			try {
-				result = new ActionDelete().execute( request, effectivePerson, id );
+				result = new ActionDelete().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				logger.warn( "system excute ExcuteListWithFilterPrev got an exception." );
-				logger.error( e, effectivePerson, request, null);
+				logger.warn("system excute ExcuteListWithFilterPrev got an exception.");
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取系统动态信息", action = ActionGet.class)
 	@GET
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("工作动态信息ID") @PathParam( "id" ) String id) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作动态信息ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		Boolean check = true;
-		
-		if( check ){
+
+		if (check) {
 			try {
-				result = new ActionGet().execute( request, effectivePerson, id );
+				result = new ActionGet().execute(request, effectivePerson, id);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				logger.warn( "system excute ExcuteListWithFilterPrev got an exception." );
-				logger.error( e, effectivePerson, request, null);
+				logger.warn("system excute ExcuteListWithFilterPrev got an exception.");
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "列示满足过滤条件的系统动态信息,下一页", action = ActionListWithFilterNext.class)
 	@PUT
-	@Path( "filter/list/{id}/next/{count}" )
+	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNextWithFilter( @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
-			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
-			JsonElement jsonElement) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void listNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam("id") String id,
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWithFilterNext.Wo>> result = new ActionResult<>();
 		Boolean check = true;
-		
-		if( check ){
+
+		if (check) {
 			try {
-				result = new ActionListWithFilterNext().execute( request, effectivePerson, id, count, jsonElement );
+				result = new ActionListWithFilterNext().execute(request, effectivePerson, id, count, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				logger.warn( "system excute ExcuteListWithFilterPrev got an exception." );
-				logger.error( e, effectivePerson, request, null);
+				logger.warn("system excute ExcuteListWithFilterPrev got an exception.");
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
-	}	
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

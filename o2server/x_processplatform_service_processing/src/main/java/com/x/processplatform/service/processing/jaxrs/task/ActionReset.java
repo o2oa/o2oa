@@ -1,10 +1,13 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -21,14 +24,23 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ExecutorServiceFactory;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.ProcessingAttributes;
+import com.x.processplatform.service.processing.ScriptHelper;
+import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.WorkDataHelper;
+import com.x.processplatform.service.processing.jaxrs.task.ActionAppend.Wo;
 
 class ActionReset extends BaseAction {
 
@@ -48,42 +60,51 @@ class ActionReset extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 			}
-			/* 检查reset人员 */
-			List<String> identites = ListTools.trim(business.organization().identity().list(wi.getIdentityList()), true,
-					true);
 
-			/* 在新增待办人员中删除当前的处理人 */
+			Callable<String> callable = new Callable<String>() {
+				public String call() throws Exception {
+					/* 检查reset人员 */
+					List<String> identites = ListTools
+							.trim(business.organization().identity().list(wi.getIdentityList()), true, true);
 
-			identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
+					/* 在新增待办人员中删除当前的处理人 */
 
-			if (identites.isEmpty()) {
-				throw new ExceptionResetEmpty();
-			}
-			emc.beginTransaction(Work.class);
-			List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
-			if (BooleanUtils.isNotTrue(wi.getKeep())) {
-				Date now = new Date();
-				Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
-				TaskCompleted taskCompleted = new TaskCompleted(task, ProcessingType.reset, now, duration);
-				emc.beginTransaction(TaskCompleted.class);
-				emc.beginTransaction(Task.class);
-				emc.persist(taskCompleted, CheckPersistType.all);
-				emc.remove(task, CheckRemoveType.all);
-				os.remove(task.getIdentity());
-				MessageFactory.taskCompleted_create(taskCompleted);
-				MessageFactory.task_delete(task);
-			}
-			os = ListUtils.union(os, identites);
-			work.setManualTaskIdentityList(ListTools.trim(os, true, true));
-			emc.check(work, CheckPersistType.all);
-			emc.commit();
-			ProcessingAttributes processingAttributes = new ProcessingAttributes();
-			processingAttributes.setDebugger(effectivePerson.getDebugger());
-			Processing processing = new Processing(processingAttributes);
-			processing.processing(work.getId());
-			Wo wo = new Wo();
-			wo.setId(task.getId());
-			result.setData(wo);
+					identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
+
+					if (identites.isEmpty()) {
+						throw new ExceptionResetEmpty();
+					}
+					emc.beginTransaction(Work.class);
+					List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
+					if (BooleanUtils.isNotTrue(wi.getKeep())) {
+						Date now = new Date();
+						Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
+						TaskCompleted taskCompleted = new TaskCompleted(task, ProcessingType.reset, now, duration);
+						emc.beginTransaction(TaskCompleted.class);
+						emc.beginTransaction(Task.class);
+						emc.persist(taskCompleted, CheckPersistType.all);
+						emc.remove(task, CheckRemoveType.all);
+						os.remove(task.getIdentity());
+						MessageFactory.taskCompleted_create(taskCompleted);
+						MessageFactory.task_delete(task);
+					}
+					os = ListUtils.union(os, identites);
+					work.setManualTaskIdentityList(ListTools.trim(os, true, true));
+					emc.check(work, CheckPersistType.all);
+					emc.commit();
+					ProcessingAttributes processingAttributes = new ProcessingAttributes();
+					processingAttributes.setDebugger(effectivePerson.getDebugger());
+					Processing processing = new Processing(processingAttributes);
+					processing.processing(work.getId());
+					Wo wo = new Wo();
+					wo.setId(task.getId());
+					result.setData(wo);
+					return "";
+				}
+			};
+
+			ExecutorServiceFactory.get(task.getJob()).submit(callable).get();
+
 			return result;
 		}
 	}

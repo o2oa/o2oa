@@ -1,20 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.imgscalr.Scalr;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,11 +10,25 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.jaxrs.fileinfo.URLParameterGetException;
 import com.x.cms.common.image.maincolor.ImageMainColorUtil;
 import com.x.cms.core.entity.AppInfo;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.imgscalr.Scalr;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class ActionAppIconUpload extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger(ActionAppIconUpload.class);
 
+	@AuditLog(operation = "上传栏目图标")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
 			String appId, Integer size, byte[] bytes, FormDataContentDisposition disposition) {
 		ActionResult<Wo> result = new ActionResult<>();

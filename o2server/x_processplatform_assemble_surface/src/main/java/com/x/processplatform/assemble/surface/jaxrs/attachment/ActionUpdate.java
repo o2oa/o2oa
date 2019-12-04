@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -45,6 +46,9 @@ class ActionUpdate extends BaseAction {
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
+			}
+			if(!fileName.equalsIgnoreCase(attachment.getName())){
+				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
 			/* 统计待办数量判断用户是否可以上传附件 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);

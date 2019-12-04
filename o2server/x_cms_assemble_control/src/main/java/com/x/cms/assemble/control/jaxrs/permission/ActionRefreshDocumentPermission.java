@@ -1,14 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.permission;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -19,11 +13,17 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
 import com.x.cms.core.entity.Document;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionRefreshDocumentPermission extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionRefreshDocumentPermission.class);
 
+	@AuditLog(operation = "刷新文档权限")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Document document = null;

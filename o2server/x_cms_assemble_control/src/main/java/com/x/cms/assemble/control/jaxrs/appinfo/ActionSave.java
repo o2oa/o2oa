@@ -1,12 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -21,16 +16,17 @@ import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.element.AppDict;
-import com.x.cms.core.entity.element.AppDictItem;
-import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.element.ViewCategory;
-import com.x.cms.core.entity.element.ViewFieldConfig;
+import com.x.cms.core.entity.element.*;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
+	@AuditLog(operation = "保存栏目信息")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		AppInfo old_appInfo = null;

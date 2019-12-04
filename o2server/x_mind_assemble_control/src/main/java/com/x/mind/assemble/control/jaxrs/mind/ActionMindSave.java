@@ -1,13 +1,7 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -20,6 +14,11 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionEntityCanNotDelete;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderWrapInConvert;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindPersist;
 import com.x.mind.entity.MindBaseInfo;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 保存脑图信息
@@ -29,7 +28,8 @@ import com.x.mind.entity.MindBaseInfo;
 public class ActionMindSave extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionMindSave.class );
-	
+
+	@AuditLog(operation = "保存脑图文件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;

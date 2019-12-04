@@ -1,10 +1,14 @@
 package com.x.processplatform.service.processing.processor.manual;
 
-public   class TaskIdentity {
+public class TaskIdentity {
+
+	public static final String IGNOREEMPOWER = "ignoreEmpower";
 
 	private String identity;
 
 	private String fromIdentity;
+
+	private Boolean ignoreEmpower = false;
 
 	public String getIdentity() {
 		return identity;
@@ -20,6 +24,14 @@ public   class TaskIdentity {
 
 	public void setFromIdentity(String fromIdentity) {
 		this.fromIdentity = fromIdentity;
+	}
+
+	public Boolean getIgnoreEmpower() {
+		return ignoreEmpower;
+	}
+
+	public void setIgnoreEmpower(Boolean ignoreEmpower) {
+		this.ignoreEmpower = ignoreEmpower;
 	}
 
 }

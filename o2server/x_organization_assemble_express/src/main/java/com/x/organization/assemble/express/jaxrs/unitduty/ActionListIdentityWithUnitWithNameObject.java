@@ -3,12 +3,6 @@ package com.x.organization.assemble.express.jaxrs.unitduty;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -25,7 +19,6 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
 
 import net.sf.ehcache.Element;
 
@@ -115,55 +108,78 @@ class ActionListIdentityWithUnitWithNameObject extends BaseAction {
 
 	public static class Wo extends com.x.base.core.project.organization.Identity {
 
+		private String matchUnitName;
+		private String matchUnitLevelName;
+		private Integer matchUnitLevel;
+
+		public String getMatchUnitName() {
+			return matchUnitName;
+		}
+
+		public void setMatchUnitName(String matchUnitName) {
+			this.matchUnitName = matchUnitName;
+		}
+
+		public String getMatchUnitLevelName() {
+			return matchUnitLevelName;
+		}
+
+		public void setMatchUnitLevelName(String matchUnitLevelName) {
+			this.matchUnitLevelName = matchUnitLevelName;
+		}
+
+		public Integer getMatchUnitLevel() {
+			return matchUnitLevel;
+		}
+
+		public void setMatchUnitLevel(Integer matchUnitLevel) {
+			this.matchUnitLevel = matchUnitLevel;
+		}
+
 	}
 
 	private List<Wo> list(Business business, List<String> names, List<String> units) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-		List<String> identityIds = new ArrayList<>();
 		for (String str : units) {
-			Unit unit = business.unit().pick(str);
-			if (null != unit) {
-				EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
-				Root<UnitDuty> root = cq.from(UnitDuty.class);
-				Predicate p = cb.equal(root.get(UnitDuty_.unit), unit.getId());
-				p = cb.and(p, root.get(UnitDuty_.name).in(names));
-				List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (!os.isEmpty()) {
-					for (UnitDuty o : os) {
-						identityIds.addAll(o.getIdentityList());
+			Unit matchUnit = business.unit().pick(str);
+			if (null != matchUnit) {
+				List<UnitDuty> os = business.entityManagerContainer().listEqualAndIn(UnitDuty.class,
+						UnitDuty.unit_FIELDNAME, matchUnit.getId(), UnitDuty.name_FIELDNAME, names);
+				for (UnitDuty o : os) {
+					for (Identity identity : business.identity().pick(o.getIdentityList())) {
+						Unit unit = business.unit().pick(identity.getUnit());
+						Person person = business.person().pick(identity.getPerson());
+						Wo wo = this.convertToIdentity(matchUnit, unit, person, identity);
+						wos.add(wo);
 					}
 				}
-			}
-		}
-		identityIds = ListTools.trim(identityIds, true, true);
-		for (String id : identityIds) {
-			Identity identity = business.identity().pick(id);
-			if (null != identity) {
-				wos.add(this.convertToIdentity(business, identity));
 			}
 		}
 		return wos;
 	}
 
-	private Wo convertToIdentity(Business business, Identity identity) throws Exception {
+	private Wo convertToIdentity(Unit matchUnit, Unit unit, Person person, Identity identity) throws Exception {
 		Wo wo = new Wo();
-		wo.setDescription(identity.getDescription());
-		wo.setDistinguishedName(identity.getDistinguishedName());
-		wo.setName(identity.getName());
-		wo.setOrderNumber(identity.getOrderNumber());
-		wo.setUnique(identity.getUnique());
-		wo.setUnitName(identity.getUnitName());
-		wo.setUnitLevel(identity.getUnitLevel());
-		wo.setUnitLevelName(identity.getUnitLevelName());
-		Person p = business.person().pick(identity.getPerson());
-		if (null != p) {
-			wo.setPerson(p.getDistinguishedName());
+		if (null != matchUnit) {
+			wo.setMatchUnitLevelName(matchUnit.getLevelName());
+			wo.setMatchUnitName(matchUnit.getName());
+			wo.setMatchUnitLevel(matchUnit.getLevel());
 		}
-		Unit u = business.unit().pick(identity.getUnit());
-		if (null != u) {
-			wo.setUnit(u.getDistinguishedName());
+		if (null != unit) {
+			wo.setUnit(unit.getDistinguishedName());
+		}
+		if (null != person) {
+			wo.setPerson(person.getDistinguishedName());
+		}
+		if (null != identity) {
+			wo.setDescription(identity.getDescription());
+			wo.setDistinguishedName(identity.getDistinguishedName());
+			wo.setName(identity.getName());
+			wo.setOrderNumber(identity.getOrderNumber());
+			wo.setUnique(identity.getUnique());
+			wo.setUnitName(identity.getUnitName());
+			wo.setUnitLevel(identity.getUnitLevel());
+			wo.setUnitLevelName(identity.getUnitLevelName());
 		}
 		return wo;
 	}

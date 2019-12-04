@@ -181,7 +181,7 @@ public class Attachment extends StorageObject {
 	}
 
 	public static final String name_FIELDNAME = "name";
-	@FieldDescribe("文件名称.")
+	@FieldDescribe("文件名称,带扩展名的文件名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
@@ -406,12 +406,37 @@ public class Attachment extends StorageObject {
 	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
 	private Boolean deepPath;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,升序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
+	public static final String divisionList_FIELDNAME = "divisionList";
+	@FieldDescribe("分组.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + divisionList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + divisionList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + divisionList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + divisionList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> divisionList;
+
 	public String getJob() {
 		return job;
 	}
 
 	public void setJob(String job) {
 		this.job = job;
+	}
+
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public String getApplication() {
@@ -580,6 +605,14 @@ public class Attachment extends StorageObject {
 
 	public void setControllerUnitList(List<String> controllerUnitList) {
 		this.controllerUnitList = controllerUnitList;
+	}
+
+	public List<String> getDivisionList() {
+		return divisionList;
+	}
+
+	public void setDivisionList(List<String> divisionList) {
+		this.divisionList = divisionList;
 	}
 
 }

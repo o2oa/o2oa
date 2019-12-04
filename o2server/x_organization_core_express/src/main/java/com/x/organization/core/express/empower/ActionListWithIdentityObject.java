@@ -9,12 +9,15 @@ import com.x.base.core.project.organization.Empower;
 
 class ActionListWithIdentityObject extends BaseAction {
 
-	public static List<Empower> execute(AbstractContext context, String application, String process,
+	public static List<Empower> execute(AbstractContext context, String application, String process, String work,
 			Collection<String> collection) throws Exception {
 		Wi wi = new Wi();
 		List<Empower> wos = new ArrayList<>();
 		if ((null != collection) && (!collection.isEmpty())) {
 			wi.getIdentityList().addAll(collection);
+			wi.setApplication(application);
+			wi.setProcess(process);
+			wi.setWork(work);
 			wos = context.applications().postQuery(applicationClass, "empower/list/identity/object", wi)
 					.getDataAsList(Empower.class);
 		}

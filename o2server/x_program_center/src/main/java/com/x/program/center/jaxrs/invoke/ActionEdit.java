@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.invoke;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -39,6 +40,7 @@ class ActionEdit extends BaseAction {
 			this.addComment(invoke);
 			emc.check(invoke, CheckPersistType.all);
 			emc.commit();
+			ApplicationCache.notify(Invoke.class);
 			Wo wo = new Wo();
 			wo.setId(invoke.getId());
 			result.setData(wo);

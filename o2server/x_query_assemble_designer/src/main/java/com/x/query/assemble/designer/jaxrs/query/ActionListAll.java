@@ -60,8 +60,8 @@ class ActionListAll extends BaseAction {
 
 		private static final long serialVersionUID = 2886873983211744188L;
 
-		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
-				JpaObject.singularAttributeField(View.class, true, false), null);
+		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class, null,
+				ListTools.toList(JpaObject.FieldsInvisible, Query.controllerList_FIELDNAME, Query.availableIdentityList_FIELDNAME, Query.availableUnitList_FIELDNAME));
 
 		private List<WoView> viewList = new ArrayList<>();
 

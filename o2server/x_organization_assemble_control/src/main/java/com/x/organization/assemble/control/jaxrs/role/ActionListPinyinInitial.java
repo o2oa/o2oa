@@ -107,7 +107,7 @@ class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
 		Root<Role> root = cq.from(Role.class);
-		Predicate p = cb.like(root.get(Role_.pinyinInitial), str + "%", '\\');
+		Predicate p = cb.like(root.get(Role_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(roleIds)) {
 			p = cb.and(p, root.get(Role_.id).in(roleIds));
 		}

@@ -106,7 +106,7 @@ public class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.like(root.get(Identity_.pinyinInitial), str + "%", '\\');
+		Predicate p = cb.like(root.get(Identity_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
 			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());
 			List<String> unitDutyIdentities = new ArrayList<>();

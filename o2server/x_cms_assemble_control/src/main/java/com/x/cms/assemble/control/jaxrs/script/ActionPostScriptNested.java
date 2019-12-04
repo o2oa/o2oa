@@ -22,7 +22,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Script;
 
 
-class ActionGetScriptNested extends BaseAction {
+class ActionPostScriptNested extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 	

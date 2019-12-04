@@ -12,9 +12,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
@@ -55,7 +56,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("exists/check")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response existsCheck(@Context HttpServletRequest request) {
+	public void existsCheck(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -64,7 +65,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	// @HttpMethodDescribe(value = "查询指定的图片的base64编码.", response =
@@ -73,7 +74,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id) {
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutString wrap = null;
@@ -114,7 +116,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				}
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -124,8 +126,9 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("{application}/{infoId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByApplicationAndInfoId(@Context HttpServletRequest request,
-			@PathParam("application") String application, @PathParam("infoId") String infoId) {
+	public void listByApplicationAndInfoId(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @PathParam("application") String application,
+			@PathParam("infoId") String infoId) {
 		ActionResult<List<WrapOutHotPictureInfo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutHotPictureInfo> wraps = null;
@@ -183,7 +186,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				}
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -193,8 +196,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listForPage(@Context HttpServletRequest request, @PathParam("page") Integer page,
-			@PathParam("count") Integer count, JsonElement jsonElement) {
+	public void listForPage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutHotPictureInfo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutHotPictureInfo> wraps_out = new ArrayList<WrapOutHotPictureInfo>();
@@ -271,7 +274,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 								if (hotPictureInfoList != null) {
 									try {
 										wraps_out = wrapout_copier.copy(hotPictureInfoList);
-										SortTools.desc(wraps_out,  JpaObject.sequence_FIELDNAME);
+										SortTools.desc(wraps_out, JpaObject.sequence_FIELDNAME);
 									} catch (Exception e) {
 										check = false;
 										Exception exception = new InfoWrapOutException(e);
@@ -305,7 +308,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			}
 		}
 
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/**
@@ -319,7 +322,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapInHotPictureInfo wrapIn = null;
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -379,9 +383,9 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	/**
 	 * 修改已经存在的热点图片的标题信息
 	 * 
@@ -392,14 +396,15 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response changeTitle(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void changeTitle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapInHotPictureInfo wrapIn = null;
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrap = null;
 		Boolean check = true;
 		List<HotPictureInfo> hotPictureInfos = null;
-		
+
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, WrapInHotPictureInfo.class);
 		} catch (Exception e) {
@@ -408,22 +413,23 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		
+
 		if (check) {
-			if ( wrapIn.getApplication() == null || wrapIn.getApplication().isEmpty() || "(0)".equals(wrapIn.getApplication())) {
+			if (wrapIn.getApplication() == null || wrapIn.getApplication().isEmpty()
+					|| "(0)".equals(wrapIn.getApplication())) {
 				check = false;
 				Exception exception = new InfoApplicationEmptyException();
 				result.error(exception);
 			}
 		}
 		if (check) {
-			if ( wrapIn.getInfoId() == null || wrapIn.getInfoId().isEmpty() || "(0)".equals(wrapIn.getInfoId())) {
+			if (wrapIn.getInfoId() == null || wrapIn.getInfoId().isEmpty() || "(0)".equals(wrapIn.getInfoId())) {
 				check = false;
 				Exception exception = new InfoIdEmptyException();
 				result.error(exception);
 			}
 		}
-		
+
 		if (check) {
 			if (wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty()) {
 				check = false;
@@ -431,24 +437,26 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				result.error(exception);
 			}
 		}
-		
+
 		if (check) {
 			try {
-				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId( wrapIn.getApplication(), wrapIn.getInfoId() );
+				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(wrapIn.getApplication(),
+						wrapIn.getInfoId());
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new InfoListByApplicationException(e, wrapIn.getApplication(), wrapIn.getInfoId() );
+				Exception exception = new InfoListByApplicationException(e, wrapIn.getApplication(),
+						wrapIn.getInfoId());
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		if (check) {
-			if( ListTools.isNotEmpty( hotPictureInfos )) {
-				for( HotPictureInfo hotPictureInfo : hotPictureInfos ) {
+			if (ListTools.isNotEmpty(hotPictureInfos)) {
+				for (HotPictureInfo hotPictureInfo : hotPictureInfos) {
 					try {
-						hotPictureInfoService.changeTitle( hotPictureInfo.getId(), wrapIn.getTitle() );
-						wrap = new WrapOutId( hotPictureInfo.getId() );
+						hotPictureInfoService.changeTitle(hotPictureInfo.getId(), wrapIn.getTitle());
+						wrap = new WrapOutId(hotPictureInfo.getId());
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new InfoSaveException(e);
@@ -465,7 +473,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			}
 			result.setData(wrap);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	// @HttpMethodDescribe( value = "根据ID删除指定的热图信息.", response = WrapOutId.class
@@ -474,7 +482,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrap = null;
@@ -498,7 +507,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if ( check && hotPictureInfo != null ) {
+		if (check && hotPictureInfo != null) {
 			try {
 				hotPictureInfoService.delete(id);
 				wrap = new WrapOutId(id);
@@ -516,7 +525,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			}
 		}
 		result.setData(wrap);
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	// @HttpMethodDescribe( value = "根据应用类型以及信息ID删除热图信息.", response =
@@ -525,8 +534,8 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 	@Path("{applatioicn}/{infoId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, @PathParam("application") String application,
-			@PathParam("infoId") String infoId) {
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("application") String application, @PathParam("infoId") String infoId) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrap = null;
@@ -558,7 +567,7 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 			}
 		}
 		if (check) {
-			if (ListTools.isNotEmpty( hotPictureInfos ) ) {
+			if (ListTools.isNotEmpty(hotPictureInfos)) {
 				for (HotPictureInfo hotPictureInfo : hotPictureInfos) {
 					try {
 						hotPictureInfoService.deleteWithInfoId(hotPictureInfo.getInfoId());
@@ -578,6 +587,6 @@ public class HotPictureInfoAction extends StandardJaxrsAction {
 				}
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

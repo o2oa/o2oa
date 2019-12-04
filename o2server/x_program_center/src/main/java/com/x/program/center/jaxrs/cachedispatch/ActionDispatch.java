@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -40,6 +41,18 @@ class ActionDispatch extends BaseAction {
 							e.printStackTrace();
 						}
 					});
+				}else{
+					logger.print("{}通知center更新自身缓存=={}", wi.getClassName(), entry.getKey());
+					List<Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
+					for (Entry<String, CenterServer> centerEntry : centerList) {
+						try {
+							CipherConnectionAction.put(effectivePerson.getDebugger(),
+									Config.url_x_program_center_jaxrs(centerEntry, "cache"),wi);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}

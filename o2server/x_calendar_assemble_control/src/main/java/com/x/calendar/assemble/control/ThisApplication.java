@@ -1,7 +1,5 @@
 package com.x.calendar.assemble.control;
 
-import java.util.List;
-
 import com.x.base.core.project.Context;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.message.MessageConnector;
@@ -12,11 +10,12 @@ import com.x.calendar.assemble.control.service.UserManagerService;
 import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
 
+import java.util.List;
+
 public class ThisApplication {
 
 	protected static Context context;
 	public static final String CalendarMANAGER = "CalendarManager";
-
 	public static Context context() {
 		return context;
 	}

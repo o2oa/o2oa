@@ -59,9 +59,9 @@ public class DescribeBuilder {
 	public static void main(String[] args) throws IOException {
 
 		File basedir = new File(args[0]);
-
+        System.out.println(args[0]);
 		File sourcesdir = new File(args[1]);
-
+		 System.out.println(args[1]);
 		File dir = new File(basedir, "src/main/webapp/describe");
 
 		FileUtils.forceMkdir(dir);
@@ -84,8 +84,10 @@ public class DescribeBuilder {
 				}
 			}
 			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
+			
 			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
 					.collect(Collectors.toList());
+			
 			map.put("jaxrs", jaxrsClasses);
 			File file = new File(dir, "describe.json");
 			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
@@ -127,6 +129,7 @@ public class DescribeBuilder {
 		}
 		jaxrsClass.setMethods(jaxrsClass.getMethods().stream().sorted(Comparator.comparing(JaxrsMethod::getName))
 				.collect(Collectors.toList()));
+		
 		return jaxrsClass;
 	}
 
@@ -202,11 +205,19 @@ public class DescribeBuilder {
 		jaxrsMethod.setFormParameters(jaxrsMethod.getFormParameters().stream().filter(Objects::nonNull)
 				.sorted(Comparator.comparing(JaxrsFormParameter::getName, Comparator.nullsLast(String::compareTo)))
 				.collect(Collectors.toList()));
-		jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
+		/*
+		 jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
 				.sorted(Comparator.comparing(JaxrsQueryParameter::getName, Comparator.nullsLast(String::compareTo)))
 				.collect(Collectors.toList()));
+		*/
+		jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
+                                      .collect(Collectors.toList()));
+		/*
 		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
 				.sorted(Comparator.comparing(JaxrsPathParameter::getName, Comparator.nullsLast(String::compareTo)))
+				.collect(Collectors.toList()));
+		*/
+		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
 				.collect(Collectors.toList()));
 		return jaxrsMethod;
 	}
@@ -339,6 +350,16 @@ public class DescribeBuilder {
 					if (StringUtils.containsAny(jaxrsField.getType(), "<String>", "<Boolean>", "<Date>", "<Integer>",
 							"<Double>", "<Long>", "<Float>")) {
 						jaxrsField.setIsBaseType(true);
+					}else {
+						//wwx add 获取类信息
+						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
+						if(null !=fieldTypeDescribe) {
+							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
+							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
+							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
+							jaxrsField.setFieldSample(fieldTypeDescribe.fieldSample());
+						}
+
 					}
 				} else {
 					// O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
@@ -350,6 +371,14 @@ public class DescribeBuilder {
 					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
 							"Double", "Long", "Float")) {
 						jaxrsField.setIsBaseType(true);
+					}else {
+						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
+						if(null !=fieldTypeDescribe) {
+							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
+							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
+							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
+						}
+						
 					}
 				}
 				list.add(jaxrsField);
@@ -622,6 +651,14 @@ public class DescribeBuilder {
 		private Boolean isCollection;
 		private String description;
 		private Boolean isBaseType;
+		
+        //当参数不是基础类型时，记录类型信息
+		private String fieldType;
+		private String fieldValue;
+		private String fieldTypeName;
+		private String fieldSample;
+
+
 
 		public String getName() {
 			return name;
@@ -663,6 +700,37 @@ public class DescribeBuilder {
 			this.isBaseType = isBaseType;
 		}
 
+		public String getFieldType() {
+			return fieldType;
+		}
+
+		public void setFieldType(String fieldTyp) {
+			this.fieldType = fieldTyp;
+		}
+
+		public String getFieldValue() {
+			return fieldValue;
+		}
+
+		public void setFieldValue(String fieldValue) {
+			this.fieldValue = fieldValue;
+		}
+		
+		public String getFieldTypeName() {
+			return fieldTypeName;
+		}
+
+		public void setFieldTypeName(String fieldTypeName) {
+			this.fieldTypeName = fieldTypeName;
+		}
+		
+		public String getFieldSample() {
+			return fieldSample;
+		}
+
+		public void setFieldSample(String fieldSample) {
+			this.fieldSample = fieldSample;
+		}
 	}
 
 	public class JaxrsPathParameter {

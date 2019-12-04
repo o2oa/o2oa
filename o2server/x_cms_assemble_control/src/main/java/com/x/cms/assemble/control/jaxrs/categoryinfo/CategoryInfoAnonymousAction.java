@@ -1,19 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -23,14 +9,25 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 @Path("anonymous/categoryinfo")
 @JaxrsDescribe("可匿名访问的信息发布内容分类管理服务")
 public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
-	
+
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( CategoryInfoAnonymousAction.class );
 	
 	@JaxrsMethodDescribe(value = "根据Flag获取分类信息对象.", action = ActionGetAnonymous.class)
@@ -43,14 +40,14 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGetAnonymous.Wo> result = null;
 		try {
-			result = new ActionGetAnonymous().execute( request, flag, effectivePerson );
+			result = ((ActionGetAnonymous)proxy.getProxy(ActionGetAnonymous.class)).execute( request, flag, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "根据ID查询分类信息对象时发生异常。flag:" + flag );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息分类,下一页.", action = ActionListNextWithFilterAnonymous.class)
@@ -66,14 +63,14 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListNextWithFilterAnonymous.Wo>> result = null;
 		try {
-			result = new ActionListNextWithFilterAnonymous().execute( request, effectivePerson, id, count, jsonElement);
+			result = ((ActionListNextWithFilterAnonymous)proxy.getProxy(ActionListNextWithFilterAnonymous.class)).execute( request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "列示根据过滤条件的信息分类时发生异常。" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问文章信息的所有分类列表.", action = ActionListWhatICanView_Article.class)
@@ -86,14 +83,14 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_Article.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_Article().execute( request, appId, effectivePerson );
+			result = ((ActionListWhatICanView_Article)proxy.getProxy(ActionListWhatICanView_Article.class)).execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "根据指定应用栏目ID查询分类信息列表时发生异常。ID:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问数据信息的所有分类列表.", action = ActionListWhatICanView_Data.class)
@@ -106,14 +103,14 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_Data.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_Data().execute( request, appId, effectivePerson );
+			result = ((ActionListWhatICanView_Data)proxy.getProxy(ActionListWhatICanView_Data.class)).execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "根据指定应用栏目ID查询分类信息列表时发生异常。ID:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问信息的所有分类列表.", action = ActionListWhatICanView_AllType.class)
@@ -126,14 +123,14 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanView_AllType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanView_AllType().execute( request, appId, effectivePerson );
+			result = ((ActionListWhatICanView_AllType)proxy.getProxy(ActionListWhatICanView_AllType.class)).execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "根据指定应用栏目ID查询分类信息列表时发生异常。ID:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限发布信息的所有分类列表.", action = ActionListWhatICanPublish.class)
@@ -146,13 +143,13 @@ public class CategoryInfoAnonymousAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<List<ActionListWhatICanPublish.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanPublish().execute( request, appId, effectivePerson );
+			result = ((ActionListWhatICanPublish)proxy.getProxy(ActionListWhatICanPublish.class)).execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionCategoryInfoProcess( e, "根据应用栏目ID查询分类信息对象时发生异常。AppId:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}	
 }

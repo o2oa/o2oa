@@ -1,12 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,8 +15,12 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 public class ActionDelete extends BaseAction {
-	
+
+	@AuditLog(operation = "删除表单")
 	protected ActionResult<WrapOutId> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;

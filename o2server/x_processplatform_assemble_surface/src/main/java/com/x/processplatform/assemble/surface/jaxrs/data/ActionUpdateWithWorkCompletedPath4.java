@@ -5,12 +5,16 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.jaxrs.data.ActionUpdateWithWorkCompletedPath3.Wo;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -37,11 +41,12 @@ class ActionUpdateWithWorkCompletedPath4 extends BaseAction {
 			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
 				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
-			this.updateData(business, workCompleted, jsonElement, path0, path1, path2, path3, path4);
-			/** 在方法内进行了commit不需要再次进行commit */
-			// emc.commit();
-			Wo wo = new Wo();
-			wo.setId(workCompleted.getId());
+			Wo wo = ThisApplication.context().applications()
+					.putQuery(
+							x_processplatform_service_processing.class, Applications.joinQueryUri("data",
+									"workcompleted", workCompleted.getId(), path0, path1, path2, path3, path4),
+							jsonElement, workCompleted.getJob())
+					.getData(Wo.class);
 			result.setData(wo);
 			return result;
 		}

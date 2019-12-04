@@ -22,7 +22,11 @@ public class ExternalDataSource extends ConfigObject {
 		this.driverClassName = "";
 		this.dictionary = "";
 		this.maxTotal = DEFAULT_MAXTOTAL;
+		this.maxIdle = DEFAULT_MAXIDLE;
 		this.logLevel = LogLevel.WARN;
+		this.statEnable = DEFAULT_STATENABLE;
+		this.statFilter = DEFAULT_STATFILTER;
+		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
 	}
 
 	public static ExternalDataSource defaultInstance() {
@@ -41,8 +45,16 @@ public class ExternalDataSource extends ConfigObject {
 	private String driverClassName;
 	@FieldDescribe("方言")
 	private String dictionary;
-	@FieldDescribe("最大连接数")
+	@FieldDescribe("最大使用连接数")
 	private Integer maxTotal;
+	@FieldDescribe("最大空闲连接数")
+	private Integer maxIdle;
+	@FieldDescribe("启用统计,默认启用")
+	private Boolean statEnable;
+	@FieldDescribe("统计方式配置,默认mergeStat")
+	private String statFilter;
+	@FieldDescribe("执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.")
+	private Integer slowSqlMillis;
 
 	@FieldDescribe("设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*")
 	private List<String> includes;
@@ -52,6 +64,14 @@ public class ExternalDataSource extends ConfigObject {
 	private LogLevel logLevel = LogLevel.WARN;
 
 	public static final Integer DEFAULT_MAXTOTAL = 50;
+
+	public static final Integer DEFAULT_MAXIDLE = 0;
+
+	public static final Boolean DEFAULT_STATENABLE = true;
+
+	public static final String DEFAULT_STATFILTER = "mergeStat";
+
+	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 
 	public LogLevel getLogLevel() {
 		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
@@ -67,8 +87,28 @@ public class ExternalDataSource extends ConfigObject {
 				: this.dictionary;
 	}
 
+	public Integer getSlowSqlMillis() {
+		return (null == this.slowSqlMillis || this.slowSqlMillis < 1) ? DEFAULT_SLOWSQLMILLIS : this.slowSqlMillis;
+	}
+
+	public String getStatFilter() {
+		return StringUtils.isEmpty(this.statFilter) ? DEFAULT_STATFILTER : this.statFilter;
+	}
+
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(this.statEnable);
+	}
+
+	public Integer getMaxIdle() {
+		if ((this.maxIdle == null) || (this.maxIdle < 1)) {
+			return DEFAULT_MAXIDLE;
+		} else {
+			return this.maxTotal;
+		}
+	}
+
 	public Integer getMaxTotal() {
-		if ((this.maxTotal == null) || (this.maxTotal < 1)) {
+		if ((this.maxTotal == null) || (this.maxTotal < 0)) {
 			return DEFAULT_MAXTOTAL;
 		} else {
 			return this.maxTotal;

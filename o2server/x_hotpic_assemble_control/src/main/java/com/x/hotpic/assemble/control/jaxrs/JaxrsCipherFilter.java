@@ -9,6 +9,6 @@ import com.x.base.core.project.jaxrs.CipherJaxrsFilter;
  * 
  * @author liyi *
  */
-@WebFilter(urlPatterns = { "/jaxrs/cipher/*" })
+@WebFilter(urlPatterns = { "/jaxrs/cipher/*" }, asyncSupported = true)
 public class JaxrsCipherFilter extends CipherJaxrsFilter {
 }

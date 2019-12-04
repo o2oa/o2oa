@@ -8,21 +8,39 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class Communicate extends ConfigObject {
 
-	public static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+	public static final Boolean DEFAULT_WSENABLE = true;
+	public static final Boolean DEFAULT_PMSENABLE = true;
+	public static final Boolean DEFAULT_CALENDARENABLE = true;
 
 	public Communicate() {
-		this.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
+		this.wsEnable = DEFAULT_WSENABLE;
+		this.pmsEnable = DEFAULT_PMSENABLE;
+		this.calendarEnable = DEFAULT_CALENDARENABLE;
 	}
 
 	public static Communicate defaultInstance() {
 		return new Communicate();
 	}
 
-	@FieldDescribe("是否启用webSocket推送消息.")
-	private Boolean webSocketEnable;
+	@FieldDescribe("是否启用ws消息.")
+	private Boolean wsEnable;
 
-	public Boolean webSocketEnable() {
-		return BooleanUtils.isTrue(webSocketEnable);
+	@FieldDescribe("是否启用pms消息.")
+	private Boolean pmsEnable;
+
+	@FieldDescribe("是否启用calendar消息.")
+	private Boolean calendarEnable;
+
+	public Boolean wsEnable() {
+		return BooleanUtils.isTrue(wsEnable);
+	}
+
+	public Boolean pmsEnable() {
+		return BooleanUtils.isTrue(pmsEnable);
+	}
+
+	public Boolean calendarEnable() {
+		return BooleanUtils.isTrue(calendarEnable);
 	}
 
 	@FieldDescribe("清理设置.")

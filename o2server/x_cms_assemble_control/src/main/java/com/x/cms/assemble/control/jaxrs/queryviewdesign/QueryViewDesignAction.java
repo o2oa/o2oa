@@ -1,21 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.queryviewdesign;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -24,12 +8,24 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.query.Query;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("queryview/design")
 @JaxrsDescribe("数据视图设计信息管理")
 public class QueryViewDesignAction extends BaseAction {
+
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 
 	@JaxrsMethodDescribe(value = "列示数据视图设计信息对象,下一页.", action = ActionListNext.class)
 	@GET
@@ -42,12 +38,12 @@ public class QueryViewDesignAction extends BaseAction {
 			) {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListNext().execute(id, count);
+			result = ((ActionListNext)proxy.getProxy(ActionListNext.class)).execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示数据视图设计信息对象,上一页.", action = ActionListPrev.class)
@@ -61,12 +57,12 @@ public class QueryViewDesignAction extends BaseAction {
 			) {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListPrev().execute(id, count);
+			result = ((ActionListPrev)proxy.getProxy(ActionListPrev.class)).execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据标识获取数据视图设计信息内容.", action = ActionFlag.class)
@@ -79,12 +75,12 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionFlag().execute(effectivePerson, flag);
+			result = ((ActionFlag)proxy.getProxy(ActionFlag.class)).execute(effectivePerson, flag);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取数据视图设计信息内容.", action = ActionGet.class)
@@ -97,12 +93,12 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionGet().execute(effectivePerson, id);
+			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute(effectivePerson, id);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "创建数据视图设计信息.", action = ActionCreate.class )
@@ -116,14 +112,14 @@ public class QueryViewDesignAction extends BaseAction {
 
 		if( check ){
 			try {
-				result = new ActionCreate().execute( request, effectivePerson, jsonElement );
+				result = ((ActionCreate)proxy.getProxy(ActionCreate.class)).execute( request, effectivePerson, jsonElement );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
 			}
 		}
 		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "更新数据视图设计信息.", action = ActionUpdate.class )
@@ -140,13 +136,13 @@ public class QueryViewDesignAction extends BaseAction {
 
 		if( check ){
 			try {
-				result = new ActionUpdate().execute(effectivePerson, id, jsonElement );
+				result = ((ActionUpdate)proxy.getProxy(ActionUpdate.class)).execute(effectivePerson, id, jsonElement );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "删除数据视图设计信息.", action = ActionDelete.class )
@@ -159,12 +155,12 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionDelete().execute( effectivePerson, id );
+			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute( effectivePerson, id );
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "根据应用列示视图设计信息.", action = ActionListWithApplication.class )
@@ -177,12 +173,12 @@ public class QueryViewDesignAction extends BaseAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListWithApplication().execute(effectivePerson, applicationId);
+			result = ((ActionListWithApplication)proxy.getProxy(ActionListWithApplication.class)).execute(effectivePerson, applicationId);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe( value = "模拟执行视图设计信息.", action = ActionSimulate.class )
@@ -207,12 +203,12 @@ public class QueryViewDesignAction extends BaseAction {
 		}
 		if( check ){
 			try {
-				result = new ActionSimulate().execute(effectivePerson, flag, wrapIn);
+				result = ((ActionSimulate)proxy.getProxy(ActionSimulate.class)).execute(effectivePerson, flag, wrapIn);
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

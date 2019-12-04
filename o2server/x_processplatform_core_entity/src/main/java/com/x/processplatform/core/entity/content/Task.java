@@ -133,6 +133,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.creatorPerson = work.getCreatorPerson();
 		this.creatorIdentity = work.getCreatorIdentity();
 		this.creatorUnit = work.getCreatorUnit();
+		this.workCreateType = work.getWorkCreateType();
 		this.expireTime = expireTime;
 		if (ListTools.isNotEmpty(routes)) {
 			routes.stream().sorted(Comparator.comparing(Route::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
@@ -452,6 +453,13 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + first_FIELDNAME)
 	private Boolean first;
+
+	public static final String workCreateType_FIELDNAME = "workCreateType";
+	@FieldDescribe("工作创建类型,surface,assgin")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workCreateType_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + workCreateType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String workCreateType;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1242,6 +1250,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setTimeValue02(Date timeValue02) {
 		this.timeValue02 = timeValue02;
+	}
+
+	public String getWorkCreateType() {
+		return workCreateType;
+	}
+
+	public void setWorkCreateType(String workCreateType) {
+		this.workCreateType = workCreateType;
 	}
 
 }

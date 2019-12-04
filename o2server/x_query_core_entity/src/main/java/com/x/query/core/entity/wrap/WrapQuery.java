@@ -26,6 +26,12 @@ public class WrapQuery extends Query {
 	@FieldDescribe("统计")
 	private List<WrapStat> statList = new ArrayList<>();
 
+	@FieldDescribe("数据表")
+	private List<WrapTable> tableList = new ArrayList<>();
+
+	@FieldDescribe("查询配置")
+	private List<WrapStatement> statementList = new ArrayList<>();
+
 	@FieldDescribe("展现")
 	private List<WrapReveal> revealList = new ArrayList<>();
 
@@ -35,6 +41,14 @@ public class WrapQuery extends Query {
 
 	public List<String> listStatId() throws Exception {
 		return ListTools.extractProperty(this.getStatList(), JpaObject.id_FIELDNAME, String.class, true, true);
+	}
+
+	public List<String> listTableId() throws Exception {
+		return ListTools.extractProperty(this.getTableList(), JpaObject.id_FIELDNAME, String.class, true, true);
+	}
+
+	public List<String> listStatementId() throws Exception {
+		return ListTools.extractProperty(this.getStatementList(), JpaObject.id_FIELDNAME, String.class, true, true);
 	}
 
 	public List<String> listRevealId() throws Exception {
@@ -65,4 +79,19 @@ public class WrapQuery extends Query {
 		this.revealList = revealList;
 	}
 
+	public List<WrapTable> getTableList() {
+		return tableList;
+	}
+
+	public void setTableList(List<WrapTable> tableList) {
+		this.tableList = tableList;
+	}
+
+	public List<WrapStatement> getStatementList() {
+		return statementList;
+	}
+
+	public void setStatementList(List<WrapStatement> statementList) {
+		this.statementList = statementList;
+	}
 }

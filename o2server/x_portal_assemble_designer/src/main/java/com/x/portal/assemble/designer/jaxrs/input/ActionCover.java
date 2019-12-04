@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -142,6 +143,10 @@ class ActionCover extends BaseAction {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
+		ApplicationCache.notify(Script.class);
+		ApplicationCache.notify(Page.class);
+		ApplicationCache.notify(Widget.class);
+		ApplicationCache.notify(Portal.class);
 	}
 
 	private <T extends JpaObject> String idleNameWithPortal(Business business, String portalId, String name,

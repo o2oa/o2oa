@@ -51,7 +51,7 @@ public class ActionDelete extends BaseAction {
 			emc.remove(o);
 		}
 		emc.delete(WorkLog.class, business.workLog().listWithJob(job));
-		for (Item o : business.dataItem().listWithJobWithPath(job)) {
+		for (Item o : business.item().listWithJobWithPath(job)) {
 			emc.remove(o);
 		}
 		List<String> workIds = business.work().listWithJob(job);

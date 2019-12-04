@@ -9,7 +9,6 @@ import com.x.calendar.assemble.control.jaxrs.calendar.CalendarAction;
 import com.x.calendar.assemble.control.jaxrs.event.Calendar_EventAction;
 import com.x.calendar.assemble.control.jaxrs.event.Calendar_EventMessageAction;
 import com.x.calendar.assemble.control.jaxrs.setting.CalendarSettingAction;
-import com.x.calendar.assemble.control.jaxrs.test.TestAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -20,7 +19,6 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(Calendar_EventAction.class);
 		this.classes.add(CalendarAction.class);
 		this.classes.add(Calendar_EventMessageAction.class);
-		this.classes.add(TestAction.class);
 		return this.classes;
 	}
 

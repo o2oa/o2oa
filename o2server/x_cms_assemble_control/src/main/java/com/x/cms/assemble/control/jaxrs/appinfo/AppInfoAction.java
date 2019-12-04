@@ -1,24 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -28,13 +9,26 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("appinfo")
 @JaxrsDescribe("信息发布(CMS)-栏目(APPINFO)管理服务")
 public class AppInfoAction extends StandardJaxrsAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger(AppInfoAction.class);
 
 	@JaxrsMethodDescribe(value = "创建新的栏目信息或者更新已存在的栏目信息。", action = ActionSave.class)
@@ -47,7 +41,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if (check) {
 			try {
-				result = new ActionSave().execute( request, effectivePerson, jsonElement );
+				result = ((ActionSave)proxy.getProxy(ActionSave.class)).execute( request, effectivePerson, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppInfoProcess(e, "栏目信息保存时发生异常。");
@@ -55,7 +49,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除指定的栏目信息（如果栏目下仍存在分类信息，则不可删除）。", action = ActionDelete.class)
@@ -68,14 +62,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionDelete().execute(request, effectivePerson, id);
+			result = ((ActionDelete)proxy.getProxy(ActionDelete.class)).execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据ID删除CMS应用信息对象发生未知异常，ID:" + id);
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取栏目访问控制信息.", action = ActionQueryGetControl.class)
@@ -90,14 +84,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionQueryGetControl().execute( request, id, effectivePerson );
+				result = ((ActionQueryGetControl)proxy.getProxy(ActionQueryGetControl.class)).execute( request, id, effectivePerson );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据栏目ID删除指定栏目内所有的信息文档。", action = ActionEraseDocumentWithAppInfo.class)
@@ -110,14 +104,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionEraseDocumentWithAppInfo.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionEraseDocumentWithAppInfo().execute(request, id, effectivePerson );
+			result = ((ActionEraseDocumentWithAppInfo)proxy.getProxy(ActionEraseDocumentWithAppInfo.class)).execute(request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据栏目ID删除所有的信息文档发生未知异常，ID:" + id);
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据标识获取信息栏目信息对象.", action = ActionGet.class)
@@ -130,14 +124,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, effectivePerson, flag );
+			result = ((ActionGet)proxy.getProxy(ActionGet.class)).execute( request, effectivePerson, flag );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID查询应用栏目信息对象时发生异常。flag:" + flag );
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据别名获取信息栏目信息对象.", action = ActionGetByAlias.class)
@@ -149,17 +143,17 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGetByAlias().execute(request, effectivePerson, alias);
+			result = ((ActionGetByAlias)proxy.getProxy(ActionGetByAlias.class)).execute(request, effectivePerson, alias);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据指定应用唯一标识查询应用栏目信息对象时发生异常。ALIAS:" + alias);
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle_WithAppType.class)
 	@GET
 	@Path("list/user/view/article/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -167,9 +161,9 @@ public class AppInfoAction extends StandardJaxrsAction {
 	public void listWhatICanViewArticle_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType ) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListWhatICanViewArticle_WithAppType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewArticle_WithAppType().execute(request, effectivePerson, appType );
+			result = ((ActionListWhatICanViewArticle_WithAppType)proxy.getProxy(ActionListWhatICanViewArticle_WithAppType.class)).execute(request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -177,7 +171,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewArticle.class)
@@ -189,7 +183,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewArticle.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewArticle().execute(request, effectivePerson);
+			result = ((ActionListWhatICanViewArticle)proxy.getProxy(ActionListWhatICanViewArticle.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -197,7 +191,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
@@ -209,7 +203,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewData().execute(request, effectivePerson);
+			result = ((ActionListWhatICanViewData)proxy.getProxy(ActionListWhatICanViewData.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -217,10 +211,10 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有信息栏目信息列表.", action = ActionListWhatICanViewData_WithAppType.class)
 	@GET
 	@Path("list/user/view/data/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -230,7 +224,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewData.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewData_WithAppType().execute(request, effectivePerson, appType );
+			result = ((ActionListWhatICanViewData_WithAppType)proxy.getProxy(ActionListWhatICanViewData_WithAppType.class)).execute(request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -238,10 +232,10 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType_WithAppType.class)
 	@GET
 	@Path("list/user/view/all/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -251,7 +245,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewAllDocType_WithAppType().execute( request, effectivePerson, appType );
+			result = ((ActionListWhatICanViewAllDocType_WithAppType)proxy.getProxy(ActionListWhatICanViewAllDocType_WithAppType.class)).execute( request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -259,7 +253,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限查看的所有栏目信息列表.", action = ActionListWhatICanViewAllDocType.class)
@@ -271,7 +265,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListWhatICanViewAllDocType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanViewAllDocType().execute(request, effectivePerson);
+			result = ((ActionListWhatICanViewAllDocType)proxy.getProxy(ActionListWhatICanViewAllDocType.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -279,7 +273,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish.class)
@@ -291,7 +285,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanPublish().execute(request, effectivePerson);
+			result = ((ActionListWhatICanPublish)proxy.getProxy(ActionListWhatICanPublish.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -299,10 +293,10 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish.class)
+	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish_WithAppType.class)
 	@GET
 	@Path("list/user/publish/type/{appType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -312,7 +306,8 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanPublish_WithAppType().execute(request, effectivePerson, appType );
+			result = ((ActionListWhatICanPublish_WithAppType)proxy.getProxy(ActionListWhatICanPublish_WithAppType.class))
+					.execute(request, effectivePerson, appType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -320,7 +315,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionGetPublishableAppInfo.class)
@@ -333,7 +328,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGetPublishableAppInfo().execute(request, effectivePerson, appId );
+			result = ((ActionGetPublishableAppInfo)proxy.getProxy(ActionGetPublishableAppInfo.class)).execute(request, effectivePerson, appId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -341,7 +336,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取所有的栏目分类信息列表.", action = ActionListAllAppType.class)
@@ -353,7 +348,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListAllAppType.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListAllAppType().execute(request, effectivePerson);
+			result = ((ActionListAllAppType)proxy.getProxy(ActionListAllAppType.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -361,7 +356,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage.class)
@@ -373,7 +368,8 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanManage().execute(request, effectivePerson);
+			result = ((ActionListWhatICanManage)proxy.getProxy(ActionListWhatICanManage.class))
+					.execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -381,7 +377,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "根据栏目类别名称获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage_WithAppType.class)
@@ -394,7 +390,8 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListWhatICanManage_WithAppType().execute(request, effectivePerson, appType);
+			result = ((ActionListWhatICanManage_WithAppType)proxy.getProxy(ActionListWhatICanManage_WithAppType.class))
+					.execute(request, effectivePerson, appType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e,
@@ -402,7 +399,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取用户有权限访问到的所有信息栏目信息列表.", action = ActionListAll.class)
@@ -414,14 +411,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListAll().execute(request, effectivePerson);
+			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute(request, effectivePerson);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "查询所有应用栏目信息对象时发生异常");
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,下一页.", action = ActionListNextWithFilter.class)
@@ -436,14 +433,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListNextWithFilter().execute(request, effectivePerson, id, count, jsonElement );
+			result = ((ActionListNextWithFilter)proxy.getProxy(ActionListNextWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "查询栏目信息对象时发生异常");
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,上一页.", action = ActionListPrevWithFilter.class)
@@ -458,14 +455,14 @@ public class AppInfoAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<ActionListPrevWithFilter.Wo>> result = new ActionResult<>();
 		try {
-			result = new ActionListPrevWithFilter().execute(request, effectivePerson, id, count, jsonElement);
+			result = ((ActionListPrevWithFilter)proxy.getProxy(ActionListPrevWithFilter.class)).execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "查询栏目信息对象时发生异常");
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "上传或者替换栏目的图标内容，可以指定压缩大小	.", action = ActionAppIconUpload.class)
@@ -482,11 +479,11 @@ public class AppInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionAppIconUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionAppIconUpload().execute(request, effectivePerson, appId, size, bytes, disposition );
+			result = ((ActionAppIconUpload)proxy.getProxy(ActionAppIconUpload.class)).execute(request, effectivePerson, appId, size, bytes, disposition );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

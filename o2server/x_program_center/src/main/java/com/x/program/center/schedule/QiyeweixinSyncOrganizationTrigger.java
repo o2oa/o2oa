@@ -16,7 +16,7 @@ public class QiyeweixinSyncOrganizationTrigger extends BaseAction {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			if (pirmaryCenter()) {
-				ThisApplication.dingdingSyncOrganizationCallbackRequest.add(new Object());
+				ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.add(new Object());
 			}
 		} catch (Exception e) {
 			logger.error(e);

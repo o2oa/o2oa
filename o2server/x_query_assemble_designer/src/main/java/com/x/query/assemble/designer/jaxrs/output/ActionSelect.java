@@ -13,10 +13,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
-import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
-import com.x.query.core.entity.wrap.WrapStat;
-import com.x.query.core.entity.wrap.WrapView;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.wrap.*;
 
 import net.sf.ehcache.Element;
 
@@ -54,6 +53,8 @@ class ActionSelect extends BaseAction {
 		wo.setStatList(WrapStat.outCopier.copy(business.entityManagerContainer().list(Stat.class, wi.listStatId())));
 		wo.setRevealList(
 				WrapReveal.outCopier.copy(business.entityManagerContainer().list(Reveal.class, wi.listRevealId())));
+		wo.setTableList(WrapTable.outCopier.copy(business.entityManagerContainer().list(Table.class, wi.listTableId())));
+		wo.setStatementList(WrapStatement.outCopier.copy(business.entityManagerContainer().list(Statement.class, wi.listStatementId())));
 		return wo;
 	}
 

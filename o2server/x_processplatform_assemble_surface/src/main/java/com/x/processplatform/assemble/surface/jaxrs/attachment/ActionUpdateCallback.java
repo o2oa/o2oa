@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -37,6 +38,9 @@ class ActionUpdateCallback extends BaseAction {
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
+			}
+			if(!fileName.equalsIgnoreCase(attachment.getName())){
+				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
 			/** 禁止不带扩展名的文件上传 */
 			// if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {

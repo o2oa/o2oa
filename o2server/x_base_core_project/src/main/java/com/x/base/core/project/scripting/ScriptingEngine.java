@@ -41,6 +41,8 @@ public class ScriptingEngine {
 	public static final String BINDINGNAME_ROUTES = "routes";
 	public static final String BINDINGNAME_ROUTE = "route";
 
+	public static final String BINDINGNAME_RESOURCES = "resources";
+
 	public ScriptingEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
 	}

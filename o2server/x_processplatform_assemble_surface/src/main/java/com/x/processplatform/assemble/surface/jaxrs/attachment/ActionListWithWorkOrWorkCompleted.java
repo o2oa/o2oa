@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,8 +45,9 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			List<Wo> wos = new ArrayList<>();
 
-			for (Wo wo : this.list(business, job)) {
-				if (this.read(wo, effectivePerson, identities, units)) {
+			for (Attachment attachment : this.list(business, job)) {
+				if (this.read(attachment, effectivePerson, identities, units)) {
+					Wo wo = Wo.copier.copy(attachment);
 					wo.getControl().setAllowRead(true);
 					wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
 					wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
@@ -53,66 +55,19 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 
-			wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime)).collect(Collectors.toList());
+			wos = wos.stream().sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+					.thenComparing(Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+					.collect(Collectors.toList());
 
 			result.setData(wos);
 			return result;
 		}
 	}
 
-	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getReadIdentityList())
-					|| ListTools.containsAny(units, wo.getReadUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getEditIdentityList())
-					|| ListTools.containsAny(units, wo.getEditUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(units, wo.getControllerUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private List<Wo> list(Business business, String job) throws Exception {
+	private List<Attachment> list(Business business, String job) throws Exception {
 		List<Attachment> os = business.entityManagerContainer().listEqual(Attachment.class, Attachment.job_FIELDNAME,
 				job);
-		List<Wo> wos = Wo.copier.copy(os);
-		return wos;
+		return os;
 	}
 
 	public static class Wo extends Attachment {

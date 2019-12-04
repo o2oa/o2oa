@@ -17,14 +17,18 @@ public class WebServer extends ConfigObject {
 		this.sslEnable = false;
 		this.proxyHost = "";
 		this.proxyPort = null;
-		this.weight = default_weight;
-		this.dirAllowed = default_dirAllowed;
+		this.weight = DEFAULT_WEIGHT;
+		this.dirAllowed = DEFAULT_DIRALLOWED;
+		this.statEnable = DEFAULT_STATENABLE;
+		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 	}
 
-	private static final Integer default_http_port = 80;
-	private static final Integer default_https_port = 443;
-	private static final Integer default_weight = 100;
-	private static final Boolean default_dirAllowed = false;
+	private static final Integer DEFAULT_HTTP_PORT = 80;
+	private static final Integer DEFAULT_HTTPS_PORT = 443;
+	private static final Integer DEFAULT_WEIGHT = 100;
+	private static final Boolean DEFAULT_DIRALLOWED = false;
+	private static final Boolean DEFAULT_STATENABLE = false;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.gif,*.jpg,*.png,*.ico";
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -40,14 +44,26 @@ public class WebServer extends ConfigObject {
 	private Integer weight;
 	@FieldDescribe("允许浏览目录,")
 	private Boolean dirAllowed;
+	@FieldDescribe("启用统计,默认启用统计.")
+	private Boolean statEnable;
+	@FieldDescribe("统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico")
+	private String statExclusions;
+
+	public String getStatExclusions() {
+		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
+	}
+
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(statEnable);
+	}
 
 	public Boolean getDirAllowed() {
-		return dirAllowed == null ? default_dirAllowed : dirAllowed;
+		return dirAllowed == null ? DEFAULT_DIRALLOWED : dirAllowed;
 	}
 
 	public Integer getWeight() {
 		if (weight == null || weight < 0) {
-			return default_weight;
+			return DEFAULT_WEIGHT;
 		}
 		return weight;
 	}
@@ -61,9 +77,9 @@ public class WebServer extends ConfigObject {
 			return this.port;
 		} else {
 			if (this.getSslEnable()) {
-				return default_https_port;
+				return DEFAULT_HTTPS_PORT;
 			} else {
-				return default_http_port;
+				return DEFAULT_HTTP_PORT;
 			}
 
 		}
@@ -108,9 +124,5 @@ public class WebServer extends ConfigObject {
 	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
-
-	// public void setHost(String host) {
-	// this.host = host;
-	// }
 
 }

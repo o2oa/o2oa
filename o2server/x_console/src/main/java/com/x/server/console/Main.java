@@ -29,6 +29,7 @@ import org.eclipse.jetty.deploy.DeploymentManager;
 import org.quartz.Scheduler;
 
 import com.x.base.core.project.config.ApplicationServer;
+import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.StorageServer;
@@ -43,14 +44,15 @@ import com.x.server.console.action.ActionEraseContentBbs;
 import com.x.server.console.action.ActionEraseContentCms;
 import com.x.server.console.action.ActionEraseContentLog;
 import com.x.server.console.action.ActionEraseContentProcessPlatform;
+import com.x.server.console.action.ActionHeapDump;
 import com.x.server.console.action.ActionRestoreData;
 import com.x.server.console.action.ActionRestoreStorage;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionShowCpu;
-import com.x.server.console.action.ActionShowDataSource;
 import com.x.server.console.action.ActionShowMemory;
 import com.x.server.console.action.ActionShowOs;
 import com.x.server.console.action.ActionShowThread;
+import com.x.server.console.action.ActionStack;
 import com.x.server.console.action.ActionUpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
@@ -142,8 +144,6 @@ public class Main {
 		}
 
 		Matcher matcher = null;
-		// try (BufferedReader reader = new BufferedReader(new
-		// InputStreamReader(pipedInput))) {
 		String cmd = "";
 		while (true) {
 			try {
@@ -153,11 +153,6 @@ public class Main {
 				continue;
 			}
 			if (StringUtils.isBlank(cmd)) {
-				continue;
-			}
-			matcher = CommandFactory.test_pattern.matcher(cmd);
-			if (matcher.find()) {
-				test();
 				continue;
 			}
 
@@ -173,6 +168,18 @@ public class Main {
 				continue;
 			}
 
+			matcher = CommandFactory.stack_pattern.matcher(cmd);
+			if (matcher.find()) {
+				stack(matcher.group(1), matcher.group(2), matcher.group(3));
+				continue;
+			}
+
+			matcher = CommandFactory.heapDump_pattern.matcher(cmd);
+			if (matcher.find()) {
+				heapDump(matcher.group(1));
+				continue;
+			}
+
 			matcher = CommandFactory.show_memory_pattern.matcher(cmd);
 			if (matcher.find()) {
 				showMemory(matcher.group(1), matcher.group(2));
@@ -182,12 +189,6 @@ public class Main {
 			matcher = CommandFactory.show_thread_pattern.matcher(cmd);
 			if (matcher.find()) {
 				showThread(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
-			matcher = CommandFactory.show_dataSource_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showDataSource(matcher.group(1), matcher.group(2));
 				continue;
 			}
 
@@ -425,15 +426,6 @@ public class Main {
 		return true;
 	}
 
-	private static boolean showDataSource(String interval, String repeat) {
-		try {
-			return new ActionShowDataSource().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
 	private static boolean createEncryptKey(String password) {
 		try {
 			return new ActionCreateEncryptKey().execute(password);
@@ -603,8 +595,11 @@ public class Main {
 					startStorageServer();
 				}
 			}
-			if (Config.currentNode().getIsPrimaryCenter()) {
-				startCenterServer();
+			CenterServer centerServer = Config.currentNode().getCenter();
+			if (null != centerServer) {
+				if (BooleanUtils.isTrue(centerServer.getEnable())) {
+					startCenterServer();
+				}
 			}
 			ApplicationServer applicationServer = Config.currentNode().getApplication();
 			if (null != applicationServer) {
@@ -925,6 +920,24 @@ public class Main {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private static boolean stack(String count, String interval, String password) {
+		try {
+			return new ActionStack().execute(Integer.parseInt(count, 10), Integer.parseInt(interval, 10), password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	private static boolean heapDump(String password) {
+		try {
+			return new ActionHeapDump().execute(password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 }

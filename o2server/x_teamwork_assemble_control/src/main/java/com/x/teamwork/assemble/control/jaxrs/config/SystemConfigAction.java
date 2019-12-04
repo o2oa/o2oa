@@ -54,7 +54,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "根据ID获取系统配置信息", action = ActionGet.class )
@@ -77,7 +77,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "根据Code获取系统配置信息", action = ActionGetWithCode.class )
@@ -100,7 +100,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "判断当前用户是否有管理员权限", action = ActionIsManager.class )
@@ -123,7 +123,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe( value = "新建或者更新系统配置信息", action = ActionSave.class )
@@ -145,7 +145,7 @@ public class SystemConfigAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}	
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 }

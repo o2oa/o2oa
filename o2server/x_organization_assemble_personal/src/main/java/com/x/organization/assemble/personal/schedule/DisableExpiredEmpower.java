@@ -42,7 +42,7 @@ public class DisableExpiredEmpower extends AbstractJob {
 		Root<Empower> root = cq.from(Empower.class);
 		Predicate p = cb.equal(root.get(Empower_.enable), true);
 		p = cb.and(p, cb.lessThan(root.get(Empower_.completedTime), new Date()));
-		List<Empower> os = em.createQuery(cq).getResultList();
+		List<Empower> os = em.createQuery(cq.where(p)).getResultList();
 		if (!os.isEmpty()) {
 			emc.beginTransaction(Empower.class);
 			for (Empower o : os) {

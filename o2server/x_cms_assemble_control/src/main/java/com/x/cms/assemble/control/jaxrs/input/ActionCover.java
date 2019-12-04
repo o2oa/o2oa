@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.element.wrap.*;
 import org.apache.commons.collections4.ListUtils;
@@ -204,6 +205,14 @@ class ActionCover extends BaseAction {
 		}
 		
 		business.entityManagerContainer().commit();
+
+		ApplicationCache.notify(CategoryInfo.class);
+		ApplicationCache.notify(AppDictItem.class);
+		ApplicationCache.notify(AppDict.class);
+		ApplicationCache.notify(Form.class);
+		ApplicationCache.notify(Script.class);
+		ApplicationCache.notify(AppInfo.class);
+
 		return appInfo;
 	}
 

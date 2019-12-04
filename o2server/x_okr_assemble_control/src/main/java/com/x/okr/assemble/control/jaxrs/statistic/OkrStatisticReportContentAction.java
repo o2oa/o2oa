@@ -10,9 +10,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -41,7 +42,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@Path("excute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response excute(@Context HttpServletRequest request) {
+	public void excute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		try {
@@ -51,7 +52,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "测试定时代理，对工作的汇报提交情况进行统计分析.", action = ActionStReportContentCaculateAll.class)
@@ -59,7 +60,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@Path("excute/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response excuteAll(@Context HttpServletRequest request) {
+	public void excuteAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<WrapOutString> result = new ActionResult<>();
 		try {
@@ -69,7 +70,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@Path("filter/list")
@@ -77,7 +78,8 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listByCondition(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void listByCondition(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrStatisticReportContentCenter>> result = new ActionResult<>();
 		try {
@@ -87,7 +89,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@Path("filter/tree")
@@ -95,7 +97,8 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response treeByCondition(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void treeByCondition(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrStatisticReportContentCenter>> result = new ActionResult<>();
 		try {
@@ -105,7 +108,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@Path("filter/sub/{parentId}")
@@ -113,7 +116,8 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listReportContentByCondition(@Context HttpServletRequest request,
+	public void listReportContentByCondition(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("上级工作信息ID") @PathParam("parentId") String parentId, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrStatisticReportContentCenter>> result = new ActionResult<>();
@@ -125,7 +129,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@Path("date/list")
@@ -133,7 +137,8 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listDateByCondition(@Context HttpServletRequest request, JsonElement jsonElement) {
+	public void listDateByCondition(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<List<WoOkrReportSubmitStatusDate>> result = new ActionResult<>();
 		try {
@@ -143,7 +148,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@Path("export")
@@ -151,8 +156,8 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response export(@Context HttpServletRequest request, @Context HttpServletResponse response,
-			JsonElement jsonElement) {
+	public void export(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionStReportContentExport.Wo> result = new ActionResult<>();
 		try {
@@ -162,7 +167,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction {
 			result.error(e);
 			logger.warn("system excute ExcuteReportStatusCaculate got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

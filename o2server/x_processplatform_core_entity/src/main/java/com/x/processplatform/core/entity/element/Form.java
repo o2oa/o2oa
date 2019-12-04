@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.element;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -88,13 +89,7 @@ public class Form extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		// this.editor = StringUtils.trimToEmpty(this.editor);
 	}
-
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
 
 	public String getDataOrMobileData() {
 		if (StringUtils.isNotEmpty(this.getData())) {
@@ -114,6 +109,10 @@ public class Form extends SliceJpaObject {
 		return null;
 	}
 
+	public String getCategory() {
+		return Objects.toString(this.category, "");
+	}
+
 	public static final String name_FIELDNAME = "name";
 	@RestrictFlag
 	@FieldDescribe("名称.")
@@ -123,6 +122,13 @@ public class Form extends SliceJpaObject {
 	@CitationNotExist(fields = { "name", "id",
 			"alias" }, type = Form.class, equals = @Equal(property = "application", field = "application")))
 	private String name;
+
+	public static final String category_FIELDNAME = "category";
+	@FieldDescribe("分类")
+	@Column(length = length_255B, name = ColumnNamePrefix + category_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + category_FIELDNAME)
+	@CheckPersist(allowEmpty = true, simplyString = false)
+	private String category;
 
 	public static final String alias_FIELDNAME = "alias";
 	@Flag
@@ -193,9 +199,9 @@ public class Form extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
 	private Boolean hasMobile;
 
-	// public static String[] FLA GS = new String[] { "id", "alias" };
-
-	// public static String[] RESTRICTFLA GS = new String[] { "name" };
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
 	public String getName() {
 		return name;

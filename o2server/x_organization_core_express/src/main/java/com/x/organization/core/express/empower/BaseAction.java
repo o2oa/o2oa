@@ -22,6 +22,17 @@ abstract class BaseAction {
 		@FieldDescribe("流程")
 		private String process;
 
+		@FieldDescribe("工作")
+		private String work;
+
+		public String getWork() {
+			return work;
+		}
+
+		public void setWork(String work) {
+			this.work = work;
+		}
+
 		public List<String> getIdentityList() {
 			return identityList;
 		}

@@ -31,7 +31,7 @@ class ActionCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			List<String> consumers = Config.messages().getConsumers(wi.getType());			
+			List<String> consumers = Config.messages().getConsumers(wi.getType());
 			Instant instant = this.instant(effectivePerson, business, wi, consumers);
 			if (ListTools.isNotEmpty(consumers)) {
 				for (String consumer : consumers) {
@@ -80,25 +80,39 @@ class ActionCreate extends BaseAction {
 		for (Message message : messages) {
 			switch (message.getConsumer()) {
 			case MessageConnector.CONSUME_WS:
-				ThisApplication.wsConsumeQueue.send(message);
+				if (Config.communicate().wsEnable()) {
+					ThisApplication.wsConsumeQueue.send(message);
+				}
 				break;
 			case MessageConnector.CONSUME_PMS:
-				ThisApplication.pmsConsumeQueue.send(message);
-				break;
-			case MessageConnector.CONSUME_PMS_INNER:
-					ThisApplication.pmsInnerConsumeQueue.send(message);
-					break;
-			case MessageConnector.CONSUME_DINGDING:
-				ThisApplication.dingdingConsumeQueue.send(message);
-				break;
-			case MessageConnector.CONSUME_ZHENGWUDINGDING:
-				ThisApplication.zhengwuDingdingConsumeQueue.send(message);
-				break;
-			case MessageConnector.CONSUME_QIYEWEIXIN:
-				ThisApplication.qiyeweixinConsumeQueue.send(message);
+				if (Config.communicate().pmsEnable()) {
+					ThisApplication.pmsConsumeQueue.send(message);
+				}
 				break;
 			case MessageConnector.CONSUME_CALENDAR:
-				ThisApplication.calendarConsumeQueue.send(message);
+				if (Config.communicate().calendarEnable()) {
+					ThisApplication.calendarConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_DINGDING:
+				if (Config.dingding().getEnable() && Config.dingding().getMessageEnable()) {
+					ThisApplication.dingdingConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_ZHENGWUDINGDING:
+				if (Config.zhengwuDingding().getEnable() && Config.zhengwuDingding().getMessageEnable()) {
+					ThisApplication.zhengwuDingdingConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_QIYEWEIXIN:
+				if (Config.qiyeweixin().getEnable() && Config.qiyeweixin().getMessageEnable()) {
+					ThisApplication.qiyeweixinConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_PMS_INNER:
+				if (Config.pushConfig().getEnable()) {
+					ThisApplication.pmsInnerConsumeQueue.send(message);
+				}
 				break;
 			default:
 				break;
@@ -144,6 +158,7 @@ class ActionCreate extends BaseAction {
 		message.setInstant(instant.getId());
 		return message;
 	}
+
 	private Message pmsInnerMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
 		Message message = new Message();
 		message.setBody(Objects.toString(wi.getBody()));

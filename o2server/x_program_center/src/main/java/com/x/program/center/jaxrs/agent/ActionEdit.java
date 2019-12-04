@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.agent;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -9,7 +10,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -39,6 +39,8 @@ class ActionEdit extends BaseAction {
 			this.addComment(agent);
 			emc.check(agent, CheckPersistType.all);
 			emc.commit();
+
+			ApplicationCache.notify(Agent.class);
 			Wo wo = new Wo();
 			wo.setId(agent.getId());
 			result.setData(wo);

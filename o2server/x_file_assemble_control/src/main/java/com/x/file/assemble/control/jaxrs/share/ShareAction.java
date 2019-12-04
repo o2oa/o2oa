@@ -44,7 +44,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据密码获取分享的文件对象。", action = ActionGetWithPassword.class)
@@ -63,7 +63,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "分享文件.", action = ActionCreate.class)
@@ -80,7 +80,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除分享的文件.", action = ActionDelete.class)
@@ -98,7 +98,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取他人共享给我的文件V1.", action = ActionList.class)
@@ -115,7 +115,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取我共享的文件QueryParam.", action = ActionListMyShare.class)
@@ -134,7 +134,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取我共享的文件2.", action = ActionListMyShare.class)
@@ -153,7 +153,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取他人共享给我的文件.", action = ActionListShareToMe.class)
@@ -171,7 +171,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取他人共享给我的文件2.", action = ActionListShareToMe.class)
@@ -189,7 +189,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "保存到网盘", action = ActionSaveToFolder.class)
@@ -210,10 +210,10 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取共享文件指定文件夹下的直属文件夹。", action = ActionListFolderWithFolder.class)
+	@JaxrsMethodDescribe(value = "获取共享文件指定文件夹下的直属文件夹.", action = ActionListFolderWithFolder.class)
 	@GET
 	@Path("list/folder/share/{shareId}/folder/{folderId}/")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -229,10 +229,10 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取共享文件指定文件夹下的附件。", action = ActionListAttWithFolder.class)
+	@JaxrsMethodDescribe(value = "获取共享文件指定文件夹下的附件.", action = ActionListAttWithFolder.class)
 	@GET
 	@Path("list/att/share/{shareId}/folder/{folderId}/")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -248,10 +248,10 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取附件内容,输出头信息", action = ActionDownload.class)
+	@JaxrsMethodDescribe(value = "获取附件内容,输出头信息.", action = ActionDownload.class)
 	@GET
 	@Path("download/share/{shareId}/file/{fileId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -267,7 +267,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "屏蔽共享给我的文件", action = ActionShield.class)
@@ -285,7 +285,7 @@ public class ShareAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

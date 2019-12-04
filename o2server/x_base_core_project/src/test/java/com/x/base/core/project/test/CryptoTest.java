@@ -1,18 +1,36 @@
 package com.x.base.core.project.test;
 
+import java.util.Random;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ClassUtils;
 import org.junit.Test;
 
 public class CryptoTest {
 
 	@Test
 	public void test() throws Exception {
+	
 		System.out.println(CryptoClass.encrypt("password", "12345678"));
 	}
-
+	public static void main(String[] args) {
+		String javaType = "List<WorkStatus>";
+		String className = javaType.substring(javaType.indexOf("<")+1, javaType.indexOf(">"));
+		System.out.println(className);
+		Class clazz = null;
+		try {
+			//clazz = Class.forName(className);
+		Class<?> ss = ClassUtils.getClass(className);
+		System.out.println(ss);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(clazz);
+	}
 	@Test
 	public void test1() throws Exception {
 		System.out.println(CryptoClass.decrypt("imXg6AUytfr+uVm31GQvyw==", "12345678"));

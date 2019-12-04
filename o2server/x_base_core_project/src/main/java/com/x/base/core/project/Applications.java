@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.CRC32;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,11 +72,20 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse getQuery(Class<?> applicationClass, String uri) throws Exception {
-		return this.getQuery(false, applicationClass.getName(), uri);
+		return this.getQuery(false, applicationClass.getName(), uri, null);
+	}
+
+	public ActionResponse getQuery(Class<?> applicationClass, String uri, String seed) throws Exception {
+		return this.getQuery(false, applicationClass.getName(), uri, seed);
 	}
 
 	public ActionResponse getQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
-		return this.getQuery(xdebugger, applicationClass.getName(), uri);
+		return this.getQuery(xdebugger, applicationClass.getName(), uri, null);
+	}
+
+	public ActionResponse getQuery(Boolean xdebugger, Class<?> applicationClass, String uri, String seed)
+			throws Exception {
+		return this.getQuery(xdebugger, applicationClass.getName(), uri, seed);
 	}
 
 	public ActionResponse getQuery(Application application, String uri) throws Exception {
@@ -87,24 +97,43 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse getQuery(String applicationName, String uri) throws Exception {
-		return getQuery(false, applicationName, uri);
+		return getQuery(false, applicationName, uri, null);
 	}
 
-	public ActionResponse getQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
+	public ActionResponse getQuery(String applicationName, String uri, String seed) throws Exception {
+		return getQuery(false, applicationName, uri, seed);
+	}
+
+	public ActionResponse getQuery(Boolean xdebugger, String applicationName, String uri, String seed)
+			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("getQuery can not find application with name:" + applicationName + ".");
 		}
-		Application application = this.randomWithWeight(name);
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			application = this.randomWithWeight(name);
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
 		return CipherConnectionAction.get(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(Class<?> applicationClass, String uri) throws Exception {
-		return this.deleteQuery(false, applicationClass.getName(), uri);
+		return this.deleteQuery(false, applicationClass.getName(), uri, null);
+	}
+
+	public ActionResponse deleteQuery(Class<?> applicationClass, String uri, String seed) throws Exception {
+		return this.deleteQuery(false, applicationClass.getName(), uri, seed);
 	}
 
 	public ActionResponse deleteQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
-		return this.deleteQuery(xdebugger, applicationClass.getName(), uri);
+		return this.deleteQuery(xdebugger, applicationClass.getName(), uri, null);
+	}
+
+	public ActionResponse deleteQuery(Boolean xdebugger, Class<?> applicationClass, String uri, String seed)
+			throws Exception {
+		return this.deleteQuery(xdebugger, applicationClass.getName(), uri, seed);
 	}
 
 	public ActionResponse deleteQuery(Application application, String uri) throws Exception {
@@ -117,26 +146,45 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse deleteQuery(String applicationName, String uri) throws Exception {
-		return deleteQuery(false, applicationName, uri);
+		return deleteQuery(false, applicationName, uri, null);
 	}
 
-	public ActionResponse deleteQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
+	public ActionResponse deleteQuery(String applicationName, String uri, String seed) throws Exception {
+		return deleteQuery(false, applicationName, uri, seed);
+	}
+
+	public ActionResponse deleteQuery(Boolean xdebugger, String applicationName, String uri, String seed)
+			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("deleteQuery can not find application with name:" + applicationName + ".");
 		}
-		Application application = this.randomWithWeight(name);
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			application = this.randomWithWeight(name);
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
 		return CipherConnectionAction.delete(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
-		return this.postQuery(false, applicationClass.getName(), uri, body);
+		return this.postQuery(false, applicationClass.getName(), uri, body, null);
+	}
+
+	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object body, String seed) throws Exception {
+		return this.postQuery(false, applicationClass.getName(), uri, body, seed);
 	}
 
 	public ActionResponse postQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body)
 			throws Exception {
-		return this.postQuery(xdebugger, applicationClass.getName(), uri, body);
+		return this.postQuery(xdebugger, applicationClass.getName(), uri, body, null);
+	}
+
+	public ActionResponse postQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body, String seed)
+			throws Exception {
+		return this.postQuery(xdebugger, applicationClass.getName(), uri, body, seed);
 	}
 
 	public ActionResponse postQuery(Application application, String uri, Object body) throws Exception {
@@ -150,27 +198,45 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse postQuery(String applicationName, String uri, Object body) throws Exception {
-		return this.postQuery(false, applicationName, uri, body);
+		return this.postQuery(false, applicationName, uri, body, null);
 	}
 
-	public ActionResponse postQuery(Boolean xdebugger, String applicationName, String uri, Object body)
+	public ActionResponse postQuery(String applicationName, String uri, Object body, String seed) throws Exception {
+		return this.postQuery(false, applicationName, uri, body, seed);
+	}
+
+	public ActionResponse postQuery(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("postQuery can not find application with name:" + applicationName + ".");
 		}
-		Application application = this.randomWithWeight(name);
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			application = this.randomWithWeight(name);
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
 		return CipherConnectionAction.post(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
 	}
 
 	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
-		return this.putQuery(false, applicationClass.getName(), uri, body);
+		return this.putQuery(false, applicationClass.getName(), uri, body, null);
+	}
+
+	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object body, String seed) throws Exception {
+		return this.putQuery(false, applicationClass.getName(), uri, body, seed);
 	}
 
 	public ActionResponse putQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body)
 			throws Exception {
-		return this.putQuery(xdebugger, applicationClass.getName(), uri, body);
+		return this.putQuery(xdebugger, applicationClass.getName(), uri, body, null);
+	}
+
+	public ActionResponse putQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body, String seed)
+			throws Exception {
+		return this.putQuery(xdebugger, applicationClass.getName(), uri, body, seed);
 	}
 
 	public ActionResponse putQuery(Application application, String uri, Object body) throws Exception {
@@ -184,16 +250,25 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public ActionResponse putQuery(String applicationName, String uri, Object body) throws Exception {
-		return this.putQuery(false, applicationName, uri, body);
+		return this.putQuery(false, applicationName, uri, body, null);
 	}
 
-	public ActionResponse putQuery(Boolean xdebugger, String applicationName, String uri, Object body)
+	public ActionResponse putQuery(String applicationName, String uri, Object body, String seed) throws Exception {
+		return this.putQuery(false, applicationName, uri, body, seed);
+	}
+
+	public ActionResponse putQuery(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("putQuery can not find application with name:" + applicationName + ".");
 		}
-		Application application = this.randomWithWeight(name);
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			application = this.randomWithWeight(name);
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
 		return CipherConnectionAction.put(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
 	}
@@ -245,6 +320,14 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			return application;
 		}
 		throw new Exception("randomWithScheduleWeight error: " + className + ".");
+	}
+
+	public Application randomWithSeed(String className, String seed) throws Exception {
+		List<Application> list = this.get(className);
+		CRC32 crc32 = new CRC32();
+		crc32.update(seed.getBytes(DefaultCharset.charset));
+		int idx = (int) crc32.getValue() % list.size();
+		return list.get(idx);
 	}
 
 	public static String joinQueryUri(String... parts) {

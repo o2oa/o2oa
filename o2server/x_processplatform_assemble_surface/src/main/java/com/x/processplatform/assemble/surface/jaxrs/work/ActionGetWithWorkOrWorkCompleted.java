@@ -109,23 +109,27 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	private Data data(Business business, String job) {
 		try {
-			EntityManager em = business.entityManagerContainer().get(Item.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Item> cq = cb.createQuery(Item.class);
-			Root<Item> root = cq.from(Item.class);
-			Predicate p = cb.equal(root.get(Item_.bundle), job);
-			p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
-			List<Item> list = em.createQuery(cq.where(p)).getResultList();
-			if (list.isEmpty()) {
-				return new Data();
-			} else {
-				JsonElement jsonElement = itemConverter.assemble(list);
-				if (jsonElement.isJsonObject()) {
-					return gson.fromJson(jsonElement, Data.class);
-				} else {
-					/* 如果不是Object强制返回一个Map对象 */
+			try {
+				EntityManager em = business.entityManagerContainer().get(Item.class);
+				CriteriaBuilder cb = em.getCriteriaBuilder();
+				CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+				Root<Item> root = cq.from(Item.class);
+				Predicate p = cb.equal(root.get(Item_.bundle), job);
+				p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
+				List<Item> list = em.createQuery(cq.where(p)).getResultList();
+				if (list.isEmpty()) {
 					return new Data();
+				} else {
+					JsonElement jsonElement = itemConverter.assemble(list);
+					if (jsonElement.isJsonObject()) {
+						return gson.fromJson(jsonElement, Data.class);
+					} else {
+						/* 如果不是Object强制返回一个Map对象 */
+						return new Data();
+					}
 				}
+			} catch (Exception e) {
+				throw new ExceptionData(e, job);
 			}
 		} catch (Exception e) {
 			logger.error(e);

@@ -30,9 +30,7 @@ class ActionListWithApplication extends BaseAction {
 						application.getName(), application.getId());
 			}
 			List<String> ids = business.form().listWithApplication(applicationId);
-			// List<Form> os = emc.list(Form.class, ids);
 			wos = emc.fetch(ids, Wo.copier);
-			// wos = Wo.copier.copy(os);
 			wos = business.form().sort(wos);
 			result.setData(wos);
 			return result;

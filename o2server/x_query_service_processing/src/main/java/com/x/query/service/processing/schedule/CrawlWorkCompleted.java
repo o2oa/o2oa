@@ -135,80 +135,89 @@ public class CrawlWorkCompleted extends Crawl {
 		for (Entry entry : this.listWait(business)) {
 			WorkCompleted workCompleted = emc.find(entry.getReference(), WorkCompleted.class);
 			if (null != workCompleted) {
-				logger.debug("正在处理:{}.", workCompleted.getTitle());
-				entry.setTitle(workCompleted.getTitle());
-				entry.setBundle(workCompleted.getJob());
-				entry.setApplication(workCompleted.getApplication());
-				entry.setApplicationName(workCompleted.getApplicationName());
-				entry.setProcess(workCompleted.getProcess());
-				entry.setProcessName(workCompleted.getProcessName());
-				entry.setCreatorPerson(workCompleted.getCreatorPerson());
-				entry.setCreatorUnit(workCompleted.getCreatorUnit());
-				emc.beginTransaction(Entry.class);
-				emc.beginTransaction(Word.class);
-				emc.deleteEqual(Word.class, Word.entry_FIELDNAME, entry.getId());
-				String title = workCompleted.getTitle();
-				String body = converter.text(emc.listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
-						ItemCategory.pp, Item.bundle_FIELDNAME, workCompleted.getJob()), true, true, true, true, true,
-						",");
-				String attachment = this.attachmentToText(business, workCompleted);
-				title = StringUtils.deleteWhitespace(title);
-				body = StringUtils.deleteWhitespace(body);
-				attachment = StringUtils.deleteWhitespace(attachment);
-				String text = body + attachment;
-				String summary = StringUtils.join(HanLP.extractSummary(text, 10), ",");
-				entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
-				Word word = null;
-				if (StringUtils.isNotEmpty(title)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(title)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_TITLE);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+				try {
+					try {
+						logger.debug("正在处理:{}.", workCompleted.getTitle());
+						entry.setTitle(workCompleted.getTitle());
+						entry.setBundle(workCompleted.getJob());
+						entry.setApplication(workCompleted.getApplication());
+						entry.setApplicationName(workCompleted.getApplicationName());
+						entry.setProcess(workCompleted.getProcess());
+						entry.setProcessName(workCompleted.getProcessName());
+						entry.setCreatorPerson(workCompleted.getCreatorPerson());
+						entry.setCreatorUnit(workCompleted.getCreatorUnit());
+						emc.beginTransaction(Entry.class);
+						emc.beginTransaction(Word.class);
+						emc.deleteEqual(Word.class, Word.entry_FIELDNAME, entry.getId());
+						String title = workCompleted.getTitle();
+						String body = converter.text(
+								emc.listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME, ItemCategory.pp,
+										Item.bundle_FIELDNAME, workCompleted.getJob()),
+								true, true, true, true, true, ",");
+						String attachment = this.attachmentToText(business, workCompleted);
+						title = StringUtils.deleteWhitespace(title);
+						body = StringUtils.deleteWhitespace(body);
+						attachment = StringUtils.deleteWhitespace(attachment);
+						String text = body + attachment;
+						String summary = StringUtils.join(HanLP.extractSummary(text, 10), ",");
+						entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
+						Word word = null;
+						if (StringUtils.isNotEmpty(title)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(title)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_TITLE);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
-					}
-				}
-				if (StringUtils.isNotEmpty(body)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(body)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_BODY);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+						if (StringUtils.isNotEmpty(body)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(body)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_BODY);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
-					}
-				}
-				if (StringUtils.isNotEmpty(attachment)) {
-					for (LanguageProcessingHelper.Item o : this.toWord(attachment)) {
-						if (StringUtils.length(o.getValue()) < 31) {
-							/* 可能产生过长的字比如...................................... */
-							word = new Word();
-							word.setEntry(entry.getId());
-							word.setBundle(entry.getBundle());
-							word.setType(entry.getType());
-							word.setValue(o.getValue());
-							word.setLabel(o.getLabel());
-							word.setTag(Word.TAG_ATTACHMENT);
-							word.setCount(o.getCount().intValue());
-							emc.persist(word, CheckPersistType.all);
+						if (StringUtils.isNotEmpty(attachment)) {
+							for (LanguageProcessingHelper.Item o : this.toWord(attachment)) {
+								if (StringUtils.length(o.getValue()) < 31) {
+									/* 可能产生过长的字比如...................................... */
+									word = new Word();
+									word.setEntry(entry.getId());
+									word.setBundle(entry.getBundle());
+									word.setType(entry.getType());
+									word.setValue(o.getValue());
+									word.setLabel(o.getLabel());
+									word.setTag(Word.TAG_ATTACHMENT);
+									word.setCount(o.getCount().intValue());
+									emc.persist(word, CheckPersistType.all);
+								}
+							}
 						}
+						entry.setWait(false);
+						emc.commit();
+					} catch (Exception e) {
+						throw new ExceptionCrawlWorkCompleted(e, workCompleted);
 					}
+				} catch (Exception e) {
+					logger.error(e);
 				}
-				entry.setWait(false);
-				emc.commit();
 			}
 		}
 	}

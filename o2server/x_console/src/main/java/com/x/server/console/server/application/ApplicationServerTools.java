@@ -6,10 +6,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.DispatcherType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -26,10 +28,12 @@ import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.base.core.project.x_bbs_assemble_control;
 import com.x.base.core.project.x_calendar_assemble_control;
@@ -124,6 +128,14 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+				/* stat */
+				if (applicationServer.getStatEnable()) {
+					FilterHolder holder = new FilterHolder(new WebStatFilter());
+					holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+					webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
+					webApp.addServlet(StatViewServlet.class, "/druid/*");
+				}
+				/* stat end */
 				handlers.addHandler(webApp);
 			} else if (dir.exists()) {
 				FileUtils.forceDelete(dir);
@@ -150,6 +162,15 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setExtraClasspath(calculateExtraClassPath(cls));
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
+				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+				/* stat */
+				if (applicationServer.getStatEnable()) {
+					FilterHolder holder = new FilterHolder(new WebStatFilter());
+					holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+					webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
+					webApp.addServlet(StatViewServlet.class, "/druid/*");
+				}
+				/* stat end */
 				handlers.addHandler(webApp);
 			} else if (dir.exists()) {
 				FileUtils.forceDelete(dir);
@@ -248,8 +269,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		XPathExpression expr = xpath.compile("web-app/context-param[param-name='project']/param-value");
-		NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-		String str = nodes.item(0).getTextContent();
+		String str = expr.evaluate(doc, XPathConstants.STRING).toString();
 		return StringUtils.trim(str);
 	}
 

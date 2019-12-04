@@ -72,7 +72,7 @@ class ActionDelete extends BaseAction {
 			emc.delete(Hint.class, business.hint().listWithWork(work.getId()));
 			// 判断附件是否有其他的Work在引用，如果没有那么删除
 			if (business.work().listWithJob(work.getJob()).size() == 1) {
-				List<Item> os = business.dataItem().listWithJobWithPath(work.getJob());
+				List<Item> os = business.item().listWithJobWithPath(work.getJob());
 				for (Item o : os) {
 					emc.remove(o);
 				}

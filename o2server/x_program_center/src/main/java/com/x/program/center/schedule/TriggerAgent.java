@@ -14,9 +14,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,24 +24,30 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.Applications;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.program.center.Business;
-import com.x.program.center.Context;
 import com.x.program.center.ThisApplication;
-import com.x.program.center.WebservicesClient;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Agent_;
+
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 public class TriggerAgent extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TriggerAgent.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
+
+	private static Ehcache cache = ApplicationCache.instance().getCache(Agent.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -82,7 +87,7 @@ public class TriggerAgent extends BaseAction {
 							emc.commit();
 						}
 					}
-					if (null != agent) {
+					if (null != agent && agent.getEnable()) {
 						logger.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
 								pair.getName(), pair.getCron(),
 								(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
@@ -172,8 +177,6 @@ public class TriggerAgent extends BaseAction {
 
 		private Agent agent;
 
-		private static final String BINDING_RESOURCES = "resources";
-
 		public ExecuteThread(Agent agent) {
 			this.agent = agent;
 		}
@@ -183,25 +186,35 @@ public class TriggerAgent extends BaseAction {
 				try {
 					LOCK.add(agent.getId());
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						ScriptEngineManager manager = new ScriptEngineManager();
-						ScriptEngine engine = manager.getEngineByName("JavaScript");
-						ScriptContext newContext = new SimpleScriptContext();
-						Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
+						String cacheKey = ApplicationCache.concreteCacheKey(TriggerAgent.class, agent.getId());
+						Element element = cache.get(cacheKey);
+						CompiledScript compiledScript = null;
+						if ((null != element) && (null != element.getObjectValue())) {
+							compiledScript = (CompiledScript) element.getObjectValue();
+						} else {
+							compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
+							cache.put(new Element(cacheKey, compiledScript));
+						}
+						ScriptContext scriptContext = new SimpleScriptContext();
+						Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 						Resources resources = new Resources();
 						resources.setEntityManagerContainer(emc);
 						resources.setContext(ThisApplication.context());
 						resources.setOrganization(new Organization(ThisApplication.context()));
 						resources.setApplications(ThisApplication.context().applications());
 						resources.setWebservicesClient(new WebservicesClient());
-						engineScope.put(BINDING_RESOURCES, resources);
+						bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
 						try {
-							engine.eval(agent.getText(), newContext);
+							ScriptFactory.initialServiceScriptText().eval(scriptContext);
+							compiledScript.eval(scriptContext);
 						} catch (Exception e) {
-							throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getText());
+							throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(),
+									agent.getAlias(), agent.getText());
 						}
 					} catch (Exception e) {
 						logger.error(e);
 					}
+
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						Agent o = emc.find(agent.getId(), Agent.class);
 						if (null != o) {
@@ -219,30 +232,8 @@ public class TriggerAgent extends BaseAction {
 		}
 	}
 
-	public static class Resources {
-		private EntityManagerContainer entityManagerContainer;
-		private Context context;
+	public static class Resources extends AbstractResources {
 		private Organization organization;
-		private WebservicesClient webservicesClient;
-		private Applications applications;
-
-		public static String RESOURCES_BINDING_NAME = "resources";
-
-		public EntityManagerContainer getEntityManagerContainer() {
-			return entityManagerContainer;
-		}
-
-		public void setEntityManagerContainer(EntityManagerContainer entityManagerContainer) {
-			this.entityManagerContainer = entityManagerContainer;
-		}
-
-		public Context getContext() {
-			return context;
-		}
-
-		public void setContext(Context context) {
-			this.context = context;
-		}
 
 		public Organization getOrganization() {
 			return organization;
@@ -250,22 +241,6 @@ public class TriggerAgent extends BaseAction {
 
 		public void setOrganization(Organization organization) {
 			this.organization = organization;
-		}
-
-		public WebservicesClient getWebservicesClient() {
-			return webservicesClient;
-		}
-
-		public void setWebservicesClient(WebservicesClient webservicesClient) {
-			this.webservicesClient = webservicesClient;
-		}
-
-		public Applications getApplications() {
-			return applications;
-		}
-
-		public void setApplications(Applications applications) {
-			this.applications = applications;
 		}
 
 	}

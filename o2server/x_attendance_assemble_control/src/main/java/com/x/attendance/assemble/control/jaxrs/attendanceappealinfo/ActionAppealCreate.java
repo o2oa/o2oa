@@ -1,12 +1,5 @@
 package com.x.attendance.assemble.control.jaxrs.attendanceappealinfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.assemble.control.jaxrs.AppealConfig;
@@ -20,6 +13,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionAppealCreate extends BaseAction {
 	
@@ -89,13 +87,15 @@ public class ActionAppealCreate extends BaseAction {
 		if (check) {
 			if( StringUtils.isNotEmpty( appeal_auditor_type ) ) {
 				try {
-					System.out.println("personName:" + personName );
-					System.out.println("attendanceAppealInfo.getUnitName():" + attendanceAppealInfo.getUnitName() );
-					System.out.println("wrapIn.getIdentity():" + wrapIn.getIdentity() );
+//					System.out.println("personName:" + personName );
+//					System.out.println("attendanceAppealInfo.getUnitName():" + attendanceAppealInfo.getUnitName() );
+//					System.out.println("wrapIn.getIdentity():" + wrapIn.getIdentity() );
 					appealAuditPersonName = attendanceAppealInfoServiceAdv.getAppealAuditPerson( personName, attendanceAppealInfo.getUnitName(), wrapIn.getIdentity() );
-					appealAuditPersonName = userManagerService.getPersonNameByIdentity(appealAuditPersonName);
-					attendanceAppealInfo.setProcessPerson1( appealAuditPersonName );
-					attendanceAppealInfo.setCurrentProcessor( appealAuditPersonName );// 将第一个处理人设置为当前处理人
+					if( StringUtils.isNotEmpty( appealAuditPersonName )){
+						appealAuditPersonName = userManagerService.getPersonNameByIdentity(appealAuditPersonName);
+						attendanceAppealInfo.setProcessPerson1( appealAuditPersonName );
+						attendanceAppealInfo.setCurrentProcessor( appealAuditPersonName );// 将第一个处理人设置为当前处理人
+					}
 				}catch( Exception e ) {
 					check = false;
 					Exception exception = new ExceptionAttendanceAppealProcess(e, "系统在根据根据考勤人员查询申诉审核人信息时发生异常！personName:"+personName );
@@ -107,12 +107,12 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		
 		if (check) {
-			if( appealAuditPersonName == null || appealAuditPersonName.isEmpty() ) {
+			if( StringUtils.isEmpty(appealAuditPersonName) ) {
 				//申诉审核人不存在
 				check = false;
 				String message = null;
 				String unitLevelName = null;
-				if( appeal_auditor_type == null || appeal_auditor_type.isEmpty() ) {
+				if( StringUtils.isEmpty(appeal_auditor_type)) {
 					message = "申诉审核人类别未配置!";
 				}else if( "无".equals( appeal_auditor_type.trim() )){//当前人处理
 					attendanceAppealInfo.setProcessPerson1( effectivePerson.getDistinguishedName() );
@@ -150,13 +150,13 @@ public class ActionAppealCreate extends BaseAction {
 			}
 		}
 		if (check) {
-			if( StringUtils.isNotEmpty( appeal_checker_type ) && !"无".equals( appeal_checker_type ) ) {
-				if( appealCheckPersonName == null || appealCheckPersonName.isEmpty() ) {
+			if( StringUtils.isNotEmpty( appeal_checker_type ) && !StringUtils.equals( appeal_checker_type, "无" ) ) {
+				if( StringUtils.isEmpty(appealCheckPersonName) ) {
 					//申诉复核人不存在
 					check = false;
 					String message = null;
 					String unitLevelName = null;
-					if( appeal_checker_type == null || appeal_checker_type.isEmpty() ) {
+					if( StringUtils.isEmpty( appeal_checker_type )) {
 						message = "申诉复核人类别未配置!";
 					}else if( AppealConfig.APPEAL_AUDITTYPE_UNITDUTY.equals( appeal_checker_type )){
 						unitLevelName = userManagerService.getUnitLevelNameWithName( attendanceDetail.getUnitName() );
@@ -180,10 +180,11 @@ public class ActionAppealCreate extends BaseAction {
 		//查询申诉审核人所属组织
 		if (check) {
 			if( AppealConfig.APPEAL_AUDITTYPE_UNITDUTY.equalsIgnoreCase( appeal_auditor_type ) ) {
-				attendanceAppealInfo.setProcessPersonUnit1( attendanceAppealInfoServiceAdv.getPersonUnitName( appealAuditPersonName, attendanceDetail.getUnitName(), wrapIn.getIdentity() ) );
+				attendanceAppealInfo.setProcessPersonUnit1(
+						attendanceAppealInfoServiceAdv.getPersonUnitName( appealAuditPersonName, attendanceDetail.getUnitName(), wrapIn.getIdentity() ) );
 			}else {
 				//汇报对象，指定人以及人员属性中指定的人员，根据人员姓名取首选组织（第一个）
-				if( appealAuditPersonName != null  && !appealAuditPersonName.isEmpty() ) {
+				if( StringUtils.isNotEmpty( appealAuditPersonName ) ) {
 					try {//获取审核人组织信息
 						attendanceAppealInfo.setProcessPersonUnit1( userManagerService.getUnitNameWithPersonName( appealAuditPersonName ));
 					}catch( Exception e ) {
@@ -198,7 +199,7 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		//根据所属组织名称查询申诉审核人所属顶层组织
 		if (check) {
-			if( attendanceAppealInfo.getProcessPersonUnit1() != null  && !attendanceAppealInfo.getProcessPersonUnit1().isEmpty() ) {
+			if( StringUtils.isNotEmpty( attendanceAppealInfo.getProcessPersonUnit1() )) {
 				try {
 					attendanceAppealInfo.setProcessPersonTopUnit1( userManagerService.getTopUnitNameWithUnitName( attendanceAppealInfo.getProcessPersonUnit1() ) );
 				}catch( Exception e ) {
@@ -232,7 +233,7 @@ public class ActionAppealCreate extends BaseAction {
 		}
 		//根据所属组织名称查询申诉复核人所属顶层组织
 		if (check) {
-			if( attendanceAppealInfo.getProcessPersonUnit2() != null  && !attendanceAppealInfo.getProcessPersonUnit2().isEmpty() ) {
+			if( StringUtils.isNotEmpty(attendanceAppealInfo.getProcessPersonUnit2())) {
 				try {//获取复核人顶层组织信息
 					attendanceAppealInfo.setProcessPersonTopUnit2(  userManagerService.getTopUnitNameWithUnitName( attendanceAppealInfo.getProcessPersonUnit2()) );
 				}catch( Exception e ) {

@@ -46,7 +46,7 @@ public class InputAction extends StandardJaxrsAction {
 	// logger.error(e, effectivePerson, request, null);
 	// result.error(e);
 	// }
-	// asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	// asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	// }
 
 	@JaxrsMethodDescribe(value = "上传对比数据内容.", action = ActionCompare.class)
@@ -64,7 +64,7 @@ public class InputAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "准备覆盖应用.", action = ActionPrepareCover.class)
@@ -82,7 +82,7 @@ public class InputAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "覆盖应用.", action = ActionCover.class)
@@ -100,7 +100,7 @@ public class InputAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "准备创建应用.", action = ActionPrepareCreate.class)
@@ -118,7 +118,7 @@ public class InputAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建应用.", action = ActionCreate.class)
@@ -136,7 +136,7 @@ public class InputAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

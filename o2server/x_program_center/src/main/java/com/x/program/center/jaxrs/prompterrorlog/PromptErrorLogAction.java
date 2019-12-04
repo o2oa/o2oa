@@ -47,7 +47,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "记录提示错误.", action = ActionCreate.class)
@@ -63,7 +63,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示提示错误,下一页.", action = ActionListNext.class)
@@ -81,7 +81,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示提示错误,上一页.", action = ActionListPrev.class)
@@ -99,7 +99,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "按loggerName统计提示错误数量.", action = ActionCountWithLoggerName.class)
@@ -116,7 +116,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "按exceptionClass统计提示错误数量.", action = ActionCountWithExceptionClass.class)
@@ -133,7 +133,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,下一页.", action = ActionListNextWithLoggerName.class)
@@ -153,7 +153,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,上一页.", action = ActionListPrevWithLoggerName.class)
@@ -173,7 +173,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,下一页.", action = ActionListNextWithExceptionClass.class)
@@ -193,7 +193,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定应用当前用户的Task对象,上一页.", action = ActionListPrevWithExceptionClass.class)
@@ -213,7 +213,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示PromptErrorLog,指定日期,下一页.", action = ActionListNextWithDate.class)
@@ -232,7 +232,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示PromptErrorLog,指定日期,上一页.", action = ActionListPrevWithDate.class)
@@ -251,7 +251,7 @@ public class PromptErrorLogAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

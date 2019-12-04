@@ -9,6 +9,8 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,7 +36,7 @@ public class JobAction extends StandardJaxrsAction {
 	@Path("{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteWithJob(@Context HttpServletRequest request,
+	public void deleteWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("job") String job) {
 		ActionResult<List<WrapOutId>> result = new ActionResult<>();
 		List<WrapOutId> wraps = new ArrayList<>();
@@ -46,6 +48,6 @@ public class JobAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

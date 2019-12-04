@@ -63,6 +63,7 @@
 </style>
 <script>
 var appMap = new Map();
+appMap.set("com.x.base.core.project.x_program_center", "中心服务");
 appMap.set("com.x.base.core.project.x_attendance_assemble_control", "考勤相关服务");
 appMap.set("com.x.base.core.project.x_bbs_assemble_control", "论坛相关服务");
 appMap.set("com.x.base.core.project.x_calendar_assemble_control", "日程管理相关服务");
@@ -104,7 +105,7 @@ appMap.set("zoneland.unicom.bj.assemble.control.zoneland_unicom_bj_assemble_cont
 	    },
 	    crossDomain : true
 	}).done(function(json) {
-	     
+	    debugger;
 	    if (json.type == 'success') {
 		if (json.data) {
 		    var str = '<table border="1">';
@@ -125,9 +126,12 @@ appMap.set("zoneland.unicom.bj.assemble.control.zoneland_unicom_bj_assemble_cont
 			str += '</td>';
 			str += '</tr>';
 		    });
+			
+			str += '<tr><td>中心服务</td><td>com.x.base.core.project.x_program_center</td><td><a href="http://'+window.location.hostname+':20030/x_program_center/jest/index.html" target="_blank">http://'+window.location.hostname+':20030/x_program_center/jest/index.html</a><br></td></tr>';
 		    str += '</table>';
 		    $('#content').html(str);
 		}
+
 	    }
 	});
     });

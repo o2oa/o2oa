@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<link rel="stylesheet" type="text/css" href="./jquery.dataTables.min.css"/>
+	<script type="text/javascript" src="./jquery.min.js"></script>
+	<script type="text/javascript" src="./jquery.dataTables.min.js"></script>
+	<script language="JavaScript">
+		$(document).ready(function() {
+			var url = "/x_program_center/jaxrs/center/metrics/datatable";
+			$('#example').DataTable( {
+				ajax: {
+					url: url,
+					dataSrc: 'data'
+				},
+				"autoWidth": false,
+				"pageLength": 25,
+				"columns": [
+					{ "data": "serverName" },
+					{ "data": "targetContextCNName" },
+					{ "data": "targetClassName" },
+					{ "data": "dateTime" },
+					{ "data": "count" },
+					{ "data": "mean_call", render: renderFunc },
+					{ "data": "m1_rate", render: renderFunc },
+					{ "data": "m5_rate", render: renderFunc },
+					{ "data": "m15_rate", render: renderFunc },
+					{ "data": "min_rate", render: renderFunc },
+					{ "data": "max_rate", render: renderFunc },
+					{ "data": "mean_rate", render: renderFunc },
+					{ "data": "stddev_rate", render: renderFunc },
+					{ "data": "p50_rate", render: renderFunc },
+					{ "data": "p75_rate", render: renderFunc },
+					{ "data": "p95_rate", render: renderFunc },
+					{ "data": "p98_rate", render: renderFunc },
+					{ "data": "p99_rate", render: renderFunc },
+					{ "data": "p999_rate", render: renderFunc }
+				]
+			} );
+		} );
+
+		function renderFunc(data, type, row){
+			if( data != 0 && "display" == type ){
+				return parseFloat(data).toFixed(2);
+			}
+			return data;
+		}
+	</script>
+</head>
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px; padding:10px">
+<table id="example" class="display" style="margin:10px">
+	<thead>
+	<tr>
+		<th>主机</th>
+		<th>模块名称</th>
+		<th>目标类</th>
+		<th>报告时间</th>
+		<th>访问次数</th>
+		<th>mean_call<br/>(次/秒)</th>
+		<th>m1_rate<br/>(次/秒)</th>
+		<th>m5_rate<br/>(次/秒)</th>
+		<th>m15_rate<br/>(次/秒)</th>
+		<th>min_rate<br/>(毫秒)</th>
+		<th>max_rate<br/>(毫秒)</th>
+		<th>mean_rate<br/>(毫秒)</th>
+		<th>stddev_rate<br/>(毫秒)</th>
+		<th>p50_rate<br/>(毫秒)</th>
+		<th>p75_rate<br/>(毫秒)</th>
+		<th>p95_rate<br/>(毫秒)</th>
+		<th>p98_rate<br/>(毫秒)</th>
+		<th>p99_rate<br/>(毫秒)</th>
+		<th>p999_rate<br/>(毫秒)</th>
+	</tr>
+	</thead>
+	<tfoot>
+	<tr>
+		<th>主机</th>
+		<th>模块名称</th>
+		<th>目标类</th>
+		<th>报告时间</th>
+		<th>访问次数</th>
+		<th>mean_call<br/>(次/秒)</th>
+		<th>m1_rate<br/>(次/秒)</th>
+		<th>m5_rate<br/>(次/秒)</th>
+		<th>m15_rate<br/>(次/秒)</th>
+		<th>min_rate<br/>(毫秒)</th>
+		<th>max_rate<br/>(毫秒)</th>
+		<th>mean_rate<br/>(毫秒)</th>
+		<th>stddev_rate<br/>(毫秒)</th>
+		<th>p50_rate<br/>(毫秒)</th>
+		<th>p75_rate<br/>(毫秒)</th>
+		<th>p95_rate<br/>(毫秒)</th>
+		<th>p98_rate<br/>(毫秒)</th>
+		<th>p99_rate<br/>(毫秒)</th>
+		<th>p999_rate<br/>(毫秒)</th>
+	</tr>
+	</tfoot>
+</table>
+</body>
+</html>

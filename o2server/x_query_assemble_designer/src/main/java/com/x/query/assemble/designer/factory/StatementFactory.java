@@ -8,6 +8,13 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.AbstractFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Statement_;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public class StatementFactory extends AbstractFactory {
 
@@ -24,6 +31,17 @@ public class StatementFactory extends AbstractFactory {
 						.thenComparing(Comparator.comparing(Statement::getName, StringTools.emptyLastComparator())))
 				.collect(Collectors.toList());
 		return list;
+	}
+
+	public List<Statement> listWithQueryObject(String queryId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Statement.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Statement> cq = cb.createQuery(Statement.class);
+		Root<Statement> root = cq.from(Statement.class);
+		Predicate p = cb.equal(root.get(Statement_.query), queryId);
+		cq.select(root).where(p);
+		List<Statement> os = em.createQuery(cq).getResultList();
+		return os;
 	}
 
 }

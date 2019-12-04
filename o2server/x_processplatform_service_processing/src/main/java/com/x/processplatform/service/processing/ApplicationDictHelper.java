@@ -29,7 +29,7 @@ public class ApplicationDictHelper {
 	private Gson gson = XGsonBuilder.instance();
 
 	private static String path_separator = ".";
-
+	
 	public ApplicationDictHelper(EntityManagerContainer emc, String application) {
 		this.emc = emc;
 		this.application = application;

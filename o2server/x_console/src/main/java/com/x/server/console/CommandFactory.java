@@ -78,6 +78,12 @@ public class CommandFactory {
 	public static final Pattern show_dataSource_pattern = Pattern
 			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
 
+	public static final Pattern stack_pattern = Pattern.compile("^ {0,}stack ([1-9][0-9]*) ([1-9][0-9]*) (.+)$",
+			Pattern.CASE_INSENSITIVE);
+	
+	public static final Pattern heapDump_pattern = Pattern.compile("^ {0,}heap dump (.+)$",
+			Pattern.CASE_INSENSITIVE);
+
 	public static void printStartHelp() {
 		try {
 			printStartImage();

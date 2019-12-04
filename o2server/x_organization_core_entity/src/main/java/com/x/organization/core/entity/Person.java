@@ -105,8 +105,6 @@ public class Person extends SliceJpaObject {
 		if (null == this.orderNumber) {
 			this.orderNumber = DateTools.timeOrderNumber();
 		}
-		// this.signature =
-		// StringEscapeUtils.escapeHtml4(Objects.toString(this.signature, ""));
 	}
 
 	/* 更新运行方法 */
@@ -128,18 +126,18 @@ public class Person extends SliceJpaObject {
 	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + icon_FIELDNAME)
 	private String icon;
 
-	public static final String icon_mdpi_FIELDNAME = "iconMdpi";
+	public static final String iconMdpi_FIELDNAME = "iconMdpi";
 	@FieldDescribe("icon Base64编码后的文本（中等尺寸图像）.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + icon_mdpi_FIELDNAME)
+	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + iconMdpi_FIELDNAME)
 	private String iconMdpi;
 
-	public static final String icon_ldpi_FIELDNAME = "iconLdpi";
+	public static final String iconLdpi_FIELDNAME = "iconLdpi";
 	@FieldDescribe("icon Base64编码后的文本（小尺寸图像）.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + icon_ldpi_FIELDNAME)
+	@Column(length = JpaObject.length_128K, name = ColumnNamePrefix + iconLdpi_FIELDNAME)
 	private String iconLdpi;
 
 	public static final String signature_FIELDNAME = "signature";

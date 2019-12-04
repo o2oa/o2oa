@@ -62,13 +62,15 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
 			/* 清空可能的Manual活动预期人员 */
-			work.setManualTaskIdentityList(new ArrayList<String>());
+			this.arrive_cleanManualTaskIdentityList(aeiObjects);
 			/* 将强制路由标记进行修改 */
 			work.setForceRouteArriveCurrentActivity(false);
 			if (BooleanUtils.isTrue(work.getForceRoute())) {
 				work.setForceRoute(false);
 				work.setForceRouteArriveCurrentActivity(true);
 			}
+			/* 计算是否经过人工节点 */
+			this.arrive_updateWorkThroughManual(aeiObjects);
 			/* 清空BeforeExecuted活动执行一次事件 */
 			work.setBeforeExecuted(false);
 			aeiObjects.getUpdateWorks().add(work);
@@ -109,6 +111,18 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			logger.error(e);
 			return null;
 		}
+	}
+
+	private void arrive_cleanManualTaskIdentityList(AeiObjects aeiObjects) throws Exception {
+		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>());
+	}
+
+	private void arrive_updateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
+		boolean value = aeiObjects.getWorkLogs().stream().filter(o -> {
+			return Objects.equals(ActivityType.manual, o.getArrivedActivityType())
+					&& BooleanUtils.isTrue(o.getConnected());
+		}).count() > 0;
+		aeiObjects.getWork().setWorkThroughManual(value);
 	}
 
 	private void callBeforeArriveScript(AeiObjects aeiObjects) throws Exception {

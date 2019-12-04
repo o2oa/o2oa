@@ -565,72 +565,51 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void executeProjection() throws Exception {
 		if (ListTools.isNotEmpty(this.getProjections())) {
-			for (Work o : this.getCreateWorks()) {
-				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+			if (this.getProcess().getProjectionFully()) {
+				for (Work o : this.getWorks()) {
+					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateWorks().contains(o)) {
+						this.getUpdateWorks().add(o);
+					}
+				}
+				for (Task o : this.getTasks()) {
+					ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateTasks().contains(o)) {
+						this.getUpdateTasks().add(o);
+					}
+				}
+				for (TaskCompleted o : this.getTaskCompleteds()) {
+					ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateTaskCompleteds().contains(o)) {
+						this.getUpdateTaskCompleteds().add(o);
+					}
+				}
+				for (Read o : this.getReads()) {
+					ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateReads().contains(o)) {
+						this.getUpdateReads().add(o);
+					}
+				}
+				for (ReadCompleted o : this.getReadCompleteds()) {
+					ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateReadCompleteds().contains(o)) {
+						this.getUpdateReadCompleteds().add(o);
+					}
+				}
+				for (Review o : this.getReviews()) {
+					ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
+					if (!this.getUpdateReviews().contains(o)) {
+						this.getUpdateReviews().add(o);
+					}
+				}
+			} else {
+				for (Work o : this.getCreateWorks()) {
+					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+				}
+				for (Work o : this.getUpdateWorks()) {
+					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+				}
 			}
-			for (Work o : this.getUpdateWorks()) {
-				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
-			}
-//				switch (Objects.toString(p.getType(), "")) {
-//				case Projection.TYPE_WORK:
-//					for (Work o : this.getCreateWorks()) {
-//						ProjectionFactory.projectionWork(p, this.getData(), o);
-//					}
-//					for (Work o : this.getUpdateWorks()) {
-//						ProjectionFactory.projectionWork(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_WORKCOMPLETED:
-//					for (WorkCompleted o : this.getCreateWorkCompleteds()) {
-//						ProjectionFactory.projectionWorkCompleted(p, this.getData(), o);
-//					}
-//					for (WorkCompleted o : this.getUpdateWorkCompleteds()) {
-//						ProjectionFactory.projectionWorkCompleted(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_TASK:
-//					for (Task o : this.getCreateTasks()) {
-//						ProjectionFactory.projectionTask(p, this.getData(), o);
-//					}
-//					for (Task o : this.getUpdateTasks()) {
-//						ProjectionFactory.projectionTask(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_TASKCOMPLETED:
-//					for (TaskCompleted o : this.getCreateTaskCompleteds()) {
-//						ProjectionFactory.projectionTaskCompleted(p, this.getData(), o);
-//					}
-//					for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
-//						ProjectionFactory.projectionTaskCompleted(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_READ:
-//					for (Read o : this.getCreateReads()) {
-//						ProjectionFactory.projectionRead(p, this.getData(), o);
-//					}
-//					for (Read o : this.getUpdateReads()) {
-//						ProjectionFactory.projectionRead(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_READCOMPLETED:
-//					for (ReadCompleted o : this.getCreateReadCompleteds()) {
-//						ProjectionFactory.projectionReadCompleted(p, this.getData(), o);
-//					}
-//					for (ReadCompleted o : this.getUpdateReadCompleteds()) {
-//						ProjectionFactory.projectionReadCompleted(p, this.getData(), o);
-//					}
-//					break;
-//				case Projection.TYPE_REVIEW:
-//					for (Review o : this.getCreateReviews()) {
-//						ProjectionFactory.projectionReview(p, this.getData(), o);
-//					}
-//					for (Review o : this.getUpdateReviews()) {
-//						ProjectionFactory.projectionReview(p, this.getData(), o);
-//					}
-//					break;
-//				default:
-//					break;
-//				}
 		}
 	}
 
@@ -752,13 +731,14 @@ public class AeiObjects extends GsonPropertyObject {
 					/* 创建待办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
 					/* 创建授权的review */
-					if (StringUtils.isNotEmpty(o.getTrustIdentity())) {
-						String trustPerson = this.business().organization().person()
-								.getWithIdentity(o.getTrustIdentity());
-						if (StringUtils.isNotEmpty(trustPerson)) {
-							this.createReview(new Review(this.getWork(), trustPerson));
-						}
-					}
+					/* 业务逻辑修改后貌似不需要 */
+//					if (StringUtils.isNotEmpty(o.getTrustIdentity())) {
+//						String trustPerson = this.business().organization().person()
+//								.getWithIdentity(o.getTrustIdentity());
+//						if (StringUtils.isNotEmpty(trustPerson)) {
+//							this.createReview(new Review(this.getWork(), trustPerson));
+//						}
+//					}
 				} catch (Exception e) {
 					logger.error(e);
 				}

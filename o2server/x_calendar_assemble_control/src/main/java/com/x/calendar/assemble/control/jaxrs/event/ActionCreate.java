@@ -1,14 +1,8 @@
 package com.x.calendar.assemble.control.jaxrs.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.PromptException;
@@ -21,11 +15,17 @@ import com.x.calendar.assemble.control.ExceptionWrapInConvert;
 import com.x.calendar.assemble.control.ThisApplication;
 import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionCreate extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger( ActionCreate.class );
-	
+
+	@AuditLog(operation = "保存日程事件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;

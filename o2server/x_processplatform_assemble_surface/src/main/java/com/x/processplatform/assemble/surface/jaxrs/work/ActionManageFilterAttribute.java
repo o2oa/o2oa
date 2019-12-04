@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -67,6 +68,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		private List<NameValueCountPair> activityNameList = new ArrayList<>();
 
 		@FieldDescribe("可选择的工作状态")
+		@FieldTypeDescribe(fieldType="class",fieldValue="{name='',value='',count=0}",fieldTypeName = "com.x.base.core.project.bean.NameValueCountPair")
+		
 		private List<NameValueCountPair> workStatusList = new ArrayList<>();
 
 		public List<NameValueCountPair> getProcessList() {

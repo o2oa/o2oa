@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.Group;
 import com.x.base.core.project.tools.ListTools;
 
@@ -116,6 +117,11 @@ public class GroupFactory {
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(String... values) throws Exception {
 		return ActionListWithPerson.execute(context, Arrays.asList(values));
+	}
+
+	/** 查询人员所在的群组 */
+	public List<String> listWithPerson(EffectivePerson effectivePerson) throws Exception {
+		return ActionListWithPerson.execute(context, ListTools.toList(effectivePerson.getDistinguishedName()));
 	}
 
 }

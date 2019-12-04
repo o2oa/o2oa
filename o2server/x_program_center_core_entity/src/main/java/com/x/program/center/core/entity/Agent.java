@@ -118,13 +118,6 @@ public class Agent extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + lastEndTime_FIELDNAME)
 	private Date lastEndTime;
 
-//	public static final String appointmentTime_FIELDNAME = "appointmentTime";
-//	@FieldDescribe("预计时间.")
-//	@CheckPersist(allowEmpty = true)
-//	@Column(name = ColumnNamePrefix + appointmentTime_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + appointmentTime_FIELDNAME)
-//	private Date appointmentTime;
-
 	public String getName() {
 		return name;
 	}

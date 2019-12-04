@@ -42,6 +42,8 @@ class ActionUploadCallback extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
+			/* 调整可能的附件名称 */
+			fileName = this.adjustFileName(business, work.getJob(), fileName);
 			/** 禁止不带扩展名的文件上传 */
 			// if (StringUtils.isEmpty(fileName)) {
 			// throw new ExceptionEmptyExtension(fileName);

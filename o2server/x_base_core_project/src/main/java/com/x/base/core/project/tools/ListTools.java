@@ -1,5 +1,6 @@
 package com.x.base.core.project.tools;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -394,7 +395,15 @@ public class ListTools {
 		if (isEmpty(sourceList) || isEmpty(groupList)) {
 			return sourceList;
 		}
-		Map<Object, List<W>> map = groupList.stream().collect(Collectors.groupingBy(o -> {
+		/* 不过滤的情况下 null 值导致 element cannot be mapped to a null key */
+		Map<Object, List<W>> map = groupList.stream().filter(o -> {
+			try {
+				return (null != PropertyUtils.getProperty(o, groupProperty));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;
+		}).collect(Collectors.groupingBy(o -> {
 			try {
 				return PropertyUtils.getProperty(o, groupProperty);
 			} catch (Exception e) {

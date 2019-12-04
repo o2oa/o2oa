@@ -1,4 +1,5 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -7,9 +8,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -23,65 +25,65 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-
-@Path( "okrworkreportpersonlink" )
+@Path("okrworkreportpersonlink")
 @JaxrsDescribe("工作汇报处理者信息管理服务")
-public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
-	
-	private static  Logger logger = LoggerFactory.getLogger( OkrWorkReportPersonLinkAction.class );
+public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(OkrWorkReportPersonLinkAction.class);
 
 	@JaxrsMethodDescribe(value = "新建或者更新工作汇报处理者信息", action = ActionSave.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionSave().execute( request, effectivePerson, jsonElement );
+			result = new ActionSave().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.warn( "system excute ActionSave got an exception. " );
+			result.error(e);
+			logger.warn("system excute ActionSave got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除工作汇报处理者信息", action = ActionDelete.class)
 	@DELETE
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("工作汇报处理者信息ID") @PathParam( "id" ) String id) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作汇报处理者信息ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionDelete().execute( request, effectivePerson, id );
+			result = new ActionDelete().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.warn( "system excute ActionDelete got an exception. " );
+			result.error(e);
+			logger.warn("system excute ActionDelete got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取工作汇报处理者信息", action = ActionGet.class)
 	@GET
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("工作汇报处理者信息ID") @PathParam( "id" ) String id) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作汇报处理者信息ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGet().execute( request, effectivePerson, id );
+			result = new ActionGet().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.warn( "system excute ExcuteGet got an exception. " );
+			result.error(e);
+			logger.warn("system excute ExcuteGet got an exception. ");
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

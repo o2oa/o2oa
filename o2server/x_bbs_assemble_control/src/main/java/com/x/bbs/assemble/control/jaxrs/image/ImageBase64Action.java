@@ -5,6 +5,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,30 +26,31 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoPr
 @Path("image/encode")
 @JaxrsDescribe("图片编码服务")
 public class ImageBase64Action extends StandardJaxrsAction {
-	
-	private static  Logger logger = LoggerFactory.getLogger( ImageBase64Action.class );	
-	
+
+	private static Logger logger = LoggerFactory.getLogger(ImageBase64Action.class);
+
 	@Path("base64")
-	@JaxrsMethodDescribe( value = "将URL指向的图片转换成base64String.", action = ActionImageBase64.class )
+	@JaxrsMethodDescribe(value = "将URL指向的图片转换成base64String.", action = ActionImageBase64.class)
 	@POST
-	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
-	@Consumes( MediaType.APPLICATION_JSON )
-	public Response convert( @Context HttpServletRequest request, JsonElement jsonElement ) { 
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void convert(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<String> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
-		if(check){
+
+		if (check) {
 			try {
-				result = new ActionImageBase64().execute( request, effectivePerson, jsonElement );
+				result = new ActionImageBase64().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new ExceptionForumInfoProcess( e, "获取所有ForumInfo的信息列表时发生异常！" );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}	
+				Exception exception = new ExceptionForumInfoProcess(e, "获取所有ForumInfo的信息列表时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
-		
-		return ResponseFactory.getDefaultActionResultResponse(result);	
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

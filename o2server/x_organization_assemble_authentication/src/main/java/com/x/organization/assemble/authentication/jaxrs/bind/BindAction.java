@@ -7,6 +7,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,7 +30,7 @@ public class BindAction extends StandardJaxrsAction {
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listNext(@Context HttpServletRequest request) {
+	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<List<WrapOutBind>> result = new ActionResult<>();
 		try {
 			result = new ActionList().execute();
@@ -36,7 +38,7 @@ public class BindAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

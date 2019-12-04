@@ -25,13 +25,16 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
 
 @Path("script")
 @JaxrsDescribe("脚本信息管理")
 public class ScriptAction extends StandardJaxrsAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 
 	@JaxrsMethodDescribe(value = "根据ID获取指定的脚本信息.", action = ActionGet.class)
@@ -39,33 +42,34 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGet().execute( effectivePerson, id );
+			result = ((ActionGet) proxy.getProxy(ActionGet.class)).execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error( e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "创建新的脚本信息.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void post( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+	public void post(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreate().execute( request, effectivePerson, jsonElement );
+			result = ((ActionCreate) proxy.getProxy(ActionCreate.class)).execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error( e, effectivePerson, request, jsonElement);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "更新脚本信息.", action = ActionUpdate.class)
@@ -73,17 +77,17 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void put( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void put(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdate().execute( effectivePerson, id, jsonElement );
+			result = ((ActionUpdate) proxy.getProxy(ActionUpdate.class)).execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error( e, effectivePerson, request, jsonElement);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "删除脚本信息.", action = ActionDelete.class)
@@ -91,17 +95,17 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void delete( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("脚本信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDelete().execute( effectivePerson, id );
+			result = ((ActionDelete) proxy.getProxy(ActionDelete.class)).execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error( e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中的所有脚本.", action = ActionListWithApplication.class)
@@ -109,17 +113,18 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/app/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithApplication( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag ) {
+	public void listWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag) {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithApplication().execute( effectivePerson, flag );
+			result = ((ActionListWithApplication) proxy.getProxy(ActionListWithApplication.class))
+					.execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据栏目ID和脚本名称获取脚本.", action = ActionGetWithAppAndName.class)
@@ -127,18 +132,19 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/app/{appId}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithAppWithName( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void getWithAppWithName(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("栏目ID") @PathParam("appId") String appId,
 			@JaxrsParameterDescribe("脚本名称") @PathParam("name") String name) {
 		ActionResult<ActionGetWithAppAndName.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetWithAppAndName().execute( effectivePerson, appId, name );
+			result = ((ActionGetWithAppAndName) proxy.getProxy(ActionGetWithAppAndName.class)).execute(effectivePerson,
+					appId, name);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，下一页.", action = ActionListNext.class)
@@ -146,19 +152,18 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void standardListNext( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void standardListNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
-			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
-			) {
+			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count) {
 		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListNext().execute( effectivePerson, id, count );
+			result = ((ActionListNext) proxy.getProxy(ActionListNext.class)).execute(effectivePerson, id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合条件的脚本信息对象，上一页.", action = ActionListPrev.class)
@@ -166,39 +171,59 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void standardListPrev( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void standardListPrev(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("上一页最后一条脚本信息ID") @PathParam("id") String id,
-			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count 
-			) {
+			@JaxrsParameterDescribe("每页显示条目数量") @PathParam("count") Integer count) {
 		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListPrev().execute( effectivePerson, id, count );
+			result = ((ActionListPrev) proxy.getProxy(ActionListPrev.class)).execute(effectivePerson, id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取脚本信息以及依赖脚本内容.", action = ActionGetScriptNested.class)
+	@JaxrsMethodDescribe(value = "获取脚本信息以及依赖脚本内容.", action = ActionPostScriptNested.class)
 	@POST
 	@Path("{uniqueName}/app/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getScriptNested( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
+	public void postScriptNested(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("脚本唯一标识") @PathParam("uniqueName") String uniqueName,
-			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag, 
-			JsonElement jsonElement) {
-		ActionResult<ActionGetScriptNested.Wo> result = new ActionResult<>();
+			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionPostScriptNested.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetScriptNested().execute( request, effectivePerson, uniqueName, flag, jsonElement );
+			result = ((ActionPostScriptNested) proxy.getProxy(ActionPostScriptNested.class)).execute(request,
+					effectivePerson, uniqueName, flag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取脚本信息以及依赖脚本内容.", action = ActionGetScriptNestedImported.class)
+	@GET
+	@Path("{uniqueName}/app/{flag}/imported")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getScriptNestedImported(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("脚本唯一标识") @PathParam("uniqueName") String uniqueName,
+			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGetScriptNestedImported.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = ((ActionGetScriptNestedImported) proxy.getProxy(ActionGetScriptNestedImported.class))
+					.execute(request, effectivePerson, uniqueName, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取Script以及依赖脚本内容。", action = ActionLoad.class)
@@ -207,17 +232,17 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void load(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 @JaxrsParameterDescribe("脚本标识") @PathParam("flag") String flag,
-					 @JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String applicationFlag,
-					 JsonElement jsonElement) {
+			@JaxrsParameterDescribe("脚本标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("栏目标识") @PathParam("appInfoFlag") String applicationFlag, JsonElement jsonElement) {
 		ActionResult<ActionLoad.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionLoad().execute(effectivePerson, flag, applicationFlag, jsonElement);
+			result = ((ActionLoad) proxy.getProxy(ActionLoad.class)).execute(effectivePerson, flag, applicationFlag,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -1,17 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.permission;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -21,13 +9,23 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.ThisApplication;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 @Path("permission")
 @JaxrsDescribe("栏目分类权限配置操作")
 public class PermissionAction extends StandardJaxrsAction {
 
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 	private static  Logger logger = LoggerFactory.getLogger( PermissionAction.class );
 
 	@JaxrsMethodDescribe(value = "查询登录用户是否指定栏目的管理员.", action = ActionIsAppInfoManager.class)
@@ -42,7 +40,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionIsAppInfoManager().execute( request, effectivePerson, id );
+				result = ((ActionIsAppInfoManager)proxy.getProxy(ActionIsAppInfoManager.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询登录用户是否指定栏目的管理员时发生异常。" );
@@ -50,7 +48,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询登录用户是否指定分类的管理员.", action = ActionIsCategoryInfoManager.class)
@@ -65,7 +63,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionIsCategoryInfoManager().execute( request, effectivePerson, id );
+				result = ((ActionIsCategoryInfoManager)proxy.getProxy(ActionIsCategoryInfoManager.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询登录用户是否指定分类的管理员时发生异常。" );
@@ -73,7 +71,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目管理员信息列表.", action = ActionListAppInfoManagers.class)
@@ -88,7 +86,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListAppInfoManagers().execute( request, effectivePerson, id );
+				result = ((ActionListAppInfoManagers)proxy.getProxy(ActionListAppInfoManagers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询栏目管理员信息列表时发生异常。" );
@@ -96,7 +94,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目发布者信息列表.", action = ActionListAppInfoPublishers.class)
@@ -111,7 +109,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListAppInfoPublishers().execute( request, effectivePerson, id );
+				result = ((ActionListAppInfoPublishers)proxy.getProxy(ActionListAppInfoPublishers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询栏目发布者信息列表时发生异常。" );
@@ -119,7 +117,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询栏目可见范围信息.", action = ActionListAppInfoViewers.class)
@@ -134,7 +132,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListAppInfoViewers().execute( request, effectivePerson, id );
+				result = ((ActionListAppInfoViewers)proxy.getProxy(ActionListAppInfoViewers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询栏目可见范围信息时发生异常。" );
@@ -142,7 +140,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类管理员信息列表.", action = ActionListCategoryInfoManagers.class)
@@ -157,7 +155,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListCategoryInfoManagers().execute( request, effectivePerson, id );
+				result = ((ActionListCategoryInfoManagers)proxy.getProxy(ActionListCategoryInfoManagers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询分类管理员信息列表时发生异常。" );
@@ -165,7 +163,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类发布者信息列表.", action = ActionListCategoryInfoPublishers.class)
@@ -180,7 +178,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListCategoryInfoPublishers().execute( request, effectivePerson, id );
+				result = ((ActionListCategoryInfoPublishers)proxy.getProxy(ActionListCategoryInfoPublishers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询分类发布者信息列表时发生异常。" );
@@ -188,7 +186,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "查询分类发布范围信息.", action = ActionListCategoryInfoViewers.class)
@@ -203,7 +201,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionListCategoryInfoViewers().execute( request, effectivePerson, id );
+				result = ((ActionListCategoryInfoViewers)proxy.getProxy(ActionListCategoryInfoViewers.class)).execute( request, effectivePerson, id );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "查询分类发布范围信息时发生异常。" );
@@ -211,7 +209,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目管理员信息.", action = ActionAppInfoManagerSave.class)
@@ -226,7 +224,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionAppInfoManagerSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionAppInfoManagerSave)proxy.getProxy(ActionAppInfoManagerSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "栏目管理员权限更新时发生异常。" );
@@ -234,7 +232,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目发布者信息.", action = ActionAppInfoPublisherSave.class)
@@ -249,7 +247,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionAppInfoPublisherSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionAppInfoPublisherSave)proxy.getProxy(ActionAppInfoPublisherSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "栏目发布者权限更新时发生异常。" );
@@ -257,7 +255,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新栏目可见范围信息.", action = ActionAppInfoViewerSave.class)
@@ -272,7 +270,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionAppInfoViewerSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionAppInfoViewerSave)proxy.getProxy(ActionAppInfoViewerSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "栏目可见范围权限更新时发生异常。" );
@@ -280,7 +278,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类管理员信息.", action = ActionCategoryInfoManagerSave.class)
@@ -295,7 +293,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionCategoryInfoManagerSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionCategoryInfoManagerSave)proxy.getProxy(ActionCategoryInfoManagerSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "分类管理员权限更新时发生异常。" );
@@ -303,7 +301,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类发布者信息.", action = ActionCategoryInfoPublisherSave.class)
@@ -318,7 +316,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionCategoryInfoPublisherSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionCategoryInfoPublisherSave)proxy.getProxy(ActionCategoryInfoPublisherSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "分类发布者权限更新时发生异常。" );
@@ -326,7 +324,7 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "保存或者更新分类可见范围信息.", action = ActionCategoryInfoViewerSave.class)
@@ -341,7 +339,7 @@ public class PermissionAction extends StandardJaxrsAction {
 		Boolean check = true;
 		if( check ){
 			try {
-				result = new ActionCategoryInfoViewerSave().execute( request, effectivePerson, id, jsonElement );
+				result = ((ActionCategoryInfoViewerSave)proxy.getProxy(ActionCategoryInfoViewerSave.class)).execute( request, effectivePerson, id, jsonElement );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAppCategoryAdminProcess( e, "分类可见范围权限更新时发生异常。" );
@@ -349,6 +347,6 @@ public class PermissionAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}	
 }

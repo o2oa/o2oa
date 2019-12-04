@@ -1,19 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.queryview;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -22,12 +8,24 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.proxy.StandardJaxrsActionProxy;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.query.Query;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 @Path("queryview")
 @JaxrsDescribe("数据视图信息管理")
 public class QueryViewAction extends BaseAction {
+
+	private StandardJaxrsActionProxy proxy = new StandardJaxrsActionProxy(ThisApplication.context());
 
 	@JaxrsMethodDescribe(value = "列示所有栏目中的数据视图信息.", action = ActionListAll.class)
 	@GET
@@ -38,12 +36,12 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
-			result = new ActionListAll().execute( request, effectivePerson);
+			result = ((ActionListAll)proxy.getProxy(ActionListAll.class)).execute( request, effectivePerson);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "列示指定栏目中所有当前用户可见的数据视图信息.", action = ActionList.class)
@@ -55,12 +53,12 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson( request );
-			result = new ActionList().execute( request, effectivePerson);
+			result = ((ActionList)proxy.getProxy(ActionList.class)).execute( request, effectivePerson);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示指定栏目中所有当前用户可见的数据视图信息.", action = ActionFlag.class)
@@ -73,12 +71,12 @@ public class QueryViewAction extends BaseAction {
 		ActionResult<ActionFlag.Wo> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionFlag().execute( request, effectivePerson, flag);
+			result = ((ActionFlag)proxy.getProxy(ActionFlag.class)).execute( request, effectivePerson, flag);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
 	@JaxrsMethodDescribe(value = "执行指定栏目中指定数据视图查询.", action = ActionExecute.class)
@@ -96,13 +94,13 @@ public class QueryViewAction extends BaseAction {
 		
 		if( check ){
 			try {
-				result = new ActionExecute().execute( request, effectivePerson, flag, appId, jsonElement);
+				result = ((ActionExecute)proxy.getProxy(ActionExecute.class)).execute( request, effectivePerson, flag, appId, jsonElement);
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

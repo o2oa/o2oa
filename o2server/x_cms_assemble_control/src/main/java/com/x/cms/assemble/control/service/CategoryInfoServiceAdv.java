@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -13,6 +8,10 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.query.core.entity.View;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 对栏目分类信息进行管理的服务类（高级）
@@ -53,18 +52,18 @@ public class CategoryInfoServiceAdv {
 
 	/**
 	 * 根据需要过滤的栏目列表和信息类型以及返回最大条目数量列示栏目信息ID列表(无权限查询)
-	 * @param viewAbleAppIds
+	 * @param inAppIds
 	 * @param documentType
 	 * @param maxCount
 	 * @return
 	 * @throws Exception
 	 */
-    public List<String> listCategoryIdsWithAppIds(List<String> viewAbleAppIds, String documentType, Integer maxCount ) throws Exception {
-    	if (ListTools.isEmpty( viewAbleAppIds )) {
-           return new ArrayList<>();
+    public List<String> listCategoryIdsWithAppIds(List<String> inAppIds, String documentType, Integer maxCount ) throws Exception {
+    	if (ListTools.isEmpty( inAppIds )) {
+			inAppIds =  new ArrayList<>();
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-           return categoryInfoService.listByAppIds( emc, viewAbleAppIds, documentType, maxCount );
+           return categoryInfoService.listByAppIds( emc, inAppIds, documentType, maxCount );
         } catch (Exception e) {
             throw e;
         }

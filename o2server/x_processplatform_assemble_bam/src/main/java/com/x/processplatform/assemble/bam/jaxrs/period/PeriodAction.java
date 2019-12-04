@@ -45,7 +45,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月产生的待办任务,所对应的组织,根据Task和TaskCompleted统计得到.", action = ActionListStartTaskUnitStubs.class)
@@ -62,7 +62,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月产生的待办数量,现有待办+已经办理完成的已办,(0)表示占位符.", action = ActionListCountStartTask.class)
@@ -83,7 +83,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月产生的待办数量,现有待办+已经办理完成的已办,根据unit进行分项统计,(0)表示占位符.", action = ActionListCountStartTaskByUnit.class)
@@ -103,7 +103,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月产生的待办数量,现有待办+已经办理完成的已办,根据application进行分项统计,(0)表示占位符.", action = ActionListCountStartTaskByApplication.class)
@@ -121,7 +121,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月产生的待办数量,现有待办+已经办理完成的已办,根据process进行分项统计,(0)表示占位符.", action = ActionListCountStartTaskByProcess.class)
@@ -141,7 +141,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月产生的待办数量,现有待办+已经办理完成的已办,根据activity进行分项统计,(0)表示占位符.", action = ActionListCountStartTaskByActivity.class)
@@ -162,7 +162,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/*****************************************************************************************************************************/
@@ -187,7 +187,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月完成的待办任务,所对应的公司以及部门,根据TaskCompleted统计得到.", action = ActionListCompletedTaskUnitStubs.class)
@@ -204,7 +204,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的办理量,,根据TaskCompleted统计得到.(0)表示占位符.", action = ActionListCountCompletedTask.class)
@@ -226,7 +226,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的办理量,,根据TaskCompleted统计得到.按unit分项统计,(0)表示占位符.", action = ActionListCountCompletedTaskByUnit.class)
@@ -246,7 +246,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的办理量,,根据TaskCompleted统计得到.按application分项统计,(0)表示占位符.", action = ActionListCountCompletedTaskByApplication.class)
@@ -264,7 +264,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的办理量,,根据TaskCompleted统计得到.按process分项统计,(0)表示占位符.", action = ActionListCountCompletedTaskByProcess.class)
@@ -284,7 +284,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的办理量,,根据TaskCompleted统计得到.按process分项统计,(0)表示占位符.", action = ActionListCountCompletedTaskByActivity.class)
@@ -305,7 +305,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	/*****************************************************************************************************************************/
 	/* 每月完成的待办任务量 end */
@@ -329,7 +329,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月产生的超时待办任务,所对应的公司以及部门,根据Task和TaskCompleted统计得到.", action = ActionListExpiredTaskUnitStubs.class)
@@ -346,7 +346,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的超时办理量,根据task和taskCompleted的截至时间来计算,计入到待办截至时间的所在月份.(0)表示占位符.", action = ActionListCountExpiredTask.class)
@@ -367,7 +367,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的超时办理量,根据task和taskCompleted的截至时间来计算,计入到待办截至时间的所在月份,按unit分项统计,(0)表示占位符.", action = ActionListCountExpiredTaskByUnit.class)
@@ -387,7 +387,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的超时办理量,根据task和taskCompleted的截至时间来计算,计入到待办截至时间的所在月份,按application分项统计,(0)表示占位符.", action = ActionListCountExpiredTaskByApplication.class)
@@ -405,7 +405,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的超时办理量,根据task和taskCompleted的截至时间来计算,计入到待办截至时间的所在月份,按process分项统计,(0)表示占位符.", action = ActionListCountExpiredTaskByProcess.class)
@@ -425,7 +425,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的超时办理量,根据task和taskCompleted的截至时间来计算,计入到待办截至时间的所在月份,按activity分项统计,(0)表示占位符.", action = ActionListCountExpiredTaskByActivity.class)
@@ -446,7 +446,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/*****************************************************************************************************************************/
@@ -471,7 +471,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月产生的Work,所对应的公司以及部门,根据Work和WorkCompleted统计得到.", action = ActionListStartWorkUnitStubs.class)
@@ -488,7 +488,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的Work创建量,统计work和workCompleted,(0)作为占位符.", action = ActionListCountStartWork.class)
@@ -508,7 +508,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的Work创建量,统计work和workCompleted,按unit分项统计,(0)作为占位符.", action = ActionListCountStartWorkByUnit.class)
@@ -527,7 +527,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的Work创建量,统计work和workCompleted,按application分项统计,(0)作为占位符.", action = ActionListCountStartWorkByApplication.class)
@@ -545,7 +545,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月的Work创建量,统计work和workCompleted,按process分项统计,(0)作为占位符.", action = ActionListCountStartWorkByProcess.class)
@@ -565,7 +565,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/*****************************************************************************************************************************/
@@ -590,7 +590,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月完成的Work,所对应的公司以及部门,根据WorkCompleted统计得到.", action = ActionListCompletedWorkUnitStubs.class)
@@ -607,7 +607,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的Work数量,时长,步数.根据workcompleted统计,(0)表示占位符.", action = ActionListCountCompletedWork.class)
@@ -628,7 +628,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的Work数量,时长,步数.根据workcompleted统计得到,根据unit分项统计,(0)表示占位符.", action = ActionListCountCompletedWorkByUnit.class)
@@ -647,7 +647,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的Work数量,时长,步数.根据workcompleted统计得到,根据application分项统计,(0)表示占位符.", action = ActionListCountCompletedWorkByApplication.class)
@@ -665,7 +665,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月完成的Work数量,时长,步数.根据workcompleted统计得到,根据process分项统计,(0)表示占位符.", action = ActionListCountCompletedWorkByProcess.class)
@@ -685,7 +685,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	/*****************************************************************************************************************************/
 	/* 每月完成Work数量 end */
@@ -709,7 +709,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取每月超时的Work,所对应的公司以及部门,根据Work和WorkCompleted统计得到.", action = ActionListExpiredWorkUnitStubs.class)
@@ -726,7 +726,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月超时的Work数量.根据work和workCompleted统计得到,(0)表示占位符.", action = ActionListCountExpiredWork.class)
@@ -746,7 +746,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月超时的Work数量.根据work和workCompleted统计得到,按unit分项统计,(0)表示占位符.", action = ActionListCountExpiredWorkByUnit.class)
@@ -765,7 +765,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月超时的Work数量.根据work和workCompleted统计得到,按department分项统计,(0)表示占位符.", action = ActionListCountExpiredWorkByApplication.class)
@@ -782,7 +782,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取过去12个月中每月超时的Work数量.根据work和workCompleted统计得到,按process分项统计,(0)表示占位符.", action = ActionListCountExpiredWorkByProcess.class)
@@ -802,7 +802,7 @@ public class PeriodAction extends StandardJaxrsAction {
 			e.printStackTrace();
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	/*****************************************************************************************************************************/

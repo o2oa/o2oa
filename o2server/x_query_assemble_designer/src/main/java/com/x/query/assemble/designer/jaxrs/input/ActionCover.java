@@ -9,6 +9,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.ApplicationCache;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.wrap.*;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,10 +31,6 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
-import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
-import com.x.query.core.entity.wrap.WrapStat;
-import com.x.query.core.entity.wrap.WrapView;
 
 class ActionCover extends BaseAction {
 
@@ -108,14 +108,67 @@ class ActionCover extends BaseAction {
 			}
 			obj.setQuery(query.getId());
 		}
+		for (WrapTable _o : wi.getTableList()) {
+			Table obj = business.entityManagerContainer().find(_o.getId(), Table.class);
+			if (null != obj) {
+				WrapTable.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapTable.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, query.getId(), obj.getAlias(), Table.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, query.getId(), obj.getName(), Table.class, obj.getId()));
+			}
+			obj.setQuery(query.getId());
+		}
+		for (WrapStatement _o : wi.getStatementList()) {
+			Statement obj = business.entityManagerContainer().find(_o.getId(), Statement.class);
+			if (null != obj) {
+				WrapStatement.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapStatement.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(
+						this.idleAliasWithQuery(business, query.getId(), obj.getAlias(), Statement.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithQuery(business, query.getId(), obj.getName(), Statement.class, obj.getId()));
+			}
+			obj.setQuery(query.getId());
+		}
 		business.entityManagerContainer().beginTransaction(Query.class);
 		business.entityManagerContainer().beginTransaction(View.class);
 		business.entityManagerContainer().beginTransaction(Stat.class);
 		business.entityManagerContainer().beginTransaction(Reveal.class);
+		business.entityManagerContainer().beginTransaction(Table.class);
+		business.entityManagerContainer().beginTransaction(Statement.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
+		if(!wi.getTableList().isEmpty()){
+			ApplicationCache.notify(Table.class);
+			ApplicationCache.notify(Statement.class);
+
+			business.buildAllTable();
+		}else if(!wi.getStatementList().isEmpty()){
+			ApplicationCache.notify(Statement.class);
+		}
+		if(!wi.getViewList().isEmpty()){
+			ApplicationCache.notify(View.class);
+		}
+		if(!wi.getStatList().isEmpty()){
+			ApplicationCache.notify(Stat.class);
+		}
+		if(!wi.getRevealList().isEmpty()){
+			ApplicationCache.notify(Reveal.class);
+		}
 	}
 
 	private <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name, Class<T> cls,

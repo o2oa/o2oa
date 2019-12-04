@@ -15,23 +15,27 @@ public class ApplicationServer extends ConfigObject {
 
 	public ApplicationServer() {
 		this.enable = true;
-		this.port = default_port;
+		this.port = DEFAULT_PORT;
 		this.sslEnable = false;
 		this.proxyHost = "";
-		this.proxyPort = default_port;
+		this.proxyPort = DEFAULT_PORT;
 		this.redeploy = true;
-		this.scanInterval = default_scanInterval;
+		this.scanInterval = DEFAULT_SCANINTERVAL;
 		this.includes = new CopyOnWriteArrayList<String>();
 		this.excludes = new CopyOnWriteArrayList<String>();
 		this.weights = new CopyOnWriteArrayList<NameWeightPair>();
 		this.scheduleWeights = new CopyOnWriteArrayList<NameWeightPair>();
+		this.statEnable = DEFAULT_STATENABLE;
+		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 
 	}
 
-	private static final Integer default_port = 20020;
-	private static final Integer default_scanInterval = 0;
-	public static final Integer default_weight = 100;
-	public static final Integer default_scheduleWeight = 100;
+	private static final Integer DEFAULT_PORT = 20020;
+	private static final Integer DEFAULT_SCANINTERVAL = 0;
+	private static final Integer DEFAULT_WEIGHT = 100;
+	private static final Integer DEFAULT_SCHEDULEWEIGHT = 100;
+	private static final Boolean DEFAULT_STATENABLE = true;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -55,12 +59,24 @@ public class ApplicationServer extends ConfigObject {
 	private CopyOnWriteArrayList<NameWeightPair> weights;
 	@FieldDescribe("设置应用的定时任务权重,在集群环境中,一个应用可以部署多个实例提供负载均衡.通过合计占比来分配应用占比.")
 	private CopyOnWriteArrayList<NameWeightPair> scheduleWeights;
+	@FieldDescribe("启用统计,默认启用统计.")
+	private Boolean statEnable;
+	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
+	private String statExclusions;
+
+	public String getStatExclusions() {
+		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
+	}
+
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(statEnable);
+	}
 
 	public Integer getScanInterval() {
 		if (null != this.scanInterval && this.scanInterval > 0) {
 			return this.scanInterval;
 		}
-		return default_scanInterval;
+		return DEFAULT_SCANINTERVAL;
 	}
 
 	public CopyOnWriteArrayList<NameWeightPair> getWeights() {
@@ -79,14 +95,14 @@ public class ApplicationServer extends ConfigObject {
 
 	public Integer weight(Class<?> clazz) {
 		NameWeightPair pair = this.weights.stream().filter(p -> StringUtils.equals(p.getName(), clazz.getName()))
-				.findFirst().orElse(new NameWeightPair(clazz.getName(), default_weight));
+				.findFirst().orElse(new NameWeightPair(clazz.getName(), DEFAULT_WEIGHT));
 		return pair.getWeight();
 	}
 
 	public Integer scheduleWeight(Class<?> clazz) {
 		NameWeightPair pair = this.scheduleWeights.stream()
 				.filter(p -> StringUtils.equals(p.getName(), clazz.getName())).findFirst()
-				.orElse(new NameWeightPair(clazz.getName(), default_scheduleWeight));
+				.orElse(new NameWeightPair(clazz.getName(), DEFAULT_SCHEDULEWEIGHT));
 		return pair.getWeight();
 	}
 
@@ -94,7 +110,7 @@ public class ApplicationServer extends ConfigObject {
 
 		private String name;
 
-		private Integer weight = default_weight;
+		private Integer weight = DEFAULT_WEIGHT;
 
 		public NameWeightPair() {
 		}
@@ -116,7 +132,7 @@ public class ApplicationServer extends ConfigObject {
 			if ((null != this.weight) && (this.weight > 0)) {
 				return this.weight;
 			}
-			return default_weight;
+			return DEFAULT_WEIGHT;
 		}
 
 		public void setWeight(Integer weight) {
@@ -133,7 +149,7 @@ public class ApplicationServer extends ConfigObject {
 		if (null != this.port && this.port > 0 && this.port < 65535) {
 			return this.port;
 		}
-		return default_port;
+		return DEFAULT_PORT;
 	}
 
 	public Boolean getSslEnable() {

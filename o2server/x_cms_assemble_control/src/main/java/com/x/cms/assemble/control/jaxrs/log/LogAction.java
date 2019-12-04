@@ -48,7 +48,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定栏目的操作日志信息列表.", action = ActionListByAppId.class)
@@ -67,7 +67,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定分类的操作日志信息列表.", action = ActionListByCategory.class)
@@ -86,7 +86,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取指定文档的操作日志信息列表.", action = ActionListByDocument.class)
@@ -105,7 +105,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取操作日志信息对象.", action = ActionGet.class)
@@ -124,7 +124,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的操作日志,下一页.", action = ActionListNextWithFilter.class)
@@ -146,7 +146,7 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的操作日志,上一页.", action = ActionListPrevWithFilter.class)
@@ -168,6 +168,6 @@ public class LogAction extends StandardJaxrsAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}		
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 }

@@ -6,7 +6,6 @@ import com.x.organization.assemble.personal.schedule.DisableExpiredEmpower;
 public class ThisApplication {
 
 	protected static Context context;
-	public static final int passwordStrengthLevel = 4;
 
 	public static Context context() {
 		return context;
@@ -14,7 +13,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
-			context.schedule(DisableExpiredEmpower.class, "0 */20 * * * ?");
+			context.schedule(DisableExpiredEmpower.class, "0 0/20 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

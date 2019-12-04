@@ -3,12 +3,14 @@ package com.x.base.core.project.http;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.zip.CRC32;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DefaultCharset;
 
 public class ActionResult<T> implements Serializable {
 
@@ -31,10 +33,6 @@ public class ActionResult<T> implements Serializable {
 	protected Long spent = -1L;
 
 	protected Long size = -1L;
-
-//	protected Long page = -1L;
-//
-//	protected Long pageSize = -1L;
 
 	protected Long count = 0L;
 
@@ -166,21 +164,5 @@ public class ActionResult<T> implements Serializable {
 	public String getMessage() {
 		return message;
 	}
-
-//	public Long getPage() {
-//		return page;
-//	}
-//
-//	public void setPage(Long page) {
-//		this.page = page;
-//	}
-
-//	public Long getPageSize() {
-//		return pageSize;
-//	}
-//
-//	public void setPageSize(Long pageSize) {
-//		this.pageSize = pageSize;
-//	}
 
 }

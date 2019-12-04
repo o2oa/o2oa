@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -17,10 +18,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
-import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
-import com.x.query.core.entity.wrap.WrapStat;
-import com.x.query.core.entity.wrap.WrapView;
+import com.x.query.core.entity.schema.Statement;
+import com.x.query.core.entity.schema.Table;
+import com.x.query.core.entity.wrap.*;
 
 class ActionCreate extends BaseAction {
 
@@ -71,6 +71,24 @@ class ActionCreate extends BaseAction {
 			obj.setQuery(query.getId());
 			persistObjects.add(obj);
 		}
+		for (WrapTable _o : wi.getTableList()) {
+			Table obj = business.entityManagerContainer().find(_o.getId(), Table.class);
+			if (null != obj) {
+				throw new ExceptionEntityExistForCreate(_o.getId(), Table.class);
+			}
+			obj = WrapTable.inCopier.copy(_o);
+			obj.setQuery(query.getId());
+			persistObjects.add(obj);
+		}
+		for (WrapStatement _o : wi.getStatementList()) {
+			Statement obj = business.entityManagerContainer().find(_o.getId(), Statement.class);
+			if (null != obj) {
+				throw new ExceptionEntityExistForCreate(_o.getId(), Statement.class);
+			}
+			obj = WrapStatement.inCopier.copy(_o);
+			obj.setQuery(query.getId());
+			persistObjects.add(obj);
+		}
 		for (WrapReveal _o : wi.getRevealList()) {
 			Reveal obj = business.entityManagerContainer().find(_o.getId(), Reveal.class);
 			if (null != obj) {
@@ -84,10 +102,20 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(View.class);
 		business.entityManagerContainer().beginTransaction(Stat.class);
 		business.entityManagerContainer().beginTransaction(Reveal.class);
+		business.entityManagerContainer().beginTransaction(Table.class);
+		business.entityManagerContainer().beginTransaction(Statement.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
+		if(!wi.getTableList().isEmpty()){
+			ApplicationCache.notify(Table.class);
+			ApplicationCache.notify(Statement.class);
+
+			business.buildAllTable();
+		}else if(!wi.getStatementList().isEmpty()){
+			ApplicationCache.notify(Statement.class);
+		}
 		return query;
 	}
 

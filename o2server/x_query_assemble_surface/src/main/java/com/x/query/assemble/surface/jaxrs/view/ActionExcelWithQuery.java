@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -64,6 +65,9 @@ class ActionExcelWithQuery extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("过滤")
+		@FieldTypeDescribe(fieldType="class",fieldValue="{value='',otherValue='',path='',formatType='',logic='',comparison=''}",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
+		fieldSample="{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
+
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")

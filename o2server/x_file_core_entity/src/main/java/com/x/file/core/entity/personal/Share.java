@@ -8,6 +8,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.file.core.entity.PersistenceProperties;
+import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -51,6 +52,24 @@ public class Share extends SliceJpaObject {
 		this.lastUpdateTime = new Date();
 		/* 如果扩展名为空去掉null */
 		this.extension = StringUtils.trimToEmpty(extension);
+		/* 共享人员去重 */
+		if (null != this.shareUserList) {
+			ListOrderedSet<String> set = new ListOrderedSet<>();
+			set.addAll(this.shareUserList);
+			this.shareUserList = set.asList();
+		}
+		/* 共享组织去重 */
+		if (null != this.shareOrgList) {
+			ListOrderedSet<String> set = new ListOrderedSet<>();
+			set.addAll(this.shareOrgList);
+			this.shareOrgList = set.asList();
+		}
+		/* 屏蔽用户去重 */
+		if (null != this.shieldUserList) {
+			ListOrderedSet<String> set = new ListOrderedSet<>();
+			set.addAll(this.shieldUserList);
+			this.shieldUserList = set.asList();
+		}
 	}
 
 	/* 更新运行方法 */

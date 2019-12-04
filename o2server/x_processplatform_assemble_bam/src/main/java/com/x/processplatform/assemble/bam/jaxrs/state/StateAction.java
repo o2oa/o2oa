@@ -40,7 +40,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取运行情况.", action = ActionRunning.class)
@@ -56,7 +56,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取根据组织,个人的统计.", action = ActionOrganization.class)
@@ -72,7 +72,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取根据应用的统计.", action = ActionCategory.class)
@@ -88,7 +88,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "触发根据应用的统计.", action = ActionCategoryTrigger.class)
@@ -104,7 +104,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "触发获取应用.", action = ActionApplicationStubsTrigger.class)
@@ -121,7 +121,7 @@ public class StateAction extends StandardJaxrsAction {
 			logger.error(e);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

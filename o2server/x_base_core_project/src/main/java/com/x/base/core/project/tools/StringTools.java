@@ -31,9 +31,9 @@ import org.slf4j.helpers.MessageFormatter;
 public class StringTools {
 	public static final Pattern MOBILE_REGEX = Pattern.compile(
 			"(^(\\+)?0{0,2}852\\d{8}$)|(^(\\+)?0{0,2}853\\d{8}$)|(^(\\+)?0{0,2}886\\d{9}$)|(^1(3|4|5|6|7|8|9)\\d{9}$)");
-	/** 中文,英文,数字,-,. 【】（） */
+	/** 中文,英文,数字,-,.· 【】（） */
 	public static final Pattern SIMPLY_REGEX = Pattern
-			.compile("^[\u4e00-\u9fa5a-zA-Z0-9\\_\\(\\)\\-\\ \\.\\【\\】\\（\\）]*$");
+			.compile("^[\u4e00-\u9fa5a-zA-Z0-9\\_\\(\\)\\-\\ \\.\\ \\·\\【\\】\\（\\）]*$");
 	public static final Pattern FILENAME_REGEX = Pattern.compile("[^/\\\\<>*?|\"]+(\\.?)[^/\\\\<>*?|\"]+");
 	/**
 	 * RFC822 compliant regex adapted for Java
@@ -47,7 +47,9 @@ public class StringTools {
 
 	public static final String[] SQL_LIKE = new String[] { "_", "%" };
 
-	public static final String[] SQL_LIKE_SHIFT = new String[] { "\\\\_", "\\\\%" };
+	public static final String[] SQL_LIKE_SHIFT = new String[] { "^_", "^%" };
+
+	public static final char SQL_ESCAPE_CHAR = '^';
 
 	private static final Random random = new Random();
 

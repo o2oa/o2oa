@@ -15,7 +15,7 @@ public class DingdingSyncOrganizationTrigger implements Job {
 	/* 向列表发送一个同步信号 */
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		ThisApplication.qiyeweixinSyncOrganizationCallbackRequest.add(new Object());
+		ThisApplication.dingdingSyncOrganizationCallbackRequest.add(new Object());
 	}
 
 }

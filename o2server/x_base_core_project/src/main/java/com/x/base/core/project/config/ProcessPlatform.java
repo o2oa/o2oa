@@ -34,6 +34,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public final static String DEFAULT_DOCTOWORDDEFAULTSITE = "$doc";
 
+	public final static Integer DEFAULT_EXECUTORCOUNT = 32;
+
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -54,6 +56,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.docToWordType = DEFAULT_DOCTOWORDTYPE;
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
+		this.executorCount = DEFAULT_EXECUTORCOUNT;
 	}
 
 	@FieldDescribe("提醒设置,设置提醒间隔.")
@@ -103,6 +106,13 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
 	private String docToWordDefaultSite;
+
+	@FieldDescribe("执行器数量")
+	private Integer executorCount;
+
+	public Integer getExecutorCount() {
+		return ((null == executorCount) || (executorCount < 1)) ? DEFAULT_EXECUTORCOUNT : this.executorCount;
+	}
 
 	public Integer getFormVersionCount() {
 		return formVersionCount == null ? DEFAULT_FORMVERSIONCOUNT : this.formVersionCount;

@@ -13,27 +13,31 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class CenterServer extends ConfigObject {
 
-	private static final Boolean default_enable = true;
-	private static final Integer default_port = 20030;
-	private static final Integer default_scanInterval = 0;
-	private static final Boolean default_configApiEnable = true;
-	private static final Integer default_order = 0;
+	private static final Boolean DEFAULT_ENABLE = true;
+	private static final Integer DEFAULT_PORT = 20030;
+	private static final Integer DEFAULT_SCANINTERVAL = 0;
+	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
+	private static final Integer DEFAULT_ORDER = 0;
+	private static final Boolean DEFAULT_STATENABLE = true;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
 	}
 
 	public CenterServer() {
-		this.enable = default_enable;
+		this.enable = DEFAULT_ENABLE;
 		this.sslEnable = false;
 		this.redeploy = true;
-		this.order = default_order;
-		this.port = default_port;
+		this.order = DEFAULT_ORDER;
+		this.port = DEFAULT_PORT;
 		this.httpProtocol = "";
 		this.proxyHost = "";
-		this.proxyPort = default_port;
-		this.scanInterval = default_scanInterval;
-		this.configApiEnable = default_configApiEnable;
+		this.proxyPort = DEFAULT_PORT;
+		this.scanInterval = DEFAULT_SCANINTERVAL;
+		this.configApiEnable = DEFAULT_CONFIGAPIENABLE;
+		this.statEnable = DEFAULT_STATENABLE;
+		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 	}
 
 	@FieldDescribe("是否启用")
@@ -46,7 +50,6 @@ public class CenterServer extends ConfigObject {
 	private Boolean redeploy;
 	@FieldDescribe("端口,center服务器端口,默认20030")
 	private Integer port;
-
 	@FieldDescribe("对外http访问协议,http/https")
 	private String httpProtocol;
 	@FieldDescribe("代理主机,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问地址.")
@@ -59,13 +62,25 @@ public class CenterServer extends ConfigObject {
 	private LinkedHashMap<String, Object> config;
 	@FieldDescribe("允许通过Api修改config")
 	private Boolean configApiEnable;
+	@FieldDescribe("启用统计,默认启用统计.")
+	private Boolean statEnable;
+	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
+	private String statExclusions;
+
+	public String getStatExclusions() {
+		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
+	}
+
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(statEnable);
+	}
 
 	public Boolean getConfigApiEnable() {
-		return configApiEnable == null ? default_configApiEnable : this.configApiEnable;
+		return configApiEnable == null ? DEFAULT_CONFIGAPIENABLE : this.configApiEnable;
 	}
 
 	public Boolean getEnable() {
-		return enable == null ? default_enable : this.enable;
+		return enable == null ? DEFAULT_ENABLE : this.enable;
 	}
 
 	public String getHttpProtocol() {
@@ -76,7 +91,7 @@ public class CenterServer extends ConfigObject {
 		if (null != this.scanInterval && this.scanInterval > 0) {
 			return this.scanInterval;
 		}
-		return default_scanInterval;
+		return DEFAULT_SCANINTERVAL;
 	}
 
 	public Boolean getRedeploy() {
@@ -91,7 +106,7 @@ public class CenterServer extends ConfigObject {
 		if (null != this.port && this.port > 0 && this.port < 65535) {
 			return this.port;
 		}
-		return default_port;
+		return DEFAULT_PORT;
 	}
 
 	public String getProxyHost() throws Exception {
@@ -113,7 +128,7 @@ public class CenterServer extends ConfigObject {
 	}
 
 	public Integer getOrder() {
-		return order == null ? default_order : this.order;
+		return order == null ? DEFAULT_ORDER : this.order;
 	}
 
 	public void save() throws Exception {

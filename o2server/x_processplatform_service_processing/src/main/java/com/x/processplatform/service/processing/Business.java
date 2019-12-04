@@ -36,13 +36,13 @@ public class Business {
 		return attachment;
 	}
 
-	private ItemFactory dataItem;
+	private ItemFactory item;
 
-	public ItemFactory dataItem() throws Exception {
-		if (null == this.dataItem) {
-			this.dataItem = new ItemFactory(this);
+	public ItemFactory item() throws Exception {
+		if (null == this.item) {
+			this.item = new ItemFactory(this);
 		}
-		return dataItem;
+		return item;
 	}
 
 	private TaskFactory task;

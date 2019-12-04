@@ -1,7 +1,6 @@
 package com.x.mind.assemble.control.jaxrs.folder;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -12,6 +11,8 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderNotExists;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindFolderQuery;
 import com.x.mind.entity.MindFolderInfo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 删除文件夹信息
  * @author O2LEE
@@ -20,7 +21,8 @@ import com.x.mind.entity.MindFolderInfo;
 public class ActionFolderDelete extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionFolderDelete.class );
-	
+
+	@AuditLog(operation = "删除文件目录")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String folderId ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

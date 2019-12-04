@@ -23,13 +23,11 @@ public class ApplicationCache extends AbstractApplicationCache {
 
 	private NotifyThread notifyThread;
 	private ReceiveThread receiveThread;
-	// private static ConcurrentHashMap<String, List<Class<?>>> incidenceMap = new
-	// ConcurrentHashMap<>();
 
 	private volatile static ApplicationCache INSTANCE;
 	private CacheManager manager;
 
-	private static Integer defaultSize = 2000;
+	private static Integer defaultSize = 1000;
 
 	private static Integer defaultTimeToIdle = MINUTES_20;
 	private static Integer defaultTimeToLive = MINUTES_30;
@@ -112,31 +110,6 @@ public class ApplicationCache extends AbstractApplicationCache {
 		}
 		return cache;
 	}
-
-//	private ApplicationCache() {
-//		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
-//			List<ClassInfo> list = new ArrayList<>();
-//			list.addAll(scanResult.getSubclasses(Deployable.class.getName()));
-//			for (ClassInfo info : list) {
-//				Class<?> clz = Class.forName(info.getName());
-//				for (String str : clz.getAnnotation(Module.class).containerEntities()) {
-//					List<Class<?>> os = incidenceMap.get(str);
-//					if (null == os) {
-//						os = new ArrayList<Class<?>>();
-//						incidenceMap.put(str, os);
-//					}
-//					os.add(clz);
-//				}
-//			}
-//			manager = createCacheManager();
-//			this.notifyThread = new NotifyThread();
-//			notifyThread.start();
-//			this.receiveThread = new ReceiveThread();
-//			receiveThread.start();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 	private ApplicationCache() {
 		try {

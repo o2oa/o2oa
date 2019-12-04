@@ -1,18 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.google.gson.Gson;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -29,11 +18,22 @@ import com.x.cms.common.excel.reader.ExcelReaderUtil;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.tools.DateOperation;
 import com.x.query.core.entity.View;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ActionPersistImportDataExcel extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger( ActionPersistImportDataExcel.class );
 
+	@AuditLog(operation = "导入Execel生成文档")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson,  String categoryId,
 			byte[] bytes, String json_data, FormDataContentDisposition disposition) {
 		

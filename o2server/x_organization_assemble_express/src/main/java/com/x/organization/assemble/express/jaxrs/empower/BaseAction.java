@@ -16,8 +16,6 @@ import net.sf.ehcache.Ehcache;
 
 class BaseAction extends StandardJaxrsAction {
 
-	Ehcache cache = CacheFactory.getOrganizationCache();
-
 	static class WoUnitListAbstract extends GsonPropertyObject {
 
 		@FieldDescribe("组织识别名")

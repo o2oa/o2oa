@@ -1,10 +1,7 @@
 package com.x.mind.assemble.control.jaxrs.folder;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -19,6 +16,9 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindFolderQuery;
 import com.x.mind.assemble.control.jaxrs.mind.BaseAction;
 import com.x.mind.entity.MindFolderInfo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 /**
  * 移动一组脑图和文件夹到指定的文件夹
  * @author O2LEE
@@ -27,7 +27,8 @@ import com.x.mind.entity.MindFolderInfo;
 public class ActionMoveToFolder extends BaseAction {
 	
 	private Logger logger = LoggerFactory.getLogger( ActionMoveToFolder.class );
-	
+
+	@AuditLog(operation = "移动文件目录")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String folderId, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;
