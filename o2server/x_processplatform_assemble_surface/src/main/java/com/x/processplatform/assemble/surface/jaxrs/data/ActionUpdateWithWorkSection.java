@@ -40,11 +40,9 @@ class ActionUpdateWithWorkSection extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			System.out.println("11111!!!!!!!!!!!!!!!!!!!!!!!!!!!!!surface ActionUpdateWithWorkSection");
 			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("data", "section", "work", work.getId()), jsonElement, work.getJob())
 					.getData(Wo.class);
-			System.out.println("8888!!!!!!!!!!!!!!!!!!!!!!!!!!!!!surface ActionUpdateWithWorkSection");
 			result.setData(wo);
 			return result;
 		}
