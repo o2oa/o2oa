@@ -6,7 +6,7 @@
 /configSample/
 /logs/
 /target/
-/x_build_and_scratch/
+/x_build/
 /servers/
 command.swap
 /store/
