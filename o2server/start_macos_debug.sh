@@ -1,4 +1,5 @@
 current_dir=$(cd "$(dirname "$0")"; pwd);
+sudo date
 if [ -d ${current_dir}/local/update ]; then
 	if [ ! -d ${current_dir}/commons ]; then
 	mkdir ${current_dir}/commons
@@ -134,4 +135,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-setsid ${current_dir}/jvm/aix/bin/java -server -Djava.awt.headless=true -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo ${current_dir}/jvm/macos/bin/java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

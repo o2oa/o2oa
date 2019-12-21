@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
 //var deleted = require('gulp-deleted');
     del = require('del'),
-    uglify = require('gulp-uglify'),
+    uglify = require('gulp-tm-uglify'),
     rename = require('gulp-rename'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
@@ -11,6 +11,7 @@ var gulp = require('gulp'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
+var assetRev = require('gulp-tm-asset-rev');
 
 var apps = [
     {"folder": "o2_lib",                                    "tasks": ["move", "clean"]},
@@ -108,7 +109,7 @@ var apps = [
     {"folder": "x_desktop",                                 "tasks": ["move", "min", "clean", "watch"]}
 ];
 
-var sourcePrefix = '../o2web/';
+var sourcePrefix = '../../o2web/';
 var destDir = 'target/o2server/servers/webServer/';
 
 var uploadOptions = {
@@ -350,14 +351,85 @@ gulp.task("index", function(){
                 port: options.port || 22,
                 remotePath: (options.remotePath || '/')
             })))
-			.pipe(gulp.dest(destDir))
+            .pipe(gulp.dest(destDir))
             .pipe(gutil.noop());
 });
 
-gulp.task("default", gulp.parallel(minTasks, moveTasks, "index"));
+//gulp.task("default", gulp.parallel(minTasks, moveTasks, "index"));
 gulp.task("clean", gulp.series(cleanTasks));
 gulp.task("sync", gulp.series(
     gulp.series(cleanTasks),
     gulp.parallel(minTasks, moveTasks, "index")
 ));
 gulp.task("watch", gulp.parallel(watchTasks));
+
+gulp.task("o2:new-v:html", function () {
+    var path = "x_desktop";
+    var src = sourcePrefix+'source/'+path+'/*.html';
+    var dest = destDir+'x_desktop/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+
+});
+gulp.task("o2:new-v:o2", function () {
+    var path = "o2_core";
+    var src = sourcePrefix+'source/'+path+'/o2.js';
+    var dest = destDir+'o2_core/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+});
+gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
+
+gulp.task("default", gulp.series("clean", gulp.parallel(minTasks, moveTasks, 'index'), "o2:new-v"));

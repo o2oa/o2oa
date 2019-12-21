@@ -29,10 +29,10 @@ if exist "%~dp0local\update" (
 			xcopy "%~dp0local\update\o2server\commons" "%~dp0commons" /S /Y /Q
 		)
 		if exist "%~dp0local\update\o2server\configSample" (
-			xcopy "%~dp0local\update\o2server\configSample" "%~dp0configSample" /S /Y /Q
+			xcopy "%~dp0local\update\o2server\configSample" "%~dp0configSample" /S /Y /Q	
 		)
 		if exist "%~dp0local\update\o2server\localSample" (
-			xcopy "%~dp0local\update\o2server\localSample" "%~dp0localSample" /S /Y /Q
+			xcopy "%~dp0local\update\o2server\localSample" "%~dp0localSample" /S /Y /Q	
 		)
 		if exist "%~dp0local\update\o2server\jvm" (
 			xcopy "%~dp0local\update\o2server\jvm" "%~dp0jvm" /S /Y /Q
@@ -132,5 +132,5 @@ if exist "%~dp0local\update" (
 	)
 )
 @echo on
-"%~dp0jvm\windows\bin\java" -server -Xms2g -Xmx5g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
+"%~dp0jvm\windows\bin\java" -server -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
 pause
