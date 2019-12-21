@@ -17,12 +17,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -34,6 +36,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
@@ -50,10 +53,6 @@ import com.x.program.center.Business;
 public class SyncOrganization {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
-
-	private ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-	private ScriptEngine engine = scriptEngineManager.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
-	private Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 
 	public PullResult execute(Business business) throws Exception {
 		logger.print("钉钉进行人员同步.");
@@ -274,7 +273,7 @@ public class SyncOrganization {
 			person.setOfficePhone(user.getMobile());
 			person.setGenderType(GenderType.d);
 			/* 新增人员需要增加密码 */
-			business.person().setPassword(person, this.getPassword(engine, pattern, person));
+			business.person().setPassword(person, this.initPassword(business, person));
 			emc.persist(person, CheckPersistType.all);
 			result.getCreatePersonList().add(person.getDistinguishedName());
 		}
@@ -282,14 +281,17 @@ public class SyncOrganization {
 		return person;
 	}
 
-	private String getPassword(ScriptEngine engine, Pattern pattern, Person person) throws Exception {
+	private String initPassword(Business business, Person person) throws Exception {
 		String str = Config.person().getPassword();
+		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
-			String eval = matcher.group(1);
-			engine.put("person", person);
-			String pass = engine.eval(eval).toString();
-			return pass;
+			String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put("person", person);
+			Object o = ScriptFactory.scriptEngine.eval(eval, scriptContext);
+			return o.toString();
 		} else {
 			return str;
 		}
