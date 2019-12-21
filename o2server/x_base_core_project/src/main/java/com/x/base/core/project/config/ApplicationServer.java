@@ -13,6 +13,14 @@ public class ApplicationServer extends ConfigObject {
 		return new ApplicationServer();
 	}
 
+	private static final Integer DEFAULT_PORT = 20020;
+	private static final Integer DEFAULT_SCANINTERVAL = 0;
+	private static final Integer DEFAULT_WEIGHT = 100;
+	private static final Integer DEFAULT_SCHEDULEWEIGHT = 100;
+	private static final Boolean DEFAULT_STATENABLE = true;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
+	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
+
 	public ApplicationServer() {
 		this.enable = true;
 		this.port = DEFAULT_PORT;
@@ -27,15 +35,8 @@ public class ApplicationServer extends ConfigObject {
 		this.scheduleWeights = new CopyOnWriteArrayList<NameWeightPair>();
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-
+		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
 	}
-
-	private static final Integer DEFAULT_PORT = 20020;
-	private static final Integer DEFAULT_SCANINTERVAL = 0;
-	private static final Integer DEFAULT_WEIGHT = 100;
-	private static final Integer DEFAULT_SCHEDULEWEIGHT = 100;
-	private static final Boolean DEFAULT_STATENABLE = true;
-	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -63,6 +64,12 @@ public class ApplicationServer extends ConfigObject {
 	private Boolean statEnable;
 	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
 	private String statExclusions;
+	@FieldDescribe("最大提交数据限制(M),限制有所上传的内容大小,包括附件.")
+	private Integer maxFormContent;
+
+	public Integer getMaxFormContent() {
+		return ((null == maxFormContent) || (maxFormContent < 1)) ? DEFAULT_MAXFORMCONTENT : maxFormContent;
+	}
 
 	public String getStatExclusions() {
 		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";

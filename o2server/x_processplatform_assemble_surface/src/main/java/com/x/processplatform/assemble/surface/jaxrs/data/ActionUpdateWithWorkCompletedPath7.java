@@ -24,10 +24,11 @@ class ActionUpdateWithWorkCompletedPath7 extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			String path3, String path4, String path5, String path6, String path7, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		WorkCompleted workCompleted = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+			workCompleted = emc.find(id, WorkCompleted.class);
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 			}
@@ -42,15 +43,15 @@ class ActionUpdateWithWorkCompletedPath7 extends BaseAction {
 			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
 				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
-			Wo wo = ThisApplication.context().applications()
-					.putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("data", "workcompleted", workCompleted.getId(), path0, path1,
-									path2, path3, path4, path5, path6, path7),
-							jsonElement, workCompleted.getJob())
-					.getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId(), path0, path1, path2,
+								path3, path4, path5, path6, path7),
+						jsonElement, workCompleted.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

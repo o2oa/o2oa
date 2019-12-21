@@ -1,16 +1,15 @@
 package com.x.calendar.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.Business;
 import com.x.calendar.core.entity.Calendar;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -85,7 +84,11 @@ public class CalendarServiceAdv{
 		addStringToList( calendar.getCreateor(), calendar.getViewablePersonList() );
 		
 		if( "UNIT".equals( calendar.getType() )) {
-			addStringToList( calendar.getTarget(), calendar.getViewableUnitList() );
+			if( ListTools.isEmpty(calendar.getViewableUnitList() )
+				&& ListTools.isEmpty(calendar.getViewableGroupList() )
+				&& ListTools.isEmpty(calendar.getViewablePersonList() )){
+				addStringToList( calendar.getTarget(), calendar.getViewableUnitList() );
+			}
 		}else {
 			addStringToList( calendar.getTarget(), calendar.getViewablePersonList() );
 		}		
@@ -180,12 +183,10 @@ public class CalendarServiceAdv{
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据权限查询日历信息ID列表
 	 * @param personName
-	 * @param unitNames
-	 * @param groupNames
 	 * @return
 	 * @throws Exception
 	 */

@@ -57,7 +57,7 @@ public class DumpRestoreData extends ConfigObject {
 
 	public Integer getBatchSize() {
 		if ((null == this.batchSize) || (this.batchSize < 1)) {
-			return 2000;
+			return default_batchSize;
 		}
 		return this.batchSize;
 	}

@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
@@ -17,8 +16,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.ItemCategory;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -30,7 +27,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
@@ -170,18 +166,18 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		for (WoTask task : wo.getTaskList()) {
 			if (effectivePerson.isPerson(task.getPerson())) {
 				wo.setCurrentTaskIndex(loop);
-				/* 发送抢办信号 */
-				if (Objects.equals(ManualMode.grab, wo.getActivity().getManualMode())) {
-					CompletableFuture.runAsync(() -> {
-						try {
-							ThisApplication.context().applications().getQuery(
-									x_processplatform_service_processing.class,
-									Applications.joinQueryUri("task", task.getId(), "grab"));
-						} catch (Exception e) {
-							logger.error(e);
-						}
-					});
-				}
+//				/* 发送抢办信号 */
+//				if (Objects.equals(ManualMode.grab, wo.getActivity().getManualMode())) {
+//					CompletableFuture.runAsync(() -> {
+//						try {
+//							ThisApplication.context().applications().getQuery(
+//									x_processplatform_service_processing.class,
+//									Applications.joinQueryUri("task", task.getId(), "grab"));
+//						} catch (Exception e) {
+//							logger.error(e);
+//						}
+//					});
+//				}
 				break;
 			}
 			loop++;

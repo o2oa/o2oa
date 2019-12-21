@@ -21,13 +21,16 @@ import com.x.processplatform.core.entity.content.Read;
 class ActionProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Read read;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Read read = emc.find(id, Read.class);
+			read = emc.find(id, Read.class);
 			if (null == read) {
-				throw new ExceptionEntityNotExist(id,Read.class);
+				throw new ExceptionEntityNotExist(id, Read.class);
 			}
 			if (!business.read().allowProcessing(effectivePerson, read)) {
 				throw new ExceptionAccessDenied(effectivePerson);
@@ -38,12 +41,14 @@ class ActionProcessing extends BaseAction {
 				read.setOpinion(wi.getOpinion());
 			}
 			emc.commit();
-			/* processing read */
-			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null).getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		/* processing read */
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null, read.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

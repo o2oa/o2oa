@@ -1,11 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -22,6 +16,11 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
 import com.x.query.core.entity.Item;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 public class DocumentInfoService {
 
@@ -247,12 +246,49 @@ public class DocumentInfoService {
 		}
 		return business.getDocumentFactory().listNextWithCondition( pageSize, sequenceFieldValue, orderField, orderType, queryFilter );
 	}
+
+	/**
+	 * 对Document信息进行分页查询（忽略权限）
+	 * document和Review除了sequence还有5个排序列支持title, appAlias, categoryAlias, creatorPerson, creatorUnitName的分页查询
+	 除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
+	 * @param emc
+	 * @param pageSize
+	 * @param lastId
+	 * @param orderField
+	 * @param orderType
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Document> listPrevWithCondition( EntityManagerContainer emc, Integer pageSize, String lastId, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+		if( pageSize == 0 ) { pageSize = 20; }
+		if( StringUtils.isEmpty( orderType ) ) {  orderType = "desc"; }
+		Business business = new Business(emc);
+		Document document = null;
+		String sequenceFieldValue = null;
+		Object obj = null;
+
+		//校正排序列情况
+		orderField = Document.getSequnceFieldNameWithProperty( orderField );
+
+		//如果有指定lastId值 ，需要查询该ID对应的文档的sequence
+		if( StringUtils.isNotEmpty( lastId ) && !StringUtils.equalsIgnoreCase( lastId, StandardJaxrsAction.EMPTY_SYMBOL ) ) {
+			document = emc.find( lastId, Document.class );
+			if( document != null ){//查询出ID对应的记录的sequence
+				obj = PropertyUtils.getProperty( document, orderField );
+				if( obj != null ) {
+					sequenceFieldValue = obj.toString();
+				}
+			}
+		}
+		return business.getDocumentFactory().listPrevWithCondition( pageSize, sequenceFieldValue, orderField, orderType, queryFilter );
+	}
 	
 	public List<Document> listNextWithCondition(EntityManagerContainer emc, String orderField, String orderType, QueryFilter queryFilter, int maxCount) throws Exception {
 		if( maxCount == 0 ) { maxCount = 20; }
 		Business business = new Business(emc);
 		return business.getDocumentFactory().listNextWithCondition( orderField, orderType, queryFilter, maxCount );
-	}	
+	}
 	
 	public List<Document> listMyDraft(EntityManagerContainer emc, String name, List<String> categoryIdList, String documentType) throws Exception {
 		Business business = new Business(emc);	

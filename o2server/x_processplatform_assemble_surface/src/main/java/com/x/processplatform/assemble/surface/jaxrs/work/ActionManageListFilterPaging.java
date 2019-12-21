@@ -67,6 +67,12 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
 		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
+		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
 		}
@@ -117,6 +123,12 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
+		}
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(Work_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
@@ -165,12 +177,21 @@ class ActionManageListFilterPaging extends BaseAction {
 		@FieldDescribe("活动名称")
 		private List<String> activityNameList;
 
+		@FieldDescribe("work工作")
+		private List<String> workList;
+
+		@FieldDescribe("job工作实例")
+		private List<String> jobList;
+
 		@FieldDescribe("工作状态")
 		@FieldTypeDescribe(fieldType="enum",fieldValue="start|processing|hanging",fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
 		private List<WorkStatus> workStatusList;
 
 		@FieldDescribe("关键字")
 		private String key;
+
+		public Wi() {
+		}
 
 		public List<String> getApplicationList() {
 			return applicationList;
@@ -250,6 +271,22 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		public void setEndTime(String endTime) {
 			this.endTime = endTime;
+		}
+
+		public List<String> getWorkList() {
+			return workList;
+		}
+
+		public void setWorkList(List<String> workList) {
+			this.workList = workList;
+		}
+
+		public List<String> getJobList() {
+			return jobList;
+		}
+
+		public void setJobList(List<String> jobList) {
+			this.jobList = jobList;
 		}
 	}
 

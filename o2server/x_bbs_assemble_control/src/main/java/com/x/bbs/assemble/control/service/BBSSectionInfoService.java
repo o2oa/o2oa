@@ -1,11 +1,5 @@
 package com.x.bbs.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,12 +9,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
-import com.x.bbs.entity.BBSForumInfo;
-import com.x.bbs.entity.BBSPermissionInfo;
-import com.x.bbs.entity.BBSPermissionRole;
-import com.x.bbs.entity.BBSRoleInfo;
-import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSUserRole;
+import com.x.bbs.entity.*;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 论坛信息管理服务类
@@ -71,11 +64,17 @@ public class BBSSectionInfoService {
 			emc.persist( _bBSSectionInfo, CheckPersistType.all);
 			if( _forumInfo_tmp != null ){
 				_forumInfo_tmp.setSectionTotal( _forumInfo_tmp.getSectionTotal() + 1 );
+				if( StringUtils.isEmpty( _forumInfo_tmp.getReplyMessageNotifyType() )){
+					_forumInfo_tmp.setReplyMessageNotifyType("0,0,0");
+				}
 				emc.check( _forumInfo_tmp, CheckPersistType.all );	
 			}
 		}else{
 			_bBSSectionInfo.setCreateTime( _bBSSectionInfo_tmp.getCreateTime() );
 			_bBSSectionInfo.copyTo( _bBSSectionInfo_tmp, JpaObject.FieldsUnmodify  );
+			if( StringUtils.isEmpty( _bBSSectionInfo_tmp.getReplyMessageNotifyType() )){
+				_bBSSectionInfo_tmp.setReplyMessageNotifyType("0,0,0");
+			}
 			emc.check( _bBSSectionInfo_tmp, CheckPersistType.all );
 		}
 		emc.commit();
@@ -149,6 +148,9 @@ public class BBSSectionInfoService {
 					forumInfo.setSectionTotal( forumInfo.getSectionTotal() - 1 );
 				}else{
 					forumInfo.setSectionTotal( 0L );
+				}
+				if( StringUtils.isEmpty( forumInfo.getReplyMessageNotifyType() )){
+					forumInfo.setReplyMessageNotifyType("0,0,0");
 				}
 			}
 			emc.check( forumInfo, CheckPersistType.all );

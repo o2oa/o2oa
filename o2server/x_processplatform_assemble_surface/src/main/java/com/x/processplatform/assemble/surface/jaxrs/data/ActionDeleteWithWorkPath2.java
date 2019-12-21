@@ -19,10 +19,11 @@ class ActionDeleteWithWorkPath2 extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2)
 			throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
@@ -31,13 +32,13 @@ class ActionDeleteWithWorkPath2 extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			Wo wo = ThisApplication.context().applications()
-					.deleteQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("data", "work", work.getId(), path0, path1, path2), work.getJob())
-					.getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.deleteQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("data", "work", work.getId(), path0, path1, path2), work.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

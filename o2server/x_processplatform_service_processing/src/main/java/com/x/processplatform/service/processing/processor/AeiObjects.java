@@ -566,49 +566,89 @@ public class AeiObjects extends GsonPropertyObject {
 	private void executeProjection() throws Exception {
 		if (ListTools.isNotEmpty(this.getProjections())) {
 			if (this.getProcess().getProjectionFully()) {
+
 				for (Work o : this.getWorks()) {
-					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateWorks().contains(o)) {
+					if ((!this.getUpdateWorks().contains(o)) && (!this.getDeleteWorks().contains(o))) {
 						this.getUpdateWorks().add(o);
 					}
 				}
+
 				for (Task o : this.getTasks()) {
-					ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateTasks().contains(o)) {
+					if ((!this.getUpdateTasks().contains(o)) && (!this.getDeleteTasks().contains(o))) {
 						this.getUpdateTasks().add(o);
 					}
 				}
+
 				for (TaskCompleted o : this.getTaskCompleteds()) {
-					ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateTaskCompleteds().contains(o)) {
+					if ((!this.getUpdateTaskCompleteds().contains(o))
+							&& (!this.getDeleteTaskCompleteds().contains(o))) {
 						this.getUpdateTaskCompleteds().add(o);
 					}
 				}
+
 				for (Read o : this.getReads()) {
-					ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateReads().contains(o)) {
+					if ((!this.getUpdateReads().contains(o)) && (!this.getDeleteReads().contains(o))) {
 						this.getUpdateReads().add(o);
 					}
 				}
+
 				for (ReadCompleted o : this.getReadCompleteds()) {
-					ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateReadCompleteds().contains(o)) {
+					if ((!this.getUpdateReadCompleteds().contains(o))
+							&& (!this.getDeleteReadCompleteds().contains(o))) {
 						this.getUpdateReadCompleteds().add(o);
 					}
 				}
+
 				for (Review o : this.getReviews()) {
-					ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
-					if (!this.getUpdateReviews().contains(o)) {
+					if ((!this.getUpdateReviews().contains(o)) && (!this.getDeleteReviews().contains(o))) {
 						this.getUpdateReviews().add(o);
 					}
 				}
-			} else {
-				for (Work o : this.getCreateWorks()) {
-					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
-				}
-				for (Work o : this.getUpdateWorks()) {
-					ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
-				}
+
+			}
+
+			for (Work o : this.getCreateWorks()) {
+				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+			}
+			for (Work o : this.getUpdateWorks()) {
+				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+			}
+
+			for (Task o : this.getCreateTasks()) {
+				ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+			}
+			for (Task o : this.getUpdateTasks()) {
+				ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+			}
+
+			for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+				ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+			}
+			for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
+				ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+			}
+
+			for (Read o : this.getCreateReads()) {
+				ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+			}
+			for (Read o : this.getUpdateReads()) {
+				ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+			}
+
+			for (ReadCompleted o : this.getCreateReadCompleteds()) {
+				ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
+			}
+
+			for (ReadCompleted o : this.getUpdateReadCompleteds()) {
+				ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
+			}
+
+			for (Review o : this.getUpdateReviews()) {
+				ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
+			}
+
+			for (Review o : this.getDeleteReviews()) {
+				ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
 			}
 		}
 	}
@@ -768,7 +808,7 @@ public class AeiObjects extends GsonPropertyObject {
 			this.getCreateTaskCompleteds().stream().forEach(o -> {
 				try {
 					/* 将相同用户的其他已办的lastest标记为false */
-					this.taskCompleteds.stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
+					this.getTaskCompleteds().stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
 							.forEach(p -> p.setLatest(false));
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 					/* 发送创建已办消息 */
@@ -784,7 +824,7 @@ public class AeiObjects extends GsonPropertyObject {
 				TaskCompleted obj;
 				try {
 					/* 要删除此已经办前此人其他的已办lastest标记为true */
-					TaskCompleted lastest = this.taskCompleteds.stream()
+					TaskCompleted lastest = this.getTaskCompleteds().stream()
 							.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
 									&& (!StringUtils.equals(o.getId(), p.getId())))
 							.sorted(Comparator
@@ -989,10 +1029,10 @@ public class AeiObjects extends GsonPropertyObject {
 		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
 		os = ListUtils.sum(os, this.getCreateAttachments());
 		Data data = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
-		if (ListTools.isNotEmpty(this.createWorkCompleteds)) {
-			data.setWork(this.createWorkCompleteds.get(0));
+		if (ListTools.isNotEmpty(this.getCreateWorkCompleteds())) {
+			data.setWork(this.getCreateWorkCompleteds().get(0));
 		} else {
-			data.setWork(this.work);
+			data.setWork(this.getWork());
 		}
 		this.getWorkDataHelper().update(data);
 	}

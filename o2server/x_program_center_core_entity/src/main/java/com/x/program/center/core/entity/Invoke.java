@@ -119,7 +119,7 @@ public class Invoke extends SliceJpaObject {
 	public static final String remoteAddrRegex_FIELDNAME = "remoteAddrRegex";
 	@FieldDescribe("访问地址的表达式.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + remoteAddrRegex_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	@Index(name = TABLE + IndexNameMiddle + remoteAddrRegex_FIELDNAME)
 	private String remoteAddrRegex;
 

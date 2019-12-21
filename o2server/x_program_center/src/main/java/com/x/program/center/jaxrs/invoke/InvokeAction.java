@@ -83,7 +83,7 @@ public class InvokeAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreate().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -156,7 +156,7 @@ public class InvokeAction extends StandardJaxrsAction {
 		try {
 			result = new ActionExecute().execute(request, effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

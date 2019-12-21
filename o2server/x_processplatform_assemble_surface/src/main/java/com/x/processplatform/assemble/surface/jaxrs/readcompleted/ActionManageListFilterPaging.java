@@ -78,6 +78,12 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(ReadCompleted_.work).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(ReadCompleted_.job).in(wi.getJobList()));
+		}
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
@@ -126,6 +132,12 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(ReadCompleted_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(ReadCompleted_.work).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(ReadCompleted_.job).in(wi.getJobList()));
+		}
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(ReadCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
@@ -169,6 +181,12 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		@FieldDescribe("创建组织")
 		private List<String> creatorUnitList;
+
+		@FieldDescribe("work工作")
+		private List<String> workList;
+
+		@FieldDescribe("job工作实例")
+		private List<String> jobList;
 
 		@FieldDescribe("开始时期")
 		private List<String> startTimeMonthList;
@@ -246,6 +264,22 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		public void setEndTime(String endTime) {
 			this.endTime = endTime;
+		}
+
+		public List<String> getWorkList() {
+			return workList;
+		}
+
+		public void setWorkList(List<String> workList) {
+			this.workList = workList;
+		}
+
+		public List<String> getJobList() {
+			return jobList;
+		}
+
+		public void setJobList(List<String> jobList) {
+			this.jobList = jobList;
 		}
 	}
 

@@ -40,4 +40,13 @@ public class TestClient2 {
 		}
 	}
 
+	@Test
+	public void test2() {
+
+		List<String> aa = new ArrayList<>();
+
+		System.out.println(aa.stream().findFirst().orElse(null));
+
+	}
+
 }

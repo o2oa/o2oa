@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.w3c.dom.Document;
 
@@ -81,8 +82,8 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 5;
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 100;
+	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
@@ -165,10 +166,12 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 				/* stat */
 				if (applicationServer.getStatEnable()) {
-					FilterHolder holder = new FilterHolder(new WebStatFilter());
-					holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
-					webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
-					webApp.addServlet(StatViewServlet.class, "/druid/*");
+					FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+					statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+					webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+					ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+					statServletHolder.setInitParameter("sessionStatEnable", "false");
+					webApp.addServlet(statServletHolder, "/druid/*");
 				}
 				/* stat end */
 				handlers.addHandler(webApp);
@@ -181,7 +184,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
-		server.setAttribute("maxFormContentSize", 1024 * 1024 * 1024 * 10);
+		server.setAttribute("maxFormContentSize", applicationServer.getMaxFormContent() * 1024 * 1024);
 
 		if (applicationServer.getSslEnable()) {
 			addHttpsConnector(server, applicationServer.getPort());
@@ -198,6 +201,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		server.setStopAtShutdown(true);
 
 		server.start();
+
 		System.out.println("****************************************");
 		System.out.println("* application server start completed.");
 		System.out.println("* port: " + applicationServer.getPort() + ".");

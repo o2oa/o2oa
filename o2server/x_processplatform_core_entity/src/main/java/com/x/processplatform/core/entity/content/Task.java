@@ -106,10 +106,9 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public Task() {
 	}
 
-	public Task(Work work, String identity, String person, String unit, String trustIdentity, Date startTime,
+	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
 			Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this.job = work.getJob();
-		// this.title = work.getTitle();
 		this.setTitle(work.getTitle());
 		this.startTime = startTime;
 		this.work = work.getId();
@@ -123,7 +122,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.person = person;
 		this.identity = identity;
 		this.unit = unit;
-		this.trustIdentity = trustIdentity;
+		this.empowerFromIdentity = empowerFromIdentity;
 		this.activity = work.getActivity();
 		this.activityName = work.getActivityName();
 		this.activityAlias = work.getActivityAlias();
@@ -259,12 +258,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = false)
 	private String unit;
 
-	public static final String trustIdentity_FIELDNAME = "trustIdentity";
-	@FieldDescribe("委托人Identity")
-	@Column(length = length_255B, name = ColumnNamePrefix + trustIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + trustIdentity_FIELDNAME)
+	public static final String empowerFromIdentity_FIELDNAME = "empowerFromIdentity";
+	@FieldDescribe("授权自Identity")
+	@Column(length = length_255B, name = ColumnNamePrefix + empowerFromIdentity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + empowerFromIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String trustIdentity;
+	private String empowerFromIdentity;
 
 	public static final String activity_FIELDNAME = "activity";
 	@FieldDescribe("活动ID.")
@@ -988,12 +987,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeDecisionOpinionList = routeDecisionOpinionList;
 	}
 
-	public String getTrustIdentity() {
-		return trustIdentity;
+	public String getEmpowerFromIdentity() {
+		return empowerFromIdentity;
 	}
 
-	public void setTrustIdentity(String trustIdentity) {
-		this.trustIdentity = trustIdentity;
+	public void setEmpowerFromIdentity(String empowerFromIdentity) {
+		this.empowerFromIdentity = empowerFromIdentity;
 	}
 
 	public Boolean getFirst() {

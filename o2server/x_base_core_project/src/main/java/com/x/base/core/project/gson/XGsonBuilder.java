@@ -3,6 +3,7 @@ package com.x.base.core.project.gson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -160,6 +161,40 @@ public class XGsonBuilder {
 		} catch (JsonParseException e) {
 			return false;
 		}
+	}
+
+	public static JsonElement merge(JsonElement from, JsonElement to) throws Exception {
+		if (from == null) {
+			throw new Exception("from jsonElement can't be null.");
+		}
+		if (to == null) {
+			throw new Exception("to jsonElement can't be null.");
+		}
+		if (!from.isJsonObject()) {
+			throw new Exception("from jsonElement must be a jsonObject.");
+		}
+		if (!to.isJsonObject()) {
+			throw new Exception("to jsonElement must be a jsonObject.");
+		}
+		return merge(from.getAsJsonObject(), to.deepCopy().getAsJsonObject());
+	}
+
+	private static JsonObject merge(JsonObject from, JsonObject to) {
+		for (Map.Entry<String, JsonElement> fromEntry : from.entrySet()) {
+			String key = fromEntry.getKey();
+			JsonElement fromValue = fromEntry.getValue();
+			if (to.has(key)) {
+				JsonElement toValue = to.get(key);
+				if ((!fromValue.isJsonObject()) || (!toValue.isJsonObject())) {
+					to.add(key, fromValue);
+				} else {
+					merge(fromValue.getAsJsonObject(), toValue.getAsJsonObject());
+				}
+			} else {
+				to.add(key, fromValue);
+			}
+		}
+		return to;
 	}
 
 }

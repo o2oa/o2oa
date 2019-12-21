@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -25,6 +28,10 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.util.WorkLogTree;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
@@ -60,14 +67,52 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			CompletableFuture<List<WoReadCompleted>> future_readCompleteds = CompletableFuture.supplyAsync(() -> {
 				return this.readCompleteds(business, job);
 			});
-			CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
+			CompletableFuture<List<WorkLog>> future_workLogs = CompletableFuture.supplyAsync(() -> {
 				return this.workLogs(business, job);
 			});
 			List<WoTask> tasks = future_tasks.get();
 			List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
 			List<WoRead> reads = future_reads.get();
 			List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
-			List<Wo> wos = future_workLogs.get();
+			List<WorkLog> workLogs = future_workLogs.get();
+			WorkLogTree tree = new WorkLogTree(workLogs);
+
+			List<Wo> wos = new ArrayList<>();
+			for (WorkLog o : workLogs.stream().filter(o -> Objects.equals(ActivityType.manual, o.getFromActivityType()))
+					.collect(Collectors.toList())) {
+				Wo wo = Wo.copier.copy(o);
+				Node node = tree.find(o);
+				if (null != node) {
+					Nodes nodes = node.downNextManual();
+					if (nodes.isEmpty()) {
+						/* 如果没有找到后面的人工节点,那么有多种可能,有一种是已经删除,工作合并到其他分支了,那么找其他分支的下一步 */
+						WorkLog otherWorkLog = workLogs.stream()
+								.filter(g -> (g != o)
+										&& StringUtils.equals(g.getArrivedActivity(), o.getArrivedActivity())
+										&& StringUtils.equals(g.getSplitToken(), o.getSplitToken()))
+								.findFirst().orElse(null);
+						if (null != otherWorkLog) {
+							node = tree.find(otherWorkLog);
+							if (null != node) {
+								nodes = node.downNextManual();
+							}
+						}
+					}
+					if (!nodes.isEmpty()) {
+						for (Node n : nodes) {
+							tasks.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
+									n.getWorkLog().getFromActivityToken())).forEach(t -> {
+										wo.getNextManualTaskIdentityList().add(t.getIdentity());
+									});
+							taskCompleteds.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
+									n.getWorkLog().getFromActivityToken())).forEach(t -> {
+										wo.getNextManualTaskCompletedIdentityList().add(t.getIdentity());
+									});
+						}
+					}
+				}
+				wos.add(wo);
+			}
 			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
 					taskList_FIELDNAME);
 			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
@@ -76,6 +121,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					readList_FIELDNAME);
 			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
 					ReadCompleted.activityToken_FIELDNAME, readCompletedList_FIELDNAME);
+			result.setData(wos);
 			result.setData(wos);
 			return result;
 		}
@@ -131,13 +177,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<Wo> workLogs(Business business, String job) {
-		List<Wo> os = new ArrayList<>();
+	private List<WorkLog> workLogs(Business business, String job) {
+		List<WorkLog> os = new ArrayList<>();
 		try {
-			os = business.entityManagerContainer().fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job);
+			os = business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
 			return os.stream()
-					.sorted(Comparator.comparing(Wo::getFromTime, Comparator.nullsLast(Date::compareTo))
-							.thenComparing(Wo::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
+							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
 			logger.error(e);
@@ -156,9 +202,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						WorkLog.fromTime_FIELDNAME, WorkLog.arrivedActivity_FIELDNAME,
 						WorkLog.arrivedActivityType_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME,
 						WorkLog.arrivedActivityAlias_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
-						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.connected_FIELDNAME,
-						WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME, WorkLog.arrivedGroup_FIELDNAME,
-						WorkLog.fromOpinionGroup_FIELDNAME, WorkLog.arrivedOpinionGroup_FIELDNAME),
+						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.route_FIELDNAME,
+						WorkLog.connected_FIELDNAME, WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME,
+						WorkLog.arrivedGroup_FIELDNAME, WorkLog.fromOpinionGroup_FIELDNAME,
+						WorkLog.arrivedOpinionGroup_FIELDNAME),
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();
@@ -168,6 +215,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		private List<WoRead> readList = new ArrayList<>();
 
 		private List<WoReadCompleted> readCompletedList = new ArrayList<>();
+
+		private List<String> nextManualTaskIdentityList = new ArrayList<>();
+
+		private List<String> nextManualTaskCompletedIdentityList = new ArrayList<>();
 
 		public List<WoTask> getTaskList() {
 			return taskList;
@@ -201,6 +252,22 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			this.readCompletedList = readCompletedList;
 		}
 
+		public List<String> getNextManualTaskIdentityList() {
+			return nextManualTaskIdentityList;
+		}
+
+		public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+			this.nextManualTaskIdentityList = nextManualTaskIdentityList;
+		}
+
+		public List<String> getNextManualTaskCompletedIdentityList() {
+			return nextManualTaskCompletedIdentityList;
+		}
+
+		public void setNextManualTaskCompletedIdentityList(List<String> nextManualTaskCompletedIdentityList) {
+			this.nextManualTaskCompletedIdentityList = nextManualTaskCompletedIdentityList;
+		}
+
 	}
 
 	public static class WoTask extends Task {
@@ -210,7 +277,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
 				ListTools.toList(Task.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
 						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.opinionLob_FIELDNAME,
-						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
+						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME,
+						Task.empowerFromIdentity_FIELDNAME),
 				null);
 	}
 
@@ -226,7 +294,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.opinionLob_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
-						TaskCompleted.processingType_FIELDNAME),
+						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME),
 				null);
 	}
 

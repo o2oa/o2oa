@@ -20,8 +20,9 @@ class ActionFetchWithJob extends BaseAction {
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<JsonElement> result = new ActionResult<>();
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<JsonElement> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			if ((!this.manager(business, effectivePerson))

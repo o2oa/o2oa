@@ -9,9 +9,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -20,6 +24,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.scripting.Scripting;
 import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.ListTools;
@@ -244,11 +249,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
-			String eval = matcher.group(1);
-			ScriptingEngine engine = Scripting.getEngine();
-			engine.binding("person", person);
-			String pass = engine.evalAsString(eval);
-			return pass;
+			String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put("person", person);
+			Object o = ScriptFactory.scriptEngine.eval(eval, scriptContext);
+			return o.toString();
 		} else {
 			return str;
 		}

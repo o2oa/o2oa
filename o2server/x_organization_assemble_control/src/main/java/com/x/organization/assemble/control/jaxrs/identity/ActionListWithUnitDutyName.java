@@ -17,10 +17,9 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
@@ -47,39 +46,57 @@ class ActionListWithUnitDutyName extends BaseAction {
 
 	public static class Wo extends Identity {
 
+		private String matchUnitName;
+		private String matchUnitLevelName;
+		private Integer matchUnitLevel;
+
 		private static final long serialVersionUID = -127291000673692614L;
 
 		static WrapCopier<Identity, Wo> copier = WrapCopierFactory.wo(Identity.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
+		public String getMatchUnitName() {
+			return matchUnitName;
+		}
+
+		public void setMatchUnitName(String matchUnitName) {
+			this.matchUnitName = matchUnitName;
+		}
+
+		public String getMatchUnitLevelName() {
+			return matchUnitLevelName;
+		}
+
+		public void setMatchUnitLevelName(String matchUnitLevelName) {
+			this.matchUnitLevelName = matchUnitLevelName;
+		}
+
+		public Integer getMatchUnitLevel() {
+			return matchUnitLevel;
+		}
+
+		public void setMatchUnitLevel(Integer matchUnitLevel) {
+			this.matchUnitLevel = matchUnitLevel;
+		}
+
 	}
 
 	private List<Wo> list(Business business, String unitDutyName) throws Exception {
-		List<String> identityIds = this.listIdentityId(business, unitDutyName);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.id).in(identityIds);
-		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<Wo> wos = Wo.copier.copy(os);
-		wos = business.identity().sort(wos);
-		return wos;
-	}
-
-	private List<String> listIdentityId(Business business, String unitDutyName) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
-		Root<UnitDuty> root = cq.from(UnitDuty.class);
-		Predicate p = cb.equal(root.get(UnitDuty_.name), unitDutyName);
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<String> identityIds = new ArrayList<>();
+		List<Wo> wos = new ArrayList<Wo>();
+		List<UnitDuty> os = business.entityManagerContainer().listEqual(UnitDuty.class, UnitDuty.name_FIELDNAME,
+				unitDutyName);
 		for (UnitDuty o : os) {
-			identityIds.addAll(o.getIdentityList());
+			Unit unit = business.unit().pick(o.getUnit());
+			for (String identityId : o.getIdentityList()) {
+				Identity identity = business.identity().pick(identityId);
+				Wo wo = Wo.copier.copy(identity);
+				wo.setMatchUnitLevel(unit.getLevel());
+				wo.setMatchUnitLevelName(unit.getLevelName());
+				wo.setMatchUnitName(unit.getName());
+				wos.add(wo);
+			}
 		}
-		identityIds = ListTools.trim(identityIds, true, true);
-		return identityIds;
+		return wos;
 	}
 
 }

@@ -20,6 +20,7 @@ public class CenterServer extends ConfigObject {
 	private static final Integer DEFAULT_ORDER = 0;
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
+	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 
 	public static CenterServer defaultInstance() {
 		return new CenterServer();
@@ -38,6 +39,7 @@ public class CenterServer extends ConfigObject {
 		this.configApiEnable = DEFAULT_CONFIGAPIENABLE;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
+		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
 	}
 
 	@FieldDescribe("是否启用")
@@ -66,6 +68,12 @@ public class CenterServer extends ConfigObject {
 	private Boolean statEnable;
 	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
 	private String statExclusions;
+	@FieldDescribe("最大提交数据限制(M),限制有所上传的内容大小,包括附件.")
+	private Integer maxFormContent;
+
+	public Integer getMaxFormContent() {
+		return ((null == maxFormContent) || (maxFormContent < 1)) ? DEFAULT_MAXFORMCONTENT : maxFormContent;
+	}
 
 	public String getStatExclusions() {
 		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";

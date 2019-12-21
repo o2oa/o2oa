@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.zip.CRC32;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpHeader;
@@ -20,57 +20,55 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class ResponseFactory {
 
-	// private static CacheControl defaultCacheControl =
-	// CacheControlFactory.getDefault();
+	private static CacheControl defaultCacheControl = CacheControlFactory.getDefault();
 
 	public static final String Content_Disposition = "Content-Disposition";
 	// public static final String Content_Length = "Content-Length";
 	public static final String Accept_Ranges = "Accept-Ranges";
 	public static final String Content_Type = "Content-Type";
 
-//	public static <T> Response getDefaultActionResultResponse(ActionResult<T> result) {
-//		if (result.getType().equals(ActionResult.Type.error)) {
-//			if ((result.throwable instanceof CallbackPromptException)) {
-//				return Response.ok(callbackError(result)).build();
-//			} else {
-//				return Response.serverError().entity(result.toJson()).build();
-//			}
-//		} else {
-//			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
-//				/* 附件,二进制流文件 */
-//				WoFile wo = (WoFile) result.getData();
-//				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-//						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").tag(etagWoFile(wo))
-//						.build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
-//				/* 纯文本text */
-//				WoText wo = (WoText) result.getData();
-//				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(etagWoText(wo)).build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
-//				/* jsonp callback */
-//				return Response.ok(callback((WoCallback) result.getData())).build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
-//				/* 303 */
-//				WoSeeOther wo = (WoSeeOther) result.getData();
-//				try {
-//					return Response.seeOther(new URI(wo.getUrl())).build();
-//				} catch (Exception e) {
-//					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
-//				}
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
-//				/* 304 */
-//				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
-//				try {
-//					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
-//				} catch (Exception e) {
-//					return Response.serverError().entity(Objects.toString(wo.getUrl(), "")).build();
-//				}
-//			} else {
-//				/* default */
-//				return Response.ok(result.toJson()).tag(etagDefault(result.getData())).build();
-//			}
-//		}
-//	}
+	public static <T> Response getDefaultActionResultResponse(ActionResult<T> result) {
+		if (result.getType().equals(ActionResult.Type.error)) {
+			if ((result.throwable instanceof CallbackPromptException)) {
+				return Response.ok(callbackError(result)).cacheControl(defaultCacheControl).build();
+			} else {
+				return Response.serverError().entity(result.toJson()).cacheControl(defaultCacheControl).build();
+			}
+		} else {
+			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
+				WoFile wo = (WoFile) result.getData();
+				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
+						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
+				WoText wo = (WoText) result.getData();
+				return Response.ok(wo.getText()).cacheControl(defaultCacheControl).type(HttpMediaType.TEXT_PLAIN_UTF_8)
+						.build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoContentType)) {
+				WoContentType wo = (WoContentType) result.getData();
+				return Response.ok(wo.getBody()).type(wo.getContentType()).build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
+				return Response.ok(callback((WoCallback) result.getData())).cacheControl(defaultCacheControl).build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
+				WoSeeOther wo = (WoSeeOther) result.getData();
+				try {
+					return Response.seeOther(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
+			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
+				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
+				try {
+					return Response.temporaryRedirect(new URI(wo.getUrl())).build();
+				} catch (Exception e) {
+					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
+							.cacheControl(defaultCacheControl).build();
+				}
+			} else {
+				return Response.ok(result.toJson()).cacheControl(defaultCacheControl).build();
+			}
+		}
+	}
 
 	public static <T> Response getEntityTagActionResultResponse(HttpServletRequest request, ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
@@ -88,8 +86,7 @@ public class ResponseFactory {
 					return Response.notModified().tag(tag).build();
 				}
 				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").tag(etagWoFile(wo))
-						.build();
+						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				/* 纯文本text */
 				WoText wo = (WoText) result.getData();
@@ -97,7 +94,14 @@ public class ResponseFactory {
 				if (notModified(request, tag)) {
 					return Response.notModified().tag(tag).build();
 				}
-				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(etagWoText(wo)).build();
+				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).tag(tag).build();
+			} else if ((null != result.getData()) && (result.getData() instanceof WoContentType)) {
+				WoContentType wo = (WoContentType) result.getData();
+				EntityTag tag = new EntityTag(etagWoContentType(wo));
+				if (notModified(request, tag)) {
+					return Response.notModified().tag(tag).build();
+				}
+				return Response.ok(wo.getBody()).type(wo.getContentType()).tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
 				/* jsonp callback */
 				return Response.ok(callback((WoCallback) result.getData())).build();
@@ -128,56 +132,6 @@ public class ResponseFactory {
 		}
 	}
 
-//	private static CacheControl maxAgeCacheControl = CacheControlFactory.getMaxAge(259200);
-//
-//	public static <T> Response getMaxAgeActionResultResponse(ActionResult<T> result) {
-//		if (result.getType().equals(ActionResult.Type.error)) {
-//			if ((result.throwable instanceof CallbackPromptException)) {
-//				return Response.ok(callbackError(result)).cacheControl(maxAgeCacheControl).build();
-//			} else {
-//				return Response.serverError().entity(result.toJson()).cacheControl(maxAgeCacheControl).build();
-//			}
-//		} else {
-//			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
-//				/* 附件,二进制流文件 */
-//				WoFile wo = (WoFile) result.getData();
-//				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-//						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes")
-//						.cacheControl(maxAgeCacheControl).tag(etagWoFile(wo)).build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
-//				/* 纯文本text */
-//				WoText wo = (WoText) result.getData();
-//				return Response.ok(wo.getText()).type(HttpMediaType.TEXT_PLAIN_UTF_8).cacheControl(maxAgeCacheControl)
-//						.tag(etagWoText(wo)).build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
-//				/* jsonp callback */
-//				return Response.ok(callback((WoCallback) result.getData())).cacheControl(maxAgeCacheControl).build();
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoSeeOther)) {
-//				/* 303 */
-//				WoSeeOther wo = (WoSeeOther) result.getData();
-//				try {
-//					return Response.seeOther(new URI(wo.getUrl())).cacheControl(maxAgeCacheControl).build();
-//				} catch (Exception e) {
-//					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
-//							.cacheControl(maxAgeCacheControl).build();
-//				}
-//			} else if ((null != result.getData()) && (result.getData() instanceof WoTemporaryRedirect)) {
-//				/* 304 */
-//				WoTemporaryRedirect wo = (WoTemporaryRedirect) result.getData();
-//				try {
-//					return Response.temporaryRedirect(new URI(wo.getUrl())).cacheControl(maxAgeCacheControl).build();
-//				} catch (Exception e) {
-//					return Response.serverError().entity(Objects.toString(wo.getUrl(), ""))
-//							.cacheControl(maxAgeCacheControl).build();
-//				}
-//			} else {
-//				/* default */
-//				return Response.ok(result.toJson()).cacheControl(maxAgeCacheControl).tag(etagDefault(result.getData()))
-//						.build();
-//			}
-//		}
-//	}
-
 	private static boolean notModified(HttpServletRequest request, EntityTag tag) {
 		String If_None_Match = request.getHeader(HttpHeader.IF_NONE_MATCH.toString());
 		if (StringUtils.isNotEmpty(If_None_Match)) {
@@ -191,6 +145,12 @@ public class ResponseFactory {
 	private static String etagWoFile(WoFile wo) {
 		CRC32 crc = new CRC32();
 		crc.update(wo.getBytes());
+		return crc.getValue() + "";
+	}
+
+	private static String etagWoContentType(WoContentType wo) {
+		CRC32 crc = new CRC32();
+		crc.update((wo.getBody().toString() + wo.getContentType()).getBytes());
 		return crc.getValue() + "";
 	}
 

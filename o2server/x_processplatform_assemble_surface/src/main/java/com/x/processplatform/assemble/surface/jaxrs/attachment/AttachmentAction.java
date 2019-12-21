@@ -148,18 +148,18 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionDelete.class)
+	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionDeleteWithWork.class)
 	@DELETE
 	@Path("{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void deleteWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
-		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		ActionResult<ActionDeleteWithWork.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDelete().execute(effectivePerson, id, workId);
+			result = new ActionDeleteWithWork().execute(effectivePerson, id, workId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -565,7 +565,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEditText().execute(effectivePerson, id, workId, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

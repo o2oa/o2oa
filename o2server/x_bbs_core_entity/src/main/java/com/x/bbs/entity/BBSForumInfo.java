@@ -1,32 +1,20 @@
 package com.x.bbs.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 论坛信息表
@@ -472,16 +460,16 @@ public class BBSForumInfo extends SliceJpaObject {
 		this.typeCategory = typeCategory;
 	}
 
-	public Boolean getReplyMessageNotify() { return this.replyMessageNotify; }
+	public Boolean getReplyMessageNotify() { return this.replyMessageNotify== null ? false : this.replyMessageNotify; }
 
 	public void setReplyMessageNotify(final Boolean replyMessageNotify) { this.replyMessageNotify = replyMessageNotify; }
 
-	public String getReplyMessageNotifyType() { return this.replyMessageNotifyType; }
+	public String getReplyMessageNotifyType() { return this.replyMessageNotifyType == null ? "0,0,0" : this.replyMessageNotifyType; }
 
 	public void setReplyMessageNotifyType(final String replyMessageNotifyType) { this.replyMessageNotifyType = replyMessageNotifyType; }
 
 	public Boolean getSubjectMessageNotify() {
-		return this.subjectMessageNotify;
+		return this.subjectMessageNotify == null ? false : this.subjectMessageNotify;
 	}
 
 	public void setSubjectMessageNotify(final Boolean subjectMessageNotify) {
@@ -489,7 +477,7 @@ public class BBSForumInfo extends SliceJpaObject {
 	}
 
 	public String getSubjectMessageNotifyType() {
-		return this.subjectMessageNotifyType;
+		return this.subjectMessageNotifyType == null ? "0,0" : this.subjectMessageNotifyType;
 	}
 
 	public void setSubjectMessageNotifyType(final String subjectMessageNotifyType) {

@@ -114,14 +114,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			this.choiceList = choiceList;
 		}
 
-//		public List<WoCondition> getConditionList() {
-//			return conditionList;
-//		}
-//
-//		public void setConditionList(List<WoCondition> conditionList) {
-//			this.conditionList = conditionList;
-//		}
-
 		public List<WoDelay> getDelayList() {
 			return delayList;
 		}

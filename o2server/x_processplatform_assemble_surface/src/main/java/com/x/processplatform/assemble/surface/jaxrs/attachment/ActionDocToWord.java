@@ -33,11 +33,14 @@ import com.x.processplatform.core.entity.content.Work;
 class ActionDocToWord extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Work work = null;
+		Wo wo = new Wo();
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
+			work = emc.find(workId, Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -45,20 +48,18 @@ class ActionDocToWord extends BaseAction {
 					new ExceptionEntityNotExist(work.getId()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+		}
 
-			String person = effectivePerson.isCipher() ? work.getCreatorPerson()
-					: effectivePerson.getDistinguishedName();
+		String person = effectivePerson.isCipher() ? work.getCreatorPerson() : effectivePerson.getDistinguishedName();
+		byte[] bytes = null;
 
-			byte[] bytes = null;
-
-			if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
-				bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
-			} else {
-				bytes = this.local(wi);
-			}
-
+		if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
+			bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
+		} else {
+			bytes = this.local(wi);
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob());
-
 			Attachment attachment = null;
 			for (Attachment o : attachments) {
 				if (StringUtils.equalsIgnoreCase(wi.getSite(), o.getSite())) {
@@ -99,11 +100,11 @@ class ActionDocToWord extends BaseAction {
 				emc.persist(attachment, CheckPersistType.all);
 				emc.commit();
 			}
-			Wo wo = new Wo();
 			wo.setId(attachment.getId());
-			result.setData(wo);
-			return result;
 		}
+		result.setData(wo);
+		return result;
+
 	}
 
 	private byte[] local(Wi wi) throws Exception {
@@ -154,5 +155,4 @@ class ActionDocToWord extends BaseAction {
 		}
 
 	}
-
 }

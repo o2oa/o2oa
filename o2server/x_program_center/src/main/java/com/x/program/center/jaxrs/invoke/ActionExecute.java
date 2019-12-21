@@ -19,11 +19,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoContentType;
 import com.x.base.core.project.jaxrs.WoSeeOther;
 import com.x.base.core.project.jaxrs.WoTemporaryRedirect;
+import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.jaxrs.WoValue;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -103,11 +104,18 @@ class ActionExecute extends BaseAction {
 					result.setData(woTemporaryRedirect);
 				} else {
 					if (null != customResponse.value) {
-						wo.setValue(customResponse.value);
+						if (StringUtils.isNotEmpty(customResponse.contentType)) {
+							result.setData(new WoContentType(customResponse.value, customResponse.contentType));
+						} else if (customResponse.value instanceof WoText) {
+							result.setData(customResponse.value);
+						} else {
+							wo.setValue(customResponse.value);
+							result.setData(wo);
+						}
 					} else {
 						wo.setValue(o);
+						result.setData(wo);
 					}
-					result.setData(wo);
 				}
 			} catch (Exception e) {
 				throw new ExceptionExecuteError(invoke.getName(), e);
@@ -123,6 +131,7 @@ class ActionExecute extends BaseAction {
 	public static class CustomResponse {
 		protected String type = null;
 		protected Object value;
+		protected String contentType;
 
 		public void seeOther(String url) {
 			this.type = "seeOther";
@@ -136,6 +145,11 @@ class ActionExecute extends BaseAction {
 
 		public void setBody(Object obj) {
 			this.value = obj;
+		}
+
+		public void setBody(Object obj, String contentType) {
+			this.value = obj;
+			this.contentType = contentType;
 		}
 
 	}

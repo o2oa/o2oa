@@ -21,6 +21,7 @@ public class WebServer extends ConfigObject {
 		this.dirAllowed = DEFAULT_DIRALLOWED;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
+		this.cacheControlMaxAge = DEFAULT_CACHECONTROLMAXAGE;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
@@ -29,6 +30,7 @@ public class WebServer extends ConfigObject {
 	private static final Boolean DEFAULT_DIRALLOWED = false;
 	private static final Boolean DEFAULT_STATENABLE = false;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.gif,*.jpg,*.png,*.ico";
+	private static final Integer DEFAULT_CACHECONTROLMAXAGE = 0;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -48,6 +50,15 @@ public class WebServer extends ConfigObject {
 	private Boolean statEnable;
 	@FieldDescribe("统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico")
 	private String statExclusions;
+	@FieldDescribe("服务器max-age缓存时间(秒)")
+	private Integer cacheControlMaxAge;
+
+	public Integer getCacheControlMaxAge() {
+		if (cacheControlMaxAge == null || cacheControlMaxAge < 0) {
+			return DEFAULT_CACHECONTROLMAXAGE;
+		}
+		return cacheControlMaxAge;
+	}
 
 	public String getStatExclusions() {
 		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";

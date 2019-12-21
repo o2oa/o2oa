@@ -257,6 +257,18 @@ public class BBSConfigSettingService{
 			logger.warn( "system init system config 'BBS_LOGO_NAME' got an exception." );
 			logger.error(e);
 		}
+
+		value = " - O2OA办公软件管理系统";
+		type = "text";
+		selectContent = null;
+		isMultiple = false;
+		description = "论坛标题Tail:全站网页标题内容的后缀内容。默认' - O2OA办公软件管理系统'，可以为空。";
+		try {
+			checkAndInitSystemConfig("BBS_TITLE_TAIL", "论坛标题Tail", value, description, type, selectContent, isMultiple,  ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_TITLE_TAIL' got an exception." );
+			logger.error(e);
+		}
 		
 		value = "信息|问题|投票";
 		type = "select";

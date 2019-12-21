@@ -43,9 +43,6 @@ public class CommandFactory {
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
-//	public static final Pattern update_pattern = Pattern.compile("^ {0,}update (true|false) (true|false) (.+)$",
-//			Pattern.CASE_INSENSITIVE);
-
 	public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
@@ -75,14 +72,15 @@ public class CommandFactory {
 	public static final Pattern show_cpu_pattern = Pattern.compile("^ {0,}show cpu ([1-9][0-9]*) ([1-9][0-9]*) {0,}$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern show_dataSource_pattern = Pattern
-			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern show_http_thread_pattern = Pattern
+			.compile("^ {0,}show http thread ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
+//	public static final Pattern show_dataSource_pattern = Pattern
+//			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern stack_pattern = Pattern.compile("^ {0,}stack ([1-9][0-9]*) ([1-9][0-9]*) (.+)$",
 			Pattern.CASE_INSENSITIVE);
-	
-	public static final Pattern heapDump_pattern = Pattern.compile("^ {0,}heap dump (.+)$",
-			Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern heapDump_pattern = Pattern.compile("^ {0,}heap dump (.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {

@@ -33,7 +33,7 @@ public class ReadAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);
 
-	@JaxrsMethodDescribe(value = "根据工作创建待阅.", action = ActionCreateWithWork.class)
+	@JaxrsMethodDescribe(value = "对工作添加待阅,选择是否重发通知", action = ActionCreateWithWork.class)
 	@POST
 	@Path("work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -84,24 +84,6 @@ public class ReadAction extends StandardJaxrsAction {
 			result = new ActionProcessing().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "重置待阅.", action = ActionReset.class)
-	@PUT
-	@Path("{id}/reset")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void putWithReset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionReset.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionReset().execute(id, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

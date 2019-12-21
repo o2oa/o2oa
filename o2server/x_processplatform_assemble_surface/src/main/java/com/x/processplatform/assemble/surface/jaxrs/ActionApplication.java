@@ -13,6 +13,7 @@ import com.x.processplatform.assemble.surface.jaxrs.data.DataAction;
 import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
 import com.x.processplatform.assemble.surface.jaxrs.job.JobAction;
+import com.x.processplatform.assemble.surface.jaxrs.keylock.KeyLockAction;
 import com.x.processplatform.assemble.surface.jaxrs.process.ProcessAction;
 import com.x.processplatform.assemble.surface.jaxrs.read.ReadAction;
 import com.x.processplatform.assemble.surface.jaxrs.readcompleted.ReadCompletedAction;
@@ -22,7 +23,6 @@ import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
 import com.x.processplatform.assemble.surface.jaxrs.serialnumber.SerialNumberAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
 import com.x.processplatform.assemble.surface.jaxrs.taskcompleted.TaskCompletedAction;
-import com.x.processplatform.assemble.surface.jaxrs.test.TestAction;
 import com.x.processplatform.assemble.surface.jaxrs.tool.ToolAction;
 import com.x.processplatform.assemble.surface.jaxrs.util.UtilAction;
 import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
@@ -50,13 +50,13 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(WorkCompletedAction.class);
 		classes.add(JobAction.class);
 		classes.add(ToolAction.class);
-		classes.add(TestAction.class);
 		classes.add(FileAction.class);
 		classes.add(FormAction.class);
 		classes.add(UtilAction.class);
 		classes.add(WorkLogAction.class);
 		classes.add(ControlAction.class);
 		classes.add(RouteAction.class);
+		classes.add(KeyLockAction.class);
 		return classes;
 	}
 }

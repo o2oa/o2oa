@@ -29,7 +29,7 @@ class ActionGetWithWork extends BaseAction {
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(id);
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
 			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, work.getId(),

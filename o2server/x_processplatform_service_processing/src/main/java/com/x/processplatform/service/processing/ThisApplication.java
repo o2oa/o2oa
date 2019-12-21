@@ -10,9 +10,12 @@ import com.x.processplatform.service.processing.processor.embed.SyncEmbedQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
 import com.x.processplatform.service.processing.schedule.DataMerge;
-import com.x.processplatform.service.processing.schedule.Delay;
+import com.x.processplatform.service.processing.schedule.DeleteDraft;
 import com.x.processplatform.service.processing.schedule.Expire;
-import com.x.processplatform.service.processing.schedule.Reorganize;
+import com.x.processplatform.service.processing.schedule.LogLongDetained;
+import com.x.processplatform.service.processing.schedule.PassExpired;
+import com.x.processplatform.service.processing.schedule.TouchDelay;
+import com.x.processplatform.service.processing.schedule.TouchDetained;
 import com.x.processplatform.service.processing.schedule.Urge;
 
 public class ThisApplication {
@@ -37,20 +40,29 @@ public class ThisApplication {
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
 			context().startQueue(syncEmbedQueue);
-			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
-				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
+			if (BooleanUtils.isTrue(Config.processPlatform().getDataMerge().getEnable())) {
+				context.schedule(DataMerge.class, Config.processPlatform().getDataMerge().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getDeleteDraft().getEnable())) {
+				context.schedule(DeleteDraft.class, Config.processPlatform().getDeleteDraft().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getExpire().getEnable())) {
 				context.schedule(Expire.class, Config.processPlatform().getExpire().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getDelay().getEnable())) {
-				context.schedule(Delay.class, Config.processPlatform().getDelay().getCron());
+			if (BooleanUtils.isTrue(Config.processPlatform().getLogLongDetained().getEnable())) {
+				context.schedule(LogLongDetained.class, Config.processPlatform().getLogLongDetained().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getReorganize().getEnable())) {
-				context.schedule(Reorganize.class, Config.processPlatform().getReorganize().getCron());
+			if (BooleanUtils.isTrue(Config.processPlatform().getPassExpired().getEnable())) {
+				context.schedule(PassExpired.class, Config.processPlatform().getPassExpired().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getDataMerge().getEnable())) {
-				context.schedule(DataMerge.class, Config.processPlatform().getDataMerge().getCron());
+			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDelay().getEnable())) {
+				context.schedule(TouchDelay.class, Config.processPlatform().getTouchDelay().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDetained().getEnable())) {
+				context.schedule(TouchDetained.class, Config.processPlatform().getTouchDetained().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
+				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

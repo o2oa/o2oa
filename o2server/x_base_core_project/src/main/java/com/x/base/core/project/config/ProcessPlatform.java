@@ -41,11 +41,7 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public ProcessPlatform() {
-		this.urge = new Urge();
-		this.expire = new Expire();
-		this.delay = new Delay();
-		this.reorganize = new Reorganize();
-		this.dataMerge = new DataMerge();
+
 		this.maintenanceIdentity = "";
 		this.formVersionCount = DEFAULT_FORMVERSIONCOUNT;
 		this.processVersionCount = DEFAULT_PROCESSVERSIONCOUNT;
@@ -57,25 +53,15 @@ public class ProcessPlatform extends ConfigObject {
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
 		this.executorCount = DEFAULT_EXECUTORCOUNT;
+		this.urge = new Urge();
+		this.expire = new Expire();
+		this.touchDelay = new TouchDelay();
+		this.dataMerge = new DataMerge();
+		this.touchDetained = new TouchDetained();
+		this.deleteDraft = new DeleteDraft();
+		this.passExpired = new PassExpired();
+
 	}
-
-	@FieldDescribe("提醒设置,设置提醒间隔.")
-	private Press press;
-
-	@FieldDescribe("催办任务设置,发现即将过期时发送提醒消息.")
-	private Urge urge;
-
-	@FieldDescribe("过期任务设置,将执行3个独立任务,1.将已经过了截至时间的待办标记过期,2.触发设置了过期路由的工作,3.如果启用了自动流转,那么开始自动流转,可以选择仅处理唯一路由的工作,或者启动基于MLP的人工神经网络进行处理.")
-	private Expire expire;
-
-	@FieldDescribe("延时任务设置,定时触发延时任务,当超过延时时间后继续流转.")
-	private Delay delay;
-
-	@FieldDescribe("整理任务设置,将执行4个独立任务,1.删除无效的待办,2.删除流程或者应用不存在的工作,3.将活动节点错误的工作调度到开始节点,4.触发滞留时间过长的工作.")
-	private Reorganize reorganize;
-
-	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
-	private DataMerge dataMerge;
 
 	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
 	private String maintenanceIdentity;
@@ -154,9 +140,32 @@ public class ProcessPlatform extends ConfigObject {
 		return StringUtils.isEmpty(docToWordDefaultSite) ? DEFAULT_DOCTOWORDDEFAULTSITE : docToWordDefaultSite;
 	}
 
-	public Press getPress() {
-		return this.press == null ? new Press() : this.press;
-	}
+	@FieldDescribe("催办任务设置,发现即将过期时发送提醒消息.")
+	private Urge urge;
+
+	@FieldDescribe("将已经过了截至时间的待办标记过期.")
+	private Expire expire;
+
+	@FieldDescribe("延时任务设置,定时触发延时任务,当超过延时时间后继续流转.")
+	private TouchDelay touchDelay;
+
+	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
+	private DataMerge dataMerge;
+
+	@FieldDescribe("清除草稿状态的工作.")
+	private DeleteDraft deleteDraft;
+
+	@FieldDescribe("超时工作路由设置.")
+	private PassExpired passExpired;
+
+	@FieldDescribe("触发长时间未处理的工作.")
+	private TouchDetained touchDetained;
+
+	@FieldDescribe("记录长期滞留工作,待办,待阅设置.")
+	private LogLongDetained logLongDetained;
+
+	@FieldDescribe("提醒设置,设置提醒间隔.")
+	private Press press;
 
 	public Urge getUrge() {
 		return this.urge == null ? new Urge() : this.urge;
@@ -166,16 +175,32 @@ public class ProcessPlatform extends ConfigObject {
 		return this.expire == null ? new Expire() : this.expire;
 	}
 
-	public Delay getDelay() {
-		return this.delay == null ? new Delay() : this.delay;
+	public PassExpired getPassExpired() {
+		return this.passExpired == null ? new PassExpired() : this.passExpired;
 	}
 
-	public Reorganize getReorganize() {
-		return this.reorganize == null ? new Reorganize() : this.reorganize;
+	public TouchDelay getTouchDelay() {
+		return this.touchDelay == null ? new TouchDelay() : this.touchDelay;
+	}
+
+	public TouchDetained getTouchDetained() {
+		return this.touchDetained == null ? new TouchDetained() : this.touchDetained;
+	}
+
+	public DeleteDraft getDeleteDraft() {
+		return this.deleteDraft == null ? new DeleteDraft() : this.deleteDraft;
+	}
+
+	public LogLongDetained getLogLongDetained() {
+		return this.logLongDetained == null ? new LogLongDetained() : this.logLongDetained;
 	}
 
 	public DataMerge getDataMerge() {
 		return this.dataMerge == null ? new DataMerge() : this.dataMerge;
+	}
+
+	public Press getPress() {
+		return this.press == null ? new Press() : this.press;
 	}
 
 	public String getMaintenanceIdentity() {
@@ -187,41 +212,6 @@ public class ProcessPlatform extends ConfigObject {
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 	}
 
-	public static class Press extends ConfigObject {
-
-		public static Press defaultInstance() {
-			Press o = new Press();
-			return o;
-		}
-
-		public final static Integer DEFAULT_INTERVALMINUTES = 10;
-
-		public final static Integer DEFAULT_COUNT = 3;
-
-		@FieldDescribe("提醒间隔(分钟)")
-		private Integer intervalMinutes;
-
-		@FieldDescribe("提醒数量限制.")
-		private Integer count;
-
-		public Integer getIntervalMinutes() {
-			return (intervalMinutes == null || intervalMinutes < 0) ? DEFAULT_INTERVALMINUTES : this.intervalMinutes;
-		}
-
-		public Integer getCount() {
-			return (count == null || count < 0) ? DEFAULT_COUNT : this.count;
-		}
-
-		public void setIntervalMinutes(Integer intervalMinutes) {
-			this.intervalMinutes = intervalMinutes;
-		}
-
-		public void setCount(Integer count) {
-			this.count = count;
-		}
-
-	}
-
 	public static class Urge extends ConfigObject {
 
 		public static Urge defaultInstance() {
@@ -231,7 +221,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "6 6/10 8-18 * * ?";
+		public final static String DEFAULT_CRON = "30 0/10 8-18 * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -269,22 +259,13 @@ public class ProcessPlatform extends ConfigObject {
 
 		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "8 8/10 * * * ?";
-
-		public final static String AUTO_NEURAL = "neural";
-		public final static String AUTO_SINGLE = "single";
-		public final static String AUTO_DISABLE = "disable";
-
-		public final static String DEFAULT_AUTO = AUTO_DISABLE;
+		public final static String DEFAULT_CRON = "45 0/15 8-18 * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
 		@FieldDescribe("定时cron表达式")
 		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("自动处理模式,disable:禁用,neural:人工神经网络,single:仅处理只有一条路由的工作.")
-		private String auto = DEFAULT_AUTO;
 
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
@@ -298,34 +279,18 @@ public class ProcessPlatform extends ConfigObject {
 			return BooleanUtils.isTrue(this.enable);
 		}
 
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public String getAuto() {
-			return StringUtils.isEmpty(this.auto) ? DEFAULT_AUTO : this.auto;
-		}
-
-		public void setAuto(String auto) {
-			this.auto = auto;
-		}
-
 	}
 
-	public static class Delay extends ConfigObject {
+	public static class TouchDelay extends ConfigObject {
 
-		public static Delay defaultInstance() {
-			Delay o = new Delay();
+		public static TouchDelay defaultInstance() {
+			TouchDelay o = new TouchDelay();
 			return o;
 		}
 
 		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "2 2/10 * * * ?";
+		public final static String DEFAULT_CRON = "5 0/5 * * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -343,65 +308,6 @@ public class ProcessPlatform extends ConfigObject {
 
 		public Boolean getEnable() {
 			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-	}
-
-	public static class Reorganize extends ConfigObject {
-
-		public static Reorganize defaultInstance() {
-			Reorganize o = new Reorganize();
-			return o;
-		}
-
-		public final static String DEFAULT_CRON = "30 15 8,12,14 * * ?";
-
-		public final static Boolean DEFAULT_ENABLE = true;
-
-		public final static Integer DEFAULT_TRIGGERAFTERMINUTES = 60 * 24;
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式")
-		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("当工作滞留设定时间后,将尝试触发工作流转,可以自动处理由于人员变动的引起的工作滞留.")
-		private Integer triggerAfterMinutes = DEFAULT_TRIGGERAFTERMINUTES;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public Integer getTriggerAfterMinutes() {
-			return null == this.triggerAfterMinutes ? DEFAULT_TRIGGERAFTERMINUTES : this.triggerAfterMinutes;
-		}
-
-		public void setTriggerAfterMinutes(Integer triggerAfterMinutes) {
-			this.triggerAfterMinutes = triggerAfterMinutes;
 		}
 
 	}
@@ -417,7 +323,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public final static String DEFAULT_CRON = "30 30 6 * * ?";
 
-		public final static Integer DEFAULT_PERIOD = 365 * 2;
+		public final static Integer DEFAULT_THRESHOLDDAYS = 365 * 2;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
@@ -426,7 +332,7 @@ public class ProcessPlatform extends ConfigObject {
 		private String cron = DEFAULT_CRON;
 
 		@FieldDescribe("期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge")
-		private Integer period = DEFAULT_PERIOD;
+		private Integer thresholdDays = DEFAULT_THRESHOLDDAYS;
 
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
@@ -437,24 +343,219 @@ public class ProcessPlatform extends ConfigObject {
 		}
 
 		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable) && (null != this.period) && (this.period > -1);
+			return BooleanUtils.isTrue(this.enable);
 		}
 
-		public void setCron(String cron) {
-			this.cron = cron;
+		public Integer getThresholdDays() {
+			return (null == thresholdDays || thresholdDays < 1) ? DEFAULT_THRESHOLDDAYS : thresholdDays;
 		}
 
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
+	}
+
+	public static class TouchDetained extends ConfigObject {
+
+		public static TouchDetained defaultInstance() {
+			TouchDetained o = new TouchDetained();
+			return o;
 		}
 
-		public Integer getPeriod() {
-			return period;
+		public final static String DEFAULT_CRON = "30 30 12 * * ?";
+
+		public final static Boolean DEFAULT_ENABLE = true;
+
+		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("当工作滞留设定时间后,将尝试触发工作流转,可以自动处理由于人员变动的引起的工作滞留,默认24*60分钟.")
+		private Integer thresholdMinutes = DEFAULT_THRESHOLDMINUTES;
+
+		public Integer getThresholdMinutes() {
+			return (null == thresholdMinutes || thresholdMinutes < 0) ? DEFAULT_THRESHOLDMINUTES : thresholdMinutes;
 		}
 
-		public void setPeriod(Integer period) {
-			this.period = period;
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
 		}
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+	}
+
+	public static class DeleteDraft extends ConfigObject {
+
+		public static DeleteDraft defaultInstance() {
+			DeleteDraft o = new DeleteDraft();
+			return o;
+		}
+
+		public final static String DEFAULT_CRON = "0 0 20 * * ?";
+
+		public final static Boolean DEFAULT_ENABLE = false;
+
+		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 10;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("设定阈值,如果超过这个时间认为是可以删除的草稿,默认为10天.")
+		private Integer thresholdMinutes = DEFAULT_THRESHOLDMINUTES;
+
+		public Integer getThresholdMinutes() {
+			return (null == thresholdMinutes || thresholdMinutes < 0) ? DEFAULT_THRESHOLDMINUTES : thresholdMinutes;
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+	}
+
+	public static class PassExpired extends ConfigObject {
+
+		public static PassExpired defaultInstance() {
+			PassExpired o = new PassExpired();
+			return o;
+		}
+
+		public final static String DEFAULT_CRON = "5 5 8-18 * * ?";
+
+		public final static Boolean DEFAULT_ENABLE = true;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+	}
+
+	public static class LogLongDetained extends ConfigObject {
+
+		public static LogLongDetained defaultInstance() {
+			LogLongDetained o = new LogLongDetained();
+			return o;
+		}
+
+		public final static String DEFAULT_CRON = "0 0 4 * * ?";
+
+		public final static Boolean DEFAULT_ENABLE = true;
+
+		public final static Integer DEFAULT_TASKTHRESHOLDMINUTES = 60 * 24 * 10;
+
+		public final static Integer DEFAULT_READTHRESHOLDMINUTES = 60 * 24 * 10;
+
+		public final static Integer DEFAULT_WORKTHRESHOLDMINUTES = 60 * 24 * 10;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("设定待办滞留阈值,.")
+		private Integer taskThresholdMinutes = DEFAULT_TASKTHRESHOLDMINUTES;
+
+		@FieldDescribe("设定待阅滞留阈值,.")
+		private Integer readThresholdMinutes = DEFAULT_READTHRESHOLDMINUTES;
+
+		@FieldDescribe("设定工作滞留阈值,.")
+		private Integer workThresholdMinutes = DEFAULT_WORKTHRESHOLDMINUTES;
+
+		public Integer getTaskThresholdMinutes() {
+			return (null == taskThresholdMinutes || taskThresholdMinutes < 0) ? DEFAULT_TASKTHRESHOLDMINUTES
+					: taskThresholdMinutes;
+		}
+
+		public Integer getReadThresholdMinutes() {
+			return (null == readThresholdMinutes || readThresholdMinutes < 0) ? DEFAULT_READTHRESHOLDMINUTES
+					: readThresholdMinutes;
+		}
+
+		public Integer getWorkThresholdMinutes() {
+			return (null == workThresholdMinutes || workThresholdMinutes < 0) ? DEFAULT_WORKTHRESHOLDMINUTES
+					: workThresholdMinutes;
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+	}
+
+	public static class Press extends ConfigObject {
+
+		public static Press defaultInstance() {
+			Press o = new Press();
+			return o;
+		}
+
+		public final static Integer DEFAULT_INTERVALMINUTES = 10;
+
+		public final static Integer DEFAULT_COUNT = 3;
+
+		@FieldDescribe("提醒间隔(分钟)")
+		private Integer intervalMinutes;
+
+		@FieldDescribe("提醒数量限制.")
+		private Integer count;
+
+		public Integer getIntervalMinutes() {
+			return (intervalMinutes == null || intervalMinutes < 1) ? DEFAULT_INTERVALMINUTES : this.intervalMinutes;
+		}
+
+		public Integer getCount() {
+			return (count == null || count < 0) ? DEFAULT_COUNT : this.count;
+		}
+
+		public void setIntervalMinutes(Integer intervalMinutes) {
+			this.intervalMinutes = intervalMinutes;
+		}
+
+		public void setCount(Integer count) {
+			this.count = count;
+		}
+
 	}
 
 }

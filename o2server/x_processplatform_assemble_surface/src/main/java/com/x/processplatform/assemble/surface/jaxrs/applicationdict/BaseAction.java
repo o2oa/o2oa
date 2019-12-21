@@ -10,18 +10,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 import com.x.processplatform.core.entity.element.ApplicationDict;
 import com.x.processplatform.core.entity.element.ApplicationDictItem;
 
 abstract class BaseAction extends StandardJaxrsAction {
-
-	static WrapCopier<ApplicationDict, WrapOutApplicationDict> copier = WrapCopierFactory.wo(ApplicationDict.class,
-			WrapOutApplicationDict.class, null, WrapOutApplicationDict.Excludes);
 
 	JsonElement get(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
 		List<ApplicationDictItem> list = business.applicationDictItem()
@@ -125,7 +119,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		for (ApplicationDictItem o : exists) {
 			emc.remove(o);
 		}
-		if (NumberUtils.isNumber(paths[paths.length - 1])) {
+		if (NumberUtils.isCreatable(paths[paths.length - 1])) {
 			int position = paths.length - 1;
 			for (ApplicationDictItem o : business.applicationDictItem()
 					.listWithApplicationDictWithPathWithAfterLocation(applicationDict.getId(),

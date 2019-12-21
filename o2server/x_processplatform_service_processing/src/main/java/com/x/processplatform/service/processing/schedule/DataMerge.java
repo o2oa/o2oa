@@ -3,8 +3,10 @@ package com.x.processplatform.service.processing.schedule;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -15,24 +17,21 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.entity.dataitem.DataItemConverter;
-import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
-import com.x.processplatform.service.processing.Business;
-import com.x.query.core.entity.Item;
-import com.x.query.core.entity.Item_;
+import com.x.processplatform.service.processing.ThisApplication;
+
+import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class DataMerge extends AbstractJob {
 
@@ -40,66 +39,68 @@ public class DataMerge extends AbstractJob {
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		TimeStamp stamp = new TimeStamp();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
-			WorkCompleted workCompleted = null;
-			List<String> ids = new ArrayList<>();
-			int count = 0;
+		try {
+			TimeStamp stamp = new TimeStamp();
+			List<WorkCompleted> targets = new ArrayList<>();
+			String sequence = null;
+			AtomicInteger count = new AtomicInteger();
 			do {
-				ids = this.list(business);
-				for (String id : ids) {
-					workCompleted = emc.find(id, WorkCompleted.class);
-					if (null != workCompleted) {
-						logger.print("数据合并任务, 标题: {}, id: {}.", workCompleted.getTitle(), workCompleted.getId());
-						List<Item> items = this.items(business, workCompleted);
-						JsonElement jsonElement = converter.assemble(items);
-						emc.beginTransaction(WorkCompleted.class);
-						workCompleted.setData(XGsonBuilder.toJson(jsonElement));
-						workCompleted.setDataMerged(true);
-						emc.commit();
-						emc.beginTransaction(Item.class);
-						for (Item item : items) {
-							emc.remove(item, CheckRemoveType.all);
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					targets = this.list(emc, sequence);
+				}
+				if (!targets.isEmpty()) {
+					sequence = targets.get(targets.size() - 1).getSequence();
+					for (WorkCompleted workCompleted : targets) {
+						try {
+							try {
+								ThisApplication.context().applications()
+										.getQuery(x_processplatform_service_processing.class, Applications
+												.joinQueryUri("workcompleted", workCompleted.getId(), "data", "merge"),
+												workCompleted.getJob())
+										.getData(WoId.class);
+								count.incrementAndGet();
+							} catch (Exception e) {
+								throw new ExceptionDataMerge(e, workCompleted.getId(), workCompleted.getTitle(),
+										workCompleted.getSequence());
+							}
+						} catch (Exception e) {
+							logger.error(e);
 						}
-						emc.commit();
-						count++;
 					}
 				}
-			} while (ListTools.isNotEmpty(ids));
-			logger.print("共催办的任务 {} 个, 耗时:{}.", count, stamp.consumingMilliseconds());
+			} while (!targets.isEmpty());
+			logger.print("完成{}个已完成工作数据合并, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
 		} catch (Exception e) {
-			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
 
-	private List<Item> items(Business business, WorkCompleted workCompleted) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Item.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Item> cq = cb.createQuery(Item.class);
-		Root<Item> root = cq.from(Item.class);
-		Path<String> path = root.get(Item.bundle_FIELDNAME);
-		Predicate p = cb.equal(path, workCompleted.getJob());
-		p = cb.and(p, cb.equal(root.get(Item_.itemCategory), ItemCategory.pp));
-		List<Item> list = em.createQuery(cq.where(p)).getResultList();
-		return list;
-	}
-
-	private List<String> list(Business business) throws Exception {
+	private List<WorkCompleted> list(EntityManagerContainer emc, String sequence) throws Exception {
 		Date date = new Date();
-		date = DateUtils.addDays(date, 0 - Config.processPlatform().getDataMerge().getPeriod());
-		EntityManager em = business.entityManagerContainer().get(WorkCompleted.class);
+		date = DateUtils.addDays(date, 0 - Config.processPlatform().getDataMerge().getThresholdDays());
+		EntityManager em = emc.get(WorkCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Path<String> id_path = root.get(WorkCompleted_.id);
+		Path<String> job_path = root.get(WorkCompleted_.job);
+		Path<String> sequence_path = root.get(WorkCompleted_.sequence);
 		Predicate p = cb.or(cb.isNull(root.get(WorkCompleted_.dataMerged)),
 				cb.equal(root.get(WorkCompleted_.dataMerged), false));
 		p = cb.and(p, cb.lessThan(root.get(WorkCompleted_.completedTime), date));
-		cq.select(root.get(WorkCompleted_.id)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq.distinct(true)).setMaxResults(100).getResultList();
-		return os;
+		if (StringUtils.isNotEmpty(sequence)) {
+			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+		}
+		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
+		List<WorkCompleted> list = new ArrayList<>();
+		for (Tuple o : os) {
+			WorkCompleted workCompleted = new WorkCompleted();
+			workCompleted.setId(o.get(id_path));
+			workCompleted.setJob(o.get(job_path));
+			workCompleted.setSequence(o.get(sequence_path));
+			list.add(workCompleted);
+		}
+		return list;
 	}
-
 }

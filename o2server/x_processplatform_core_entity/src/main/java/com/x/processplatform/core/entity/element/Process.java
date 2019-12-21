@@ -131,7 +131,7 @@ public class Process extends SliceJpaObject {
 	@RestrictFlag
 	@FieldDescribe("名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
+	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
 	/* 同一个应用下不可重名 */
 	@CitationNotExist(fields = { "name", "id",
 			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application")))
@@ -141,7 +141,7 @@ public class Process extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
+	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
 	/* 同一个应用下不可重名 */
 	@CitationNotExist(fields = { "name", "id",
 			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application")))

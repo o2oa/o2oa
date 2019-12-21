@@ -1,16 +1,5 @@
 package com.x.cms.core.express.permission;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
@@ -19,6 +8,15 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 对CMS栏目、分类、文档进行权限过滤查询，在CMS应用中会直接引用
@@ -800,7 +798,7 @@ public class CmsPermissionService {
 		cq.select(root.get(AppInfo.id_FIELDNAME));
 
 		Predicate p = cb.isTrue(root.get(AppInfo.allPeopleView_FIELDNAME));
-		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType )  ){
+		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType ) && !"全部".equalsIgnoreCase( appType )   ){
 			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo.appType_FIELDNAME), appType));
 		}
 		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
@@ -830,7 +828,7 @@ public class CmsPermissionService {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get(AppInfo.id_FIELDNAME));
 		Predicate p = cb.isTrue(root.get(AppInfo.allPeoplePublish_FIELDNAME));
-		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType )  ){
+		if( StringUtils.isNotEmpty( appType ) && !"all".equalsIgnoreCase( appType ) && !"全部".equalsIgnoreCase( appType )  ){
 			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo.appType_FIELDNAME), appType));
 		}
 		if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {

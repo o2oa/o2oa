@@ -1,13 +1,13 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -32,25 +32,37 @@ class ActionCreate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String processId, JsonElement jsonElement)
 			throws Exception {
+
 		ActionResult<Wo> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Process process = business.element().get(processId, Process.class);
-			Application application = business.element().get(process.getApplication(), Application.class);
-			Begin begin = business.element().getBeginWithProcess(process.getId());
-			Work work = this.create(application, process, begin);
-			emc.beginTransaction(Work.class);
-			if ((null != jsonElement) && jsonElement.isJsonObject()) {
-				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
-				workDataHelper.update(jsonElement);
+		Wo wo = new Wo();
+
+		Callable<String> callable = new Callable<String>() {
+			public String call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+					Process process = business.element().get(processId, Process.class);
+					Application application = business.element().get(process.getApplication(), Application.class);
+					Begin begin = business.element().getBeginWithProcess(process.getId());
+
+					Work work = create(application, process, begin);
+					emc.beginTransaction(Work.class);
+					if ((null != jsonElement) && jsonElement.isJsonObject()) {
+						WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
+						workDataHelper.update(jsonElement);
+					}
+					emc.persist(work, CheckPersistType.all);
+					emc.commit();
+					wo.setId(work.getId());
+					MessageFactory.work_create(work);
+				}
+				return "";
 			}
-			emc.persist(work, CheckPersistType.all);
-			emc.commit();
-			Wo wo = new Wo();
-			wo.setId(work.getId());
-			MessageFactory.work_create(work);
-			result.setData(wo);
-		}
+		};
+
+		/* 根据流程应用id分派进程号. */
+		ProcessPlatformExecutorFactory.get(processId).submit(callable).get();
+
+		result.setData(wo);
 		return result;
 	}
 

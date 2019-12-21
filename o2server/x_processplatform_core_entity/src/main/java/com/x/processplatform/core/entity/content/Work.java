@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,10 +23,13 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.PersistentMap;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.KeyColumn;
+import org.apache.openjpa.persistence.jdbc.KeyIndex;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -338,6 +342,20 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	private Boolean beforeExecuted;
 
 	/** Manual Attribute */
+
+	public static final String manualEmpowerMap_FIELDNAME = "manualEmpowerMap";
+	@FieldDescribe("人员授权Map类型.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ manualEmpowerMap_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualEmpowerMap_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME + KeyIndexNameSuffix)
+	private LinkedHashMap<String, String> manualEmpowerMap;
+
 	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
 	@FieldDescribe("预期的处理人")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -1274,6 +1292,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
+	}
+
+	public LinkedHashMap<String, String> getManualEmpowerMap() {
+		return manualEmpowerMap;
+	}
+
+	public void setManualEmpowerMap(LinkedHashMap<String, String> manualEmpowerMap) {
+		this.manualEmpowerMap = manualEmpowerMap;
 	}
 
 }

@@ -12,6 +12,9 @@ class ActionUpdate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, WrapInCollect wrapIn) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
+		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+			throw new ExceptionModifyConfig();
+		}
 		if (BooleanUtils.isTrue(wrapIn.getEnable())) {
 			if (!this.connect()) {
 				throw new ExceptionUnableConnect();

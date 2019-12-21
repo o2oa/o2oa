@@ -1,11 +1,15 @@
 package com.x.processplatform.service.processing.schedule;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -14,14 +18,18 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
-import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ThisApplication;
+
+import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class Urge extends AbstractJob {
 
@@ -29,41 +37,65 @@ public class Urge extends AbstractJob {
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		TimeStamp stamp = new TimeStamp();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			List<String> ids = this.list_urge_task(business);
-			for (String id : ids) {
-				Task task = emc.find(id, Task.class);
-				if (null != task) {
-					try {
-						logger.print("催办任务, 用户: {}, 标题: {}, id: {}.", task.getPerson(), task.getTitle(), task.getId());
-						emc.beginTransaction(Task.class);
-						task.setUrged(true);
-						emc.commit();
-						MessageFactory.task_urge(task);
-					} catch (Exception e) {
-						logger.error(e);
+		try {
+			TimeStamp stamp = new TimeStamp();
+			List<Task> targets = new ArrayList<>();
+			String sequence = null;
+			AtomicInteger count = new AtomicInteger();
+			do {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					targets = this.list(emc, sequence);
+				}
+				if (!targets.isEmpty()) {
+					sequence = targets.get(targets.size() - 1).getSequence();
+					for (Task task : targets) {
+						try {
+							try {
+								ThisApplication.context().applications()
+										.getQuery(x_processplatform_service_processing.class,
+												Applications.joinQueryUri("task", task.getId(), "urge"), task.getJob())
+										.getData(WoId.class);
+								count.incrementAndGet();
+							} catch (Exception e) {
+								throw new ExceptionUrge(e, task.getId(), task.getTitle(), task.getSequence());
+							}
+						} catch (Exception e) {
+							logger.error(e);
+						}
 					}
 				}
-			}
-			logger.print("共催办的任务 {} 个, 耗时:{}.", ids.size(), stamp.consumingMilliseconds());
+			} while (!targets.isEmpty());
+			logger.print("完成{}个待办的催办, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
 		} catch (Exception e) {
-			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
 
-	private List<String> list_urge_task(Business business) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Task.class);
+	private List<Task> list(EntityManagerContainer emc, String sequence) throws Exception {
+		EntityManager em = emc.get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Task> root = cq.from(Task.class);
-		Predicate p = cb.or(cb.isNull(root.get(Task_.urged)), cb.equal(root.get(Task_.urged), false));
-		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Task_.urgeTime), new Date()));
-		cq.select(root.get(Task_.id)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
-		return os;
+		Path<String> id_path = root.get(Task_.id);
+		Path<String> job_path = root.get(Task_.job);
+		Path<String> sequence_path = root.get(Task_.sequence);
+		Path<Date> urgeTime_path = root.get(Task_.urgeTime);
+		Path<Boolean> urged_path = root.get(Task_.urged);
+		Predicate p = cb.or(cb.equal(urged_path, false), cb.isNull(urged_path));
+		p = cb.and(p, cb.lessThan(urgeTime_path, new Date()));
+		if (StringUtils.isNotEmpty(sequence)) {
+			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+		}
+		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
+		List<Task> list = new ArrayList<>();
+		for (Tuple o : os) {
+			Task task = new Task();
+			task.setId(o.get(id_path));
+			task.setJob(o.get(job_path));
+			task.setSequence(o.get(sequence_path));
+			list.add(task);
+		}
+		return list;
 	}
-
 }

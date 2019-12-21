@@ -27,7 +27,7 @@ class ActionChangeSite extends BaseAction {
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(id);
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);

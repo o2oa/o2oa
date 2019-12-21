@@ -25,7 +25,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
 class ActionEdit extends BaseAction {
-
+	
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();

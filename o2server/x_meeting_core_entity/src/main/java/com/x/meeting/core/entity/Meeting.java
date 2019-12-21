@@ -34,6 +34,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CitationExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.tools.ListTools;
 
 @Entity
@@ -200,6 +201,7 @@ public class Meeting extends SliceJpaObject {
 	@Column(length = JpaObject.length_8B, name = ColumnNamePrefix + confirmStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + confirmStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
+	@FieldTypeDescribe(fieldType="enum",fieldValue="allow|deny|wait",fieldTypeName = "com.x.meeting.core.entity.ConfirmStatus")
 	private ConfirmStatus confirmStatus;
 
 	public static final String manualCompleted_FIELDNAME = "manualCompleted";

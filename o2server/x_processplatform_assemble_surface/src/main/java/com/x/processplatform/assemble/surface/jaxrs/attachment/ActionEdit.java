@@ -7,7 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -18,6 +19,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
@@ -30,19 +32,21 @@ class ActionEdit extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, JsonElement jsonElement)
 			throws Exception {
+
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Attachment attachment = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("receive id:{}, jsonElement:{}.", id, jsonElement);
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Work work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			Attachment attachment = emc.find(id, Attachment.class);
+			attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(id);
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
@@ -53,15 +57,21 @@ class ActionEdit extends BaseAction {
 			if (!business.controllerable(effectivePerson, application, process, attachment)) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
-			emc.beginTransaction(Attachment.class);
-			Wi.copier.copy(wi, attachment);
-			emc.check(attachment, CheckPersistType.all);
-			emc.commit();
-			Wo wo = new Wo();
-			wo.setId(attachment.getId());
-			result.setData(wo);
-			return result;
 		}
+//			emc.beginTransaction(Attachment.class);
+//			Wi.copier.copy(wi, attachment);
+//			emc.check(attachment, CheckPersistType.all);
+//			emc.commit();
+//			Wo wo = new Wo();
+//			wo.setId(attachment.getId());
+//			result.setData(wo);
+//			return result;
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("attachment", attachment.getId()), wi, attachment.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends Attachment {

@@ -359,6 +359,31 @@ public class DocumentAction extends StandardJaxrsAction{
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 上一页.", action = ActionQueryListPrevWithFilter.class)
+	@PUT
+	@Path("filter/list/{id}/prev/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listPrevWithFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+										  @JaxrsParameterDescribe("最后一条信息ID，如果是第一页，则可以用(0)代替") @PathParam("id") String id,
+										  @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+										  JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionQueryListPrevWithFilter.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = ((ActionQueryListPrevWithFilter)proxy.getProxy(ActionQueryListPrevWithFilter.class)).execute( request, id, count, jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 	
 	@JaxrsMethodDescribe(value = "列示符合过滤条件的草稿信息内容, 下一页.", action = ActionQueryListDraftNextWithFilter.class)
 	@PUT
