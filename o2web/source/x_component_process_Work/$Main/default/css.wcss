@@ -4,6 +4,7 @@
         "height": "100%",
         "overflow": "auto",
         "background-color": "#FFF"
+        //"position": "relative"
     },
     "formNode": {
         "min-height": "100%",

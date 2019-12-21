@@ -37,6 +37,7 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.container = $(container);
         this.orgAction = MWF.Actions.get("x_organization_assemble_control");
+        //this.org2Action = MWF.Actions.get("x_organization_assemble_express");
         this.processAction = MWF.Actions.get("x_processplatform_assemble_surface");
         this.designerAction = MWF.Actions.get("x_processplatform_assemble_designer");
         this.portalAction = MWF.Actions.get("x_portal_assemble_surface");
@@ -510,6 +511,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     initSearchArea: function(flag){
+        this.searchItems = [];
         if (flag){
             this.itemSearchAreaNode.empty();
             this.itemAreaNode.setStyle("display", "none");
@@ -527,7 +529,10 @@ MWF.xApplication.Selector.Person = new Class({
                 this._listItemByKey(function(json){
                     this.initSearchArea(true);
                     json.data.each(function(data){
-                        this._newItemSearch(data, this, this.itemSearchAreaNode);
+                        if( !this.isExcluded( data ) ) {
+                            var itemSearch = this._newItemSearch(data, this, this.itemSearchAreaNode);
+                            this.searchItems.push( itemSearch );
+                        }
                         //this._newItem(data, this, this.itemSearchAreaNode);
                     }.bind(this));
                 }.bind(this), null, key);
@@ -1230,10 +1235,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.load();
     },
     _getShowName: function(){
-        return this.data.name+"("+this.data.employee+")";
+        return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },
     _getTtiteText: function(){
-        return this.data.name+"("+this.data.employee+")";
+        return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/personicon.png)");
@@ -1241,7 +1246,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
     load: function(){
         this.selector.fireEvent("queryLoadItem",[this]);
 
-        this.node = new Element("div", {
+        if( !this.node )this.node = new Element("div", {
             "styles": this.selector.css.selectorItem
         }).inject(this.container);
 
@@ -1328,9 +1333,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         });
     },
     clickItem: function(){
-        //if (this.selector.options.count.toInt()===1){
-        //    this.selectedSingle();
-        //}else{
+        if ( layout.mobile && this.selector.options.count.toInt()===1){
+            this.selectedSingle();
+        }else{
             if (this.isSelected){
                 this.unSelected();
                 this.selector.fireEvent("unselectItem",[this])
@@ -1338,7 +1343,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.selected();
                 this.selector.fireEvent("selectItem",[this])
             }
-        //}
+        }
     },
     overItem: function(){
         if (!this.isSelected ){
@@ -1393,8 +1398,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
     selected: function(){
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
-        if ((count.toInt()===0) || (this.selector.selectedItems.length+1)<=count){
-            debugger;
+        if( count == 1 && this.selector.emptySelectedItems){
+            this.selector.emptySelectedItems();
+        }
+        if ((count.toInt()===0) || (this.selector.selectedItems.length+1)<=count) {
             this.isSelected = true;
             this.node.setStyles(this.selector.css.selectorItem_selected);
             this.textNode.setStyles(this.selector.css.selectorItemTextNode_selected);
@@ -1411,6 +1418,29 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.node.setStyles(this.selector.css.selectorItem);
         this.textNode.setStyles(this.selector.css.selectorItemTextNode);
         this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+
+        if( this.category ){
+            this.category.checkSelectAll();
+        }
+
+        if( this.selector.searchItems && this.selector.searchItems.length ){
+            this.selector.searchItems.each( function(itemSearch){
+                var sd = itemSearch.data;
+                var d = this.data;
+                if(
+                    ( sd.distinguishedName && (sd.distinguishedName === d.distinguishedName) ) ||
+                    ( sd.id && (sd.id === d.id) ) ||
+                    ( sd.unique && (sd.unique === d.unique) ) ||
+                    ( sd.employee && (sd.employee === d.employee) ) ||
+                    ( sd.levelName && (sd.levelName === d.levelName) )
+                ){
+                    itemSearch.isSelected = false;
+                    itemSearch.node.setStyles(this.selector.css.selectorItem);
+                    itemSearch.textNode.setStyles(this.selector.css.selectorItemTextNode);
+                    itemSearch.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+                }
+            }.bind(this))
+        }
 
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
@@ -1451,7 +1481,14 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         this.items = [];
         if (item) this.items.push(item);
         this.level = 0;
+
+        this.node = new Element("div", {
+            "styles": this.selector.css.selectorItem
+        }).inject(this.container);
+        this.node.setStyle("display","none");
+
         this.getData(function(){
+            this.node.setStyle("display","");
             this.load();
         }.bind(this));
     },
@@ -1547,7 +1584,8 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
     createNode: function(){
         this.node = new Element("div", {
-            "styles": this.selector.css.selectorItemCategory
+            "styles": this.selector.css.selectorItemCategory,
+            "title" : this._getTtiteText()
         }).inject(this.container);
     },
 
@@ -1694,6 +1732,22 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
     },
+    checkSelectAll : function(){
+        if( !this.isSelectedAll )return;
+        if( !this.selectAllNode || !this.selector.css.selectorItemCategoryActionNode_selectAll)return;
+        if( ! this.subItems )return;
+        var hasSelectedItem = false;
+        for( var i=0; i< this.subItems.length; i++ ){
+            if( this.subItems[i].isSelected ){
+                hasSelectedItem = true;
+                break;
+            }
+        }
+        if( !hasSelectedItem ){
+            this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            this.isSelectedAll = false;
+        }
+    },
     afterLoad: function(){
         if (this.level===1) this.clickItem();
     },
@@ -1714,7 +1768,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     });
                     this.fx.start("height", "0px", ""+this.childrenHeight+"px");
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-
+                    this.isExpand = true;
                 }else{
                     if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
                     this.fx.start("height", ""+this.childrenHeight+"px", "0px").chain(function(){
@@ -1724,6 +1778,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                         });
                     }.bind(this));
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                    this.isExpand = false;
                 }
             }
             if(callback)callback()
@@ -1775,6 +1830,13 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     },
     _hasChildItem: function(){
         return this._hasChild();
+    },
+    _getTtiteText: function(){
+        if( this.data.levelName ){
+            return this.data.name+"("+ this.data.levelName +")";
+        }else{
+            return this.data.name;
+        }
     }
 });
 
@@ -1797,7 +1859,6 @@ MWF.xApplication.Selector.Person.ItemRoleCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/roleicon.png)");
     }
 });
-
 
 MWF.xApplication.Selector.Person.Filter = new Class({
     Implements: [Options, Events],

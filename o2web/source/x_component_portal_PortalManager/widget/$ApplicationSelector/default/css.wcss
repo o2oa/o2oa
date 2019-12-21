@@ -168,7 +168,7 @@
     "applicationItemNameNode": {
         "height": "30px",
         "font-size": "18px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-weight": "bold",
         "line-height": "40px",
         "color": "#FFF"
@@ -176,7 +176,7 @@
     "applicationItemTypeNode": {
         "height": "30px",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "line-height": "40px",
         "color": "#EEE"
     },
@@ -195,7 +195,7 @@
     "applicationItemElTitleNode": {
         "font-size": "14px",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "color": "#333",
         "padding": "0px 5px 5px 5px"
     },

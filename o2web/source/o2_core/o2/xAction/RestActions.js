@@ -44,6 +44,105 @@ MWF.xAction.RestActions = MWF.Actions = {
         }
         return null;
     },
+    //actions: [{"action": "", "subAction": "TaskAction", "name": "list", "par": [], "body": "",  "urlEncode"： false, "cache": false}]
+    async: function(actions, callback){
+        var cbs = (o2.typeOf(callback)==="function") ? callback : callback.success;
+        var cbf = (o2.typeOf(callback)==="function") ? null : callback.failure;
+        var res = [];
+        var len = actions.length;
+        var jsons = new Array(len-1);
+
+        var cb = function(){
+            if (res.length===len) cbs.apply(this, jsons);
+        };
+        var _doError = function(xhr, text, error){
+            if (xhr.status!=0){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+            }
+        };
+
+        actions.each(function(action, i){
+            var actionArgs = action.par || [];
+            actionArgs.push(function(json){
+                jsons[i] = json;
+                res.push(true);
+                cb();
+            });
+            actionArgs.push(function(xhr, text, error){
+                res.push(false);
+                if (!cbf){
+                    _doError(xhr, text, error);
+                }else{
+                    cbf();
+                }
+                cb();
+            });
+            actionArgs.push(true);
+            actionArgs.push(action.urlEncode);
+            actionArgs.push(action.cache);
+            action.action[action.subAction][action.name].apply(action.action[action.subAction], actionArgs);
+        });
+    },
+
+    //actions: [{"action": "", "name": "list", "par": [], "body": "",  "urlEncode"： false, "cache": false}]
+    invokeAsync2: function(actions, callback){
+        debugger;
+        var cbs = (o2.typeOf(callback)==="function") ? callback : callback.success;
+        var cbf = (o2.typeOf(callback)==="function") ? null : callback.failure;
+        var res = [];
+        var len = actions.length;
+        var jsons = new Array(len-1);
+
+        var cb = function(){
+            if (res.length===len) cbs.apply(this, jsons);
+        };
+        var _doError = function(xhr, text, error){
+            if (xhr.status!=0){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+            }
+        };
+
+        actions.each(function(action, i){
+            var actionArgs = action.par || [];
+            actionArgs.push(function(json){
+                jsons[i] = json;
+                res.push(true);
+                cb();
+            });
+            actionArgs.push(function(xhr, text, error){
+                res.push(false);
+                if (!cbf){
+                    _doError(xhr, text, error);
+                }else{
+                    cbf();
+                }
+                cb();
+            });
+            actionArgs.push(true);
+            actionArgs.push(action.urlEncode);
+            actionArgs.push(action.cache);
+            action.action[action.name].apply(action.action, actionArgs);
+        });
+    },
+
     "getHost": function(root){
         var addressObj = layout.desktop.serviceAddressList[root];
         var address = "";
@@ -83,7 +182,7 @@ MWF.xAction.RestActions = MWF.Actions = {
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
             }
         };
-        debugger;
+
         actions.each(function(action, i){
             var par = (i<parlen) ? args[i+2] : args[parlen+1];
             if (par){
@@ -168,7 +267,7 @@ MWF.xAction.RestActions.Action = new Class({
                 }
                 async = (n>++i) ? functionArguments[i] : null;
                 urlEncode = (n>++i) ? functionArguments[i] : true;
-                cache = (n>++i) ? functionArguments[i] : false;
+                cache = (n>++i) ? functionArguments[i] : (Browser.name != "ie");
             }else{
                 parameters.each(function(p, x){
                     parameter[p] = (n>x) ? functionArguments[x] : null;
@@ -185,8 +284,10 @@ MWF.xAction.RestActions.Action = new Class({
                 failure = (n>++i) ? functionArguments[i] : null;
                 async = (n>++i) ? functionArguments[i] : null;
                 urlEncode = (n>++i) ? functionArguments[i] : true;
-                cache = (n>++i) ? functionArguments[i] : false;
+                cache = (n>++i) ? functionArguments[i] : (Browser.name != "ie");
             }
+
+            //if (!cache) debugger;
             return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
         }.bind(this);
     }

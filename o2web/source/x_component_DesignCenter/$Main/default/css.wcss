@@ -73,7 +73,7 @@
     "applicationMenuTextNode": {
         "height": "40px",
         "line-height": "20px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px",
         "color": "#333333"
     }

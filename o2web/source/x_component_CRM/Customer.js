@@ -5,7 +5,7 @@ MWF.xDesktop.requireApp("CRM", "Template", null,false);
 MWF.xDesktop.requireApp("Template", "Explorer", null,false);
 
 MWF.require("MWF.widget.Identity", null,false);
-MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);
+/*MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);*/
 
 MWF.xApplication.CRM.Customer = new Class({
     Extends: MWF.widget.Common,
@@ -23,13 +23,14 @@ MWF.xApplication.CRM.Customer = new Class({
 
         this.actions = actions;
         this.node = $(node);
+        debugger
     },
     loadCss: function () {
         this.cssPath = "/x_component_CRM/$Customer/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
-        this.testActions = new MWF.xApplication.Forum.Actions.RestActions();
+        //this.testActions = new MWF.xApplication.Forum.Actions.RestActions();
         if(this.formContentArr)this.formContentArr.empty();
         this.formContentArr = [];
         if(this.formMarkArr)this.formMarkArr.empty();
@@ -37,7 +38,7 @@ MWF.xApplication.CRM.Customer = new Class({
 
         this.rightContentDiv = this.app.rightContentDiv;
         this.createHeadContent();
-        this.createToolBarContent();
+        //this.createToolBarContent();
         this.createCustomerContent();
 
         this.resizeWindow();
@@ -55,6 +56,7 @@ MWF.xApplication.CRM.Customer = new Class({
     },
 
     createHeadContent:function(){
+        debugger
         if(this.headContentDiv) this.headContentDiv.destroy();
         this.headContentDiv = new Element("div.headContentDiv",{"styles":this.css.headContentDiv}).inject(this.rightContentDiv);
         this.headTitleDiv = new Element("div.headTitleDiv",{
@@ -105,7 +107,7 @@ MWF.xApplication.CRM.Customer = new Class({
                         "isNew":true,
                         "onReloadView" : function(  ){
                             //alert(JSON.stringify(data))
-                            this.reload();
+                            //this.reload();
                         }.bind(this)
                     });
                     this.explorer.load();
@@ -137,40 +139,27 @@ MWF.xApplication.CRM.Customer = new Class({
         if(this.contentListInDiv) this.contentListInDiv.destroy();
         this.contentListInDiv = new Element("div.contentListInDiv",{"styles":this.css.contentListInDiv}).inject(this.contentListDiv);
 
-        this.bottomPageBar = new Element("div.bottomPageBar",{"styles":this.css.bottomPageBar}).inject(this.contentListDiv);
+        var size = this.rightContentDiv.getSize();
+        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px"});
+        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px","width":"100%"});
 
-        this.loadView();
+        if(this.customerView) delete this.customerView;
+        var templateUrl = this.path+"customerView.json";
+        var filter = {};
 
-        this.view.node.addEvents({
-            "scroll":function(e){
-                this.view.nodeHead.setStyle("margin-left",(0-this.view.node.scrollLeft)+"px");
-            }.bind(this)
-        });
-    },
-
-    loadView : function(){
-
-        this.view = new MWF.xApplication.CRM.Customer.View( this.contentListInDiv, this.app, this, {
-            templateUrl : this.path+"customerView.json",
-            pagingEnable : true,
-            pagingPar : {
-                position : ["bottom"],
-                hasNextPage : false,
-                hasReturn:false,
-                currentPage : this.options.viewPageNum||1,
-                countPerPage : 30,
-                onPostLoad : function( pagingBar ){
-
-                }.bind(this),
-                onPageReturn : function( pagingBar ){
-
-                }.bind(this)
+        ////this.customerView =  new  MWF.xApplication.CRM.Customer.View(this.contentListInDiv, this.app, {lp : this.app.lp.curtomerView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,filterData:filter} );
+        this.customerView =  new MWF.xApplication.CRM.Customer.View(
+            this.contentListInDiv,
+            this.openDiv,
+            this.app,
+            this,
+            { templateUrl : templateUrl,filterData:filter},
+            {
+                lp:this.app.lp.customerView,
+                isAdmin:this.options.isAdmin
             }
-        },{lp:this.app.lp.customerView,css : this.css} );
-        //this.view.filterData = { sectionId : "5a60743f-e074-43ad-86c1-87c88b125281" , withTopSubject : true };
-        //this.view.pagingContainerTop = this.pagingBarTop;
-        this.view.pagingContainerBottom = this.bottomPageBar;
-        this.view.load();
+        );
+        this.customerView.load();
     },
 
     resizeWindow:function(){
@@ -181,125 +170,99 @@ MWF.xApplication.CRM.Customer = new Class({
             var x = this.headSearchDiv.getSize().x;
             this.headSearchDiv.setStyles({"margin-left":(size.x-rSize.x-lSize.x)/2-(x/2)+"px"});
         }
-
-        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-2)+"px","width":(this.rightContentDiv.getWidth())+"px"});
-        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":(this.contentListDiv.getHeight()-this.bottomPageBar.getHeight())+"px","width":(this.rightContentDiv.getWidth())+"px"});
-        if(this.view && this.view.node){
-            //alert(this.contentListInDiv.getHeight())
-            this.view.node.setStyles({
-                "height":(this.contentListInDiv.getHeight()-40)+"px",
-                "width":this.rightContentDiv.getWidth()+"px"
-            });
-        }
+        //alert(JSON.stringify(size))
+        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px"});
+        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px"});
     }
 
 });
 
 
 MWF.xApplication.CRM.Customer.View = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexView,
-    load: function () {
-        this.thWidthArr = [];
-        this.initData();
-        this.ayalyseTemplate();
+    Extends: MWF.xApplication.CRM.Template.ComplexView,
 
-        var nodeHead =  this.nodeHead = new Element("div.viewHeadListNode",{
-            "styles":this.css.viewHeadListNode
-        }).inject(this.container);
-
-        this.node = new Element("div.viewBodyNode", {
-            "styles": this.css.viewBodyNode
-        }).inject(this.container);
-
-        if( this.options.scrollEnable ){
-            this.setScroll();
-        }
-        this.getContentTemplateNode();
-        this.createHeadNode();
-        this.createViewNode();
-        //this.initSortData();
-        //this.createViewHead();
-        this.createViewBody();
+    _createDocument: function(data){
+        return new MWF.xApplication.CRM.Clue.Document(this.viewNode, data, this.explorer, this);
     },
-    createHeadNode:function(){
-        var _width = 0;
-        this._width = 0;
-        this.template.items.each(function (item,i) {
-            var headItemNode = this.formatElement(this.nodeHead, item.head);
-            if(item.head.width){
-                headItemNode.setStyle("width",parseInt(item.head.width)+"px");
-                _width = _width + parseInt(item.head.width);
-                if(i==this.template.items.length-1){
-                    if(_width<this.explorer.contentListInDiv.getWidth()){
-                        this.lastTdWidth = this.explorer.contentListInDiv.getWidth()-_width+parseInt(item.head.width);
-                        headItemNode.setStyle("width",parseInt(this.explorer.contentListInDiv.getWidth()-_width+parseInt(item.head.width))+"px");
-                        headItemNode.set("width",this.lastTdWidth);
-                        this._width = this._width + this.lastTdWidth;
-                    }else{
-                        this.lastTdWidth = parseInt(item.head.width);
-                        this._width = this._width + parseInt(item.head.width);
-                    }
-                }else{
-                    this._width = this._width + parseInt(item.head.width);
-                }
 
+    _getCurrentPageData: function(callback, count, page, searchText,searchType){
+        var category = this.category = this.options.category;
+        if (!count)count = 15;
+        if (!page)page = 1;
+        var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+
+        //if(id=="(0)")this.app.createShade();
+        var filter = this.options.filterData || {};
+        filter={key: searchText?searchText.trim():"",
+            orderFieldName: "updateTime",
+            orderType: "desc"
+        };
+        if (!searchType)searchType = "全部客户";
+        if(!this.isAdmin){
+            debugger
+            if(searchType=="我负责的客户"){
+                this.actions.ListMyDuty_customer(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
             }
+            if(searchType=="下属负责的客户"){
+                this.actions.ListNestedSubPerson_customer(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+            if(searchType=="我参与的客户"){
+                this.actions.ListMyParticipate_customer(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+            if(searchType=="全部客户"){
+                this.actions.ListAllMy_customer(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+        }else{
+            this.actions.getCustomerListPage(page, count, filter, function (json) {
+                if (callback)callback(json);
+            }.bind(this));
+        }
 
-        }.bind(this));
-
-
-    },
-    _createDocument: function(data, index){
-        return new MWF.xApplication.CRM.Customer.Document(this.viewNode, data, this.explorer, this, null,  index);
-    },
-    _getCurrentPageData: function(callback, count, pageNum){
-        this.clearBody();
-        if(!count)count=30;
-        if(!pageNum)pageNum = 1;
-
-        var filter = this.filterData || {};
-        //var filter = {};
-        //this.app.createShade();
-        this.explorer.actions.getCustomerListPage( pageNum, count, filter, function(json){
-            if( !json.data )json.data = [];
-            if( !json.count )json.count=0;
-            this.app.destroyShade();
-            if( callback )callback(json);
-        }.bind(this))
-    },
-    _removeDocument: function(documentData, all){
 
     },
     _create: function(){
 
     },
-    _openDocument: function( documentData,index ){
-
-        documentData = {
-            id:"5514a10e-0789-4289-a4b5-c54022075553"
-        };
-        MWF.xDesktop.requireApp("CRM", "CustomerRead", function(){
-            this.customerRead = new MWF.xApplication.CRM.CustomerRead(this.explorer.contentListDiv,this.app, this.explorer,this.actions,{
-                "width":1000,
-                "onReloadView" : function(){
-                    //alert("reload list")
-                    //alert(this.currentPage)
-                    this.gotoPage(this.currentPage)
-                    //this.explorer.createCustomerContent();
+    _openDocument: function(openId ,openName){
+        /*MWF.xDesktop.requireApp("CRM", "ClueEdit", function(){
+         this.explorer = new MWF.xApplication.CRM.ClueEdit(this, this.actions,{},{
+         "clueId":clueId,
+         "onReloadView" : function(  ){
+         //alert(JSON.stringify(data))
+         this.reload();
+         }.bind(this)
+         });
+         this.explorer.load();
+         }.bind(this))*/
+        MWF.xDesktop.requireApp("CRM", "CustomerOpen", function(){
+            this.explorer = new MWF.xApplication.CRM.CustomerOpen(this, this.actions,{},{
+                "openId":openId,
+                "openName":openName,
+                "openType":"single",
+                "onReloadView" : function(  ){
+                    //alert(JSON.stringify(data))
+                    this.reload();
                 }.bind(this)
-            } );
-            this.customerRead.load(documentData);
-            this.explorer.formContentArr.push(this.customerRead);
-            this.explorer.formMarkArr.push(this.customerRead.formMaskNode);
-
-        }.bind(this));
+            });
+            this.explorer.load();
+        }.bind(this))
     },
     _queryCreateViewNode: function(){
+
     },
     _postCreateViewNode: function( viewNode ){
-        this.viewNode.set("width",this._width+"px");
+
     },
     _queryCreateViewHead:function(){
+
     },
     _postCreateViewHead: function( headNode ){
 

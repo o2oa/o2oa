@@ -78,7 +78,7 @@ body .fc { /* extra precedence to overcome jqui */
 	font-size: 1em;
 	text-align: center;
 	overflow: hidden;
-	font-family: "微软雅黑","Courier New", Courier, monospace;
+	font-family: "Microsoft YaHei","Courier New", Courier, monospace;
 
 	/* don't allow browser text-selection */
 	-webkit-touch-callout: none;
@@ -1107,7 +1107,7 @@ be a descendant of the grid when it is being dragged.
 	overflow: hidden;
 	line-height: 8px;
 	font-size: 11px;
-	font-family: "微软雅黑", monospace;
+	font-family: "Microsoft YaHei", monospace;
 	text-align: center;
 	cursor: s-resize;
 }

@@ -1,0 +1,94 @@
+{
+	"container": {
+		"background-color": "#f9f9f9",
+		"padding": "5px",
+		"width": "30px",
+		"overflow": "hidden",
+		"border": "1px solid #cccccc",
+		"border-radius": "3px",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"display":"block",
+		"font-size": "14px"
+	},
+	"toolbarSeparator": {
+		"display":"block",
+		"float": "left",
+		"margin-bottom": "5px",
+		"margin-top": "3px",
+		"height": "18px",
+		"width": "1px",
+		"background-color": "#888888",
+		"border-right": "1px solid #FFFFFF",
+		"overflow": "hidden"
+	},
+
+	"button": {
+		"display":"block",
+		"position": "static",
+		"border": "1px solid #f9f9f9",
+		"background-color": "#f9f9f9",
+		"cursor": "pointer",
+		"color": "#333333",
+		"padding": "3px 0px"
+	},
+	"buttonImgDiv": {
+		"display":"block",
+		"cursor": "pointer"
+	},
+	"buttonImg": {
+	    "display":"block",
+	    "margin": "auto",
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer",
+		"margin-top": "0px"
+	},
+	"buttonTextDiv": {
+		"display":"block",
+		"width": "20px",
+		"cursor": "pointer",
+		"text-align": "center",
+		"line-height": "16px",
+		"margin": "auto",
+		"margin-top": "3px"
+	},
+
+	"buttonDisable": {
+		"color": "#999"
+	},
+	"buttonImgDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDisable": {
+		"color": "#999"
+	},
+
+	"buttonOver": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"buttonOut": {
+		"background-color": "#f9f9f9",
+		"color": "#333333"
+	},
+	"buttonDown": {
+		"background-color": "#dddddd",
+		//"background-color": "#1f77b4",
+		"color": "#333333"
+	},
+	"buttonUp": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "3px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	}
+}

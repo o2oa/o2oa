@@ -110,7 +110,7 @@
     //"background-color": "#dde9f4",
     "background-color" : "dde9f4",
     "line-height" :"40px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "16px",
     "color" : "#3587d7",
     "padding-left" : "10px",
@@ -130,7 +130,7 @@
     "height" : "40px",
     "font-weight" : "normal",
     "line-height" : "40px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "16px",
     "background-color": "#dde9f4"
     //"text-shadow": "0px 0px 2px #fff"

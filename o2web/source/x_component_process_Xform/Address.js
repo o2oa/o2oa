@@ -30,13 +30,21 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
 
         MWF.require("MWF.widget.Combox", function(){
             this.combox = new MWF.widget.Combox({
+                "style": "blue",
+                "onlySelect": true,
                 "count": 4,
                 "focusList": true,
                 "onCommitInput": function(){
                     this.fireEvent("commitInput");
                 }.bind(this),
-                "onChange": function(){
-                    this.fireEvent("change");
+                "onChange": function(e, oldValues){
+                    var thisValues = this.combox.values.map(function(v){ return v.data || v.value});
+                    if ((oldValues && (oldValues.join() !== thisValues.join()))){
+                        while (this.combox.values.length-1>e.index){
+                            this.combox.deleteItem(this.combox.values[this.combox.values.length-1])
+                        }
+                        this.fireEvent("change");
+                    }
                 }.bind(this),
                 "optionsMethod": this._searchOptions.bind(this)
             });
@@ -85,7 +93,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
                         var k = text.name;
                         var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
+                            //if (keyword.indexOf(value)!==-1)
+                                list.push({"text": k, "value": k});
                         }else{
                             list.push({"text": k, "value": k});
                         }
@@ -109,13 +118,14 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
             case 1: //市
                 var item = this.combox.getFirst();
 
-                o2.Actions.get("x_general_assemble_control").listCity(item.data, function(json){
+                o2.Actions.get("x_general_assemble_control").listCity(item.data || item.value, function(json){
                     var list = [];
                     json.data.each(function(text){
                         var k = text.name;
                         var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
+                            //if (keyword.indexOf(value)!==-1)
+                                list.push({"text": k, "value": k});
                         }else{
                             list.push({"text": k, "value": k});
                         }
@@ -138,16 +148,18 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
                 // });
                 break;
             case 2: //区
-                var p = this.combox.getFirst().data;
+                var f = this.combox.getFirst();
+                var p = f.data || f.value;
                 var item = this.combox.getFirst().getNextItem();
 
-                o2.Actions.get("x_general_assemble_control").listDistrict(p, item.data, function(json){
+                o2.Actions.get("x_general_assemble_control").listDistrict(p, item.data||item.value, function(json){
                     var list = [];
                     json.data.each(function(text){
                         var k = text.name;
                         var keyword = k+MWF.widget.PinYin.toPY(k).toLowerCase()+MWF.widget.PinYin.toPYFirst(k).toLowerCase();
                         if (value){
-                            if (keyword.indexOf(value)!==-1) list.push({"text": k, "value": k});
+                            //if (keyword.indexOf(value)!==-1)
+                                list.push({"text": k, "value": k});
                         }else{
                             list.push({"text": k, "value": k});
                         }

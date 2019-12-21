@@ -40,7 +40,7 @@
     "height": "30px",
     "margin": "0px",
     "line-height" :"30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "color" : "#ddd",
     "padding-left" : "10px"
@@ -54,7 +54,7 @@
     "padding-left" : "30px",
     "height" : "30px",
     "line-height" : "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
     //"text-shadow": "0px 0px 2px #fff"
   },
@@ -90,7 +90,7 @@
   },
   "categoryTopNode" : {
     //"padding" : "5px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#fff",
     "background-color" : "#f7f7f7",
     "overflow" : "hidden",
@@ -131,7 +131,7 @@
   },
   "recommandTopNode" : {
     //"padding" : "5px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#fff",
     "background-color" : "#f7f7f7",
     "overflow" : "hidden",
@@ -326,7 +326,7 @@
   },
   "documentItemTitleNode" : {
     "margin-top" : "5px",
-    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left"
   },
   "documentItemTitleNode_over" : {
@@ -425,7 +425,7 @@
   },
   "documentItemTitleNode" : {
     "margin-top" : "5px",
-    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left",
     "cursor" : "pointer"
   },

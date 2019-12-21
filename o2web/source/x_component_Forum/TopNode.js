@@ -28,6 +28,10 @@ MWF.xApplication.Forum.TopNode = new Class({
     load: function(){
         this.createTopNode();
     },
+    getMainPageTitle : function(){
+        var tail = this.app.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+        return ( MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title ) + tail;
+    },
     openMainPage : function(){
         if( this.app.inBrowser || this.options.naviMode ){
             this.app.clearContent();
@@ -43,7 +47,7 @@ MWF.xApplication.Forum.TopNode = new Class({
             forum.window = this.app.window;
             forum.taskitem = this.app.taskitem;
             forum.load();
-            this.app.setTitle( "论坛首页" );
+            this.app.setTitle(  this.getMainPageTitle() );
         }else{
             var appId = "Forum";
             if (this.app.desktop.apps[appId]){
@@ -77,6 +81,7 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.restActions.getBBSName( function( json ){
             var data = json.data;
             if( data.configValue && data.configValue!="" && data.configValue!="O2社区" ){
+                this.bbsName = data.configValue;
                 this.topTextNode = new Element("div.topTextNode", {
                     "styles": this.css.topTextNode,
                     "text": data.configValue
@@ -166,7 +171,7 @@ MWF.xApplication.Forum.TopNode = new Class({
                 this.settingTextNode = new Element("div", {
                     "styles": this.css.settingTextNode,
                     "text": this.lp.setting,
-                    "title" : "论坛设置"
+                    "title" : this.lp.forumConfig
                 }).inject(this.settingNode);
                 this.settingNode.addEvent("click", function(){ this.app.openSetting( ) }.bind(this));
 

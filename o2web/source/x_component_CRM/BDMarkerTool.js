@@ -302,7 +302,7 @@ if(typeof BMapLib._toolInUse == "undefined"){
             this._map = map;
             this._opts = {
                 icon: MarkerTool.SYS_ICONS[8], //默认选择红色雨滴样式
-                followText: "点击地图添加工作场所", //鼠标跟随文字提示
+                followText: "点击地图添加定位标记", //鼠标跟随文字提示
                 autoClose: true //是否添加完毕标注就关闭此工具
             };
 
@@ -313,7 +313,7 @@ if(typeof BMapLib._toolInUse == "undefined"){
 
             this._followMarker = null; //鼠标跟随Marker
             this._followLabel = null; //鼠标跟随文本提示
-        }
+        };
 
     baidu.lang.inherits(MarkerTool, baidu.lang.Class , "MarkerTool");//继承基类baidu.lang.Class所有prototype属性挂接的方法
 
@@ -422,7 +422,7 @@ if(typeof BMapLib._toolInUse == "undefined"){
             me._followMarker.setPosition(pt);
             me._followMarker.setLabel(me._followLabel);
             me._followMarker.show();
-        }
+        };
         me._map.addEventListener("mousemove", me._mouseMoveHandler);
 
         //绑定click事件
@@ -456,7 +456,7 @@ if(typeof BMapLib._toolInUse == "undefined"){
             if(me._opts.autoClose){ //自动关闭工具
                 me.close();
             }
-        }
+        };
         me._map.addEventListener("click", me._clickHandler);
     };
 

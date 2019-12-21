@@ -165,7 +165,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
     getSubformData: function(data){
         if( !data || typeOf(data)!=="object" )return;
         var subformDataStr = null;
-        if (this.form.options.mode !== "Mobile"){
+        if ( this.form.json.mode !== "Mobile" && !layout.mobile){
             subformDataStr = data.data;
         }else{
             subformDataStr = data.mobileData;

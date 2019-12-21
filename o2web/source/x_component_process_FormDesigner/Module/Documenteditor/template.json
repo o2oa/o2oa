@@ -83,6 +83,8 @@
 		"annotation":"",
 		"copytoTitle":"抄送：",
 		"copyto":"[抄送]",
+		"copyto2Title":"发：",
+		"copyto2":"[发]",
 		"editionUnit":"[印发机关]",
 		"editionDate":"[印发日期]",
 		"meetingAttendTitle": "出席：",

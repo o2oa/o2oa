@@ -27,7 +27,7 @@
         "line-height": "80px",
         "color": "#FFF",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "margin-left": "5px"
     },
@@ -80,7 +80,7 @@
         "width": "96%",
         "height": "28px",
         "border": "0px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px",
         "color": "#999",
         "background": "transparent",
@@ -556,7 +556,7 @@
         "color": "#666666",
         "font-weight": "bold",
         "line-height": "40px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px"
     },
     "headArea1Node": {
@@ -659,7 +659,7 @@
         "color": "#666666",
         //"line-height": "39px",
         "cursor": "pointer",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "12px"
     },
 

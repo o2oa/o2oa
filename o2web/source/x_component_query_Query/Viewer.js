@@ -925,6 +925,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.load();
     },
     load: function(){
+        debugger;
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
         if (this.prev){
             this.node.inject(this.prev.node, "after");
@@ -947,6 +948,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         Object.each(this.view.entries, function(c, k){
+            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
@@ -962,7 +964,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                         }
                     }
                     if (this.view.openColumns.indexOf(k)!==-1){
-                        this.setOpenWork(td)
+                        this.setOpenWork(td, c)
                     }
                     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                 }
@@ -985,12 +987,25 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         this.setEvent();
     },
-    setOpenWork: function(td){
+    setOpenWork: function(td, column){
+        debugger;
         td.setStyle("cursor", "pointer");
-        if (this.view.json.type==="cms"){
-            td.addEvent("click", this.openCms.bind(this));
+        if( column.clickCode ){
+            if( !this.view.Macro ){
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.view.businessData = {};
+                    this.view.Macro = new MWF.Macro.PageContext(this.view);
+                }.bind(this), false);
+            }
+            td.addEvent("click", function( ev ){
+                return this.view.Macro.fire(column.clickCode, this, ev);
+            }.bind(this));
         }else{
-            td.addEvent("click", this.openWorkAndCompleted.bind(this));
+            if (this.view.json.type==="cms"){
+                td.addEvent("click", this.openCms.bind(this));
+            }else{
+                td.addEvent("click", this.openWorkAndCompleted.bind(this));
+            }
         }
 
     },

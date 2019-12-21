@@ -1,0 +1,110 @@
+{
+  "headContentDiv":{
+    "background":"#F5F6FB",
+    "width":"100%"
+  },
+   "headHomeDiv":{
+      "text-align":"center",
+      "margin":"15px 0px 0px 15px",
+      "float":"left",
+      "display":"inline-block"
+    },
+     "headHomeImg":{
+          "float":"left",
+          "width":"50px",
+          "display":"inline-block"
+        },
+  "headTitleDiv":{
+    "height":"30px",
+    "margin":"25px 0px 20px 20px",
+    "float":"left",
+    "font-size":"18px",
+    "display":"inline-block"
+  },
+  "selectDiv":{
+      "float":"left",
+      "margin-top":"18px",
+      "margin-left":"20px",
+      "font-size":"16px",
+      "border":"1px solid #dcdfe6",
+      "border-radius":"3px",
+      "background-color":"rgb(255, 255, 255)",
+      "height":"35px",
+      "width":"220px",
+      "cursor":"pointer",
+      "display":"inline-block"
+   },
+   "selectname":{
+      "margin-top":"8px",
+      "margin-left":"10px",
+      "display":"inline-block"
+   },
+   "arrowdown":{
+         "float":"right",
+         "margin-top":"8px",
+        "display":"inline-block"
+    },
+    "selectImg":{
+        "float":"right",
+       "display":"inline-block"
+   },
+
+  "contentListDiv":{
+  "margin-left": "15px",
+   "margin-right": "15px"
+  },
+  "vux_flex_rowDiv":{
+    "height": "450px",
+  },
+  "vux_flex_row":{
+    "margin-right": "15px",
+     "margin-left": "15px",
+     "margin-top": "15px"
+    },
+  "contentListInDiv":{
+    "width":"100%",
+    "flex-wrap":"wrap",
+    "display":"flex",
+  },
+  "vux_flexbox_item":{
+    "flex": "0 0 50%",
+    "padding-bottom": "10px"
+  },
+  "vux_flexbox_item_right":{
+    "flex": "0 0 48%",
+    "padding-left": "20px",
+    "padding-bottom": "10px"
+  },
+  "cardDiv":{
+    "height":"365px",
+    "background-color":"#fff",
+    "position": "relative",
+    "padding":"10px 10px 20px 10px",
+    "border": "1px solid #e6e6e6",
+    "border-radius": "2px"
+  },
+  "img_mark":{
+     "margin-right": "10px",
+     "float":"left"
+  },
+  "mark_header":{
+    "font-size":"16px",
+    "width":"200px"
+  },
+  "user_change":{
+        "display":"inline-block",
+        "float":"left",
+        "font-size":"16px",
+        "cursor":"pointer",
+        "padding-top": "28px",
+        "color":"#3e84e9"
+    },
+  "user_line":{
+        "width": "1px",
+        "height": "16px",
+        "background-color": "#aaa",
+        "display":"inline-block",
+        "float":"left",
+        "margin": "30px 15px 0px 15px"
+   }
+}

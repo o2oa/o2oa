@@ -9,7 +9,7 @@ MWF.xApplication.process.Xform.LP = {
     "taskProcessedMessage": "您处理了一个待办任务：",
     "nextActivity": "下一个活动：",
     "nextUser": "处理人：",
-    "workCompleted": "文件流转完成",
+    "workCompleted": "待办已处理",
     "workProcess": "继续流转",
     "close": "关闭",
 
@@ -124,6 +124,11 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentOCRTitle": "纠正自动识别的图片中的文字",
     "attachmentOCR_saved": "图像文字识别结果已保存",
 
+    "attachmentOrderTitle": "附件排序",
+    "attachmentOrderUp": "上移",
+    "attachmentOrderDown": "下移",
+    "attachmentOrderInfo": "拖动附件图标，或通过“下移”、“下移”按钮对附件进行排序",
+
     "autosave": "自动保存文档",
 
     "ignore": "忽略",
@@ -132,10 +137,11 @@ MWF.xApplication.process.Xform.LP = {
     "recover": "恢复正文",
     "notRecover": "取消正文恢复",
 
-    "doublePage": "多页",
+    "doublePage": "双页",
     "singlePage": "单页",
     "editdoc": "编辑正文",
     "editdocCompleted": "编辑完成",
+    "printdoc": "打印正文",
 
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
     "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
@@ -148,6 +154,8 @@ MWF.xApplication.process.Xform.LP = {
     "empowerTo" : "授权给",
     "selectAll" : "全选",
     "computePage": "正在计算分页，请稍候……",
+    "keyLockTitle": "文件编辑已锁定",
+    "keyLockInfor": "文件正由 {name} 编辑处理，您可以查看文件内容，稍后可刷新页面重试。",
 
     "documentEditor": {
         "copies": "",

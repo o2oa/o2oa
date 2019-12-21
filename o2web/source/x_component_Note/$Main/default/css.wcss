@@ -18,7 +18,7 @@
         "overflow": "auto",
         "margin": "5px",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "-webkit-user-select": "text",
         "-moz-user-select": "text",
         "resize": "none",

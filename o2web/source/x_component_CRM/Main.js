@@ -17,59 +17,93 @@ MWF.xApplication.CRM.Main = new Class({
 		"width": "1400",
 		"height": "700",
 		"isResize": true,
-		"isMax": false,
+		"isMax": true,
 		"title": MWF.xApplication.CRM.LP.title
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.CRM.LP;
+		if(!this.inBrowser){
 
+			this.openInNewBrowserX();
+		}else{
+			COMMON.AjaxModule.loadCss( this.path+this.options.style+"/main.css",function(){
+				console.log("main.css,load complete");
+			})
+		}
+	},
+	openInNewBrowserX: function(){
+		this.desktop.openBrowserApp = this.options.name;
+		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
+		var status = (this.desktop.openBrowserStatus) ? JSON.encode(this.desktop.openBrowserStatus) : "";
+
+		var url = "app.html?app="+this.options.name+"&status="+status;
+		window.open(url, "_blank");
+		if (!this.inBrowser)
+			try{
+				this.close();
+			}catch(e){
+				this.taskitem.destroy();
+				this.window = null;
+				this.taskitem = null;
+				this.desktop.closeApp(this);
+				this.fireAppEvent("postClose");
+				o2.release(this);
+			}
+	},
+
+	load: function(isCurrent){
+		this.fireAppEvent("queryLoad");
+		if (!this.inBrowser){
+			this.loadWindow(isCurrent);
+		}else{
+			this.loadInBrowser(isCurrent);
+		}
 	},
 	onPostLoad:function(){
 		this.resizeWindow();
 	},
 	loadApplication: function(callback){
-		//this.maxSize();
-		this.user = layout.desktop.session.user.name;
-		this.userGender = layout.desktop.session.user.genderType;
-		//this.restActions = new MWF.xApplication.CRM.Actions.RestActions();
+		this.maxSize(function () {
+			this.user = layout.desktop.session.user.name;
+			this.userGender = layout.desktop.session.user.genderType;
+			//this.restActions = new MWF.xApplication.CRM.Actions.RestActions();
 
-		this.actions = new MWF.xApplication.CRM.Actions.RestActions();
-		//this.identites = this.getIdentityies();
+			this.actions = new MWF.xApplication.CRM.Actions.RestActions();
+			//this.identites = this.getIdentityies();
 
-		if( !this.container ){
-			this.content.setStyle("overflow", "hidden");
-			this.container = new Element("div.container",{"styles":this.css.container}).inject(this.content)
-		}
-
-
-
-		this.createTopContent();
-		this.createMiddleContent();
-		//this.naviDiv.getElementById("homePage").click()
-		this.resizeWindow();
-		this.addEvent("resize", function(){
-			this.resizeWindow();
-		}.bind(this));
-
-		MWF.xDesktop.requireApp("CRM", "BaiduMap", function(){
-			window.BMap_loadScriptTime = (new Date).getTime();
-			var apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
-			if( !window.BDMapApiLoaded ){
-				COMMON.AjaxModule.loadDom(apiPath, function () {
-					window.BDMapApiLoaded = true;
-					if( !window.BDMarkerToolLoaded ){
-						COMMON.AjaxModule.load( "/x_component_CRM/BDMarkerTool.js", function(){
-							window.BDMarkerToolLoaded = true;
-						});
-					}else{
-
-					}
-				});
+			if( !this.container ){
+				this.content.setStyle("overflow", "hidden");
+				this.container = new Element("div.container",{"styles":this.css.container}).inject(this.content)
 			}
+
+
+
+			this.createTopContent();
+			this.createMiddleContent();
+			//this.resizeWindow();
+			this.addEvent("c", function(){
+				this.resizeWindow();
+			}.bind(this));
+
+			MWF.xDesktop.requireApp("CRM", "BaiduMap", function(){
+				window.BMap_loadScriptTime = (new Date).getTime();
+				var apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
+				if( !window.BDMapApiLoaded ){
+					COMMON.AjaxModule.loadDom(apiPath, function () {
+						window.BDMapApiLoaded = true;
+						if( !window.BDMarkerToolLoaded ){
+							COMMON.AjaxModule.load( "/x_component_CRM/BDMarkerTool.js", function(){
+								window.BDMarkerToolLoaded = true;
+							});
+						}else{
+
+						}
+					});
+				}
+			}.bind(this));
+			if(callback) callback();
 		}.bind(this));
 
-
-		if(callback) callback();
 	},
 	reload:function(){
 		this.createMiddleContent();
@@ -80,7 +114,7 @@ MWF.xApplication.CRM.Main = new Class({
 		if(this.middleContentDiv) this.middleContentDiv.destroy();
 		this.middleContentDiv = new Element("div.middleContentDiv",{"styles":this.css.middleContentDiv}).inject(this.container);
 		this.createLeftContent();
-		this.createRightContent();
+		//this.createRightContent();
 	},
 	////////////////////Top//////////////////////////////////////
 	createTopContent:function(){
@@ -106,7 +140,9 @@ MWF.xApplication.CRM.Main = new Class({
 			"src":this.path+"default/icons/arrow.png"
 		}).inject(topLeftLi);
 	},
-
+	isAdmin: function(){
+		return   MWF.AC.isCMSManager() || MWF.AC.isAdministrator()
+	},
 
 
 
@@ -129,14 +165,8 @@ MWF.xApplication.CRM.Main = new Class({
 			"styles":this.css.quickStartTextDiv,
 			"text":this.lp.main.quickStart
 		}).inject(this.quickStartDiv);
-		this.quickStartDiv.addEvents({
-			"click":function(){
-				//this.openHomePage();
-			}.bind(this)
-		});
 		this.createNavi();
 
-		//this.leftContentDiv.tween("width","600px")
 
 	},
 	createNavi:function(){
@@ -192,7 +222,7 @@ MWF.xApplication.CRM.Main = new Class({
 								}
 							},
 							"click":function(){
-								if(_self.curModule != this.get("action")){
+								//if(_self.curModule != this.get("action")){
 									_self.curModule = this.get("action");
 									var allLi = _self.naviDiv.getElements(".naviItemLi");
 									allLi.setStyles({"color":"#ffffff"});
@@ -204,7 +234,7 @@ MWF.xApplication.CRM.Main = new Class({
 									var tmp = this.getElement("img");
 									if(tmp)	tmp.set("src",_self.path + tmp.get("dfFill"));
 									_self.openModule(this.get("action"))
-								}
+								//}
 
 							}
 						})
@@ -212,6 +242,7 @@ MWF.xApplication.CRM.Main = new Class({
 				}
 			}.bind(this));
 		}.bind(this),false);
+
 		//this.naviDiv.getElementById("homePage").click()
 		this.naviDiv.getElements(".naviItemLi").each(function(d){
 			if(d.get("action") == "homePage"){
@@ -219,6 +250,7 @@ MWF.xApplication.CRM.Main = new Class({
 				d.setStyles({"color":"#ff8e31"});
 				var tmp = d.getElement("img");
 				if(tmp)tmp.set("src",_self.path + tmp.get("dfFill"));
+                _self.openHomePage();
 			}
 		})
 	},
@@ -231,7 +263,9 @@ MWF.xApplication.CRM.Main = new Class({
 			this.openClue();
 		}else if(action == "customer"){
 			this.openCustomer()
-		}else if(action == "contact"){
+		}else if(action == "publicseas"){
+			this.openPublicseas()
+		} else if(action == "contact"){
 			this.openContact()
 		}else if(action == "chance"){
 			this.openChance()
@@ -241,17 +275,31 @@ MWF.xApplication.CRM.Main = new Class({
 	},
 	openHomePage:function(){
 		//首页
-		this.reload();
+		//if(this.rightContentDiv)this.rightContentDiv.empty();
+		if(this.indexModule) delete this.indexModule;
+		MWF.xDesktop.requireApp("CRM","Index",function(){
+			if(this.rightContentDiv) this.rightContentDiv.destroy();
+			this.rightContentDiv = new Element("div.rightContentDiv#rightContentDiv",{"styles":this.css.rightContentDiv}).inject(this.middleContentDiv);
+			this.resizeWindow();
+			this.indexModule = new MWF.xApplication.CRM.Index(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
+			this.indexModule.load();
+		}.bind(this));
 	},
 	openMessage:function(){
 		//信息
+		if(this.rightContentDiv)this.rightContentDiv.empty();
+		if(this.messageModule) delete this.messageModule;
+		MWF.xDesktop.requireApp("CRM", "Message", function(){
+			this.messageModule = new MWF.xApplication.CRM.Message(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
+			this.messageModule.load();
+		}.bind(this))
 	},
 	openClue:function(){
 		//线索
 		if(this.rightContentDiv)this.rightContentDiv.empty();
 		if(this.clueModule) delete this.clueModule;
 		MWF.xDesktop.requireApp("CRM","Clue",function(){
-			this.clueModule = new MWF.xApplication.CRM.Clue(this.rightContentDiv,this,this.actions);
+			this.clueModule = new MWF.xApplication.CRM.Clue(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
 			this.clueModule.load();
 		}.bind(this));
 	},
@@ -260,15 +308,35 @@ MWF.xApplication.CRM.Main = new Class({
 		if(this.rightContentDiv)this.rightContentDiv.empty();
 		if(this.customerModule) delete this.customerModule;
 		MWF.xDesktop.requireApp("CRM", "Customer", function(){
-			this.customerModule = new MWF.xApplication.CRM.Customer(this.rightContentDiv,this,this.actions,{});
+			this.customerModule = new MWF.xApplication.CRM.Customer(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
 			this.customerModule.load();
 		}.bind(this))
 	},
+	openPublicseas:function(){
+		//客户
+		if(this.rightContentDiv)this.rightContentDiv.empty();
+		if(this.publicseasModule) delete this.publicseasModule;
+		MWF.xDesktop.requireApp("CRM", "Publicseas", function(){
+			this.publicseasModule = new MWF.xApplication.CRM.Publicseas(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
+			this.publicseasModule.load();
+		}.bind(this))
+	},
 	openContact:function(){
-
+		if(this.rightContentDiv)this.rightContentDiv.empty();
+		if(this.contactsModule) delete this.contactsModule;
+		MWF.xDesktop.requireApp("CRM", "Contacts", function(){
+			this.contactsModule = new MWF.xApplication.CRM.Contacts(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
+			this.contactsModule.load();
+		}.bind(this))
 	},
 	openChance: function(){
-
+		//商机
+		if(this.rightContentDiv)this.rightContentDiv.empty();
+		if(this.chanceModule) delete this.chanceModule;
+		MWF.xDesktop.requireApp("CRM", "Chance", function(){
+			this.chanceModule = new MWF.xApplication.CRM.Chance(this.rightContentDiv,this,this.actions,{"isAdmin":this.isAdmin()});
+			this.chanceModule.load();
+		}.bind(this))
 	},
 	openStat: function(){
 
@@ -294,8 +362,8 @@ MWF.xApplication.CRM.Main = new Class({
 	//////////////////////////////////////公用方法///////////////////////////////////////////////
 	resizeWindow:function(){
 		var size = this.content.getSize();
-		this.middleContentDiv.setStyles({"height":(size.y-this.topContentDiv.getSize().y)+"px"});
-		var midSize = this.middleContentDiv.getSize();
+		if(this.middleContentDiv) this.middleContentDiv.setStyles({"height":(size.y-this.topContentDiv.getSize().y)+"px"});
+		if(this.middleContentDiv) var midSize = this.middleContentDiv.getSize();
 		if(this.leftContentDiv) this.leftContentDiv.setStyles({"height":midSize.y+"px"});
 		if(this.rightContentDiv) this.rightContentDiv.setStyles({
 			"height":midSize.y+"px",
@@ -303,35 +371,6 @@ MWF.xApplication.CRM.Main = new Class({
 			"margin-left":this.leftContentDiv.getSize().x+"px"
 		})
 	},
-	//getIdentityies : function(){
-	//	var identites = [];
-	//	this.getOrgAction(function(){
-	//		this.orgAction.listIdentityByPerson(function(json){
-	//			json.data.each(function(d){ alert(d)
-	//				identites.push( d.name );
-	//			})
-	//		}.bind(this), null, this.user,false)
-	//	}.bind(this))
-	//	this.restActions.listMyRelief(function(json){
-	//		if( json.data ){
-	//			json.data.each(function(d){
-	//				identites.push( d.leaderIdentity );
-	//			})
-	//		}
-	//	}.bind(this),null, false)
-	//	alert(identites)
-	//	return identites;
-	//},
-	//getOrgAction: function(callback){
-	//	if (!this.orgAction){
-	//		MWF.require("MWF.xAction.org.express.RestActions", function(){
-	//			this.orgAction = new MWF.xAction.org.express.RestActions();
-	//			if (callback) callback();
-	//		}.bind(this),false);
-	//	}else{
-	//		if (callback) callback();
-	//	}
-	//},
 
 	recordStatus: function(){
 		var status;

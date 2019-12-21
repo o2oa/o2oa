@@ -175,7 +175,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
                         accepts.push(".txt");
                         break;
                     case "pic":
-                        accepts.push(".bmp, .gif, .psd, .jpeg, .jpg");
+                        accepts.push(".bmp, .gif, .psd, .jpeg, .jpg, .png");
                         break;
                     case "pdf":
                         accepts.push(".pdf");

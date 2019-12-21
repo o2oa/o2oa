@@ -18,7 +18,6 @@ MWF.xApplication.CRM.Clue = new Class({
         this.lp = this.app.lp.clue;
         this.path = "/x_component_CRM/$Clue/";
         this.loadCss();
-
         this.actions = actions;
         this.node = $(node);
     },
@@ -34,7 +33,7 @@ MWF.xApplication.CRM.Clue = new Class({
 
         this.rightContentDiv = this.app.rightContentDiv;
         this.createHeadContent();
-        this.createToolBarContent();
+        //this.createToolBarContent();
         this.createClueContent();
 
         this.resizeWindow();
@@ -43,18 +42,24 @@ MWF.xApplication.CRM.Clue = new Class({
         }.bind(this));
 
     },
+
     reload:function(){
         this.createClueContent();
         this.resizeWindow();
     },
 
     createHeadContent:function(){
+        /*if(this.openDiv) this.openDiv.destroy();
+        this.openDiv = new Element("div.modal").inject(this.rightContentDiv);
+        this.openDiv.setStyles({"display":"none"});*/
+
         if(this.headContentDiv) this.headContentDiv.destroy();
         this.headContentDiv = new Element("div.headContentDiv",{"styles":this.css.headContentDiv}).inject(this.rightContentDiv);
         this.headTitleDiv = new Element("div.headTitleDiv",{
             "styles":this.css.headTitleDiv,
             "text":this.lp.head.headTitle
         }).inject(this.headContentDiv);
+
         //search
         this.headSearchDiv = new Element("div.headSearchDiv",{"styles":this.css.headSearchDiv}).inject(this.headContentDiv);
         this.headSearchTextDiv = new Element("div.headSearchTextDiv",{"styles":this.css.headSearchTextDiv}).inject(this.headSearchDiv);
@@ -93,8 +98,8 @@ MWF.xApplication.CRM.Clue = new Class({
         }).inject(this.headBottonDiv);
         this.headNewBottonDiv.addEvents({
             "click":function(){
-                MWF.xDesktop.requireApp("CRM", "CustomerEdit", function(){
-                    this.explorer = new MWF.xApplication.CRM.CustomerEdit(this, this.actions,{},{
+                MWF.xDesktop.requireApp("CRM", "ClueEdit", function(){
+                    this.explorer = new MWF.xApplication.CRM.ClueEdit(this, this.actions,{},{
                         "isEdited":true,
                         "isNew":true,
                         "onReloadView" : function(  ){
@@ -127,26 +132,25 @@ MWF.xApplication.CRM.Clue = new Class({
         this.contentListInDiv = new Element("div.contentListInDiv",{"styles":this.css.contentListInDiv}).inject(this.contentListDiv);
 
         var size = this.rightContentDiv.getSize();
-        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px","width":(size.x)+"px"});
-        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px","width":(this.contentListDiv.getWidth())+"px"});
+        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px"});
+        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px","width":"100%"});
 
         if(this.clueView) delete this.clueView;
-        var templateUrl = this.path+"customerView.json";
+        var templateUrl = this.path+"clueView.json";
         var filter = {};
-
         ////this.customerView =  new  MWF.xApplication.CRM.Customer.View(this.contentListInDiv, this.app, {lp : this.app.lp.curtomerView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,filterData:filter} );
-
-        this.customerView =  new  MWF.xApplication.CRM.Clue.View(
+        this.clueView =  new  MWF.xApplication.CRM.Clue.View(
             this.contentListInDiv,
+            this.openDiv,
             this.app,
             this,
             { templateUrl : templateUrl,filterData:filter},
             {
-                lp:this.app.lp.curtomerView
-
+                lp:this.app.lp.clueView,
+                isAdmin:this.options.isAdmin
             }
         );
-        this.customerView.load();
+        this.clueView.load();
         //this.app.setScrollBar(this.contentListInDiv.getElement(".contentTableNode"),this.customerView,"crm");
     },
 
@@ -159,8 +163,8 @@ MWF.xApplication.CRM.Clue = new Class({
             this.headSearchDiv.setStyles({"margin-left":(size.x-rSize.x-lSize.x)/2-(x/2)+"px"});
         }
         //alert(JSON.stringify(size))
-        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px","width":(size.x)+"px"});
-        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px","width":(this.contentListDiv.getWidth())+"px"});
+        if(this.contentListDiv)this.contentListDiv.setStyles({"height":(size.y-this.headContentDiv.getHeight()-8)+"px"});
+        if(this.contentListInDiv)this.contentListInDiv.setStyles({"height":this.contentListDiv.getHeight()+"px"});
     }
 });
 
@@ -172,41 +176,82 @@ MWF.xApplication.CRM.Clue.View = new Class({
         return new MWF.xApplication.CRM.Clue.Document(this.viewNode, data, this.explorer, this);
     },
 
-    _getCurrentPageData: function(callback, count){
+    _getCurrentPageData: function(callback, count, page, searchText,searchType){
         var category = this.category = this.options.category;
-
-        if (!count)count = 20;
+        if (!count)count = 15;
+        if (!page)page = 1;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
 
-        if(id=="(0)")this.app.createShade();
-
         var filter = this.options.filterData || {};
+        /*if(searchText && searchText.trim()!=""){
+            filter = {
+                key:searchText
+            };
+        }*/
+        filter={key: searchText?searchText.trim():"",
+                orderFieldName: "updateTime",
+                orderType: "desc"
+        };
+        debugger
+        if (!searchType)searchType = "全部线索";
+        if(!this.isAdmin){
+            debugger
+            if(searchType=="下属的线索"){
+                this.actions.ListNestedSubPerson(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+            if(searchType=="我负责的线索"){
+                this.actions.ListMyDuty(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+            if(searchType=="已转化的线索"){
+                this.actions.ListTransfer(page, count, filter, function (json) {
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+            if(searchType=="全部线索"){
+                debugger
+                this.actions.ListAllMy(page, count, filter, function (json) {
+                    debugger
+                    if (callback)callback(json);
+                }.bind(this));
+            }
+        }else{
+            this.actions.getClueListPage(page, count, filter, function (json) {
+                if (callback)callback(json);
+            }.bind(this));
+        }
 
-        this.actions.getCustomerListNext(id, count, filter, function (json) {
-            if (callback)callback(json);
-            this.app.destroyShade();
-        }.bind(this));
 
     },
     _create: function(){
 
     },
-    _openDocument: function( documentData ){
-
-        //if(this.customerRead){
-        //    this.customerRead.load(documentData)
-        //}else{
-            MWF.xDesktop.requireApp("CRM", "CustomerRead", function(){
-                this.customerRead = new MWF.xApplication.CRM.CustomerRead(this.explorer.contentListDiv,this.app, this.explorer,this.actions,{
-                    "width":1000
-                } );
-                this.customerRead.load(documentData);
-                this.explorer.formContentArr.push(this.customerRead);
-                this.explorer.formMarkArr.push(this.customerRead.formMaskNode);
-
-            }.bind(this));
-        //}
-
+    _openDocument: function(clueId ,clueName){
+        /*MWF.xDesktop.requireApp("CRM", "ClueEdit", function(){
+            this.explorer = new MWF.xApplication.CRM.ClueEdit(this, this.actions,{},{
+                "clueId":clueId,
+                "onReloadView" : function(  ){
+                    //alert(JSON.stringify(data))
+                    this.reload();
+                }.bind(this)
+            });
+            this.explorer.load();
+        }.bind(this))*/
+        MWF.xDesktop.requireApp("CRM", "ClueOpen", function(){
+            this.explorer = new MWF.xApplication.CRM.ClueOpen(this, this.actions,{},{
+                "clueId":clueId,
+                "clueName":clueName,
+                "openType":"single",
+                "onReloadView" : function(  ){
+                    //alert(JSON.stringify(data))
+                    this.reload();
+                }.bind(this)
+            });
+            this.explorer.load();
+        }.bind(this))
     },
     _queryCreateViewNode: function(){
 
@@ -224,10 +269,11 @@ MWF.xApplication.CRM.Clue.View = new Class({
 });
 
 MWF.xApplication.CRM.Clue.Document = new Class({
-    Extends: MWF.xApplication.CRM.Template.ComplexDocument,
+    /*Extends: MWF.xApplication.CRM.Template.ComplexDocument,
 
     "viewActionReturn":function(){
         return false
-    }
+    }*/
+
 
 });

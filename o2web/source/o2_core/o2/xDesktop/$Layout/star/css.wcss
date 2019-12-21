@@ -115,7 +115,7 @@
 		"width": "80px",
 		"height": "34px",
 		"line-height": "16px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "12px",
 		"float": "right",
 		"text-align": "center",
@@ -161,7 +161,7 @@
 	"mainNaviTextNode": {
 		"height": "20px",
 		"line-height": "20px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"color": "#FFFFFF"
 	},
 	"taskItemNode": {
@@ -214,7 +214,7 @@
         "background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/star/taskbar/close1.png)"
     },
 	"taskItemTextNode": {
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px",
 		//"float": "left",
 		//"margin-left": "30px",
@@ -292,7 +292,7 @@
 		"width": "80px",
 		"height": "30px",
 		"line-height": "15px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px",
 		"color": "#FFF",
 		"text-shadow" : "1px 1px 1px #000",
@@ -449,7 +449,7 @@
 	"applicationMenuTextNode": {
 		"height": "40px",
 		"line-height": "20px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px",
 		"color": "#FFF"
 	},

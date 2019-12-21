@@ -1,0 +1,56 @@
+{
+	"comboxNode": {
+		"min-height": "20px",
+		"line-height": "20px",
+		"border": "1px solid #333333",
+		"margin": "0px",
+		"padding": "2px 5px",
+		"cursor": "text",
+		"overflow": "hidden",
+	},
+	"inputNode": {
+	    "border": "0px",
+	    "display": "block",
+	    "float": "left",
+	    //"background-color": "red",
+	    "padding": "0px",
+	    "margin-right": "10px",
+	    "outline": "none",
+	    "width": "1px"
+	},
+	"valueItemNode": {
+	    "float": "left",
+	    "cursor": "default",
+	    "margin-right": "5px",
+	    "background": "transparent"
+	},
+	"valueItemNode_over": {
+        "background": "#eeeeee",
+        "border-radius":"2px",
+    },
+    "optionListNode": {
+        "font-size": "14px",
+        "border": "1px solid #e2e3e7",
+        "border-radius": "2px",
+        "box-shadow": "0px 0px 6px #e2e3e7",
+        "padding": "0px",
+        "position": "absolute",
+        "background-color": "#ffffff",
+        "z-index": "10000",
+        "max-height": "300px",
+        "overflow": "auto"
+    },
+    "relativeOptionListLocation": {
+        "position": "absolute"
+    },
+    "optionNode": {
+        "padding": "5px 10px",
+        "min-height": "20px",
+        "line-height": "20px",
+        "cursor": "pointer"
+    },
+    "optionNode_selected": {
+        "background-color": "#f1f4f9",
+        "color": "#333333"
+    }
+}

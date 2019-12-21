@@ -1,0 +1,72 @@
+[
+  {
+    "title" : "姓名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "empName",
+    "name" : "empName",
+    "width" : "20%"
+  },
+  {
+    "title" : "日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "defaultSort" : "desc",
+    "sort" : "asc,desc",
+    "item" : "recordDateString",
+    "name" : "recordDateString",
+    "width" : "20%"
+  },
+
+  {
+    "title" : "说明",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function( data ){ if(data.isHoliday){return '节假日'}else if(data.isWeekend){return '周末'}else if(data.isWorkday){return '调休工作日'}else{return '工作日'}  }",
+    "name" : "description",
+    "width" : "20%"
+  },
+
+  {
+    "title" : "上班打卡时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "sort" : "asc,desc",
+    "item" : "onDutyTime",
+    "name" : "onDutyTime",
+    "width" : "15%"
+  },
+  {
+    "title" : "下班打卡时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "sort" : "asc,desc",
+    "item" : "offDutyTime",
+    "name" : "offDutyTime",
+    "width" : "15%"
+  },
+  {
+    "title": "考勤状态",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假或外出报备' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else{ status = '正常' }; return status; }",
+    "name" : "status",
+    "width" : "15%"
+  } //,
+  //  {
+  //    "access" : "admin",
+  //    "title" : "操作",
+  //    "headStyles" : "normalThNode",
+  //    "contentStyles" : "normalTdNode",
+  //    "item" : "actions",
+  //    "name" : "actions",
+  //    "width" : "10%",
+  //    "sub" : [{
+  //      "title" : "删除文件",
+  //      "action" : "remove",
+  //      "styles" : "actionDeleteNode",
+  //      "overStyles" : "actionDeleteNode_over",
+  //      "downStyles" : "actionDeleteNode_down"
+  //    }]
+  //  }
+]

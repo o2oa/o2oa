@@ -44,7 +44,7 @@
 		"z-index": "999",
 		"border-style": "none",
 		"border-width": "0",
-		"background-color": "#a1a1a1"
+		"background-color": "#e1e1e1"
 	},
 	"button": {
 	  "border" : "1px solid #0B82FF",

@@ -110,7 +110,7 @@
 	"height": "20px",
 	"line-height": "20px",
 	"overflow": "hidden",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "18px",
 	"font-weight" : "normal",
 	"float": "left",
@@ -136,7 +136,7 @@
 	"margin": "auto",
 	"font-size": "14px",
 	"color": "#666",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"overflow" : "hidden",
 	"position" : "relative"
   },

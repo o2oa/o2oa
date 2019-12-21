@@ -205,7 +205,7 @@
         "border": "1px solid #cccccc"
 	},
 	"documentSendBodyInputNode": {
-	    "font-family": "'Microsoft YaHei','微软雅黑','SimSun','宋体'",
+	    "font-family": "'Microsoft YaHei','Microsoft YaHei','SimSun','宋体'",
 	    "font-size": "14px",
 	    "color": "#666666",
 	    "height": "300px",

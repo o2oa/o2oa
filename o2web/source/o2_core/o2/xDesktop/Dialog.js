@@ -41,13 +41,19 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 			if (!this.markNode){
 				var size = MWF.getMarkSize(this.options.maskNode);
 				var topNode = this.options.container || $(document.body);
-				this.markNode = new Element("iframe", {
-					styles: this.css.mark
-				}).inject(topNode);
-				this.markNode.set("styles", {
-					"height": size.y,
-					"width": size.x
-				});
+
+                this.markNode = new Element("iframe", {
+                    styles: this.css.mark
+                }).inject(topNode);
+                this.markNode.set("styles", {
+                    "height": size.y,
+                    "width": size.x
+                });
+				if (!this.markNode_up) this.markNode_up = new Element("div", { styles: this.css.mark }).inject(topNode);
+                this.markNode_up.set("styles", {
+                    "height": size.y,
+                    "width": size.x
+                });
 			}
 			this.markNode.setStyle("display", "block");
 		}
@@ -92,8 +98,15 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 	},
     reCenter: function(){
         var size = this.node.getSize();
-        var container = $(document.body);
 
+        if( this.options.positionWidth ){
+            size.x = parseInt(this.options.positionWidth);
+        }
+        if( this.options.positionHeight ){
+            size.y = parseInt(this.options.positionHeight);
+        }
+
+        var container = $(document.body);
         if( this.options.positionNode && this.options.positionNode.getSize().y<$(document.body).getSize().y ){
             container = this.options.positionNode;
         }else if (layout.desktop.currentApp){
@@ -107,7 +120,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         }
 
         var p = o2.getCenter(size, container, container);
-        if (p.y<0) p.y = 0;
+        if (p.y< ( this.options.minTop || 0 ) ) p.y = this.options.minTop || 0;
         this.options.top = p.y;
         this.options.left = p.x;
         this.css.to.top = this.options.top+"px";
@@ -134,11 +147,24 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             (node.getStyle("border-right-width").toInt() || 0 );
     },
     setContentHeightAuto : function(){
-        var maxHeight = this.options.maxHeight || "98%";
-        if( typeOf(maxHeight) === "string" && maxHeight.substr(maxHeight.length - 1, 1) === "%" ) {
+
+        var maxHeightPercent = this.options.maxHeightPercent || "98%";
+        if( typeOf(maxHeightPercent) === "string" && maxHeightPercent.substr(maxHeightPercent.length - 1, 1) === "%" ) {
             var containerHeight = ( this.options.positionNode || this.options.container || $(document.body)).getSize().y;
-            maxHeight = parseInt(containerHeight * parseInt(maxHeight) / 100);
+            maxHeightPercent = parseInt(containerHeight * parseInt(maxHeightPercent) / 100);
         }
+
+        var maxHeight;
+        if( this.options.maxHeight && parseFloat( this.options.maxHeight ).toString() !== "NaN" ){
+            maxHeight = parseFloat( this.options.maxHeight );
+            if( typeOf(maxHeightPercent) === "number" ){
+                maxHeight = Math.min( maxHeight, maxHeightPercent )
+            }
+        }else if( typeOf(maxHeightPercent) === "number" ){
+            maxHeight = maxHeightPercent;
+        }
+
+
 
         var offsetY = 0;
         var y = 0;
@@ -154,7 +180,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         }
 
 
-        if ( y > maxHeight) {
+        if (  typeOf(maxHeight) === "number" && y > maxHeight) {
             this.options.height = maxHeight;
             this.options.contentHeight = null;
             this.options.fromTop = this.options.fromTop.toFloat() - offsetY / 2;

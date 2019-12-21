@@ -32,7 +32,7 @@
     "height": "30px",
     "margin": "0px",
     "line-height" :"30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "color" : "#ddd",
     "padding-left" : "10px"
@@ -46,7 +46,7 @@
     "padding-left" : "30px",
     "height" : "30px",
     "line-height" : "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
     //"text-shadow": "0px 0px 2px #fff"
   },

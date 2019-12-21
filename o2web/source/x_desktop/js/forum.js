@@ -109,10 +109,10 @@ o2.addReady(function(){
                 };
                 layout.load = function(){
 
-                    MWF.require("MWF.xDesktop.MessageMobile", function(){
-                        layout.message = new MWF.xDesktop.MessageMobile();
-                        layout.message.load();
-                    }.bind(this));
+                    // MWF.require("MWF.xDesktop.MessageMobile", function(){
+                    //     layout.message = new MWF.xDesktop.MessageMobile();
+                    //     layout.message.load();
+                    // }.bind(this));
 
                     this.isAuthentication(function(){
 

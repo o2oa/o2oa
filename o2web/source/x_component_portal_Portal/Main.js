@@ -1,15 +1,15 @@
 MWF.xApplication.portal.Portal.options.multitask = true;
 MWF.xApplication.portal.Portal.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "portal.Portal",
-		"icon": "icon.png",
-		"width": "1200",
-		"height": "800",
-		"title": MWF.xApplication.portal.Portal.LP.title,
+    options: {
+        "style": "default",
+        "name": "portal.Portal",
+        "icon": "icon.png",
+        "width": "1200",
+        "height": "800",
+        "title": MWF.xApplication.portal.Portal.LP.title,
         "portalId": "",
         "pageId": "",
         "widgetId" : "",
@@ -17,37 +17,37 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "taskObject": null,
         "parameters": "",
         "readonly": false
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.portal.Portal.LP;
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
             this.options.portalId = this.status.portalId;
             this.options.pageId = this.status.pageId;
             this.options.widgetId = this.status.widgetId;
         }
-	},
-	loadApplication: function(callback){
+    },
+    loadApplication: function(callback){
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
 
         //MWF.require("MWF.widget.Mask", function(){
-            //this.mask = new MWF.widget.Mask({"style": "desktop"});
+        //this.mask = new MWF.widget.Mask({"style": "desktop"});
 
-            this.formNode = new Element("div", {"styles": {"min-height": "100%", "font-size": "14px"}}).inject(this.node);
-            this.action = MWF.Actions.get("x_portal_assemble_surface");
+        this.formNode = new Element("div", {"styles": {"min-height": "100%", "font-size": "14px"}}).inject(this.node);
+        this.action = MWF.Actions.get("x_portal_assemble_surface");
 
-            //MWF.xDesktop.requireApp("portal.Portal", "Actions.RestActions", function(){
-            //    this.action = new MWF.xApplication.portal.Portal.Actions.RestActions();
-                if (!this.options.isRefresh){
-                    this.maxSize(function(){
-                        //this.mask.loadNode(this.content);
-                        this.loadPortal(this.options.parameters, callback);
-                    }.bind(this));
-                }else {
-                    //this.mask.loadNode(this.content);
-                    this.loadPortal(this.options.parameters, callback);
-                }
+        //MWF.xDesktop.requireApp("portal.Portal", "Actions.RestActions", function(){
+        //    this.action = new MWF.xApplication.portal.Portal.Actions.RestActions();
+        if (!this.options.isRefresh){
+            this.maxSize(function(){
+                //this.mask.loadNode(this.content);
+                this.loadPortal(this.options.parameters, callback);
+            }.bind(this));
+        }else {
+            //this.mask.loadNode(this.content);
+            this.loadPortal(this.options.parameters, callback);
+        }
         //if (callback) callback();
-            //}.bind(this));
+        //}.bind(this));
 
         //}.bind(this));
     },
@@ -60,9 +60,10 @@ MWF.xApplication.portal.Portal.Main = new Class({
     //    //this.parseData(data);
     //    this.openPortal();
     //},
-    toPortal: function(portal, page, par){
+    toPortal: function(portal, page, par, nohis){
         this.options.portalId = portal;
         this.options.pageId = page;
+        if (!nohis) this.doHistory(page,this.options.portalId);
 
         if (this.appForm) this.appForm.fireEvent("beforeClose");
         Object.keys(this.$events).each(function(k){
@@ -74,7 +75,17 @@ MWF.xApplication.portal.Portal.Main = new Class({
         this.formNode.empty();
         this.loadPortal(par);
     },
-    toPage: function(name, par){
+    doHistory: function(name, portal){
+        if (this.inBrowser){
+            var stateObj = { "page": name, "id": portal || this.options.portalId };
+            history.pushState(stateObj, "page");
+        }
+    },
+    toPage: function(name, par, nohis){
+        debugger;
+
+        if (!nohis) this.doHistory(name, this.portal.id);
+
         if (name){
             var m = (layout.mobile) ? "getPageByNameMobile" : "getPageByName";
             this.action[m](name, this.portal.id, function(json){

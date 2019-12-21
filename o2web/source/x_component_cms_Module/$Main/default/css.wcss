@@ -217,7 +217,7 @@
 //    "background": "url(/x_component_cms_Module/$Main/default/icon/category.png) no-repeat 20px center",
 //    "background-color" : "#f1f8ff",
 //    "line-height" :"35px",
-//    "font-family": "微软雅黑",
+//    "font-family": "Microsoft YaHei",
 //    "font-size": "14px",
 //    "color" : "#3587d7",
 //    "padding-left" : "40px"
@@ -230,7 +230,7 @@
     "height" : "40px",
     "font-weight" : "normal",
     "line-height" : "40px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "15px",
     "background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 38px 12px",
     "background-color": "#f7f7f7"
@@ -300,7 +300,7 @@
     "padding-left" : "65px",
     "height" : "40px",
     "line-height" : "40px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "15px",
     "background" : "url(/x_component_cms_Module/$Main/default/icon/category_all3.png) no-repeat 38px 12px",
     "background-color": "#f7f7f7"
@@ -323,7 +323,7 @@
     "padding-left" : "65px",
     "height" : "40px",
     "line-height" : "40px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "background-color": "#f7f7f7"
   },

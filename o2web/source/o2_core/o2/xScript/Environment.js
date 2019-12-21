@@ -20,12 +20,17 @@ MWF.xScript.Environment = function(ev){
             var p = {"getKey": function(){return key;}, "getParent": function(){return _self;}};
             while (p && !_forms[p.getKey()]) p = p.getParent();
             if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
-        });
+        }, "", null, _form);
     };
     this.setData = function(data){
         this.data = getJSONData(data);
         this.data.save = function(callback){
-            _form.workAction.saveData(function(){if (callback) callback();}.bind(this), null, (ev.work.id || ev.workCompleted.id), data);
+            _form.saveFormData(callback)
+            // var formData = {
+            //     "data": data,
+            //     "sectionList": _form.getSectionList()
+            // };
+            // _form.workAction.saveSectionData(function(){if (callback) callback();}.bind(this), null, (ev.work.id || ev.workCompleted.id), formData);
         }
     };
     this.setData(_data);
@@ -866,11 +871,12 @@ MWF.xScript.Environment = function(ev){
     //  name : "" // 脚本名称/别名/id
     //}
     //或者name: "" // 脚本名称/别名/id
-    if( !window.includedScripts ){
-        var includedScripts = window.includedScripts = [];
-    }else{
-        var includedScripts = window.includedScripts;
-    }
+    // if( !window.includedScripts ){
+    //     var includedScripts = window.includedScripts = [];
+    // }else{
+    //     var includedScripts = window.includedScripts;
+    // }
+    var includedScripts = [];
     this.include = function( optionsOrName , callback ){
         var options = optionsOrName;
         if( typeOf( options ) == "string" ){
@@ -879,10 +885,15 @@ MWF.xScript.Environment = function(ev){
         var name = options.name;
         var type = ( options.type && options.application ) ?  options.type : "process";
         var application = options.application || _form.json.application;
-        if (includedScripts.indexOf( name )> -1){
+        var key = type +"-" + application + "-"  + name;
+        if (includedScripts.indexOf( key )> -1){
             if (callback) callback.apply(this);
             return;
         }
+        //if (includedScripts.indexOf( name )> -1){
+        //    if (callback) callback.apply(this);
+        //    return;
+        //}
         var scriptAction;
         switch ( type ){
             case "portal" :
@@ -912,6 +923,7 @@ MWF.xScript.Environment = function(ev){
         }
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
+                includedScripts.push( key );
                 includedScripts = includedScripts.concat(json.data.importedList);
                 MWF.Macro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
@@ -1006,9 +1018,29 @@ MWF.xScript.Environment = function(ev){
             }
         },
         "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
-            var p = MWF.getCenter({"x": width, "y": height});
-            e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
-            _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
+            if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
+                var p = MWF.getCenter({"x": width, "y": height});
+                e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
+                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
+            }else{
+                e = (arguments.length>1) ? arguments[1] : null;
+                title = (arguments.length>2) ? arguments[2] : null;
+                text = (arguments.length>3) ? arguments[3] : null;
+                width = (arguments.length>4) ? arguments[4] : null;
+                height = (arguments.length>5) ? arguments[5] : null;
+                ok = (arguments.length>6) ? arguments[6] : null;
+                cancel = (arguments.length>7) ? arguments[7] : null;
+                callback = (arguments.length>8) ? arguments[8] : null;
+                mask = (arguments.length>9) ? arguments[9] : null;
+                style = (arguments.length>10) ? arguments[10] : null;
+
+                // var p = MWF.getCenter({"x": width, "y": height});
+                // e = {"event": {"clientX": p.x,"x": p.x,"clientY": p.y,"y": p.y}};
+                _form.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style);
+            }
+        },
+        "alert": function(type, title, text, width, height){
+            _form.alert(type, title, text, width, height);
         },
         "notice": function(content, type, target, where, offset, option){
             _form.notice(content, type, target, where, offset, option);
@@ -1032,30 +1064,96 @@ MWF.xScript.Environment = function(ev){
             return layout.desktop.openApplication(this.event, "process.Work", op);
         },
         "openJob": function(id, choice, options){
+            var workData = null;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
-                var workData = null;
-                o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
-                    if (json.data) workData = json.data;
-                }.bind(this), null, false);
+                if (json.data) workData = json.data;
+            }.bind(this), null, false);
 
-                if (workData){
-                    var len = workData.workList.length + workData.workCompletedList.length;
-                    if (len){
-                        if (len>1 && choice){
+            if (workData){
+                var len = workData.workList.length + workData.workCompletedList.length;
+                if (len){
+                    if (len>1 && choice){
+                        var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node);
+                        workData.workList.each(function(work){
+                            var workNode = new Element("div", {
+                                "styles": {
+                                    "background": "#ffffff",
+                                    "border-radius": "10px",
+                                    "clear": "both",
+                                    "margin-bottom": "10px",
+                                    "height": "40px",
+                                    "padding": "10px 10px"
+                                }
+                            }).inject(node);
+                            var html = "<div style='height: 40px; width: 40px; float: left; background: url(/x_component_process_Xform/$Form/default/icon/work.png) no-repeat center center'></div>" +
+                                "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>"+o2.LP.widget.open+"</div></div>"+
+                                "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>"+work.title+"</div>" +
+                                "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>"+work.activityName+"</div>" +
+                                "<div style='color:#999999; float: left; margin-right: 10px'>"+work.activityArrivedTime+"</div>" +
+                                "<div style='color:#999999; float: left; margin-right: 10px'>"+(work.manualTaskIdentityText || "")+"</div></div>";
+                            workNode.set("html", html);
+                            var action = workNode.getElement(".MWFAction");
+                            action.store("work", work);
+                            action.addEvent("click", function(e){
+                                var work = e.target.retrieve("work");
+                                if (work) this.openWork(work.id, null, work.title, options);
+                                dlg.close();
+                            }.bind(this));
 
+                        }.bind(this));
+                        workData.workCompletedList.each(function(work){
+                            var workNode = new Element("div", {
+                                "styles": {
+                                    "background": "#ffffff",
+                                    "border-radius": "10px",
+                                    "clear": "both",
+                                    "margin-bottom": "10px",
+                                    "height": "40px",
+                                    "padding": "10px 10px"
+                                }
+                            }).inject(node);
+                            var html = "<div style='height: 40px; width: 40px; float: left; background: url(/x_component_process_Xform/$Form/default/icon/work.png) no-repeat center center'></div>" +
+                                "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>"+o2.LP.widget.open+"</div></div>"+
+                                "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>"+work.title+"</div>" +
+                                "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>"+o2.LP.widget.workcompleted+"</div>" +
+                                "<div style='color:#999999; float: left; margin-right: 10px'>"+work.completedTime+"</div>";
+                            workNode.set("html", html);
+                            var action = workNode.getElement(".MWFAction");
+                            action.store("work", work);
+                            action.addEvent("click", function(e){
+                                var work = e.target.retrieve("work");
+                                if (work) this.openWork(null, work.id, work.title, options);
+                                dlg.close();
+                            }.bind(this));
+
+                        }.bind(this));
+                        var height = node.getSize().y+20;
+                        if (height>600) height = 600;
+
+                        var dlg = o2.DL.open({
+                            "title": o2.LP.widget.choiceWork,
+                            "style" : "user",
+                            "isResize": false,
+                            "content": node,
+                            "buttonList": [
+                                {
+                                    "type" : "cancel",
+                                    "text": o2.LP.widget.close,
+                                    "action": function(){dlg.close();}
+                                }
+                            ]
+                        });
+                    }else{
+                        if (workData.workList.length){
+                            var work =  workData.workList[0];
+                            return this.openWork(work.id, null, work.title, options);
                         }else{
-                            if (workData.workList.length){
-                                var work =  workData.workList[0];
-                                return this.openWork(work.id, null, work.title, options);
-                            }else{
-                                var work =  workData.workCompletedList[0];
-                                return this.openWork(null, work.id, work.title, options);
-                            }
+                            var work =  workData.workCompletedList[0];
+                            return this.openWork(null, work.id, work.title, options);
                         }
                     }
                 }
-            }.bind(this));
-
+            }
             // var op = options || {};
             // op.workId = id;
             // op.workCompletedId = completedId;
@@ -1173,8 +1271,8 @@ MWF.xScript.Environment = function(ev){
 
             if (target){
                 if (layout.app && layout.app.inBrowser){
-                    layout.app.content.empty();
-                    layout.app = null;
+                    //layout.app.content.empty();
+                    layout.app.$openWithSelf = true;
                 }
             }
             var action = MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(process, app, function(json){
@@ -1270,9 +1368,9 @@ MWF.xScript.createTable = function(){
         };
     }
 };
-MWF.xScript.JSONData = function(data, callback, key, parent){
+MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
-        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self);};
+        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
     };
     var setter = function(data, callback, k, _self){
         return function(v){
@@ -1292,6 +1390,20 @@ MWF.xScript.JSONData = function(data, callback, key, parent){
             "getKey": {"value": function(){ return key; }},
             "getParent": {"value": function(){ return parent; }},
             "toString": {"value": function() { return data.toString();}},
+            "setSection": {"value": function(newKey, newValue){
+                    this.add(newKey, newValue, true);
+                    try {
+                        var path = [this.getKey()];
+                        p = this.getParent();
+                        while (p && p.getKey()){
+                            path.unshift(p.getKey());
+                            p = p.getParent();
+                        }
+                        if (path.length) _form.sectionListObj[path.join(".")] = newKey;
+                    }catch(e){
+                        debugger;
+                    }
+                }},
             "add": {"value": function(newKey, newValue, overwrite){
                 var flag = true;
                 var type = typeOf(data);

@@ -52,7 +52,7 @@
 	},
 	"startMenuTextNode": {
 		"text-align": "center",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px"
 	},
 	"normalStartMenuNode": {

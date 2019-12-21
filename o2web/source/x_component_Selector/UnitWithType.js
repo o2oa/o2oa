@@ -117,6 +117,9 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
     _getShowName: function(){
         return this.data.name;
     },
+    _getTtiteText: function(){
+        return this.data.levelName || this.data.name;
+    },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
     },

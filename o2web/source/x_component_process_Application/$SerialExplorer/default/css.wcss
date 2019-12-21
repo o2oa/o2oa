@@ -27,7 +27,7 @@
         "line-height": "80px",
         "color": "#FFF",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "margin-left": "5px"
 	},
@@ -50,7 +50,7 @@
         "color": "#666666",
         "font-weight": "bold",
         "line-height": "40px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px"
     },
 	"processAreaHeadNode": {
@@ -88,7 +88,7 @@
         "overflow": "hidden",
         "color": "#666666",
         //"line-height": "39px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "12px"
     },
     "workItemWorkNode_remove": {

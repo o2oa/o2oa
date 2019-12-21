@@ -1,0 +1,51 @@
+{
+  "viewHeadSetting": {
+    "html": "<table border='1' cellpadding='0' cellspacing='0' styles='headTable' id='headTable'></table>"
+  },
+  "viewSetting": {
+    "html": "<table  styles='contentTable' id='contentTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over"
+  },
+  "sortField":"level",
+  "sortType":'desc',
+  "items":[],
+  "field":[{
+    "field":"id",
+    "title":"",
+    "width":50,
+    "resize": true,
+    "align": 'left',
+    "formatter" :function (v, data, index) {return '<span class="checkbox" sid="'+v+'"></span>';}
+  },{
+    "field":"customername",
+    "title":"客户名称",
+    "width":150,
+    "resize": true,
+    "align": 'left'
+  },{
+      "field":"nexttime",
+      "title":"下次联系时间",
+      "width":150,
+      "align": 'left',
+      "resize":true
+  },{
+      "field":"updateTime",
+      "title":"最后跟进时间",
+      "width":150,
+      "resize": true,
+      "align": 'left'
+    },{
+      "field":"createTime",
+      "title":"创建时间",
+      "minWidth":150,
+      "resize":true,
+      "align": 'left'
+    }
+  ]
+}

@@ -33,11 +33,16 @@ MWF.xApplication.Template.Selector.Custom = new Class({
             }.bind(this))
         }else{
             this.options.selectableItems.each(function (item, index) {
+                if( item.isItem ){
+                    var item = this._newItem(item, this, this.itemAreaNode);
+                    this.items.push(item);
+                }
                 if(item.subItemList && item.subItemList.length>0){
                     var category = this._newItemCategory(item, this, this.itemAreaNode);
                     item.subItemList.each(function (subItem, index) {
-                        var item = this._newItem(subItem, this, category.children);
+                        var item = this._newItem(subItem, this, category.children, 2, category);
                         this.items.push(item);
+                        category.subItems.push(item);
                     }.bind(this));
                 }
             }.bind(this));
@@ -71,8 +76,8 @@ MWF.xApplication.Template.Selector.Custom = new Class({
             this.initSearchArea(false);
         }
     },
-    _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level);
+    _newItem: function(data, selector, container, level, category){
+        return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category);
     },
     createItemsSearchData: function(callback){
         if (!this.itemsSearchData){
@@ -145,6 +150,9 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
     },
+    _getTtiteText: function(){
+        return this.data.name;
+    },
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
@@ -169,9 +177,16 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         this.node = new Element("div", {
             "styles": this.selector.css.selectorItemCategory_department
         }).inject(this.container);
+        this.loaded = true;
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+    },
+    _getTtiteText: function(){
+        return this.data.name;
+    },
+    _hasChildItem : function(){
+        return this._hasChild();
     },
     _hasChild: function(){
         return (this.data.subItemList && this.data.subItemList.length);

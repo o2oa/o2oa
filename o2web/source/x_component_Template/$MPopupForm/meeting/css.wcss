@@ -117,7 +117,7 @@
     "margin": "auto",
     "font-size": "14px",
     "color": "#666",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "overflow" : "hidden",
     "position" : "relative"
   },

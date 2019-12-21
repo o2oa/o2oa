@@ -15,6 +15,8 @@ var MSelector = new Class({
         "isCreateReadNode" : true, //适应给MDomitem的做法
         "emptyOptionEnable" : true,
         "containerIsTarget" : false,
+        "tooltipWhenNoSelectValue" : false,
+        "hasScrollBar" : true,
 
         "textField" : "",
         "valueField" : "",
@@ -244,6 +246,38 @@ var MSelector = new Class({
                     if( this.inputNode ){
                         this.inputNode.focus();
                     }
+
+                    var parent = this.node.getParent();
+                    var zIndex;
+                    while( parent ){
+                        zIndex = parent.getStyle("z-index");
+                        if( zIndex && parseFloat(zIndex).toString() !== "NaN" ){
+                            parent = null;
+                        }else{
+                            parent = parent.getParent();
+                        }
+                    }
+                    if( zIndex && parseFloat(zIndex).toString() !== "NaN" ){
+                        this.contentTooltip.node.setStyle("z-index", parseFloat( zIndex )+1)
+                    }else{
+                        this.contentTooltip.node.setStyle("z-index", "auto")
+                    }
+
+                    parent = this.node.getParent();
+                    while( parent ){
+                        var overflow = parent.getStyle("overflow");
+                        var overflowY = parent.getStyle("overflow-y");
+                        if(  overflow === "auto" || overflow === "scroll" || overflowY === "auto" || overflowY === "scroll" ){
+                            this.scrollFun = function( e ){
+                                this.contentTooltip.setPosition();
+                            }.bind(this);
+                            this.scrollParentNode = parent;
+                            parent.addEvent( "scroll", this.scrollFun );
+                            parent = null;
+                        }else{
+                            parent = parent.getParent();
+                        }
+                    }
                 }.bind(this),
                 onPostInitialize : function(){
                     if(this.options.trigger == "immediately" ){
@@ -253,6 +287,10 @@ var MSelector = new Class({
                 onHide : function(){
                     this.status = "hidden";
                     if(this.selectArrowNode) this.selectArrowNode.setStyles( this.css.selectArrowNode );
+                    //this.node.setStyles(this.css.selectNode);
+                    if( this.scrollParentNode && this.scrollFun ){
+                        this.scrollParentNode.removeEvent("scroll", this.scrollFun);
+                    }
                 }.bind(this)
             }, this.options.tooltipsOptions );
             this.contentTooltip = new MSelector.Tootips( this.dropdownContainer || this.app.content, this.node, this.app, data, options );
@@ -419,7 +457,11 @@ var MSelector = new Class({
             }else{
                 if( this.options.isSetSelectedValue && this.selectValueNode ){
                     var d = this._getData( value );
-                    this.selectValueNode.set("text", d[ this.textField ] );
+                    if( d ) {
+                        this.selectValueNode.set("text", d[this.textField]);
+                    }else{
+                        this.selectValueNode.set("text", value || "");
+                    }
                     this.value = value;
                 }
             }
@@ -533,7 +575,36 @@ MSelector.Tootips = new Class({
         //    "width": width,
         //    "max-width": width
         //});
-        this.createItemList( this.data, contentNode )
+        debugger;
+        if( this.data && this.data.length > 0 ){
+            this.createItemList( this.data, contentNode )
+        }else if( this.selector.options.tooltipWhenNoSelectValue ){
+            this.createNoSelectValueNode( contentNode );
+        }
+    },
+    createNoSelectValueNode:function( node ){
+        var _selector = this.selector;
+        this.css = _selector.css;
+
+        if(_selector.selectArrowNode)_selector.selectArrowNode.setStyles( this.css.selectArrowNode_up );
+
+        _selector.listContentNode = new Element("div.listContentNode",{
+            "styles":this.css.listContentNode
+        }).inject( node );
+
+        _selector.listNode = new Element("div.listNode",{
+            "styles":this.css.listNode
+        }).inject(_selector.listContentNode);
+
+        var noTooltipNode = new Element("div.listItemNode",{
+            "styles":this.css.listItemNode,
+            "text" : _selector.options.tooltipWhenNoSelectValue
+        }).inject(_selector.listNode);
+
+        noTooltipNode.setStyles({
+            "height":_selector.options.height,
+            "line-height":_selector.options.height
+        });
     },
     createItemList:function(data, node){
         data = data || [];
@@ -553,7 +624,7 @@ MSelector.Tootips = new Class({
         _selector.listNode = new Element("div.listNode",{
             "styles":this.css.listNode
         }).inject(_selector.listContentNode);
-        _selector.setScrollBar(_selector.listNode);
+        if( _selector.options.hasScrollBar )_selector.setScrollBar(_selector.listNode);
 
         data.each(function(d){
             this.createItem( d );
@@ -578,6 +649,9 @@ MSelector.Tootips = new Class({
         if(data)listItemNode.store("data",data);
 
         listItemNode.addEvents({
+            "mousedown" : function(ev){
+                ev.stopPropagation();
+            },
             "click":function(ev){
                 var _self = this.obj;
                 var data = this.itemNode.retrieve( "data" );

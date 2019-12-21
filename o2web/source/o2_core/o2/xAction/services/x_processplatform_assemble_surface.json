@@ -10,6 +10,7 @@
   "listWorkNextManage": {"uri": "/jaxrs/work/list/{id}/next/{count}/application/{applicationId}/manage"},
   "listWorkPrevManage": {"uri": "/jaxrs/work/list/{id}/prev/{count}/application/{applicationId}/manage"},
   "listProcessCountManage": {"uri": "/jaxrs/work/list/count/application/{applicationId}/process/manage"},
+  "listProcessManage": {"uri": "/jaxrs/work/list/count/application/{applicationId}/process/manage"},
 
   "listWorkCreator": {"uri": "/jaxrs/work/list/{id}/next/{count}/creator/current"},
   "listWorkCreatorFilter": {"uri": "/jaxrs/work/list/{id}/next/{count}/creator/current/filter", "method": "POST"},
@@ -201,6 +202,7 @@
   "getWorkcompletedData": {"uri": "/jaxrs/data/workcompleted/{id}", "method": "GET"},
 
   "saveData": {"uri": "/jaxrs/data/work/{id}", "method": "PUT"},
+  "saveSectionData": {"uri": "/jaxrs/data/section/work/{id}", "method": "PUT"},
   "saveWorkCompletedData": {"uri": "/jaxrs/data/workcompleted/{id}", "method": "PUT"},
 
   "getJobByWorkCompleted": {"uri": "/jaxrs/workcompleted/{id}/complex"},

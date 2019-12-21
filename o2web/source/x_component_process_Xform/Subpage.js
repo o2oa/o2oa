@@ -150,7 +150,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
     },
     getSubpageData: function(data){
         var subpageDataStr = null;
-        if (this.form.options.mode !== "Mobile"){
+        if (this.form.json.mode !== "Mobile" && !layout.mobile){
             subpageDataStr = data.data;
         }else{
             subpageDataStr = data.mobileData;

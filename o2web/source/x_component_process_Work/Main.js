@@ -28,7 +28,10 @@ MWF.xApplication.process.Work.Main = new Class({
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
     loadWorkApplication: function(callback, mask){
-        if (mask) this.mask = new MWF.widget.Mask({"style": "desktop"});
+	    debugger;
+        var maskStyle = (Browser.name=="firefox") ? "work_firefox" : "desktop";
+        //alert(maskStyle);
+        if (mask) this.mask = new MWF.widget.Mask({"style": maskStyle, "loading": false});
         this.formNode = new Element("div", {"styles": this.css.formNode}).inject(this.node);
         if (!this.options.isRefresh){
             this.maxSize(function(){
@@ -48,7 +51,7 @@ MWF.xApplication.process.Work.Main = new Class({
             this.loadWorkApplication(callback, false)
         }else{
             MWF.require("MWF.widget.Mask", function(){
-                this.loadWorkApplication(callback, true)
+                this.loadWorkApplication(callback, false)
             }.bind(this));
         }
 
@@ -102,6 +105,26 @@ MWF.xApplication.process.Work.Main = new Class({
         //     "getForm": false
         // };
         if (id){
+
+            // o2.Actions.invokeAsync2([
+            //     {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm", "par": [id], "cache": true},
+            //     {"action": this.action, "name": "loadWork", "par": [id]},
+            //     {"action": this.action, "name": "getWorkControl", "par": [id]},
+            //     {"action": this.action, "name": "getWorkLog", "par": [id]},
+            //     {"action": this.action, "name": "listAttachments", "par": [id]}
+            // ], {
+            //     "success": function(json_form, json_work, json_control, json_log, json_att){
+            //         if (json_work && json_control && json_form && json_log && json_att){
+            //             this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
+            //
+            //             //if (layout.mobile) this.loadMobileActions();
+            //             this.openWork();
+            //         } else{
+            //             this.close();
+            //         }
+            //     }.bind(this), "failure": function(){}
+            // });
+
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
                 {"action": this.action, "name": "loadWork"},
@@ -118,7 +141,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     this.close();
                 }
             }.bind(this), "failure": function(){}}, id);
-            //}.bind(this), "failure": function(){}}, [id, true, true, true], id);
+           // }.bind(this), "failure": function(){}}, [id, true, true, true], id);
         }
     },
     parseData: function(workData, controlData, formData, logData, attData){
@@ -314,6 +337,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
                     "data": this.data,
+                    "originalData" : Object.clone( this.data ),
                     "taskList": this.taskList,
                     "readList": this.readList,
                     "work": this.work,
@@ -333,6 +357,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.appForm.workAction = this.action;
                 this.appForm.app = this;
                 this.appForm.load(function(){
+                    if (this.mask) this.mask.hide();
                     if (window.o2android && window.o2android.appFormLoaded){
                         layout.appForm = this.appForm;
                         window.o2android.appFormLoaded(JSON.stringify(this.appForm.mobileTools));

@@ -25,8 +25,8 @@ MWF.xApplication.MinderEditor.FontFamily = new Class({
             name: '宋体',
             val: '宋体,SimSun'
         }, {
-            name: '微软雅黑',
-            val: '微软雅黑,Microsoft YaHei'
+            name: 'Microsoft YaHei',
+            val: 'Microsoft YaHei,Microsoft YaHei'
         }, {
             name: '楷体',
             val: '楷体,楷体_GB2312,SimKai'

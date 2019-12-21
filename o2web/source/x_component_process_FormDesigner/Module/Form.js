@@ -163,14 +163,26 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         }
 		if( this.json.confirmStyle )delete this.json.confirmStyle;
 		if( this.json.dialogStyle )delete this.json.dialogStyle;
+		if( this.json.attachmentStyle )delete this.json.attachmentStyle;
+		if( this.json.hideModuleIcon )delete this.json.hideModuleIcon;
+		if( this.json.nodeStyleWithhideModuleIcon )delete this.json.nodeStyleWithhideModuleIcon;
+		if( this.json.confirmIcon )delete this.json.confirmIcon;
+		if( this.json.submitedDlgUseNotice )delete this.json.submitedDlgUseNotice;
+		if( this.json.submitedDlgStyle )delete this.json.submitedDlgStyle;
 		if( this.json.selectorStyle )delete this.json.selectorStyle;
+		if( this.json.errorStyle )delete this.json.errorStyle;
+		if( this.json.noticeStyle )delete this.json.noticeStyle;
+		if( this.json.noticeErrorStyle )delete this.json.noticeErrorStyle;
+		if( this.json.noticeSuccessStyle )delete this.json.noticeSuccessStyle;
+		if( this.json.noticeOkStyle )delete this.json.noticeOkStyle;
+		if( this.json.noticeNoticeStyle )delete this.json.noticeNoticeStyle;
     },
     setTemplateStyles: function(styles){
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
-		if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
-		if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;
-		if( styles.selectorStyle )this.json.selectorStyle = styles.selectorStyle;
+		//if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
+		//if( styles.dialogStyle )this.json.dialogStyle = styles.dialogStyle;
+		//if( styles.selectorStyle )this.json.selectorStyle = styles.selectorStyle;
     },
 
 	loadTemplateStyles : function( file, extendFile, callback ){
@@ -735,7 +747,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             subNode = nextNode;
         }
     },
-	_getFormData: function(){
+	_getFormData: function(callback){
 
     	this.fireEvent("queryGetFormData");
 		var copy = this.node.clone(true, true);
@@ -747,8 +759,26 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		//this._clearNoDomModule();
 		copy.destroy();
 
-        this.data.json.mode = this.options.mode;
+		this.data.json.mode = this.options.mode;
 		this.data.html = html;
+
+		//@todo 预先整理表单样式
+		// var tmpFormNode = new Element("div", {
+		// 	"opacity": 0
+		// }).inject(this.designer.content);
+		// MWF.xDesktop.requireApp("process.Xform2", "Form_", null, false);
+		// this.appForm = new MWF.APPForm_(tmpFormNode, this.data, {
+		// 	"onAfterLoad": function(){
+		// 		var preprocessHtml = tmpFormNode.get("html");
+		// 		this.data.preprocessHtml = preprocessHtml;
+		//
+		// 		if (callback) callback();
+		// 	}.bind(this)
+		// });
+		// this.appForm.businessData = {};
+		// this.appForm.load();
+
+
 		return this.data;
 	},
 	_clearNoDomModule : function(){

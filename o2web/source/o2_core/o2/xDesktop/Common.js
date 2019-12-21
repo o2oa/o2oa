@@ -255,7 +255,9 @@ MWF.xDesktop.getCMSFileUr = function(id, app){
 MWF.xDesktop.getServiceAddress = function(config, callback){
     var error = function(){
         //MWF.xDesktop.notice("error", {"x": "right", "y": "top"}, "")
-        $("browser_loadding").getFirst().empty();
+        var loadingNode = $("browser_loadding");
+        var contentNode = $("appContent");
+        ((loadingNode) ? loadingNode.getFirst() : contentNode).empty();
         var html= "<div style='width: 800px; color: #ffffff; margin: 30px auto'>" +
             "<div style='height: 40px;'>" +
             "   <div style='height: 40px; width: 40px; float: left; background: url(/x_desktop/img/error.png)'></div>" +
@@ -276,8 +278,12 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
         }
         html+="</div><br><div style='margin-left: 50px; font-size: 20px'>"+MWF.LP.desktop.notice.errorConnectCenter2+"</div></div>";
 
-        $("browser_loadding").getFirst().set("html", html);
+        ((loadingNode) ? loadingNode.getFirst() : contentNode).set("html", html);
+        if (!loadingNode && contentNode){
+            contentNode.setStyle("background-color", "#666666");
+        }
     };
+    debugger;
     if (typeOf(config.center)==="object"){
         MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
     }else if (typeOf(config.center)==="array"){
@@ -424,33 +430,36 @@ MWF.org = {
             "name": data.name,
             "unique": data.unique,
             "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName,
+            // "dn": data.distinguishedName,
             "person": data.person,
             "unit": data.unit,
             "unitName": data.unitName,
-            "unitLevel": data.unitLevel,
+            // "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
-        var woPerson = data.woPerson;
-        if (!data.woPerson){
-            //MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-            //this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control");
-            //var uri = "/jaxrs/person/{flag}";
-            //uri = uri.replace("{flag}", data.person);
-
-            //this.action.invoke({"uri": uri, "success": function(json){
-            //    woPerson = json.data;
-            //}.bind(this), "async":false});
-            MWF.Actions.get("x_organization_assemble_control").getPerson(data.person, function(json){
-                woPerson = json.data
-            }, null, false);
+        if( data.ignoreEmpower ){
+            rData.ignoreEmpower = true;
         }
-        rData.personName = woPerson.name;
-        rData.personEmployee = woPerson.employee;
-        rData.personUnique = woPerson.unique;
-        rData.personDn = woPerson.distinguishedName;
-
         if (!flat){
+            var woPerson = data.woPerson;
+            if (!data.woPerson){
+                //MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+                //this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control");
+                //var uri = "/jaxrs/person/{flag}";
+                //uri = uri.replace("{flag}", data.person);
+
+                //this.action.invoke({"uri": uri, "success": function(json){
+                //    woPerson = json.data;
+                //}.bind(this), "async":false});
+                MWF.Actions.get("x_organization_assemble_control").getPerson(data.person, function(json){
+                    woPerson = json.data
+                }, null, false);
+            }
+            rData.personName = woPerson.name;
+            rData.personEmployee = woPerson.employee;
+            rData.personUnique = woPerson.unique;
+            rData.personDn = woPerson.distinguishedName;
+
             rData.woPerson = {
                 "id": woPerson.id,
                 "genderType": woPerson.genderType,

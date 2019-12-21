@@ -18,7 +18,11 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
         value.each(function(v){
-            text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+            if( typeOf(v) === "string" ){ //������������
+                text.push(v);
+            }else{
+                text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+            }
         }.bind(this));
         return {"value": value || "", "text": [text.join(",")]};
     },
@@ -618,7 +622,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 var data = null;
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") data = v;
                 if (data){
@@ -630,7 +634,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
@@ -661,6 +665,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
 
         if (this.json.isInput){
             if (this.combox){
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
             }else{
                 var node = this.node.getFirst();
@@ -780,6 +785,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (this.json.isInput){
 
             if (this.combox){
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
 
                 // values.each(function(v){

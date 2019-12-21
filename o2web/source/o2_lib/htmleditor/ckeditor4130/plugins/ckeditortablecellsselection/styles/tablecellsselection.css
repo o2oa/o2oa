@@ -1,0 +1,28 @@
+.tcs::selection{
+	background-color: transparent;
+}
+.tcs td:not(.tcs-selection-enabled) > *,
+.tcs th:not(.tcs-selection-enabled) > *,
+.tcs td:not(.tcs-selection-enabled),
+.tcs th:not(.tcs-selection-enabled){
+	-webkit-user-select: none !important;
+	-khtml-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+}
+.tcs tr::selection,
+.tcs td:not(.tcs-selection-enabled) > *::selection,
+.tcs th:not(.tcs-selection-enabled) > *::selection,
+.tcs td:not(.tcs-selection-enabled)::selection,
+.tcs th:not(.tcs-selection-enabled)::selection,
+.tcs br::selection{
+	background-color: transparent;
+}
+.tcs tr::-moz-selection, .tcs td:not(.tcs-selection-enabled)::-moz-selection, .tcs th:not(.tcs-selection-enabled)::-moz-selection{
+	background-color: transparent;
+}
+.tcs .tcs-selected:not(.sel-from){
+	border: 1px double #4887C7;
+	background-color: rgba(51, 122, 183, 0.2) !important;
+}

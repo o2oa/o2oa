@@ -151,6 +151,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
     show: function(){
         if (this.subformData){
             this.subformModule = new MWF.FCSubform.Form(this.form, this.node, {
+                mode : this.form.options.mode,
                 parentformIdList : this.getParentformIdList(),
                 level : this.getLevel()
             });
@@ -482,6 +483,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
         //this.subformData.json.id = this.json.id;
 
         this.subformModule = new MWF.FCSubform.Form(this.form, this.node, {
+            mode : this.form.options.mode,
             parentformIdList : this.getParentformIdList(),
             level : this.getLevel()
         });
@@ -551,7 +553,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform.Form = new Class({
         //this.node.setProperties(this.json.properties);
         //this.setNodeEvents();
         if (this.options.mode==="Mobile"){
-            if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
+            //if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
         }
     },
     loadDomModules: function(){

@@ -1432,6 +1432,73 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             //     }.bind(this));
             // }
 
+            // @todo 预先整理表单样式
+            // var loadedPcForm = !this.pcForm;
+            // var loadedMobileForm = !this.mobileForm;
+            // var checkLoad = function(){
+            //     if (loadedPcForm && loadedMobileForm){
+            //         this.isSave = true;
+            //         var fieldList = this.getFieldList();
+            //         this.actions.saveForm(pcData, mobileData, fieldList, function(responseJSON){
+            //             this.notice(MWF.APPFD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
+            //             if (!this.pcForm.json.name) this.pcForm.treeNode.setText("<"+this.json.type+"> "+this.json.id);
+            //             this.pcForm.treeNode.setTitle(this.pcForm.json.id);
+            //             this.pcForm.node.set("id", this.pcForm.json.id);
+            //
+            //             if (this.mobileForm){
+            //                 if (!this.mobileForm.json.name) this.mobileForm.treeNode.setText("<"+this.mobileForm.json.type+"> "+this.mobileForm.json.id);
+            //                 this.mobileForm.treeNode.setTitle(this.mobileForm.json.id);
+            //                 this.mobileForm.node.set("id", this.mobileForm.json.id+"_"+this.options.mode);
+            //             }
+            //
+            //             var name = this.pcForm.json.name;
+            //             if (this.pcForm.data.isNewForm) this.setTitle(this.options.appTitle + "-"+name);
+            //             this.pcForm.data.isNewForm = false;
+            //             if (this.mobileForm) this.mobileForm.data.isNewForm = false;
+            //
+            //             this.options.desktopReload = true;
+            //             this.options.id = this.pcForm.json.id;
+            //
+            //             if (this.pcForm) this.pcForm.fireEvent("postSave");
+            //             if (this.mobileForm) this.mobileForm.fireEvent("postSave");
+            //
+            //             this.isSave = false;
+            //
+            //         }.bind(this), function(xhr, text, error){
+            //             this.isSave = false;
+            //
+            //             if (this.pcForm) this.pcForm.fireEvent("postSaveError");
+            //             if (this.mobileForm) this.mobileForm.fireEvent("postSaveError");
+            //
+            //             var errorText = error+":"+text;
+            //             if (xhr) errorText = xhr.responseText;
+            //             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+            //         }.bind(this));
+            //     }
+            // }.bind(this);
+            //
+            //
+            // var pcData, mobileData;
+            // if (this.pcForm){
+            //     this.pcForm._getFormData(function(){
+            //         pcData = this.pcForm.data;
+            //         loadedPcForm = true;
+            //         checkLoad();
+            //     });
+            // }
+            // if (this.mobileForm){
+            //     this.mobileForm._getFormData(function(){
+            //         mobileData = this.mobileForm.data;
+            //         loadedMobileForm = true;
+            //         checkLoad();
+            //     });
+            // }else{
+            //     if (this.formMobileData) mobileData = this.formMobileData;
+            //     loadedMobileForm = true;
+            //     checkLoad();
+            // }
+
+
             var pcData, mobileData;
             if (this.pcForm){
                 this.pcForm._getFormData();

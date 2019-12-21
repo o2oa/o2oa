@@ -1,0 +1,18 @@
+[
+  {
+    "title": "标记定位",
+    "text" : "点击后移到地图相应位置",
+    "id": "1.1",
+    "action": "createDocument",
+    "icon": "create.png",
+    "expand": false,
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }, {
+    "styles" : "toolbarSep"
+  },{
+  "id": "wpContent",
+  "styles" : "toolbarContent"
+  }
+]

@@ -52,6 +52,26 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         //     this.loadMobile();
         // }
     },
+    reloadAttachments: function(){
+        if (this.options.size==="min"){
+            this.minContent.empty();
+            var atts = this.attachments;
+            this.attachments = [];
+            while (atts.length){
+                var att = atts.shift();
+                this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(att.data, this));
+            }
+        }else{
+            this.content.empty();
+            var atts = this.attachments;
+            this.attachments = [];
+            while (atts.length){
+                var att = atts.shift();
+                this.attachments.push(new o2.widget.AttachmentController.Attachment(att.data, this));
+            }
+        }
+        this.checkActions();
+    },
 	loadMax: function(){
         if (!this.node) this.node = new Element("div", {"styles": this.css.container});
 
@@ -186,9 +206,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 this.deleteAttachment(e, node);
             }.bind(this));
 
-            this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", o2.LP.widget.replace, function (e, node) {
-                this.replaceAttachment(e, node);
-            }.bind(this));
+            if( !this.options.isReplaceHidden ){
+                this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", o2.LP.widget.replace, function (e, node) {
+                    this.replaceAttachment(e, node);
+                }.bind(this));
+            }
         }
         if (!hiddenGroup.contains("read")) {
             this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", o2.LP.widget.download, function (e, node) {
@@ -344,9 +366,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.deleteAttachment(e, node);
         }.bind(this));
 
-        this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function(e, node){
-            this.replaceAttachment(e, node);
-        }.bind(this));
+        if( !this.options.isReplaceHidden ){
+            this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function(e, node){
+                this.replaceAttachment(e, node);
+            }.bind(this));
+        }
 
         // this.officeAction = this.createAction(this.editActionsGroupNode, "office", o2.LP.widget.office, function(e, node){
         //     this.openInOfficeControl(e, node);
@@ -449,7 +473,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     //    }else{
             this.checkUploadAction();
             this.checkDeleteAction();
+
             this.checkReplaceAction();
+
             //this.checkOfficeAction();
             this.checkDownloadAction();
             this.checkSizeAction();
@@ -513,6 +539,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     //     if (this.min_officeAction) this.min_officeAction.setStyle("display", "none");
     // },
     checkReplaceAction: function(){
+        if( this.options.isReplaceHidden )return;
         if (this.options.readonly){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
@@ -892,15 +919,15 @@ debugger;
                                     "subject": o2.LP.widget.refuseUpload,
                                     "content": "<div>名为：<font style='color:#0000ff'>“"+file.name+"”</font>的附件不符合允许上传类型，<font style='color:#ff0000'>已经被剔除</font></div>"
                                 };
-                                layout.desktop.message.addTooltip(msg);
-                                layout.desktop.message.addMessage(msg);
+                                if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
+                                if (layout.desktop.message) layout.desktop.message.addMessage(msg);
                             }else if (size && file.size> size*1024*1024){
                                 var msg = {
                                     "subject": o2.LP.widget.refuseUpload,
                                     "content": "<div>名为：<font style='color:#0000ff'>“"+file.name+"”</font>的附件超出允许的大小，<font style='color:#ff0000'>已经被剔除</font>（仅允许上传小于"+size+"M的文件）</div>"
                                 };
-                                layout.desktop.message.addTooltip(msg);
-                                layout.desktop.message.addMessage(msg);
+                                if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
+                                if (layout.desktop.message) layout.desktop.message.addMessage(msg);
                             }else{
                                 var formData = new FormData();
                                 Object.each(obj, function(v, k){
@@ -1605,6 +1632,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         }
         this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
         this.textSizeNode.set("text", "（"+size+"）");
+
+        this.node.set("title",this.data.name + "（"+size+"）");
 
     },
     loadSequence: function(){

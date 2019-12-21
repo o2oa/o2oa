@@ -31,28 +31,214 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.load();
 	},
     load: function(){
-        this.routeSelectorTile = new Element("div", {"styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute}).inject(this.node);
-        this.routeSelectorArea = new Element("div", {"styles": this.css.routeSelectorArea}).inject(this.node);
 
         this.routeOpinionTile = new Element("div", {"styles": this.css.routeOpinionTile, "text": MWF.xApplication.process.Work.LP.inputOpinion}).inject(this.node);
         this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.node);
         this.setOpinion();
 
-        this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
-        this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
+        if( layout.mobile ){
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+            this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
+            this.orgsArea.hide()
+        }else{
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+            this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
+        }
 
         this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.node);
         this.setButtons();
 
-        this.setRouteList();
+        if( layout.mobile ){
+            this.routeSelectorTile = new Element("div", {"styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute}).inject(this.routeOpinionTile, "before");
+            this.routeSelectorArea = new Element("div", {"styles": this.css.routeSelectorArea}).inject(this.routeSelectorTile, "after");
+            this.setRouteList();
+        }else{
+            this.getRouteGroupList();
+            if( this.hasDecisionOpinion ){
+                //if( this.getMaxOrgLength() > 1 ){
+                    this.routeContainer = new Element("div", {
+                        "styles" : this.css.routeContainer
+                    }).inject(this.routeOpinionTile, "before");
+
+                    this.routeLeftWarper =  new Element("div", { "styles":
+                        this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
+                    }).inject(this.routeContainer);
+                    this.routeGroupTitle = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRouteGroup }).inject(this.routeLeftWarper);
+                    this.routeGroupArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeLeftWarper);
+
+                    this.routeRightWarper =  new Element("div", { "styles":
+                        this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
+                    }).inject(this.routeContainer);
+                    this.routeSelectorTile = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute }).inject(this.routeRightWarper);
+                    this.routeSelectorArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeRightWarper);
+                    this.setRouteGroupList();
+                //}else{
+                //    this.routeGroupTile = new Element("div", {"styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute }).inject(this.routeOpinionTile, "before");
+                //    this.routeGroupArea = new Element("div", {"styles": this.css.routeSelectorArea_hasGroup_wide }).inject(this.routeGroupTile, "after");
+                //    this.setRouteGroupList();
+                //}
+            }else{
+                this.routeSelectorTile = new Element("div", {"styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute}).inject(this.routeOpinionTile, "before");
+                this.routeSelectorArea = new Element("div", {"styles": this.css.routeSelectorArea}).inject(this.routeSelectorTile, "after");
+                this.setRouteList();
+            }
+        }
 
         this.fireEvent("postLoad");
     },
-
-    setRouteList: function(){
-        var _self = this;
-        //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
+    getRouteGroupList : function(){
+        if( this.routeGroupObject )return this.routeGroupObject;
+        this.routeGroupObject = {};
+        this.routeGroupNameList = [];
+        this.hasDecisionOpinion = false;
         var routeList = this.getRouteDataList();
+        routeList.each(function(route, i){
+
+            if( route.hiddenScriptText ){ //如果隐藏路由，返回
+                if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
+            }
+
+            if( route.displayNameScriptText ){ //如果有显示名称公式
+                route.displayName = this.form.Macro.exec(route.displayNameScriptText, this);
+            }else{
+                route.displayName = route.name;
+            }
+
+            if( route.decisionOpinion ){
+                this.hasDecisionOpinion = true;
+                var decisionOpinionList = route.decisionOpinion.split("#");
+                decisionOpinionList.each( function( decisionOption ){
+                    this.routeGroupNameList.combine( [decisionOption] );
+                    var d = this.splitByStartNumber( decisionOption );
+                    if( !this.routeGroupObject[ d.name ] )this.routeGroupObject[ d.name ] = [];
+                    this.routeGroupObject[ d.name ].push( route );
+                }.bind(this))
+            }else{
+                var defaultName =  MWF.xApplication.process.Work.LP.defaultDecisionOpinionName;
+                this.routeGroupNameList.combine( [defaultName] );
+                if( !this.routeGroupObject[ defaultName ] )this.routeGroupObject[ defaultName ] = [];
+                this.routeGroupObject[ defaultName].push( route );
+            }
+        }.bind(this));
+        return this.routeGroupObject;
+    },
+    splitByStartNumber : function( str ){
+        var obj = {
+            name : "",
+            order : ""
+        };
+        for( var i=0; i<str.length; i++ ){
+            if( parseInt(str.substr(i,1)).toString() !== "NaN" ){
+                obj.order = obj.order + str.substr(i,1);
+            }else{
+                obj.name = str.substr( i, str.length );
+                break;
+            }
+        }
+        return obj;
+    },
+    setRouteGroupList : function(){
+        var _self = this;
+        //var keys = Object.keys( this.routeGroupObject );
+        //var length = keys.length;
+        //var sortArray = MWF.xApplication.process.Work.LP.routeGroupOrderList;
+        //keys.sort( function( a, b ){
+        //    var aIdx = sortArray.indexOf(a);
+        //    var bIdx = sortArray.indexOf(b);
+        //    if( aIdx === -1 )aIdx = sortArray.length;
+        //    if( bIdx === -1 )aIdx = sortArray.length;
+        //    return aIdx - bIdx;
+        //});
+
+        var keys = this.routeGroupNameList;
+        keys.sort( function( a, b ){
+            var aIdx = parseInt(this.splitByStartNumber( a ).order || "9999999");
+            var bIdx = parseInt(this.splitByStartNumber( b ).order || "9999999");
+            return aIdx - bIdx;
+        }.bind(this));
+
+        var list = [];
+        keys.each( function( k ){
+            list.push( this.splitByStartNumber( k).name )
+        }.bind(this))
+
+        list.each( function( routeGroupName ){
+            var routeList = this.routeGroupObject[routeGroupName];
+            var routeGroupNode = new Element("div", {"styles": this.css.routeGroupNode, "text": routeGroupName}).inject(this.routeGroupArea);
+            routeGroupNode.store( "routeList", routeList );
+            routeGroupNode.store( "routeGroupName", routeGroupName );
+
+            routeGroupNode.addEvents({
+                "mouseover": function(e){_self.overRouteGroup(this);},
+                "mouseout": function(e){_self.outRouteGroup(this);},
+                "click": function(e){_self.selectRouteGroup(this);}
+            });
+
+            if ( length === 1 ){
+                this.selectRouteGroup(routeGroupNode);
+            }else{
+                this.setSize(0);
+            }
+        }.bind(this))
+    },
+    overRouteGroup: function(node){
+        if (this.selectedRouteGroup){
+            if (this.selectedRouteGroup.get("text") != node.get("text")){
+                node.setStyles(this.css.routeGroupNode_over);
+            }
+        }else{
+            node.setStyles(this.css.routeGroupNode_over);
+        }
+    },
+    outRouteGroup: function(node){
+        if (this.selectedRouteGroup){
+            if (this.selectedRouteGroup.get("text") != node.get("text")){
+                node.setStyles(this.css.routeGroupNode);
+            }
+        }else{
+            node.setStyles(this.css.routeGroupNode);
+        }
+    },
+    selectRouteGroup: function(node){
+        if (this.selectedRouteGroup){
+            if (this.selectedRouteGroup.get("text") != node.get("text")){
+                this.selectedRouteGroup.setStyles(this.css.routeGroupNode);
+
+                this.selectedRouteGroup = node;
+                this.selectedRouteGroup.setStyles(this.css.routeGroupNode_selected);
+
+                var routeList = this.selectedRouteGroup.retrieve("routeList");
+                this.setRouteList( routeList );
+
+            }else{
+                //this.selectedRouteGroup.setStyles(this.css.routeNode);
+                //this.selectedRouteGroup.getFirst().setStyles(this.css.routeIconNode);
+                //this.selectedRouteGroup.getLast().setStyles(this.css.routeTextNode);
+                //
+                //this.selectedRouteGroup = null;
+            }
+        }else{
+            this.selectedRouteGroup = node;
+            node.setStyles(this.css.routeGroupNode_selected);
+
+            var routeList = this.selectedRouteGroup.retrieve("routeList");
+            this.setRouteList( routeList );
+        }
+        this.routeGroupArea.setStyle("background-color", "#FFF");
+    },
+
+    setRouteList: function( routeList ){
+        var _self = this;
+        //if( this.hasDecisionOpinion && this.getMaxOrgLength() === 1 ){
+        //    if( this.routeSelectorArea )this.routeSelectorArea.destroy();
+        //    this.routeSelectorArea = new Element("div", { styles : this.css.routeSelectorArea_hasGroup_single }).inject( this.selectedRouteGroup, "after" );
+        //}else{
+            this.routeSelectorArea.empty();
+        //}
+        this.selectedRoute = null;
+
+        //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
+         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
         routeList.each(function(route, i){
             if( route.hiddenScriptText ){
@@ -62,10 +248,10 @@ MWF.xApplication.process.Work.Processor = new Class({
             if( route.displayNameScriptText ){
                 routeName = this.form.Macro.exec(route.displayNameScriptText, this);
             }
-            var routeNode = new Element("div", {"styles": this.css.routeNode}).inject(this.routeSelectorArea);
-            var routeIconNode = new Element("div", {"styles": this.css.routeIconNode}).inject(routeNode);
-            var routeTextNode = new Element("div", {"styles": this.css.routeTextNode, "text": routeName}).inject(routeNode);
-            routeNode.store( "route", this.task.routeList[i] );
+            var routeNode = new Element("div", {"styles": this.css.routeNode, "text": routeName}).inject(this.routeSelectorArea);
+            //var routeIconNode = new Element("div", {"styles": this.css.routeIconNode}).inject(routeNode);
+            //var routeTextNode = new Element("div", {"styles": this.css.routeTextNode, "text": routeName}).inject(routeNode);
+            routeNode.store( "route", route.id );
             routeNode.store( "routeName", route.name );
 
             routeNode.addEvents({
@@ -85,10 +271,11 @@ MWF.xApplication.process.Work.Processor = new Class({
     overRoute: function(node){
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
-                node.setStyle("background-color", "#f7e1d0");
+                node.setStyles(this.css.routeNode_over);
+                //node.setStyle("background-color", "#f7e1d0");
             }
         }else{
-            node.setStyle("background-color", "#f7e1d0");
+            node.setStyles(this.css.routeNode_over);
         }
     },
     outRoute: function(node){
@@ -104,29 +291,41 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 this.selectedRoute.setStyles(this.css.routeNode);
-                this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
-                this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
+                //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
+                //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
                 this.selectedRoute = node;
-                node.setStyle("background-color", "#da7429");
-                node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
-                node.getLast().setStyle("color", "#FFF");
+                node.setStyles(this.css.routeNode_selected);
+                //node.setStyle("background-color", "#da7429");
+                //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
+                //node.getLast().setStyle("color", "#FFF");
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
-                this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
-                this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
+                //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
+                //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
                 this.selectedRoute = null;
             }
         }else{
             this.selectedRoute = node;
-            node.setStyle("background-color", "#da7429");
-            node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
-            node.getLast().setStyle("color", "#FFF");
+            node.setStyles(this.css.routeNode_selected);
+            //node.setStyle("background-color", "#da7429");
+            //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
+            //node.getLast().setStyle("color", "#FFF");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
-        this.loadOrgs( this.selectedRoute ? this.selectedRoute.retrieve("route") : "" );
+        if( layout.mobile ){
+            this.loadOrgs_mobile( this.selectedRoute ? this.selectedRoute.retrieve("route") : "" );
+        }else{
+            this.loadOrgs( this.selectedRoute ? this.selectedRoute.retrieve("route") : "" );
+        }
+
+        //临时添加
+        if(this.form.data.json.events.afterSelectRoute){
+            this.form.Macro.exec(this.form.data.json.events.afterSelectRoute.code, node);
+        }
+
     },
 
     setOpinion: function(){
@@ -346,156 +545,332 @@ MWF.xApplication.process.Work.Processor = new Class({
         }.bind(this));
 
         this.okButton.addEvent("click", function( ev ){
-            if (!this.selectedRoute) {
-                this.routeSelectorArea.setStyle("background-color", "#ffe9e9");
-                //new mBox.Notice({
-                //    type: "error",
-                //    position: {"x": "center", "y": "top"},
-                //    move: false,
-                //    target: this.routeSelectorArea,
-                //    delayClose: 6000,
-                //    content: MWF.xApplication.process.Work.LP.mustSelectRoute
-                //});
-                MWF.xDesktop.notice(
-                    "error",
-                    {"x": "center", "y": "top"},
-                    MWF.xApplication.process.Work.LP.mustSelectRoute,
-                    this.routeSelectorArea,
-                    null,  //{"x": 0, "y": 30}
-                    { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
-                );
+            if( layout.mobile ){
+                this.submit_mobile(ev)
+            }else{
+                this.submit_pc(ev)
+            }
+        }.bind(this));
+    },
+    submit_mobile : function(ev){
+        if (!this.selectedRoute) {
+            this.routeSelectorArea.setStyle("background-color", "#ffe9e9");
+            new mBox.Notice({
+                type: "error",
+                position: {"x": "center", "y": "top"},
+                move: false,
+                target: this.routeSelectorArea,
+                delayClose: 6000,
+                content: MWF.xApplication.process.Work.LP.mustSelectRoute
+            });
+            return false;
+        }
+        var routeName = this.selectedRoute.retrieve("routeName") || this.selectedRoute.get("text");
+        var opinion = this.inputTextarea.get("value");
+        if (opinion === MWF.xApplication.process.Work.LP.inputText) opinion = "";
+        var medias = [];
+        if (this.handwritingFile) medias.push(this.handwritingFile);
+        if (this.soundFile) medias.push(this.soundFile);
+        if (this.videoFile) medias.push(this.videoFile);
+
+        var currentRouteId = this.selectedRoute.retrieve("route");
+        var routeData = this.getRouteData( currentRouteId );
+        if( !opinion && medias.length === 0  ){
+            if( routeData.opinionRequired == true ){
+                this.inputTextarea.setStyle("background-color", "#ffe9e9");
+                new mBox.Notice({
+                    type: "error",
+                    position: {"x": "center", "y": "top"},
+                    move: false,
+                    target: this.inputTextarea,
+                    delayClose: 6000,
+                    content: MWF.xApplication.process.Work.LP.opinionRequired
+                });
                 return false;
             }
-debugger;
-            var routeName = this.selectedRoute.retrieve("routeName") || this.selectedRoute.get("text");
-            var opinion = this.inputTextarea.get("value");
-            if (opinion === MWF.xApplication.process.Work.LP.inputText) opinion = "";
-            var medias = [];
-            if (this.handwritingFile) medias.push(this.handwritingFile);
-            if (this.soundFile) medias.push(this.soundFile);
-            if (this.videoFile) medias.push(this.videoFile);
+        }
 
-            var currentRouteId = this.selectedRoute.retrieve("route");
-            var routeData = this.getRouteData( currentRouteId );
-            if( !opinion && medias.length === 0  ){
-                if( routeData.opinionRequired == true ){
-                    this.inputTextarea.setStyle("background-color", "#ffe9e9");
-                    //new mBox.Notice({
-                    //    type: "error",
-                    //    position: {"x": "center", "y": "top"},
-                    //    move: false,
-                    //    target: this.inputTextarea,
-                    //    delayClose: 6000,
-                    //    content: MWF.xApplication.process.Work.LP.opinionRequired
-                    //});
+        if( routeData.validationScriptText ){
+            var validation = this.form.Macro.exec(routeData.validationScriptText, this);
+            if( !validation || validation.toString() !== "true" ){
+                if( typeOf(validation) === "string" ){
+                    new mBox.Notice({
+                        type: "error",
+                        position: {"x": "center", "y": "top"},
+                        move: false,
+                        target: this.node,
+                        delayClose: 6000,
+                        content: validation
+                    });
+                    return false;
+                }else{
+                    //"路由校验失败"
+                    new mBox.Notice({
+                        type: "error",
+                        position: {"x": "center", "y": "top"},
+                        move: false,
+                        target: this.node,
+                        delayClose: 6000,
+                        content: MWF.xApplication.process.Work.LP.routeValidFailure
+                    });
+                    return false;
+                }
+            }
+        }
+
+        //var array = [routeName, opinion, medias];
+        //this.node.mask({
+        //    "inject": {"where": "bottom", "target": this.node},
+        //    "destroyOnHide": true,
+        //    "style": {
+        //        "background-color": "#999",
+        //        "opacity": 0.3,
+        //        "z-index":600
+        //    }
+        //});
+        //this.fireEvent("submit", array );
+
+        var appendTaskOrgItem;
+        if( routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select" ){
+            if( !this.orgItems || this.orgItems.length === 0 ){
+                new mBox.Notice({
+                    type: "error",
+                    position: {"x": "center", "y": "top"},
+                    move: false,
+                    target: this.orgsArea,
+                    delayClose: 6000,
+                    content: MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig //"没有配置转交人，请联系管理员"
+                });
+                return false;
+            }else{
+                appendTaskOrgItem = this.orgItems[0]
+            }
+        }
+
+        if( !this.saveOrgs() )return false;
+
+        //this.saveOrgsWithCheckEmpower( function(){
+        var array = [routeName, opinion, medias];
+
+        if( appendTaskOrgItem ){
+            var appandTaskIdentityList = appendTaskOrgItem.getData();
+            if( !appandTaskIdentityList || appandTaskIdentityList.length === 0){
+                new mBox.Notice({
+                    type: "error",
+                    position: {"x": "center", "y": "top"},
+                    move: false,
+                    target: this.orgsArea,
+                    delayClose: 6000,
+                    content:  MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice //"请选择转交人"
+                });
+                return;
+            }else{
+                array.push( appendTaskOrgItem.getData() );
+                appendTaskOrgItem.setData([]);
+            }
+        }
+
+        if( routeData.validationScriptText ){
+            var validation = this.form.Macro.exec(routeData.validationScriptText, this);
+            if( !validation || validation.toString() !== "true" ){
+                if( typeOf(validation) === "string" ){
                     MWF.xDesktop.notice(
                         "error",
-                        {"x": "center", "y": "top"},
-                        MWF.xApplication.process.Work.LP.opinionRequired,
-                        this.inputTextarea,
-                        null,  //{"x": 0, "y": 30}
+                        {"x": "center", "y": "center"},
+                        validation,
+                        this.node,
+                        {"x": 0, "y": 30},
+                        { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+                    );
+                    return false;
+                }else{
+                    //"路由校验失败"
+                    MWF.xDesktop.notice(
+                        "error",
+                        {"x": "center", "y": "center"},
+                        MWF.xApplication.process.Work.LP.routeValidFailure,
+                        this.node,
+                        {"x": 0, "y": 30},
                         { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
                     );
                     return false;
                 }
             }
+        }
 
-            var appendTaskOrgItem = "";
-            if( routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select" ){
-                if( !this.orgItems || this.orgItems.length === 0 ){
+        this.node.mask({
+            "inject": {"where": "bottom", "target": this.node},
+            "destroyOnHide": true,
+            "style": {
+                "background-color": "#999",
+                "opacity": 0.3,
+                "z-index":600
+            }
+        });
+        this.fireEvent("submit", array );
+        //}.bind(this))
+    },
+    submit_pc : function(ev){
+        if (this.hasDecisionOpinion && !this.selectedRouteGroup) {
+            this.routeGroupArea.setStyle("background-color", "#ffe9e9");
+            MWF.xDesktop.notice(
+                "error",
+                {"x": "center", "y": "top"},
+                MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
+                this.routeGroupArea,
+                null,  //{"x": 0, "y": 30}
+                { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+            );
+            return false;
+        }
+
+        if (!this.selectedRoute) {
+            this.routeSelectorArea.setStyle("background-color", "#ffe9e9");
+            //new mBox.Notice({
+            //    type: "error",
+            //    position: {"x": "center", "y": "top"},
+            //    move: false,
+            //    target: this.routeSelectorArea,
+            //    delayClose: 6000,
+            //    content: MWF.xApplication.process.Work.LP.mustSelectRoute
+            //});
+            MWF.xDesktop.notice(
+                "error",
+                {"x": "center", "y": "top"},
+                MWF.xApplication.process.Work.LP.mustSelectRoute,
+                this.routeSelectorArea,
+                null,  //{"x": 0, "y": 30}
+                { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+            );
+            return false;
+        }
+        var routeName = this.selectedRoute.retrieve("routeName") || this.selectedRoute.get("text");
+        var opinion = this.inputTextarea.get("value");
+        if (opinion === MWF.xApplication.process.Work.LP.inputText) opinion = "";
+        var medias = [];
+        if (this.handwritingFile) medias.push(this.handwritingFile);
+        if (this.soundFile) medias.push(this.soundFile);
+        if (this.videoFile) medias.push(this.videoFile);
+
+        var currentRouteId = this.selectedRoute.retrieve("route");
+        var routeData = this.getRouteData( currentRouteId );
+        if( !opinion && medias.length === 0  ){
+            if( routeData.opinionRequired == true ){
+                this.inputTextarea.setStyle("background-color", "#ffe9e9");
+                //new mBox.Notice({
+                //    type: "error",
+                //    position: {"x": "center", "y": "top"},
+                //    move: false,
+                //    target: this.inputTextarea,
+                //    delayClose: 6000,
+                //    content: MWF.xApplication.process.Work.LP.opinionRequired
+                //});
+                MWF.xDesktop.notice(
+                    "error",
+                    {"x": "center", "y": "top"},
+                    MWF.xApplication.process.Work.LP.opinionRequired,
+                    this.inputTextarea,
+                    null,  //{"x": 0, "y": 30}
+                    { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+                );
+                return false;
+            }
+        }
+
+        var appendTaskOrgItem = "";
+        if( routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select" ){
+            if( !this.orgItems || this.orgItems.length === 0 ){
+                //new mBox.Notice({
+                //    type: "error",
+                //    position: {"x": "center", "y": "top"},
+                //    move: false,
+                //    target: this.orgsArea,
+                //    delayClose: 6000,
+                //    content: MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig //"没有配置转交人，请联系管理员"
+                //});
+                MWF.xDesktop.notice(
+                    "error",
+                    {"x": "center", "y": "center"},
+                    MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
+                    this.node,
+                    null,  //{"x": 0, "y": 30}
+                    { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+                );
+                return false;
+            }else{
+                appendTaskOrgItem = this.orgItems[0]
+            }
+        }
+
+
+        this.saveOrgsWithCheckEmpower( function(){
+            var array = [routeName, opinion, medias];
+
+            if( appendTaskOrgItem ){
+                var appandTaskIdentityList = appendTaskOrgItem.getData();
+                if( !appandTaskIdentityList || appandTaskIdentityList.length === 0){
                     //new mBox.Notice({
                     //    type: "error",
                     //    position: {"x": "center", "y": "top"},
                     //    move: false,
                     //    target: this.orgsArea,
                     //    delayClose: 6000,
-                    //    content: MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig //"没有配置转交人，请联系管理员"
+                    //    content:  MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice //"请选择转交人"
                     //});
                     MWF.xDesktop.notice(
                         "error",
                         {"x": "center", "y": "center"},
-                        MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
+                        MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice,
                         this.node,
-                        null,  //{"x": 0, "y": 30}
+                        {"x": 0, "y": 30},
                         { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
                     );
-                    return false;
+                    return;
                 }else{
-                    appendTaskOrgItem = this.orgItems[0]
+                    array.push( appendTaskOrgItem.getData() );
+                    appendTaskOrgItem.setData([]);
                 }
             }
 
-
-            this.saveOrgsWithCheckEmpower( function(){
-                var array = [routeName, opinion, medias];
-
-                if( appendTaskOrgItem ){
-                    var appandTaskIdentityList = appendTaskOrgItem.getData();
-                    if( !appandTaskIdentityList || appandTaskIdentityList.length === 0){
-                        //new mBox.Notice({
-                        //    type: "error",
-                        //    position: {"x": "center", "y": "top"},
-                        //    move: false,
-                        //    target: this.orgsArea,
-                        //    delayClose: 6000,
-                        //    content:  MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice //"请选择转交人"
-                        //});
+            if( routeData.validationScriptText ){
+                var validation = this.form.Macro.exec(routeData.validationScriptText, this);
+                if( !validation || validation.toString() !== "true" ){
+                    if( typeOf(validation) === "string" ){
                         MWF.xDesktop.notice(
                             "error",
                             {"x": "center", "y": "center"},
-                            MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice,
+                            validation,
                             this.node,
                             {"x": 0, "y": 30},
                             { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
                         );
-                        return;
+                        return false;
                     }else{
-                        array.push( appendTaskOrgItem.getData() );
-                        appendTaskOrgItem.setData([]);
+                        //"路由校验失败"
+                        MWF.xDesktop.notice(
+                            "error",
+                            {"x": "center", "y": "center"},
+                            MWF.xApplication.process.Work.LP.routeValidFailure,
+                            this.node,
+                            {"x": 0, "y": 30},
+                            { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
+                        );
+                        return false;
                     }
                 }
+            }
 
-                debugger;
-                if( routeData.validationScriptText ){
-                    var validation = this.form.Macro.exec(routeData.validationScriptText, this);
-                    if( !validation || validation.toString() !== "true" ){
-                        if( typeOf(validation) === "string" ){
-                            MWF.xDesktop.notice(
-                                "error",
-                                {"x": "center", "y": "center"},
-                                validation,
-                                this.node,
-                                {"x": 0, "y": 30},
-                                { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
-                            );
-                            return false;
-                        }else{
-                            //"路由校验失败"
-                            MWF.xDesktop.notice(
-                                "error",
-                                {"x": "center", "y": "center"},
-                                MWF.xApplication.process.Work.LP.routeValidFailure,
-                                this.node,
-                                {"x": 0, "y": 30},
-                                { "closeOnBoxClick" : true, "closeOnBodyClick" : true, "fixed" : true, "delayClose" : 6000 }
-                            );
-                            return false;
-                        }
-                    }
+            this.node.mask({
+                "inject": {"where": "bottom", "target": this.node},
+                "destroyOnHide": true,
+                "style": {
+                    "background-color": "#999",
+                    "opacity": 0.3,
+                    "z-index":600
                 }
-
-                this.node.mask({
-                    "inject": {"where": "bottom", "target": this.node},
-                    "destroyOnHide": true,
-                    "style": {
-                        "background-color": "#999",
-                        "opacity": 0.3,
-                        "z-index":600
-                    }
-                });
-                this.fireEvent("submit", array );
-            }.bind(this))
-        }.bind(this));
+            });
+            this.fireEvent("submit", array );
+        }.bind(this))
     },
 
 
@@ -536,8 +911,11 @@ debugger;
         var routeList = this.getRouteDataList();
         var length = 0;
         routeList.each( function(route){
+            if( route.hiddenScriptText ){ //如果隐藏路由，返回
+                if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
+            }
             length = Math.max( length, route.selectConfigList.length);
-        });
+        }.bind(this));
         return length;
     },
     getOrgData : function( routeId ){
@@ -547,6 +925,94 @@ debugger;
                 return routeList[i].selectConfigList;
             }
         }
+    },
+    loadOrgs_mobile : function( route ){
+        if( !this.form || !route ){
+            this.orgsArea.hide();
+            return;
+        }else{
+            this.orgsArea.show();
+        }
+        if( !this.orgTableObject )this.orgTableObject = {};
+        if( !this.orgItemsObject )this.orgItemsObject = {};
+        var isLoaded = false;
+        for( var key in this.orgTableObject ){
+            if( route === key ){
+                this.orgTableObject[key].show();
+                this.orgItems = this.orgItemsObject[key] || [];
+                var data = this.getOrgData( route );
+                isLoaded = true;
+            }else{
+                this.orgTableObject[key].hide();
+            }
+        }
+        if( isLoaded )return;
+
+        this.orgItems = [];
+        this.orgItemsObject[route] = this.orgItems;
+
+        var data = this.getOrgData( route );
+        if( data.length  ){
+            this.orgsArea.show();
+
+            var routeOrgTable = new Element("div",{
+                "styles" : this.css.routeOrgTable
+            }).inject( this.orgsArea );
+            this.orgTableObject[route] = routeOrgTable;
+
+            data.each( function( config, i ){
+                var sNode = new Element("div",{
+                    "styles" : this.css.routeOrgTr
+                }).inject( routeOrgTable );
+                this.loadOrg_mobile( sNode, config )
+            }.bind(this))
+        }else{
+            this.orgsArea.hide();
+        }
+    },
+    loadOrg_mobile : function( container, json ){
+        var titleNode = new Element("div.selectorTitle", {
+            "styles" : this.css.selectorTitle
+        }).inject(container);
+        var titleTextNode = new Element("div.selectorTitleText", {
+            "text": json.title,
+            "styles" : this.css.selectorTitleText
+        }).inject(titleNode);
+
+        var contentNode = new Element("div.selectorContent", {
+            "styles" : this.css.selectorContent
+        }).inject(container);
+
+        var errorNode = new Element("div.selectorErrorNode", {
+            "styles" : this.css.selectorErrorNode
+        }).inject(container);
+
+        var org = new MWF.xApplication.process.Work.Processor.Org( contentNode, this.form, json, this, {
+            onSelect : function(items, data){
+                if( !data || !data.length ){
+                    contentNode.setStyles( this.css.selectorContent_noItem );
+                }else{
+                    contentNode.setStyles( this.css.selectorContent );
+                }
+            }.bind(this)
+        });
+        org.errContainer = errorNode;
+        org.summitDlalog = this;
+        this.orgItems.push( org );
+
+        titleNode.addEvent("click", function(){
+            this.load();
+        }.bind(org));
+        contentNode.addEvent("click", function(){
+            this.load();
+        }.bind(org));
+
+        var defaultValue = org.getValue();
+        org.loadOrgWidget( defaultValue, contentNode );
+        if( !defaultValue || defaultValue.length == 0){{
+            contentNode.setStyles( this.css.selectorContent_noItem );
+        }}
+
     },
     loadOrgs : function( route ){
         if( !this.form || !route ){
@@ -674,6 +1140,25 @@ debugger;
             }
         }.bind(this))
         return selectorList;
+    },
+    getCurrentRouteOrgList : function(){
+        var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
+        var orgList = this.orgItemsObject[currentRoute];
+        return orgList || [];
+    },
+    getSelectorSelectedData : function( filedName ){
+        var data = [];
+        var orgList = this.getCurrentRouteOrgList();
+        for( var i=0; i<orgList.length; i++ ){
+            var org = orgList[i];
+            if( org.json.name === filedName ){
+                var selector = org.selector.selector;
+                selector.selectedItems.each( function(item){
+                    data.push( item.data )
+                })
+            }
+        }
+        return data;
     },
     getOffsetY : function(node){
         return (node.getStyle("margin-top").toInt() || 0 ) +
@@ -969,17 +1454,22 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         //    groupOpt.exclude = exclude;
         //}
 
-        var defaultOpt = {
-            "style" : "process",
-            "width" : "auto",
-            "height" : "240",
-            "embedded" : true,
-            "hasLetter" : false, //字母
-            "hasTop" : true, //可选、已选的标题
-            "hasShuttle" : true //穿梭按钮
-        };
-
-        debugger;
+        var defaultOpt;
+        if( layout.mobile ){
+            defaultOpt = {
+                "style" : "default",
+                "zIndex" : 3000
+            };
+        }else{
+            defaultOpt = {
+                "style" : "process",
+                "width" : "auto",
+                "height" : "240",
+                "embedded" : true,
+                "hasLetter" : false, //字母
+                "hasTop" : true //可选、已选的标题
+            };
+        }
 
         if( this.json.events && typeOf(this.json.events) === "object" ){
             Object.each(this.json.events, function(e, key){
@@ -1011,19 +1501,32 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
             if( this.form.json.selectorStyle.style )defaultOpt.style = this.form.json.selectorStyle.style;
         }
 
+        var mobileEvents = {
+            "onComplete": function(items){
+                this.selectOnComplete(items);
+            }.bind(this),
+            "onCancel": this.selectOnCancel.bind(this),
+            "onClose": this.selectOnClose.bind(this)
+        };
+
         if( this.selectTypeList.length === 1 ){
-            return Object.merge( defaultOpt, {
-                "type": this.selectTypeList[0],
-                "onLoad": function(){
-                    //this 为 selector
-                    _self.selectOnLoad(this, this.selector )
-                }
-                //"onComplete": function(items){
-                //    this.selectOnComplete(items);
-                //}.bind(this),
-                //"onCancel": this.selectOnCancel.bind(this),
-                //"onClose": this.selectOnClose.bind(this)
-            }, identityOpt || unitOpt )
+            return Object.merge(
+                defaultOpt,
+                {
+                    "type": this.selectTypeList[0],
+                    "onLoad": function(){
+                        //this 为 selector
+                        _self.selectOnLoad(this, this.selector )
+                    }
+                    //"onComplete": function(items){
+                    //    this.selectOnComplete(items);
+                    //}.bind(this),
+                    //"onCancel": this.selectOnCancel.bind(this),
+                    //"onClose": this.selectOnClose.bind(this)
+                },
+                layout.mobile ? mobileEvents : {} ,
+                identityOpt || unitOpt
+            )
         }else if( this.selectTypeList.length > 1 ){
             var options = {
                 "type" : "",
@@ -1039,43 +1542,100 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
                 //"onClose": this.selectOnClose.bind(this)
             };
             if( identityOpt ){
-                options.identityOptions = Object.merge( defaultOpt, identityOpt);
+                options.identityOptions = Object.merge(
+                    defaultOpt,
+                    layout.mobile ? mobileEvents : {},
+                    identityOpt
+                );
             }
             if( unitOpt ){
-                options.unitOptions = Object.merge( defaultOpt, unitOpt);
+                options.unitOptions = Object.merge(
+                    defaultOpt,
+                    layout.mobile ? mobileEvents : {},
+                    unitOpt
+                );
             }
             //if( groupOpt )options.groupOptions = groupOpt;
             return options;
         }
     },
-    //selectOnComplete: function(items){
-    //    var array = [];
-    //    items.each(function(item){
-    //        array.push(item.data);
-    //    }.bind(this));
-    //    this.checkEmpower( array, function( data ){
-    //        var values = [];
-    //        data.each(function(d){
-    //            values.push(MWF.org.parseOrgData(d, true));
-    //        }.bind(this));
-    //
-    //        this.setData(values);
-    //        //this.validationMode();
-    //        //this.validation();
-    //        this.fireEvent("select");
-    //    }.bind(this))
-    //},
-    //selectOnCancel: function(){
-    //    //this.validation();
-    //},
+    selectOnComplete: function(items){ //移动端才执行
+        var array = [];
+        items.each(function(item){
+            array.push(item.data);
+        }.bind(this));
+        this.checkEmpower( array, function( data ){
+            var values = [];
+            data.each(function(d){
+                values.push(MWF.org.parseOrgData(d, true));
+            }.bind(this));
+
+            this.setData(values);
+
+            //this.validationMode();
+            //this.validation();
+
+            this.container.empty();
+            this.loadOrgWidget(values, this.container);
+
+            this.selector = null;
+
+            this.fireEvent("select", [items, values]);
+        }.bind(this))
+    },
+    selectOnCancel: function(){ //移动端才执行
+        //this.validation();
+    },
     selectOnLoad: function( selector ){
         //if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
         this.fireEvent("loadSelector", [selector])
     },
-    //selectOnClose: function(){
-    //    //v = this._getBusinessData();
-    //    //if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
-    //},
+    selectOnClose: function(){
+        var v = this._getBusinessData();
+        //if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+    },
+    loadOrgWidget: function(value, node){
+        var height = node.getStyle("height").toInt();
+        if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
+        if (value && value.length){
+            value.each(function(data){
+                var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+                var copyData = Object.clone(data);
+                if( this.json.displayTextScript && this.json.displayTextScript.code ){
+                    this.currentData = copyData;
+                    var displayName = this.form.Macro.exec(this.json.displayTextScript.code, this);
+                    if( displayName ){
+                        copyData.displayName = displayName;
+                    }
+                    this.currentData = null;
+                }
+
+                var widget;
+                switch (flag.toLowerCase()){
+                    case "i":
+                        widget = new MWF.widget.O2Identity(copyData, node, {"style": "xform","lazy":true});
+                        break;
+                    case "p":
+                        widget = new MWF.widget.O2Person(copyData, node, {"style": "xform","lazy":true});
+                        break;
+                    case "u":
+                        widget = new MWF.widget.O2Unit(copyData, node, {"style": "xform","lazy":true});
+                        break;
+                    case "g":
+                        widget = new MWF.widget.O2Group(copyData, node, {"style": "xform","lazy":true});
+                        break;
+                    default:
+                        widget = new MWF.widget.O2Other(copyData, node, {"style": "xform","lazy":true});
+                }
+                widget.field = this;
+                if( layout.mobile ){
+                    //widget.node.setStyles({
+                    //    "float" : "none"
+                    //})
+                }
+            }.bind(this));
+        }
+    },
 
     hasEmpowerIdentity : function(){
         var data = this.getData();
@@ -1097,7 +1657,8 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
     },
     saveCheckedEmpowerData:function( callback ){
         var data = this.getData();
-        this.empowerChecker.replaceEmpowerIdentity(data, function( newData ){
+        //this.empowerChecker.replaceEmpowerIdentity(data, function( newData ){
+        this.empowerChecker.setIgnoreEmpowerFlag(data, function( newData ){
             var values = [];
             newData.each(function(d){
                 values.push(MWF.org.parseOrgData(d, true));
@@ -1163,20 +1724,24 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         this.setData(v);
     },
     getData: function(){
-        if( this.selector ){
+        if( this.selector && !layout.mobile ){
             return this.getSelectedData();
         }else{
             return this.getValue();
         }
     },
     getSelectedData : function(){
-        var data = [];
-        if( this.selector && this.selector.selector){
-            this.selector.selector.selectedItems.each( function( item ){
-                data.push( MWF.org.parseOrgData(item.data) );
-            })
+        if( layout.mobile ){
+            return this.getValue();
+        }else{
+            var data = [];
+            if( this.selector && this.selector.selector){
+                this.selector.selector.selectedItems.each( function( item ){
+                    data.push( MWF.org.parseOrgData(item.data, true) );
+                })
+            }
+            return data;
         }
-        return data;
     },
     getValue: function(){
         var value = this._getBusinessData();
@@ -1244,7 +1809,7 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
                 var vtype = typeOf(v);
                 var data = null;
                 if (vtype==="string"){
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") data = v;
                 if (data)values.push(data);
@@ -1252,7 +1817,7 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         }
         if (type==="string"){
             var vData;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
             if (vData)values.push(vData);
         }
         if (type==="object")values.push(value);
@@ -1310,48 +1875,73 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         switch (this.json.sectionBy){
             case "person":
                 return this._getBusinessSectionDataByPerson();
-                break;
             case "unit":
                 return this._getBusinessSectionDataByUnit();
-                break;
             case "activity":
                 return this._getBusinessSectionDataByActivity();
-                break;
+            case "splitValue":
+                return this._getBusinessSectionDataBySplitValue();
             case "script":
                 return this._getBusinessSectionDataByScript(this.json.sectionByScript.code);
-                break;
             default:
                 return this.form.businessData.data[this.json.name] || "";
         }
     },
     _getBusinessSectionDataByPerson: function(){
+        this.form.sectionListObj[this.json.name] = layout.desktop.session.user.id;
         var dataObj = this.form.businessData.data[this.json.name];
         return (dataObj) ? (dataObj[layout.desktop.session.user.id] || "") : "";
     },
     _getBusinessSectionDataByUnit: function(){
+        this.form.sectionListObj[this.json.name] = "";
+        var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+        if (key) this.form.sectionListObj[this.json.name] = key;
         var dataObj = this.form.businessData.data[this.json.name];
         if (!dataObj) return "";
-        var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
         return (key) ? (dataObj[key] || "") : "";
     },
     _getBusinessSectionDataByActivity: function(){
+        this.form.sectionListObj[this.json.name] = "";
+        var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+        if (key) this.form.sectionListObj[this.json.name] = key;
         var dataObj = this.form.businessData.data[this.json.name];
         if (!dataObj) return "";
-        var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+        return (key) ? (dataObj[key] || "") : "";
+    },
+    _getBusinessSectionDataBySplitValue: function(){
+        this.form.sectionListObj[this.json.name] = "";
+        var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+        if (key) this.form.sectionListObj[this.json.name] = key;
+        var dataObj = this.form.businessData.data[this.json.name];
+        if (!dataObj) return "";
         return (key) ? (dataObj[key] || "") : "";
     },
     _getBusinessSectionDataByScript: function(code){
+        this.form.sectionListObj[this.json.name] = "";
         var dataObj = this.form.businessData.data[this.json.name];
         if (!dataObj) return "";
         var key = this.form.Macro.exec(code, this);
+        if (key) this.form.sectionListObj[this.json.name] = key;
         return (key) ? (dataObj[key] || "") : "";
+    },
+
+    loadPathData: function(path){
+        var data = null;
+        this.form.workAction.getJobDataByPath(this.form.businessData.work.job, path, function(json){
+            data = json.data ||  null;
+        }, null, false);
+        return data;
     },
 
     _setBusinessData: function(v){
         if (this.json.section=="yes"){
+            // var d = this.loadPathData(this.json.name);
+            // if (d) this.form.businessData.data[this.json.name] = d;
             this._setBusinessSectionData(v);
         }else {
             if (this.json.type==="Opinion"){
+                // var d = this.loadPathData(this.json.name);
+                // if (d) this.form.businessData.data[this.json.name] = d;
                 this._setBusinessSectionDataByPerson(v);
             }else{
                 if (this.form.businessData.data[this.json.name]){
@@ -1375,6 +1965,9 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
             case "activity":
                 this._setBusinessSectionDataByActivity(v);
                 break;
+            case "splitValue":
+                this._setBusinessSectionDataBySplitValue(v);
+                break;
             case "script":
                 this._setBusinessSectionDataByScript(this.json.sectionByScript.code, v);
                 break;
@@ -1390,6 +1983,7 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
     _setBusinessSectionDataByPerson: function(v){
         var resetData = false;
         var key = layout.desktop.session.user.id;
+        this.form.sectionListObj[this.json.name] = key;
 
         var dataObj = this.form.businessData.data[this.json.name];
         if (!dataObj){
@@ -1407,6 +2001,7 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
 
         if (key){
+            this.form.sectionListObj[this.json.name] = key;
             var dataObj = this.form.businessData.data[this.json.name];
             if (!dataObj){
                 dataObj = {};
@@ -1424,6 +2019,25 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
 
         if (key){
+            this.form.sectionListObj[this.json.name] = key;
+            var dataObj = this.form.businessData.data[this.json.name];
+            if (!dataObj){
+                dataObj = {};
+                this.form.businessData.data[this.json.name] = dataObj;
+                resetData = true;
+            }
+            if (!dataObj[key]) resetData = true;
+            dataObj[key] = v;
+        }
+
+        if (resetData) this.form.Macro.environment.setData(this.form.businessData.data);
+    },
+    _setBusinessSectionDataBySplitValue: function(v){
+        var resetData = false;
+        var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+
+        if (key){
+            this.form.sectionListObj[this.json.name] = key;
             var dataObj = this.form.businessData.data[this.json.name];
             if (!dataObj){
                 dataObj = {};
@@ -1441,6 +2055,7 @@ MWF.xApplication.process.Work.Processor.Org = new Class({
         var key = this.form.Macro.exec(code, this);
 
         if (key){
+            this.form.sectionListObj[this.json.name] = key;
             var dataObj = this.form.businessData.data[this.json.name];
             if (!dataObj){
                 dataObj = {};
@@ -1566,6 +2181,7 @@ MWF.xApplication.process.Work.Processor.EmpowerChecker = new Class({
                 o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
                     "application": (this.form.businessData.work || this.form.businessData.workCompleted).application,
                     "process": (this.form.businessData.work || this.form.businessData.workCompleted).process,
+                    "work" : (this.form.businessData.work || this.form.businessData.workCompleted).id,
                     "identityList": array
                 }, function (json) {
                     var arr = [];

@@ -2468,28 +2468,32 @@ bind.applications = resources.getApplications();
 bind.organization = resources.getOrganization();
 bind.service = resources.getWebservicesClient();
 
-bind.response = bind.customResponse = customResponse;
-bind.requestText = requestText;
-bind.request = request;
-bind.currentPerson = bind.effectivePerson = effectivePerson;
+//bind.response = customResponse;
+//bind.customResponse = customResponse;
+bind.requestText = this.requestText || null;
+bind.request = this.request || null;
+if (this.effectivePerson) bind.currentPerson = bind.effectivePerson = effectivePerson;
 
-var _response = {
-    "customResponse": customResponse,
-    seeOther: function(url){
-        customResponse.seeOther(url);
-    },
-    temporaryRedirect: function(url){
-        customResponse.temporaryRedirect(url);
-    },
-    setBody: function(o){
-        var body = o;
-        if (typeOf(o)=="object"){
-            body = JSON.stringify(o);
+if (this.parameters) bind.parameters = JSON.parse(this.parameters); //JPQL语句传入参数
+if (this.customResponse){
+    var _response = {
+        "customResponse": this.customResponse || "",
+        seeOther: function(url){
+            customResponse.seeOther(url);
+        },
+        temporaryRedirect: function(url){
+            customResponse.temporaryRedirect(url);
+        },
+        setBody: function(o, contentType){
+            var body = o;
+            if (typeOf(o)=="object"){
+                body = JSON.stringify(o);
+            }
+            customResponse.setBody(body, contentType || "");
         }
-        customResponse.setBody(body);
-    }
-};
-bind.response = bind.customResponse = _response;
+    };
+    bind.response = _response;
+}
 
 //定义方法
 var _define = function(name, fun, overwrite){

@@ -7,7 +7,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         this.node.setStyle("-webkit-user-select", "text");
         if (this.form.businessData){
             if (this.form.businessData.workLogList){
-                this.workLog = this.form.businessData.workLogList;
+                this.workLog = Array.clone(this.form.businessData.workLogList);
                 this.loadWorkLog();
             }
         }
@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             if (this.json.mode==="table"){
                 this.loadWorkLogTable();
             }else if (this.json.mode==="text"){
-                this.loadWorkLogText();
+                   this.loadWorkLogText();
             }else if (this.json.mode==="media"){
                 this.loadWorkLogMedia();
             }else{
@@ -111,7 +111,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
         }
     },
-    loadCategoryList : function(  ){
+    loadCategoryList : function(){
         var category;
         if( this.json.category === "activity" ){
             category = "fromActivityName";
@@ -294,7 +294,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }.bind(this))
     },
     _loadTableBorderStyle: function(){
-        if (this.json.tableStyles.border){
+        if (this.json.tableStyles && this.json.tableStyles.border){
             this.table.set("cellspacing", "0");
             this.table.setStyles({
                 "border-top": this.json.tableStyles.border,
@@ -318,7 +318,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
     },
     _loadTableStyles: function(){
-        Object.each(this.json.tableStyles, function(value, key){
+        Object.each(this.json.tableStyles || {}, function(value, key){
             var reg = /^border\w*/ig;
             if (!key.test(reg)){
                 this.table.setStyle(key, value);
@@ -644,9 +644,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         td = tr.insertCell(3).setStyles(this.form.css[style]);
         td.set("text", task.completedTime || "");
         td = tr.insertCell(4).setStyles(this.form.css[style]);
-        td.set("text", task.routeName || "");
+        td.set("text", (task.processingType=="empower") ? "授权" : task.routeName || "");
         td = tr.insertCell(5).setStyles(this.form.css[style]);
-        td.set("html", "<div style='line-height: 28px; float:left'>" + task.opinion || ""+"</div>");
+        opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + task.opinion || ""+"</div>";
+        td.set("html", opinion);
 
         if (task.mediaOpinion){
             var mediaIds = task.mediaOpinion.split(",");
@@ -869,15 +870,29 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         var company = "";
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
-
             var html = this.json.textStyle;
+            if (task.processingType=="empower") html = "<font style='color:#ff5400;'>{person}</font>（{department}）授权给<font style='color:#ff5400;'>{empowerTo}</font>处理。（{time}）</font>";
+            var nextTasks = o2.name.cns(log.nextManualTaskIdentityList).join(", ");
+            var nextTaskCompleteds = o2.name.cns(log.nextManualTaskCompletedIdentityList).join(", ");
+            var nextTaskParts = [];
+            //if (nextTasks) nextTaskParts.push(nextTasks+" 正在处理");
+            //if (nextTaskCompleteds) nextTaskParts.push(nextTaskCompleteds+" 处理完成");
+            if (nextTasks) nextTaskParts.push(nextTasks);
+            if (nextTaskCompleteds) nextTaskParts.push(nextTaskCompleteds);
+
+            var nextTaskText = nextTaskParts.join(", ");
+
             if (this.json.textStyleScript && this.json.textStyleScript.code){
                 this.form.Macro.environment.log = log;
                 this.form.Macro.environment.list = null;
                 html = this.form.Macro.exec(this.json.textStyleScript.code, this);
             }
 
-            html = html.replace(/\{person\}/g, task.person.substring(0, task.person.indexOf("@")));
+            var person = task.person.substring(0, task.person.indexOf("@"));
+            if( task.processingType === "processing" && task.empowerFromIdentity){
+                person = person+" 代 "+o2.name.cn(task.empowerFromIdentity||"");
+            }
+            html = html.replace(/\{person\}/g, person );
             html = html.replace(/\{department\}/g, task.unit.substring(0, task.unit.indexOf("@")));
             html = html.replace(/\{route\}/g, task.routeName);
             html = html.replace(/\{time\}/g, task.completedTime);
@@ -889,11 +904,17 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = html.replace(/\{activity\}/g, log.fromActivityName);
             html = html.replace(/\{arrivedActivity\}/g, log.arrivedActivityName);
             html = html.replace(/\{img\}/g, "<span class='mwf_log_img'></span>");
+            html = html.replace(/\{empowerTo\}/g, ((task.empowerToIdentity) ? o2.name.cn(task.empowerToIdentity) : ""));
+
+            html = html.replace(/\{nextTask\}/g, nextTasks);
+            html = html.replace(/\{nextTaskCompleted\}/g, nextTaskCompleteds);
+            html = html.replace(/\{next\}/g, nextTaskText);
 
             //var html = MWF.xApplication.process.Xform.LP.nextUser + task.person+"("+task.department+")" +", "+
             //    MWF.xApplication.process.Xform.LP.selectRoute + ": [" + task.routeName + "], " +
             //    MWF.xApplication.process.Xform.LP.submitAt + ": " + task.completedTime+ ", " +
             //    MWF.xApplication.process.Xform.LP.idea + ": <font style=\"color: #00F\">" + (task.opinion || "")+"</font>";
+
             textNode.set("html", html);
             var imgNode = textNode.getElement(".mwf_log_img");
             if (task.mediaOpinion){

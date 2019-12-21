@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>YmDatePlugin v1.1演示</title>
+
+<link rel="stylesheet" href="css/jquery-ui.css" />
+<link rel="stylesheet" id="skin" href="css/jquery-ui-1.9.2.custom.min9.css" />
+<style type="text/css">
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+	font-size: 62.5%;
+}
+.describe,a,span{
+	font-size:12px;
+	text-align:right;
+}
+.redfont{
+	color:#F00;}
+</style>
+<script type="text/javascript" src="jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="jquery-ym-datePlugin-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	//默认功能
+    $("#demoText1").ymdateplugin();
+	//显示其他月
+	$("#demoText2").ymdateplugin({
+		showOtherMonths: true,//显示其他月
+		selectOtherMonths: true//是否可选
+	});
+	/*::注意：：
+	 * 	showTimePanel和showButtonPanel只能配置一项true
+	 */
+	//显示今天/关闭
+	$("#demoText3").ymdateplugin({
+		showButtonPanel: true
+	});	
+	//显示时间的选择
+	$("#demoText4").ymdateplugin({
+		showTimePanel: true
+	});
+	//DIV展示日历 选择某一天触发事件
+	$("#demoText5").ymdateplugin({
+		setSelectDay:function(dd,mm,yy){
+			alert("您选择了："+yy+"年"+(mm+1)+"月"+dd+"日");	
+		}	
+	});
+	//下拉年月
+	$("#demoText6").ymdateplugin({
+		changeMonth: true,
+		changeYear: true
+	});
+	//显示多个月
+	$("#demoText7").ymdateplugin({
+		numberOfMonths: 3,
+		showButtonPanel: true
+	});	
+	//限制可选
+	$("#demoText8").ymdateplugin({
+		minDate: -20,
+		maxDate: "+1M +10D" 
+	});
+	//时间范围
+	$("#demoText9").ymdateplugin({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onClose: function(selectedDate) {
+      	$("#demoText10").ymdateplugin("option", "minDate", selectedDate );
+      }
+    });
+    $("#demoText10").ymdateplugin({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onClose: function( selectedDate ) {
+        $("#demoText9").ymdateplugin("option", "maxDate", selectedDate );
+      }
+    });
+	//星期序列
+	$("#demoText11").ymdateplugin({
+		showWeek: true,
+		firstDay: 1
+	});
+	
+	
+	//换肤
+	$("#skins").trigger("click");
+	$("#skins").click(function(){
+		$("#skins").trigger("change");	
+	});
+	$("#skins").change(function(){
+		if($(this).val()>0){
+			$("#skin").attr("href","css/jquery-ui-1.9.2.custom.min"+$(this).val()+".css");
+		}else{
+			$("#skin").attr("href","");
+		}
+	});
+});
+</script>
+</head>
+
+<body>
+
+<div style="width:600px;margin:0 auto;">
+
+	<h1>功能演示</h1>
+	<h2>v1.1   ::增加：皮肤20套</h2>
+	<span>更换皮肤:</span>
+	<select id="skins">
+		<option value="0">无皮肤</option>
+		<option value="1">高亮</option>
+		<option value="2">黑暗</option>
+		<option value="3">平滑</option>
+		<option value="4">开始</option>
+		<option value="5">微软</option>
+		<option value="6">阳光</option>
+		<option value="7">阴天</option>
+		<option value="8">青蛙</option>
+		<option value="9">轻盈</option>
+		<option value="10">蜂箱</option>
+		<option value="11">胡椒</option>
+		<option value="12">茄子</option>
+		<option value="13">库比蒂诺</option>
+		<option value="14">南街</option>
+		<option value="15">闪击</option>
+		<option value="16">人类</option>
+		<option value="17">hot sneaks</option>
+		<option value="18">excite-bike</option>
+		<option value="19">vader</option>
+		<option value="20">dot-luv</option>
+	</select>
+	<table border="1">
+	  <tr>
+		<td class="describe">DIV展示日历:</td>
+		<td><div id="demoText5"></div></td>
+	  </tr>
+	  <tr>
+		<td class="describe">默认功能:</td>
+		<td><input type="text" id="demoText1" readonly="readonly" /></td>
+	  </tr>
+	  <tr>
+		<td class="describe">显示其他月:</td>
+		<td><input type="text" id="demoText2" readonly="readonly" /></td>
+	   </tr>
+	  <tr>
+		<td class="describe">显示今天/关闭:</td>
+		<td><input type="text" id="demoText3" readonly="readonly" /></td>
+	  </tr>
+	  <tr class="redfont">
+		<td class="describe">显示时间选择:</td>
+		<td><input type="text" id="demoText4" readonly="readonly" /></td>
+	  </tr>
+	  <tr>
+		<td class="describe">下拉年月:</td>
+		<td><input type="text" id="demoText6" readonly="readonly" /></td>
+	  </tr>
+	  <tr>
+		<td class="describe">显示多个月:</td>
+		<td><input type="text" id="demoText7" readonly="readonly" /></td>
+	  </tr>
+	  <tr>
+		<td class="describe">限制可选:</td>
+		<td><input type="text" id="demoText8" readonly="readonly" /></td>
+	  </tr>
+	  <tr>
+		<td class="describe">时间范围:</td>
+		<td>
+			<input type="text" id="demoText9" readonly="readonly" />To<br />
+			<input type="text" id="demoText10" readonly="readonly" />
+		 </td>
+	  </tr>
+	  <tr>
+		<td class="describe">星期序列:</td>
+		<td><input type="text" id="demoText11" readonly="readonly" /></td>
+	  </tr>
+	</table>
+
+</div>
+	
+</body>
+</html>

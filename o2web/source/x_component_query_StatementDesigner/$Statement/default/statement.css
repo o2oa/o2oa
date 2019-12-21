@@ -1,11 +1,22 @@
 .o2_statement_statementDesignerNode {
-    height: 200px;
+    overflow: hidden;
     padding: 20px;
     box-shadow: 0 0 10px #999999;
     background: #f3f3f3;
     border-bottom: 1px solid #cccccc;
 }
+.o2_statement_statementDesignerFormatLine {
+    height:30px;
+    line-height: 30px;
+    border-bottom: 1px solid #666666;
+}
+.o2_statement_statementDesignerFormatTitle {
+    font-weight: bold;
+    float: left;
+    margin-right: 10px;
+}
 .o2_statement_statementDesignerLine {
+    margin-top: 5px;
     height: 30px;
     line-height: 30px;
 }
@@ -33,7 +44,13 @@
     font-weight: bold;
 }
 .o2_statement_statementDesignerJpqlLine {
-    height: 150px;
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerScript {
+    height: 260px;
     margin-top: 10px;
     border: 1px solid #cccccc;
     background: #ffffff;

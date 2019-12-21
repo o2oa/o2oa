@@ -10,7 +10,7 @@
     "overflow-y" : "scroll"
   },
   "topNode" : {
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#999",
     "background-color" : "#fff",
     "overflow" : "hidden",
@@ -283,7 +283,7 @@
     "background-color": "#fff",
     "color": "#333",
     "line-height": "35px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -351,7 +351,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },

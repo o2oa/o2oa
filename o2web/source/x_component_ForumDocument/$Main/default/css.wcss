@@ -9,7 +9,7 @@
     "overflow-y" : "scroll"
   },
   "topNode" : {
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#999",
     "background-color" : "#fff",
     "overflow" : "hidden",
@@ -1010,7 +1010,7 @@
     "margin": "auto",
     "font-size": "12px",
     "color": "#666",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "overflow" : "hidden"
   },
   "formTableContainer" : {
@@ -1042,7 +1042,7 @@
     "cursor": "pointer",
     "float": "left",
     "font-size": "14px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "background-color":"#5c97e1",
     "color": "#FFF",
     "box-shadow": "0px 0px 5px #2a5c95"
@@ -1057,7 +1057,7 @@
     "cursor": "pointer",
     "float": "left",
     "font-size": "14px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "background-color":"#5c97e1",
     "color": "#FFF",
     "box-shadow": "0px 0px 5px #2a5c95"
@@ -1072,7 +1072,7 @@
     "cursor": "pointer",
     "float": "left",
     "font-size": "14px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "background-color":"#5c97e1",
     "color": "#FFF",
     "box-shadow": "0px 0px 5px #2a5c95"

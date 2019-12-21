@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head lang="en">
+<html lang="zh-CN">
+<head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <title>登录中...</title>
-    <script src="../o2_core/o2.min.js?v=2.2.1"></script>
-    <script src="../o2_core/compatible.min.js?v=2.2.1"></script>
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="../o2_core/compatible.min.js"></script>
     <script src="../o2_lib/Decimal.js"></script>
     <script>
         function getServiceAddress(config, callback){
@@ -69,7 +69,51 @@
                 if (callback) callback(address);
             }.bind(this));
         }
+        
+        function sso(){
+            o2.JSON.get("res/config/config.json", function(config){
+                getServiceAddress(config, function(address){
+                    var uri = new URI(window.location.toString());
+                    var xtoken = uri.getData("SMAP_SESSION_DATA");
+                    var appID = uri.getData("appID");
+                    var redirect = uri.getData("redirect");
+                    if (xtoken){
+                        var res = new Request.JSON({
+                            url: address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime(),
+                            secure: false,
+                            method: "GET",
+                            noCache: true,
+                            withCredentials: true,
+                            onSuccess: function(responseJSON, responseText){
+                                var result = responseJSON.data.value
+								if(result){
+									if (redirect){
+										window.location = redirect;
+									}else{
+										window.location = "/";
+									}
+								}else{
+									$("ssoerror").set("html","单点失败！"+responseJSON.message);
+									$("ssoerror").show();
+								}
+                            }.bind(this),
+                            onFailure: function(xhr){
+                                $("ssoerror").show();
+                            }.bind(this),
+                            onError: function(text, error){
+                                $("ssoerror").show();
+                            }.bind(this)
+                        });
 
+                        res.send();
+                    }else{
+						$("ssoerror").set("html","单点失败，认证token为空！");
+                        $("ssoerror").show();
+                    }
+                });
+            });
+        }
+        
         o2.addReady(function(){
             o2.JSON.get("res/config/config.json", function(config){
                 getServiceAddress(config, function(address){
@@ -79,13 +123,13 @@
                     var redirect = uri.getData("redirect");
                     if (xtoken){
                         var res = new Request.JSON({
-                            url: address+"?SMAP_SESSION_DATA="+xtoken+"&appID="+appID,
+                            url: address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime(),
                             secure: false,
                             method: "GET",
                             noCache: true,
                             withCredentials: true,
                             onSuccess: function(responseJSON, responseText){
-								var result = responseJSON.data.value
+                                var result = responseJSON.data.value;
 								if(result){
 									if (redirect){
 										window.location = redirect;
@@ -114,10 +158,9 @@
             });
 
         });
-
     </script>
 </head>
-<body bgcolor="#faebd7" bgcolor="#ffc0cb">
+<body style="background: rgb(239, 239, 244);">
 <div id="ssoerror" style="text-align:center;display:none;">单点失败，请联系管理员！</div>
 </body>
 </html>

@@ -56,7 +56,8 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		}
 		this.isCurrentUser = this.userName == this.options.personName;
 		this.personNameAbbreviate = this.options.personName.split('@')[0];
-		this.setTitle( this.personNameAbbreviate );
+		var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+		this.setTitle( this.personNameAbbreviate + tail );
 		this.loadController(function(){
 			this.access.login( function () {
 				this.getUserData( this.options.personName, function( json ){

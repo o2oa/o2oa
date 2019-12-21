@@ -822,7 +822,8 @@ o2.addReady(function(){
     //异步载入必要模块
     layout.config = null;
 
-    var modules = [ "MWF.xDesktop.Common", "MWF.xAction.RestActions"];
+    var lp = o2.session.path+"/lp/"+o2.language+".js";
+    var modules = [ "MWF.xDesktop.Common", "MWF.xAction.RestActions",lp];
     MWF.require(modules, function(){
         if (layout.config) _getDistribute(function(){ _load(); });
     });
@@ -857,7 +858,7 @@ o2.addReady(function(){
                     var isLoadedB = false;
                     //var isLoadedC = false;
 
-                    var lp = o2.session.path+"/lp/"+o2.language+".js";
+
                     var modules = [
                         "o2.xDesktop.Dialog",
                         "MWF.xDesktop.UserData",
@@ -873,7 +874,7 @@ o2.addReady(function(){
                     //MWF.xDesktop.requireApp("Common", "", null, false);
                     var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js",lp], function(){isLoadedA = true; _check();});
+                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function(){isLoadedA = true; _check();});
                     o2.require("MWF.widget.Common", function(){
                         o2.require(modules, function(){
                             o2.requireApp("Common", "", function(){isLoadedB = true; _check();})
@@ -897,10 +898,10 @@ o2.addReady(function(){
             //打开登录页面
             var _loadResource = function(callback){
                 var isLoadedA = false;
-                var isLoadedB = false
+                var isLoadedB = false;
                 //var isLoadedC = false;
 
-                var lp = o2.session.path+"/lp/"+o2.language+".js";
+               // var lp = o2.session.path+"/lp/"+o2.language+".js";
                 var modules = [
                     "o2.xDesktop.Dialog",
                     "MWF.xDesktop.UserData",
@@ -915,7 +916,7 @@ o2.addReady(function(){
                 //MWF.xDesktop.requireApp("Common", "", null, false);
                 var _check = function(){ if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                o2.load(["../o2_lib/mootools/plugin/mBox.min.js",lp], function(){isLoadedA = true; _check();});
+                o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function(){isLoadedA = true; _check();});
                 o2.require("MWF.widget.Common", function(){
                     o2.require(modules, function(){
                         o2.requireApp("Common", "", function(){isLoadedB = true; _check();})

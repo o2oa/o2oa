@@ -18,7 +18,11 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
         value.each(function(v){
-            text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+            if( typeOf(v) === "string" ){ //������������
+                text.push(v);
+            }else{
+                text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
+            }
         }.bind(this));
         return {"value": value || "", "text": [text.join(",")]};
     },
@@ -636,7 +640,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 var data = null;
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") data = v;
                 if (data){
@@ -648,7 +652,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
@@ -679,6 +683,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
 
         if (this.json.isInput){
             if (this.combox){
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
             }else{
                 var node = this.node.getFirst();
@@ -795,6 +800,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (this.json.isInput){
 
             if (this.combox){
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
 
                 // values.each(function(v){
@@ -932,6 +938,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
                 o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
                     "application" : (this.form.businessData.work || this.form.businessData.workCompleted).application,
                     "process" : (this.form.businessData.work || this.form.businessData.workCompleted).process,
+                    "work" : (this.form.businessData.work || this.form.businessData.workCompleted).id,
                     "identityList" : array
                 }, function( json ){
                     var arr = [];
@@ -953,7 +960,31 @@ MWF.APPOrg.EmpowerChecker = new Class({
             if( callback )callback( data );
         }
     },
+    getIgnoreEmpowerArray : function( callback ){
+        var array = [];
+        this.empowerSelectNodes.each(function(node){
+            if( !node.retrieve("isSelected") ){
+                var d = node.retrieve("data");
+                array.push( d.fromIdentity );
+            }
+        }.bind(this));
+        if( callback )callback( array );
+        return array;
+    },
+    setIgnoreEmpowerFlag : function(data, callback){
+        var ignoreList = this.getIgnoreEmpowerArray();
+        for( var i=0; i<data.length; i++ ){
+            var d = data[i];
+            if( ignoreList.indexOf( d.distinguishedName ) > -1 ){
+                d.ignoreEmpower = true;
+            }else if( d.ignoreEmpower ){
+                delete  d.ignoreEmpower;
+            }
+        }
+        if( callback )callback( data );
+    },
     replaceEmpowerIdentity : function(data, callback){
+        debugger;
         var empowerData = {};
         this.empowerSelectNodes.each(function(node){
             if( node.retrieve("isSelected") ){
@@ -962,28 +993,32 @@ MWF.APPOrg.EmpowerChecker = new Class({
             }
         }.bind(this));
 
-        var identityList = [];
-        for( var key in empowerData ){
-            identityList.push( empowerData[key].toIdentity );
-        }
-        o2.Actions.get("x_organization_assemble_express").listIdentity({ "identityList" : identityList }, function(json){
-            var newData = data.clone();
-            var d = {};
-            json.data.each( function(j){
-                d[j.distinguishedName] = j;
-            });
-            for( var i=0; i<newData.length; i++ ){
-                var nd = newData[i];
-                if( nd.distinguishedName && empowerData[nd.distinguishedName]){
-                    if( d[empowerData[nd.distinguishedName].toIdentity] ){
-                        newData[i] = d[empowerData[nd.distinguishedName].toIdentity]
+        if( Object.keys(empowerData).length === 0 ){
+            callback( data );
+        }else{
+            var identityList = [];
+            for( var key in empowerData ){
+                identityList.push( empowerData[key].toIdentity );
+            }
+            o2.Actions.get("x_organization_assemble_express").listIdentity({ "identityList" : identityList }, function(json){
+                var newData = data.clone();
+                var d = {};
+                json.data.each( function(j){
+                    d[j.distinguishedName] = j;
+                });
+                for( var i=0; i<newData.length; i++ ){
+                    var nd = newData[i];
+                    if( nd.distinguishedName && empowerData[nd.distinguishedName]){
+                        if( d[empowerData[nd.distinguishedName].toIdentity] ){
+                            newData[i] = d[empowerData[nd.distinguishedName].toIdentity]
+                        }
                     }
                 }
-            }
-            callback( newData );
-        },function(){
-            callback( data );
-        });
+                callback( newData );
+            },function(){
+                callback( data );
+            });
+        }
     },
     openSelectEmpowerDlg : function( data, orginData, callback, container ){
         var node = new Element("div", {"styles": this.css.empowerAreaNode});
@@ -1006,7 +1041,8 @@ MWF.APPOrg.EmpowerChecker = new Class({
                     "type" : "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": function(d, e){
-                        this.replaceEmpowerIdentity( orginData, callback );
+                        //this.replaceEmpowerIdentity( orginData, callback );
+                        this.setIgnoreEmpowerFlag( orginData, callback );
                         dlg.close();
                     }.bind(this)
                 },
@@ -1412,6 +1448,7 @@ MWF.APPOrg.IdentityOptions = new Class({
                 "expandSubEnable" : (this.json.identityExpandSubEnable=="no") ? false : true,
                 "resultType" : this.json.identityResultType,
                 "categoryType": this.json.categoryType || "unit",
+                "dutyUnitLevelBy" : this.json.dutyUnitLevelBy || "duty",
                 "include" : this._getInclude()
             };
         }

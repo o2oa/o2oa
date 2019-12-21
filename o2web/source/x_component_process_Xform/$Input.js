@@ -213,7 +213,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 		//var text = this.node.get("text");
         var value = (this.node.getFirst()) ? this.node.getFirst().get("value") : this.node.get("text");
         var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
-		return {"value": [value] || "", "text": [text || value || ""]};
+		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
@@ -293,6 +293,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     },
     notValidationMode: function(text){
         if (!this.isNotValidationMode){
+            debugger;
             this.isNotValidationMode = true;
             this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
             this.node.setStyle("border-color", "red");
@@ -304,7 +305,13 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                 this.errNode.inject(this.node, "after");
             //}
             this.showNotValidationMode(this.node);
-            if (!this.node.isIntoView()) this.node.scrollIntoView();
+
+            var parentNode = this.node;
+            while( parentNode.offsetParent === null ){
+                parentNode = parentNode.getParent();
+            }
+
+            if (!parentNode.isIntoView()) parentNode.scrollIntoView();
         }
     },
     showNotValidationMode: function(node){
@@ -405,15 +412,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return true;
     },
     validation: function(routeName, opinion){
-        if (!this.validationConfig(routeName, opinion))  return false;
+        if (!this.readonly && !this.json.isReadonly){
+            if (!this.validationConfig(routeName, opinion))  return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString()!="true"){
-            this.notValidationMode(flag);
-            return false;
+            if (!this.json.validation) return true;
+            if (!this.json.validation.code) return true;
+            var flag = this.form.Macro.exec(this.json.validation.code, this);
+            if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+            if (flag.toString()!="true"){
+                this.notValidationMode(flag);
+                return false;
+            }
         }
         return true;
     }

@@ -35,6 +35,13 @@
           "action" : "customer"
         },
         {
+          "title" : "公海",
+          "type":"item",
+          "icon" :"default/icons/publicseas.png",
+          "iconFill":"default/icons/publicseas-fill.png",
+          "action" : "publicseas"
+        },
+        {
           "title" : "联系人",
           "type":"item",
           "icon" :"default/icons/contact.png",

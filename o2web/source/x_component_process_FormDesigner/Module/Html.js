@@ -64,7 +64,14 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 		});
         this.textarea.set("value", this.json.text);
 	},
-	
+	_setNodeProperty: function(){
+		this.textarea.set("value", this.json.text);
+		if (this.property){
+			var editNode = this.property.propertyNode.getElement(".MWF_editHtmlText");
+			if (editNode) editNode.set("value", this.textarea.get("value"));
+		}
+		this._setTextareaHeight();
+	},
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
@@ -86,15 +93,20 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 		this.textarea.focus();
 		
 		this.textarea.addEvents({
-			"keydown": function(){
+			"keydown": function(e){
 				this._setTextareaHeight();
+				e.stopPropagation();
 			}.bind(this),
 			"keyup": function(e){
 				if (e.code==8 || e.code==46 || (e.control && e.code==88)){
 					this._setTextareaHeight();
 				}
-				var editNode = $("editHtmlText");
-				if (editNode) editNode.set("value", this.textarea.get("value"));
+				if (this.property){
+					var editNode = this.property.propertyNode.getElement(".MWF_editHtmlText");
+					if (editNode) editNode.set("value", this.textarea.get("value"));
+				}
+				// var editNode = $("editHtmlText");
+				// if (editNode) editNode.set("value", this.textarea.get("value"));
 			}.bind(this),
 			"change": function(){
 				this.json.text = this.textarea.get("value");

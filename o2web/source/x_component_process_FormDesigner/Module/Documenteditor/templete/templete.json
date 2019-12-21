@@ -10,5 +10,11 @@
     "file": "meeting.html",
     "layouts": {
     }
+  },
+  "letter": {
+    "name": "函类",
+    "file": "letter.html",
+    "layouts": {
+    }
   }
 }

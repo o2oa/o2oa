@@ -19,7 +19,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         "autoSave" : true,
         "saveOnClose" : true,
         "postPublish" : null,
-        "postDelete" : null
+        "postDelete" : null,
+        "formId" : null
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Document.LP;
@@ -28,6 +29,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.readonly = (this.status.readonly=="true" || this.status.readonly==true) ? true : false;
             this.options.autoSave = (this.status.autoSave=="true" || this.status.autoSave==true) ? true : false;
             this.options.saveOnClose = (this.status.saveOnClose=="true" || this.status.saveOnClose==true) ? true : false;
+            this.options.formId = this.status.formId;
         }
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
@@ -190,18 +192,26 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.close();
             }
         }.bind(this);
-        if( this.options.anonymousAccess ){
-            this.action.getFormByAnonymous(formId, function( json ){
+        if( this.options.formId ){
+            this.action.getForm(this.options.formId, function( json ){
                 success(json);
             }.bind(this), function(error){
                 failure(error)
             }.bind(this));
         }else{
-            this.action.getForm(formId, function( json ){
-                success(json);
-            }.bind(this), function(error){
-                failure(error)
-            }.bind(this));
+            if( this.options.anonymousAccess ){
+                this.action.getFormByAnonymous(formId, function( json ){
+                    success(json);
+                }.bind(this), function(error){
+                    failure(error)
+                }.bind(this));
+            }else{
+                this.action.getForm(formId, function( json ){
+                    success(json);
+                }.bind(this), function(error){
+                    failure(error)
+                }.bind(this));
+            }
         }
     },
     //listAttachment: function(){
@@ -376,6 +386,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             "autoSave" : this.options.autoSave,
             "saveOnClose" : this.options.saveOnClose
         };
+        if( this.options.formId )status.formId = this.options.formId;
         if(this.options.appId && this.options.appId!="")status.appId = this.options.appId;
         return status;
     },

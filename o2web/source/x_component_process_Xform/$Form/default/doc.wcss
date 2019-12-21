@@ -1,6 +1,10 @@
 {
     "doc_toolbar": {
-        "height": "30px",
+        "height": "37px",
+        "border-bottom": "0px solid #cccccc"
+    },
+    "doc_toolbar_node": {
+        "height": "29px",
         "border-bottom": "1px solid #cccccc"
     },
     "doc_toolbar_doublePage": {
@@ -35,6 +39,11 @@
         "font-family": "'仿宋', serif",
         "line-height": "1.02cm",
         "letter-spacing": "-0.01cm"
+    },
+    "doc_sidebar": {
+        "width": "30px",
+        "overflow": "hidden",
+        "position": "absolute"
     },
 
     "doc_layout_copiesSecretPriority": {},

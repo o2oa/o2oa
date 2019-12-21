@@ -231,6 +231,7 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         createTemplateCategoryAllNode.addEvent("click", function(){
             loadAllTemplates();
         });
+        debugger;
         this.app.restActions.listFormTemplateCategory(function(json){
             json.data.each(function(d){
                 var createTemplateCategoryItemNode = new Element("div", {"styles": this.css.createTemplateFormCategoryItemNode, "text": d.name+"("+ d.count+")", "value": d.name}).inject(createTemplateCategoryNode);

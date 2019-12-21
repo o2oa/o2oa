@@ -13,6 +13,13 @@ MWF.xApplication.query.StatementDesigner.LP = {
     "inputStatementName": "请输入查询配置名称",
     "inputStatementData": "请先编辑JPQL查询语句",
 
+    "statementFormat": "如何创建语句：",
+    "statementJpql": "直接编写JPQL创建语句",
+    "statementScript": "通过脚本创建语句",
+
+    "statementCategory": "访问对象类型",
+    "scriptTitle": "通过脚本创建JPQL",
+
 
     "item": "项目",
     "type": "类型",

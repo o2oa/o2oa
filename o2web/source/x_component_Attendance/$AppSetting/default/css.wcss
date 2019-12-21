@@ -54,7 +54,7 @@
     "margin": "auto",
     "font-size": "16px",
     "color": "#666",
-    "font-family": "微软雅黑"
+    "font-family": "Microsoft YaHei"
   },
 
   "createTableContainer" : {
@@ -122,7 +122,7 @@
     "line-height": "30px",
     "padding-left": "65px",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border-radius": "3px",
     "border": "1px solid #354f67",
     "color": "#FFF",
@@ -140,7 +140,7 @@
     "padding-left": "40px",
     "margin-right": "20px",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border-radius": "3px",
     "color": "#FFF",
     "margin-top": "20px",
@@ -157,7 +157,7 @@
     "padding-left": "30px",
     "margin-right": "20px",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border-radius": "3px",
     "color": "#FFF",
     "margin-top": "20px",

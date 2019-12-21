@@ -303,7 +303,7 @@
     "height": "20px",
     "color": "#333333",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -325,7 +325,7 @@
     "overflow": "hidden",
     "color": "#666666",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },
@@ -334,7 +334,7 @@
     "overflow": "hidden",
     "color": "#666666",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },

@@ -12,6 +12,19 @@
 		"background-color": "#4c6b87",
 		"position": "static"
 	},
+	"titleActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "height": "30px",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "line-height": "30px",
+        "text-align": "center",
+        "padding": "0 20px",
+        "margin-top": "25px",
+        "cursor": "pointer",
+        "color": "#ffffff"
+    },
 	"iconElementNode": {
         "float": "left",
         "width": "80px",
@@ -37,7 +50,7 @@
         "line-height": "80px",
         "color": "#FFF",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "margin-left": "5px"
 	},
@@ -110,7 +123,7 @@
 		"width": "96%",
 		"height": "28px",
 		"border": "0px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px",
 		"color": "#999",
 		"background": "transparent",
@@ -147,7 +160,7 @@
 		"border": "1px solid #FFF",
 		"line-height": "30px",
 		"font-size": "14px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"color": "#FFF",
 		"text-align": "center",
 		"border-radius": "0px",

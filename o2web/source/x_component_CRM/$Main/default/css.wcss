@@ -4,7 +4,7 @@
     "height":"100%",
     "background-color":"#fff",
     "font-size":"14px",
-    "font-family": "微软雅黑"
+    "font-family": "Microsoft YaHei"
   },
   ///////////////////////////////top//////////////////////////////////////////////
   "topContentDiv":{
@@ -12,7 +12,7 @@
     "width":"100%",
     "min-width":"1000px",
     "height":"60px",
-    "background":"#f5f6fb",
+    "border-top": "1px solid",
     "box-shadow":"0px 1px 2px #d2d3d7"
   },
   "logoDiv":{
@@ -59,7 +59,7 @@
   "leftContentDiv":{
     "width":"200px",
     "height":"600px",
-    "background":"#336699",
+    "background":"#505353",
     "float":"left"
   },
   "quickStartDiv":{
@@ -119,6 +119,7 @@
   "rightContentDiv":{
     "padding-top":"2px",
     "height":"600px",
+    "background-color":"#F5F6F9",
     "min-width":"800px"
   }
 }

@@ -554,10 +554,10 @@ MWF.xApplication.Common.Main = new Class({
 	alert: function(type, e, title, text, width, height){
 		MWF.require("MWF.widget.Dialog", function(){
 			var size = $(document.body).getSize();
-
+debugger;
             var x = 0, y = 0;
 			if (e==="center") {
-                var p = o2.getCenterPosition(document.body, width, height);
+                var p = o2.getCenterPosition(this.content, width, height);
                 x = p.x;
                 y = p.y;
             }else{
@@ -602,6 +602,8 @@ MWF.xApplication.Common.Main = new Class({
 				"height": height,
                 "text": ctext,
                 "html": chtml,
+				"maskNode": this.content,
+				"container": this.content,
 				"buttonList": [
 				    {
 				    	"text": MWF.LP.process.button.ok,

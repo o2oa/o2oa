@@ -272,8 +272,17 @@
                             <tr>
                                 <td class="editTableTitle">分类:</td>
                                 <td class="editTableValue">
-                                    <input type="radio" name="categoryType" value="unit" text{(['duty'].indexOf($.categoryType)==-1)?'checked':''}/>按组织
-                                    <input type="radio" name="categoryType" value="duty" text{($.categoryType && ($.categoryType.indexOf('duty')!=-1))?'checked':''}/>按职务<br/>
+                                    <input type="radio" name="categoryType" value="unit" text{(['duty'].indexOf($.categoryType)==-1)?'checked':''}
+                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', '');}" />按组织
+                                    <input type="radio" name="categoryType" value="duty" text{($.categoryType && ($.categoryType.indexOf('duty')!=-1))?'checked':''}
+                                    onclick="if (this.checked) {$('text{$.pid}dutyUnitLevelByTr').setStyle('display', 'none');}"/>按职务<br/>
+                                </td>
+                            </tr>
+                            <tr id="text{$.pid}dutyUnitLevelByTr" style="display: text{($.categoryType=='duty')?'none':''}; ">
+                                <td class="editTableTitle">展现层级:</td>
+                                <td class="editTableValue">
+                                    <input type="radio" name="dutyUnitLevelBy" value="duty" text{(['identity'].indexOf($.dutyUnitLevelBy)==-1)?'checked':''}/>按职务所在组织<br/>
+                                    <input type="radio" name="dutyUnitLevelBy" value="identity" text{($.dutyUnitLevelBy && ($.dutyUnitLevelBy.indexOf('identity')!=-1))?'checked':''}/>按身份所在组织
                                 </td>
                             </tr>
                             <tr>
@@ -449,6 +458,7 @@
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>处理人<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='department')?'checked':''} type="radio" value="unit"/>处理人所在组织<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>活动ID<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>拆分值<br/>
                         <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>脚本<br/>
                     </td>
                 </tr>

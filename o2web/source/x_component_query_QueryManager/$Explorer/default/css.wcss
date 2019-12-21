@@ -37,10 +37,48 @@
         "line-height": "80px",
         "color": "#FFF",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "margin-left": "5px"
 	},
+	"categoryElementNode": {
+        "overflow": "hidden",
+        "background-color": "#ffffff",
+        "position": "static",
+        "font-size": "14px"
+    },
+    "categoryElementItemAllNode": {
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu.png') 0 center no-repeat",
+        "height": "38px",
+        "margin-left": "30px",
+        "padding-left": "22px",
+        "line-height":"38px",
+        "color": "#333333",
+        "border-bottom": "2px solid #ffffff"
+    },
+    "categoryElementItemAllNode_current": {
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu_click.png') 0 center no-repeat",
+        "color": "#4a90e2",
+        "border-bottom": "2px solid #4a90e2"
+    },
+    "categoryElementItemNode": {
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_grey.png') 0 center no-repeat",
+        "height": "38px",
+        "margin-left": "30px",
+        "padding-left": "22px",
+        "line-height":"38px",
+        "color": "#333333",
+        "border-bottom": "2px solid #ffffff"
+    },
+    "categoryElementItemNode_current": {
+        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_click.png') 0 center no-repeat",
+        "color": "#4a90e2",
+        "border-bottom": "2px solid #4a90e2"
+    },
 	"searchElementNode": {
 		"margin-left": "362px",
 		"overflow": "hidden"
@@ -71,7 +109,7 @@
 		"width": "96%",
 		"height": "28px",
 		"border": "0px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"font-size": "14px",
 		"color": "#999",
 		"background": "transparent",
@@ -108,7 +146,7 @@
 		"border": "1px solid #FFF",
 		"line-height": "30px",
 		"font-size": "14px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"color": "#FFF",
 		"text-align": "center",
 		"border-radius": "0px",

@@ -18,7 +18,7 @@ MWF.xScript.Actions.UnitActions = new Class({
     listSubGroupNested: invoke("listSubGroupNested"),
     listSupGroupDirect: invoke("listSupGroupDirect"),
     listSupGroupNested: invoke("listSupGroupNested"),
-    listlistGroupWithPersonGroup: invoke("listGroupWithPerson"),
+    listGroupWithPerson: invoke("listGroupWithPerson"),
     groupHasRole: invoke("groupHasRole"),
 
     //角色--------

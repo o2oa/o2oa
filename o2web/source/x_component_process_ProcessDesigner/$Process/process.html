@@ -230,6 +230,17 @@
             <div></div>
             <div></div>
         </div>
+        <hr/>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue">
+                    <b>每次流转刷新映射数据：</b>
+                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully!==false)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="projectionFully" text{($.projectionFully===false)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+        </table>
+
     </div>
 
     <div title="事件"  class="MWFTab">

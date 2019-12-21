@@ -11,6 +11,7 @@ o2.widget.Combox = new Class({
         "splitShow": ", ",
         "focusList": false,
         "noDataColor": true,
+        "onlySelect": false,
         "count": 0
 	},
 	initialize: function(options){
@@ -25,12 +26,17 @@ o2.widget.Combox = new Class({
 	},
     getSelectList: function(value, callback){
 	    var list = [];
+
         if (this.options.list.length){
-            var listValues = this.options.list.filter(function(v, i){
-                var key = (v.keyword || "")+v.text;
-                return (key.indexOf(value)!==-1);
-            });
-            list = listValues;
+            if (this.options.onlySelect){
+                list = this.options.list;
+            }else{
+                var listValues = this.options.list.filter(function(v, i){
+                    var key = (v.keyword || "")+v.text;
+                    return (key.indexOf(value)!==-1);
+                });
+                list = listValues;
+            }
         }
         if (this.options.optionsMethod){
             this.options.optionsMethod(value, function(methodValues){
@@ -212,6 +218,7 @@ o2.widget.Combox = new Class({
         }
     },
     createItem: function(values, i, data, callback){
+	    debugger;
         if (values[i]){
             var value = values[i];
 
@@ -280,7 +287,7 @@ o2.widget.Combox = new Class({
     deleteItem: function(item){
         this.values.erase(item);
         item.node.destroy();
-        item.input.destroy();
+        if (item.input) item.input.destroy();
         o2.release(item);
     }
 });
@@ -294,6 +301,7 @@ o2.widget.Combox.Value = new Class({
         this.value = value;
         this.data = data || null;
         this.type = "item";
+        this.index = this.combox.values.length;
         this.load();
     },
     getItemPosition: function(){
@@ -371,6 +379,7 @@ o2.widget.Combox.Value = new Class({
         this.input.searchItems();
     },
     commitInput: function(data){
+        var oldValues = this.combox.values.map(function(v){ return v.data || v.value});
         var valueStr = this.input.node.get("value");
         if (valueStr){
             var values = valueStr.split(this.combox.splitRegExp);
@@ -407,13 +416,13 @@ o2.widget.Combox.Value = new Class({
                     this.input.hide();
                     this.combox.editItem = null;
                     this.combox.fireEvent("commitInput", [this]);
-                    this.combox.fireEvent("change", [this]);
+                    this.combox.fireEvent("change", [this, oldValues]);
                 }else{
                     this.combox.editItem = null;
                     var combox = this.combox;
                     this.input.hideOptionList();
                     this.combox.deleteItem(this);
-                    combox.fireEvent("change", [this]);
+                    combox.fireEvent("change", [this, oldValues]);
                 }
             }
 
@@ -454,6 +463,7 @@ o2.widget.Combox.Input = new Class({
         this.bind = bind;
         this.css = this.combox.css;
         this.node = new Element("input", {"styles": this.css.inputNode, "type":"text", "value": value});
+        if (this.combox.options.onlySelect) this.node.set("readonly", true);
         this.setInputNodeStyles();
         this.setInputWidth();
         this.setEvent();
@@ -555,6 +565,7 @@ o2.widget.Combox.Input = new Class({
                     if ((this.combox.editItem == this.bind) || (!this.combox.editItem)){
                         this.bind.commitInput();
                     }
+                    this.hideOptionList();
                     e.stopPropagation();
                 //}
             }.bind(this)
@@ -664,8 +675,10 @@ o2.widget.Combox.Input = new Class({
         }
     },
     createOptionListNode: function(){
+        // this.relativeOptionListLocation = new Element("div", {"styles": this.css.relativeOptionListLocation});
+        // this.relativeOptionListLocation.inject(this.node, "after");
         this.optionListNode = new Element("div", {"styles": this.css.optionListNode});
-        this.optionListNode.inject(this.node, "after");
+        this.optionListNode.inject(this.node, "after");;
         this.optionListNode.addEvents({
             "mousedown": function(e){
                 this.noBlur = true;
@@ -715,6 +728,27 @@ o2.widget.Combox.Input = new Class({
             "edge": "leftTop",
             "offset": {"y": 3}
         });
+        var pNode = this.optionListNode.getOffsetParent();
+        var p = this.optionListNode.getPosition(pNode);
+        var s = this.optionListNode.getSize();
+        var ps = pNode.getSize();
+        //var ss = pNode.getScroll();
+        if (p.y+s.y>ps.y){
+            this.optionListNode.position({
+                "relativeTo": this.node,
+                "position": "leftTop",
+                "edge": "leftBottom",
+                "offset": {"y": 3}
+            });
+        }
+        debugger;
+        var p = this.optionListNode.getPosition(pNode);
+        if (p.y<10){
+            var top = this.optionListNode.getStyle("top").toInt();
+            top = top-p.y+10;
+            this.optionListNode.setStyle("top", ""+top+"px");
+        }
+
         if (layout.desktop.offices){
             Object.each(layout.desktop.offices, function(office){
                 if (this.optionListNode.isOverlap(office.officeNode)){

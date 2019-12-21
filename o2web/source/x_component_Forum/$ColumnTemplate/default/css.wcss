@@ -27,7 +27,7 @@
   },
   "itemTitleNode" : {
     "margin-top" : "5px",
-    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left"
   },
   "itemTitleNode_over" : {
@@ -110,7 +110,7 @@
   },
   "itemTitleNode" : {
     "margin-top" : "5px",
-    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left",
     "cursor" : "pointer"
   },
