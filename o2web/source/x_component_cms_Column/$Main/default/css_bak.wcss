@@ -38,7 +38,7 @@
         "line-height": "40px",
         "float": "left",
         "padding-left": "20px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-weight" : "bold"
     },
     "createColumnNode":{
@@ -109,7 +109,7 @@
         "height": "30px",
         "color": "#000",
         "line-height": "40px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "font-weight": "bold"
     },
@@ -118,7 +118,7 @@
         "height": "50px",
         "color": "#666",
         "line-height": "20px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px"
     },
     "columnItemDelActionNode": {
@@ -177,7 +177,7 @@
         "margin": "auto",
         "font-size": "16px",
         "color": "#666",
-        "font-family": "微软雅黑"
+        "font-family": "Microsoft YaHei"
     },
     "columnCreateOkActionNode": {
         "height": "30px",
@@ -187,7 +187,7 @@
         "line-height": "30px",
         "padding-left": "65px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "border": "1px solid #354f67",
         "color": "#FFF",
@@ -204,7 +204,7 @@
         "line-height": "30px",
         "padding-left": "40px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "color": "#FFF",
         "margin-top": "20px",
@@ -235,7 +235,7 @@
         "line-height": "40px",
         "float": "left",
         "padding-left": "20px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-weight" : "bold"
     },
     "createCategoryNode":{
@@ -340,7 +340,7 @@
         "margin": "auto",
         "font-size": "16px",
         "color": "#666",
-        "font-family": "微软雅黑"
+        "font-family": "Microsoft YaHei"
     },
     "categoryCreateOkActionNode": {
         "height": "30px",
@@ -350,7 +350,7 @@
         "line-height": "30px",
         "padding-left": "65px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "border": "1px solid #354f67",
         "color": "#FFF",
@@ -367,7 +367,7 @@
         "line-height": "30px",
         "padding-left": "40px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "color": "#FFF",
         "margin-top": "20px",
@@ -454,7 +454,7 @@
     "applicationItemNameNode": {
         "height": "30px",
         "font-size": "18px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-weight": "bold",
         "line-height": "40px",
         "color": "#FFF"
@@ -462,7 +462,7 @@
     "applicationItemTypeNode": {
         "height": "30px",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "line-height": "40px",
         "color": "#EEE"
     },
@@ -481,7 +481,7 @@
     "applicationItemElTitleNode": {
         "font-size": "14px",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "color": "#333",
         "padding": "0px 5px 5px 5px"
     },

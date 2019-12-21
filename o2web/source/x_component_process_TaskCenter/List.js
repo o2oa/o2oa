@@ -1068,33 +1068,29 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
         }.bind(this));
     },
     addMessage: function(data){
-        var content = "";
+        if (layout.desktop.message){
+            var content = "";
 
-        if (data.length){
-            data.each(function(work){
-                var users = [];
-                work.taskList.each(function(task){
-                    users.push(task.person+"("+task.department+")");
+            if (data.length){
+                data.each(function(work){
+                    var users = [];
+                    work.taskList.each(function(task){
+                        users.push(task.person+"("+task.department+")");
+                    }.bind(this));
+
+                    content += "<div><b>"+this.list.app.lp.nextActivity+"<font style=\"color: #ea621f\">"+work.fromActivityName+"</font>, "+this.list.app.lp.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>"
                 }.bind(this));
+            }else{
+                content += this.list.app.lp.workCompleted;
+            }
+            var msg = {
+                "subject": this.list.app.lp.taskProcessed,
+                "content": "<div>"+this.list.app.lp.taskProcessedMessage+"“"+this.data.title+"”</div>"+content
+            };
 
-                content += "<div><b>"+this.list.app.lp.nextActivity+"<font style=\"color: #ea621f\">"+work.fromActivityName+"</font>, "+this.list.app.lp.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>"
-            }.bind(this));
-        }else{
-            content += this.list.app.lp.workCompleted;
+            layout.desktop.message.addTooltip(msg);
+            layout.desktop.message.addMessage(msg);
         }
-        //
-        //
-        //data.taskList.each(function(list){
-        //    content += "<div><b>"+this.list.app.lp.nextActivity+"<font style=\"color: #ea621f\">"+list.activityName+"</font>, "+this.list.app.lp.nextUser+"<font style=\"color: #ea621f\">"+list.personList.join(", ")+"</font></b></div>"
-        //}.bind(this));
-
-        var msg = {
-            "subject": this.list.app.lp.taskProcessed,
-            "content": "<div>"+this.list.app.lp.taskProcessedMessage+"“"+this.data.title+"”</div>"+content
-        };
-
-        layout.desktop.message.addTooltip(msg);
-        layout.desktop.message.addMessage(msg);
     },
     submitTask: function(routeName, opinion, medias, processor, flag){
         if (!opinion) opinion = routeName;

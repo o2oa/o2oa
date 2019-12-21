@@ -261,11 +261,34 @@
         r.send();
     };
 
+    var _cacheUrls = [
+        /jaxrs\/form\/workorworkcompleted\/.+/ig,
+    //    /jaxrs\/script/ig,
+        /jaxrs\/script\/.+\/app\/.+\/imported/ig,
+        /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
+        /jaxrs\/script\/.+\/application\/.+\/imported/ig,
+        /jaxrs\/page\/.+\/portal\/.+/ig
+        // /jaxrs\/authentication/ig
+        // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
+    ];
     _restful = function(method, address, data, callback, async, withCredentials, cache){
         var loadAsync = (async !== false);
         var credentials = (withCredentials !== false);
         address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
+        //var noCache = cache===false;
         var noCache = !cache;
+
+
+        //if (Browser.name == "ie")
+        if (_cacheUrls.length){
+            for (var i=0; i<_cacheUrls.length; i++){
+                if (_cacheUrls[i].test(address)){
+                    noCache = false;
+                    break;
+                }
+            }
+        }
+        //var noCache = false;
         var res = new Request.JSON({
             url: address,
             secure: false,

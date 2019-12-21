@@ -1,3 +1,4 @@
+MWF.xApplication.CRM.AddressExplorer={};
 MWF.xApplication.CRM.CustomerEdit = new Class({
     Extends: MWF.xApplication.CRM.Template.PopupForm,
     Implements: [Options, Events],
@@ -30,550 +31,248 @@ MWF.xApplication.CRM.CustomerEdit = new Class({
         this.actions = actions;
     },
     load: function () {
+        this.loadResource(function(){
+            this.appArea = jQuery("body").children(":first");
+            this.createForm();
+            debugger
+        }.bind(this))
 
-        this.createForm();
-
+    },
+    loadResource: function ( callback ) {
+        if(callback)callback();
     },
     createForm:function(){
-        this.allArrowArr = [];
-        if (this.options.isNew) {
-            this.create();
-        } else if (this.options.isEdited) {
-            this.edit();
-        } else {
-            this.open();
-        }
-
-        this.formContentNode.addEvents({
-            "click": function () {
-                if(this.listContentDiv){
-                    this.listContentDiv.destroy();
-                }
-                if(this.allArrowArr.length>0){
-                    this.allArrowArr.each(function(d){
-                        d.setStyles({
-                            "background":"url(/x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"
-                        });
-                    }.bind(this))
-                }
-
-            }.bind(this)
-        });
-    },
-    createTopNode: function () {
-        if (!this.formTopNode) {
-            this.formTopNode = new Element("div.formTopNode", {
-                "styles": this.css.formTopNode
-            }).inject(this.formNode);
-
-            this.formTopIconNode = new Element("div", {
-                "styles": this.css.formTopIconNode
-            }).inject(this.formTopNode);
-
-            this.formTopTextNode = new Element("div", {
-                "styles": this.css.formTopTextNode,
-                "text": this.options.title + ( this.data.title ? ("-" + this.data.title ) : "" )
-            }).inject(this.formTopNode);
-
-            if (this.options.closeAction) {
-                this.formTopCloseActionNode = new Element("div", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
-                this.formTopCloseActionNode.addEvent("click", function () {
-                    this.close();
-                }.bind(this))
+        debugger
+        _self = this;
+        jQuery(_self.appArea).next().attr("style","");
+        jQuery(_self.appArea).next().attr("class","mask");
+        var section_header = '<div class="section-header"><div class="section-mark" style="border-left-color: rgb(70, 205, 207);"></div> '+
+            '<div data-v-ec8f8850="" class="section-title">基本信息</div></div>';
+        var itemTemplateObject = _self.lp;
+        var section_conent = '<div class="section-conent">';
+        debugger
+        for ( i in itemTemplateObject){
+            var stype = itemTemplateObject[i].type;
+            var notEmpty = itemTemplateObject[i].notEmpty?itemTemplateObject[i].notEmpty:"false";
+            var innerHtml = '<input type="text" class="inline-input" name="'+i+'" id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'">';
+            if(stype=="textarea"){
+                innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
-
-            this.formTopContentNode = new Element("div", {
-                "styles": this.css.formTopContentNode
-            }).inject(this.formTopNode);
-
-            this._createTopContent();
-
-        }
-    },
-    _createTopContent: function () {
-
-    },
-    _createTableContent: function () {
-        //this.loadFormData();
-        var Ttype = "customer";
-        this.actions.getProfiles(Ttype,function(json){
-            this.profileData = json.data;
-            if(this.data.id){
-                this.actions.getCustomerInfo(this.data.id,function(json){
-                    this.customerData = json.data;
-                    this.loadFormData();
-                    this.createCustomBottom();
-                }.bind(this));
-            }else{
-                this.loadFormData();
-                this.createCustomBottom();
+            if(stype=="select" || stype=="hide"){
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
-        }.bind(this));
-
-    },
-    loadFormData:function(){
-        var tmpData={};
-        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
-            "<tr>" +
-            "   <td styles='formTableTitle'><span lable='TCustomerName'></span><span style='color:#f00'>*</span></td>" +
-            "   <td styles='formTableValue' item='TCustomerName'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TCustomerType'></td>" +
-            "   <td styles='formTableValue'><div id='TCustomerType'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TCustomerLevel'></td>" +
-            "   <td styles='formTableValue'><div id='TCustomerLevel'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TSource'></td>" +
-            "   <td styles='formTableValue'><div id='TSource'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TIndustryFirst'></td>" +
-            "   <td styles='formTableValue'><div id='TIndustryFirst'></div><div id='TIndustrySecond'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TDistrict'></td>" +
-            "   <td styles='formTableValue'><div id='TProvince'></div><div id='TCity'></div><div id='TArea'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TStreet'></td>" +
-            "   <td styles='formTableValue' item='TStreet'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TLocation'></td>" +
-            "   <td styles='formTableValue'><div style='width:100%;height:30px;'><input type='text' placeholder='"+this.lp.TLocationNotice+"' id='mapLocation' disabled/></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle'></td>" +
-            "   <td styles='formTableValue'><div id='mapDiv' styles='mapDiv'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TTelphone'></td>" +
-            "   <td styles='formTableValue' item='TTelphone'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TFax'></td>" +
-            "   <td styles='formTableValue' item='TFax'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TRemark'></td>" +
-            "   <td styles='formTableValue' item='TRemark'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TWebSite'></td>" +
-            "   <td styles='formTableValue' item='TWebSite'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TEmail'></td>" +
-            "   <td styles='formTableValue' item='TEmail'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TCustomerStatus'></td>" +
-            "   <td styles='formTableValue'><div id='TCustomerStatus'></div></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='TCustomerGrade'></td>" +
-            "   <td styles='formTableValue'><div id='TCustomerGrade'></div></td>" +
-            "</tr>" +
-            "</table>"
-        this.formTableArea.set("html", html);
-        this.loadForm();
-
-        this.TCustomerType = this.formTableArea.getElement("#TCustomerType");
-        this.TCustomerLevel = this.formTableArea.getElement("#TCustomerLevel");
-        this.TSource = this.formTableArea.getElement("#TSource");
-        this.TIndustryFirst = this.formTableArea.getElement("#TIndustryFirst");
-        this.TIndustrySecond = this.formTableArea.getElement("#TIndustrySecond");
-        this.TProvince = this.formTableArea.getElement("#TProvince");
-        this.TCity = this.formTableArea.getElement("#TCity");
-        this.TArea = this.formTableArea.getElement("#TArea");
-        this.TCustomerStatus = this.formTableArea.getElement("#TCustomerStatus");
-        this.TCustomerGrade = this.formTableArea.getElement("#TCustomerGrade");
-
-        var size = {"width":230,"height":30};
-
-        this.TIndustryFirst.setStyles({"float":"left"});
-        this.TIndustrySecond.setStyles({"float":"left","margin-left":"10px"});
-
-
-
-        //客户类型
-        this.TCustomerTypeSelector =  new MWF.xApplication.CRM.Template.Select(this.TCustomerType,this, this.actions, size);
-        this.TCustomerTypeSelector.load();
-        alert(JSON.stringify(this.profileData.customertype_config))
-        this.TCustomerTypeSelector.setList(this.profileData.customertype_config);
-        if(this.customerData && this.customerData.customertype){
-            this.TCustomerTypeSelector.selectValueDiv.set({"text":this.customerData.customertype});
-            this.TCustomerTypeSelector.node.set("value",this.customerData.customertype);
-        }
-        //客户级别
-        this.TCustomerLevelSelector =  new MWF.xApplication.CRM.Template.Select(this.TCustomerLevel,this, this.actions, size);
-        this.TCustomerLevelSelector.load();
-        this.TCustomerLevelSelector.setList(this.profileData.level_config);
-        if(this.customerData && this.customerData.level){
-            this.TCustomerLevelSelector.selectValueDiv.set({"text":this.customerData.level});
-            this.TCustomerLevelSelector.node.set("value",this.customerData.level);
-        }
-        //来源
-        this.TSourceSelector =  new MWF.xApplication.CRM.Template.Select(this.TSource,this, this.actions, size);
-        this.TSourceSelector.load();
-        this.TSourceSelector.setList(this.profileData.source_config);
-        if(this.customerData && this.customerData.source){
-            this.TSourceSelector.selectValueDiv.set({"text":this.customerData.source});
-            this.TSourceSelector.node.set("value",this.customerData.source);
-        }
-        //行业
-        this.TIndustryFirstSelector =  new MWF.xApplication.CRM.Template.Select(this.TIndustryFirst,this, this.actions, {"width":230,"height":30});
-        this.TIndustrySecondSelector =  new MWF.xApplication.CRM.Template.Select(this.TIndustrySecond,this, this.actions, {"width":230,"height":30,"available":"no"});
-        this.TIndustrySecondSelector.load();
-        this.TIndustryFirstSelector.load();
-        if(this.customerData && this.customerData.industryfirst){
-            this.TIndustryFirstSelector.selectValueDiv.set({"text":this.customerData.industryfirst});
-            this.TIndustryFirstSelector.node.set("value",this.customerData.industryfirst);
-
-
-            this.profileData.industry_config.childNodes.each(function(d){
-                if(d.configname == this.customerData.industryfirst){
-                    tmpData = d;
-                }
-            }.bind(this));
-            this.TIndustrySecondSelector.setList(tmpData);
-            this.TIndustrySecond.set("available","yes");
-            this.TIndustrySecond.setStyles({"background-color":""});
-
-        }
-        if(this.customerData && this.customerData.industrysecond){
-            this.TIndustrySecondSelector.selectValueDiv.set({"text":this.customerData.industrysecond});
-            this.TIndustrySecondSelector.node.set("value",this.customerData.industrysecond);
-
-            this.profileData.industry_config.childNodes.each(function(d){
-                if(d.configname == this.customerData.industryfirst){
-                    tmpData = d;
-                }
-            }.bind(this));
-            this.TIndustrySecondSelector.setList(tmpData);
-            this.TIndustrySecond.set("available","yes");
-            this.TIndustrySecond.setStyles({"background-color":""});
-
-        }
-        this.TIndustryFirstSelector.setList(this.profileData.industry_config,function(d){
-            if(this.TIndustryFirst.get("value") == this.lp.defaultSelect){
-                this.TIndustrySecondSelector.createDefault();
-                this.TIndustrySecondSelector.setList();
-                this.TIndustrySecond.set("available","no");
-                this.TIndustrySecond.setStyles({"background-color":"#eeeeee"})
-            }else{
-                this.TIndustrySecondSelector.createDefault();
-                this.TIndustrySecondSelector.setList(d);
-                this.TIndustrySecond.set("available","yes");
-                this.TIndustrySecond.setStyles({"background-color":""});
+            if(stype=="map"){
+                innerHtml = '<div class="setMap" id="setMap"' +' stype="'+stype+'"></div>';
             }
-        }.bind(this));
+            section_conent = section_conent+'<div class="conent-inline"><div class="conent-title" lable="'+i+'">'+itemTemplateObject[i].text+'</div>' +
+                '<div class="conent-value">'+innerHtml+'</div></div>';
+        }
+        section_conent = section_conent + '</div>';
+        var section_button = '<div class="section_button"><div><button class="el-button handle-button el-button-cancle"><span>取消</span></button>'+
+            '<button class="el-button handle-button el-button-primary"><span>保存</span></button></div></div>';
+        var htmlstr = section_header+section_conent+section_button;
 
-
-
-        //省、市、区
-        this.TProvinceSelector =  new MWF.xApplication.CRM.Template.Select(this.TProvince,this, this.actions, {"width":150,"height":30});
-        this.TProvinceSelector.load({},function(){
-            this.actions.getProvinceList(function(json){
-                this.TProvinceSelector.setAddress(json.data,function(d){
-                    //city
-                    if(this.TProvince.get("value") == this.lp.defaultSelect){
-                        this.TCitySelector.createDefault();
-                        this.TCitySelector.setAddress();
-                        this.TCity.set("available","no");
-                        this.TCity.setStyles({"background-color":"#eeeeee"});
-                    }else{
-                        this.actions.getCityList({pid: d.cityid},function(json){
-                            this.TCitySelector.createDefault();
-                            this.TCitySelector.setAddress(json.data,function(dd){
-                                //area
-                                if(this.TCity.get("value") == this.lp.defaultSelect){
-                                    this.TAreaSelector.createDefault();
-                                    this.TAreaSelector.setAddress();
-                                    this.TArea.set("available","no");
-                                    this.TArea.setStyles({"background-color":"#eeeeee"});
-                                }else{
-                                    this.actions.getAreaList({pid:dd.cityid},function(json){
-                                        this.TAreaSelector.createDefault();
-                                        this.TAreaSelector.setAddress(json.data);
-                                        this.TArea.set("available","yes");
-                                        this.TArea.setStyles({"background-color":""});
-                                    }.bind(this));
+        jQuery(".headMoreImg").notifyMe(
+            'left',
+            'default',
+            "新建客户",
+            '',
+            '',
+            htmlstr,
+            'notifyEdit',
+            50
+        );
+        jQuery(".conent-value").each(function(index,element){
+                var cobj = jQuery(element).children().eq(0)
+                var stype = jQuery(cobj).attr("stype");
+                if(stype=="datetime"){
+                    _self.loadTimeContainer(jQuery(cobj).attr("id"));
+                }
+                if(stype=="select" || stype=="hide"){
+                    var selectObjects = _self.app.lp.customer;
+                    for ( j in selectObjects){
+                        if(j==jQuery(cobj).attr("id")){
+                            var clp = itemTemplateObject[j];
+                            var valueList = clp.value;
+                            var valueArr = valueList.split(",");
+                            if(valueArr.length>0){
+                                var selectHtml = '<ul class="el-dropdown-type" style="display: none;" tid="'+jQuery(cobj).attr("id")+'">'
+                                for(var n=0;n<valueArr.length;n++){
+                                    selectHtml = selectHtml+'<li class="el-dropdown-menu__item">'+valueArr[n]+'</li>'
                                 }
-
-                            }.bind(this));
-                            this.TCity.set("available","yes");
-                            this.TCity.setStyles({"background-color":""});
-                        }.bind(this));
-
+                                jQuery(".notify-content").append(selectHtml+'<div class="popper__arrow"></div></ul>');
+                                jQuery(cobj).click(function(){
+                                    jQuery("[tid='"+jQuery(cobj).attr("id")+"']").css({"left":jQuery(cobj).offset().left-50,"top":jQuery(cobj).offset().top+30,"width":282})
+                                    jQuery("[tid='"+jQuery(cobj).attr("id")+"']").toggle(100);
+                                });
+                                jQuery("[tid='"+jQuery(cobj).attr("id")+"']").children().click(function(){
+                                    debugger
+                                    jQuery(cobj).text(jQuery(this).text());
+                                    jQuery("[tid='"+jQuery(cobj).attr("id")+"']").toggle(100);
+                                });
+                            }
+                        }
                     }
 
-                    this.TAreaSelector.createDefault();
-                    this.TAreaSelector.setAddress();
-                    this.TArea.set("available","no");
-                    this.TArea.setStyles({"background-color":"#eeeeee"});
-                }.bind(this))
-            }.bind(this))
-        }.bind(this));
-        this.TCitySelector =  new MWF.xApplication.CRM.Template.Select(this.TCity,this, this.actions, {"width":150,"height":30,"available":"no"});
-        this.TCitySelector.load();
-        this.TAreaSelector =  new MWF.xApplication.CRM.Template.Select(this.TArea,this, this.actions, {"width":150,"height":30,"available":"no"});
-        this.TAreaSelector.load();
-
-        if(this.customerData && this.customerData.province){ //省
-            this.TProvinceSelector.selectValueDiv.set({"text":this.customerData.province});
-            this.TProvinceSelector.node.set("value",this.customerData.province);
-        }
-        if(this.customerData && this.customerData.city){ //市
-            if(this.customerData && this.customerData.province){
-                this.actions.getCityListByName({"regionname":this.customerData.province},
-                    function(json){
-                        this.TCitySelector.setAddress(json.data,function(dd){
-                            //area
-                            if(this.TCity.get("value") == this.lp.defaultSelect){
-                                this.TAreaSelector.createDefault();
-                                this.TAreaSelector.setAddress();
-                                this.TArea.set("available","no");
-                                this.TArea.setStyles({"background-color":"#eeeeee"});
-                            }else{
-                                this.actions.getAreaList({pid:dd.cityid},function(json){
-                                    this.TAreaSelector.createDefault();
-                                    this.TAreaSelector.setAddress(json.data);
-                                    this.TArea.set("available","yes");
-                                    this.TArea.setStyles({"background-color":""});
-                                }.bind(this));
-                            }
-
-                        }.bind(this));
-                    }.bind(this));
+                }
+                if(stype=="map"){
+                    _self.loadMap();
+                }
             }
-            this.TCitySelector.selectValueDiv.set({"text":this.customerData.city});
-            this.TCitySelector.node.set("value",this.customerData.city);
-            this.TCity.set("available","yes");
-            this.TCity.setStyles({"background-color":""});
+        );
 
-
-        }
-        if(this.customerData && this.customerData.county){ //区
-            if(this.customerData && this.customerData.city){
-                this.actions.getAreaListByName({"regionname":this.customerData.city},
-                    function(json){
-                        this.TAreaSelector.setAddress(json.data);
-                    }.bind(this));
-            }
-            this.TAreaSelector.selectValueDiv.set({"text":this.customerData.county});
-            this.TAreaSelector.node.set("value",this.customerData.county);
-            this.TArea.set("available","yes");
-            this.TArea.setStyles({"background-color":""});
-        }
-
-        this.TProvince.setStyles({"float":"left"});
-        this.TCity.setStyles({"float":"left","margin-left":"10px"});
-        this.TArea.setStyles({"float":"left","margin-left":"10px"});
-
-        this.TCustomerStatusSelector =  new MWF.xApplication.CRM.Template.Select(this.TCustomerStatus,this, this.actions, size);
-        this.TCustomerStatusSelector.load();
-        this.TCustomerStatusSelector.setList(this.profileData.state_config);
-        if(this.customerData && this.customerData.state){
-            this.TCustomerStatusSelector.selectValueDiv.set({"text":this.customerData.state});
-            this.TCustomerStatusSelector.node.set("value",this.customerData.state);
-        }
-        this.TCustomerGradeSelector = new MWF.xApplication.CRM.Template.Select(this.TCustomerGrade,this, this.actions, size);
-        this.TCustomerGradeSelector.load();
-        this.TCustomerGradeSelector.setList(this.profileData.customerrank_config);
-
-        this.TMap = this.formTableArea.getElement("#mapDiv");
-        this.TMap.addEvents({
-            "mousewheel":function(e){
-                e.stopPropagation();
+        jQuery('.el-button-cancle').click(function(){
+            setTimeout(function(){
+                jQuery("#notifyEdit").remove();
+                if(jQuery(".mask").length>0){
+                    jQuery(".mask").attr("style",'left: 0px; top: 0px; width: 100%; overflow: hidden; position: absolute; z-index: 500000; background-color: rgb(255, 255, 255)');
+                    jQuery(".mask").attr("class","");
+                }
+            },200);
+        });
+        jQuery('.el-button-primary').click(function(){
+            var sflag = true;
+            jQuery(".inline-input[notempty='true']").each(function(index,element){
+                if(jQuery(element).val()=="" && jQuery(element).text()==""){
+                    sflag = false;
+                    var nameStr = jQuery(element).parent().prev().text()+'不能为空';
+                    if(jQuery(element).nextAll(".empError").length>0)jQuery(element).nextAll(".empError").remove();
+                    jQuery(element).parent().append('<div class="empError" style="color:#f56c6c;padding: 0;line-height: 1;">'+nameStr+'</div>');
+                }else{
+                    if(jQuery(element).nextAll(".empError").length>0)jQuery(element).nextAll(".empError").remove();
+                }
+            });
+            if(sflag){
+                var filter = {};
+                filter = {
+                    customername:jQuery('div[lable="customername"]').next().children().eq(0).val(),
+                    level:jQuery('div[lable="level"]').next().children().eq(0).text(),
+                    industry:jQuery('div[lable="industry"]').next().children().eq(0).text(),
+                    source:jQuery('div[lable="source"]').next().children().eq(0).text(),
+                    dealstatus:jQuery('div[lable="dealstatus"]').next().children().eq(0).text(),
+                    telephone:jQuery('div[lable="telephone"]').next().children().eq(0).val(),
+                    cellphone:jQuery('div[lable="cellphone"]').next().children().eq(0).val(),
+                    website:jQuery('div[lable="website"]').next().children().eq(0).val(),
+                    location:jQuery('div[lable="detailaddress"]').next().children().eq(0).attr("location"),
+                    detailaddress:jQuery('div[lable="detailaddress"]').next().children().eq(0).val(),
+                    lng:jQuery('div[lable="detailaddress"]').next().children().eq(0).attr("lng"),
+                    lat:jQuery('div[lable="detailaddress"]').next().children().eq(0).attr("lat"),
+                    province:jQuery('div[lable="detailaddress"]').next().children().eq(0).attr("province"),
+                    city:jQuery('div[lable="detailaddress"]').next().children().eq(0).attr("city"),
+                    nexttime:jQuery('div[lable="nexttime"]').next().children().eq(0).val(),
+                    remark:jQuery('div[lable="remark"]').next().children().eq(0).val(),
+                };
+                debugger
+                _self.actions.saveCustomer( filter, function (json) {
+                    debugger
+                    if(json.type=="success"){
+                        Showbo.Msg.alert('保存成功!');
+                    }
+                    setTimeout(function(){
+                        jQuery("#notifyEdit").remove();
+                        if(jQuery(".mask").length>0){
+                            jQuery(".mask").attr("style",'left: 0px; top: 0px; width: 100%; overflow: hidden; position: absolute; z-index: 500000; background-color: rgb(255, 255, 255)');
+                            jQuery(".mask").attr("class","");
+                        }
+                    },200);
+                }.bind(_self));
             }
         });
-        this.mapLocation = this.formTableArea.getElement("#mapLocation");
-        this.mapLocation.setStyles({
-            "width": "99%",
-            "text-indent":"5px",
-            "border":"1px solid #999",
-            "background-color":"#eee",
-            "border-radius": "3px",
-            "box-shadow": "0px 0px 6px #eee",
-            "height": "26px"
+        jQuery(".inline-input[notempty='true']").blur( function () {
+            if(jQuery(this).attr("stype")!="datetime"){
+                if(jQuery(this).val()=="" && jQuery(this).text()==""){
+                    var nameStr = jQuery(this).parent().prev().text()+'不能为空';
+                    if(jQuery(this).nextAll(".empError").length>0)jQuery(this).nextAll(".empError").remove();
+                    jQuery(this).parent().append('<div class="empError" style="color:#f56c6c;padding: 0;line-height: 1;">'+nameStr+'</div>');
+                }else{
+                    if(jQuery(this).nextAll(".empError").length>0)jQuery(this).nextAll(".empError").remove();
+                }
+            }
         });
-
-
-        MWF.xDesktop.requireApp("CRM", "BaiduMap", function(){
-            this.bMap = new MWF.xApplication.CRM.BaiduMap(this.TMap,this.app,this,this.actions,{"from":"newCustomer"});
-            var mapData = {};
-            if(this.customerData && this.customerData.addresslatitude){
-                mapData.latitude = this.customerData.addresslatitude
-            }
-            if(this.customerData && this.customerData.addresslongitude){
-                mapData.longitude = this.customerData.addresslongitude
-            }
-            this.bMap.load(mapData);
-        }.bind(this));
     },
-
-    loadForm: function(){
-        this.form = new MForm(this.formTableArea, this.data, {
-            style: "default",
-            isEdited: this.isEdited || this.isNew,
-            itemTemplate: this.getItemTemplate(this.lp )
-        },this.app,this.css);
-        this.form.load();
-        this.formTableArea.getElements("textarea").setStyles({"height":"100px","overflow":"auto","color":"#666666"});
-        this.formTableArea.getElements("input").setStyles({"color":"#666666"});
+    loadTimeContainer: function(stime){
+        jQuery("#"+stime).ymdateplugin({
+            showTimePanel: true
+        });
+    },
+    loadMap: function(){
+        _self = this;
+        this.mapDiv = jQuery("#setMap")[0];
+        jQuery(".section-conent").css("height","700px");
+        if(this.mapDiv)this.mapDiv.empty();
+        if(this.addressModule) delete this.addressModule;
+        MWF.xDesktop.requireApp("CRM", "AddressExplorer", function(){
+            this.addressModule = new MWF.xApplication.CRM.AddressExplorer(this.mapDiv,this,this.actions,{});
+            this.addressModule.load();
+        }.bind(this))
     },
     getItemTemplate: function( lp ){
         _self = this;
         return {
-            TCustomerName: {
-                text: lp.TCustomerName,
+            customername: {
+                text: lp.customername,
                 type: "text",
-                attr : {placeholder:lp.TCustomerName},
+                //attr : {placeholder:lp.name},
                 notEmpty:true,
                 value:this.customerData && this.customerData.customername?this.customerData.customername:""
             },
-            TCustomerType:{
-                text: lp.TCustomerType
+            level:{
+                type: "select",
+                notEmpty:true,
+                text: lp.level,
+                value:this.app.lp.customer.level.value
             },
-            TCustomerLevel: {
-                text: lp.TCustomerLevel
+            industry: {
+                type: "select",
+                notEmpty:true,
+                text: lp.industry,
+                value:this.app.lp.customer.industry.value
             },
-            TSource: {
-                text: lp.TSource
+            source: {
+                type: "select",
+                notEmpty:true,
+                text: lp.source,
+                value:this.app.lp.customer.source.value
             },
-            TIndustryFirst:{
-                text: lp.TIndustryFirst
-            },
-            TIndustrySecond:{
-
-            },
-            TDistrict:{
-                text: lp.TDistrict
-            },
-            TStreet: {
-                text: lp.TStreet,
+            /*dealstatus:{
+                type: "hide",
+                text: lp.dealstatus,
+                value:this.app.lp.customer.dealstatus.value
+            },*/
+            telephone:{
                 type: "text",
-                value:this.customerData && this.customerData.houseno?this.customerData.houseno:""
+                notEmpty:true,
+                text: lp.telephone,
+                value:this.app.lp.clue.level.value
             },
-            TLocation:{
-                text: lp.TLocation,
-                type : "text",
-                attr : {"id":"mapLocation","disabled":true},
-                value:this.customerData && this.customerData.houseno?this.customerData.houseno:""
+            website: {
+                text:lp.website,
+                type: "text"
             },
-            TTelphone: {
-                text: lp.TTelphone,
-                type: "text",
-                value:this.customerData && this.customerData.telno?this.customerData.telno:""
+            nexttime: {
+                text:lp.nexttime,
+                notEmpty:true,
+                attr : {id:"nexttime"},
+                type: "datetime"
             },
-            TFax: {
-                text: lp.TFax,
-                type: "text",
-                value:this.customerData && this.customerData.customerfax?this.customerData.customerfax:""
+            cellphone: {
+                text:lp.cellphone,
+                type: "text"
             },
-            TRemark: {
-                text: lp.TRemark,
-                name:"TRemark",
-                type: "textarea",
-                value:this.customerData && this.customerData.remark?this.customerData.remark:""
+            detailaddress: {
+                text:lp.detailaddress,
+                type: "text"
             },
-            TWebSite: {
-                text: lp.TWebSite,
-                type: "text",
-                value:this.customerData && this.customerData.url?this.customerData.url:""
+            remark: {
+                text:lp.remark,
+                type: "textarea"
             },
-            TEmail: {
-                text: lp.TEmail,
-                type: "text",
-                value:this.customerData && this.customerData.email?this.customerData.email:""
-            },
-            TCustomerStatus: {
-                text: lp.TCustomerStatus
-            },
-            TCustomerGrade: {
-                text: lp.TCustomerGrade
+            location: {
+                text:lp.location,
+                type: "map"
             }
         }
-    },
-    createCustomBottom:function(){
-        this.okActionNode = new Element("div.formOkActionNode", {
-            "styles": this.css.formOkActionNode,
-            "text": this.lp.actionConfirm
-        }).inject(this.formBottomNode);
-
-        this.okActionNode.addEvent("click", function (e) {
-            this.ok(e);
-        }.bind(this));
-    },
-    //_createBottomContent: function () {
-    //
-    //    this.cancelActionNode = new Element("div.formCancelActionNode", {
-    //        "styles": this.css.formCancelActionNode,
-    //        "text": this.lp.actionCancel
-    //    }).inject(this.formBottomNode);
-    //    this.cancelActionNode.addEvent("click", function (e) {
-    //        this.cancel(e);
-    //    }.bind(this));
-    //
-    //    this.okActionNode = new Element("div.formOkActionNode", {
-    //        "styles": this.css.formOkActionNode,
-    //        "text": this.lp.actionConfirm
-    //    }).inject(this.formBottomNode);
-    //
-    //    this.okActionNode.addEvent("click", function (e) {
-    //        this.ok(e);
-    //    }.bind(this));
-    //
-    //},
-    _ok: function (data, callback) {
-        var name = this.data.TCustomerName;
-        var customertype = this.formTableArea.getElement("#TCustomerTypeValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TCustomerTypeValue").get("text");
-        var level = this.formTableArea.getElement("#TCustomerLevel").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TCustomerLevel").get("text");
-        var source = this.formTableArea.getElement("#TSourceValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TSourceValue").get("text");
-        var industryfirst = this.formTableArea.getElement("#TIndustryFirstValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TIndustryFirstValue").get("text");
-        var industrysecond = this.formTableArea.getElement("#TIndustrySecond").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TIndustrySecond").get("text");
-        var province = this.formTableArea.getElement("#TProvinceValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TProvinceValue").get("text");
-        var city = this.formTableArea.getElement("#TCityValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TCityValue").get("text");
-        var county = this.formTableArea.getElement("#TAreaValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TAreaValue").get("text");
-        var houseno = this.data.TStreet;
-        var addresslongitude = this.data.lng;
-        var addresslatitude = this.data.lat;
-        var telno = this.data.TTelphone;
-        var url = this.data.TWebSite;
-        var email = this.data.TEmail;
-        var state = this.formTableArea.getElement("#TCustomerStatusValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TCustomerStatusValue").get("text");
-        var rank = this.formTableArea.getElement("#TCustomerGradeValue").get("text") == this.lp.defaultSelect ? "":this.formTableArea.getElement("#TCustomerGradeValue").get("text");
-        var customerfax = this.data.TFax;
-        var remark = this.data.TRemark;
-        var qqno = "";
-        var webchat = "";
-        var id = this.customerData ? this.customerData.id:"";
-
-        var saveData = {
-            "id":id,
-            "customername":name,
-            "customertype":customertype,
-            "level":level,
-            "source":source,
-            "industryfirst":industryfirst,
-            "industrysecond":industrysecond,
-            "province":province,
-            "city":city,
-            "county":county,
-            "houseno":houseno,
-            "addresslongitude":addresslongitude,
-            "addresslatitude":addresslatitude,
-            "customerfax":customerfax,
-            "telno":telno,
-            "url":url,
-            "remark":remark,
-            "email":email,
-            "state":state,
-            "customerrank":rank,
-            "qqno":qqno,
-            "webchat":webchat
-        };
-
-        //alert(JSON.stringify(saveData))
-        this.app.createShade();
-        this.actions.saveCustomer(saveData,function(json){
-            this.app.destroyShade();
-            this.app.notice(this.lp.saveSuccess,"success");
-            this.close();
-            this.fireEvent("reloadView",json);
-        }.bind(this),function(xhr,text,error){
-            this.app.showErrorMessage(xhr,text,error);
-            this.app.destroyShade();
-        }.bind(this));
     }
+
+
 });

@@ -282,7 +282,7 @@
     "padding-right": "20px",
     "color": "#333333",
     "line-height": "26px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "18px",
     "overflow" : "hidden",
     "text-align" : "center"
@@ -295,7 +295,7 @@
     "height": "56px",
     "color": "#666",
     "line-height": "20px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "text-align" : "center"
   },
@@ -350,7 +350,7 @@
     "padding-top" : "3px",
     "padding-bottom" : "3px",
     "color": "#3c76b7",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "border" : "1px solid #fff",
     "background-color" : "#fff",
@@ -370,7 +370,7 @@
   "documentItem" : {
     "height": "28px",
     "line-height" : "28px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "color": "#666",
     "padding-left" : "10px",
@@ -400,7 +400,7 @@
   "moreLinkText" : {
     "display" : "inline",
     "line-height" : "21px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "color" : "#999",
     "cursor" : "pointer",

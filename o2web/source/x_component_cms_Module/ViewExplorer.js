@@ -52,7 +52,9 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
             "styles" : this.css.searchContainer
         }).inject( this.searchNode );
 
-        this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
+        this.resizeFun = function(){this.setContentSize();}.bind(this);
+
+        this.app.addEvent("resize", this.resizeFun );
 
     },
     loadQuryView : function(){
@@ -382,8 +384,11 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
             this.viewSearchCustomActionNode.addEvents({
                 "click": function(){
-                    var x = this.searchContainer.getParent().getParent().getSize().x;
-                    this.searchContainer.setStyle("width", Math.min( 800, x ) + "px" );
+                    var parent = this.searchContainer.getParent();
+                    if( parent ){
+                        var x = parent.getParent().getSize().x;
+                        this.searchContainer.setStyle("width", Math.min( 800, x ) + "px" );
+                    }
                 }.bind(this)
             });
 
@@ -421,8 +426,15 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         if(this.viewSearchInputAreaNode)this.viewSearchInputAreaNode.setStyle("width","auto");
         if( this.node && this.searchContainer && this.viewAreaNode ){
             var size = this.node.getSize();
-            var searchSize = this.searchContainer.getParent().getParent().getSize();
-            var h = size.y-searchSize.y;
+            debugger;
+            var searchSize;
+            var parent = this.searchContainer.getParent();
+            if( parent ){
+                searchSize = parent.getParent().getSize();
+            }else{
+                searchSize = this.searchContainer.getSize();
+            }
+            var h = size.y-searchSize.y - 80; //80是视图翻页条的高度
             this.viewAreaNode.setStyle("height", ""+h+"px");
         }
     }
@@ -467,6 +479,8 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         //    }
         //}.bind(this));
 
+        debugger;
+
         this.view.viewJson.selectList.each(function(column){
             var k = column.column;
             var cell = this.data.data[column.column];
@@ -474,11 +488,11 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
             if (this.view.hideColumns.indexOf(k)===-1){
                 var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
                 if (k!== this.view.viewJson.group.column){
-                    var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                    td.set("text", v);
+                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                    td.set("text", cell);
                 }
                 if (this.view.openColumns.indexOf(k)!==-1){
-                    this.setOpenWork(td)
+                    this.setOpenWork(td, column)
                 }
                 if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
             }
@@ -536,11 +550,23 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
             }.bind(this)
         });
     },
-    setOpenWork: function(td){
+    setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");
-        td.addEvent("click", function(){
-            this.openCMSDocument()
-        }.bind(this));
+        if( column.clickCode ) {
+            if (!this.view.Macro) {
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.view.businessData = {};
+                    this.view.Macro = new MWF.Macro.PageContext(this.view);
+                }.bind(this), false);
+            }
+            td.addEvent("click", function( ev ){
+                return this.view.Macro.fire(column.clickCode, this, ev);
+            }.bind(this));
+        }else{
+            td.addEvent("click", function(){
+                this.openCMSDocument()
+            }.bind(this));
+        }
     },
     openCMSDocument : function( isEdited ){
         var appId = "cms.Document"+this.data.bundle;

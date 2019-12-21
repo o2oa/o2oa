@@ -655,7 +655,7 @@
         "width": "490px",
         "border": "0px",
         "font-size": "14px",
-        "font-family": "'Microsoft YaHei','微软雅黑','SimSun','宋体'",
+        "font-family": "'Microsoft YaHei','Microsoft YaHei','SimSun','宋体'",
         "overflow": "auto"
     },
     "attachmentOCRImageAreaNode": {
@@ -904,6 +904,59 @@
         "line-height": "1.02cm",
         "letter-spacing": "-0.01cm"
     },
+    "html5ActionButtonDingdingMore": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#191F25",
+        "text-align": "center",
+        "background": "#ffffff",
+        "line-height": "3em"
+    },
+    "html5ActionButtonDingdingNormal": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#191F25",
+        "text-align": "center",
+        "background": "#ffffff",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #dfdfdf"
+    },
+    "html5ActionButtonDingdingPrimary": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#ffffff",
+        "text-align": "center",
+        "background": "#3296FA",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #3296FA"
+    },
+    "html5ActionButtonDingdingDanger": {
+        "height": "3em",
+        "float": "left",
+        "margin": "0.5em 0",
+        "font-size": "1em",
+        "color": "#ffffff",
+        "text-align": "center",
+        "background": "#F25643",
+        "line-height": "3em",
+        "border-radius": "5px",
+        "border": "1px solid #F25643"
+    },
+    "html5ActionButtonDingdingSplit": {
+        "width": "1em",
+        "background-color": "#ffffff",
+        "height": "3em",
+        "margin": "0.5em 0",
+        "float": "left"
+    },
     "html5ActionButton": {
         "height": "100%",
         "float": "left",
@@ -958,5 +1011,83 @@
         "z-index": 20000,
         "border": "1px solid #333333",
         "box-shadow": "3px 3px 20px #333333"
-    }
+    },
+    "attachmentOrderNode":{
+        "width": "700px",
+        "height": "600px",
+        "padding": "10px 10px 5px 10px"
+    },
+    "attachmentOrderInforNode": {
+        "padding": "10px 20px 5px 20px",
+        "height": "30px",
+        "line-height": "30px",
+        "color": "#666666"
+    },
+    "attachmentOrderAreaNode": {
+        "padding": "10px 10px 5px 10px",
+        "background-color": "#ffffff",
+        "height": "530px",
+        "overflow": "auto"
+    },
+    "attachmentOrderItemNode": {
+        "min-height": "30px",
+        "overflow": "auto",
+        "line-height": "30px",
+        "padding": "5px 0px",
+        "border-bottom": "1px solid #cccccc"
+    },
+    "attachmentOrderItemIconNode": {
+        "width": "30px",
+        "height": "30px",
+        "float": "left",
+        "cursor": "move",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/attOrder.png) no-repeat center center",
+        "background-size": "24px 24px"
+    },
+    "attachmentOrderItemTextNode": {
+        "margin-left": "30px",
+        "margin-right": "130px",
+        "min-height": "30px",
+        "padding": "0px 5px",
+        "color": "#666666"
+    },
+    "attachmentOrderItemActionNode": {
+        "width": "130px",
+        "height": "30px",
+        "float": "right"
+    },
+    "attachmentOrderItemActionUpNode": {
+        "border": "1px solid #999999",
+        "border-radius": "3px",
+        "height": "20px",
+        "width": "30px",
+        "float": "left",
+        "margin-left": "5px",
+        "margin-top": "4px",
+        "padding-left": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "cursor": "pointer",
+        "background": "url(/x_component_process_Xform/$Form/default/icon/moveup.png) no-repeat 3px center",
+        "color": "#999999"
+    },
+     "attachmentOrderItemActionDownNode": {
+         "border": "1px solid #999999",
+         "border-radius": "3px",
+         "height": "20px",
+         "width": "30px",
+         "float": "left",
+         "margin-left": "5px",
+         "margin-top": "4px",
+         "padding-left": "20px",
+         "line-height": "20px",
+         "font-size": "12px",
+         "cursor": "pointer",
+         "background": "url(/x_component_process_Xform/$Form/default/icon/movedown.png) no-repeat 3px center",
+         "color": "#999999"
+     },
+     "attachmentOrderFlagNode": {
+        "height": "2px",
+        "background-color": "#5c649c"
+     }
 }

@@ -8,7 +8,7 @@
 		"position": "absolute",
 		"height": "330px",
 		"padding": "10px",
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"overflow": "hidden"
 	},
 
@@ -40,8 +40,7 @@
 		"margin-right": "22px",
 		"color": "#333",
 		"font-size": "24px",
-
-		"font-family": "微软雅黑",
+		"font-family": "Microsoft YaHei",
 		"background-position": "center center",
 		"cursor": "move"
 	},

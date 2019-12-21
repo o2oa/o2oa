@@ -15,7 +15,7 @@
 			</tr>
 		</table>
 
-		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display:none">
 			<tr>
 				<td class="editTableTitle">文件模板:</td>
 				<td class="editTableValue">
@@ -38,16 +38,28 @@
 
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-			<tr>
-				<td class="editTableTitle">编辑:</td>
-				<td class="editTableValue">
-					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit!='n' && $.allowEdit!='s')?'checked':''} type="radio" value="y"/>允许
-					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit=='n')?'checked':''} type="radio" value="n"/>不允许
-					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'block')}" name="allowEdit" text{($.allowEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
-				</td>
-			</tr>
+		<tr>
+			<td class="editTableTitle">编辑:</td>
+			<td class="editTableValue">
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit!='n' && $.allowEdit!='s')?'checked':''} type="radio" value="y"/>允许
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'none')}" name="allowEdit" text{($.allowEdit=='n')?'checked':''} type="radio" value="n"/>不允许
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowEditScriptArea').setStyle('display', 'block')}" name="allowEdit" text{($.allowEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
+			</td>
+		</tr>
 		</table>
 		<div id="text{$.pid}allowEditScriptArea" style="display: text{($.allowEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="allowEditScript" title="编辑脚本 (S)"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		<tr>
+			<td class="editTableTitle">打印正文:</td>
+			<td class="editTableValue">
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowPrintScriptArea').setStyle('display', 'none')}" name="allowPrint" text{($.allowPrint!='n' && $.allowPrint!='s')?'checked':''} type="radio" value="y"/>允许
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowPrintScriptArea').setStyle('display', 'none')}" name="allowPrint" text{($.allowPrint=='n')?'checked':''} type="radio" value="n"/>不允许
+				<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowPrintScriptArea').setStyle('display', 'block')}" name="allowPrint" text{($.allowPrint=='s')?'checked':''} type="radio" value="s"/>根据脚本
+			</td>
+		</tr>
+		</table>
+		<div id="text{$.pid}allowPrintScriptArea" style="display: text{($.allowEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="allowPrintScript" title="允许打印脚本 (S)"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -73,7 +85,7 @@
 					<td class="editTableValue">
 						<input class="editTableRadio" name="toWordTrigger" text{($.toWordTrigger!='save' && $.toWordTrigger!=='open')?'checked':''} type="radio" value="submit"/>提交时
 						<input class="editTableRadio" name="toWordTrigger" text{($.toWordTrigger=='save')?'checked':''} type="radio" value="save"/>保存时
-						<input class="editTableRadio" name="toWordTrigger" text{($.toWordTrigger=='open')?'checked':''} type="radio" value="open"/>打开时
+<!--						<input class="editTableRadio" name="toWordTrigger" text{($.toWordTrigger=='open')?'checked':''} type="radio" value="open"/>打开时-->
 					</td>
 				</tr>
 				<tr>
@@ -312,6 +324,23 @@
 			</div>
 
 			<div id="text{$.pid}redHeaderValueScriptArea" style="display: text{($.redHeaderValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="redHeaderValueScript" title="红头绑定值脚本 (S)"></div>
+		</div>
+<!-----------------------------------------------红头------------------------------------------------------------------->
+
+<!-----------------------------------------------红线------------------------------------------------------------------->
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">红线（redLine）</div>
+		<div style="display: none">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">是否显示</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redLineShowScriptArea').setStyle('display', 'none')}" name="redLineShow" text{($.redLineShow!='n' && $.redLineShow!='s')?'checked':''} type="radio" value="y"/>显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redLineShowScriptArea').setStyle('display', 'none')}" name="redLineShow" text{($.redLineShow=='n')?'checked':''} type="radio" value="n"/>不显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}redLineShowScriptArea').setStyle('display', 'block')}" name="redLineShow" text{($.redLineShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}redLineShowScriptArea" style="display: text{($.redHeaderShow=='s')?'block':'none'}" class="MWFFormulaArea" name="redLineShowScript" title="红线显示脚本 (S)"></div>
 		</div>
 <!-----------------------------------------------红头------------------------------------------------------------------->
 
@@ -762,6 +791,56 @@
 			</div>
 
 			<div id="text{$.pid}copytoValueScriptArea" style="display: text{($.copytoValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copytoValueScript" title="抄送绑定值脚本 (S)"></div>
+		</div>
+<!-----------------------------------------------抄送------------------------------------------------------------------->
+
+<!-----------------------------------------------发------------------------------------------------------------------->
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">发（copyto2）</div>
+		<div style="display: none">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">是否显示</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='y')?'checked':''} type="radio" value="y"/>显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show=='n')?'checked':''} type="radio" value="n"/>不显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'none')}" name="copyto2Show" text{($.copyto2Show!='y' && $.copyto2Show!='n' && $.copyto2Show!='s')?'checked':''} type="radio" value="a"/>自动
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ShowScriptArea').setStyle('display', 'block')}" name="copyto2Show" text{($.copyto2Show=='s')?'checked':''} type="radio" value="s"/>根据脚本
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}copyto2ShowScriptArea" style="display: text{($.copyto2Show=='s')?'block':'none'}" class="MWFFormulaArea" name="copyto2ShowScript" title="抄送显示脚本 (S)"></div>
+
+			<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+			<!--				<tr>-->
+			<!--					<td class="editTableTitle">允许编辑:</td>-->
+			<!--					<td class="editTableValue">-->
+			<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2EditScriptArea').setStyle('display', 'none')}" name="copyto2Edit" text{($.copyto2Edit=='y')?'checked':''} type="radio" value="y"/>允许-->
+			<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2EditScriptArea').setStyle('display', 'none')}" name="copyto2Edit" text{($.copyto2Edit!='y' && $.copyto2Edit!='s')?'checked':''} type="radio" value="n"/>不允许-->
+			<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2EditScriptArea').setStyle('display', 'block')}" name="copyto2Edit" text{($.copyto2Edit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
+			<!--					</td>-->
+			<!--				</tr>-->
+			<!--			</table>-->
+			<!--			<div id="text{$.pid}copyto2EditScriptArea" style="display: text{($.copyto2Edit=='s')?'block':'none'}" class="MWFFormulaArea" name="copyto2EditScript" title="抄送编辑脚本 (S)"></div>-->
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">绑定值:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'block'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'none')}" name="copyto2ValueType" text{($.copyto2ValueType!='script')?'checked':''} type="radio" value="data"/>表单数据
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copyto2ValueDataArea').setStyle('display', 'none'); $('text{$.pid}copyto2ValueScriptArea').setStyle('display', 'block')}" name="copyto2ValueType" text{($.copyto2ValueType=='script')?'checked':''} type="radio" value="script"/>脚本
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}copyto2ValueDataArea" style="display: text{($.copyto2ValueType!='script')?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">表单数据:</td>
+						<td class="editTableValue"><input type="text" name="copyto2ValueData" value="text{$.copyto2ValueData}" class="editTableInput"/></td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="text{$.pid}copyto2ValueScriptArea" style="display: text{($.copyto2ValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="copyto2ValueScript" title="抄送绑定值脚本 (S)"></div>
 		</div>
 <!-----------------------------------------------抄送------------------------------------------------------------------->
 

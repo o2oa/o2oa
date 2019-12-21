@@ -6,13 +6,14 @@ MWF.xScript.Actions.CMSScriptActions = new Class({
 		this.action = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control");
         this.action.getActions = function(callback){
             this.actions = {
-                "getScriptByName": {"uri": "/jaxrs/script/{uniqueName}/app/{appId}","method": "POST"}
-            }
+                //"getScriptByName": {"uri": "/jaxrs/script/{uniqueName}/app/{appId}","method": "POST"},
+                "getScriptByName": {"uri": "/jaxrs/script/{uniqueName}/app/{appId}/imported"}
+            };
             if (callback) callback();
         }
     },
     getScriptByName: function(appId, uniqueName, included, success, failure, async){
-        this.action.invoke({"name": "getScriptByName", "data": {"importedList": included}, "async": async, "parameter": {"appId": appId, "uniqueName": uniqueName},	"success": success,	"failure": failure});
+        this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"appId": appId, "uniqueName": uniqueName},	"success": success,	"failure": failure});
     },
     getScript: function(id, success, failure, async){
         this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});

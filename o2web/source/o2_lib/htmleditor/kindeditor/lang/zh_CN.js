@@ -211,7 +211,7 @@ KindEditor.lang({
 		'FangSong_GB2312' : '仿宋_GB2312',
 		'KaiTi_GB2312' : '楷体_GB2312',
 		'SimHei' : '黑体',
-		'Microsoft YaHei' : '微软雅黑',
+		'Microsoft YaHei' : 'Microsoft YaHei',
 		'Arial' : 'Arial',
 		'Arial Black' : 'Arial Black',
 		'Times New Roman' : 'Times New Roman',

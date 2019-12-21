@@ -152,8 +152,11 @@ MWF.xApplication.Forum.LP = {
 	"selectDepartment" : "选择组织",
 	"selectCompany" : "选择公司",
 
+	"recommanded" : "推荐",
 	"subject" : "主题",
 	"allSubject" : "全部主题",
+	"recommandedSubject" : "推荐主题",
+	"primeSubject" : "精华主题",
 	"type" : "类别",
 	"typeValue" : "讨论,投票,新闻,悬赏,辩论,灌水,知识,动态",
 	"subjectType" : "主题类别选项",
@@ -283,6 +286,7 @@ MWF.xApplication.Forum.LP = {
 	"satisfiedAnswer" : "满意回复",
 	"question" : "问题",
 
-	"gotoTop" : "顶部"
+	"gotoTop" : "顶部",
+	"forumConfig" : "论坛设置"
 
 };

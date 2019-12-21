@@ -6,13 +6,14 @@ MWF.xScript.Actions.ScriptActions = new Class({
 		this.action = new MWF.xDesktop.Actions.RestActions("", "x_processplatform_assemble_surface");
         this.action.getActions = function(callback){
             this.actions = {
-                "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"}
-            }
+                //"getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
+                "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}/imported"}
+            };
             if (callback) callback();
         }
     },
     getScriptByName: function(application, name, included, success, failure, async){
-        this.action.invoke({"name": "getScriptByName", "data": {"importedList": included}, "async": async, "parameter": {"applicationId": application, "name": name},	"success": success,	"failure": failure});
+        this.action.invoke({"name": "getScriptByName", "async": async, "parameter": {"applicationId": application, "name": name},	"success": success,	"failure": failure});
     },
     getScript: function(id, success, failure, async){
         this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});

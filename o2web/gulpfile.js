@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
 //var deleted = require('gulp-deleted');
     del = require('del'),
-    uglify = require('gulp-uglify'),
+    uglify = require('gulp-tm-uglify'),
     rename = require('gulp-rename'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
@@ -11,6 +11,7 @@ var gulp = require('gulp'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
+var assetRev = require('gulp-tm-asset-rev');
 
 var apps = [
     {"folder": "o2_lib",                                    "tasks": ["move", "clean"]},
@@ -71,16 +72,19 @@ var apps = [
     {"folder": "x_component_portal_WidgetDesigner",         "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_Application",           "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_ApplicationExplorer",   "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_process_ApplicationExplorer1",  "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_DictionaryDesigner",    "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_FormDesigner",          "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_ProcessDesigner",       "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_ProcessManager",        "tasks": ["move", "min", "clean", "watch"]},
+ //   {"folder": "x_component_process_ProjectionDesigner",    "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_ScriptDesigner",        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_StatDesigner",          "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_TaskCenter",            "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_ViewDesigner",          "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_Work",                  "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_process_Xform",                 "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_process_Xform2",                 "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Profile",                       "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_query_Query",                   "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_query_QueryExplorer",           "tasks": ["move", "min", "clean", "watch"]},
@@ -104,17 +108,26 @@ var apps = [
     {"folder": "x_component_Snake",                         "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Strategy",                      "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Template",                      "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_TeamWork",                      "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Weixin",                        "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_desktop",                                 "tasks": ["move", "min", "clean", "watch"]}
 ];
 
 var uploadOptions = {
-    'location': '',
-    'host': '',
-    'user': '',
-    'pass': '',
+    'location': 'E:/o2server/servers/webServer/',
+    'host': 'dev.o2oa.net',
+    'user': 'xadmin',
+    'pass': 'o2No.one',
     "remotePath": "/"
 };
+// var uploadOptions = {
+//     'location': 'E:/o2server/servers/webServer/',
+//     'host': '10.217.243.23',
+//     "port": "8022",
+//     'user': 'lande',
+//     'pass': 'Zone2009',
+//     "remotePath": "/data/o2server/servers/webServer/"
+// };
 var options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["upload", "location", "host", "user", "pass", "port", "remotePath"]
 });
@@ -123,13 +136,18 @@ options.location = options.location || uploadOptions.location;
 options.host = options.host || uploadOptions.host;
 options.user = options.user || uploadOptions.user;
 options.pass = options.pass || uploadOptions.pass;
-options.port = options.port || 0;
+options.port = options.port || uploadOptions.port;
 options.remotePath = options.remotePath || uploadOptions.remotePath;
+console.log(options.host);
+console.log(options.user);
+console.log(options.pass);
+console.log(options.port);
+console.log(options.remotePath);
 
 
-var minTasks = [];      //压缩修改过的js文件，更名为 *.min.js,并移动到编译目录（dest）
-var moveTasks = [];     //将修改过的文件移动到编译目录（dest）
-var watchTasks = [];    //监控任务
+var minTasks = []; 
+var moveTasks = [];
+var watchTasks = []; 
 var cleanTasks = [];
 
 function getMinTask(path){
@@ -148,7 +166,7 @@ function getMinTask(path){
                 port: options.port || 21,
                 remotePath: (options.remotePath || '/')+path
             })))
-            .pipe(gulpif((options.upload=='sftp'&&options.host!=''), ftp({
+            .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
                 host: options.host,
                 user: options.user || 'anonymous',
                 pass: options.pass || null,
@@ -173,7 +191,7 @@ function getMoveTask(path){
                 port: options.port || 21,
                 remotePath: (options.remotePath || '/')+path
             })))
-            .pipe(gulpif((options.upload=='sftp'&&options.host!=''), ftp({
+            .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
                 host: options.host,
                 user: options.user || 'anonymous',
                 pass: options.pass || null,
@@ -316,12 +334,129 @@ apps.map(function(app){
         watchTasks.push(taskName);
         gulp.task(taskName, getWatchTask(app.folder, (app.tasks.indexOf("min")!==-1)));
     }
-})
 
-gulp.task("default", gulp.parallel(minTasks, moveTasks));
+    if (app.tasks.indexOf("min")!==-1 && app.tasks.indexOf("move")!==-1){
+        gulp.task(app.folder, gulp.parallel("min:"+app.folder, "move:"+app.folder));
+    }else if (app.tasks.indexOf("min")==-1 && app.tasks.indexOf("move")!==-1){
+        gulp.task(app.folder, gulp.parallel("move:"+app.folder));
+    }else if (app.tasks.indexOf("min")!==-1 && app.tasks.indexOf("move")==-1){
+        gulp.task(app.folder, gulp.parallel("min:"+app.folder));
+    }
+});
+gulp.task("index", function(){
+    var src = ['source/favicon.ico', 'source/index.html'];
+    var dest = "dest"
+    return gulp.src(src)
+        .pipe(changed(dest))
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+});
+
 gulp.task("clean", gulp.series(cleanTasks));
 gulp.task("sync", gulp.series(
     gulp.series(cleanTasks),
-    gulp.parallel(minTasks, moveTasks)
+    gulp.parallel(minTasks, moveTasks, 'index')
 ));
+
 gulp.task("watch", gulp.parallel(watchTasks));
+
+
+gulp.task("git_clean", function(cb){
+    var dest = 'D:/O2/github/huqi1980/o2oa/o2web/source/';
+    del(dest,  {dryRun: true, force: true}, cb);
+});
+
+gulp.task("git_dest", function(){
+    var dest = "D:/O2/github/huqi1980/o2oa/o2web/source";
+    return gulp.src("source/**/*")
+        .pipe(changed(dest))
+        .pipe(gulp.dest(dest))
+});
+
+gulp.task("git", gulp.series('git_clean', 'git_dest'));
+
+gulp.task("o2:new-v:html", function () {
+    var path = "x_desktop";
+    var src = 'source/x_desktop/*.html';
+    var dest = 'dest/x_desktop/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+
+});
+gulp.task("o2:new-v:o2", function () {
+    var path = "o2_core";
+    var src = 'source/o2_core/o2.js';
+    var dest = 'dest/o2_core/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+path+'/')))
+        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || '@anonymous',
+            port: options.port || 21,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), sftp({
+            host: options.host,
+            user: options.user || 'anonymous',
+            pass: options.pass || null,
+            port: options.port || 22,
+            remotePath: (options.remotePath || '/')+path
+        })))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+});
+gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
+
+gulp.task("default", gulp.series("clean", gulp.parallel(minTasks, moveTasks, 'index'), "o2:new-v"));

@@ -158,25 +158,36 @@ o2.widget.Dialog = o2.DL = new Class({
         this.titleRefresh.set("title", o2.LP.widget.refresh);
     },
 	setTitleEvent: function(){
-		this.title.addEvent("mousedown", function(){
-            var content;
-            if (layout.app) content = layout.app.content;
-            if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
-			this.containerDrag = new Drag.Move(this.node, {
-                "container": content
-            });
-		}.bind(this));
-		this.title.addEvent("mouseup", function(){
-			this.node.removeEvents("mousedown");
-			this.title.addEvent("mousedown", function(){
-				var content;
-				if (layout.app) content = layout.app.content;
-				if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
-                this.containerDrag = new Drag.Move(this.node, {
-                    "container": content
-                });
-			}.bind(this));
-		}.bind(this));
+		var content;
+		if (layout.app) content = layout.app.content;
+		if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
+		this.containerDrag = new Drag.Move(this.node, {
+			"handle": this.title,
+			"container": this.markNode || content,
+			"snap": 5
+		});
+
+		// this.title.addEvent("mousedown", function(e){
+        //     var content;
+        //     if (layout.app) content = layout.app.content;
+        //     if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
+		// 	this.containerDrag = new Drag.Move(this.node, {
+        //         "container": content
+        //     });
+		// 	this.containerDrag.start();
+		// }.bind(this));
+		// this.title.addEvent("mouseup", function(){
+		// 	this.node.removeEvents("mousedown");
+		// 	this.title.addEvent("mousedown", function(){
+		// 		var content;
+		// 		if (layout.app) content = layout.app.content;
+		// 		if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
+        //         this.containerDrag = new Drag.Move(this.node, {
+        //             "container": content
+        //         });
+		// 		this.containerDrag.start();
+		// 	}.bind(this));
+		// }.bind(this));
 	},
 	setResizeNode: function(){
 		//未实现................................
@@ -494,6 +505,13 @@ o2.widget.Dialog = o2.DL = new Class({
 	_markHide: function(){
 		if (this.markNode){
 			this.markNode.setStyle("display", "none");
+			this.markNode.destroy();
+			this.markNode = null;
+		}
+		if (this.markNode_up){
+			this.markNode_up.setStyle("display", "none");
+			this.markNode_up.destroy();
+			this.markNode_up = null;
 		}
 	}
 });

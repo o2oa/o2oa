@@ -30,6 +30,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
 
         MWF.require("MWF.widget.Combox", function(){
             this.combox = select = new MWF.widget.Combox({
+                "onlySelect": this.json.onlySelect==="y",
                 "count": this.json.count.toInt() || 0,
                 "splitStr": this.json.splitStr || ",\\s*|;\\s*|，\\s*|；\\s*",
                 "splitShow": this.json.splitShow || ", ",
@@ -183,7 +184,9 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
         return this._getBusinessData();
     },
     getTextData: function(){
-        return this.node.get("text");
+	    var v = this.getData();
+        return {"value": v, "text": v};
+        //return this.node.get("text");
     },
     resetData: function(){
         this.setData(this.getValue());

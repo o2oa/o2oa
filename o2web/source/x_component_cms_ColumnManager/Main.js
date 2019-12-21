@@ -981,6 +981,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || "信息" )+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
+        var flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? "显示所有文档视图" : "隐藏所有文档视图" )+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "</table>";
@@ -1002,6 +1004,15 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.descriptionInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
         this.sortInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationSort"), this.data.appInfoSeq, this.app.css.formInput);
+
+        debugger;
+        this.allDocumentViewSelect = new MDomItem( this.propertyContentNode.getElement("#showAllDocumentViews"), {
+            type : "select",
+            defaultValue : "true",
+            value : ( typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : [ "显示所有文档视图", "隐藏所有文档视图" ]
+        });
 
         //this.typeInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationType"), this.data.applicationCategory, this.app.css.formInput);
     },
@@ -1043,6 +1054,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.sortInput.editMode();
 
         this.typeSelect.editMode();
+        this.allDocumentViewSelect.editMode();
         //this.typeInput.editMode();
         this.isEdit = true;
     },
@@ -1053,6 +1065,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.descriptionInput.readMode();
         this.sortInput.readMode();
         this.typeSelect.readMode();
+        this.allDocumentViewSelect.readMode();
         //this.typeInput.readMode();
         this.isEdit = false;
     },
@@ -1105,6 +1118,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.data.description = this.descriptionInput.input.get("value");
         this.data.appInfoSeq = this.sortInput.input.get("value");
         this.data.documentType = this.typeSelect.getValue();
+        this.data.showAllDocuments = this.allDocumentViewSelect.getValue() !== "false";
         //this.data.applicationCategory = this.appTypeInput.input.get("value");
 
         this.app.restActions.saveColumn(this.data, function(json){
@@ -1116,6 +1130,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.descriptionInput.save();
             this.sortInput.save();
             this.typeSelect.save();
+            this.allDocumentViewSelect.save();
             //this.typeInput.save();
             this.app.notice( this.app.lp.application.saveSuccess, "success");
 

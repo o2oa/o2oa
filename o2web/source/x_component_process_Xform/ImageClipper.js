@@ -172,6 +172,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
 
             this.errNode = this.createErrorNode(text).inject(this.node, "after");
             this.showNotValidationMode(this.node);
+            if (!this.node.isIntoView()) this.node.scrollIntoView();
         }
     },
     showNotValidationMode: function(node){

@@ -78,7 +78,7 @@
         "line-height": "50px",
         "float": "left",
         "padding-left": "20px",
-        "font-family": "微软雅黑"
+        "font-family": "Microsoft YaHei"
     },
     "columnTop_All": {
         "float": "left",
@@ -235,7 +235,7 @@
     },
     "columnItemTitleNode": {
         "color": "#fff",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "18px",
         "padding-top" : "24px",
         "text-align" : "center",
@@ -296,7 +296,7 @@
         "overflow" : "hidden",
         "color": "#999",
         "line-height": "20px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "13px"
     },
     "columnItemBottomNode" : {
@@ -408,7 +408,7 @@
         "margin": "auto",
         "font-size": "16px",
         "color": "#666",
-        "font-family": "微软雅黑"
+        "font-family": "Microsoft YaHei"
     },
     "columnCreateOkActionNode": {
         "height": "30px",
@@ -418,7 +418,7 @@
         "line-height": "30px",
         "padding-left": "65px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "border": "1px solid #354f67",
         "color": "#FFF",
@@ -435,7 +435,7 @@
         "line-height": "30px",
         "padding-left": "40px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "color": "#FFF",
         "margin-top": "20px",

@@ -14,7 +14,7 @@
     "overflow-y" : "hidden"
   },
   "topNode" : {
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#999",
     "background-color" : "#fff",
     "overflow" : "hidden",

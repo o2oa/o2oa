@@ -10,8 +10,8 @@ layout.addReady(function(){
 
         var _load = function(){
             //o2.require("MWF.xDesktop.MessageMobile", function(){
-            layout.message = new MWF.xDesktop.MessageMobile();
-            layout.message.load();
+            // layout.message = new MWF.xDesktop.MessageMobile();
+            // layout.message.load();
             //}.bind(this));
 
             layout.apps = [];
@@ -26,8 +26,23 @@ layout.addReady(function(){
                     if (!option && !m_status)  option = topWindow.layout.desktop.openBrowserOption;
                 }catch(e){}
             }
+
             layout.openApplication(null, appName, option||{}, m_status);
         };
         _load();
+
+        window.addEventListener('popstate', function (event) {
+            debugger
+            uri = new URI(document.location.href);
+            id = uri.getData("id");
+            page = uri.getData("page");
+            if (event.state){
+                id = event.state.id;
+                page = event.state.page;
+            }
+            // var appName = "portal.Portal";
+            // var option = {"portalId": id, "pageId": page, "widgetId":widget };
+            layout.app.toPortal(id, page, null, true);
+        }.bind(this));
     })(layout);
 });

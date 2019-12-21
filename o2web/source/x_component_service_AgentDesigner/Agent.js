@@ -101,11 +101,19 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
             if (this.data.text){
                 this.editor.editor.setValue(this.data.text);
             }else{
+                // var defaultText = "/********************\n";
+                // defaultText += "resources.getEntityManagerContainer(); //实体管理器\n";
+                // defaultText += "resources.getContext(); //上下文根\n";
+                // defaultText += "resources.getOrganization(); //组织访问\n";
+                // defaultText += "resources.getWebservicesClient();//webSerivces客户端\n";
+                // defaultText += "********************/\n";
+
                 var defaultText = "/********************\n";
-                defaultText += "resources.getEntityManagerContainer(); //实体管理器\n";
-                defaultText += "resources.getContext(); //上下文根\n";
-                defaultText += "resources.getOrganization(); //组织访问\n";
-                defaultText += "resources.getWebservicesClient();//webSerivces客户端\n";
+                defaultText += "this.entityManager; //实体管理器\n";
+                defaultText += "this.applications; //访问系统内服务\n";
+                defaultText += "this.organization(); //组织访问\n";
+                defaultText += "this.org(); //组织快速访问方法\n";
+                defaultText += "this.service(); ///webSerivces客户端\n";
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }

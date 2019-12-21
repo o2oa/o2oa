@@ -4,7 +4,7 @@
     "width":"100%",
     "height":"100%",
     "background-color":"#3066a7",
-    "font-family": "微软雅黑"
+    "font-family": "Microsoft YaHei"
   },
   "topBar":{
     "width":"100%",
@@ -460,7 +460,7 @@
     "margin": "auto",
     "font-size": "12px",
     "color": "#666",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "overflow" : "hidden"
   },
   "formTableContainer" : {
@@ -484,7 +484,7 @@
     "line-height": "35px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#3d77c1",
     "color": "#FFF",
@@ -500,7 +500,7 @@
     "line-height": "35px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#3d77c1",
     "color": "#FFF",
@@ -539,7 +539,7 @@
     "color": "#ffffff",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px",
     "background-color": "#204c81"
   },
@@ -576,7 +576,7 @@
     "background-color": "#fff",
     "color": "#666666",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -630,7 +630,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },

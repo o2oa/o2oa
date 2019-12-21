@@ -145,40 +145,53 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         switch (this.json.sectionBy){
             case "person":
                 return this._getBusinessSectionDataByPerson();
-                break;
             case "unit":
                 return this._getBusinessSectionDataByUnit();
-                break;
             case "activity":
                 return this._getBusinessSectionDataByActivity();
-                break;
+            case "splitValue":
+                return this._getBusinessSectionDataBySplitValue();
             case "script":
                 return this._getBusinessSectionDataByScript(this.json.sectionByScript.code);
-                break;
             default:
                 return this.form.businessData.data[this.json.id] || "";
         }
     },
     _getBusinessSectionDataByPerson: function(){
+        this.form.sectionListObj[this.json.id] = layout.desktop.session.user.id;
         var dataObj = this.form.businessData.data[this.json.id];
         return (dataObj) ? (dataObj[layout.desktop.session.user.id] || "") : "";
     },
     _getBusinessSectionDataByUnit: function(){
+        this.form.sectionListObj[this.json.id] = "";
         var dataObj = this.form.businessData.data[this.json.id];
         if (!dataObj) return "";
         var key = (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+        if (key) this.form.sectionListObj[this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
     _getBusinessSectionDataByActivity: function(){
+        this.form.sectionListObj[this.json.id] = "";
         var dataObj = this.form.businessData.data[this.json.id];
         if (!dataObj) return "";
         var key = (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+        if (key) this.form.sectionListObj[this.json.id] = key;
+        return (key) ? (dataObj[key] || "") : "";
+    },
+    _getBusinessSectionDataBySplitValue: function(){
+        this.form.sectionListObj[this.json.id] = "";
+        var dataObj = this.form.businessData.data[this.json.id];
+        if (!dataObj) return "";
+        var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+        if (key) this.form.sectionListObj[this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
     _getBusinessSectionDataByScript: function(code){
+        this.form.sectionListObj[this.json.id] = "";
         var dataObj = this.form.businessData.data[this.json.id];
         if (!dataObj) return "";
         var key = this.form.Macro.exec(code, this);
+        if (key) this.form.sectionListObj[this.json.id] = key;
         return (key) ? (dataObj[key] || "") : "";
     },
 
@@ -200,6 +213,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         }
     },
     _setBusinessSectionData: function(v){
+        debugger;
         switch (this.json.sectionBy){
             case "person":
                 this._setBusinessSectionDataByPerson(v);
@@ -209,6 +223,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
                 break;
             case "activity":
                 this._setBusinessSectionDataByActivity(v);
+                break;
+            case "splitValue":
+                this._setBusinessSectionDataBySplitValue(v);
                 break;
             case "script":
                 this._setBusinessSectionDataByScript(this.json.sectionByScript.code, v);
@@ -271,6 +288,24 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
 
         if (resetData) this.form.Macro.environment.setData(this.form.businessData.data);
     },
+    _setBusinessSectionDataBySplitValue: function(v){
+        var resetData = false;
+        var key = (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+
+        if (key){
+            var dataObj = this.form.businessData.data[this.json.id];
+            if (!dataObj){
+                dataObj = {};
+                this.form.businessData.data[this.json.id] = dataObj;
+                resetData = true;
+            }
+            if (!dataObj[key]) resetData = true;
+            dataObj[key] = v;
+        }
+
+        if (resetData) this.form.Macro.environment.setData(this.form.businessData.data);
+    },
+
     _setBusinessSectionDataByScript: function(code, v){
         var resetData = false;
         var key = this.form.Macro.exec(code, this);

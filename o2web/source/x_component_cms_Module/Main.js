@@ -197,8 +197,25 @@ MWF.xApplication.cms.Module.Main = new Class({
 				this.createDocumentAction.addEvents({
 					"click": function(e){
 						MWF.xDesktop.requireApp("cms.Index", "Newer", null, false);
+						//add categoryConfig=============begin
+						var ignoreTitle = false;
+						MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+						MWF.require("o2.xScript.Macro", null, false);
+						var scriptAction = new MWF.xScript.Actions.CMSScriptActions();
+						scriptAction.getScriptByName( this.options.columnData.id, "_config", [], function(json){
+							if (json.data){
+								MWF.Macro.exec(json.data.text, this);
+							}
+						}.bind(this), null, false);
+						if(this.categoryConfig){
+							if(this.categoryConfig.ignoreTitle){
+								ignoreTitle = true;
+							}
+						}
+						//add categoryConfig=============end
 						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
-							restrictToColumn : true
+							restrictToColumn : true,
+							ignoreTitle : ignoreTitle
 						});
 						this.creater.load();
 					}.bind(this),
@@ -926,16 +943,22 @@ MWF.xApplication.cms.Module.Navi = new Class({
 	},
 	load: function(){
 		var self = this;
-		this.allView = new MWF.xApplication.cms.Module.NaviAllView( this, this.node, {}  );
+		var showAll = (typeOf(this.columnData.showAllDocuments) === "boolean" ? this.columnData.showAllDocuments : true).toString();
+		if( showAll !== "false" ){
+			this.allView = new MWF.xApplication.cms.Module.NaviAllView( this, this.node, {}  );
+		}
 		new Element("div",{
 			"styles" : this.css.viewNaviBottom
 		}).inject(this.node);
 
 		this.app.restActions.listCategory( this.columnData.id, function( json ) {
-			json.data.each(function (d) {
+			json.data.each(function (d, idx) {
 				var isCurrent = false;
 				var category = new MWF.xApplication.cms.Module.NaviCategory(this, this.node,d, {} );
 				this.categoryList.push( category );
+				if( showAll == "false" && idx === 0 ){
+					category.setCurrent();
+				}
 				this.fireEvent("postLoad");
 			}.bind(this))
 		}.bind(this))

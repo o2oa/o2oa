@@ -151,18 +151,20 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				//	this.isAdmin = flag;
 				this.restActions.getCategory(this.sectionData.forumId, function (forumData) {
 					this.forumData = forumData.data;
-					this.setTitle( title );
-					this.createTopNode();
+					this.createTopNode( title );
+					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					this.setTitle( title + tail );
 					this.createMiddleNode();
 				}.bind(this));
 				//}.bind(this) );
 			}.bind(this))
 		}.bind(this) )
 	},
-	createTopNode: function(){
+	createTopNode: function( title ){
 		var node = new MWF.xApplication.Forum.TopNode(this.contentContainerNode, this, this, {
 			type: this.options.style
 		});
+		this.topNode = node;
 		node.load();
 
 		//var forumSetting = MWF.xApplication.Forum.ForumSetting[this.sectionData.forumId];
@@ -178,7 +180,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 
 		var topItemTitleNode = new Element("div.topItemTitleNode", {
 			"styles": this.css.topItemTitleNode,
-			"text": this.lp.title
+			"text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
 		}).inject(topTitleMiddleNode);
 		topItemTitleNode.addEvent("click", function(){
 			var appId = "Forum";

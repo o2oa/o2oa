@@ -16,8 +16,15 @@
             <tr>
                 <td class="editTableTitle">打开文档:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"/>否
+                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"
+                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', '');}"/>是
+                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"
+                           onclick="if(this.checked){ $('text{$.pid}clickCodeTr').setStyle('display', 'none');}"/>否
+                </td>
+            </tr>
+            <tr id="text{$.pid}clickCodeTr" style="display:text{($.allowOpen===true)?'':'none'}">
+                <td class="editTableValue" colspan="2">
+                    <div class="MWFFormulaArea" name="clickCode" title="打开文档脚本(S)"></div>
                 </td>
             </tr>
         </table>

@@ -1407,12 +1407,14 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
     },
     resetPeople: function (items) {
         var nameList = [];
+        var nameShortList = [];
         items.each(function(item){
             nameList.push(item.data.distinguishedName);
+            nameShortList.push(item.data.name);
         });
         var data = {
             "routeName": this.explorer.app.lp.reset,
-            "opinion": this.explorer.app.lp.reset+": "+nameList.join(", "),
+            "opinion": this.explorer.app.lp.reset+": "+nameShortList.join(", "),
             "identityList": nameList
         };
         this.explorer.actions.resetTask(this.data.id, data, function(){
@@ -1651,7 +1653,7 @@ MWF.xApplication.process.Application.WorkExplorer.Read = new Class({
         var text = lp.flagRead.replace(/{people}/g, this.data.person);
         var _self = this;
         this.node.setStyles(this.css.taskItemNode_action);
-        this.explorer.app.confirm("warn", e, lp.flagReadTitle, text, 350, 120, function(){
+        this.explorer.app.confirm("warn", e, lp.flagReadTitle, text, 350, 180, function(){
             this.close();
             _self.doFlagRead();
         }, function(){

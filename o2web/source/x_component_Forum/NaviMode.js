@@ -64,6 +64,10 @@ MWF.xApplication.Forum.NaviMode = MWFForum.NaviMode = new Class({
     close : function(){
         this.back();
     },
+    setTitle : function( title ){
+        var tail = this.app.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+        this.app.setTitle( title + tail );
+    },
     back : function( type ){
         var item = this.currentItem;
         if( !type ){
@@ -86,7 +90,7 @@ MWF.xApplication.Forum.NaviMode = MWFForum.NaviMode = new Class({
                 forumCategory.window = this.app.window;
                 forumCategory.taskitem = this.app.taskitem;
                 forumCategory.load();
-                this.app.setTitle( item.data.forumName );
+                this.setTitle( item.data.forumName );
                 this.destroy();
                 break;
             case MWFForum.NaviType.section :
@@ -102,7 +106,7 @@ MWF.xApplication.Forum.NaviMode = MWFForum.NaviMode = new Class({
                 forumSection.window = this.app.window;
                 forumSection.taskitem = this.app.taskitem;
                 forumSection.load();
-                this.app.setTitle( item.data.sectionName );
+                this.setTitle( item.data.sectionName );
                 this.destroy();
                 break;
             default :
@@ -117,7 +121,7 @@ MWF.xApplication.Forum.NaviMode = MWFForum.NaviMode = new Class({
                 forum.window = this.app.window;
                 forum.taskitem = this.app.taskitem;
                 forum.load();
-                this.app.setTitle( "论坛首页" );
+                this.setTitle( MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title );
                 this.destroy();
                 break
         }
@@ -297,7 +301,7 @@ MWFForum.NaviMode.CategoryItem = new Class({
 
         this.isCurrent = true;
         this.navi.currentItem = this;
-        this.navi.app.setTitle( this.data.forumName );
+        this.navi.setTitle( this.data.forumName );
 
         this.loadView();
     },
@@ -406,7 +410,7 @@ MWFForum.NaviMode.SectionItem = new Class({
 
         this.isCurrent = true;
         this.navi.currentItem = this;
-        this.navi.app.setTitle( this.data.sectionName );
+        this.navi.setTitle( this.data.sectionName );
 
         this.loadView();
     },
@@ -494,7 +498,7 @@ MWFForum.NaviMode.AllItem = new Class({
 
         this.isCurrent = true;
         this.navi.currentItem = this;
-        this.navi.app.setTitle( "全部主题" );
+        this.navi.setTitle( MWF.xApplication.Forum.LP.allSubject );
 
         this.loadView();
     },
@@ -521,7 +525,7 @@ MWFForum.NaviMode.AllItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleNode,
-            "text": "论坛首页"
+            "text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
         }).inject(topTitleMiddleNode);
 
         var topItemSepNode = new Element("div.topItemSepNode", {
@@ -535,7 +539,7 @@ MWFForum.NaviMode.AllItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleLastNode,
-            "text": "全部主题"
+            "text": MWF.xApplication.Forum.LP.allSubject
         }).inject(topTitleMiddleNode);
 
         var view = this.navi.view = new MWFForum.NaviMode.AllView( this.viewWarp, this.app, this, {
@@ -578,7 +582,7 @@ MWFForum.NaviMode.RecommandItem = new Class({
         var _self = this;
         this.node = new Element("div.recommandNode", {
             "styles": this.css.recommandNode,
-            "text" : "推荐"
+            "text" : MWF.xApplication.Forum.LP.recommanded
         }).inject(this.container);
 
         this.node.addEvents({
@@ -603,7 +607,7 @@ MWFForum.NaviMode.RecommandItem = new Class({
 
         this.isCurrent = true;
         this.navi.currentItem = this;
-        this.navi.app.setTitle( "推荐主题" );
+        this.navi.setTitle( MWF.xApplication.Forum.LP.recommandedSubject );
 
         this.loadView();
     },
@@ -630,7 +634,7 @@ MWFForum.NaviMode.RecommandItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleNode,
-            "text": "论坛首页"
+            "text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
         }).inject(topTitleMiddleNode);
 
         var topItemSepNode = new Element("div.topItemSepNode", {
@@ -644,7 +648,7 @@ MWFForum.NaviMode.RecommandItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleLastNode,
-            "text": "推荐主题"
+            "text": MWF.xApplication.Forum.LP.recommandedSubject
         }).inject(topTitleMiddleNode);
 
 
@@ -688,7 +692,7 @@ MWFForum.NaviMode.CreamItem = new Class({
         var _self = this;
         this.node = new Element("div.cream", {
             "styles": this.css.recommandNode,
-            "text" : "精华"
+            "text" : MWF.xApplication.Forum.LP.prime
         }).inject(this.container);
 
         this.node.addEvents({
@@ -713,7 +717,7 @@ MWFForum.NaviMode.CreamItem = new Class({
 
         this.isCurrent = true;
         this.navi.currentItem = this;
-        this.navi.app.setTitle( "精华主题" );
+        this.navi.setTitle( MWF.xApplication.Forum.LP.primeSubject );
 
         this.loadView();
     },
@@ -740,7 +744,7 @@ MWFForum.NaviMode.CreamItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleNode,
-            "text": "论坛首页"
+            "text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
         }).inject(topTitleMiddleNode);
 
         var topItemSepNode = new Element("div.topItemSepNode", {
@@ -754,7 +758,7 @@ MWFForum.NaviMode.CreamItem = new Class({
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleLastNode,
-            "text": "精华主题"
+            "text": MWF.xApplication.Forum.LP.primeSubject
         }).inject(topTitleMiddleNode);
 
         var view = this.navi.view = new MWFForum.NaviMode.CreamView( this.viewWarp, this.app, this, {

@@ -1,0 +1,408 @@
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    a:active, a.visited {
+        color: #337ab7;
+    }
+
+.rayui-btn, .rayui-input {
+    border: 1px solid #e2e2e2;
+    border-radius: 2px;
+    font-size: 14px;
+    display: inline-block;
+    margin: 5px 3px;
+    outline: none;
+}
+
+.rayui-input {
+    background-color: #fff;
+    padding: 4px 6px;
+}
+
+.rayui-input:hover {
+    border-color: #D2D2D2;
+}
+
+/* start 按钮组*/
+.rayui-btn {
+    padding: 3px 6px;
+    cursor: pointer;
+    text-align: center;
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.rayui-btn:hover {
+    opacity: .9;
+}
+
+.rayui-btn-default:hover {
+    border-color: #009688;
+}
+
+.rayui-btn-primary {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.rayui-btn-success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.rayui-btn-info {
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #5bc0de;
+}
+
+.rayui-btn-warning {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+}
+
+.rayui-btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+/* end 按钮组*/
+
+
+
+.rayui-disabled {
+    color: #d2d2d2 !important;
+    cursor: not-allowed !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.blowout-left {
+    top: -10000px !important;
+    left: -10000px !important;
+}
+
+.blowout-right {
+    top: -10000px !important;
+    right: -10000px !important;
+}
+
+.hiddenImp {
+    display: none !important;
+}
+
+/* start 排序图标*/
+.laytable-sort-span {
+    padding-left: 5px;
+}
+
+.laytable-sort {
+    display: inline-block;
+    border-style: solid;
+    position: relative;
+    cursor: pointer;
+    border-color: #888 transparent;
+}
+
+    .laytable-sort:hover {
+        border-color: #000 transparent;
+    }
+
+.laytable-asc {
+    top: -6px;
+    left: -10px;
+    border-width: 0 5px 5px 5px;
+}
+
+.laytable-desc {
+    top: 1px;
+    border-width: 5px 5px 0 5px;
+}
+
+th[sort-type="desc"] .laytable-desc, th[sort-type="asc"] .laytable-asc {
+    border-color: #000 transparent;
+}
+/* end 排序图标*/
+.laytable, .laytable-box {
+    position: relative;
+    border: 1px solid #e6e6e6;
+    color: #555;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+    .laytable, .laytable-box table {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        box-sizing: border-box;
+        border-spacing: 0;
+    }
+
+.laytable {
+    border-top: 1px solid #e6e6e6;
+    border-left: 1px solid #e6e6e6;
+}
+
+.laytable, .laytable-box .laytable-body {
+    background-color: #ffffff;
+}
+
+.laytable-head-boxmain, .laytable-head-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.laytable-body-box {
+    position: relative;
+    overflow-y: auto;
+}
+
+.laytable-head-boxmain, .laytable-head, .laytable > thead {
+    background-color: #FAFDFF;
+}
+
+/*固定列*/
+.laytable-box .laytable-fixed {
+    top: 0;
+    position: absolute;
+}
+
+.laytable-body-noscroll {
+    overflow: hidden;
+}
+
+.laytable-box .laytable-fixed-l {
+    /*box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.08);*/
+}
+
+.laytable-box .laytable-fixed-r {
+    right: 0;
+    box-shadow: -1px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+.laytable-fixed-amend {
+    width: 50px;
+    height: 40px;
+    top: -1px;
+    position: absolute;
+    background-color: #f2f2f2;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+}
+/*数据*/
+.laytable-body-noscroll .laytable-body-box {
+    overflow-x: hidden;
+}
+
+.laytable > tbody > tr:hover, .laytable-body-box tr:hover, .laytable-tr-hover {
+    background-color: #f8f8f8;
+}
+
+.laytable-box tr.last td {
+    border-bottom: 0;
+}
+
+.laytable-box tr td.last, .laytable-box tr th.last {
+    border-right: 0;
+}
+
+.laytable th, .laytable td, .laytable-box th, .laytable-box td {
+    -moz-box-sizing: border-box; /*Firefox3.5+*/
+    -webkit-box-sizing: border-box; /*Safari3.2+*/
+    -o-box-sizing: border-box; /*Opera9.6*/
+    -ms-box-sizing: border-box; /*IE8*/
+    padding: 9px 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+    border: 0;
+    display: table-cell;
+    font-weight: normal;
+    border-bottom: 0.55px solid #e6e6e6;
+}
+
+.laytable-box td[islink] a{
+    color: #337ab7;
+}
+
+    .laytable-box th.nowrap, .laytable-box td.nowrap {
+        padding: 9px 0px;
+        word-wrap: normal;
+        word-break: normal;
+    }
+
+        .laytable-box th.nowrap div, .laytable-box td.nowrap div {
+            overflow: hidden;
+            display: block;
+            padding: 9px 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+.laytable-box[skin=none] th, .laytable-box[skin=none] td {
+    border: 0;
+}
+
+.laytable-box[skin=col] td {
+    border-bottom: 0;
+}
+
+.laytable-box[skin=row] th, .laytable-box[skin=row] td {
+    border-right: 0;
+}
+
+.laytable-box table[ray-even] tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.laytable-box th.hidden, .laytable-box td.hidden {
+    display: none;
+}
+
+.laytable-expand {
+    width: 16px;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+}
+
+.laytable-body-box tr[data-index] .laytable-expand:after {
+    content: '+'
+}
+
+.laytable-body-box tr[expand="1"] .laytable-expand:after {
+    content: '-'
+}
+/*分页样式*/
+.laytable-page-boxmain {
+    position: relative;
+    top: -1px;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    min-height: 25px;
+    font-size: 14px;
+    background-color:#ffffff;
+    border-top: 1px solid #e6e6e6;
+}
+
+    .laytable-page-boxmain * {
+        vertical-align: middle;
+    }
+
+ul.laytable-page-pagination {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+    display: inline-block;
+}
+
+    ul.laytable-page-pagination li {
+        display: inline-block;
+        cursor: pointer;
+        list-style: none;
+        moz-user-select: -moz-none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        ul.laytable-page-pagination li:hover {
+            color: #009688;
+        }
+
+        ul.laytable-page-pagination li > a.page-item {
+            padding: 4px 8px;
+        }
+
+        ul.laytable-page-pagination li > a.page-active {
+            -ms-border-radius: 3px;
+            border-radius: 3px;
+            color: #fff;
+            background-color: #009688;
+        }
+
+.laytable-page-boxmain .laytable-page-input {
+    min-width: 30px;
+    width: 30px;
+    max-width: 80px;
+    text-align: center;
+}
+
+.laytable-page-boxmain .rayui-input:focus {
+    border-color: #009688 !important;
+}
+
+.laytable-page-boxmain .rayui-btn:hover {
+    border-color: #e2e2e2;
+}
+
+.laytable-loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: url("/x_component_CRM/$Template/plugins/table2/images/loading.gif") no-repeat center center;
+}
+
+.laytable-msg {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+}
+
+.laytable-tips {
+    position: absolute;
+    border: 1px solid #e6e6e6;
+    box-shadow: -1px 0 8px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+}
+
+.laytable-tips-content {
+    overflow-y: scroll;
+    padding: 20px 10px;
+    max-height: 80px;
+}
+
+.laytable-tips-close {
+    display: block;
+    width: 24px;
+    height: 24px;
+    font-weight: normal;
+    position: absolute;
+    right: -3px;
+    top: -12px;
+    background: url("/x_component_CRM/$Template/plugins/table2/images/close.png") no-repeat
+}
+
+.laytable-tips-close:hover {
+    opacity: .8;
+}
+
+.laytable-head th {
+    border-right: 0.5px solid #e6e6e6;
+}
+.headTableNode {
+    height: 50px;
+    background-color: rgb(255, 255, 255);
+}
+

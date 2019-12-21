@@ -3,7 +3,7 @@
   "treeContentNode" : {
 	"cursor" : "pointer",
 	"color" : "#666",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "14px",
 	"background-color": "#F8F8F8"
   },
@@ -14,7 +14,7 @@
 	"height" : "40px",
 	"font-weight" : "normal",
 	"line-height" : "40px",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "15px",
 	"position" : "relative",
 	"background-color": "#F8F8F8"

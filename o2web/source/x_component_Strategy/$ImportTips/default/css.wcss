@@ -160,7 +160,7 @@
     "margin": "auto",
     "font-size": "14px",
     "color": "#666",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "overflow" : "hidden"
   },
   "formTableContainer" : {
@@ -197,7 +197,7 @@
     "line-height": "30px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#5d97e1",
     "color": "#FFF",
@@ -213,7 +213,7 @@
     "line-height": "30px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#5d97e1",
     "color": "#FFF",
@@ -229,7 +229,7 @@
     "line-height": "30px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color": "#FFF",
     "margin-left": "10px",
     "margin-right": "20px"
@@ -288,7 +288,7 @@
     "background-color": "#fff",
     "color": "#666666",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
   "appointNode":{
@@ -353,7 +353,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },

@@ -149,6 +149,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "description": "栏目描述",
         "sort" : "栏目排序",
         "documentType": "文档类型",
+        "showAllDocumentViews" : "栏目视图",
         "icon": "栏目图标",
         "sign" : "栏目别名",
         "controllerList": "管理者",

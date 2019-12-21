@@ -29,10 +29,27 @@ MWF.xApplication.Selector.Identity = new Class({
         if(this.options.noUnit){
             this.loadInclude();
         }else if (this.options.units.length){
+            // var units = [];
+            // this.options.units.each(function(u){
+            //     if (typeOf(u)==="string"){
+            //         units.push(u);
+            //     }else{
+            //         units.push(u.distinguishedName)
+            //     }
+            // });
+            // this.org2Action.listUnit({"unitList":units}, function(json){
+            //     json.data.each(function(d){
+            //         var category = this._newItemCategory("ItemUnitCategory", d, this, this.itemAreaNode);
+            //         this.subCategorys.push( category );
+            //     }.bind(this));
+            // }.bind(this));
             this.options.units.each(function(unit){
                 if (typeOf(unit)==="string"){
+
+
                     this.orgAction.getUnit(unit, function(json){
                         if (json.data){
+
                             var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
                             this.subCategorys.push( category );
                         }
@@ -372,7 +389,8 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemCategory,
     createNode: function(){
         this.node = new Element("div", {
-            "styles": this.selector.css.selectorItemCategory_department
+            "styles": this.selector.css.selectorItemCategory_department,
+            "title" : this._getTtiteText()
         }).inject(this.container);
     },
     _getShowName: function(){
@@ -388,15 +406,17 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                 if( firstLoaded ){
                     this.children.setStyles({"display": "block", "height": "auto"});
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                    this.isExpand = true;
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-
+                        this.isExpand = true;
                     }else{
                         this.children.setStyles({"display": "none", "height": "0px"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                        this.isExpand = false;
                     }
                 }
                 if(callback)callback();
@@ -442,6 +462,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                     }.bind(this), null, this.data.distinguishedName);
                 }
             }else{
+
                 this.selector.orgAction.listIdentityWithUnit(function(idJson){
                     idJson.data.each(function(idSubData){
                         if( !this.selector.isExcluded( idSubData ) ) {
@@ -729,7 +750,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 if(!this.includeUnit)this.includeUnit = [];
                 this.includeUnit.push( data.distinguishedName );
                 var category = this.selector._newItemCategory("ItemUnitCategory", data, this.selector, container || this.includeAreaNode, level, parentCategory);
-                if( !parentCategory ){
+                if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category )
                 }else{
                     this.selector.subCategorys.push( category )
@@ -745,7 +766,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 if(!this.includeGroup)this.includeGroup = [];
                 this.includeGroup.push( data.distinguishedName );
                 var category = this.selector._newItemCategory("ItemGroupCategory", data, this.selector, container || this.includeAreaNode, level, parentCategory);
-                if( !parentCategory ){
+                if( parentCategory && parentCategory.subCategorys ){
                     parentCategory.subCategorys.push( category )
                 }else{
                     this.selector.subCategorys.push( category )

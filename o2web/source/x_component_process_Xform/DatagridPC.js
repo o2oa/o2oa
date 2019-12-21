@@ -127,6 +127,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 	},
 	
 	_getValueText: function(idx, value){
+		debugger;
 		var module = this.editModules[idx];
 		if (module){
 			switch (module.json.type){
@@ -186,6 +187,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				}
 
 				break;
+			// case "address":
+			// 	if (typeOf(value)==="array"){
+			//
+			// 	}
+			// 	break;
 			}
 		}
 		return value;
@@ -284,6 +290,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                         //var i = newTr.rowIndex;
                         //var data = {"value": [i], "text": [i]};
                     }else {
+                    	debugger;
                         if (data[id]) {
                             module.setData(data[id][module.json.id]);
                         } else {

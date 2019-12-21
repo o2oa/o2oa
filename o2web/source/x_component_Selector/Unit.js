@@ -163,6 +163,9 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     _getShowName: function(){
         return this.data.name;
     },
+    _getTtiteText: function(){
+        return this.data.levelName || this.data.name;
+    },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
     },
@@ -310,6 +313,22 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             this.isSelectedAll = true;
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
+        }
+    },
+    checkSelectAll : function(){
+        if( !this.isSelectedAll )return;
+        if( !this.selectAllNode || !this.selector.css.selectorItemCategoryActionNode_selectAll)return;
+        if( ! this.subItems )return;
+        var hasSelectedItem = false;
+        for( var i=0; i< this.subItems.length; i++ ){
+            if( this.subItems[i].isSelected ){
+                hasSelectedItem = true;
+                break;
+            }
+        }
+        if( !hasSelectedItem ){
+            this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            this.isSelectedAll = false;
         }
     },
     loadSubItems: function( callback ){

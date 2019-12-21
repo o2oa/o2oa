@@ -54,7 +54,7 @@
     }
     this.o2 = {
         "version": {
-            "v": '2.2.1',
+            "v": "2.3.1",
             "build": "2019.07.31",
             "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
         },
@@ -506,7 +506,7 @@
         var thisDoc = doc || document;
         var ms = (_typeOf(modules)==="array") ? modules : [modules];
         for (var i=0; i<ms.length; i++){
-            var module = modules[i];
+            var module = ms[i];
 
             var k = encodeURIComponent(module+(thisDoc.unid||""));
             var removeCss = _loadedCss[k];

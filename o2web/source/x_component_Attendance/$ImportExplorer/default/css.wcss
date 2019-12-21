@@ -68,7 +68,7 @@
     "float":"left",
     "text-align": "left",
     "line-height" :"25px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
   "toolbarSeparatorNode": {
@@ -159,7 +159,7 @@
     "color": "#666666",
     "font-weight": "bold",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -186,7 +186,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px"
   },
   "documentItemNode_noread": {
@@ -206,7 +206,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px"
   },
 

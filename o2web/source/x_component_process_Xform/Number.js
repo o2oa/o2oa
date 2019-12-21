@@ -5,10 +5,20 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     iconStyle: "numberIcon",
 
     getInputData: function(){
-        var n = this.node.getElement("input").get("value").toFloat();
-        if ((isNaN(n))) {this.setData('0')};
-        return (isNaN(n)) ? 0 : n;
+        if (this.node.getFirst()){
+            var v = this.node.getElement("input").get("value");
+            var n = v.toFloat();
+            return (isNaN(n)) ? 0 : n;
+        }else{
+            return this._getBusinessData();
+        }
+        return v;
     },
+    // getInputData: function(){
+    //     var n = this.node.getElement("input").get("value").toFloat();
+    //     if ((isNaN(n))) {this.setData('0')};
+    //     return (isNaN(n)) ? 0 : n;
+    // },
     validationFormat: function(){
         debugger;
         var n = this.node.getElement("input").get("value");
@@ -108,16 +118,18 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     },
 
     validation: function(routeName, opinion){
-        if (!this.validationFormat()) return false;
-        if (!this.validationConfig(routeName, opinion))  return false;
+        if (!this.readonly && !this.json.isReadonly){
+            if (!this.validationFormat()) return false;
+            if (!this.validationConfig(routeName, opinion)) return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString()!="true"){
-            this.notValidationMode(flag);
-            return false;
+            if (!this.json.validation) return true;
+            if (!this.json.validation.code) return true;
+            var flag = this.form.Macro.exec(this.json.validation.code, this);
+            if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+            if (flag.toString() != "true") {
+                this.notValidationMode(flag);
+                return false;
+            }
         }
         return true;
     },

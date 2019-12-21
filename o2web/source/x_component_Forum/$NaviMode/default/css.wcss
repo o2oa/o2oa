@@ -6,7 +6,7 @@
 	"float" : "left",
 	"width" : "160px",
 	"color" : "#333",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "14px",
 	"text-align" : "center",
 	"background-color" : "#F7F7F7"
@@ -278,7 +278,7 @@
 	"background-color": "#fff",
 	"color": "#333",
 	"line-height": "35px",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "14px"
   },
 
@@ -346,7 +346,7 @@
 	"color": "#666666",
 	//"line-height": "39px",
 	"cursor": "pointer",
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"font-size": "12px",
 	"background-color": "#fff"
   },
@@ -456,7 +456,7 @@
 	"background": "url("+"/x_component_cms_Module/$ViewExplorer/default/icon/editing_over.png) no-repeat center center"
   },
   "topNode" : {
-	"font-family": "微软雅黑",
+	"font-family": "Microsoft YaHei",
 	"color" : "#999",
 	"background-color" : "#fff",
 	"overflow" : "hidden",

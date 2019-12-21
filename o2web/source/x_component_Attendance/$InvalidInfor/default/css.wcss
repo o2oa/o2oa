@@ -66,7 +66,7 @@
     "float":"left",
     "text-align": "left",
     "line-height" :"25px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -126,7 +126,7 @@
     "color": "#666666",
     "font-weight": "bold",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -153,7 +153,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "default",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px"
   },
   "documentItemNode_noread": {
@@ -173,7 +173,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px"
   },
 
@@ -241,7 +241,7 @@
     "margin": "auto",
     "font-size": "16px",
     "color": "#666",
-    "font-family": "微软雅黑"
+    "font-family": "Microsoft YaHei"
   },
   "createOkActionNode": {
     "height": "30px",
@@ -251,7 +251,7 @@
     "line-height": "30px",
     "padding-left": "65px",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border-radius": "3px",
     "border": "1px solid #354f67",
     "color": "#FFF",
@@ -268,7 +268,7 @@
     "line-height": "30px",
     "padding-left": "40px",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border-radius": "3px",
     "color": "#FFF",
     "margin-top": "20px",

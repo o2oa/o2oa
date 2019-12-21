@@ -49,6 +49,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.fireEvent("postLoad");
                 this.fireEvent("afterLoad");
                 this.fireEvent("load");
+
+                this.form.app.addEvent("resize", function(){
+                    // if (this.options.pageShow!=="double"){
+                    //     this._doublePage();
+                    // }else{
+                         this._singlePage();
+                    // }
+                    this._checkScale();
+                }.bind(this));
             }.bind(this));
             this._loadStyles();
 
@@ -71,7 +80,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             case "n":
                 return false;
             case "a":
-                if (["copies", "secret", "priority", "attachment", "annotation", "copyto"].indexOf(name!=-1)){
+                if (["copies", "secret", "priority", "attachment", "annotation", "copyto", "copyto2"].indexOf(name!=-1)){
                     return !!this.data[name] && (!!this.data[name].length);
                 }
                 return true;
@@ -255,6 +264,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.secret = this._getShow("secret", "secretShow", "secretShowScript");
         control.priority = this._getShow("priority", "priorityShow", "priorityShowScript");
         control.redHeader = this._getShow("redHeader", "redHeaderShow", "redHeaderShowScript");
+        control.redLine = this._getShow("redLine", "redLineShow", "redLineShowScript");
+
         control.signer = this._getShow("signer", "signerShow", "signerShowScript");
         control.fileno = this._getShow("fileno", "filenoShow", "filenoShowScript");
         control.subject = this._getShow("subject", "subjectShow", "subjectShowScript");
@@ -264,6 +275,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.issuanceDate = this._getShow("issuanceDate", "issuanceDateShow", "issuanceDateShowScript");
         control.annotation = this._getShow("annotation", "annotationShow", "annotationShowScript");
         control.copyto = this._getShow("copyto", "copytoShow", "copytoShowScript");
+        control.copyto2 = this._getShow("copyto2", "copyto2Show", "copyto2ShowScript");
         control.editionUnit = this._getShow("editionUnit", "editionUnitShow", "editionUnitShowScript");
         control.editionDate = this._getShow("editionDate", "editionDateShow", "editionDateShowScript");
 
@@ -305,6 +317,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.issuanceDate = this._getEdit("issuanceDate", "issuanceDateEdit", "issuanceDateEditScript");
         control.annotation = this._getEdit("annotation", "annotationEdit", "annotationEditScript");
         control.copyto = this._getEdit("copyto", "copytoEdit", "copytoEditScript");
+        control.copyto2 = this._getEdit("copyto2", "copyto2Edit", "copyto2EditScript");
         control.editionUnit = this._getEdit("editionUnit", "editionUnitEdit", "editionUnitEditScript");
         control.editionDate = this._getEdit("editionDate", "editionDateEdit", "editionDateEditScript");
         control.meetingAttend = this._getShow("meetingAttend", "meetingAttendEdit", "meetingAttendEditScript");
@@ -466,10 +479,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         node = this.contentNode.getElement(".doc_layout_edition_copyto_table");
         if (node) node.setStyles(this.css.doc_layout_edition_copyto_table);
 
+        var node = this.contentNode.getElement(".doc_layout_edition_copyto2");
+        if (node) node.setStyles(this.css.doc_layout_edition_copyto);
+        node = this.contentNode.getElement(".doc_layout_edition_copyto2_table");
+        if (node) node.setStyles(this.css.doc_layout_edition_copyto_table);
+
         this.layout_copytoTitle = this.contentNode.getElement(".doc_layout_edition_copyto_title");
         if (this.layout_copytoTitle) this.layout_copytoTitle.setStyles(this.css.doc_layout_edition_copyto_title);
         this.layout_copytoContent = this.contentNode.getElement(".doc_layout_edition_copyto_content");
         if (this.layout_copytoContent) this.layout_copytoContent.setStyles(this.css.doc_layout_edition_copyto_content);
+
+        this.layout_copyto2Title = this.contentNode.getElement(".doc_layout_edition_copyto2_title");
+        if (this.layout_copyto2Title) this.layout_copyto2Title.setStyles(this.css.doc_layout_edition_copyto_title);
+        this.layout_copyto2Content = this.contentNode.getElement(".doc_layout_edition_copyto2_content");
+        if (this.layout_copyto2Content) this.layout_copyto2Content.setStyles(this.css.doc_layout_edition_copyto_content);
 
         var issuance = this.contentNode.getElement(".doc_layout_edition_issuance");
         if (issuance) issuance.setStyles(this.css.doc_layout_edition_issuance);
@@ -503,6 +526,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }else{
             this._loadFileNo();
         }
+        if (!this.layout_fileno) this._loadFileNo();
+
         this._loadRedLine();
 	    this._loadSubject();
 
@@ -555,6 +580,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_secret) this.layout_secret[m("secret")]();
         if (this.layout_priority) this.layout_priority[m("priority")]();
         if (this.layout_redHeader) this.layout_redHeader[m("redHeader")]();
+        if (this.layout_redLine) this.layout_redLine[m("redLine")]();
 
         if (this.layout_fileNoUpTable) this.layout_fileNoUpTable[m("signer")]();
         if (this.layout_filenoArea) this.layout_filenoArea[(!control.signer) ? "show" : "hide"]();
@@ -567,12 +593,49 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_issuanceDate) this.layout_issuanceDate[m("issuanceDate")]();
         if (this.layout_annotation) this.layout_annotation[m("annotation")]();
 
-        if (!control.copyto && !control.editionUnit && !control.editionDate){
+        debugger;
+        if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content)  && (!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
+            if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content) ){
+                if (this.layout_edition){
+                    if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
+                    if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                    if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
+                        "border-top": "solid windowtext 1.5pt"
+                    });
+                }
+            }else if (!control.copyto || !this.layout_copytoContent){
+                if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
+                //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
+                if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
+                    "border-top": "solid windowtext 1.5pt"
+                });
+            }else if (!control.copyto2 || !this.layout_copyto2Content) {
+                if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
+                if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
+                    "border-bottom": "solid windowtext 1.0pt"
+                });
+            }
+            if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
+                if (this.layout_editionArea && (this.layout_edition_issuance_date || this.layout_edition_issuance_unit)){
+                    var trs = this.layout_editionArea.getElement("table").rows;
+                    trs.item(trs.length-1).destroy();
+                    trs = this.layout_editionArea.getElement("table").rows;
+                    var tr = trs.item(trs.length-1);
+                    if (tr){
+                        tr.getElements("td").setStyles({
+                            "border-bottom": "solid windowtext 1.5pt"
+                        });
+                    }
+                }
+            }
+
             if (this.layout_editionArea) this.layout_editionArea.show();
             if (this.layout_copytoTitle) this.layout_copytoTitle[m("copyto")]();
             if (this.layout_copytoContent) this.layout_copytoContent[m("copyto")]();
+            if (this.layout_copyto2Title) this.layout_copyto2Title[m("copyto2")]();
+            if (this.layout_copyto2Content) this.layout_copyto2Content[m("copyto2")]();
 
             if (this.layout_edition_issuance_unit) this.layout_edition_issuance_unit[m("editionUnit")]();
             if (this.layout_edition_issuance_date) this.layout_edition_issuance_date[m("editionDate")]();
@@ -611,6 +674,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.pages = [];
 
         this.allowEdit = this._isAllowEdit();
+        this.allowPrint = this._isAllowPrint();
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.doc_content}).inject(this.node);
 
@@ -637,12 +701,56 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }.bind(this));
 
             if (this.json.toWord=="y"){
-                if (this.json.toWordTrigger=="open") this.toWord();
-                if (this.json.toWordTrigger=="save")  this.form.addEvent("beforeSave", this.toWord.bind(this));
-                if (this.json.toWordTrigger=="submit")  this.form.addEvent("beforeProcess", this.toWord.bind(this));
+                if (this.json.toWordTrigger=="open") this.docToWord();
+                if (this.json.toWordTrigger=="save")  this.form.addEvent("beforeSave", this.docToWord.bind(this));
+                if (this.json.toWordTrigger=="submit")  this.form.addEvent("beforeProcess", this.docToWord.bind(this));
             }
+
+            if (!layout.mobile) this.loadSideToolbar();
+
             if (callback) callback();
         }.bind(this));
+    },
+    resizeSidebar: function(){
+	    if (this.sidebarNode){
+            var fileTextNode = this.contentNode.getElement("div.doc_layout_filetext");
+            if (fileTextNode){
+                this.sidebarNode.position({
+                    relativeTo: fileTextNode,
+                    position: 'topLeft',
+                    edge: 'topRight',
+                    offset: {"x": -20}
+                });
+            }
+        }
+    },
+    loadSideToolbar: function(){
+        if (this.allowEdit){
+            if (this.pages.length){
+                var fileTextNode = this.pages[0].getElement("div.doc_layout_filetext");
+                if (fileTextNode){
+                    this.sidebarNode = new Element("div", {"styles": this.css.doc_sidebar}).inject(this.node);
+                    this.resizeSidebar();
+
+                    this.scrollNode = this.sidebarNode.getParentSrcollNode();
+                    if (this.scrollNode){
+                        this.scrollNode.addEvent("scroll", function(){
+                            this.resizeSidebar();
+                        }.bind(this));
+                    }
+
+                    html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+
+                    this.sidebarNode.set("html", html);
+
+                    MWF.require("MWF.widget.Toolbar", function() {
+                        this.sideToolbar = new MWF.widget.Toolbar(this.sidebarNode, {"style": "documentEdit_side"}, this);
+                        this.sideToolbar.load();
+                    }.bind(this));
+
+                }
+            }
+        }
     },
     _returnScale: function(){
         this.isScale = false;
@@ -673,33 +781,57 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.isScale = true;
                 var scale = (contentWidth)/pageSize.x;
                 this.scale = scale;
-
-                var h = this.node.getSize().y;
-                h = h - contentSize.y*(1-scale);
-
-                this.node.setStyles({
-                    "height":""+h+"px"
-                });
-                this.contentNode.setStyles({
-                    "transform":"scale(1, "+scale+")",
-                    "transform-origin": "0px 0px",
-                    "overflow": "visible"
-                });
-
-                this._singlePage();
-                this.pages.each(function(page){
-                    page.setStyles({
-                        "transform":"scale("+scale+", 1)",
-                        "transform-origin": "0px 0px",
-                        "overflow": "visible",
-                        "margin-left": "10px"
-                    });
-                });
-
-                if (this.doublePageAction) this.doublePageAction.hide();
+                this.zoom();
+                this.resetNodeSize();
+                // var h = this.node.getSize().y;
+                // h = h - contentSize.y*(1-scale);
+                //
+                // this.node.setStyles({
+                //     "height":""+h+"px"
+                // });
+                // this.contentNode.setStyles({
+                //     "transform":"scale(1, "+scale+")",
+                //     "transform-origin": "0px 0px",
+                //     "overflow": "visible"
+                // });
+                //
+                // this._singlePage();
+                // this.pages.each(function(page){
+                //     page.setStyles({
+                //         "transform":"scale("+scale+", 1)",
+                //         "transform-origin": "0px 0px",
+                //         "overflow": "visible",
+                //         "margin-left": "10px"
+                //     });
+                // });
+                //
+                // if (this.doublePageAction) this.doublePageAction.hide();
 
             }
         }
+    },
+    zoom: function(scale){
+	    if (scale) this.scale = scale;
+
+        var w = this.node.getSize().x;
+        w = w/this.scale;
+        this.contentNode.setStyles({
+            "transform":"scale("+this.scale+")",
+            "transform-origin": "0px 0px",
+            "overflow": "hidden",
+            "width": ""+w+"px"
+        });
+
+
+        // this._singlePage();
+        // this.pages.each(function(page){
+        //     page.setStyles({
+        //         "transform":"scale("+this.scale+", 1)",
+        //         "transform-origin": "0px 0px",
+        //         "overflow": "visible",
+        //         "margin-left": "10px"
+        //     });
+        // });
     },
 
     _switchReadOrEdit: function(){
@@ -716,16 +848,32 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _switchReadOrEditInline: function(){
         if (this.eiitMode){
             this._readFiletext();
-            if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+            if (this.allowEdit){
+                if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+                this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+            }
             this.eiitMode = false;
         }else{
             this._editFiletext("inline");
-            if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted)
+            if (this.allowEdit){
+                if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+                this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+            }
             this.eiitMode = true;
         }
     },
+    _printDoc: function(){
+        this.toWord(function(data){
+            if (this.form.businessData.work && !this.form.businessData.work.completedTime){
+                this.form.workAction.getAttachmentStream(data.id, this.form.businessData.work.id);
+            }else{
+                this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
+            }
+        }.bind(this), "$doc.doc");
+    },
     _readFiletext: function(){
-        this._returnScale();
+        //this._returnScale();
+        this.zoom(1);
         if (this.filetextEditor) this.filetextEditor.destroy();
         if (this.filetextScrollNode){
             if (this.reLocationFiletextToolbarFun){
@@ -744,6 +892,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     _editFiletext: function(inline){
 	    this._returnScale();
+	    this.zoom(1);
         this._singlePage();
         this.pages = [];
         this.contentNode.empty();
@@ -867,6 +1016,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
+    _isAllowPrint: function(){
+        if (this.json.allowPrint=="n") return false;
+        if (this.json.allowPrint=="s"){
+            if (this.json.allowPrintScript && this.json.allowPrintScript.code){
+                return !!this.form.Macro.exec(this.json.allowPrintScript.code, this);
+            }
+        }
+        return true;
+    },
 
     _getEdit: function(name, typeItem, scriptItem){
         switch (this.json[typeItem]) {
@@ -902,15 +1060,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
         }
-
-        this.toolNode.set("html", html);
+        if (this.allowPrint){
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
+        }
+        this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
+        this.toolbarNode.set("html", html);
 
         MWF.require("MWF.widget.Toolbar", function() {
-            this.toolbar = new MWF.widget.Toolbar(this.toolNode, {"style": "documentEdit"}, this);
+            this.toolbar = new MWF.widget.Toolbar(this.toolbarNode, {"style": "documentEdit"}, this);
             this.toolbar.load();
         }.bind(this));
 
-        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolNode);
+        this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
         this.doublePageAction.addEvent("click", function(){
             if (this.options.pageShow!=="double"){
                 this._doublePage();
@@ -918,9 +1079,25 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._singlePage();
             }
         }.bind(this));
+
+
+        // this.zoomSelectAction =  new Element("select", {"styles": {"float": "right"}}).inject(this.toolbarNode);
+        // var options = "<option value='2'>200%</option> " +
+        //     "<option value='1.75'>175%</option>" +
+        //     "<option value='1.5'>150%</option>" +
+        //     "<option value='1' selected>100%</option>" +
+        //     "<option value='0.75'>75%</option>" +
+        //     "<option value='0.5'>50%</option>" +
+        //     "<option value='0.25'>25%</option>"
+        // this.zoomSelectAction.set("html", options);
+        // this.zoomSelectAction.addEvent("change", function(e){
+        //     this._returnScale();
+        //     this.scale = e.target.options[e.target.selectedIndex].value;
+        //     this.zoom();
+        // }.bind(this));
+
     },
     _repage: function(delay){
-	    debugger;
         if (this.options.pageShow!=="double"){
             this._singlePage();
         }else{
@@ -937,13 +1114,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     _singlePage: function(){
+        //if (this.eiitMode) this._readFiletext();
+	    this.zoom(1);
+        this._checkScale();
+
         var w = this.contentNode.getSize().x;
         var count = 1;
-        var pageWidth = count * this.options.docPageFullWidth;
+        var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+        //var docPageFullWidth = this.options.docPageFullWidt;
+
+        var pageWidth = count * docPageFullWidth;
         var margin = (w-pageWidth)/(count+1);
+
         if (this.isScale){
-            margin = "10"
+            margin = "10";
         }
+        if (this.scale) margin = margin/this.scale;
         this.pages.each(function(page, i){
             page.setStyles({
                 "float": "left",
@@ -951,11 +1137,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             });
         });
 
+        this.resetNodeSize();
         // this.pages.each(function(page){
         //     page.setStyle("float", "none");
         // });
+        this.resizeSidebar();
         this.options.pageShow="single";
         this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.doublePage);
+    },
+    resetNodeSize: function(){
+        var contentSize = this.contentNode.getSize();
+        var toolbarSize = this.toolNode.getSize();
+        contentHeight = contentSize.y;
+        var h = contentHeight+toolbarSize.y+20;
+        //h = h - contentSize.y*(1-this.scale);
+
+        this.node.setStyles({
+            "height":""+h+"px"
+        });
     },
     createWaitSplitPage: function(){
 	    debugger;
@@ -968,12 +1167,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 	    this.waitSplitPageNode = new Element("div", {"styles": this.form.css.waitSplitPageNode, "text": MWF.xApplication.process.Xform.LP.computePage}).inject(this.node);
         this.waitSplitPageNode.position({
-            "relativeTo": this.contentNode,
+            "relativeTo": this.node,
             "position": "topRight",
             "edge": "topRight",
             "offset": {
                 "x": -10,
-                "y": 10
+                "y": 45
             }
         });
 
@@ -986,17 +1185,29 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _doublePage: function(){
+        if (this.eiitMode) this._switchReadOrEditInline();
+        this.zoom(1);
         this.createWaitSplitPage();
 	    window.setTimeout(function(){
             this._checkSplitPage(this.pages[0]);
 
+            this.zoom(1);
             var w = this.contentNode.getSize().x;
-            var count = (w/this.options.docPageFullWidth).toInt();
+            var toPageWidth = (w-100)/2;
+            scale = toPageWidth/this.options.docPageFullWidth;
+            if (scale<1) this.zoom(scale);
+
+            var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+            //var docPageFullWidth = this.options.docPageFullWidth;
+
+            var w = this.contentNode.getSize().x;
+            var count = (w/docPageFullWidth).toInt();
             var pages = this.contentNode.getElements(".doc_layout_page");
             count = Math.min(pages.length, count);
 
-            var pageWidth = count * this.options.docPageFullWidth;
+            var pageWidth = count * docPageFullWidth;
             var margin = (w-pageWidth)/(count+1);
+            if (this.scale) margin = margin/(this.scale);
             this.pages.each(function(page, i){
                 page.setStyles({
                     "float": "left",
@@ -1010,9 +1221,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //         page.setStyle("float", "right");
             //     }
             // });
+            this.resetNodeSize();
+
             this.options.pageShow="double";
             this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.singlePage);
 
+            this.resizeSidebar();
             this.clearWaitSplitPage();
         }.bind(this), 1000);
     },
@@ -1174,9 +1388,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             { name: 'about', groups: [ 'about' ] }
         ];
         //editorConfig.extraPlugins = "ecnet,colordialog,tableresize,quicktable,mathjax,ckeditor_wiris";
-        editorConfig.extraPlugins = "ecnet,colordialog,tableresize,quicktable,eqneditor";
+        //editorConfig.extraPlugins = "ecnet,colordialog,quicktable,tableresize,eqneditor";
+        //editorConfig.extraPlugins = "tableresize,quicktable";
+        editorConfig.extraPlugins = "quicktable,tableresize";
+
         //editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-        editorConfig.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
+        editorConfig.removeButtons = 'NumberedList,Source,Save,NewPage,Preview,Print,Templates,Paste,PasteFromWord,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,BulletedList,Outdent,Indent,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,TextColor,BGColor,Maximize,ShowBlocks,About,Styles,Font,FontSize';
 
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
@@ -1300,7 +1517,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     loadCkeditorFiletext: function(callback, inline){
         if (this.layout_filetext){
-            o2.load("ckeditor", function(){
+            o2.load("/o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
                 this.layout_filetext.setAttribute('contenteditable', true);
 
@@ -1432,6 +1649,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.data[name] = this.json.defaultValue[name];
         }
     },
+    computeData: function(){
+        this._computeData(false);
+        this.setData(this.data);
+    },
     _computeItemData: function(name, typeItem, dataItem, scriptItem, ev, dom){
         switch (this.json[typeItem]) {
             case "data":
@@ -1441,6 +1662,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 break;
             case "script":
+                debugger;
+
                 if (this.json[scriptItem] && this.json[scriptItem].code){
                     var v = this.form.Macro.exec(this.json[scriptItem].code, this);
                     this.data[name] = v;
@@ -1471,6 +1694,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this._computeItemData("issuanceDate", "issuanceDateValueType", "issuanceDateValueData", "issuanceDateValueScript", ev, "layout_issuanceDate");
         this._computeItemData("annotation", "annotationValueType", "annotationValueData", "annotationValueScript", ev, "layout_annotation");
         this._computeItemData("copyto", "copytoValueType", "copytoValueData", "copytoValueScript", ev, "layout_copytoContent");
+        this._computeItemData("copyto2", "copyto2ValueType", "copyto2ValueData", "copyto2ValueScript", ev, "layout_copyto2Content");
         this._computeItemData("editionUnit", "editionUnitValueType", "editionUnitValueData", "editionUnitValueScript", ev, "layout_edition_issuance_unit");
         this._computeItemData("editionDate", "editionDateValueType", "editionDateValueData", "editionDateValueScript", ev, "layout_edition_issuance_date");
 
@@ -1532,6 +1756,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
             if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
             if (this.layout_copytoContent) this.data.copyto = this.layout_copytoContent.get("text");
+            if (this.layout_copyto2Title) this.data.copyto2Title = this.layout_copyto2Title.get("text");
+            if (this.layout_copyto2Content) this.data.copyto2 = this.layout_copyto2Content.get("text");
             if (this.layout_edition_issuance_unit) this.data.editionUnit = this.layout_edition_issuance_unit.get("text");
             if (this.layout_edition_issuance_date) this.data.editionDate = this.layout_edition_issuance_date.get("text");
 
@@ -1539,9 +1765,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_meetingLeaveTitle) this.data.meetingLeaveTitle = this.layout_meetingLeaveTitle.get("text");
         if (this.layout_meetingSitTitle) this.data.meetingSitTitle = this.layout_meetingSitTitle.get("text");
 
-        if (this.layout_meetingAttendContent) this.data.meetingAttend = this.layout_meetingAttendContent.get("text");
-        if (this.layout_meetingLeaveContent) this.data.meetingLeave = this.layout_meetingLeaveContent.get("text");
-        if (this.layout_meetingSitContent) this.data.meetingSit = this.layout_meetingSitContent.get("text");
+        if (this.layout_meetingAttendContent) this.data.meetingAttend = this.layout_meetingAttendContent.get("html");
+        if (this.layout_meetingLeaveContent) this.data.meetingLeave = this.layout_meetingLeaveContent.get("html");
+        if (this.layout_meetingSitContent) this.data.meetingSit = this.layout_meetingSitContent.get("html");
 
         //}
         return this.data;
@@ -1571,6 +1797,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (data){
             debugger;
             this.data = data;
+            // this.data["$json"] = this.json;
             this._setBusinessData(data);
             if (this.layout_copies) this.layout_copies.set("text", data.copies || " ");
             if (this.layout_secret) this.layout_secret.set("text", data.secret || " ");
@@ -1594,6 +1821,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_annotation) this.layout_annotation.set("text", data.annotation || " ");
             if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
             if (this.layout_copytoContent) this.layout_copytoContent.set("text", data.copyto || " ");
+            if (this.layout_copyto2Title) this.layout_copyto2Title.set("text", data.copyto2Title || " ");
+            if (this.layout_copyto2Content) this.layout_copyto2Content.set("text", data.copyto2 || " ");
             if (this.layout_edition_issuance_unit) this.layout_edition_issuance_unit.set("text", data.editionUnit || " ");
             if (this.layout_edition_issuance_date) this.layout_edition_issuance_date.set("text", data.editionDate || " ");
 
@@ -1601,9 +1830,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_meetingLeaveTitle) this.layout_meetingLeaveTitle.set("text", data.meetingLeaveTitle || this.json.defaultValue.meetingLeaveTitle || " ");
             if (this.layout_meetingSitTitle) this.layout_meetingSitTitle.set("text", data.meetingSitTitle || this.json.defaultValue.meetingSitTitle || " ");
 
-            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("text", data.meetingAttend || " ");
-            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("text", data.meetingLeave || " ");
-            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("text", data.meetingSit || " ");
+            if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", data.meetingAttend || " ");
+            if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", data.meetingLeave || " ");
+            if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", data.meetingSit || " ");
         }
     },
     createErrorNode: function(text){
@@ -1749,53 +1978,80 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
-    toWord: function(){
+    removeDisplayNone: function(node){
+	    var n = node.getFirst();
+	    while (n){
+	        if (n.getStyle("display")=="none"){
+                var tmp = n.getNext();
+                n.destroy();
+                n = tmp;
+            }else{
+                n = this.removeDisplayNone(n);
+                n = n.getNext();
+            }
+        }
+        return node;
+    },
+
+    toWord: function(callback, name){
+        var toEdit = false;
+        if (this.eiitMode){
+            toEdit = true;
+            this._readFiletext();
+        }
+        //this._returnScale();
+        this.zoom(1);
+
+        this.pages = [];
+        this.contentNode.empty();
+        this._createPage(function(control){
+            this._loadPageLayout(control);
+            this.setData(this.data);
+            this._checkScale();
+            this.node.setStyles({
+                "height":"auto"
+            });
+
+            //var content = this.contentNode.getFirst().getFirst().get("html");
+            var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
+
+            tmpNode = this.removeDisplayNone(tmpNode);
+            var content = tmpNode.get("html");
+
+            var body = {
+                "fileName": name || this.json.toWordFilename || "$doc.doc",
+                "site": this.json.toWordSite || "$doc",
+                "content": content
+            };
+            o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
+                if (this.form.businessData.workCompleted){
+                    o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
+                        if (callback) callback(attjson.data);
+                        this.showToWord(attjson.data);
+                    }.bind(this));
+                }else{
+                    o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
+                        if (callback) callback(attjson.data);
+                        this.showToWord(attjson.data);
+                    }.bind(this));
+                }
+            }.bind(this));
+            tmpNode.destroy();
+
+            if (!toEdit){
+                this._readFiletext();
+            }else{
+                this._createEditor();
+            }
+        }.bind(this));
+    },
+    docToWord: function(){
 	    var flag = true;
         if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
             flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
         }
         if (flag){
-            var toEdit = false;
-            if (this.eiitMode){
-                toEdit = true;
-                this._readFiletext();
-            }
-            this._returnScale();
-
-            this.pages = [];
-            this.contentNode.empty();
-            this._createPage(function(control){
-                this._loadPageLayout(control);
-                this.setData(this.data);
-                this._checkScale();
-                this.node.setStyles({
-                    "height":"auto"
-                });
-
-                var content = this.contentNode.getFirst().getFirst().get("html");
-                var body = {
-                    "fileName": this.json.toWordFilename || "",
-                    "site": this.json.toWordSite || "$doc",
-                    "content": content
-                };
-                o2.Actions.get("x_processplatform_assemble_surface").docToWord(this.form.businessData.work.id, body, function(json){
-                    if (this.form.businessData.workCompleted){
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachmentWorkcompleted(json.data.id, this.form.businessData.workCompleted.id,function(attjson){
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }else{
-                        o2.Actions.get("x_processplatform_assemble_surface").getAttachment(json.data.id, this.form.businessData.work.id,function(attjson){
-                            this.showToWord(attjson.data);
-                        }.bind(this));
-                    }
-                }.bind(this));
-
-                if (!toEdit){
-                    this._readFiletext();
-                }else{
-                    this._createEditor();
-                }
-            }.bind(this));
+            this.toWord();
         }
     },
     showToWord: function(att){

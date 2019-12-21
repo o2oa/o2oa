@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         this.field = true;
     },
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly|| this.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -104,8 +104,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		
 		this.setOptions();
         this.node.addEvent("change", function(){
+			var v = this.getInputData("change");
+			this._setBusinessData(v);
             this.validationMode();
-            if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            if (this.validation()) this._setBusinessData(v);
         }.bind(this));
 
 	},
@@ -147,7 +149,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		this.fireEvent("addOption", [text, value])
 	},
 	_setValue: function(value){
-        if (!this.readonly) {
+		if (!this.readonly && !this.json.isReadonly ) {
             this._setBusinessData(value);
             for (var i=0; i<this.node.options.length; i++){
                 var option = this.node.options[i];

@@ -62,6 +62,7 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
             this.notice(this.lp.application.inputApplicationName, "error");
         }
     },
+
     importApplication: function(e){
         MWF.xDesktop.requireApp("portal.PortalExplorer", "Importer", function(){
             (new MWF.xApplication.portal.PortalExplorer.Importer(this, e)).load();
@@ -72,7 +73,12 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
 MWF.xApplication.portal.PortalExplorer.Portal = new Class({
     Extends: MWF.xApplication.process.ApplicationExplorer.Application,
 	Implements: [Events],
-
+    checkManage: function(){
+        if (this.app.control.canManage) return true;
+        if (this.app.control.canCreate && (this.data.creatorPerson==layout.desktop.session.user.name)) return true;
+        //if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
+        return false;
+    },
     loadElements: function(){
         this.loadElementList("pageList", this.pageListNode, this.openPage.bind(this), this.lp.noPage, this.createNewPage.bind(this));
     },

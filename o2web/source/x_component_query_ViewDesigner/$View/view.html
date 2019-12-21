@@ -201,7 +201,7 @@
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){ $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
-                       type="radio" text{($.data.where.dateRange.dateRangeType=='season')?'range':''} value="range"/>范围<br/>
+                       type="radio" text{($.data.where.dateRange.dateRangeType=='range')?'checked':''} value="range"/>范围<br/>
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
                        onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"

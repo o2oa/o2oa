@@ -64,20 +64,20 @@
     },
 
     "refreshNode": {
-        "width": "30px",
+        "width": "29px",
         "height": "40px",
         "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/refresh.png) center center no-repeat",
         "float": "left"
     },
     "addColumnNode": {
-        "width": "30px",
+        "width": "29px",
         "height": "40px",
         "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
         "float": "right"
     },
 
     "viewTitleContentNode": {
-        "margin": "0px 30px",
+        "margin": "0px 31px",
         "height": "40px"
     },
     "viewTitleTableNode": {

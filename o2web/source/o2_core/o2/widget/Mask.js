@@ -6,7 +6,8 @@ o2.widget.Mask = new Class({
 	options: {
 		"style": "default",
 		"zIndex": 100,
-		"loading": true
+		"loading": true,
+		"progress": false
 	},
 	initialize: function(options){
 		this.setOptions(options);
@@ -32,17 +33,23 @@ o2.widget.Mask = new Class({
 			"styles": this.css.backgroundBar
 		});
 		this.backgroundBar.setStyle("z-index", this.options.zIndex+1);
-		
-
-		this.loadBar = new Element("div", {
-			"styles": this.css.loadingBar,
-			"html": "<table width=\"80%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr valign=\"middle\" height=\"30\"><td align=\"right\"><img src=\""+o2.session.path+"/widget/$Mask/"+this.options.style+"/loading.gif\" /></td><td align=\"center\">loading...</td></tr></table>"
-		});
-		this.loadBar.setStyle("z-index", this.options.zIndex+2);
 
 		this.maskBar.inject(this.container);
 		this.backgroundBar.inject(this.container);
-		this.loadBar.inject(this.container);
+
+		if (this.options.loading){
+			this.loadBar = new Element("div", {
+				"styles": this.css.loadingBar,
+				"html": "<table width=\"80%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr valign=\"middle\" height=\"30\"><td align=\"right\"><img src=\""+o2.session.path+"/widget/$Mask/"+this.options.style+"/loading.gif\" /></td><td align=\"center\">loading...</td></tr></table>"
+			});
+			this.loadBar.setStyle("z-index", this.options.zIndex+2);
+			this.loadBar.inject(this.container);
+		}
+		if (this.options.progress){
+			this.progressNode =  new Element("div", {"styles": this.css.progressNode}).inject(this.container);
+			this.progressNode.setStyle("z-index", this.options.zIndex+2);
+		}
+
 	},
 	
 	hide: function(callBack){
@@ -61,7 +68,7 @@ o2.widget.Mask = new Class({
 			this.container.inject($(document.body));
 
 			if (!this.options.loading){
-				this.loadBar.setStyle("display", "none");
+				if (this.loadBar) this.loadBar.setStyle("display", "none");
 			}else{
 				this.loadBar.setStyle("display", "block");
 				
@@ -82,7 +89,7 @@ o2.widget.Mask = new Class({
             this.container.inject($(node));
 
             if (!this.options.loading){
-                this.loadBar.setStyle("display", "none");
+				if (this.loadBar) this.loadBar.setStyle("display", "none");
             }else{
                 this.loadBar.setStyle("display", "block");
 

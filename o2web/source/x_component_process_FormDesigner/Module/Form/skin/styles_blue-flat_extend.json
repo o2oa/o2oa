@@ -6,6 +6,7 @@
     "attachmentStyle" : {
       "style" : "blue_flat",
       "actionShowText" : true,
+      "isReplaceHidden" : true,
       "iconConfigUrl" : "/x_component_File/$Main/blue_flat/icon.json",
       "iconFolderUrl" : "/x_component_File/$Main/blue_flat/file/"
     },
@@ -20,6 +21,22 @@
       "warn" : "/x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
     },
     "submitedDlgUseNotice" : true,
+    "submitedDlgStyle" : {
+      "style" : "blue_flat_notice",
+      "promptPosition" : "center",
+      "isTitle" : true,
+      "title" : "提交成功",
+      "width": 440,
+      "height": "auto",
+      "promptCloseTime" : 5,
+      "maxTitleLength" : 30,
+      "isCountDown" : true,
+      "contentStyle" : {
+        "width":"340px",
+        "margin-top" : "0px",
+        "margin-left" : "0px"
+      }
+    },
     "selectorStyle" : {
       "style" : "blue_flat",
       "width" : "700",
@@ -61,6 +78,7 @@
     "noticeStyle" : {
       "title" : "温馨提示",
       "footer" : " ",
+      "delayClose" : 3000,
       "setStyles" : {
         "wrapper": {
           "padding-left" : "10px"

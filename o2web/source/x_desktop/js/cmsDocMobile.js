@@ -5,22 +5,22 @@ layout.mobile = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
 var href = locate.href;
-if (href.indexOf("debugger")!=-1) layout.debugger = true;
-o2.addReady(function(){
-    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
+if (href.indexOf("debugger") != -1) layout.debugger = true;
+o2.addReady(function () {
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
         //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
         MWF.require("MWF.widget.Mask", null, false);
-        layout.mask = new MWF.widget.Mask({"style": "desktop"});
+        layout.mask = new MWF.widget.Mask({ "style": "desktop" });
         layout.mask.load();
 
-        MWF.require("MWF.xDesktop.Layout", function(){
+        MWF.require("MWF.xDesktop.Layout", function () {
             MWF.require("MWF.xDesktop.Authentication", null, false);
 
-            (function(){
-                layout.load = function(){
-                    if (this.isAuthentication()){
+            (function () {
+                layout.load = function () {
+                    if (this.isAuthentication()) {
                         //var preview = window.frameElement.retrieve("preview");
                         //layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
                         //
@@ -30,16 +30,16 @@ o2.addReady(function(){
                         this.cssPath = "/x_component_cms_Document/$Main/default/css.wcss";
                         this._loadCss();
 
-                        MWF.require("MWF.xDesktop.MessageMobile", function(){
-                            layout.message = new MWF.xDesktop.MessageMobile();
-                            layout.message.load();
-                        }.bind(this));
+                        // MWF.require("MWF.xDesktop.MessageMobile", function(){
+                        //     layout.message = new MWF.xDesktop.MessageMobile();
+                        //     layout.message.load();
+                        // }.bind(this));
 
 
                         //MWF.xDesktop.requireApp("cms.Document", "Actions.RestActions", null, false);
                         //this.action = new MWF.xApplication.cms.Document.Actions.RestActions();
                         this.action = MWF.Actions.get("x_cms_assemble_control");
-                        MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, null, false);
+                        MWF.xDesktop.requireApp("cms.Document", "lp." + MWF.language, null, false);
                         //MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, {
                         //    "onRequestFailure": function(){
                         //        MWF.xDesktop.requireApp("cms.Document", "lp.zh-cn", null, false);
@@ -59,77 +59,79 @@ o2.addReady(function(){
                         //});
                     }
                 };
-                layout.addEvent = function(){};
-                layout.close = function(){
-                    if (window.o2android && window.o2android.closeDocumentWindow){
+                layout.addEvent = function () { };
+                layout.close = function () {
+                    if (window.o2android && window.o2android.closeDocumentWindow) {
                         window.o2android.closeDocumentWindow('close');
                     }
-                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow){
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow) {
                         window.webkit.messageHandlers.closeDocumentWindow.postMessage('close');
                     }
                 };
-                layout._loadCss = function(){
+                layout._loadCss = function () {
                     var key = encodeURIComponent(this.cssPath);
-                    if (MWF.widget.css[key]){
+                    if (MWF.widget.css[key]) {
                         this.css = MWF.widget.css[key];
-                    }else{
+                    } else {
                         var r = new Request.JSON({
                             url: this.cssPath,
                             secure: false,
                             async: false,
                             method: "get",
                             noCache: false,
-                            onSuccess: function(responseJSON, responseText){
+                            onSuccess: function (responseJSON, responseText) {
                                 this.css = responseJSON;
                                 MWF.widget.css[key] = responseJSON;
                             }.bind(this),
-                            onError: function(text, error){
+                            onError: function (text, error) {
                                 alert(error + text);
                             }
                         });
                         r.send();
                     }
                 };
-                layout.getIds = function(){
+                layout.getIds = function () {
                     var href = window.location.href;
-                    var qStr = href.substr(href.indexOf("?")+1, href.length);
+                    var qStr = href.substr(href.indexOf("?") + 1, href.length);
                     var qDatas = qStr.split("&");
                     var obj = {};
-                    qDatas.each(function(d){
+                    qDatas.each(function (d) {
                         var q = d.split("=");
                         obj[q[0].toLowerCase()] = q[1];
                     });
                     return obj;
                 };
 
-                layout.loadDocument = function(options){
+                layout.loadDocument = function (options) {
                     // this.action.viewDocument( options.id, function(document){
 
                     o2.Actions.invokeAsync([
-                        {"action": this.action, "name": "getDocument"},
-                        {"action": this.action, "name": "listAttachment" }
-                    ], {"success": function(json_document, json_att){
-                        if (this.mask) this.mask.hide();
-                        if (json_document ){
-                            if( json_att && typeOf( json_att.data ) === "array" ){
-                                json_document.data.attachmentList = json_att.data ;
-                            }else{
-                                json_document.data.attachmentList = [];
+                        { "action": this.action, "name": "getDocument" },
+                        { "action": this.action, "name": "listAttachment" }
+                    ], {
+                        "success": function (json_document, json_att) {
+                            if (this.mask) this.mask.hide();
+                            if (json_document) {
+                                if (json_att && typeOf(json_att.data) === "array") {
+                                    json_document.data.attachmentList = json_att.data;
+                                } else {
+                                    json_document.data.attachmentList = [];
+                                }
+                                this.parseData(json_document.data);
+                                if (!this.formId || this.formId === "") {
+                                    this.notice(this.document.categoryName + this.lp.formNotSetted, "error");
+                                } else {
+                                    this.loadForm(this.formId);
+                                }
+                            } else {
+                                this.notice(this.lp.documentGettedError + ":" + error.responseText, "error");
+                                this.close();
                             }
-                            this.parseData(json_document.data);
-                            if( !this.formId || this.formId==="" ){
-                                this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
-                            }else{
-                                this.loadForm( this.formId );
-                            }
-                        }else{
-                            this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                        }.bind(this), "failure": function () {
+                            this.notice(this.lp.documentGettedError + ":" + error.responseText, "error");
                             this.close();
-                        }
-                    }.bind(this), "failure": function(){
-                        this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-                        this.close();
-                    }.bind(this)}, options.id);
+                        }.bind(this)
+                    }, options.id);
 
                     //this.action.getDocument( options.id, function(document){
                     //    if (this.mask) this.mask.hide();
@@ -161,20 +163,20 @@ o2.addReady(function(){
                 //    }.bind(this), null);
                 //};
 
-                layout.loadForm = function( formId ){
-                    this.action.getForm(formId, function( json ){
+                layout.loadForm = function (formId) {
+                    this.action.getForm(formId, function (json) {
                         //if (this.mask) this.mask.hide();
-                        this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)): null;
-                        if( !this.form ){
-                            this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+                        this.form = (json.data.mobileData) ? JSON.decode(MWF.decodeJsonString(json.data.mobileData)) : null;
+                        if (!this.form) {
+                            this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)) : null;
                         }
                         //this.listAttachment();
                         if (this.mask) this.mask.hide();
                         // this.attachmentList = [];
                         this.openDocument();
-                    }.bind(this), function(error){
+                    }.bind(this), function (error) {
                         if (this.mask) this.mask.hide();
-                        this.notice(  this.lp.formGettedError + ":" + error.responseText , "error");
+                        this.notice(this.lp.formGettedError + ":" + error.responseText, "error");
                         //this.close();
                     }.bind(this));
                 };
@@ -200,18 +202,18 @@ o2.addReady(function(){
                 //    }
                 //},
 
-                layout.errorDocument = function(){
+                layout.errorDocument = function () {
                     if (this.mask) this.mask.hide();
                     this.node.set("text", "openError");
                 };
-                layout.parseData = function(data){
-                    //   this.setTitle(this.options.title+"-"+data.work.title);
+                layout.parseData = function (data) {
+                    window.document.title = data.document.title;
 
                     data.document.subject = data.document.title;
-                    this.data =  data.data;
+                    this.data = data.data;
                     this.document = data.document;
                     this.attachmentList = data.attachmentList || [];
-                    this.attachmentList.each(function(att){
+                    this.attachmentList.each(function (att) {
                         att.lastUpdateTime = att.updateTime;
                         att.person = att.creatorUid;
                     });
@@ -219,54 +221,62 @@ o2.addReady(function(){
 
                     //控制权限
                     var isControl = false;
-                    if( data.isAppAdmin ){//应用管理员
+                    if (data.isAppAdmin) {//应用管理员
                         isControl = true;
                     }
-                    if( data.isCategoryAdmin ){//分类管理员
+                    if (data.isCategoryAdmin) {//分类管理员
                         isControl = true;
                     }
-                    if( data.isManager){//管理员
+                    if (data.isManager) {//管理员
                         isControl = true;
                     }
-                    if( data.isCreator ){//创建者
+                    if (data.isCreator) {//创建者
                         isControl = true;
                     }
-                    if( data.isEditor ){ //编辑权限
+                    if (data.isEditor) { //编辑权限
                         isControl = true;
                     }
-                    // if( this.options.readonly ){ //强制只读
-                    //     this.readonly = true;
-                    // }else{
-                    this.readonly = !(isControl && this.document.docStatus === "draft");
-                    // }
+                    if (this.options.readonly) { //有值 赋值
+                        this.readonly = this.options.readonly
+                    } else {//没有值 是否新发布
+                        this.readonly = true;
+                        if (this.document.docStatus === "draft") {
+                            this.readonly = false
+                        }
+                    }
 
                     this.formId = this.document.form || this.document.readFormId;
-                    if( this.readonly === true && this.document.readFormId && this.document.readFormId !== "" ){
-                        this.formId  = this.document.readFormId; //阅读表单
-                    }else {
+                    //当前模式 阅读还是编辑 移动端上使用
+                    var currentMode = "read";
+                    if (this.readonly === true && this.document.readFormId && this.document.readFormId !== "") {
+                        this.formId = this.document.readFormId; //阅读表单
+                        currentMode = "read";
+                    } else {
                         this.formId = this.document.form;//编辑表单
+                        currentMode = "edit";
                     }
 
-                    this.control = data.control ||  {
+                    this.control = data.control || {
                         "allowRead": true,
                         "allowPublishDocument": isControl && this.document.docStatus === "draft",
                         "allowSave": isControl && this.document.docStatus === "published",
                         "allowPopularDocument": false,
-                        "allowEditDocument":  isControl ,
-                        "allowDeleteDocument":  isControl ,
-                        "allowArchiveDocument" : false,
-                        "allowRedraftDocument" : false
+                        "allowEditDocument": isControl,
+                        "allowDeleteDocument": isControl,
+                        "allowArchiveDocument": false,
+                        "allowRedraftDocument": false,
+                        "currentMode": currentMode
                     };
                 };
-                layout.openDocument = function(){
-                    if (this.form){
-                        MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
+                layout.openDocument = function () {
+                    if (this.form) {
+                        MWF.xDesktop.requireApp("cms.Xform", "Form", function () {
                             this.appForm = new MWF.CMSForm(this.node, this.form, {
                                 "readonly": this.readonly,
-                                "autoSave" : !this.readonly,
-                                "saveOnClose" : false,
-                                "showAttachment" : true,
-                                "onPostPublish" : null
+                                "autoSave": !this.readonly,
+                                "saveOnClose": false,
+                                "showAttachment": true,
+                                "onPostPublish": null
                             });
                             this.appForm.businessData = {
                                 "data": this.data,
@@ -285,14 +295,14 @@ o2.addReady(function(){
                             };
                             this.appForm.documentAction = this.action;
                             this.appForm.app = this;
-                            this.appForm.load(function(){
+                            this.appForm.load(function () {
                                 console.log('加载表单完成。。。。。。。。。。。。。');
                                 //告诉移动端表单加载完成
-                                if (window.o2android && window.o2android.cmsFormLoaded){
+                                if (window.o2android && window.o2android.cmsFormLoaded) {
                                     layout.appForm = this.appForm;
                                     window.o2android.cmsFormLoaded(JSON.stringify(this.control));
                                 }
-                                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded){
+                                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded) {
                                     layout.appForm = this.appForm;
                                     window.webkit.messageHandlers.cmsFormLoaded.postMessage(JSON.stringify(this.control));
                                 }
@@ -301,16 +311,16 @@ o2.addReady(function(){
                     }
                 };
 
-                layout.isAuthentication = function(){
+                layout.isAuthentication = function () {
                     layout.authentication = new MWF.xDesktop.Authentication({
                         "onLogin": layout.load.bind(layout)
                     });
 
                     var returnValue = true;
-                    this.authentication.isAuthenticated(function(json){
+                    this.authentication.isAuthenticated(function (json) {
                         this.user = json.data;
                         layout.session.user = json.data;
-                    }.bind(this), function(){
+                    }.bind(this), function () {
                         // if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal){
                         //     MWF.xDesktop.loadPortal(layout.config.loginPage.portal);
                         // }else{
@@ -380,27 +390,27 @@ o2.addReady(function(){
                 //        if (callback) callback();
                 //    }.bind(this));
                 //};
-                layout.confirm = function(type, e, title, text, width, height, ok, cancel, callback, mask, style){
-                    MWF.require("MWF.xDesktop.Dialog", function(){
+                layout.confirm = function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
+                    MWF.require("MWF.xDesktop.Dialog", function () {
                         var size = this.content.getSize();
                         var x = 0;
                         var y = 0;
-                        if (typeOf(e)=="element"){
+                        if (typeOf(e) == "element") {
                             var position = e.getPosition(this.content);
                             x = position.x;
                             y = position.y;
-                        }else{
-                            if (Browser.name=="firefox"){
+                        } else {
+                            if (Browser.name == "firefox") {
                                 x = parseFloat(e.event.clientX);
                                 y = parseFloat(e.event.clientY);
-                            }else{
+                            } else {
                                 x = parseFloat(e.event.x);
                                 y = parseFloat(e.event.y);
                             }
 
 
                             //    if (!x || !y){
-                            if (e.target){
+                            if (e.target) {
                                 var position = e.target.getPosition(this.content);
                                 x = position.x;
                                 y = position.y;
@@ -408,30 +418,30 @@ o2.addReady(function(){
                             //    }
                         }
 
-                        if (x+parseFloat(width)>size.x){
-                            x = x-parseFloat(width);
+                        if (x + parseFloat(width) > size.x) {
+                            x = x - parseFloat(width);
                         }
-                        if (x<0) x = 0;
-                        if (y+parseFloat(height)>size.y){
-                            y = y-parseFloat(height);
+                        if (x < 0) x = 0;
+                        if (y + parseFloat(height) > size.y) {
+                            y = y - parseFloat(height);
                         }
-                        if (y<0) y = 0;
+                        if (y < 0) y = 0;
 
                         var ctext = "";
                         var chtml = "";
-                        if (typeOf(text).toLowerCase()=="object"){
+                        if (typeOf(text).toLowerCase() == "object") {
                             ctext = text.text;
                             chtml = text.html;
-                        }else{
+                        } else {
                             ctext = text;
                         }
                         var dlg = new MWF.xDesktop.Dialog({
                             "title": title,
                             "style": style || "flat",
                             "top": y,
-                            "left": x-20,
-                            "fromTop":y,
-                            "fromLeft": x-20,
+                            "left": x - 20,
+                            "fromTop": y,
+                            "fromLeft": x - 20,
                             "width": width,
                             "height": height,
                             "text": ctext,
@@ -450,7 +460,7 @@ o2.addReady(function(){
                             ]
                         });
 
-                        switch (type.toLowerCase()){
+                        switch (type.toLowerCase()) {
                             case "success":
                                 dlg.content.setStyle("background-image", "url(data:image/png;base64,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)");
                                 break;
@@ -470,16 +480,16 @@ o2.addReady(function(){
                         if (callback) callback(dlg);
                     }.bind(this));
                 };
-                layout.notice = function(content, type, target, where, offset){
-                    if (!where) where = {"x": "right", "y": "top"};
+                layout.notice = function (content, type, target, where, offset) {
+                    if (!where) where = { "x": "right", "y": "top" };
                     if (!target) target = this.content;
                     if (!type) type = "ok";
                     var noticeTarget = target || $(document.body);
                     var off = offset;
-                    if (!off){
+                    if (!off) {
                         off = {
                             x: 10,
-                            y: where.y.toString().toLowerCase()=="bottom" ? 10 : 10
+                            y: where.y.toString().toLowerCase() == "bottom" ? 10 : 10
                         };
                     }
 
@@ -488,19 +498,19 @@ o2.addReady(function(){
                         position: where,
                         move: false,
                         target: noticeTarget,
-                        delayClose: (type=="error") ? 10000 : 5000,
+                        delayClose: (type == "error") ? 10000 : 5000,
                         offset: off,
                         content: content
                     });
                 };
-                layout.reload = function(){
+                layout.reload = function () {
                     window.location.reload();
                 };
 
-                MWF.getJSON("res/config/config.json", function(config){
+                MWF.getJSON("res/config/config.json", function (config) {
                     layout.config = config;
 
-                    MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+                    MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
                         layout.serviceAddressList = service;
                         layout.centerServer = center;
                         layout.load();

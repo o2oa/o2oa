@@ -5,7 +5,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 
     loadDescription: function(){},
     _loadNode: function(){
-        if (this.readonly){
+        if (this.readonly || this.json.isReadonly ){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -232,6 +232,8 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 this.errNode.inject(this.node, "after");
             }
             this.showNotValidationMode(this.node);
+
+            if (!this.node.isIntoView()) this.node.scrollIntoView();
         }
     },
     validationMode: function(){

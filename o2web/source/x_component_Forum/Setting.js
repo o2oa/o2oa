@@ -1177,6 +1177,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         if( this.isNew )data.id = id;
 
         this.saveRoleMember( true,  "moderatorNames" ,"SECTION_MANAGER_", data, true );
+        //this.saveRoleMember( true,  "moderatorNames" ,"SECTION_MANAGER_", data );
 
         var flag = data.sectionVisible != this.lp.allPerson;
         this.saveRoleMember( flag,  "sectionVisibleResult" ,"SECTION_GUEST_", data );
@@ -1350,6 +1351,10 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         }.bind(this), null, this.formData, this.file);
     },
     _ok: function (data, callback) {
+        debugger;
+        if( typeOf(data.moderatorNames) === "string" ){
+            data.moderatorNames = data.moderatorNames.split(",");
+        }
         data.sectionLevel = "主版块";
         data.typeCatagory = data.typeCatagory.split(",").join("|");
         this.app.restActions.saveSection( data, function(json){

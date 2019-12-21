@@ -10,7 +10,7 @@
     "overflow-y" : "scroll"
   },
   "topNode" : {
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "color" : "#999",
     "background-color" : "#fff",
     "overflow" : "hidden",
@@ -145,7 +145,7 @@
   },
   "personTitleNode" : {
     "margin-top" : "5px",
-    "height": "24px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "24px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left"
   },
   "contentDiv":{
@@ -380,7 +380,7 @@
     "background-color": "#fff",
     "color": "#333",
     "line-height": "35px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -448,7 +448,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },

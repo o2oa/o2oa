@@ -474,6 +474,13 @@
                 n = n.getParent();
             }
             return i;
+        },
+        "getParentSrcollNode": function(){
+            var node = this.getParent();
+            while (node && (node.getScrollSize().y<=node.getSize().y || (node.getStyle("overflow")!=="auto" &&  node.getStyle("overflow-y")!=="auto"))){
+                node = node.getParent();
+            }
+            return node || null;
         }
     });
     Object.copy = function(from, to){

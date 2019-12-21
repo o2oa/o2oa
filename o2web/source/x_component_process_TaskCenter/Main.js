@@ -1004,9 +1004,9 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
             var options = {"workId": currentTask[0], "appId": currentTask[0]};
             this.app.desktop.openApplication(null, "process.Work", options);
 
-            this.createStartWorkResault(workInfors, title, processName, false);
+            if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
         }else{
-            this.createStartWorkResault(workInfors, title, processName, true);
+            if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, true);
         }
     },
     getStartWorkInforObj: function(work){

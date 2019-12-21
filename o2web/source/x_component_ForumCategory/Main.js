@@ -75,7 +75,9 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
         this.restActions.getCategory( this.options.categoryId, function (json) {
             this.data = json.data;
-            this.setTitle( this.data.forumName );
+
+            var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+            this.setTitle( this.data.forumName + tail);
             this.createTopNode();
 
             this.middleNode = new Element("div.middleNode", {
@@ -119,7 +121,7 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
             var topItemTitleNode = new Element("div.topItemTitleNode", {
                 "styles": this.css.topItemTitleNode,
-                "text": this.lp.title
+                "text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
             }).inject(topTitleMiddleNode);
 
             var topItemSepNode = new Element("div.topItemSepNode", {

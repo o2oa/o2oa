@@ -15,27 +15,52 @@
         "background-color": "#ffffff",
         "padding": "0xp 20px"
     },
+//    "routeNode": {
+//        "float": "left",
+//        "margin-left": "20px",
+//        "border-radius": "5px",
+//        "background-color": "#ffffff",
+//        "height": "24px",
+//        "line-height": "24px",
+//        "margin-top": "8px",
+//        "padding-right": "8px",
+//        "cursor": "pointer"
+//    },
+//    "routeIconNode": {
+//        "width": "24px",
+//        "height": "24px",
+//        "float": "left",
+//        "background": "url("+"/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+//    },
+//    "routeTextNode": {
+//        "margin-left": "24px",
+//        "line-height": "24px",
+//        "color": "#000"
+//    },
+
     "routeNode": {
         "float": "left",
         "margin-left": "20px",
+        "padding-left" : "26px",
         "border-radius": "5px",
-        "background-color": "#ffffff",
-        "height": "24px",
+        "min-height": "24px",
         "line-height": "24px",
         "margin-top": "8px",
         "padding-right": "8px",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "color" : "#000",
+        "background": "url(/x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
+        "background-color": "#f0f0f0"
     },
-    "routeIconNode": {
-        "width": "24px",
-        "height": "24px",
-        "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+    "routeNode_over" : {
+        "color" : "#000",
+        "background": "url(/x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
+        "background-color": "#e6ecf8"
     },
-    "routeTextNode": {
-        "margin-left": "24px",
-        "line-height": "24px",
-        "color": "#000"
+    "routeNode_selected" : {
+        "color" : "#fff",
+        "background": "url(/x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
+        "background-color": "#4a90e2"
     },
 
     "routeOpinionTile": {
@@ -137,7 +162,7 @@
         "text-align": "center"
     },
     "inputTextarea": {
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border": "0px",
         "overflow": "auto",
         "width": "99%",
@@ -206,6 +231,9 @@
     },
     "routeOrgTable": {
     },
+    "routeOrgTr" : {
+        "margin-bottom": "10px"
+    },
     "routeOrgOddTd": {
         "width": "50%"
     },
@@ -213,19 +241,59 @@
         "width": "50%",
         "border-left": "5px solid #ffffff"
     },
+
+    //    "selectIdeaNode": {
+    //        "background-color": "#eee",
+    //        "max-height": "200px",
+    //        "clear": "both",
+    //        "overflow": "hidden"
+    //    },
+    //    "selectIdeaScrollNode": {
+    //        "max-height": "200px",
+    //        "overflow": "auto"
+    //    },
+    //    "selectIdeaItemNode": {
+    //        "line-height": "18px",
+    //        "font-size": "14px",
+    //        "cursor": "pointer",
+    //        "background-color": "#FFF",
+    //        "padding": "4px 4px 4px 4px",
+    //        "overflow": "hidden"
+    //    },
+    //    "selectIdeaItemNode_over": {
+    //        "background-color": "#e6ecf8"
+    //    },
+
     "selectorTitle": {
-        "height": "26px",
-        "line-height": "26px",
+        "padding": "0px 4px",
+        "height": "30px",
+        "line-height": "30px",
         "font-size": "14px",
-        "font-weight": "bold",
-        "color": "#333333"
+        //        "font-weight": "bold",
+        "color": "#000",
+        "cursor" : "pointer",
+        "background": "url(/x_component_process_Work/$Processor/mobile/arrow_right2.png) no-repeat right 10px center",
+        "background-color" : "#fff"
+    },
+    "selectorTitle_over" : {
+        "background-color": "#e6ecf8"
     },
     "selectorTitleText": {
-        "float": "left"
+//        "float": "left"
+    },
+    "selectorErrorNode" : {
+        //"float" : "right",
+        "background-color" : "#fff",
+        "margin-right" : "5px",
+        "font-weight" : "normal"
     },
     "selectorContent": {
         "overflow": "hidden",
-        "margin-bottom": "10px"
+        "background-color" : "#fff",
+        "padding" : "0px 5px 5px 5px"
+    },
+    "selectorContent_noItem": {
+        "padding" : "0px"
     }
 
 }

@@ -49,3 +49,42 @@ MWFForum.getDateDiff = function (publishTime, justNowStr) {
 MWFForum.getDateDiff2 = function (publishTime) {
     return MWFForum.getDateDiff( publishTime, "刚才" );
 };
+
+MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
+MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
+MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
+
+MWFForum.getSystemConfig = function( code ){
+    if( !MWFForum.SystemSetting )MWFForum.SystemSetting = {};
+
+    if( typeOf( MWFForum.SystemSetting[code] ) !== "null" )return MWFForum.SystemSetting[code];
+
+    o2.Actions.load("x_bbs_assemble_control").BBSConfigSettingAction.getByCode( {configCode : code }, function(json) {
+        MWFForum.SystemSetting[code] = json.data;
+    }.bind(this), function(){
+        MWFForum.SystemSetting[code] = "";
+    }, false );
+
+    return MWFForum.SystemSetting[code];
+};
+
+MWFForum.getSystemConfigValue = function( code ){
+    var config = MWFForum.getSystemConfig(code);
+    if( config && config.configValue ){
+        return config.configValue;
+    }else{
+        return "";
+    }
+};
+
+MWFForum.getBBSName = function(){
+    if( typeOf( MWFForum.BBSName ) !== "null" )return MWFForum.BBSName;
+
+    o2.Actions.load("x_bbs_assemble_control").BBSConfigSettingAnonymousAction.getBBSName( function(json) {
+        MWFForum.BBSName = (json.data || {}).configValue;
+    }.bind(this), function(){
+        MWFForum.BBSName = "";
+    }, false );
+
+    return MWFForum.BBSName;
+};

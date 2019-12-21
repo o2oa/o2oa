@@ -7184,7 +7184,7 @@ _p[60] = {
      */
         var FONT_ADJUST = {
             safari: {
-                "微软雅黑,Microsoft YaHei": -.17,
+                "Microsoft YaHei,Microsoft YaHei": -.17,
                 "楷体,楷体_GB2312,SimKai": -.1,
                 "隶书, SimLi": -.1,
                 "comic sans ms": -.23,
@@ -7195,7 +7195,7 @@ _p[60] = {
             },
             ie: {
                 10: {
-                    "微软雅黑,Microsoft YaHei": -.17,
+                    "Microsoft YaHei,Microsoft YaHei": -.17,
                     "comic sans ms": -.17,
                     "impact,chicago": -.08,
                     "times new roman": .04,
@@ -7203,7 +7203,7 @@ _p[60] = {
                     "default": -.15
                 },
                 11: {
-                    "微软雅黑,Microsoft YaHei": -.17,
+                    "Microsoft YaHei,Microsoft YaHei": -.17,
                     "arial,helvetica,sans-serif": -.17,
                     "comic sans ms": -.17,
                     "impact,chicago": -.08,
@@ -7214,7 +7214,7 @@ _p[60] = {
                 }
             },
             edge: {
-                "微软雅黑,Microsoft YaHei": -.15,
+                "Microsoft YaHei,Microsoft YaHei": -.15,
                 "arial,helvetica,sans-serif": -.17,
                 "comic sans ms": -.17,
                 "impact,chicago": -.08,
@@ -7223,7 +7223,7 @@ _p[60] = {
                 "default": -.15
             },
             sg: {
-                "微软雅黑,Microsoft YaHei": -.15,
+                "Microsoft YaHei,Microsoft YaHei": -.15,
                 "arial,helvetica,sans-serif": -.05,
                 "comic sans ms": -.22,
                 "impact,chicago": -.16,
@@ -7241,7 +7241,7 @@ _p[60] = {
                     "default": 0
                 },
                 Win: {
-                    "微软雅黑,Microsoft YaHei": -.15,
+                    "Microsoft YaHei,Microsoft YaHei": -.15,
                     "arial,helvetica,sans-serif": -.02,
                     "arial black,avant garde": -.2,
                     "comic sans ms": -.2,
@@ -7260,7 +7260,7 @@ _p[60] = {
             },
             firefox: {
                 Mac: {
-                    "微软雅黑,Microsoft YaHei": -.2,
+                    "Microsoft YaHei,Microsoft YaHei": -.2,
                     "宋体,SimSun": .05,
                     "comic sans ms": -.2,
                     "impact,chicago": -.15,
@@ -7269,7 +7269,7 @@ _p[60] = {
                     "default": .05
                 },
                 Win: {
-                    "微软雅黑,Microsoft YaHei": -.16,
+                    "Microsoft YaHei,Microsoft YaHei": -.16,
                     "andale mono": -.17,
                     "arial,helvetica,sans-serif": -.17,
                     "comic sans ms": -.22,
@@ -7281,7 +7281,7 @@ _p[60] = {
                 },
                 Lux: {
                     "宋体,SimSun": -.2,
-                    "微软雅黑,Microsoft YaHei": -.2,
+                    "Microsoft YaHei,Microsoft YaHei": -.2,
                     "黑体, SimHei": -.2,
                     "隶书, SimLi": -.2,
                     "楷体,楷体_GB2312,SimKai": -.2,

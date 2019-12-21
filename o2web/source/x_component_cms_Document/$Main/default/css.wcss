@@ -139,7 +139,7 @@
         "margin": "auto",
         "font-size": "12px",
         "color": "#666",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "overflow" : "hidden"
     },
     "formTableContainer" : {
@@ -170,7 +170,7 @@
         "cursor": "pointer",
         "float": "right",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "background-color":"#5c97e1",
         "color": "#FFF",
         "border-radius" : "3px"
@@ -185,7 +185,7 @@
         "cursor": "pointer",
         "float": "right",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "background-color":"#fff",
         "color": "#333",
         "border-radius" : "3px"
@@ -200,7 +200,7 @@
         "cursor": "pointer",
         "float": "right",
         "font-size": "14px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "background-color":"#fff",
         "color": "#333",
         "border-radius" : "3px"

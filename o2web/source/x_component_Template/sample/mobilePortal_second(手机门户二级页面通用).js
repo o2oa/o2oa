@@ -610,7 +610,7 @@ var MobileProcessStarter = new Class({
                 "font-size": "16px",
                 "color": "#666",
                 "overflow": "hidden",
-                "font-family": "微软雅黑"
+                "font-family": "Microsoft YaHei"
             },
             "actionNode": {
                 "width": "280px",
@@ -625,7 +625,7 @@ var MobileProcessStarter = new Class({
                 "line-height": "30px",
                 "padding-left": "65px",
                 "font-size": "16px",
-                "font-family": "微软雅黑",
+                "font-family": "Microsoft YaHei",
                 "border-radius": "3px",
                 "border": "1px solid #354f67",
                 "color": "#FFF",
@@ -643,7 +643,7 @@ var MobileProcessStarter = new Class({
                 "line-height": "30px",
                 "padding-left": "40px",
                 "font-size": "16px",
-                "font-family": "微软雅黑",
+                "font-family": "Microsoft YaHei",
                 "border-radius": "3px",
                 "color": "#FFF",
                 "margin-top": "20px",

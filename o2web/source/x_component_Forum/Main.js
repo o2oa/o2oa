@@ -27,6 +27,11 @@ MWF.xApplication.Forum.Main = new Class({
     },
     onQueryLoad: function () {
         this.lp = MWF.xApplication.Forum.LP;
+        this.setTitle( this.getMainPageTitle() )
+    },
+    getMainPageTitle : function(){
+        var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+        return ( MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title ) + tail;
     },
     loadApplication: function (callback) {
         this.userName = layout.desktop.session.user.distinguishedName;

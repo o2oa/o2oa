@@ -393,6 +393,7 @@
         "word-break": "break-all",
         "text-overflow": "ellipsis",
         "text-align": "left",
+        "white-space" : "nowrap",
         "color" : "#4CA5FF"
     },
     "minAttachmentSizeNode_list": {
@@ -423,7 +424,7 @@
         "line-height": "30px",
         "text-align": "center",
         "font-weight": "bold",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px"
     },
     "inputUploadAreaInforNode": {
@@ -431,7 +432,7 @@
         "line-height": "24px",
         "text-align": "center",
         "color": "#666",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "12px",
         "text-align": "left",
         "margin": "10px 20px 0px 20px"

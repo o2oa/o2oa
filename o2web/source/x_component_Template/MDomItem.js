@@ -2784,7 +2784,7 @@ MDomItem.Org = new Class({
     getData : function( parse ){
         var data = [];
         this.OrgWidgetList.each( function( widget ){
-            data.push( parse ? MWF.org.parseOrgData(widget.data) : widget.data );
+            data.push( parse ? MWF.org.parseOrgData(widget.data, true) : widget.data );
         }.bind(this));
         return data;
     },

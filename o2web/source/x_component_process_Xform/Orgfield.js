@@ -420,6 +420,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
         if (this.json.isInput){
             if (this.combox){
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
             }else{
                 var node = this.node.getFirst();

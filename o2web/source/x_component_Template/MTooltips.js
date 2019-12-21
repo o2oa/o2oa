@@ -12,6 +12,10 @@ var MTooltips = new Class({
             x : [ "center", "right", "left" ], //当position x 为 auto 时候的优先级
             y : [ "middle", "bottom", "top" ] //当position y 为 auto 时候的优先级
         },
+        offset : {
+            x : 0,
+            y : 0
+        },
         isFitToContainer : true, //当position x 不为 auto， y 不为 auto 的时候，自动设置偏移量，使tooltip不超过容器的可见范围
         event : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
         hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
@@ -52,6 +56,9 @@ var MTooltips = new Class({
                     ev.stopPropagation();
                 }.bind(this);
                 this.target.addEvents({
+                    "mousedown" : function(ev){
+                        ev.stopPropagation();
+                    },
                     "click": this.targetClickFun
                 });
             }
@@ -111,13 +118,13 @@ var MTooltips = new Class({
             if( this.options.event == "click" ) {
                 if( this.options.isAutoHide ){
                     if( !this.options.hasMask ){
-                        this.containerClickFun = function(e){
+                        this.containerMousedownFun = function(e){
                             if( this.status === "display" ){
                                 this.hide();
                             }
                             e.stopPropagation();
                         }.bind(this);
-                        this.container.addEvent("click", this.containerClickFun )
+                        this.container.addEvent("mousedown", this.containerMousedownFun )
                     }
                 }
             }
@@ -132,9 +139,9 @@ var MTooltips = new Class({
                 this.maskNode.setStyle("display","none");
             }
 
-            if( this.containerClickFun ){
-                this.container.removeEvent("click", this.containerClickFun );
-                this.containerClickFun = null;
+            if( this.containerMousedownFun ){
+                this.container.removeEvent("mousedown", this.containerMousedownFun );
+                this.containerMousedownFun = null;
             }
 
             this.fireEvent("hide",[this]);
@@ -340,13 +347,17 @@ var MTooltips = new Class({
         var nodeSize = node.getSize();
         var left;
         var arrowX, arrowY;
-        var offsetX = this.options.hasArrow ? 10 : 0;
+
+        var offsetX = (parseFloat(this.options.offset.x).toString() !== "NaN") ? parseFloat(this.options.offset.x) : 0;
+        offsetX += this.options.hasArrow ? 10 : 0;
 
         if( this.options.position.x == "left" ) {
             left = targetCoondinates.left - nodeSize.x - offsetX;
+            this.positionX = "left";
             arrowX = "right";
         }else if( this.options.position.x == "right" ){
             left = targetCoondinates.right + offsetX;
+            this.positionX = "right";
             arrowX = "left";
         }else{
             var priorityOfAuto = this.options.priorityOfAuto;
@@ -355,6 +366,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.x[i] == "left" ){
                         if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right){
                             left = targetCoondinates.left - nodeSize.x - offsetX;
+                            this.positionX = "left";
                             arrowX = "right";
                             break;
                         }
@@ -362,6 +374,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.x[i] == "right" ){
                         if( containerSize.x  + containerScroll.x - targetCoondinates.right > nodeSize.x ){
                             left = targetCoondinates.right + offsetX;
+                            this.positionX = "right";
                             arrowX = "left";
                             break;
                         }
@@ -371,9 +384,11 @@ var MTooltips = new Class({
             if( !left ){
                 if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right){
                     left = targetCoondinates.left - nodeSize.x - offsetX;
+                    this.positionX = "left";
                     arrowX = "right";
                 }else{
                     left = targetCoondinates.right + offsetX;
+                    this.positionX = "right";
                     arrowX = "left";
                 }
             }
@@ -382,12 +397,15 @@ var MTooltips = new Class({
         var top;
         if( this.options.position.y == "middle" ){
             top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) ;
+            this.positionY = "middle";
             arrowY = "middle";
         }else if( this.options.position.y == "top" ){
             top = targetCoondinates.bottom - nodeSize.y;
+            this.positionY = "top";
             arrowY = "bottom";
         }else if( this.options.position.y == "bottom" ){
             top = targetCoondinates.top;
+            this.positionY = "bottom";
             arrowY = "top";
         }else{
             var priorityOfAuto = this.options.priorityOfAuto;
@@ -397,6 +415,7 @@ var MTooltips = new Class({
                         if( targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) > containerScroll.y &&
                             targetCoondinates.bottom - (targetCoondinates.height/2) + ( nodeSize.y / 2 ) - containerScroll.y < containerSize.y ){
                             top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) ;
+                            this.positionY = "middle";
                             arrowY = "middle";
                             break;
                         }
@@ -404,6 +423,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.y[i] == "top" ){
                         if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom ){
                             top = targetCoondinates.bottom - nodeSize.y;
+                            this.positionY = "top";
                             arrowY = "bottom";
                             break;
                         }
@@ -411,6 +431,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.y[i] == "bottom" ){
                         if( containerSize.y  + containerScroll.y - targetCoondinates.bottom > nodeSize.y ){
                             top = targetCoondinates.top;
+                            this.positionY = "bottom";
                             arrowY = "top";
                             break;
                         }
@@ -421,12 +442,15 @@ var MTooltips = new Class({
                 if( targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) > containerScroll.y &&
                     targetCoondinates.bottom - (targetCoondinates.height/2) + ( nodeSize.y / 2 ) - containerScroll.y < containerSize.y ){
                     top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 ) ;
+                    this.positionY = "middle";
                     arrowY = "middle";
                 } else if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom ){
                     top = targetCoondinates.bottom - nodeSize.y;
+                    this.positionY = "top";
                     arrowY = "bottom";
                 }else{
                     top = targetCoondinates.top;
+                    this.positionY = "bottom";
                     arrowY = "top";
                 }
             }
@@ -539,13 +563,17 @@ var MTooltips = new Class({
         var nodeSize = node.getSize();
         var top;
         var arrowX, arrowY;
-        var offsetY = this.options.hasArrow ? 10 : 0;
+
+        var offsetY = (parseFloat(this.options.offset.y).toString() !== "NaN") ? parseFloat(this.options.offset.y) : 0;
+        offsetY += this.options.hasArrow ? 10 : 0;
 
         if( this.options.position.y == "top" ){
             top = targetCoondinates.top - nodeSize.y - offsetY;
+            this.positionY = "top";
             arrowY = "bottom";
         }else if( this.options.position.y == "bottom" ){
             top = targetCoondinates.bottom + offsetY;
+            this.positionY = "bottom";
             arrowY = "top";
         }else{
             var priorityOfAuto = this.options.priorityOfAuto;
@@ -554,6 +582,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.y[i] == "top" ){
                         if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom ){
                             top = targetCoondinates.top - nodeSize.y - offsetY;
+                            this.positionY = "top";
                             arrowY = "bottom";
                             break;
                         }
@@ -561,6 +590,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.y[i] == "bottom" ){
                         if( containerSize.y  + containerScroll.y - targetCoondinates.bottom > nodeSize.y ){
                             top = targetCoondinates.bottom + offsetY;
+                            this.positionY = "bottom";
                             arrowY = "top";
                             break;
                         }
@@ -570,9 +600,11 @@ var MTooltips = new Class({
             if( !top ){
                 if( targetCoondinates.top - containerScroll.y > containerSize.y - targetCoondinates.bottom){
                     top = targetCoondinates.top - nodeSize.y - offsetY;
+                    this.positionY = "top";
                     arrowY = "bottom";
                 }else{
                     top = targetCoondinates.bottom + offsetY;
+                    this.positionY = "bottom";
                     arrowY = "top";
                 }
             }
@@ -581,12 +613,15 @@ var MTooltips = new Class({
         var left;
         if( this.options.position.x == "center" ){
             left = targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 ) ;
+            this.positionX = "center";
             arrowX = "center";
         }else if( this.options.position.x == "left" ){
             left = targetCoondinates.right - nodeSize.x;
+            this.positionX = "left";
             arrowX = "right";
         }else if( this.options.position.x == "right" ){
             left = targetCoondinates.left;
+            this.positionX = "right";
             arrowX = "left";
         }else{
             var priorityOfAuto = this.options.priorityOfAuto;
@@ -596,6 +631,7 @@ var MTooltips = new Class({
                         if( targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 ) > containerScroll.x &&
                             targetCoondinates.right - (targetCoondinates.width/2) + ( nodeSize.x / 2 ) - containerScroll.x < containerSize.x ){
                             left = targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 ) ;
+                            this.positionX = "center";
                             arrowX = "center";
                             break;
                         }
@@ -603,6 +639,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.x[i] == "left" ){
                         if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right){
                             left = targetCoondinates.right - nodeSize.x;
+                            this.positionX = "left";
                             arrowX = "right";
                             break;
                         }
@@ -610,6 +647,7 @@ var MTooltips = new Class({
                     if( priorityOfAuto.x[i] == "right" ){
                         if( containerSize.x + containerScroll.x - targetCoondinates.right > nodeSize.x ){
                             left = targetCoondinates.left;
+                            this.positionX = "right";
                             arrowX = "left";
                             break;
                         }
@@ -620,12 +658,15 @@ var MTooltips = new Class({
                 if( targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 ) > containerScroll.x &&
                     targetCoondinates.right - (targetCoondinates.width/2) + ( nodeSize.x / 2 ) - containerScroll.x < containerSize.x ){
                     left = targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 ) ;
+                    this.positionX = "center";
                     arrowX = "center";
                 } else if( targetCoondinates.left - containerScroll.x > containerSize.x - targetCoondinates.right ){
                     left = targetCoondinates.right - nodeSize.x;
+                    this.positionX = "left";
                     arrowX = "right";
                 }else{
                     left = targetCoondinates.left;
+                    this.positionX = "right";
                     arrowX = "left";
                 }
             }
@@ -720,6 +761,63 @@ var MTooltips = new Class({
 
         node.setStyles({
             "left" : l || left,
+            "top" : top
+        });
+    },
+    setPosition : function(){
+        if( this.options.axis == "x" ){
+            this.setPosition_x();
+        }else{
+            this.setPosition_y();
+        }
+    },
+    setPosition_x : function(){
+        var top, left;
+        var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
+        var node = this.node;
+        var nodeSize = node.getSize();
+        var offsetX = (parseFloat(this.options.offset.x).toString() !== "NaN") ? parseFloat(this.options.offset.x) : 0;
+        offsetX += this.options.hasArrow ? 10 : 0;
+        if( this.positionX === "left" ){
+            left = targetCoondinates.left - nodeSize.x - offsetX;
+        }else if( this.positionX === "bottom" ){
+            left = targetCoondinates.right + offsetX;
+        }
+
+        if( this.positionY === "top" ){
+            top = targetCoondinates.top - nodeSize.y;
+        }else if( this.positionY === "bottom" ){
+            top = targetCoondinates.bottom;
+        }else if( this.positionX === "middle" ){
+            top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 )
+        }
+        node.setStyles({
+            "left" : left,
+            "top" : top
+        });
+    },
+    setPosition_y : function(){
+        var top, left;
+        var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
+        var node = this.node;
+        var nodeSize = node.getSize();
+        var offsetY = (parseFloat(this.options.offset.y).toString() !== "NaN") ? parseFloat(this.options.offset.y) : 0;
+        offsetY += this.options.hasArrow ? 10 : 0;
+        if( this.positionY === "top" ){
+            top = targetCoondinates.top - nodeSize.y - offsetY;
+        }else if( this.positionY === "bottom" ){
+            top = targetCoondinates.bottom + offsetY;
+        }
+
+        if( this.positionX === "left" ){
+            left = targetCoondinates.left - nodeSize.x;
+        }else if( this.positionX === "right" ){
+            left = targetCoondinates.right;
+        }else if( this.positionX === "center" ){
+            left = targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 )
+        }
+        node.setStyles({
+            "left" : left,
             "top" : top
         });
     },

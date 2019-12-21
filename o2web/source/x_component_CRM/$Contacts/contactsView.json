@@ -1,0 +1,127 @@
+{
+  "viewHeadSetting": {
+    "html": "<table border='1' cellpadding='0' cellspacing='0' styles='headTable' id='headTable'></table>"
+  },
+  "viewSetting": {
+    "html": "<table  styles='contentTable' id='contentTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over"
+  },
+  "selectSearch": {
+    "items": [
+      {
+        "name": "我负责的联系人"
+      },
+      {
+        "name": "下属负责的联系人"
+      },
+      {
+        "name": "全部联系人"
+      }
+    ],
+    "default": "全部联系人"
+  },
+  "items": [
+    {
+      "name": "clueName",
+      "head": {
+        "html": "<th styles='normalThNode' index='1'><span lable='clueName'></span><span name='resizeLine' styles='resizeLine'></span></th>",
+        "width": "300px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' index='1'>"+
+        " <div item='clueName' styles='documentSubject'></div>" +
+        "</td>",
+        "width":"300px",
+        "items": {
+          "clueName":{"value":"function(d){ return (d.name == undefined || d.name=='') ? '--': d.name}"}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "width": "200px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"+
+        " <div item='createTime' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "200px",
+        "items": {
+          "createTime":{"value":"function(d){ return (d.createTime == undefined || d.createTime=='') ? '--': d.createTime}"}
+        }
+      }
+    },
+    {
+      "name": "clueType",
+      "head": {
+        "html": "<th styles='normalThNode' lable='clueType'></th>",
+        "width": "200px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"+
+        " <div item='clueType' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "200px",
+        "items": {
+          "clueType":{"value":"function(d){ return (d.industry == undefined || d.industry=='') ? '--': d.industry}"}
+        }
+      }
+    },
+    {
+      "name": "clueSource",
+      "head": {
+        "html": "<th styles='normalThNode' lable='clueSource'></th>",
+        "width": "200px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"+
+        " <div item='clueSource' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "200px",
+        "items": {
+          "clueSource": {"value":"function(d){ return (d.source == undefined || d.source=='') ? '--': d.source}"}
+        }
+      }
+    },
+    {
+      "name": "clueLevel",
+      "head": {
+        "html": "<th styles='normalThNode' lable='clueLevel'></th>",
+        "width": "200px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"+
+        " <div item='clueLevel' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "200px",
+        "items": {
+          "clueLevel": {"value":"function(d){ return (d.level == undefined || d.level=='') ? '--': d.level}"}
+        }
+      }
+    },
+    {
+      "name": "clueCellphone",
+      "head": {
+        "html": "<th styles='normalThNode' lable='clueCellphone'></th>",
+        "width": "200px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"+
+        " <div item='clueCellphone' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "200px",
+        "items": {
+          "clueCellphone": {"value":"function(d){ return (d.cellphone == undefined || d.cellphone=='') ? '--': d.cellphone}"}
+        }
+      }
+    }
+  ]
+}

@@ -35,7 +35,6 @@ MWF.xApplication.Strategy.KeyWorkList = new Class({
                     //try{
                         $(this.listContentDiv).destroy();
                     //}catch(e){}
-
                 }
                 if(this.allArrowArr.length>0){
                     this.allArrowArr.each(function(d){
@@ -115,7 +114,7 @@ MWF.xApplication.Strategy.KeyWorkList = new Class({
         // 去掉新建等按钮 在应用中不操作
         //*******************************************
         //新增
-        //this.actions.getKeyWorkAddAuthorize(
+        // this.actions.getKeyWorkAddAuthorize(
         //    function(json){
         //        if(json.type=="success" && json.data && json.data.value){
         //            this.addContent = new Element("div.addContent",{"styles":this.css.addContent}).inject(this.yearContent).
@@ -175,7 +174,7 @@ MWF.xApplication.Strategy.KeyWorkList = new Class({
         //
         //        }
         //    }.bind(this)
-        //);
+        // );
     },
     expandYears:function(){
         this.yearContentList.getElementById("yearMore").destroy();

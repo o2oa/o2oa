@@ -190,6 +190,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkReplaceAction: function(){
+        if( this.options.isReplaceHidden )return;
         if (this.options.readonly){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
@@ -291,6 +292,77 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         return flag;
     },
 
+
+    //checkAttachmentOrderAction : function(){
+    //    if (this.options.readonly){
+    //        this.setAttachmentsAction("order", false );
+    //        return false;
+    //    }
+    //    if (this.attachments.length){
+    //        var user = layout.session.user.distinguishedName;
+    //        for (var i=0; i<this.attachments.length; i++){
+    //            var flag = true;
+    //
+    //            var att = this.attachments[i];
+    //            if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+    //
+    //            if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+    //                flag = false;
+    //            }
+    //            if (flag){
+    //                this.setAttachmentAction(att, "order", true );
+    //            }else{
+    //                this.setAttachmentAction(att, "order", false );
+    //            }
+    //        }
+    //    }
+    //},
+    checkOrderAction: function(){
+        //this.checkAttachmentOrderAction();
+        if (this.options.readonly){
+            this.setActionDisabled(this.orderAction);
+            this.setActionDisabled(this.min_orderAction);
+            return false;
+        }
+        if (this.attachments.length && this.attachments.length > 1){
+            var flag = true;
+            var user = layout.session.user.distinguishedName;
+            for (var i=0; i<this.attachments.length; i++){
+                var att = this.attachments[i];
+                if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+                if ((!att.data.control.allowControl && !att.data.control.allowEdit ) && att.data.person!==user){ //|| !att.data.control.allowEdit
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                this.setActionEnabled(this.orderAction);
+                this.setActionEnabled(this.min_orderAction);
+            }else{
+                this.setActionDisabled(this.orderAction);
+                this.setActionDisabled(this.min_orderAction);
+            }
+            //this.setActionEnabled(this.min_deleteAction);
+        }else{
+            this.setActionDisabled(this.orderAction);
+            this.setActionDisabled(this.min_orderAction);
+            //this.setActionDisabled(this.min_deleteAction);
+        }
+    },
+    isAttOrderAvailable : function( att ){
+        if (this.options.readonly)return false;
+        if (this.options.toolbarGroupHidden.contains("config"))return false;
+        var user = layout.session.user.distinguishedName;
+        var flag = true;
+
+        if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
+
+        if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+            flag = false;
+        }
+        return flag;
+    },
+
     createTopNode: function(){
         if (this.options.title){
             if (!this.titleNode) this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.options.title}).inject(this.node);
@@ -346,6 +418,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkSizeAction();
 
         this.checkConfigAction();
+        this.checkOrderAction();
 
         this.checkListStyleAction();
         //    }
@@ -428,6 +501,29 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         return flag;
     },
 
+    createEditGroupActions: function(){
+        if(!this.editActionBoxNode)this.editActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        if(!this.editActionsGroupNode)this.editActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.editActionBoxNode);
+        this.uploadAction = this.createAction(this.editActionsGroupNode, "upload", o2.LP.widget.upload, function(e, node){
+            this.uploadAttachment(e, node);
+        }.bind(this));
+
+        this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function(e, node){
+            this.deleteAttachment(e, node);
+        }.bind(this));
+
+        if( !this.options.isReplaceHidden ){
+            this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function(e, node){
+                this.replaceAttachment(e, node);
+            }.bind(this));
+        }
+
+        // this.officeAction = this.createAction(this.editActionsGroupNode, "office", o2.LP.widget.office, function(e, node){
+        //     this.openInOfficeControl(e, node);
+        // }.bind(this));
+
+        if( !this.options.toolbarGroupHidden.contains("read") )this.editActionSeparateNode = this.createSeparate(this.editActionsGroupNode);
+    },
 
     createConfigGroupActions: function(){
         this.configActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
@@ -438,11 +534,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }.bind(this));
 
         if( this.options.checkTextEnable ){
-            this.createSeparate(this.configActionsGroupNode);
             this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function(e, node){
                 this.checkImageTex(e, node);
             }.bind(this));
         }
+        this.createSeparate(this.configActionsGroupNode);
+
+        this.orderAction = this.createAction(this.configActionsGroupNode, "order", MWF.LP.widget.order, function(e, node){
+            this.orderAttachment(e, node);
+        }.bind(this));
 
         if (this.configAction) this.setActionDisabled(this.configAction);
         if (this.checkTextAction) this.setActionDisabled(this.checkTextAction);
@@ -458,6 +558,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
     },
     loadMinActions: function(){
+        debugger;
         var hiddenGroup = this.options.toolbarGroupHidden;
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function(e, node){
@@ -468,13 +569,21 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.deleteAttachment(e, node);
             }.bind(this));
 
-            this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", MWF.LP.widget.replace, function(e, node){
-                this.replaceAttachment(e, node);
-            }.bind(this));
+            if( !this.options.isReplaceHidden ) {
+                this.min_replaceAction = this.createAction(this.minActionAreaNode, "replace", MWF.LP.widget.replace, function (e, node) {
+                    this.replaceAttachment(e, node);
+                }.bind(this));
+            }
         }
         if (!hiddenGroup.contains("read")) {
-            this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download, function(e, node){
+            this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download
+                , function(e, node){
                 this.downloadAttachment(e, node);
+            }.bind(this));
+        }
+        if( !hiddenGroup.contains("config") ){
+            this.min_orderAction = this.createAction(this.minActionAreaNode, "order", MWF.LP.widget.order, function(e, node){
+                this.orderAttachment(e, node);
             }.bind(this));
         }
 
@@ -489,6 +598,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if( !hiddenGroup.contains("edit") || !hiddenGroup.contains("read") ) {
             this.createSeparate(this.minActionAreaNode);
         }
+
+        //this.createSeparate(this.configActionsGroupNode);
 
         if (this.options.isSizeChange) {
             //this.createSeparate(this.minActionAreaNode);
@@ -565,18 +676,18 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var controllerUnitList = (data.controllerUnitList) || [];
             var controllerIdentityList = (data.controllerIdentityList) || [];
 
-            readInput.setSelectPerson(this.module.form.app.content, {
+            readInput.setSelectPerson(this.module.form.app.content, Object.merge( this.module.form.json.selectorStyle || {}, {
                 "types": ["unit", "identity"],
                 "values": readUnitList.concat(readIdentityList).trim()
-            });
-            editInput.setSelectPerson(this.module.form.app.content, {
+            }));
+            editInput.setSelectPerson(this.module.form.app.content, Object.merge( this.module.form.json.selectorStyle || {}, {
                 "types": ["unit", "identity"],
                 "values": editUnitList.concat(editIdentityList).trim()
-            });
-            controllerInput.setSelectPerson(this.module.form.app.content, {
+            }));
+            controllerInput.setSelectPerson(this.module.form.app.content, Object.merge( this.module.form.json.selectorStyle || {}, {
                 "types": ["unit", "identity"],
                 "values": controllerUnitList.concat(controllerIdentityList).trim()
-            });
+            }));
         }else{
             readInput.setSelectPerson(this.module.form.app.content, { "types": ["unit", "identity"] });
             editInput.setSelectPerson(this.module.form.app.content, { "types": ["unit", "identity"] });
@@ -695,7 +806,208 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }, function(){
             this.module.form.app.notice("success", lp.attachmentOCR_saved, this.node);
         }.bind(this));
+    },
+    checkMoveAction: function(item){
+        if (item){
+            var actionArea = item.getFirst().getNext();
+            var actionup = actionArea.getFirst().show();
+            var actiondown = actionArea.getLast().show();
+
+            tmp = item.getPrevious();
+            if (!tmp) actionup.hide();
+
+            tmp = item.getNext();
+            if (!tmp) actiondown.hide();
+        }
+    },
+    orderAttachment: function(){
+        if (this.attachments.length){
+            this.attachments = this.attachments.sort(function(a1, a2){
+                if (!a2.data.orderNumber) return 1;
+                if (!a1.data.orderNumber) return -1;
+                return a1.data.orderNumber-a2.data.orderNumber;
+            }.bind(this));
+
+            var lp = MWF.xApplication.process.Xform.LP;
+            var css = this.module.form.css;
+            var node = new Element("div", {"styles": css.attachmentOrderNode});
+            var infoNode = new Element("div", {"styles": css.attachmentOrderInforNode, "text": lp.attachmentOrderInfo}).inject(node);
+            var attrchmentsNode = new Element("div", {"styles": css.attachmentOrderAreaNode}).inject(node);
+
+            var iconUrl = "/x_component_File/$Main/icon.json";
+            var icons = null;
+            o2.getJSON(iconUrl, function(json){
+                icons = json;
+            }.bind(this), false, false);
+
+            this.attachments.each(function(att, idx){
+                var iconName = icons[att.data.extension.toLowerCase()] || icons.unknow;
+                var iconFolderUrl = "/x_component_File/$Main/default/file/"+iconName;
+
+                var itemNode = new Element("div", {"styles": css.attachmentOrderItemNode}).inject(attrchmentsNode);
+                itemNode.store("att", att);
+                var icon = new Element("div", {"styles": css.attachmentOrderItemIconNode}).inject(itemNode);
+                icon.setStyle("background-image", "url('"+iconFolderUrl+"')");
+
+                var actionArea = new Element("div", {"styles": css.attachmentOrderItemActionNode}).inject(itemNode);
+                var text = new Element("div", {"styles": css.attachmentOrderItemTextNode, "text": att.data.name}).inject(itemNode);
+
+                var actionUp = new Element("div", {"styles": css.attachmentOrderItemActionUpNode, "text": lp.attachmentOrderUp}).inject(actionArea);
+                var actionDown = new Element("div", {"styles": css.attachmentOrderItemActionDownNode, "text": lp.attachmentOrderDown}).inject(actionArea);
+                if (idx==0) actionUp.hide();
+                if (idx == this.attachments.length-1) actionDown.hide();
+
+                actionUp.addEvent("click", function(e){
+                    var itemNode = e.target.getParent().getParent();
+                    var upNode = itemNode.getPrevious();
+                    if (upNode){
+                        itemNode.inject(upNode, "before");
+                        this.checkMoveAction(upNode);
+                    }
+                    this.checkMoveAction(itemNode);
+                    itemNode.highlight();
+                    //itemNode.setStyle("background-color", "#faf9f1");
+                }.bind(this));
+
+                actionDown.addEvent("click", function(e){
+                    var itemNode = e.target.getParent().getParent();
+                    var downNode = itemNode.getNext();
+                    if (downNode){
+                        itemNode.inject(downNode, "after");
+                        this.checkMoveAction(downNode);
+                    }
+                    this.checkMoveAction(itemNode);
+                    itemNode.highlight();
+                    // /itemNode.setStyle("background-color", "#faf9f1");
+                }.bind(this));
+
+                itemNode.addEvents({
+                    "mouseover": function(e){this.setStyle("background-color", "#f1f6fa"); },
+                    "mouseout": function(e){this.setStyle("background-color", "#ffffff");}
+                });
+
+                //var droppables = attrchmentsNode.getChildren();
+
+                new Drag(itemNode, {
+                    "handle": icon,
+                    "snap": 5,
+                    "stopPropagation": true,
+                    "preventDefault": true,
+                    onStart : function(el, e){
+                        var itemNode = el;
+                        itemNode.setStyle("background-color", "#f1f6fa");
+                        var moveNode = itemNode.clone(true).setStyles(css.attachmentOrderItemNode).setStyles({
+                            "background-color": "#faf9f1",
+                            "opacity": 0.8,
+                            "border": "1px dotted #333333"
+                        }).inject(node);
+                        moveNode.position({
+                            "relativeTo": itemNode,
+                            "position": 'upperLeft',
+                            "edge": 'upperLeft'
+                        });
+                        moveNode.owner = itemNode;
+
+                        var move = new Drag.Move(moveNode, {
+                            "container": node,
+                            "droppables": attrchmentsNode.getChildren(),
+                            "onEnter": function(el, drop){
+                                moveNode.flagNode = new Element("div", {"styles": css.attachmentOrderFlagNode}).inject(drop, "before");
+                            },
+                            "onLeave": function(el, drop){
+                                if (moveNode.flagNode) moveNode.flagNode.destroy();
+                            },
+                            "onDrop": function(el, drop){
+                                if (moveNode.flagNode){
+                                    moveNode.owner.inject(moveNode.flagNode, "after");
+                                    moveNode.flagNode.destroy();
+                                    moveNode.owner.highlight();
+                                    this.checkMoveAction(moveNode.owner);
+                                    this.checkMoveAction(drop);
+                                    this.checkMoveAction(attrchmentsNode.getLast());
+                                    moveNode.destroy()
+                                }
+                            }.bind(this)
+                        });
+                        move.start(e);
+
+
+                    }.bind(this),
+                    enter: function(el){
+                        el.removeClass('dragging');
+                    }
+                });
+                //itemNode.dragMove
+
+
+            }.bind(this));
+
+            var dlg = o2.DL.open({
+                "title": lp.attachmentOrderTitle,
+                "style" : this.module.form.json.dialogStyle || "user",
+                "isResize": false,
+                "content": node,
+                "width" : "auto",
+                "height" : "auto",
+                "buttonList": [
+                    {
+                        "type" : "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function(){
+                            this.sortAttachment(attrchmentsNode);
+                            dlg.close();
+                        }.bind(this)
+                    },
+                    {
+                        "type" : "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function(){dlg.close();}
+                    }
+                ],
+                "onPostLoad" : function(){
+                    var dlg = this;
+                    dlg.node.setStyle("display", "block");
+
+                    var size = {};
+                    if( css.attachmentOrderNode ){
+                        if(parseFloat( css.attachmentOrderNode.width ).toString() !== "NaN" ){
+                            size.x = parseInt(css.attachmentOrderNode.width)
+                        }
+                        if(parseFloat( css.attachmentOrderNode.height ).toString() !== "NaN" ){
+                            size.y = parseInt(css.attachmentOrderNode.height)
+                        }
+                    }
+
+                    node.show();
+                    var nodeSize = node.getSize();
+                    dlg.content.setStyles({
+                        "width" : size.x || nodeSize.x,
+                        "height" : size.y || nodeSize.y
+                    });
+                    dlg.setContentSize();
+                }
+            });
+        }
+    },
+    sortAttachment: function(node){
+        var nodes = node.getChildren();
+        nodes.each(function(item, idx){
+            var att = item.retrieve("att", null);
+            if (att){
+                att.data.orderNumber = idx;
+                o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.changeOrderNumber(att.data.id, this.module.form.businessData.work.id, idx);
+            }
+        }.bind(this));
+        this.attachments = this.attachments.sort(function(a1, a2){
+            if (!a2.data.orderNumber) return 1;
+            if (!a1.data.orderNumber) return -1;
+            return a1.data.orderNumber-a2.data.orderNumber;
+        }.bind(this));
+
+        this.reloadAttachments();
+        this.fireEvent("order");
     }
+
 });
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
 	Extends: MWF.APP$Module,
@@ -734,7 +1046,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 "availableListStyles" : this.json.availableListStyles ? this.json.availableListStyles : ["list","seq","icon","preview"],
                 "isDeleteOption": this.json.isDelete,
                 "isReplaceOption": this.json.isReplace,
-                "toolbarGroupHidden" : this.json.toolbarGroupHidden || []
+                "toolbarGroupHidden" : this.json.toolbarGroupHidden || [],
+                "onOrder": function(){
+                    this.fireEvent("change");
+                }.bind(this)
             };
             if (this.readonly) options.readonly = true;
             if( this.form.json.attachmentStyle ){
@@ -805,7 +1120,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                         accepts.push(".txt");
                         break;
                     case "pic":
-                        accepts.push(".bmp, .gif, .psd, .jpeg, .jpg");
+                        accepts.push(".bmp, .gif, .psd, .jpeg, .jpg, .png");
                         break;
                     case "pdf":
                         accepts.push(".pdf");

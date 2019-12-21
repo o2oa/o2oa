@@ -50,7 +50,9 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                 this.includeObject.listByFilter( "key", key, function( array ){
                     array.each( function(d){
                         if( !createdId.contains( d.distinguishedName ) ){
-                            this._newItem( d, this, this.itemSearchAreaNode);
+                            if( !this.isExcluded( d ) ) {
+                                this._newItem( d, this, this.itemSearchAreaNode);
+                            }
                         }
                     }.bind(this))
                 }.bind(this))
@@ -153,7 +155,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemCategory,
     createNode: function(){
         this.node = new Element("div", {
-            "styles": this.selector.css.selectorItemCategory_department
+            "styles": this.selector.css.selectorItemCategory_department,
+            "title" : this._getTtiteText()
         }).inject(this.container);
     },
     _getShowName: function(){
@@ -169,15 +172,17 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                 if( firstLoaded ){
                     this.children.setStyles({"display": "block", "height": "auto"});
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                    this.isExpand = true;
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-
+                        this.isExpand = true;
                     }else{
                         this.children.setStyles({"display": "none", "height": "0px"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                        this.isExpand = false;
                     }
                 }
                 if(callback)callback();
@@ -194,7 +199,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
 
                 if (this.selector.options.expandSubEnable) {
                     this.selector.options.units.each(function(u){
-                        var unitName = ""
+                        var unitName = "";
                         if (typeOf(u)==="string"){
                             unitName = u;
                         }else{

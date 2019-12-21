@@ -162,7 +162,7 @@
         "line-height": "26px"
     },
     "inputTextarea": {
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border": "0px",
         "overflow": "auto",
         "width": "381px",
@@ -172,7 +172,7 @@
         "background": "#FFF"
     },
     "inputTextarea_wide": {
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border": "0px",
         "overflow": "auto",
         "width": "493px",
@@ -257,11 +257,11 @@
     },
     "routeOrgOddTd": {
         "width": "50%",
-        "border-right": "10px solid #ffffff"
+        "border-right": "25px solid #ffffff"
     },
     "routeOrgEvenTd": {
         "width": "50%",
-        "border-left": "20px solid #ffffff"
+        "border-left": "25px solid #ffffff"
     },
     "selectorTitle": {
         "height": "26px",

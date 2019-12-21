@@ -12,6 +12,7 @@ MWF.xApplication.process.Work.LP = {
     "inputText": "请在此处填写流程意见",
 
     "mustSelectRoute": "请先选择决策",
+    "mustSelectRouteGroup" : "请先选择决策组",
     "opinionRequired" : "请填写意见",
 
     "searchKey": "请输入关键字",
@@ -46,5 +47,12 @@ MWF.xApplication.process.Work.LP = {
     "recoverFileConfirmContent": "您确定要将正文恢复到 “{att}”版本吗？（恢复后，已保存的临时文件将被删除，您无法再次恢复）",
 
     "notRecoverFileConfirmTitle": "取消正文恢复确认",
-    "notRecoverFileConfirmContent": "您确定要取消正文恢复吗？（取消后，已保存的临时文件将被删除，您无法再次恢复）"
+    "notRecoverFileConfirmContent": "您确定要取消正文恢复吗？（取消后，已保存的临时文件将被删除，您无法再次恢复）",
+
+    "closePageCountDownText" : "将在“{second}”秒后关闭页面！",
+    "closePage" : "关闭页面",
+
+    "selectRouteGroup" : "选择决策组",
+    "defaultDecisionOpinionName" : "其它",
+    "routeGroupOrderList" : ["同意","不同意","其它","其他"]
 };

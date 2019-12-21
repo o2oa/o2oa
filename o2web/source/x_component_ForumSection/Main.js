@@ -105,7 +105,8 @@ MWF.xApplication.ForumSection.Main = new Class({
 					this.sectionData = json.data;
 					//this.access.hasSectionAdminAuthority( this.sectionData, function( flag ){
 					//this.isAdmin = flag;
-					this.setTitle( this.sectionData.sectionName );
+					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					this.setTitle( this.sectionData.sectionName + tail );
 					this.createTopNode();
 					this.createMiddleNode();
 					//}.bind(this) );
@@ -141,7 +142,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 
 			var topItemTitleNode = new Element("div.topItemTitleNode", {
 				"styles": this.css.topItemTitleNode,
-				"text": this.lp.title
+				"text": MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title
 			}).inject(topTitleMiddleNode);
 			topItemTitleNode.addEvent("click", function(){
 				if( this.options.naviMode && this.forumNavi ){
@@ -458,8 +459,9 @@ MWF.xApplication.ForumSection.Main = new Class({
 		}
 	},
 	createPersonNode : function( container, personName ){
-		var persons = personName.split(",");
+		var persons = typeOf( personName ) === "string" ? personName.split(",") : personName;
 		persons.each( function(userName, i){
+			if( !userName )return;
 			var span = new Element("span", {
 				"text" : userName.split("@")[0],
 				"styles" : this.css.person

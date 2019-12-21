@@ -70,7 +70,7 @@
         "height" : "40px",
         "font-weight" : "normal",
         "line-height" : "40px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "15px",
         "background-color": "#f7f7f7"
     },
@@ -101,7 +101,7 @@
         "height" : "30px",
         "line-height" : "30px",
         "overflow" : "hidden",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "font-size": "14px",
         "background-color": "#f7f7f7"
     },
@@ -168,7 +168,7 @@
 //        "height" : "40px",
 //        "font-weight" : "normal",
 //        "line-height" : "40px",
-//        "font-family": "微软雅黑",
+//        "font-family": "Microsoft YaHei",
 //        "font-size": "15px",
 //        "padding-left" : "65px",
 //        "background": "url(/x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 40px 12px",
@@ -208,7 +208,7 @@
 	    "color": "#FFF",
 	    "line-height": "50px",
 	    "font-size": "14px",
-	    "font-family": "微软雅黑",
+	    "font-family": "Microsoft YaHei",
 	    "background-color": "#fff",
         "overflow" : "hidden"
 	},
@@ -226,7 +226,7 @@
         "bottom": "0px",
         "width": "100%",
         "color": "#FFF",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "background-color": "#365775"
     },
     "topMenuNode": {
@@ -454,7 +454,7 @@
         "line-height": "30px",
         "padding-left": "65px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "border": "1px solid #354f67",
         "color": "#FFF",
@@ -471,7 +471,7 @@
         "line-height": "30px",
         "padding-left": "40px",
         "font-size": "16px",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border-radius": "3px",
         "color": "#FFF",
         "margin-top": "20px",
@@ -734,7 +734,7 @@
         "width": "100%",
         "font-size": "14px",
         "overflow": "auto",
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "color": "#666"
     },
     "configNode": {
@@ -878,7 +878,7 @@
         "max-width" : "165px"
     },
     "marketItemTitleNode" : {
-        "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+        "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
         "float" : "left","margin-top" : "5px", "max-width" : "200px"
     },
     "marketItemDescriptiontInfor" : {

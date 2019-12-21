@@ -9,8 +9,8 @@ layout.addReady(function(){
 
         var _load = function(){
             //o2.require("MWF.xDesktop.MessageMobile", function(){
-            layout.message = new MWF.xDesktop.MessageMobile();
-            layout.message.load();
+            // layout.message = new MWF.xDesktop.MessageMobile();
+            // layout.message.load();
             //}.bind(this));
 
             layout.apps = [];

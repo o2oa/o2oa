@@ -424,6 +424,7 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 
         if (this.json.isInput) {
             if (this.combox) {
+                this.combox.clear();
                 this.combox.addNewValues(comboxValues);
             } else {
                 var node = this.node.getFirst();
@@ -553,7 +554,7 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 			"onComplete": function(items, itemsObject){
 				var values = [];
 				items.each( function(it){
-					values.push(MWF.org.parseOrgData(it.data));
+					values.push(MWF.org.parseOrgData(it.data, true));
 				});
 				if (this.json.isInput){
                     this.addData(values);

@@ -30,10 +30,10 @@ o2.addReady(function(){
                         this.cssPath = "/x_component_ForumDocument/$Mobile/default/css.wcss";
                         this._loadCss();
 
-                        MWF.require("MWF.xDesktop.MessageMobile", function(){
-                            layout.message = new MWF.xDesktop.MessageMobile();
-                            layout.message.load();
-                        }.bind(this));
+                        // MWF.require("MWF.xDesktop.MessageMobile", function(){
+                        //     layout.message = new MWF.xDesktop.MessageMobile();
+                        //     layout.message.load();
+                        // }.bind(this));
 
 
                         // MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);

@@ -72,7 +72,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.work.job;
             editorConfig.referenceType = "processPlatformJob";
-            editorConfig.extraPlugins = ['mathjax','pagebreak'];
+            editorConfig.extraPlugins = ['pagebreak'];
             
             // CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";
             // CKEDITOR.plugins.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/plugins/";
@@ -409,6 +409,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
 
             this.errNode = this.createErrorNode(text).inject(this.node, "after");
             this.showNotValidationMode(this.node);
+            if (!this.node.isIntoView()) this.node.scrollIntoView();
         }
     },
     showNotValidationMode: function(node){

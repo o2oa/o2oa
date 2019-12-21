@@ -73,7 +73,7 @@
     "height": "20px",
     "line-height": "20px",
     "overflow": "hidden",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "16px",
     "font-weight" : "normal",
     "float": "left",
@@ -127,7 +127,7 @@
     "background-color": "#fff",
     "color": "#666666",
     "line-height": "30px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "14px"
   },
 
@@ -181,7 +181,7 @@
     "color": "#666666",
     //"line-height": "39px",
     "cursor": "pointer",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "12px",
     "background-color": "#fff"
   },
@@ -276,7 +276,7 @@
   },
   "sectionItemTitleNode" : {
     "margin-top" : "5px",
-    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "Microsoft YaHei", "font-size": "16px","font-weight" : "bold",
     "float" : "left"
   },
   "sectionItemTitleNode_over" : {
@@ -445,7 +445,7 @@
     "height": "20px",
     "line-height": "20px",
     "overflow": "hidden",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "font-size": "18px",
     "font-weight" : "normal",
     "float": "left",
@@ -471,7 +471,7 @@
     "margin": "auto",
     "font-size": "14px",
     "color": "#666",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "overflow" : "hidden"
   },
   "formTableContainer" : {
@@ -495,7 +495,7 @@
     "line-height": "35px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#3d77c1",
     "color": "#FFF",
@@ -511,7 +511,7 @@
     "line-height": "35px",
     "text-align": "center",
     "font-size": "16px",
-    "font-family": "微软雅黑",
+    "font-family": "Microsoft YaHei",
     "border": "1px solid #3d77c1",
     "background-color" : "#3d77c1",
     "color": "#FFF",

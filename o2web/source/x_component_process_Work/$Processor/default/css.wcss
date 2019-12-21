@@ -127,9 +127,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("
-        +
-        "/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url(/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -137,7 +135,7 @@
         "line-height": "26px"
     },
     "inputTextarea": {
-        "font-family": "微软雅黑",
+        "font-family": "Microsoft YaHei",
         "border": "0px",
         "overflow": "auto",
         "width": "322px",
