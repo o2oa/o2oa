@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -18,6 +13,10 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewService {
 
@@ -48,10 +47,28 @@ public class ReviewService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Review> listViewableWithFilter( EntityManagerContainer emc, Integer pageSize, String docSequence, String orderField,
+	public List<Review> listNextViewableWithFilter( EntityManagerContainer emc, Integer pageSize, String docSequence, String orderField,
 			String orderType, String person, QueryFilter queryFilter ) throws Exception {
 		Business business = new Business(emc);
-		return business.reviewFactory().listWithFilter( pageSize, docSequence, orderField, orderType, person, queryFilter);
+		return business.reviewFactory().listNextWithFilter( pageSize, docSequence, orderField, orderType, person, queryFilter);
+	}
+
+	/**
+	 * 根据权限和条件查询符合条件的可见的文档Review信息列表
+	 * @param emc
+	 * @param pageSize
+	 * @param docSequence
+	 * @param orderField
+	 * @param orderType
+	 * @param person
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Review> listPrevViewableWithFilter( EntityManagerContainer emc, Integer pageSize, String docSequence, String orderField,
+													String orderType, String person, QueryFilter queryFilter ) throws Exception {
+		Business business = new Business(emc);
+		return business.reviewFactory().listPrevWithFilter( pageSize, docSequence, orderField, orderType, person, queryFilter);
 	}
 	
 	/**

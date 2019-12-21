@@ -18,20 +18,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public class StandardJaxrsActionProxy implements MethodInterceptor {
-// 2019-11-29 注释所有metrics相关的汇报能力，排查占用内存过大，导致OOM的问题
-//    private static MetricRegistry metricRegistry = new MetricRegistry();
-//    private static StandardJaxrsActionReporter reporter = null;
     private Enhancer enhancer = new Enhancer();
     private Context context;
 
     public StandardJaxrsActionProxy(Context context) {
-//        if( reporter == null) {
-//            reporter = StandardJaxrsActionReporter.forRegistry(metricRegistry)
-//                    .convertRatesTo(TimeUnit.SECONDS)
-//                    .convertDurationsTo(TimeUnit.MILLISECONDS)
-//                    .build(context);
-//            reporter.start(15, TimeUnit.SECONDS);
-//        }
+        this.context = context;
     }
 
     public Object getProxy(Class clazz){
@@ -42,23 +33,7 @@ public class StandardJaxrsActionProxy implements MethodInterceptor {
 
     @Override
     public Object intercept( Object o, Method method, Object[] objects, MethodProxy methodProxy ) throws Throwable {
-//        Timer timer = null;
-//        Timer.Context ctx = null;
-//        try{
-//            timer = metricRegistry.timer(MetricRegistry.name(method.getDeclaringClass(),method.getName(), ""));
-//            ctx = timer.time();
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-
-        //执行真实的服务方法
         Object result = methodProxy.invokeSuper(o, objects);
-
-//        try{
-//            ctx.stop();
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
         try{
             //尝试记录审计日志
             if( Config.logLevel().audit().enable() ){
@@ -80,7 +55,6 @@ public class StandardJaxrsActionProxy implements MethodInterceptor {
      * @throws ClassNotFoundException
      */
     private void tryToRecordAuditLog(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws ClassNotFoundException {
-
         //分析调用过程，记录审计日志
         Annotation[] annotations_auditLog = method.getAnnotationsByType(AuditLog.class);
         //该方法是否有AuditLog注解，如果有，则需要记录审计日志

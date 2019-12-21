@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.collections.MapUtils;
@@ -55,6 +57,7 @@ public class ResourceFactory {
 		} else {
 			internal();
 		}
+		processPlatformExecutors();
 	}
 
 	private static void node(ScanResult sr) throws Exception {
@@ -234,6 +237,14 @@ public class ResourceFactory {
 				Config.logLevel().audit().logSize());
 		new Resource(Config.RESOURCE_AUDITLOGPRINTSTREAM,
 				new PrintStream(rolloverFileOutputStream, true, DefaultCharset.name_iso_utf_8));
+	}
+
+	private static void processPlatformExecutors() throws Exception {
+		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
+		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
+			services[i] = Executors.newSingleThreadExecutor();
+		}
+		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
 	}
 
 }

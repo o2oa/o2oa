@@ -156,7 +156,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Review_.startTime), DateTools.parse(wi.getEndTime())));
 		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
+		if (ListTools.isNotEmpty(wi.getCreatorPersonList())) {
 			List<String> person_ids = business.organization().person().list(wi.getCreatorPersonList());
 			p = cb.and(p, root.get(Review_.creatorPerson).in(person_ids));
 		}

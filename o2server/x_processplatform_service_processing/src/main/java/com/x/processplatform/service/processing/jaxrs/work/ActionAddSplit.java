@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,6 +15,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
@@ -32,116 +34,129 @@ class ActionAddSplit extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
 
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		String executorSeed = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
-			Business business = new Business(emc);
-
-			ActionResult<List<Wo>> result = new ActionResult<>();
-
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			/* 校验work是否存在 */
-
-			Work work = emc.find(id, Work.class);
-
+			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-
-			if (!work.getSplitting()) {
-				throw new ExceptionNotSplit(work.getId());
-			}
-
-			if (ListTools.isEmpty(wi.getSplitValueList())) {
-				throw new ExceptionEmptySplitValue(work.getId());
-			}
-
-			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
-
-			WorkLogTree tree = new WorkLogTree(workLogs);
-
-			WorkLog arrived = workLogs.stream().filter(o -> {
-				return StringUtils.equals(o.getId(), wi.getWorkLog());
-			}).findFirst().orElse(null);
-
-			WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
-
-			if (null == arrived) {
-				throw new ExceptionInvalidArrivedWorkLog(wi.getWorkLog());
-			}
-
-			if (null == from) {
-				throw new ExceptionInvalidFromWorkLog(wi.getWorkLog());
-			}
-
-			Activity activity = business.element().getActivity(from.getFromActivity());
-
-			List<Wo> wos = new ArrayList<>();
-
-			for (String splitValue : wi.getSplitValueList()) {
-
-				emc.beginTransaction(Work.class);
-				emc.beginTransaction(WorkLog.class);
-
-				Work workCopy = new Work(work);
-				workCopy.setActivity(activity.getId());
-				workCopy.setActivityAlias(activity.getAlias());
-				workCopy.setActivityArrivedTime(new Date());
-				workCopy.setActivityDescription(activity.getDescription());
-				workCopy.setActivityName(activity.getName());
-				workCopy.setActivityToken(StringTools.uniqueToken());
-				workCopy.setActivityType(activity.getActivityType());
-				workCopy.setSplitTokenList(arrived.getSplitTokenList());
-				workCopy.setSplitToken(arrived.getSplitToken());
-				workCopy.setSplitting(from.getSplitting());
-				workCopy.getManualTaskIdentityList().clear();
-				workCopy.setSplitValue(splitValue);
-				workCopy.getManualTaskIdentityList().clear();
-				workCopy.setBeforeExecuted(false);
-				workCopy.setDestinationActivity(null);
-				workCopy.setDestinationActivityType(null);
-				workCopy.setDestinationRoute(null);
-				workCopy.setDestinationRouteName(null);
-
-				WorkLog arrivedCopy = new WorkLog(arrived);
-				arrivedCopy.setArrivedActivity(activity.getId());
-				arrivedCopy.setArrivedActivityAlias(activity.getAlias());
-				arrivedCopy.setArrivedActivityName(activity.getName());
-				arrivedCopy.setArrivedActivityToken(workCopy.getActivityToken());
-				arrivedCopy.setArrivedActivityType(activity.getActivityType());
-				arrivedCopy.setWork(workCopy.getId());
-				arrivedCopy.setArrivedTime(workCopy.getActivityArrivedTime());
-				arrivedCopy.setSplitValue(workCopy.getSplitValue());
-
-				WorkLog fromCopy = new WorkLog(from);
-				fromCopy.setConnected(false);
-				fromCopy.setFromActivity(activity.getId());
-				fromCopy.setFromActivityAlias(activity.getAlias());
-				fromCopy.setFromActivityName(activity.getName());
-				fromCopy.setFromActivityType(activity.getActivityType());
-				fromCopy.setFromActivityToken(workCopy.getActivityToken());
-				fromCopy.setFromTime(workCopy.getActivityArrivedTime());
-				fromCopy.setWork(workCopy.getId());
-				arrivedCopy.setSplitValue(workCopy.getSplitValue());
-				fromCopy.setArrivedActivity("");
-				fromCopy.setArrivedActivityAlias("");
-				fromCopy.setArrivedActivityName("");
-				fromCopy.setArrivedActivityToken("");
-				fromCopy.setArrivedActivityType(null);
-				fromCopy.setArrivedTime(null);
-
-				emc.persist(workCopy, CheckPersistType.all);
-				emc.persist(arrivedCopy, CheckPersistType.all);
-				emc.persist(fromCopy, CheckPersistType.all);
-				emc.commit();
-				Processing processing = new Processing(wi);
-				processing.processing(workCopy.getId());
-
-				Wo wo = this.wo(business, workCopy);
-				wos.add(wo);
-			}
-			result.setData(wos);
-			return result;
+			executorSeed = work.getJob();
 		}
+
+		Callable<String> callable = new Callable<String>() {
+			public String call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+
+					/* 校验work是否存在 */
+					Work work = emc.find(id, Work.class);
+					if (null == work) {
+						throw new ExceptionEntityNotExist(id, Work.class);
+					}
+
+					if (!work.getSplitting()) {
+						throw new ExceptionNotSplit(work.getId());
+					}
+					if (ListTools.isEmpty(wi.getSplitValueList())) {
+						throw new ExceptionEmptySplitValue(work.getId());
+					}
+
+					result.setData(wos);
+
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+
+					WorkLogTree tree = new WorkLogTree(workLogs);
+
+					WorkLog arrived = workLogs.stream().filter(o -> {
+						return StringUtils.equals(o.getId(), wi.getWorkLog());
+					}).findFirst().orElse(null);
+
+					WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
+
+					if (null == arrived) {
+						throw new ExceptionInvalidArrivedWorkLog(wi.getWorkLog());
+					}
+
+					if (null == from) {
+						throw new ExceptionInvalidFromWorkLog(wi.getWorkLog());
+					}
+
+					Activity activity = business.element().getActivity(from.getFromActivity());
+
+					for (String splitValue : wi.getSplitValueList()) {
+
+						emc.beginTransaction(Work.class);
+						emc.beginTransaction(WorkLog.class);
+
+						Work workCopy = new Work(work);
+						workCopy.setActivity(activity.getId());
+						workCopy.setActivityAlias(activity.getAlias());
+						workCopy.setActivityArrivedTime(new Date());
+						workCopy.setActivityDescription(activity.getDescription());
+						workCopy.setActivityName(activity.getName());
+						workCopy.setActivityToken(StringTools.uniqueToken());
+						workCopy.setActivityType(activity.getActivityType());
+						workCopy.setSplitTokenList(arrived.getSplitTokenList());
+						workCopy.setSplitToken(arrived.getSplitToken());
+						workCopy.setSplitting(from.getSplitting());
+						workCopy.getManualTaskIdentityList().clear();
+						workCopy.setSplitValue(splitValue);
+						workCopy.getManualTaskIdentityList().clear();
+						workCopy.setBeforeExecuted(false);
+						workCopy.setDestinationActivity(null);
+						workCopy.setDestinationActivityType(null);
+						workCopy.setDestinationRoute(null);
+						workCopy.setDestinationRouteName(null);
+
+						WorkLog arrivedCopy = new WorkLog(arrived);
+						arrivedCopy.setArrivedActivity(activity.getId());
+						arrivedCopy.setArrivedActivityAlias(activity.getAlias());
+						arrivedCopy.setArrivedActivityName(activity.getName());
+						arrivedCopy.setArrivedActivityToken(workCopy.getActivityToken());
+						arrivedCopy.setArrivedActivityType(activity.getActivityType());
+						arrivedCopy.setWork(workCopy.getId());
+						arrivedCopy.setArrivedTime(workCopy.getActivityArrivedTime());
+						arrivedCopy.setSplitValue(workCopy.getSplitValue());
+
+						WorkLog fromCopy = new WorkLog(from);
+						fromCopy.setConnected(false);
+						fromCopy.setFromActivity(activity.getId());
+						fromCopy.setFromActivityAlias(activity.getAlias());
+						fromCopy.setFromActivityName(activity.getName());
+						fromCopy.setFromActivityType(activity.getActivityType());
+						fromCopy.setFromActivityToken(workCopy.getActivityToken());
+						fromCopy.setFromTime(workCopy.getActivityArrivedTime());
+						fromCopy.setWork(workCopy.getId());
+						arrivedCopy.setSplitValue(workCopy.getSplitValue());
+						fromCopy.setArrivedActivity("");
+						fromCopy.setArrivedActivityAlias("");
+						fromCopy.setArrivedActivityName("");
+						fromCopy.setArrivedActivityToken("");
+						fromCopy.setArrivedActivityType(null);
+						fromCopy.setArrivedTime(null);
+
+						emc.persist(workCopy, CheckPersistType.all);
+						emc.persist(arrivedCopy, CheckPersistType.all);
+						emc.persist(fromCopy, CheckPersistType.all);
+						emc.commit();
+						Processing processing = new Processing(wi);
+						processing.processing(workCopy.getId());
+
+						Wo wo = wo(business, workCopy);
+						wos.add(wo);
+					}
+				}
+				return "";
+			}
+		};
+
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+
+		return result;
 	}
 
 	private Wo wo(Business business, Work copy) throws Exception {

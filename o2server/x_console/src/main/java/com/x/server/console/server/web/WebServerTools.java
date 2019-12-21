@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -38,8 +39,8 @@ public class WebServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
 
-	private static int WEBSERVER_THREAD_POOL_SIZE_MIN = 10;
-	private static int WEBSERVER_THREAD_POOL_SIZE_MAX = 100;
+	private static int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(WebServer webServer) throws Exception {
 
@@ -47,7 +48,13 @@ public class WebServerTools extends JettySeverTools {
 		 * 更新x_desktop的center指向
 		 */
 		updateCenterConfigJson();
-		/** 创建index.html */
+		/**
+		 * 更新 favicon.ico
+		 */
+		updateFavicon();
+		/**
+		 * 创建index.html
+		 */
 		createIndexPage();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -65,17 +72,28 @@ public class WebServerTools extends JettySeverTools {
 		// context.setResourceBase(".");
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
-		context.setDefaultsDescriptor(new File(Config.base(), "commons/webdefault_w.xml").getAbsolutePath());
+		// context.setDefaultsDescriptor(new File(Config.base(),
+		// "commons/webdefault_w.xml").getAbsolutePath());
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "" + webServer.getDirAllowed());
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+		if (webServer.getCacheControlMaxAge() > 0) {
+			context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl",
+					"max-age=" + webServer.getCacheControlMaxAge());	
+		}
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCacheSize", "256000000");
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCachedFileSize", "200000000");
 		context.setWelcomeFiles(new String[] { "default.html", "index.html" });
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
+		context.getMimeTypes().addMimeMapping("wcss", "application/json");
 		/* stat */
 		if (webServer.getStatEnable()) {
-			FilterHolder holder = new FilterHolder(new WebStatFilter());
-			holder.setInitParameter("exclusions", webServer.getStatExclusions());
-			context.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
-			context.addServlet(StatViewServlet.class, "/druid/*");
+			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+			statFilterHolder.setInitParameter("exclusions", webServer.getStatExclusions());
+			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+			statServletHolder.setInitParameter("sessionStatEnable", "false");
+			context.addServlet(statServletHolder, "/druid/*");
 		}
 		/* stat end */
 		server.setHandler(context);
@@ -83,15 +101,23 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 		server.start();
-		/* 添加wcss支持mimeType必须在server.start()之后执行 */
-		// MimeTypes mimeTypes = new MimeTypes();
-		// mimeTypes.addMimeMapping("wcss", "application/json;charset=utf-8");
+
 		context.setMimeTypes(Config.mimeTypes());
 		System.out.println("****************************************");
 		System.out.println("* web server start completed.");
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static void updateFavicon() throws Exception {
+
+		File file = new File(Config.dir_config(), "favicon.ico");
+
+		if (file.exists() && file.isFile()) {
+			FileUtils.copyFile(file, new File(Config.dir_servers_webServer(), "favicon.ico"));
+		}
+
 	}
 
 	private static void updateCenterConfigJson() throws Exception {

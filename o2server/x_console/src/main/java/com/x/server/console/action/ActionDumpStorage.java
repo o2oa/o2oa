@@ -88,7 +88,6 @@ public class ActionDumpStorage {
 				em.close();
 				emf.close();
 			}
-			System.gc();
 		}
 		FileUtils.write(new File(dir, "catalog.json"), XGsonBuilder.instance().toJson(this.catalog),
 				DefaultCharset.charset);
@@ -200,6 +199,7 @@ public class ActionDumpStorage {
 				this.dumpWrite(file, normalList, emptyList, invalidStorageList);
 			}
 			em.clear();
+			System.gc();
 		} while (ListTools.isNotEmpty(list));
 		DumpRestoreStorageCatalogItem item = new DumpRestoreStorageCatalogItem();
 		item.setCount(count);

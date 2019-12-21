@@ -14,7 +14,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.assemble.surface.jaxrs.data.ActionUpdateWithWork.Wo;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -22,6 +21,8 @@ import com.x.processplatform.core.entity.element.Process;
 class ActionUpdateWithWorkCompleted extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		WorkCompleted workCompleted = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/** 防止提交空数据清空data */
 			if (null == jsonElement || (!jsonElement.isJsonObject())) {
@@ -30,9 +31,8 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 			if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
 				throw new ExceptionEmptyData();
 			}
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+			workCompleted = emc.find(id, WorkCompleted.class);
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 			}
@@ -47,14 +47,14 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
 				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
-			Wo wo = ThisApplication.context().applications()
-					.putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("data", "workcompleted", workCompleted.getId()), jsonElement,
-							workCompleted.getJob())
-					.getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId()), jsonElement,
+						workCompleted.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

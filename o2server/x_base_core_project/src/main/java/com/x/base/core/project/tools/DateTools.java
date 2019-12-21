@@ -26,6 +26,7 @@ public class DateTools {
 	public final static String format_HHmmss = "HH:mm:ss";
 	public final static String format_HHmm = "HH:mm";
 	public final static String format_yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
+	public final static String format_yyyyMMddHHmmssSSS = "yyyy-MM-dd HH:mm:ss.SSS";
 	public final static String format_yyyyMMddHHmm = "yyyy-MM-dd HH:mm";
 
 	public final static String formatCompact_yyyyMMdd = "yyyyMMdd";
@@ -59,6 +60,10 @@ public class DateTools {
 
 	public static String now() {
 		return DateFormatUtils.format(new Date(), format_yyyyMMddHHmmss);
+	}
+
+	public static String nowMs() {
+		return DateFormatUtils.format(new Date(), format_yyyyMMddHHmmssSSS);
 	}
 
 	public static String compact(Date date) {

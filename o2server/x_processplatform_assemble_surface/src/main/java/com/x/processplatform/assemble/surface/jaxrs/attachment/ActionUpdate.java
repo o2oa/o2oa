@@ -1,11 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import com.x.base.core.entity.annotation.CheckPersistType;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -23,6 +17,10 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 class ActionUpdate extends BaseAction {
 
@@ -42,7 +40,7 @@ class ActionUpdate extends BaseAction {
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(id);
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
@@ -55,7 +53,7 @@ class ActionUpdate extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			/* 天印扩展 */
+			/* 天谷印章扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {

@@ -1,21 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -29,13 +13,15 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Attachment_;
 import com.x.processplatform.core.entity.content.Work;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 class ActionUpload extends BaseAction {
 
@@ -62,7 +48,7 @@ class ActionUpload extends BaseAction {
 			/* 调整可能的附件名称 */
 			fileName = this.adjustFileName(business, work.getJob(), fileName);
 
-			/* 天印扩展 */
+			/* 天谷印章扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {

@@ -1,14 +1,5 @@
 package com.x.cms.core.entity.content;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -16,6 +7,14 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 public class Data extends ListOrderedMap<String, Object> {
 
@@ -30,6 +29,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		if (null != document) {
 			DataDocument.documentCopier.copy(document, dataDocument);
 		}
+		dataDocument.setId( document.getId() );
 		dataDocument.setDocId(document.getId());
 		this.put(DOCUMENT_PROPERTY, dataDocument);
 	}
@@ -92,7 +92,8 @@ public class Data extends ListOrderedMap<String, Object> {
 
 		private static WrapCopier<Document, DataDocument> documentCopier = WrapCopierFactory.wo(Document.class, DataDocument.class, null,
 				JpaObject.FieldsInvisible);
-		
+
+		private String id;
 		private String docId;
 		private String title;
 		private String documentType;
@@ -113,7 +114,11 @@ public class Data extends ListOrderedMap<String, Object> {
 		private Date publishTime;
 		private Date modifyTime;
 		private Boolean isTop;
-		
+
+		public String getId() { return this.id; }
+		public void setId(final String id) { this.id = id; }
+		public Boolean getTop() { return this.isTop; }
+		public void setTop(final Boolean top) { this.isTop = top; }
 		public Boolean getIsTop() {
 			return isTop;
 		}

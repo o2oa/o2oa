@@ -22,18 +22,19 @@ class ActionUpdateWithWork extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Audit audit = logger.audit(effectivePerson);
 			/** 防止提交空数据清空data */
 			if (null == jsonElement || (!jsonElement.isJsonObject())) {
 				throw new ExceptionNotJsonObject();
 			}
-			if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
-				throw new ExceptionEmptyData();
-			}
-			ActionResult<Wo> result = new ActionResult<>();
+//			if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
+//				throw new ExceptionEmptyData();
+//			}
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
@@ -41,13 +42,13 @@ class ActionUpdateWithWork extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			Wo wo = ThisApplication.context().applications()
-					.putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("data", "work", work.getId()), jsonElement, work.getJob())
-					.getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("data", "work", work.getId()), jsonElement, work.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -17,8 +18,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.jaxrs.read.ActionProcessing.Wi;
-import com.x.processplatform.assemble.surface.jaxrs.read.ActionProcessing.Wo;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -26,11 +25,13 @@ import com.x.processplatform.core.entity.element.Process;
 public class ActionManageProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Read read;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Read read = emc.find(id, Read.class);
+			read = emc.find(id, Read.class);
 			if (null == read) {
 				throw new ExceptionEntityNotExist(id, Read.class);
 			}
@@ -47,11 +48,13 @@ public class ActionManageProcessing extends BaseAction {
 			}
 			emc.commit();
 			/* processing read */
-			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null).getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("read", read.getId(), "processing"), null, read.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

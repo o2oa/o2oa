@@ -86,8 +86,6 @@ public class ThisApplication {
 		try {
 			centerQueue.stop();
 			logQueue.stop();
-			//ApplicationCache.shutdown();
-			// codeTransferQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

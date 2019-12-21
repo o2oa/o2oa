@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.assemble.surface.schedule.CleanKeyLock;
 
 public class ThisApplication {
 
@@ -14,6 +15,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			context.schedule(CleanKeyLock.class, "2 0/2 * * * ?");
 			LoggerFactory.setLevel(Config.logLevel().x_processplatform_assemble_surface());
 		} catch (Exception e) {
 			e.printStackTrace();

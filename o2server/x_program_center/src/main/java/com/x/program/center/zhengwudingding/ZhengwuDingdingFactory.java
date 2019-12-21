@@ -13,6 +13,7 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.program.center.dingding.DingdingFactory.UserResp;
 
 public class ZhengwuDingdingFactory {
 
@@ -26,6 +27,31 @@ public class ZhengwuDingdingFactory {
 
 	private List<User> users = new ArrayList<>();
 
+	private int  count = 0;
+	    
+	public void syncSleep(int time) {
+	    	int defaultTime = 2000;
+	    	 try {
+	    		if(time == 0) {
+	    			time =defaultTime;
+	    		}
+	    		Thread.sleep(time);//延时2秒
+	 		} catch (InterruptedException e) {
+	 			// TODO Auto-generated catch block
+	 			e.printStackTrace();
+	 		}    
+	 }
+	
+	  public boolean syncExceptionDeal(Integer retCode, String retMessage) {
+	    	boolean exceptionDeal = false;
+	    	if((retCode == 90002) ||(retCode == 90018) ||  (retCode == 90006) || (retCode == 90005) || (retCode == 90019) ||
+	    	    (retCode == 90010) ||  (retCode == 90008) || (retCode == 90014) ) {
+	    		this.syncSleep(0);
+	    		exceptionDeal = true;
+	    	}
+	    	return exceptionDeal;
+	    }
+	    
 	public ZhengwuDingdingFactory(String accessToken) throws Exception {
 		this.accessToken = accessToken;
 		for (Org o : this.listRootOrg()) {
@@ -74,7 +100,13 @@ public class ZhengwuDingdingFactory {
 		UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
 		logger.debug("detailUser response:{}.", resp);
 		if (resp.getRetCode() != 0) {
-			throw new ExceptionDetailUser(resp.getRetCode(), resp.getRetMessage());
+			
+			if(this.syncExceptionDeal(resp.getRetCode(), resp.getRetMessage())) {
+				resp = HttpConnection.getAsObject(address, null, UserResp.class);
+			}else {
+			 throw new ExceptionDetailUser(resp.getRetCode(), resp.getRetMessage());
+			}
+			//throw new ExceptionDetailUser(resp.getRetCode(), resp.getRetMessage());
 		}
 		return resp.getRetData();
 	}

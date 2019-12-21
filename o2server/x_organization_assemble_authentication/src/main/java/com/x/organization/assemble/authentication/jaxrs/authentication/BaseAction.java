@@ -200,9 +200,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		String parameter = fillTokenParameter(oauthClient.getTokenParameter(), oauthClient, redirectUri, code);
 		logger.debug("token post address:{}.", address);
 		logger.debug("token post parameter:{}.", parameter);
-		List<NameValuePair> heads = new ArrayList<>();
-		heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
-		String str = HttpConnection.postAsString(address, null, parameter);
+		
+		List<NameValuePair> heads = null;
+		//if (StringUtils.equalsIgnoreCase(oauthClient.getTokenType(), "form")) {
+			heads = new ArrayList<>();
+			heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
+	    //}
+		
+		String str = HttpConnection.postAsString(address, heads, parameter);
 		return str;
 	}
 

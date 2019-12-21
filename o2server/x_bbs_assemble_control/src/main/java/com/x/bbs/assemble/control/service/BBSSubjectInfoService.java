@@ -1,9 +1,5 @@
 package com.x.bbs.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,16 +12,12 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.common.date.DateOperation;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.ThisApplication;
-import com.x.bbs.entity.BBSForumInfo;
-import com.x.bbs.entity.BBSReplyInfo;
-import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSSubjectAttachment;
-import com.x.bbs.entity.BBSSubjectContent;
-import com.x.bbs.entity.BBSSubjectInfo;
-import com.x.bbs.entity.BBSSubjectVoteResult;
-import com.x.bbs.entity.BBSVoteOption;
-import com.x.bbs.entity.BBSVoteOptionGroup;
-import com.x.bbs.entity.BBSVoteRecord;
+import com.x.bbs.entity.*;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 论坛信息管理服务类
@@ -36,10 +28,10 @@ public class BBSSubjectInfoService {
 	
 	private static  Logger logger = LoggerFactory.getLogger( BBSSubjectInfoService.class );
 	private DateOperation dateOperation = new DateOperation();
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
-	 * @param id
+	 * @param ids
 	 * @return
 	 * @throws Exception
 	 */
@@ -115,11 +107,15 @@ public class BBSSubjectInfoService {
 			emc.commit();
 		}
 	}
-	
-	
+
+
 	/**
 	 * 向数据库保存BBSSubjectInfo对象
-	 * @param wrapIn
+	 * @param emc
+	 * @param _bBSSubjectInfo
+	 * @param content
+	 * @return
+	 * @throws Exception
 	 */
 	public BBSSubjectInfo save( EntityManagerContainer emc, BBSSubjectInfo _bBSSubjectInfo, String content ) throws Exception {
 		List<BBSSubjectAttachment> attachList = null;
@@ -157,11 +153,17 @@ public class BBSSubjectInfoService {
 			if( _forumInfo_tmp != null ){
 				_forumInfo_tmp.setSubjectTotalToday( _forumInfo_tmp.getSubjectTotalToday() + 1 );
 				_forumInfo_tmp.setSubjectTotal( _forumInfo_tmp.getSubjectTotal() + 1 );
+				if( StringUtils.isEmpty( _forumInfo_tmp.getReplyMessageNotifyType() )){
+					_forumInfo_tmp.setReplyMessageNotifyType("0,0,0");
+				}
 				emc.check( _forumInfo_tmp, CheckPersistType.all );	
 			}
 			if( _sectionInfo_tmp != null ){
 				_sectionInfo_tmp.setSubjectTotalToday( _sectionInfo_tmp.getSubjectTotalToday() + 1 );
 				_sectionInfo_tmp.setSubjectTotal( _sectionInfo_tmp.getSubjectTotal() + 1 );
+				if( StringUtils.isEmpty( _sectionInfo_tmp.getReplyMessageNotifyType() )){
+					_sectionInfo_tmp.setReplyMessageNotifyType("0,0,0");
+				}
 				emc.check( _sectionInfo_tmp, CheckPersistType.all );	
 			}
 		}else{
@@ -207,16 +209,17 @@ public class BBSSubjectInfoService {
 		emc.commit();
 		return _bBSSubjectInfo;
 	}
-	
+
 	/**
 	 * 根据ID从数据库中删除BBSSubjectInfo对象
-	 * 删除主题后，要对一系列的数据进行操作：
-	 * 1、所有的回贴删除，记录回贴数量n
-	 * 2、版块主题数量-1，如果有主版块，主版块主题数量-1
-	 * 3、论坛主题数量-1
-	 * 4、版块回复数量-n，如果有主版块，主版块回复数量-n
-	 * 5、论坛回复数量-n
-	 * @param id
+	 * 	 * 删除主题后，要对一系列的数据进行操作：
+	 * 	 * 1、所有的回贴删除，记录回贴数量n
+	 * 	 * 2、版块主题数量-1，如果有主版块，主版块主题数量-1
+	 * 	 * 3、论坛主题数量-1
+	 * 	 * 4、版块回复数量-n，如果有主版块，主版块回复数量-n
+	 * 	 * 5、论坛回复数量-n
+	 * @param emc
+	 * @param subjectId
 	 * @throws Exception
 	 */
 	public void delete( EntityManagerContainer emc, String subjectId ) throws Exception {
@@ -323,6 +326,9 @@ public class BBSSubjectInfoService {
 				if ( dateOperation.isTheSameDate( today, subjectInfo.getCreateTime() ) && forumInfo.getSubjectTotalToday() > 0) {
 					forumInfo.setSubjectTotalToday( forumInfo.getSubjectTotalToday() - 1 );
 				}
+				if( StringUtils.isEmpty( forumInfo.getReplyMessageNotifyType() )){
+					forumInfo.setReplyMessageNotifyType("0,0,0");
+				}
 				emc.check(forumInfo, CheckPersistType.all);
 			}
 			if( mainSectionInfo != null ){
@@ -332,6 +338,9 @@ public class BBSSubjectInfoService {
 				if ( dateOperation.isTheSameDate( today, subjectInfo.getCreateTime() ) && mainSectionInfo.getSubjectTotalToday() > 0) {
 					mainSectionInfo.setSubjectTotalToday( mainSectionInfo.getSubjectTotalToday() - 1 );
 				}
+				if( StringUtils.isEmpty( mainSectionInfo.getReplyMessageNotifyType() )){
+					mainSectionInfo.setReplyMessageNotifyType("0,0,0");
+				}
 				emc.check( mainSectionInfo, CheckPersistType.all );
 			}
 			if( sectionInfo != null ){
@@ -340,6 +349,9 @@ public class BBSSubjectInfoService {
 				}
 				if ( dateOperation.isTheSameDate( today, subjectInfo.getCreateTime() ) && sectionInfo.getSubjectTotalToday() > 0) {
 					sectionInfo.setSubjectTotalToday( sectionInfo.getSubjectTotalToday() - 1 );
+				}
+				if( StringUtils.isEmpty( sectionInfo.getReplyMessageNotifyType() )){
+					sectionInfo.setReplyMessageNotifyType("0,0,0");
 				}
 				emc.check( sectionInfo, CheckPersistType.all );
 			}
@@ -540,8 +552,9 @@ public class BBSSubjectInfoService {
 
 	/**
 	 * 版块置顶设置
+	 * @param emc
 	 * @param subjectId
-	 * @param topToForum
+	 * @param topToSection
 	 * @param name
 	 * @return
 	 * @throws Exception

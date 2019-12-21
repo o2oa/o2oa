@@ -69,17 +69,18 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前人员的委托日志.", action = ActionListWithCurrentPerson.class)
+	@JaxrsMethodDescribe(value = "获取当前人员的委托日志.", action = ActionListWithCurrentPersonPaging.class)
 	@GET
-	@Path("list/currentperson")
+	@Path("list/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithCurrentPerson(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request) {
-		ActionResult<List<ActionListWithCurrentPerson.Wo>> result = new ActionResult<>();
+	public void listWithCurrentPersonPaging(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+		ActionResult<List<ActionListWithCurrentPersonPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithCurrentPerson().execute(effectivePerson);
+			result = new ActionListWithCurrentPersonPaging().execute(effectivePerson, page, size);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -87,16 +88,18 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前人员的被委托日志.", action = ActionListTo.class)
+	@JaxrsMethodDescribe(value = "获取当前人员的被委托日志.", action = ActionListToCurrentPersonPaging.class)
 	@GET
-	@Path("list/to")
+	@Path("list/to/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listTo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<List<ActionListTo.Wo>> result = new ActionResult<>();
+	public void listToCurrentPersonPaging(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+		ActionResult<List<ActionListToCurrentPersonPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListTo().execute(effectivePerson);
+			result = new ActionListToCurrentPersonPaging().execute(effectivePerson, page, size);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

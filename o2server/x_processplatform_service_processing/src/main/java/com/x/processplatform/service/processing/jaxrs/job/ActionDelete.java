@@ -2,10 +2,15 @@ package com.x.processplatform.service.processing.jaxrs.job;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.http.WrapOutId;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
@@ -16,57 +21,89 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
 
 public class ActionDelete extends BaseAction {
 
-	protected List<WrapOutId> execute(Business business, String job) throws Exception {
-		EntityManagerContainer emc = business.entityManagerContainer();
-		emc.beginTransaction(Task.class);
-		emc.beginTransaction(TaskCompleted.class);
-		emc.beginTransaction(Read.class);
-		emc.beginTransaction(ReadCompleted.class);
-		emc.beginTransaction(Review.class);
-		emc.beginTransaction(Attachment.class);
-		emc.beginTransaction(WorkLog.class);
-		emc.beginTransaction(Item.class);
-		emc.beginTransaction(Work.class);
-		emc.beginTransaction(WorkCompleted.class);
-		emc.beginTransaction(Hint.class);
-		emc.delete(Task.class, business.task().listWithJob(job));
-		emc.delete(TaskCompleted.class, business.taskCompleted().listWithJob(job));
-		emc.delete(Read.class, business.read().listWithJob(job));
-		emc.delete(ReadCompleted.class, business.readCompleted().listWithJob(job));
-		emc.delete(Review.class, business.review().listWithJob(job));
-		emc.delete(Hint.class, business.hint().listWithJob(job));
-		// 删除所有附件
-		for (Attachment o : emc.list(Attachment.class, business.attachment().listWithJob(job))) {
-			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, o.getStorage());
-			/** 如果没有附件存储的对象就算了 */
-			if (null != mapping) {
-				o.deleteContent(mapping);
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+
+		Callable<String> callable = new Callable<String>() {
+			public String call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					emc.beginTransaction(Task.class);
+					emc.beginTransaction(TaskCompleted.class);
+					emc.beginTransaction(Read.class);
+					emc.beginTransaction(ReadCompleted.class);
+					emc.beginTransaction(Review.class);
+					emc.beginTransaction(Attachment.class);
+					emc.beginTransaction(WorkLog.class);
+					emc.beginTransaction(Item.class);
+					emc.beginTransaction(Work.class);
+					emc.beginTransaction(WorkCompleted.class);
+					emc.beginTransaction(Hint.class);
+					for (Task o : emc.listEqual(Task.class, Task.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (TaskCompleted o : emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (Read o : emc.listEqual(Read.class, Read.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (ReadCompleted o : emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (Review o : emc.listEqual(Review.class, Review.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (Hint o : emc.listEqual(Hint.class, Hint.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					/* 删除所有附件 */
+					for (Attachment o : emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, job)) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+								o.getStorage());
+						/* 如果没有附件存储的对象就算了 */
+						if (null != mapping) {
+							o.deleteContent(mapping);
+						}
+						emc.remove(o);
+					}
+					for (WorkLog o : emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (Item o : emc.listEqual(Item.class, Item.bundle_FIELDNAME, job)) {
+						emc.remove(o);
+					}
+					for (Work o : emc.listEqual(Work.class, Work.job_FIELDNAME, job)) {
+						emc.remove(o);
+						Wo wo = new Wo();
+						wo.setId(o.getId());
+						wos.add(wo);
+					}
+					for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
+						Wo wo = new Wo();
+						wo.setId(o.getId());
+						wos.add(wo);
+					}
+					emc.commit();
+				}
+				return "";
 			}
-			emc.remove(o);
-		}
-		emc.delete(WorkLog.class, business.workLog().listWithJob(job));
-		for (Item o : business.item().listWithJobWithPath(job)) {
-			emc.remove(o);
-		}
-		List<String> workIds = business.work().listWithJob(job);
-		emc.delete(Work.class, workIds);
-		List<String> workCompletedIds = business.workCompleted().listWithJob(job);
-		emc.delete(WorkCompleted.class, workCompletedIds);
-		emc.commit();
-		List<WrapOutId> wraps = new ArrayList<>();
-		for (String str : workIds) {
-			wraps.add(new WrapOutId(str));
-		}
-		for (String str : workCompletedIds) {
-			wraps.add(new WrapOutId(str));
-		}
-		return wraps;
+		};
+
+		ProcessPlatformExecutorFactory.get(job).submit(callable).get();
+
+		result.setData(wos);
+		return result;
+
 	}
 
+	public static class Wo extends WoId {
+
+	}
 }

@@ -79,7 +79,7 @@ public class Route extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("代理节点别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";

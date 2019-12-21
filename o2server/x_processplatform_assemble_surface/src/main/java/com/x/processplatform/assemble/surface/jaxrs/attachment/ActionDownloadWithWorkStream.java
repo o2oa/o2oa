@@ -18,30 +18,34 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionDownloadWithWorkStream extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Work work = null;
+		Attachment attachment = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
+
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
+			work = emc.find(workId, Work.class);
 			/** 判断work是否存在 */
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			/** 判断attachment是否存在 */
-			Attachment o = emc.find(id, Attachment.class);
-			if (null == o) {
-				throw new ExceptionAttachmentNotExist(id);
+			attachment = emc.find(id, Attachment.class);
+			if (null == attachment) {
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			/** 生成当前用户针对work的权限控制,并判断是否可以访问 */
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, o.getStorage());
-			Wo wo = new Wo(o.readContent(mapping), this.contentType(true, o.getName()),
-					this.contentDisposition(true, o.getName()));
-			result.setData(wo);
-			return result;
 		}
+		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+				attachment.getStorage());
+		Wo wo = new Wo(attachment.readContent(mapping), this.contentType(true, attachment.getName()),
+				this.contentDisposition(true, attachment.getName()));
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoFile {

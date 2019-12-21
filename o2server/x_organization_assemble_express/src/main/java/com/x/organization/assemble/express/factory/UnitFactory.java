@@ -288,7 +288,7 @@ public class UnitFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.equal(root.get(Unit_.superior), unit.getId());
-		return em.createQuery(cq.select(root.get(Unit_.id)).where(p)).getResultList();
+		return em.createQuery(cq.select(root.get(Unit_.id)).where(p).orderBy(cb.asc(root.get(Unit_.orderNumber)))).getResultList();
 	}
 
 	public List<String> listUnitDistinguishedNameSorted(List<String> unitIds) throws Exception {

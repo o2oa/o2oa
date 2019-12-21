@@ -23,12 +23,10 @@ import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 
 @JaxrsDescribe("数据字典操作")
 @Path("applicationdict")
@@ -44,7 +42,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<WrapOutApplicationDict> result = new ActionResult<>();
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		logger.debug("run get applicationDictFlag:{}, applicationFlag:{}.", applicationDictFlag, applicationFlag);
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -56,25 +54,25 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新数据字典以及数据.", action = ActionUpdate.class)
-	@PUT
-	@Path("{applicationDictFlag}/application/{applicationFlag}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-			JsonElement jsonElement) {
-		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionUpdate().execute(effectivePerson, applicationDictFlag, applicationFlag, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "更新数据字典以及数据.", action = ActionUpdate.class)
+//	@PUT
+//	@Path("{applicationDictFlag}/application/{applicationFlag}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
+//			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+//			JsonElement jsonElement) {
+//		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionUpdate().execute(effectivePerson, applicationDictFlag, applicationFlag, jsonElement);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
 	@JaxrsMethodDescribe(value = "获取Application的数据字典列表.", action = ActionListWithApplication.class)
 	@GET
@@ -83,7 +81,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<List<WrapOutApplicationDict>> result = new ActionResult<>();
+		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithApplication().execute(applicationFlag);
@@ -314,7 +312,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
@@ -335,7 +333,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
@@ -358,7 +356,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -382,7 +380,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -407,7 +405,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -433,7 +431,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -460,7 +458,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -488,7 +486,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionUpdateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -509,7 +507,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
@@ -530,7 +528,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
@@ -553,7 +551,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -577,7 +575,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -602,7 +600,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -628,7 +626,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -655,7 +653,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -683,7 +681,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7, JsonElement jsonElement) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionCreateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -704,7 +702,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
@@ -725,7 +723,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
@@ -747,7 +745,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
@@ -770,7 +768,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -795,7 +793,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -821,7 +819,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -848,7 +846,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
@@ -876,7 +874,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
 			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
 			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+		ActionResult<ActionDeleteDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,

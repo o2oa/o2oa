@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,10 +19,15 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -41,8 +47,7 @@ import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 
@@ -54,75 +59,92 @@ import com.x.processplatform.service.processing.WorkDataHelper;
  */
 class ActionAssignCreate extends BaseAction {
 
+	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionAssignCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		String workId = "";
-		Boolean processing = false;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			List<String> applicationIds = this.listApplication(business, wi.getApplication());
-			if (ListTools.isEmpty(applicationIds)) {
-				throw new ExceptionApplicationNotExist(wi.getApplication());
-			}
-			Process process = this.getProcess(business, applicationIds, wi.getProcess());
-			Application application = business.element().get(process.getApplication(), Application.class);
-			Begin begin = business.element().getBeginWithProcess(process.getId());
-			Work work = this.create(application, process, begin);
-			workId = work.getId();
-			processing = wi.getProcessing();
-			String identityDn = business.organization().identity().get(wi.getIdentity());
-			if (StringUtils.isEmpty(identityDn)) {
-				throw new ExceptionIdentityNotExist(wi.getIdentity());
-			}
-			work.setTitle(wi.getTitle());
-			work.setCreatorIdentity(identityDn);
-			work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
-			work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
-			/* 通过赋值调用的是不能被作为草稿删除的 */
-			work.setDataChanged(true);
-			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
-				emc.beginTransaction(Attachment.class);
-				/** 这个attachmentList要手动初始化 */
-				// work.setAttachmentList(new ArrayList<String>());
-				for (WiAttachment o : wi.getAttachmentList()) {
-					StorageMapping fromMapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null == fromMapping) {
-						throw new ExceptionFromMappingNotExist(o.getStorage());
-					}
-					StorageMapping toMapping = ThisApplication.context().storageMappings().random(Attachment.class);
-					if (null == toMapping) {
-						throw new ExceptionToMappingNotExist(Attachment.class);
-					}
-					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), o.getSite());
-					attachment.setActivity(begin.getId());
-					attachment.setActivityName(begin.getName());
-					attachment.setActivityType(ActivityType.begin);
-					attachment.setActivityToken(work.getActivityToken());
-					attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
-					emc.persist(attachment, CheckPersistType.all);
-					// work.getAttachmentList().add(attachment.getId());
-				}
-			}
-			emc.beginTransaction(Work.class);
-			emc.persist(work, CheckPersistType.all);
-			if (null != wi.getData()) {
-				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
-				workDataHelper.update(wi.getData());
-			}
-			emc.commit();
-		}
-		if (BooleanUtils.isTrue(processing)) {
-			Processing o = new Processing(new ProcessingAttributes());
-			o.processing(workId);
-		}
 		Wo wo = new Wo();
-		wo.setId(workId);
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Boolean processing = wi.getProcessing();
+		CallWrapObject callWrapObject = new CallWrapObject();
+
+		Callable<String> callable = new Callable<String>() {
+			public String call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+					List<String> applicationIds = listApplication(business, wi.getApplication());
+					if (ListTools.isEmpty(applicationIds)) {
+						throw new ExceptionEntityNotExist(wi.getApplication(), Application.class);
+					}
+					Process process = getProcess(business, applicationIds, wi.getProcess());
+					Application application = business.element().get(process.getApplication(), Application.class);
+					Begin begin = business.element().getBeginWithProcess(process.getId());
+					Work work = create(application, process, begin);
+					callWrapObject.job = work.getJob();
+					callWrapObject.id = work.getId();
+					String identityDn = business.organization().identity().get(wi.getIdentity());
+					if (StringUtils.isEmpty(identityDn)) {
+						throw new ExceptionIdentityNotExist(wi.getIdentity());
+					}
+					work.setTitle(wi.getTitle());
+					work.setCreatorIdentity(identityDn);
+					work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
+					work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
+					/* 通过赋值调用的是不能被作为草稿删除的 */
+					work.setDataChanged(true);
+					if (ListTools.isNotEmpty(wi.getAttachmentList())) {
+						emc.beginTransaction(Attachment.class);
+						/** 这个attachmentList要手动初始化 */
+						// work.setAttachmentList(new ArrayList<String>());
+						for (WiAttachment o : wi.getAttachmentList()) {
+							StorageMapping fromMapping = ThisApplication.context().storageMappings()
+									.get(Attachment.class, o.getStorage());
+							if (null == fromMapping) {
+								throw new ExceptionFromMappingNotExist(o.getStorage());
+							}
+							StorageMapping toMapping = ThisApplication.context().storageMappings()
+									.random(Attachment.class);
+							if (null == toMapping) {
+								throw new ExceptionToMappingNotExist(Attachment.class);
+							}
+							Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(),
+									o.getSite());
+							attachment.setActivity(begin.getId());
+							attachment.setActivityName(begin.getName());
+							attachment.setActivityType(ActivityType.begin);
+							attachment.setActivityToken(work.getActivityToken());
+							attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+							emc.persist(attachment, CheckPersistType.all);
+						}
+					}
+					emc.beginTransaction(Work.class);
+					emc.persist(work, CheckPersistType.all);
+					if (null != wi.getData()) {
+						WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
+						workDataHelper.update(wi.getData());
+					}
+					emc.commit();
+					MessageFactory.work_create(work);
+				}
+				return "";
+			}
+		};
+
+		ProcessPlatformExecutorFactory.get(wi.getProcess()).submit(callable).get();
+
+		if (BooleanUtils.isTrue(processing)) {
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("work", callWrapObject.id, "processing"), null, callWrapObject.job);
+		}
+		wo.setId(callWrapObject.id);
 		result.setData(wo);
 		return result;
+	}
+
+	public static class CallWrapObject {
+		private String job;
+		private String id;
 	}
 
 	public static class Wi extends GsonPropertyObject {
@@ -240,7 +262,7 @@ class ActionAssignCreate extends BaseAction {
 		cq.select(root).where(p);
 		List<Process> list = em.createQuery(cq).getResultList();
 		if (list.isEmpty()) {
-			throw new ExceptionProcessNotExist(processFlag);
+			throw new ExceptionEntityNotExist(processFlag, Process.class);
 		}
 		return list.get(0);
 	}

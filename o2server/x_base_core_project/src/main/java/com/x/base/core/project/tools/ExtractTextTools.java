@@ -66,7 +66,8 @@ public class ExtractTextTools {
 	public static final List<String> SUPPORT_IMAGE_TYPES = UnmodifiableList
 			.unmodifiableList(ListTools.toList(".bmp", ".jpg", ".png", ".gif", ".jpeg", "jpe"));
 
-	public static String extract(byte[] bytes, String name, Boolean office, Boolean pdf, Boolean txt, Boolean image) {
+	public static String extract(byte[] bytes, String name, Boolean office, Boolean pdf, Boolean txt, Boolean image)
+			throws Exception {
 		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
 			if (office) {
 				if (StringUtils.endsWithIgnoreCase(name, ".doc") || StringUtils.endsWithIgnoreCase(name, ".docx")) {
@@ -114,13 +115,10 @@ public class ExtractTextTools {
 		return null;
 	}
 
-	public static String word(byte[] bytes) {
+	public static String word(byte[] bytes) throws Exception {
 		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			return tikaInstance().parseToString(in);
-		} catch (Exception e) {
-			logger.error(e);
 		}
-		return null;
 	}
 
 	public static String excel(byte[] bytes) {

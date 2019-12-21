@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -22,7 +17,11 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.content.Data;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
-import com.x.query.core.entity.Item;	
+import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 对文档信息进行查询的服务类
@@ -316,12 +315,41 @@ public class DocumentQueryService {
 				document = emc.find( lastId, Document.class );
 			}
 			if( document != null ) {
-				reviewList = reviewService.listViewableWithFilter( emc, pageSize, document.getSequence(), orderField, orderType, person, queryFilter );
+				reviewList = reviewService.listNextViewableWithFilter( emc, pageSize, document.getSequence(), orderField, orderType, person, queryFilter );
 			}else {
-				reviewList = reviewService.listViewableWithFilter( emc, pageSize, null, orderField, orderType, person, queryFilter );
+				reviewList = reviewService.listNextViewableWithFilter( emc, pageSize, null, orderField, orderType, person, queryFilter );
 			}	
 			//根据Review列表查询Document列表信息
 			documentList = listDocumentsWithReview( reviewList );			
+			return documentList;
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<Document> listPrevWithConditionInReview( String lastId, Integer pageSize, String orderField, String orderType, String person, QueryFilter queryFilter ) throws Exception {
+		if( pageSize == 0 ) { pageSize = 20; }
+
+		if( StringUtils.isEmpty( orderField ) ) {
+			orderField = Document.sequence_FIELDNAME;
+		}
+		if( StringUtils.isEmpty( orderType ) ) {
+			orderType = "desc";
+		}
+		Document document = null;
+		List<Document> documentList = null;
+		List<Review> reviewList = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			if( StringUtils.isNotEmpty( lastId ) ) {
+				document = emc.find( lastId, Document.class );
+			}
+			if( document != null ) {
+				reviewList = reviewService.listPrevViewableWithFilter( emc, pageSize, document.getSequence(), orderField, orderType, person, queryFilter );
+			}else {
+				reviewList = reviewService.listPrevViewableWithFilter( emc, pageSize, null, orderField, orderType, person, queryFilter );
+			}
+			//根据Review列表查询Document列表信息
+			documentList = listDocumentsWithReview( reviewList );
 			return documentList;
 		} catch ( Exception e ) {
 			throw e;
@@ -391,6 +419,28 @@ public class DocumentQueryService {
 		//按正常逻辑根据序列进行分页查询
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {			
 			return documentInfoService.listNextWithCondition( emc, pageSize, lastId, orderField, orderType, queryFilter );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 对Document信息进行分页查询（忽略权限）
+	 * document和Review除了sequence还有5个排序列支持title, appAlias, categoryAlias, categoryName, creatorUnitName的分页查询
+	 除了sequence和title, appAlias, categoryAlias, categoryName, creatorUnitName之外，其他的列排序全部在内存进行分页
+	 * @param lastId
+	 * @param pageSize
+	 * @param orderField
+	 * @param orderType
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Document> listPrevWithConditionOutofPermission( String lastId, Integer pageSize, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+		if( pageSize == 0 ) { pageSize = 20; }
+		//按正常逻辑根据序列进行分页查询
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentInfoService.listPrevWithCondition( emc, pageSize, lastId, orderField, orderType, queryFilter );
 		} catch ( Exception e ) {
 			throw e;
 		}

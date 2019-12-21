@@ -57,7 +57,7 @@ class ActionList extends BaseAction {
 		private static final long serialVersionUID = 1551592776065130757L;
 
 		static WrapCopier<TemplateForm, Wo> copier = WrapCopierFactory.wo(TemplateForm.class, Wo.class,
-				JpaObject.singularAttributeField(TemplateForm.class, true, true), JpaObject.FieldsInvisible);
+				JpaObject.singularAttributeField(TemplateForm.class, true, false), JpaObject.FieldsInvisible);
 
 		private Control control;
 

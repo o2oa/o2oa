@@ -8,17 +8,14 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		public static class TaskCompleted {
 			public static final String table = "PP_C_TASKCOMPLETED";
-			// public static final String table = "pp_c_taskCompleted";
 		}
 
 		public static class Hint {
 			public static final String table = "PP_C_HINT";
-			// public static final String table = "pp_c_hint";
 		}
 
 		public static class Task {
 			public static final String table = "PP_C_TASK";
-			// public static final String table = "pp_c_task";
 		}
 
 		public static class Read {
@@ -58,7 +55,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 
 		public static class SerialNumber {
-			public static final String table = "PP_E_SERIALNUMBER";
+			public static final String table = "PP_C_SERIALNUMBER";
+		}
+
+		public static class KeyLock {
+			public static final String table = "PP_C_KEYLOCK";
 		}
 	}
 

@@ -1,23 +1,21 @@
 package com.x.cms.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-
-import com.x.cms.core.entity.Review;
-import com.x.cms.core.entity.Review_;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
+import com.x.cms.core.entity.Review;
+import com.x.cms.core.entity.Review_;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 文档信息基础功能服务类
  * 
@@ -239,6 +237,47 @@ public class DocumentFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
+
+	/**
+	 * 根据条件查询符合条件的文档信息，根据上一条的sequnce查询指定数量的信息
+	 * @param maxCount
+	 * @param sequenceFieldValue
+	 * @param orderField
+	 * @param orderType
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Document> listPrevWithCondition( Integer maxCount, String sequenceFieldValue, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery(Document.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
+		if( StringUtils.isNotEmpty( sequenceFieldValue ) ) {
+			Predicate p_seq = cb.isNotNull( root.get( orderField ) );
+			if( "desc".equalsIgnoreCase( orderType )){
+				p_seq = cb.and( p_seq, cb.greaterThan( root.get( orderField ), sequenceFieldValue.toString() ));
+			}else{
+				p_seq = cb.and( p_seq, cb.lessThan( root.get( orderField ), sequenceFieldValue.toString() ));
+			}
+			p = cb.and( p, p_seq);
+		}
+
+		List<Order> orders = new ArrayList<>();
+		Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
+		if( isTopOrder != null ){
+			orders.add( isTopOrder );
+		}
+		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, orderField, orderType );
+		if( orderWithField != null ){
+			orders.add( orderWithField );
+		}
+		if( ListTools.isNotEmpty( orders )) {
+			cq.orderBy( orders );
+		}
+		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
+	}
 	
 	/**
 	 * 根据条件查询指定数量的符合条件的文档信息列表
@@ -258,12 +297,6 @@ public class DocumentFactory extends AbstractFactory {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
 		List<Order> orders = new ArrayList<>();
-//		if( !Document.isTop_FIELDNAME.equals( orderField )) {
-//			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
-//			if( isTopOrder != null ){
-//				orders.add( isTopOrder );
-//			}
-//		}
 		Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
 		if( isTopOrder != null ){
 			orders.add( isTopOrder );

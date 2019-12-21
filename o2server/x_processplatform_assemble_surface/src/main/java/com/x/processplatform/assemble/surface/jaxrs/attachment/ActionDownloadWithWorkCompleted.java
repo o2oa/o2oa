@@ -19,16 +19,20 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionDownloadWithWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
+		
+		ActionResult<Wo> result = new ActionResult<>();
+		WorkCompleted workCompleted = null;
+		Attachment attachment = null;
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
+			workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			Attachment o = emc.find(id, Attachment.class);
-			if (null == o) {
-				throw new ExceptionAttachmentNotExist(id);
+			attachment = emc.find(id, Attachment.class);
+			if (null == attachment) {
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
@@ -38,14 +42,15 @@ class ActionDownloadWithWorkCompleted extends BaseAction {
 			List<String> ids = business.attachment().listWithJob(workCompleted.getJob());
 			if (!ids.contains(id)) {
 				throw new ExceptionWorkCompletedNotContainsAttachment(workCompleted.getTitle(), workCompleted.getId(),
-						o.getName(), o.getId());
+						attachment.getName(), attachment.getId());
 			}
-			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, o.getStorage());
-			Wo wo = new Wo(o.readContent(mapping), this.contentType(false, o.getName()),
-					this.contentDisposition(false, o.getName()));
-			result.setData(wo);
-			return result;
 		}
+		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+				attachment.getStorage());
+		Wo wo = new Wo(attachment.readContent(mapping), this.contentType(false, attachment.getName()),
+				this.contentDisposition(false, attachment.getName()));
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoFile {

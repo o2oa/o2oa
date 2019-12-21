@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.workcompleted;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,11 +11,15 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -30,99 +35,118 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.ProcessingAttributes;
+import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionRollback extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
+
+		String executorSeed = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
-			ActionResult<Wo> result = new ActionResult<>();
-
-			Business business = new Business(emc);
-
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-
-			WorkCompleted workCompleted = emc.flag(flag, WorkCompleted.class);
-
+			WorkCompleted workCompleted = emc.fetch(flag, WorkCompleted.class,
+					ListTools.toList(WorkCompleted.job_FIELDNAME));
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(flag, WorkCompleted.class);
 			}
-
-			Application application = business.element().get(workCompleted.getApplication(), Application.class);
-
-			if (null == application) {
-				throw new ExceptionEntityNotExist(workCompleted.getApplication(), Application.class);
-			}
-
-			Process process = business.element().get(workCompleted.getProcess(), Process.class);
-
-			if (null == process) {
-				throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
-			}
-
-			WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
-
-			if (null == workLog) {
-				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
-			}
-
-			if (BooleanUtils.isTrue(workLog.getSplitting())) {
-				throw new ExceptionSplittingNotRollback(workCompleted.getId(), workLog.getId());
-			}
-
-			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workLog.getJob());
-
-			WorkLogTree workLogTree = new WorkLogTree(workLogs);
-
-			Node node = workLogTree.find(workLog);
-
-			Nodes nodes = workLogTree.rootTo(node);
-
-			emc.beginTransaction(Work.class);
-			emc.beginTransaction(WorkCompleted.class);
-			emc.beginTransaction(WorkLog.class);
-			emc.beginTransaction(Attachment.class);
-			emc.beginTransaction(TaskCompleted.class);
-			emc.beginTransaction(Read.class);
-			emc.beginTransaction(ReadCompleted.class);
-			emc.beginTransaction(Review.class);
-
-			Work work = this.createWork(workCompleted, workLog);
-			emc.persist(work, CheckPersistType.all);
-
-			this.disconnectWorkLog(work, workLog);
-
-			this.rollbackTaskCompleted(business, work, nodes, workLog,
-					emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()));
-
-			this.rollbackRead(business, work, nodes, workLog,
-					emc.listEqual(Read.class, Read.job_FIELDNAME, work.getJob()));
-
-			this.rollbackReadCompleted(business, work, nodes, workLog,
-					emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()));
-
-			this.rollbackReview(business, work, nodes,
-					emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
-
-			this.rollbackWorkLog(business, work, nodes, workLogs);
-
-			this.rollbackAttachment(business, work,
-					emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob()));
-
-			emc.remove(workCompleted);
-
-			emc.commit();
-
-			Processing processing = new Processing(wi);
-			processing.processing(work.getId());
-			Wo wo = new Wo();
-			wo.setId(work.getId());
-			result.setData(wo);
-			return result;
+			executorSeed = workCompleted.getJob();
 		}
+
+		Callable<String> callable = new Callable<String>() {
+			public String call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+					Business business = new Business(emc);
+
+					WorkCompleted workCompleted = emc.flag(flag, WorkCompleted.class);
+
+					if (null == workCompleted) {
+						throw new ExceptionEntityNotExist(flag, WorkCompleted.class);
+					}
+
+					Application application = business.element().get(workCompleted.getApplication(), Application.class);
+
+					if (null == application) {
+						throw new ExceptionEntityNotExist(workCompleted.getApplication(), Application.class);
+					}
+
+					Process process = business.element().get(workCompleted.getProcess(), Process.class);
+
+					if (null == process) {
+						throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
+					}
+
+					WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
+
+					if (null == workLog) {
+						throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
+					}
+
+					if (BooleanUtils.isTrue(workLog.getSplitting())) {
+						throw new ExceptionSplittingNotRollback(workCompleted.getId(), workLog.getId());
+					}
+
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workLog.getJob());
+
+					WorkLogTree workLogTree = new WorkLogTree(workLogs);
+
+					Node node = workLogTree.find(workLog);
+
+					Nodes nodes = workLogTree.rootTo(node);
+
+					emc.beginTransaction(Work.class);
+					emc.beginTransaction(WorkCompleted.class);
+					emc.beginTransaction(WorkLog.class);
+					emc.beginTransaction(Attachment.class);
+					emc.beginTransaction(TaskCompleted.class);
+					emc.beginTransaction(Read.class);
+					emc.beginTransaction(ReadCompleted.class);
+					emc.beginTransaction(Review.class);
+
+					Work work = createWork(workCompleted, workLog);
+					emc.persist(work, CheckPersistType.all);
+
+					disconnectWorkLog(work, workLog);
+
+					rollbackTaskCompleted(business, work, nodes, workLog,
+							emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()));
+
+					rollbackRead(business, work, nodes, workLog,
+							emc.listEqual(Read.class, Read.job_FIELDNAME, work.getJob()));
+
+					rollbackReadCompleted(business, work, nodes, workLog,
+							emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()));
+
+					rollbackReview(business, work, nodes,
+							emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
+
+					rollbackWorkLog(business, work, nodes, workLogs);
+
+					rollbackAttachment(business, work,
+							emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob()));
+
+					emc.remove(workCompleted);
+
+					emc.commit();
+
+					wo.setId(work.getId());
+				}
+				return "";
+			}
+		};
+
+		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", wo.getId(), "processing"), null, executorSeed);
+
+		result.setData(wo);
+		return result;
 	}
 
 	private Work createWork(WorkCompleted workCompleted, WorkLog workLog) throws Exception {

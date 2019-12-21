@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -30,8 +31,8 @@ public class CenterServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MIN = 5;
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 100;
+	private static int CENTERSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	public static Server start(CenterServer centerServer) throws Exception {
 
@@ -55,10 +56,12 @@ public class CenterServerTools extends JettySeverTools {
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 			/* stat */
 			if (centerServer.getStatEnable()) {
-				FilterHolder holder = new FilterHolder(new WebStatFilter());
-				holder.setInitParameter("exclusions", centerServer.getStatExclusions());
-				webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
-				webApp.addServlet(StatViewServlet.class, "/druid/*");
+				FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+				statFilterHolder.setInitParameter("exclusions", centerServer.getStatExclusions());
+				webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+				ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+				statServletHolder.setInitParameter("sessionStatEnable", "false");
+				webApp.addServlet(statServletHolder, "/druid/*");
 			}
 			/* stat end */
 			handlers.addHandler(webApp);
@@ -70,7 +73,7 @@ public class CenterServerTools extends JettySeverTools {
 		threadPool.setMinThreads(CENTERSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(CENTERSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
-		server.setAttribute("maxFormContentSize", 1024 * 1024 * 1024 * 10);
+		server.setAttribute("maxFormContentSize", centerServer.getMaxFormContent() * 1024 * 1024);
 
 		if (centerServer.getSslEnable()) {
 			addHttpsConnector(server, centerServer.getPort());

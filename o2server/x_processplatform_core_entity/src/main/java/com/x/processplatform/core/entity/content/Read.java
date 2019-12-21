@@ -271,12 +271,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = false)
 	private String unit;
 
-//	public static final String opinionGroup_FIELDNAME = "opinionGroup";
-//	@FieldDescribe("意见分组")
-//	@CheckPersist(allowEmpty = true)
-//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
-//	private String opinionGroup;
-
 	public static final String opinion_FIELDNAME = "opinion";
 	@FieldDescribe("处理意见.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
@@ -291,35 +285,35 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	private String opinionLob;
 
 	public static final String activity_FIELDNAME = "activity";
-	@FieldDescribe("活动ID.")
+	@FieldDescribe("活动ID,针对已完成工作添加待阅字段为空.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activity;
 
 	public static final String activityName_FIELDNAME = "activityName";
-	@FieldDescribe("活动名称.")
+	@FieldDescribe("活动名称,针对已完成工作添加待阅字段为空.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityName;
 
 	public static final String activityAlias_FIELDNAME = "activityAlias";
-	@FieldDescribe("活动别名.")
+	@FieldDescribe("活动别名,针对已完成工作添加待阅字段为空.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityAlias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activityAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityAlias;
 
 	public static final String activityDescription_FIELDNAME = "activityDescription";
-	@FieldDescribe("活动说明.")
+	@FieldDescribe("活动说明,针对已完成工作添加待阅字段为空.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityDescription_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activityDescription_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityDescription;
 
 	public static final String activityType_FIELDNAME = "activityType";
-	@FieldDescribe("活动类型.")
+	@FieldDescribe("活动类型,针对已完成工作添加待阅字段为空.")
 	@Enumerated(EnumType.STRING)
 	@Column(length = ActivityType.length, name = ColumnNamePrefix + activityType_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activityType_FIELDNAME)
@@ -327,7 +321,7 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	private ActivityType activityType;
 
 	public static final String activityToken_FIELDNAME = "activityToken";
-	@FieldDescribe("活动Token.")
+	@FieldDescribe("活动Token,针对已完成工作添加待阅字段为空.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activityToken_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + activityToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

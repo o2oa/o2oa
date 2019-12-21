@@ -204,7 +204,12 @@ Describe.createSampleMootools = function(m) {
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
-										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										  if(i.fieldType =='enum'){
+												   strSample += '       data["'+i.name+'"] = "'+ i.fieldValue +'";'+"\n";	
+											  }else{
+												  
+													strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+											  }
 									}
 							}
 						}
@@ -313,7 +318,11 @@ Describe.createSampleJSO2= function(m) {
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
-										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										if(i.fieldType =='enum'){
+										  strSample += '       data["'+i.name+'"] = "'+ i.fieldValue + '";' + "\n";
+										}else{
+										  strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										}
 									}
 							}
 						}
@@ -402,7 +411,13 @@ Describe.createSampleO2= function(m) {
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
-										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										if(i.fieldType =='enum'){
+											 
+											strSample += '       data["'+i.name+'"] = "'+i.fieldValue+'"\n';
+										}else{
+											strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										}
+									
 									}
 							}
 						}
@@ -494,7 +509,14 @@ Describe.createSample= function(m) {
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
-										strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										if(i.fieldType =='enum'){
+											 
+											strSample += '       data["'+i.name+'"] = "'+i.fieldValue+'"\n';
+										}else{
+											strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										}
+										
+										
 									}
 							}
 						}
@@ -605,7 +627,13 @@ Describe.createSampleCommon= function(m,className) {
 										  body += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
-										body += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										 if(i.fieldType =='enum'){
+											 body += '       data["'+i.name+'"] = "'+ i.fieldValue +'";'+"\n";	
+											 body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
+								
+										 }else{
+										   body += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
+										 }
 									}
 							}
 						}
@@ -761,11 +789,13 @@ Describe.prototype = {
 										if (i.isCollection) {
 											
 											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
-											'</td></tr>';
+											+'</td></tr>';
 										} else {
 											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
-													+ i.description
-											'</td></tr>';
+											
+													+ i.description+ (i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
+													+'</td></tr>';
+						
 										}
 									});
 									txt += '</table>';

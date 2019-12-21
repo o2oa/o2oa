@@ -82,7 +82,6 @@ public class ActionDumpData {
 				em.close();
 				emf.close();
 			}
-			System.gc();
 		}
 		FileUtils.write(new File(dir, "catalog.json"), pureGsonDateFormated.toJson(this.catalog),
 				DefaultCharset.charset);
@@ -121,6 +120,7 @@ public class ActionDumpData {
 				FileUtils.write(file, pureGsonDateFormated.toJson(list), DefaultCharset.charset);
 			}
 			em.clear();
+			System.gc();
 		} while (ListTools.isNotEmpty(list));
 		this.catalog.put(cls.getName(), count);
 	}

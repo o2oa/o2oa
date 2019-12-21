@@ -108,6 +108,24 @@ public class EmpowerAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取当前人员生效的授权.", action = ActionListWithCurrentPersonEnable.class)
+	@GET
+	@Path("list/currentperson/enable")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithCurrentPersonEnable(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		ActionResult<List<ActionListWithCurrentPersonEnable.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithCurrentPersonEnable().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查询指定人员的授权授权.", action = ActionListWithPerson.class)
 	@GET
 	@Path("list/person/{flag}")
@@ -136,6 +154,23 @@ public class EmpowerAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListTo().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取当前人员的生效的被授权.", action = ActionListToEnable.class)
+	@GET
+	@Path("list/to/enable")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listToEnable(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<List<ActionListToEnable.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListToEnable().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

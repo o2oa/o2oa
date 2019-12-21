@@ -1502,21 +1502,21 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新指定Work的Data数据合并区段数据.", action = ActionUpdateWithWorkSection.class)
-	@PUT
-	@Path("section/work/{id}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkSection(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionUpdateWithWorkSection.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionUpdateWithWorkSection().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "更新指定Work的Data数据合并区段数据.", action = ActionUpdateWithWorkSection.class)
+//	@PUT
+//	@Path("section/work/{id}")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void updateWithWorkSection(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+//		ActionResult<ActionUpdateWithWorkSection.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionUpdateWithWorkSection().execute(effectivePerson, id, jsonElement);
+//		} catch (Exception e) {
+//			logger.error(e, effectivePerson, request, jsonElement);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 }

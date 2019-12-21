@@ -50,7 +50,8 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 		aeiObjects.getWork().setSplitting(true);
 		aeiObjects.getWork().setSplitToken(StringTools.uniqueToken());
 		aeiObjects.getWork().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
-		aeiObjects.getWork().setSplitValue("");
+		/* 并行拆分不影响splitValue */
+		// aeiObjects.getWork().setSplitValue("");
 		/* 新创建并行Work需要单独的workLog,拷贝当前的WorkLog */
 		WorkLog mainWorkLog = aeiObjects.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(aeiObjects.getWork().getId(), o.getWork())

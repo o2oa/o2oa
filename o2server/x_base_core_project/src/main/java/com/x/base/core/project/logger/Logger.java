@@ -252,7 +252,7 @@ public class Logger {
 
 	private StringBuilder create(String logLevel, String id) {
 		StringBuilder o = new StringBuilder();
-		o.append(DateTools.now()).append(" ").append(logLevel);
+		o.append(DateTools.nowMs()).append(" ").append(logLevel);
 		o.append(" [").append(StringUtils.isEmpty(id) ? Thread.currentThread().getName() : id).append("] ");
 		o.append(this.name).append(" - ");
 		return o;

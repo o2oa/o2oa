@@ -1,8 +1,8 @@
 package com.x.base.core.project.test.string;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.zip.CRC32;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.Test;
 
 import com.x.base.core.project.tools.StringTools;
@@ -13,14 +13,16 @@ public class TestClient {
 
 	@Test
 	public void test() {
-		List<String> a = new ArrayList<>();
-		a.add("abc");
-		a.add("edf");
-		a.add("a");
-		a.add("bc");
-		a.add("ed");
-		a.add("f");
-		// System.out.println(StringTools.mergeEndsWith(a));
+		CRC32 c = new CRC32();
+		c.update("".getBytes());
+		System.out.println(c.getValue());
+	}
+
+	@Test
+	public void test4() {
+		String aaa ="(var v \\u003d person.getMobile();\\u000a return v.su\\nbstring(v.length - 6);)";
+		System.out.println(aaa);
+		System.out.println(StringEscapeUtils.unescapeJson(aaa));
 	}
 
 	@Test

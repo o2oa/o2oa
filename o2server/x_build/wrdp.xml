@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="o2server.dir" file="${basedir}../" />
+	<tstamp>
+		<format property="VERSION" pattern="yyyyMMddHHmmss" locale="zh-cn" />
+	</tstamp>
+
+	<path id="project.classpath">
+		<pathelement location="src/main/java" />
+		<pathelement location="src/main/resources" />
+		<pathelement location="target/classes" />
+		<fileset dir="${o2server.dir}/commons/ext">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${o2server.dir}/store/jars">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<property name="TYPE" value="wrdp" />
+	<property name="publish.dir" location="D:/www.zoneland.net/o2server/servers/webServer/wrdp/download" />
+	<target name="default" depends="publish" />
+	<target name="prepareSource">
+		<delete dir="target/o2server" />
+		<mkdir dir="target/o2server" />
+		<mkdir dir="target/o2server/config" />
+		<mkdir dir="target/o2server/local" />
+		<mkdir dir="target/o2server/configSample" />
+		<mkdir dir="target/o2server/localSample" />
+		<mkdir dir="target/o2server/servers/webServer" />
+		<mkdir dir="target/o2server/servers/centerServer/webapps" />
+		<mkdir dir="target/o2server/servers/centerServer/work" />
+		<mkdir dir="target/o2server/servers/applicationServer/webapps" />
+		<mkdir dir="target/o2server/servers/applicationServer/work" />
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install" />
+		</exec>
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install -g gulp-cli" />
+		</exec>
+		<exec vmlauncher="false" executable="gulp" />
+		<copy todir="target/o2server/commons/">
+			<fileset dir="${o2server.dir}/commons/" />
+		</copy>
+		<copy todir="target/o2server/configSample">
+			<fileset dir="${o2server.dir}/configSample" />
+		</copy>
+		<copy todir="target/o2server/localSample">
+			<fileset dir="${o2server.dir}/localSample" />
+		</copy>
+		<copy todir="target/o2server/store/">
+			<fileset dir="${o2server.dir}/store/">
+				<exclude name="x_report_assemble_control.war" />
+				<exclude name="jars/x_report_core_entity.jar" />
+				<exclude name="x_strategydeploy_assemble_control.war" />
+				<exclude name="jars/x_strategydeploy_core_entity.jar" />
+			</fileset>
+		</copy>
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="console.jar" />
+				<include name="index.html" />
+			</fileset>
+		</copy>
+
+
+		<zip encoding="utf-8" destfile="target/o2server/src.zip" update="false">
+			<zipfileset dir="${o2server.dir}/x_base_core_project" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_base_core_project" />
+			<zipfileset dir="${o2server.dir}/x_attendance_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_attendance_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_attendance_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_attendance_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_bbs_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_bbs_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_calendar_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_calendar_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_cms_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_cms_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_component_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_component_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_file_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_file_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_general_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_general_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_hotpic_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_hotpic_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_meeting_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_meeting_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_message_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_message_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_mind_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_mind_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_okr_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_okr_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_organization_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_portal_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_portal_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_processplatform_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_processplatform_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_query_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_query_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_program_center_core_entity" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_program_center_core_entity" />
+			<zipfileset dir="${o2server.dir}/x_organization_core_express" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_core_express" />
+			<zipfileset dir="${o2server.dir}/x_query_core_express" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_query_core_express" />
+			<zipfileset dir="${o2server.dir}/x_bbs_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_bbs_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_calendar_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_calendar_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_cms_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_cms_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_component_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_component_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_file_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_file_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_general_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_general_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_hotpic_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_hotpic_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_meeting_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_meeting_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_message_assemble_communicate" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_message_assemble_communicate" />
+			<zipfileset dir="${o2server.dir}/x_mind_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_mind_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_okr_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_okr_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_organization_assemble_authentication" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_assemble_authentication" />
+			<zipfileset dir="${o2server.dir}/x_organization_assemble_control" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_assemble_control" />
+			<zipfileset dir="${o2server.dir}/x_organization_assemble_express" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_assemble_express" />
+			<zipfileset dir="${o2server.dir}/x_organization_assemble_personal" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_organization_assemble_personal" />
+			<zipfileset dir="${o2server.dir}/x_portal_assemble_designer" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_portal_assemble_designer" />
+			<zipfileset dir="${o2server.dir}/x_portal_assemble_surface" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_portal_assemble_surface" />
+			<zipfileset dir="${o2server.dir}/x_processplatform_assemble_bam" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_processplatform_assemble_bam" />
+			<zipfileset dir="${o2server.dir}/x_processplatform_assemble_designer" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_processplatform_assemble_designer" />
+			<zipfileset dir="${o2server.dir}/x_processplatform_assemble_surface" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_processplatform_assemble_surface" />
+			<zipfileset dir="${o2server.dir}/x_processplatform_service_processing" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_processplatform_service_processing" />
+			<zipfileset dir="${o2server.dir}/x_query_assemble_designer" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_query_assemble_designer" />
+			<zipfileset dir="${o2server.dir}/x_query_assemble_surface" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_query_assemble_surface" />
+			<zipfileset dir="${o2server.dir}/x_query_service_processing" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_query_service_processing" />
+			<zipfileset dir="${o2server.dir}/x_program_center" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_program_center" />
+			<zipfileset dir="${o2server.dir}/x_console" filemode="777" dirmode="777" encoding="utf-8" includes="**/*.java" excludes="**/*_.java,src/test/**" prefix="x_console" />
+		</zip>
+
+		<echo message="${VERSION}" file="target/o2server/version.o2" append="false" />
+	</target>
+
+
+	<target name="publish" depends="prepareSource">
+		<!--windows-->
+		<delete dir="target/o2server/jvm" />
+		<mkdir dir="target/o2server/jvm" />
+		<copy todir="target/o2server/jvm/windows">
+			<fileset dir="${o2server.dir}/jvm/windows" />
+		</copy>
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="start_windows.bat" />
+				<include name="start_windows_debug.bat" />
+				<include name="stop_windows.bat" />
+				<include name="console_windows.bat" />
+				<include name="service_windows.bat" />
+			</fileset>
+		</copy>
+		<zip encoding="utf-8" destfile="${publish.dir}/${TYPE}_${VERSION}_windows.zip" update="false">
+			<zipfileset dir="target/o2server/" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server" />
+		</zip>
+		<!--linux-->
+		<delete dir="target/o2server/jvm" />
+		<mkdir dir="target/o2server/jvm" />
+		<copy todir="target/o2server/jvm/linux">
+			<fileset dir="${o2server.dir}/jvm/linux" />
+		</copy>
+		<delete file="target/o2server/start_windows.bat" />
+		<delete file="target/o2server/start_windows_debug.bat" />
+		<delete file="target/o2server/stop_windows.bat" />
+		<delete file="target/o2server/console_windows.bat" />
+		<delete file="target/o2server/service_windows.bat" />
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="start_linux.sh" />
+				<include name="stop_linux.sh" />
+				<include name="console_linux.sh" />
+			</fileset>
+		</copy>
+		<zip encoding="utf-8" destfile="${publish.dir}/${TYPE}_${VERSION}_linux.zip" update="false">
+			<zipfileset dir="target/o2server/" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server" />
+		</zip>
+		<!--macos-->
+		<delete dir="target/o2server/jvm" />
+		<mkdir dir="target/o2server/jvm" />
+		<copy todir="target/o2server/jvm/macos">
+			<fileset dir="${o2server.dir}/jvm/macos" />
+		</copy>
+		<delete file="target/o2server/start_linux.sh" />
+		<delete file="target/o2server/start_linux_debug.sh" />
+		<delete file="target/o2server/stop_linux.sh" />
+		<delete file="target/o2server/console_linux.sh" />
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="start_macos.sh" />
+				<include name="start_macos_debug.sh" />
+				<include name="stop_macos.sh" />
+				<include name="console_macos.sh" />
+			</fileset>
+		</copy>
+		<mkdir dir="${publish.dir}" />
+		<zip encoding="utf-8" destfile="${publish.dir}/${TYPE}_${VERSION}_macos.zip" update="false">
+			<zipfileset dir="target/o2server/" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server" />
+		</zip>
+		<!--aix-->
+		<delete dir="target/o2server/jvm" />
+		<mkdir dir="target/o2server/jvm" />
+		<copy todir="target/o2server/jvm/aix">
+			<fileset dir="${o2server.dir}/jvm/aix" />
+		</copy>
+		<delete file="target/o2server/start_macos.sh" />
+		<delete file="target/o2server/start_macos_debug.sh" />
+		<delete file="target/o2server/stop_macos.sh" />
+		<delete file="target/o2server/console_macos.sh" />
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="start_aix.sh" />
+				<include name="start_aix_debug.sh" />
+				<include name="stop_aix.sh" />
+				<include name="console_aix.sh" />
+			</fileset>
+		</copy>
+		<zip encoding="utf-8" destfile="${publish.dir}/${TYPE}_${VERSION}_aix.zip" update="false">
+			<zipfileset dir="target/o2server/" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server" />
+		</zip>
+		<!--neokylin_loongson-->
+		<delete dir="target/o2server/jvm" />
+		<mkdir dir="target/o2server/jvm" />
+		<copy todir="target/o2server/jvm/neokylin_loongson">
+			<fileset dir="${o2server.dir}/jvm/neokylin_loongson" />
+		</copy>
+		<delete file="target/o2server/start_aix.sh" />
+		<delete file="target/o2server/start_aix_debug.sh" />
+		<delete file="target/o2server/stop_aix.sh" />
+		<delete file="target/o2server/console_aix.sh" />
+		<copy todir="target/o2server">
+			<fileset dir="${o2server.dir}">
+				<include name="start_neokylin_loongson.sh" />
+				<include name="start_neokylin_loongson_debug.sh" />
+				<include name="stop_neokylin_loongson.sh" />
+				<include name="console_neokylin_loongson.sh" />
+			</fileset>
+		</copy>
+		<zip encoding="utf-8" destfile="${publish.dir}/${TYPE}_${VERSION}_neokylin_loongson.zip" update="false">
+			<zipfileset dir="target/o2server/" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server" />
+		</zip>
+	</target>
+
+</project>

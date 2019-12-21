@@ -1,17 +1,5 @@
 package com.x.cms.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.AbstractFactory;
@@ -22,6 +10,12 @@ import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
 import com.x.cms.core.entity.tools.CriteriaBuilderTools;
 import com.x.cms.core.entity.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 文档权限控制信息服务类
  */
@@ -149,7 +143,7 @@ public class ReviewFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Review> listWithFilter( Integer maxCount, String orderField, String orderType, String personName, QueryFilter queryFilter ) throws Exception {
+	public List<Review> listNextWithFilter( Integer maxCount, String orderField, String orderType, String personName, QueryFilter queryFilter ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Review> cq = cb.createQuery(Review.class);
@@ -190,7 +184,7 @@ public class ReviewFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Review> listWithFilter( Integer maxCount, String sequenceFieldValue, String orderField, String orderType, String personName, QueryFilter queryFilter ) throws Exception {
+	public List<Review> listNextWithFilter( Integer maxCount, String sequenceFieldValue, String orderField, String orderType, String personName, QueryFilter queryFilter ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Review> cq = cb.createQuery(Review.class);
@@ -223,6 +217,56 @@ public class ReviewFactory extends AbstractFactory {
 			orders.add( orderWithField );
 		}
 		
+		if( ListTools.isNotEmpty( orders )) {
+			cq.orderBy( orders );
+		}
+		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
+	}
+
+	/**
+	 * 根据条件查询符合条件的文档信息ID，根据上一条的sequnce查询指定数量的信息
+	 * @param maxCount
+	 * @param sequenceFieldValue
+	 * @param orderField
+	 * @param orderType
+	 * @param personName
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Review> listPrevWithFilter( Integer maxCount, String sequenceFieldValue, String orderField, String orderType, String personName, QueryFilter queryFilter ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p_permission = cb.equal( root.get( Review_.permissionObj ), "*");
+		if( StringUtils.isNotEmpty( personName )) {
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Review_.permissionObj ), personName ) );
+		}
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb, p_permission, root, queryFilter );
+		if( StringUtils.isNotEmpty( sequenceFieldValue ) ) {
+			Predicate p_seq = cb.isNotNull( root.get( Review_.docSequence ) );
+			if( "desc".equalsIgnoreCase( orderType )){
+				p_seq = cb.and( p_seq, cb.greaterThan( root.get( Review_.docSequence ), sequenceFieldValue.toString() ));
+			}else{
+				p_seq = cb.and( p_seq, cb.lessThan( root.get( Review_.docSequence ), sequenceFieldValue.toString() ));
+			}
+			p = cb.and( p, p_seq);
+		}
+
+		List<Order> orders = new ArrayList<>();
+		if( !Document.isTop_FIELDNAME.equals( orderField )) {
+			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
+			if( isTopOrder != null ){
+				orders.add( isTopOrder );
+			}
+		}
+
+		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, orderField, orderType );
+		if( orderWithField != null ){
+			orders.add( orderWithField );
+		}
+
 		if( ListTools.isNotEmpty( orders )) {
 			cq.orderBy( orders );
 		}

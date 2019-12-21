@@ -1402,4 +1402,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.currentActivityName = currentActivityName;
 	}
 
+	public String getEmpowerToIdentity() {
+		return empowerToIdentity;
+	}
+
+	public void setEmpowerToIdentity(String empowerToIdentity) {
+		this.empowerToIdentity = empowerToIdentity;
+	}
+
 }

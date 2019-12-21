@@ -38,6 +38,15 @@ public class TaskIdentities extends ArrayList<TaskIdentity> {
 		}
 	}
 
+	public boolean containEmpower() {
+		for (TaskIdentity o : this) {
+			if (StringUtils.isNotEmpty(o.getFromIdentity())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void empower(List<Empower> list) {
 		for (Empower empower : list) {
 			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())

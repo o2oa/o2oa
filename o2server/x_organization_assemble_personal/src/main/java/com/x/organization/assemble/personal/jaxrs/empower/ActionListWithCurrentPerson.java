@@ -21,16 +21,8 @@ class ActionListWithCurrentPerson extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					effectivePerson.getDistinguishedName());
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((List<Wo>) element.getObjectValue());
-			} else {
-				List<Wo> wos = this.list(business, effectivePerson);
-				cache.put(new Element(cacheKey, wos));
-				result.setData(wos);
-			}
+			List<Wo> wos = this.list(business, effectivePerson);
+			result.setData(wos);
 			return result;
 		}
 	}

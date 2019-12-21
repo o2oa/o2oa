@@ -26,6 +26,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -182,13 +183,14 @@ class ActionListWithIdentityObject extends BaseAction {
 				}
 			}
 		}
-		return null;
+		return list.get(0);
 	}
 
 	private List<Empower> list(Business business, Wi wi) throws Exception {
 
 		List<Identity> identities = business.identity().pick(wi.getIdentityList());
-		List<String> ids = ListTools.extractProperty(identities, JpaObject.id_FIELDNAME, String.class, true, true);
+		List<String> names = ListTools.extractProperty(identities, JpaObject.DISTINGUISHEDNAME, String.class, true,
+				true);
 		EntityManager em = business.entityManagerContainer().get(Empower.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Empower> cq = cb.createQuery(Empower.class);
@@ -200,9 +202,11 @@ class ActionListWithIdentityObject extends BaseAction {
 						cb.equal(root.get(Empower_.process), wi.getProcess())),
 				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER),
 						cb.equal(root.get(Empower_.process), wi.getProcess())));
-		cb.and(p, cb.isMember(root.get(Empower_.fromIdentity), cb.literal(ids)));
-		cb.and(p, cb.equal(root.get(Empower_.enable), true));
-		cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
+		p = cb.and(p, root.get(Empower_.fromIdentity).in(names));
+		// p = cb.and(p, cb.isMember(root.get(Empower_.fromIdentity),
+		// cb.literal(names)));
+		p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
+		p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
 				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
 		return em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
 

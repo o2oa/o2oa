@@ -72,23 +72,23 @@ public class OrganizationDefinition {
 
 	public final static String RoleDefinitionSuffix = "SystemRole";
 
-	public final static Pattern person_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
+	public final static Pattern person_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@P$");
 
-	public final static Pattern personAttribute_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@PA$");
+	public final static Pattern personAttribute_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@PA$");
 
-	public final static Pattern group_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@G$");
+	public final static Pattern group_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@G$");
 
-	public final static Pattern role_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@R$");
+	public final static Pattern role_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@R$");
 
-	public final static Pattern identity_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@I$");
+	public final static Pattern identity_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@I$");
 
-	public final static Pattern unit_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@U$");
+	public final static Pattern unit_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@U$");
 
-	public final static Pattern unitAttribute_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@UA$");
+	public final static Pattern unitAttribute_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@UA$");
 
-	public final static Pattern unitDuty_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@UD$");
+	public final static Pattern unitDuty_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@UD$");
 
-	public final static Pattern distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
+	public final static Pattern distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
 
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, "@")) {

@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.processplatform.service.processing.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.service.processing.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.service.processing.jaxrs.data.DataAction;
 import com.x.processplatform.service.processing.jaxrs.job.JobAction;
@@ -31,6 +32,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ReviewAction.class);
 		classes.add(AttachmentAction.class);
 		classes.add(DataAction.class);
+		classes.add(ApplicationDictAction.class);
 		classes.add(TestAction.class);
 		return classes;
 	}

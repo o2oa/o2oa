@@ -1,7 +1,6 @@
 package com.x.bbs.assemble.control.service;
 
-import java.util.List;
-
+import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -10,6 +9,8 @@ import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+
+import java.util.List;
 
 public class BBSForumSubjectStatisticService {
 	
@@ -43,6 +44,9 @@ public class BBSForumSubjectStatisticService {
 								sectionInfo.setSubjectTotalToday( count.longValue() );
 								count = business.replyInfoFactory().countReplyForTodayBySectionId( mainSectionInfo.getId() );
 								sectionInfo.setReplyTotalToday( count.longValue() );
+								if( StringUtils.isEmpty( sectionInfo.getReplyMessageNotifyType() )){
+									sectionInfo.setReplyMessageNotifyType("0,0,0");
+								}
 								emc.check( sectionInfo, CheckPersistType.all );
 							}
 						}
@@ -55,9 +59,13 @@ public class BBSForumSubjectStatisticService {
 						mainSectionInfo.setSubjectTotalToday( count.longValue() );
 						count = business.replyInfoFactory().countReplyForTodayBySectionId( mainSectionInfo.getId() );
 						mainSectionInfo.setReplyTotalToday( count.longValue() );
+						if( StringUtils.isEmpty( mainSectionInfo.getReplyMessageNotifyType() )){
+							mainSectionInfo.setReplyMessageNotifyType("0,0,0");
+						}
 						emc.check( mainSectionInfo, CheckPersistType.all );
 					}
 				}
+
 				//统计论坛版块数量
 				count = business.sectionInfoFactory().countAllSectionByForumId( f.getId() );
 				f.setSectionTotal( count.longValue() );

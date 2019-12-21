@@ -73,8 +73,10 @@ class ActionListWithPerson extends BaseAction {
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
 			List<String> identities, List<String> units) throws Exception {
 		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
-		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units);
-		return ListUtils.intersection(ids, fromProcessIds);
+		return ids;
+		// List<String> fromProcessIds = this.listFromProcess(business, effectivePerson,
+		// roles, identities, units);
+//		return ListUtils.intersection(ids, fromProcessIds);
 	}
 
 	private List<String> listFromApplication(Business business, EffectivePerson effectivePerson, List<String> roles,

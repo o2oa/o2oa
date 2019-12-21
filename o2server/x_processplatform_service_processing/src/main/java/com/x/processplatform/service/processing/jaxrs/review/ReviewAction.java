@@ -1,5 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.review;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -49,14 +51,14 @@ public class ReviewAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(WorkAction.class);
 
-	@JaxrsMethodDescribe(value = "根据workCompleted创建一个review.", action = ActionCreateWithWorkCompleted.class)
+	@JaxrsMethodDescribe(value = "根据workCompleted批量创建review.", action = ActionCreateWithWorkCompleted.class)
 	@POST
 	@Path("create/workcompleted")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, JsonElement jsonElement) {
-		ActionResult<ActionCreateWithWorkCompleted.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionCreateWithWorkCompleted.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateWithWorkCompleted().execute(effectivePerson, jsonElement);
@@ -67,14 +69,14 @@ public class ReviewAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据workId创建一个review.", action = ActionCreateWithWork.class)
+	@JaxrsMethodDescribe(value = "根据workId批量创建review.", action = ActionCreateWithWork.class)
 	@POST
 	@Path("create/work")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWork(@Suspended final AsyncResponse asyncResponse,
-										@Context HttpServletRequest request, JsonElement jsonElement) {
-		ActionResult<ActionCreateWithWork.Wo> result = new ActionResult<>();
+	public void createWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionCreateWithWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateWithWork().execute(effectivePerson, jsonElement);

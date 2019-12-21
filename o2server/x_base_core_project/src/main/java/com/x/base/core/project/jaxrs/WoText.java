@@ -2,7 +2,7 @@ package com.x.base.core.project.jaxrs;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
-public abstract class WoText{
+public class WoText {
 
 	public WoText() {
 	}

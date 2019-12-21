@@ -4,6 +4,7 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -20,6 +21,7 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionGetText extends BaseAction {
 
+	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionGetText.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
@@ -33,7 +35,7 @@ class ActionGetText extends BaseAction {
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
-				throw new ExceptionAttachmentNotExist(id);
+				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {

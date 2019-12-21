@@ -10,20 +10,21 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.processplatform.service.processing.Business;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("readcompleted")
 public class ReadCompletedAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
 	@JaxrsMethodDescribe(value = "删除已阅.", action = ActionDelete.class)
 	@DELETE
@@ -31,16 +32,14 @@ public class ReadCompletedAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wrap = new ActionDelete().execute(business, id);
-			result.setData(wrap);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			@JaxrsParameterDescribe("待阅标识") @PathParam("id") String id) {
+		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDelete().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

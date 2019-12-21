@@ -38,7 +38,7 @@ public class WorkLogTree {
 		List<String> values = ListUtils.subtract(froms, arriveds);
 		WorkLog begin = list.stream()
 				.filter(o -> BooleanUtils.isTrue(o.getConnected()) && values.contains(o.getFromActivityToken()))
-				.findFirst().orElse(null); 
+				.findFirst().orElse(null);
 		if (null == begin) {
 			throw new ExceptionBeginNotFound();
 		}
@@ -138,6 +138,19 @@ public class WorkLogTree {
 					}
 				}
 			}
+		}
+
+		/* 查找最近的人工几点,过滤所有 */
+		public Nodes downNextManual() {
+			Nodes nodes = new Nodes();
+			for (Node o : this.children) {
+				if (Objects.equals(ActivityType.manual, o.getWorkLog().getFromActivityType())) {
+					nodes.add(o);
+				} else {
+					nodes.addAll(o.downNextManual());
+				}
+			}
+			return nodes;
 		}
 
 		public Nodes parents() {

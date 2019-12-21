@@ -49,6 +49,7 @@ import com.x.server.console.action.ActionRestoreData;
 import com.x.server.console.action.ActionRestoreStorage;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionShowCpu;
+import com.x.server.console.action.ActionShowHttpThread;
 import com.x.server.console.action.ActionShowMemory;
 import com.x.server.console.action.ActionShowOs;
 import com.x.server.console.action.ActionShowThread;
@@ -189,6 +190,12 @@ public class Main {
 			matcher = CommandFactory.show_thread_pattern.matcher(cmd);
 			if (matcher.find()) {
 				showThread(matcher.group(1), matcher.group(2));
+				continue;
+			}
+
+			matcher = CommandFactory.show_http_thread_pattern.matcher(cmd);
+			if (matcher.find()) {
+				showHttpThread(matcher.group(1), matcher.group(2));
 				continue;
 			}
 
@@ -420,6 +427,15 @@ public class Main {
 	private static boolean showThread(String interval, String repeat) {
 		try {
 			return new ActionShowThread().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	private static boolean showHttpThread(String interval, String repeat) {
+		try {
+			return new ActionShowHttpThread().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

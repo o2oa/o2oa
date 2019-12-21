@@ -28,7 +28,7 @@ public class ClientInit extends ConfigObject {
 	private LoginPage loginPage;
 
 	@FieldDescribe("是否启用webSocket")
-	private String webSocketEnable;
+	private Boolean webSocketEnable;
 
 	public ClientInit() {
 		this.enable = DEFAULT_ENABLE;
@@ -148,11 +148,11 @@ public class ClientInit extends ConfigObject {
 		this.loginPage = loginPage;
 	}
 
-	public String getWebSocketEnable() {
+	public Boolean getWebSocketEnable() {
 		return webSocketEnable;
 	}
 
-	public void setWebSocketEnable(String webSocketEnable) {
+	public void setWebSocketEnable(Boolean webSocketEnable) {
 		this.webSocketEnable = webSocketEnable;
 	}
 

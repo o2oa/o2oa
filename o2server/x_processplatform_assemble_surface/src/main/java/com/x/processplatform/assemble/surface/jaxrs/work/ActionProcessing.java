@@ -13,9 +13,11 @@ import com.x.processplatform.core.entity.content.Work;
 class ActionProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Work work = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
@@ -23,17 +25,17 @@ class ActionProcessing extends BaseAction {
 			/* 标识数据被修改 */
 			work.setDataChanged(true);
 			emc.commit();
-			ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),
-					x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", work.getId(), "processing"), null);
-			Wo wo = new Wo();
-			work = emc.find(id, Work.class);
-			if (null != work) {
-				wo.setId(work.getId());
-			}
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob())
+				.getData(Wo.class);
+//		work = emc.find(id, Work.class);
+//		if (null != work) {
+//			wo.setId(work.getId());
+//		}
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,8 +19,8 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.BindingPair;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ScriptHelper;
@@ -63,6 +64,8 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 					processingAttributes);
 			/* 清空可能的Manual活动预期人员 */
 			this.arrive_cleanManualTaskIdentityList(aeiObjects);
+			/* 清空可能的Manual活动授权信息 */
+			this.arrive_cleanManualEmpowerMap(aeiObjects);
 			/* 将强制路由标记进行修改 */
 			work.setForceRouteArriveCurrentActivity(false);
 			if (BooleanUtils.isTrue(work.getForceRoute())) {
@@ -115,6 +118,10 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	private void arrive_cleanManualTaskIdentityList(AeiObjects aeiObjects) throws Exception {
 		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>());
+	}
+
+	private void arrive_cleanManualEmpowerMap(AeiObjects aeiObjects) throws Exception {
+		aeiObjects.getWork().setManualEmpowerMap(new LinkedHashMap<String, String>());
 	}
 
 	private void arrive_updateWorkThroughManual(AeiObjects aeiObjects) throws Exception {

@@ -44,7 +44,6 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		}
 		Work other = findWorkMergeTo(aeiObjects);
 
-		/* 完全找不到合并的文档,唯一一份 */
 		if (null != other) {
 			aeiObjects.getUpdateWorks().add(other);
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
@@ -61,6 +60,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getDeleteWorkLogs().add(obj);
 					});
 		} else {
+			/* 完全找不到合并的文档,唯一一份 */
 			Work branch = this.findWorkBranch(aeiObjects);
 			if (null != branch) {
 				aeiObjects.getWork().setSplitting(true);
@@ -213,7 +213,6 @@ public class MergeProcessor extends AbstractMergeProcessor {
 							&& StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(oldest.getId());
-						// o.setArrivedActivityToken(oldest.getActivityToken());
 						aeiObjects.getUpdateWorkLogs().add(o);
 					});
 		} catch (Exception e) {
