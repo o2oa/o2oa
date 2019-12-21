@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<basename property="project" file="${basedir}" />
-	<dirname property="o2server.dir" file="./" />
-	<mkdir dir="${o2server.dir}/commons/ext" />
-	<mkdir dir="${o2server.dir}/store/jars" />
+	<dirname property="o2oa.dir" file="../" />
+	<mkdir dir="${o2oa.dir}/o2server/commons/ext" />
+	<mkdir dir="${o2oa.dir}/o2server/store/jars" />
+	
+	<echo message="project = ${basedir}"/>
+	<echo message="o2oa.dir = ${o2oa.dir}"/>
+	<echo message="classpath1 = ${o2oa.dir}/o2server/commons/ext"/>
+	<echo message="classpath2 = ${o2oa.dir}/o2server/store/jars"/>
+	<echo message="classpath2 = ${o2oa.dir}/o2server/custom/jars"/>
+	
 	<path id="project.classpath">
-		<fileset dir="${o2server.dir}/commons/ext">
+		<fileset dir="${o2oa.dir}/o2server/commons/ext">
 			<include name="*.jar" />
 		</fileset>
-		<fileset dir="${o2server.dir}/store/jars">
+		<fileset dir="${o2oa.dir}/o2server/store/jars">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement location="${basedir}/target/classes" />
@@ -17,17 +24,6 @@
 	<taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask">
 		<classpath refid="project.classpath" />
 	</taskdef>
-	<!--
-	<taskdef name="if-contrib" classname="net.sf.antcontrib.logic.IfTask">
-		<classpath refid="project.classpath" />
-	</taskdef>
-	<taskdef name="for-contrib" classname="net.sf.antcontrib.logic.ForTask">
-		<classpath refid="project.classpath" />
-	</taskdef>
-	<taskdef name="var-contrib" classname="net.sf.antcontrib.property.Variable">
-		<classpath refid="project.classpath" />
-	</taskdef>
--->
 	<target name="metamodel">
 		<delete>
 			<fileset dir="${basedir}/src/main/java" includes="**/entity/**/*_.java" />
@@ -43,77 +39,11 @@
 		</delete>
 		<echo message="metamodel complete." />
 	</target>
-
-	<target name="checkAssemble">
-		<echo>checkAssemble project:${project}</echo>
-		<java classname="com.x.base.core.project.build.CheckAssemble" fork="true">
-			<sysproperty key="file.encoding" value="utf-8" />
-			<arg value="{
-					path:'${basedir}',
-					project:'${project}'
-				}" />
-			<classpath>
-				<pathelement location="${basedir}/target/classes" />
-				<pathelement location="${basedir}/src/main/resources" />
-				<fileset dir="${o2server.dir}/commons/ext">
-					<include name="*.jar" />
-				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<arg value="{
-					path:'${basedir}',
-					project:'${project}'
-				}" />
-		</java>
-	</target>
-
-	<target name="checkSerivce">
-		<echo>checkAssemble project:${project}</echo>
-		<java classname="com.x.base.core.project.build.CheckSerivce" fork="true">
-			<sysproperty key="file.encoding" value="utf-8" />
-			<arg value="{
-					path:'${basedir}',
-					project:'${project}'
-				}" />
-			<classpath>
-				<pathelement location="${basedir}/target/classes" />
-				<pathelement location="${basedir}/src/main/resources" />
-				<fileset dir="${o2server.dir}/commons/ext">
-					<include name="*.jar" />
-				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-		</java>
-	</target>
-
-	<target name="checkCore">
-		<echo>checkAssemble project:${project}</echo>
-		<java classname="com.x.base.core.project.build.CheckCore" fork="true">
-			<sysproperty key="file.encoding" value="utf-8" />
-			<arg value="{
-					path:'${basedir}',
-					project:'${project}'
-				}" />
-			<classpath>
-				<pathelement location="${basedir}/target/classes" />
-				<pathelement location="${basedir}/src/main/resources" />
-				<fileset dir="${o2server.dir}/commons/ext">
-					<include name="*.jar" />
-				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-
-		</java>
-	</target>
-
+	
 	<target name="describe">
 		<echo>describe project:${project}</echo>
+		<echo>fileset=${o2oa.dir}/o2server/commons/ext</echo>
+		<echo>fileset=${o2oa.dir}/o2server/store/jars</echo>
 		<mkdir dir="${basedir}/src/main/webapp/describe" />
 		<delete includeemptydirs="true">
 			<fileset dir="${basedir}/src/main/webapp/describe" includes="**/*" />
@@ -124,11 +54,14 @@
 			<arg value="${project}" />
 			<classpath>
 				<pathelement location="${basedir}/target/classes" />
-				<pathelement location="${basedir}/src/main/resources" />
-				<fileset dir="${o2server.dir}/commons/ext">
+				<pathelement location="${basedir}/src/main/resources" />				
+				<fileset dir="${o2oa.dir}/o2server/commons/ext">
 					<include name="*.jar" />
 				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
+				<fileset dir="${o2oa.dir}/o2server/store/jars">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2oa.dir}/o2server/custom/jars">
 					<include name="*.jar" />
 				</fileset>
 			</classpath>
@@ -147,10 +80,10 @@
 			<classpath>
 				<pathelement path="${basedir}/target/classes" />
 				<pathelement path="${basedir}/src/main/java" />
-				<fileset dir="${o2server.dir}/commons/ext">
+				<fileset dir="${o2oa.dir}/o2server/commons/ext">
 					<include name="*.jar" />
 				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
+				<fileset dir="${o2oa.dir}/o2server/store/jars">
 					<include name="x_base_core_project.jar" />
 					<exclude name="${project}.jar" />
 				</fileset>
@@ -159,27 +92,7 @@
 					path:'${basedir}'
 				}" />
 		</java>
-	</target>
-
-	<target name="createWebXml">
-		<java classname="com.x.base.core.project.build.CreateWebXml" fork="true">
-			<sysproperty key="file.encoding" value="utf-8" />
-			<classpath>
-				<pathelement path="${basedir}/target/classes" />
-				<pathelement path="${basedir}/src/main/java" />
-				<fileset dir="${o2server.dir}/commons/ext">
-					<include name="*.jar" />
-				</fileset>
-				<fileset dir="${o2server.dir}/store/jars">
-					<include name="x_base_core_project.jar" />
-					<exclude name="${project}.jar" />
-				</fileset>
-			</classpath>
-			<arg value="{
-					path:'${basedir}',
-					project:'${project}'
-				}" />
-		</java>
+		<echo>${project} create persistence xml: ${basedir}/src/main/resources/META-INF/persistence.xml</echo>
 	</target>
 
 </project>

@@ -19,6 +19,7 @@
 		<module>x_file_core_entity</module>
 		<module>x_general_core_entity</module>
 		<module>x_hotpic_core_entity</module>
+		<module>x_jpush_core_entity</module>
 		<module>x_meeting_core_entity</module>
 		<module>x_message_core_entity</module>
 		<module>x_mind_core_entity</module>
@@ -27,6 +28,7 @@
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
 		<module>x_teamwork_core_entity</module>
+		<!--module>x_workschedu_core_entity</module -->
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
@@ -38,6 +40,7 @@
 		<module>x_file_assemble_control</module>
 		<module>x_general_assemble_control</module>
 		<module>x_hotpic_assemble_control</module>
+		<module>x_jpush_assemble_control</module>
 		<module>x_meeting_assemble_control</module>
 		<module>x_message_assemble_communicate</module>
 		<module>x_mind_assemble_control</module>
@@ -56,6 +59,7 @@
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
 		<module>x_teamwork_assemble_control</module>
+		<!-- module>x_workschedu_assemble_control</module -->
 		<module>x_program_center</module>
 		<module>x_console</module>
 	</modules>
@@ -63,7 +67,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -219,6 +224,10 @@
 			<artifactId>pdfbox-tools</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>jbig2-imageio</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.adobe.xmp</groupId>
 			<artifactId>xmpcore</artifactId>
 		</dependency>
@@ -286,7 +295,16 @@
 			<groupId>net.sourceforge.tess4j</groupId>
 			<artifactId>tess4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+		</dependency>
 	</dependencies>
+
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -358,7 +376,8 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
-					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF</packagingExcludes>
+					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF
+					</packagingExcludes>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
@@ -512,17 +531,17 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>4.1.0</version>
+				<version>4.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
-				<version>4.1.0</version>
+				<version>4.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml-schemas</artifactId>
-				<version>4.1.0</version>
+				<version>4.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.opensagres.xdocreport</groupId>
@@ -553,6 +572,11 @@
 				<groupId>org.apache.pdfbox</groupId>
 				<artifactId>fontbox</artifactId>
 				<version>2.0.16</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>jbig2-imageio</artifactId>
+				<version>3.0.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.pdfbox</groupId>
@@ -678,6 +702,16 @@
 				<groupId>nl.captcha</groupId>
 				<artifactId>simplecaptcha</artifactId>
 				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>3.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>1.1.21</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
@@ -809,28 +843,25 @@
 				<artifactId>x_teamwork_core_entity</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>o2oa</groupId>
+				<artifactId>x_workschedu_core_entity</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
 		<repository>
 			<id>mvnrepository.com</id>
 			<url>https://mvnrepository.com/repos</url>
 		</repository>
 		<repository>
-			<id>neuroph.sourceforge.net</id>
-			<url>http://neuroph.sourceforge.net/maven2</url>
+			<id>enonic.com</id>
+			<url>https://repo.enonic.com/public</url>
 		</repository>
 		<repository>
-			<id>enonic.com</id>
-			<url>https://repo.enonic.com/public/</url>
+			<id>neuroph.sourceforge.net</id>
+			<url>http://neuroph.sourceforge.net/maven2</url>
 		</repository>
 	</repositories>
 </project>
