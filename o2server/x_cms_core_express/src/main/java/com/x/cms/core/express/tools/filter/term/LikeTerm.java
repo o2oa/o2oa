@@ -1,14 +1,14 @@
-package com.x.cms.core.entity.tools.filter.term;
+package com.x.cms.core.express.tools.filter.term;
 
-public class NotMemberTerm{
+public class LikeTerm{
 
 	private String name = null;
 	
 	private String value = null;
 
-	public NotMemberTerm() {}
+	public LikeTerm() {}
 	
-	public NotMemberTerm( String name, String value ) {
+	public LikeTerm( String name, String value ) {
 		this.name = name;
 		this.value = value;
 	}
@@ -27,5 +27,7 @@ public class NotMemberTerm{
 
 	public void setValue(String value) {
 		this.value = value;
-	}	
+	}
+
+	
 }

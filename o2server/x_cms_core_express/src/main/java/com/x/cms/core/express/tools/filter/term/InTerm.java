@@ -1,16 +1,16 @@
-package com.x.cms.core.entity.tools.filter.term;
+package com.x.cms.core.express.tools.filter.term;
 
 import java.util.List;
 
-public class NotInTerm{
+public class InTerm{
 
 	private String name = null;
 	
 	private List<Object> value = null;
 
-	public NotInTerm() {}
+	public InTerm() {}
 	
-	public NotInTerm( String name, List<Object> value ) {
+	public InTerm( String name, List<Object> value ) {
 		this.name = name;
 		this.value = value;
 	}
@@ -30,5 +30,4 @@ public class NotInTerm{
 	public void setValue(List<Object> value) {
 		this.value = value;
 	}	
-
 }

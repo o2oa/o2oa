@@ -1,9 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -12,7 +8,10 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 class DocumentCommentInfoService {
 

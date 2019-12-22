@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.comment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -17,9 +12,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.DocumentCommentInfo;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
-
+import com.x.cms.core.express.tools.filter.QueryFilter;
 import net.sf.ehcache.Element;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionListPageWithFilter extends BaseAction {
 
@@ -34,7 +32,7 @@ public class ActionListPageWithFilter extends BaseAction {
 		Boolean check = true;
 		String cacheKey = null;
 		Element element = null;
-		QueryFilter  queryFilter = null;
+		QueryFilter queryFilter = null;
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);

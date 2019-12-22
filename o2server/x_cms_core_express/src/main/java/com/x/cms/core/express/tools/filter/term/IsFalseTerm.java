@@ -1,12 +1,12 @@
-package com.x.cms.core.entity.tools.filter.term;
+package com.x.cms.core.express.tools.filter.term;
 
-public class IsTrueTerm {
+public class IsFalseTerm {
 
 	private String name = null;
 	
-	public IsTrueTerm() {}
+	public IsFalseTerm() {}
 	
-	public IsTrueTerm( String name ) {
+	public IsFalseTerm( String name ) {
 		this.name = name;
 	}
 	

@@ -1,24 +1,19 @@
 package com.x.cms.assemble.control.factory;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.x.cms.core.entity.DocumentCommentInfo_;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.DocumentCommentContent;
 import com.x.cms.core.entity.DocumentCommentInfo;
-import com.x.cms.core.entity.tools.CriteriaBuilderTools;
-import com.x.cms.core.entity.tools.DateOperation;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.entity.DocumentCommentInfo_;
+import com.x.cms.core.express.tools.CriteriaBuilderTools;
+import com.x.cms.core.express.tools.DateOperation;
+import com.x.cms.core.express.tools.filter.QueryFilter;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import java.util.List;
+
 
 /**
  * 文档评论基础功能服务类
