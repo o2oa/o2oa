@@ -1,5 +1,0 @@
-
-grant codeBase "file:${jnlpx.home}/javaws.jar" {
-    permission java.security.AllPermission;
-};
-

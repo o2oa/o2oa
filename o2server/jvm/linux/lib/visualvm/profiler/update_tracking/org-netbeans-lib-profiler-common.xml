@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.lib.profiler.common/1">
-    <module_version install_time="1484426011058" last="true" origin="installer" specification_version="1.32.1">
-        <file crc="2844787612" name="config/Modules/org-netbeans-lib-profiler-common.xml"/>
-        <file crc="2781712556" name="modules/org-netbeans-lib-profiler-common.jar"/>
-    </module_version>
-</module>

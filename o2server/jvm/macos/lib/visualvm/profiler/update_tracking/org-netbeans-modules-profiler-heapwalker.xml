@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.modules.profiler.heapwalker">
-    <module_version install_time="1484426024062" last="true" origin="installer" specification_version="1.99.2">
-        <file crc="737350545" name="config/Modules/org-netbeans-modules-profiler-heapwalker.xml"/>
-        <file crc="1171597001" name="modules/org-netbeans-modules-profiler-heapwalker.jar"/>
-    </module_version>
-</module>

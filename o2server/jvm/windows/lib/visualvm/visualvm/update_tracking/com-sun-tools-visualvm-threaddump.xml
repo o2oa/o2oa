@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.threaddump/0">
-    <module_version install_time="1484426045283" last="true" origin="installer" specification_version="1.0">
-        <file crc="3664428360" name="config/Modules/com-sun-tools-visualvm-threaddump.xml"/>
-        <file crc="1829075310" name="modules/com-sun-tools-visualvm-threaddump.jar"/>
-    </module_version>
-</module>

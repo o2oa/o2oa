@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.lib.profiler.charts/1">
-    <module_version install_time="1484426010216" last="true" origin="installer" specification_version="1.25.1">
-        <file crc="407947687" name="config/Modules/org-netbeans-lib-profiler-charts.xml"/>
-        <file crc="2018396342" name="modules/org-netbeans-lib-profiler-charts.jar"/>
-    </module_version>
-</module>

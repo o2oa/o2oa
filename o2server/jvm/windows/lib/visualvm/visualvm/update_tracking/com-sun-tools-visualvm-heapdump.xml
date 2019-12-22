@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.heapdump/0">
-    <module_version install_time="1484426044545" last="true" origin="installer" specification_version="1.1">
-        <file crc="1292028008" name="config/Modules/com-sun-tools-visualvm-heapdump.xml"/>
-        <file crc="2835102210" name="modules/com-sun-tools-visualvm-heapdump.jar"/>
-    </module_version>
-</module>
