@@ -12,7 +12,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

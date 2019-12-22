@@ -11,9 +11,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
-import com.x.cms.core.entity.tools.filter.term.InTerm;
-import com.x.cms.core.entity.tools.filter.term.NotInTerm;
+import com.x.cms.core.express.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.filter.term.InTerm;
+import com.x.cms.core.express.tools.filter.term.NotInTerm;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;

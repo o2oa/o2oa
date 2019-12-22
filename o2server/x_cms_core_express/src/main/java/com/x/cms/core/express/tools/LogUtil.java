@@ -1,8 +1,8 @@
-package com.x.cms.core.entity.tools;
-
-import java.util.List;
+package com.x.cms.core.express.tools;
 
 import com.x.base.core.project.tools.ListTools;
+
+import java.util.List;
 
 /**
  * 缓存管理帮助类

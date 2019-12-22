@@ -1,4 +1,4 @@
-package com.x.cms.core.entity.tools;
+package com.x.cms.core.express.tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -452,8 +452,8 @@ public class DateOperation {
 			df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		}
 		try {
-			java.util.Date d1 = df.parse(date1);
-			java.util.Date d2 = df.parse(date2);
+			Date d1 = df.parse(date1);
+			Date d2 = df.parse(date2);
 			dayNumber = (d2.getTime() - d1.getTime()) / mins;
 		} catch (Exception e) {
 			throw e;

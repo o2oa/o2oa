@@ -15,8 +15,9 @@ import com.x.cms.common.excel.reader.DocumentExcelReader;
 import com.x.cms.common.excel.reader.ExcelReadRuntime;
 import com.x.cms.common.excel.reader.ExcelReadRuntime.DocTemplate;
 import com.x.cms.common.excel.reader.ExcelReaderUtil;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.tools.DateOperation;
+import com.x.cms.core.express.tools.DateOperation;
 import com.x.query.core.entity.View;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;
 		Wo wo = new Wo();
+		AppInfo appInfo = null;
 		DocTemplate template = null;
 		CategoryInfo categoryInfo = null;
 		View view = null;
@@ -67,7 +69,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			Exception exception = new ExceptionDocumentInfoProcess( "参数不正确：json_data：" + json_data );
 			result.error( exception );
 		}
-		
+
 		if( check ){
 			try {
 				categoryInfo = categoryInfoServiceAdv.get( categoryId );
@@ -85,12 +87,28 @@ public class ActionPersistImportDataExcel extends BaseAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。ID:" + categoryId );
+				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。categoryId:" + categoryId );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
+		if( check ){
+			try {
+				appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
+				if( appInfo == null ){
+					check = false;
+					Exception exception = new ExceptionAppInfoNotExists( categoryInfo.getAppId() );
+					result.error( exception );
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询栏目信息对象时发生异常。appId:" + categoryInfo.getAppId() );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+
 		if( check ){
 			try {
 				fileName = FilenameUtils.getName(new String(disposition.getFileName().getBytes(DefaultCharset.name_iso_8859_1), DefaultCharset.name));
@@ -137,6 +155,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			template = new ExcelReadRuntime.DocTemplate();
 			template.setAppId( categoryInfo.getAppId() );
 			template.setAppName( categoryInfo.getAppName() );
+			template.setAppAlias( appInfo.getAppAlias() );
 			template.setCategoryId(categoryId);
 			template.setCategoryName( categoryInfo.getCategoryName() );
 			template.setCategoryAlias( categoryInfo.getCategoryAlias() );

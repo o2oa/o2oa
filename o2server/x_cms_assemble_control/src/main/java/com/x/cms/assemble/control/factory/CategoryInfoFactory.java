@@ -1,7 +1,12 @@
 package com.x.cms.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.assemble.control.AbstractFactory;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.CategoryInfo;
+import com.x.cms.core.entity.CategoryInfo_;
+import com.x.cms.core.express.tools.CriteriaBuilderTools;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -9,15 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import com.x.cms.core.entity.tools.CriteriaBuilderTools;
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.tools.ListTools;
-import com.x.cms.assemble.control.AbstractFactory;
-import com.x.cms.assemble.control.Business;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.CategoryInfo_;
+import java.util.List;
 
 /**
  * 分类信息基础功能服务类

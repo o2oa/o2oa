@@ -16,7 +16,7 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.content.Data;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.filter.QueryFilter;
 import com.x.query.core.entity.Item;
 import org.apache.commons.lang3.StringUtils;
 

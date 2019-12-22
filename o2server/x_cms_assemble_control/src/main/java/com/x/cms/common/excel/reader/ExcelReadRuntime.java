@@ -1,11 +1,11 @@
 package com.x.cms.common.excel.reader;
 
-import java.util.Date;
-import java.util.List;
-
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistImportDataExcel.Wi;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistImportDataExcel.Wo;
 import com.x.cms.assemble.control.queue.DataImportStatus;
+
+import java.util.Date;
+import java.util.List;
 
 public class ExcelReadRuntime {
 	
@@ -35,6 +35,7 @@ public class ExcelReadRuntime {
 		private String documentType = "数据";
 		private String appId;
 		private String appName;
+		private String appAlias;
 		private String categoryId;
 		private String categoryName;
 		private String categoryAlias;
@@ -246,5 +247,9 @@ public class ExcelReadRuntime {
 		public void setImportBatchName(String importBatchName) {
 			this.importBatchName = importBatchName;
 		}
+
+		public String getAppAlias() { return this.appAlias; }
+
+		public void setAppAlias(final String appAlias) { this.appAlias = appAlias; }
 	}
 }

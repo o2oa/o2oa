@@ -1,11 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -16,7 +10,13 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentViewRecord;
 import com.x.cms.core.entity.Log;
-import com.x.cms.core.entity.tools.DateOperation;
+import com.x.cms.core.express.tools.DateOperation;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * 对文档访问记录信息进行管理的服务类（高级）

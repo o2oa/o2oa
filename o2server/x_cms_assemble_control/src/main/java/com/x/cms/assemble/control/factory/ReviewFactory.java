@@ -8,8 +8,8 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.Review;
 import com.x.cms.core.entity.Review_;
-import com.x.cms.core.entity.tools.CriteriaBuilderTools;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.CriteriaBuilderTools;
+import com.x.cms.core.express.tools.filter.QueryFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;

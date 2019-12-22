@@ -14,7 +14,7 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.Log;
-import com.x.cms.core.entity.tools.filter.QueryFilter;
+import com.x.cms.core.express.tools.filter.QueryFilter;
 import com.x.query.core.entity.Item;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;

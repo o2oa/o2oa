@@ -1,4 +1,4 @@
-package com.x.cms.core.entity.tools.filter.term;
+package com.x.cms.core.express.tools.filter.term;
 
 public class NotEqualsTerm {
 
