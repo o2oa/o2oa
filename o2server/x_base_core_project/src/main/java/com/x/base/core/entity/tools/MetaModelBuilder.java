@@ -79,10 +79,13 @@ public class MetaModelBuilder {
 			cp.add(o);
 		}
 
-//		filter = new WildcardFileFilter("*.jar");
-//		for (File o : FileUtils.listFiles(new File(o2oadir, "o2server/commons/ext"), filter, null)) {
-//			cp.add(o);
-//		}
+		filter = new WildcardFileFilter("*.jar");
+		File dir = new File(o2oadir, "o2server/commons/ext");
+		if (dir.exists() && dir.isDirectory()) {
+			for (File o : FileUtils.listFiles(dir, filter, null)) {
+				cp.add(o);
+			}
+		}
 		return cp;
 	}
 
