@@ -2,6 +2,8 @@ package com.x.base.core.entity.tools;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +39,7 @@ public class MetaModelBuilder {
 			File basedir = new File(args[0]);
 			File sourcedir = new File(args[1]);
 			File outputdir = new File(args[2]);
+
 			File o2oadir = basedir.getParentFile().getParentFile();
 
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -44,7 +47,6 @@ public class MetaModelBuilder {
 			fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(sourcedir));
 			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(sourcedir));
 			fileManager.setLocation(StandardLocation.CLASS_PATH, classpath(o2oadir, outputdir));
-
 			List<JavaFileObject> res = new ArrayList<>();
 
 			List<String> paths = scanEntityJava(sourcedir);
@@ -79,13 +81,19 @@ public class MetaModelBuilder {
 			cp.add(o);
 		}
 
-		filter = new WildcardFileFilter("*.jar");
-		File dir = new File(o2oadir, "o2server/commons/ext");
-		if (dir.exists() && dir.isDirectory()) {
-			for (File o : FileUtils.listFiles(dir, filter, null)) {
-				cp.add(o);
-			}
+		ClassLoader cl = MetaModelBuilder.class.getClassLoader();
+
+		URL[] urls = ((URLClassLoader) cl).getURLs();
+
+		for (URL url : urls) {
+			cp.add(new File(url.getFile()));
 		}
+
+//		filter = new WildcardFileFilter("*.jar");
+//		File dir = new File(o2oadir, "o2server/commons/ext");
+//		for (File o : FileUtils.listFiles(dir, filter, null)) {
+//			cp.add(o);
+//		}
 		return cp;
 	}
 

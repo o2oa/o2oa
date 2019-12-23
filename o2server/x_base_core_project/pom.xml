@@ -30,7 +30,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.entity.tools.MetaModelBuilder</mainClass>
+							<mainClass>com.x.base.core.entity.tools.MetaModelBuilder
+							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
 								<argument>${project.build.sourceDirectory}</argument>
@@ -48,7 +49,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.entity.tools.EnhanceBaseBuilder</mainClass>
+							<mainClass>com.x.base.core.entity.tools.EnhanceBaseBuilder
+							</mainClass>
 							<arguments>
 								<argument>${project.build.directory}</argument>
 								<argument>${project.build.outputDirectory}</argument>
