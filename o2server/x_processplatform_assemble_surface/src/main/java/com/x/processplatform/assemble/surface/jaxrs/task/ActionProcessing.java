@@ -162,21 +162,6 @@ class ActionProcessing extends BaseAction {
 		return false;
 	}
 
-//	private List<Wo> listCurrentTask(Business business, String job) throws Exception {
-//		List<WoTask> woTasks = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier,
-//				Task.job_FIELDNAME, job);
-//		List<Wo> wos = new ArrayList<>();
-//		for (Entry<String, List<WoTask>> en : woTasks.stream().collect(Collectors.groupingBy(WoTask::getActivity))
-//				.entrySet()) {
-//			Wo wo = new Wo();
-//			wo.setActivity(en.getValue().get(0).getActivity());
-//			wo.setActivityName(en.getValue().get(0).getActivityName());
-//			wo.setTaskList(en.getValue());
-//			wos.add(wo);
-//		}
-//		return wos;
-//	}
-
 	public static class Wo extends GsonPropertyObject {
 
 		private String activityName;

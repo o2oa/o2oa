@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -104,13 +105,19 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 									n.getWorkLog().getFromActivityToken())).forEach(t -> {
 										wo.getNextManualTaskIdentityList().add(t.getIdentity());
 									});
-							taskCompleteds.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
-									n.getWorkLog().getFromActivityToken())).forEach(t -> {
+							taskCompleteds.stream()
+									.filter(t -> BooleanUtils.isTrue(t.getJoinInquire()) && StringUtils
+											.equals(t.getActivityToken(), n.getWorkLog().getFromActivityToken()))
+									.forEach(t -> {
 										wo.getNextManualTaskCompletedIdentityList().add(t.getIdentity());
 									});
 						}
 					}
 				}
+				/* 下一环节处理人可能是重复处理导致重复的,去重 */
+				wo.setNextManualTaskIdentityList(ListTools.trim(wo.getNextManualTaskIdentityList(), true, true));
+				wo.setNextManualTaskCompletedIdentityList(
+						ListTools.trim(wo.getNextManualTaskCompletedIdentityList(), true, true));
 				wos.add(wo);
 			}
 			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
@@ -294,7 +301,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.opinionLob_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
-						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME),
+						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME,
+						TaskCompleted.joinInquire_FIELDNAME),
 				null);
 	}
 

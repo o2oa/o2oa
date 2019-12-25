@@ -17,11 +17,11 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
@@ -78,9 +78,9 @@ public class TranslateTaskIdentityTools {
 			while (iterator.hasNext()) {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				List<String> ds = scriptHelper.evalExtrectDistinguishedName(aeiObjects.getWork().getApplication(), null,
-						o.get("code").getAsString());
+				Object objectValue = ScriptFactory.scriptEngine
+						.eval(ScriptFactory.functionalization(o.get("code").getAsString()), aeiObjects.scriptContext());
+				List<String> ds = ScriptFactory.extrectDistinguishedNameList(objectValue);
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
@@ -96,14 +96,13 @@ public class TranslateTaskIdentityTools {
 	}
 
 	/* 取到script指定的identity */
-	@SuppressWarnings("restriction")
 	private static List<String> script(TaskIdentities taskIdentities, List<String> units, List<String> groups,
 			AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(manual.getTaskScript())) || (StringUtils.isNotEmpty(manual.getTaskScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			Object o = scriptHelper.eval(aeiObjects.getWork().getApplication(), manual.getTaskScript(),
-					manual.getTaskScriptText());
+			Object o = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASK)
+					.eval(aeiObjects.scriptContext());
 			if (null != o) {
 				if (o instanceof CharSequence) {
 					taskIdentities.addIdentity(o.toString());

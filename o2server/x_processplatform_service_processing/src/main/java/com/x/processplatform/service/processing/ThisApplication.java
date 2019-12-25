@@ -35,7 +35,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_processplatform_service_processing());
-			ScriptHelperFactory.initialScriptText = Config.initialScriptText();
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);

@@ -38,6 +38,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
@@ -54,7 +57,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.ScriptHelper;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MapTools;
 import com.x.base.core.project.tools.StringTools;
@@ -129,7 +132,19 @@ public class Generate {
 			emc.commit();
 			/* 准备运算,清空数据 */
 			this.clean(business, model);
-			ScriptHelper scriptHelper = new ScriptHelper();
+			String text = model.getOutValueScriptText();
+			CompiledScript outValueCompiledScript = ScriptFactory.compile(ScriptFactory.functionalization(text));
+			CompiledScript inValueCompiledScript = null;
+			if (StringUtils.isNotEmpty(model.getInValueScriptText())) {
+				inValueCompiledScript = ScriptFactory
+						.compile(ScriptFactory.functionalization(model.getInValueScriptText()));
+			}
+			CompiledScript attachmentCompiledScript = null;
+			if (StringUtils.isNotEmpty(model.getAttachmentScriptText())) {
+				attachmentCompiledScript = ScriptFactory
+						.compile(ScriptFactory.functionalization(model.getAttachmentScriptText()));
+			}
+
 			LanguageProcessingHelper lph = new LanguageProcessingHelper();
 			DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
 			TreeSet<String> inValues = new TreeSet<>();
@@ -144,7 +159,8 @@ public class Generate {
 				if (null != workCompleted) {
 					inValues.clear();
 					outValues.clear();
-					this.convert(business, converter, scriptHelper, lph, model, workCompleted, inValues, outValues);
+					this.convert(business, converter, outValueCompiledScript, inValueCompiledScript,
+							attachmentCompiledScript, lph, model, workCompleted, inValues, outValues);
 					if ((!inValues.isEmpty()) && (!outValues.isEmpty())) {
 						this.createLearnEntry(business, model, workCompleted, inBag, outBag, inValues, outValues);
 						learnEntryCount++;
@@ -162,7 +178,8 @@ public class Generate {
 				if (null != workCompleted) {
 					inValues.clear();
 					outValues.clear();
-					this.convert(business, converter, scriptHelper, lph, model, workCompleted, inValues, outValues);
+					this.convert(business, converter, outValueCompiledScript, inValueCompiledScript,
+							attachmentCompiledScript, lph, model, workCompleted, inValues, outValues);
 					if ((!inValues.isEmpty()) && (!outValues.isEmpty())) {
 						this.createValidationEntry(business, model, workCompleted, inBag, outBag, inValues, outValues);
 						testEntryCount++;
@@ -394,19 +411,19 @@ public class Generate {
 		return count;
 	}
 
-	private void convert(Business business, DataItemConverter<Item> converter, ScriptHelper scriptHelper,
-			LanguageProcessingHelper lph, Model model, WorkCompleted workCompleted, TreeSet<String> inValue,
-			TreeSet<String> outValue) throws Exception {
+	private void convert(Business business, DataItemConverter<Item> converter, CompiledScript outValueCompiledScript,
+			CompiledScript inValueCompiledScript, CompiledScript attachmentCompiledScript, LanguageProcessingHelper lph,
+			Model model, WorkCompleted workCompleted, TreeSet<String> inValue, TreeSet<String> outValue)
+			throws Exception {
 		logger.debug("神经网络多层感知机 ({}) 正在生成条目: {}.", model.getName(), workCompleted.getTitle());
 		List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
 				ItemCategory.pp, Item.bundle_FIELDNAME, workCompleted.getJob());
 		/* 先计算output,在后面可以在data的text先把output替换掉 */
 		Data data = XGsonBuilder.convert(converter.assemble(items), Data.class);
-		scriptHelper.put(BaseAction.PROPERTY_WORKCOMPLETED, workCompleted);
-		scriptHelper.put(BaseAction.PROPERTY_DATA, data);
-		if (StringUtils.isNotBlank(model.getOutValueScriptText())) {
-			outValue.addAll(scriptHelper.evalAsStringList(model.getOutValueScriptText()));
-		}
+		ScriptContext scriptContext = new SimpleScriptContext();
+		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_DATA, data);
+		Object objectValue = outValueCompiledScript.eval(scriptContext);
+		outValue.addAll(ScriptFactory.asStringList(objectValue));
 		StringBuffer text = new StringBuffer();
 		String dataText = converter.text(items, true, true, true, true, true, ",");
 		dataText = StringUtils.replaceEach(dataText, outValue.toArray(new String[outValue.size()]),
@@ -415,22 +432,22 @@ public class Generate {
 		List<Attachment> attachmentObjects = business.entityManagerContainer().listEqual(Attachment.class,
 				Attachment.job_FIELDNAME, workCompleted.getJob());
 		/* 把不需要的附件过滤掉 */
-		if (StringUtils.isNotBlank(model.getAttachmentScriptText())) {
+		if (null != attachmentCompiledScript) {
 			List<String> attachments = ListTools.extractProperty(attachmentObjects, Attachment.name_FIELDNAME,
 					String.class, true, true);
-			scriptHelper.put(BaseAction.PROPERTY_ATTACHMENTS, attachments);
-			scriptHelper.eval(model.getAttachmentScriptText());
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(BaseAction.PROPERTY_ATTACHMENTS, attachments);
+			attachmentCompiledScript.eval(scriptContext);
 			attachmentObjects = ListTools.removePropertyNotIn(attachmentObjects, Attachment.name_FIELDNAME,
 					attachments);
 		}
-		for (Attachment o : attachmentObjects) {
+		for (Attachment att : attachmentObjects) {
 			/* 文件小于10M */
-			if (o.getLength() < BaseAction.MAX_ATTACHMENT_BYTE_LENGTH) {
+			if (att.getLength() < BaseAction.MAX_ATTACHMENT_BYTE_LENGTH) {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-						o.getStorage());
+						att.getStorage());
 				if (null != mapping) {
-					o.dumpContent(mapping);
-					text.append(ExtractTextHelper.extract(o.getBytes(), o.getName(), true, true, true, false));
+					att.dumpContent(mapping);
+					text.append(ExtractTextHelper.extract(att.getBytes(), att.getName(), true, true, true, false));
 				}
 			}
 		}
@@ -438,8 +455,8 @@ public class Generate {
 		case Model.ANALYZETYPE_FULL:
 			lph.word(text.toString()).stream().limit(MapTools.getInteger(model.getPropertyMap(),
 					Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
-					.forEach(o -> {
-						inValue.add(o.getValue());
+					.forEach(w -> {
+						inValue.add(w.getValue());
 					});
 			break;
 		case Model.ANALYZETYPE_CUSTOMIZED:
@@ -454,9 +471,9 @@ public class Generate {
 					.collect(Collectors.toList()));
 			break;
 		}
-		if (StringUtils.isNotBlank(model.getInValueScriptText())) {
-			scriptHelper.put(BaseAction.PROPERTY_INVALUES, inValue);
-			scriptHelper.eval(model.getInValueScriptText());
+		if (null != inValueCompiledScript) {
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(BaseAction.PROPERTY_INVALUES, inValue);
+			inValueCompiledScript.eval(scriptContext);
 		}
 	}
 

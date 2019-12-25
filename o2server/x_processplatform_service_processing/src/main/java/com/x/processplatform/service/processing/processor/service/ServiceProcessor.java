@@ -3,20 +3,20 @@ package com.x.processplatform.service.processing.processor.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.temporary.ServiceValue;
-import com.x.processplatform.service.processing.BindingPair;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ServiceProcessor extends AbstractServiceProcessor {
@@ -44,13 +44,20 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		if (StringUtils.isNotEmpty(aeiObjects.getWork().getServiceValue())) {
 			boolean passThrough = false;
 			if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
-				ServiceValue serviceValue = this.entityManagerContainer()
-						.find(aeiObjects.getWork().getServiceValue(), ServiceValue.class);
+				ServiceValue serviceValue = this.entityManagerContainer().find(aeiObjects.getWork().getServiceValue(),
+						ServiceValue.class);
 				if (null != serviceValue) {
-					ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-							new BindingPair("serviceValue", service));
-					passThrough = scriptHelper.evalAsBoolean(aeiObjects.getWork().getApplication(),
-							service.getScript(), service.getScriptText());
+
+					ScriptContext scriptContext = aeiObjects.scriptContext();
+					scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_SERVICEVALUE,
+							serviceValue);
+					CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+							aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_SERVICE);
+					passThrough = ScriptFactory.asBoolean(cs.eval(scriptContext));
+//					ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
+//							new BindingPair("serviceValue", serviceValue));
+//					passThrough = scriptHelper.evalAsBoolean(aeiObjects.getWork().getApplication(),
+//							service.getScript(), service.getScriptText());
 				}
 			} else {
 				passThrough = true;

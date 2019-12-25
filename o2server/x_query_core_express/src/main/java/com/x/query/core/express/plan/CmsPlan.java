@@ -131,7 +131,7 @@ public class CmsPlan extends Plan {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Document> root = cq.from(Document.class);
 		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root));
-//		System.out.println(">>>>>1-listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
+		//System.out.println(">>>>>1-listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
 		List<String> docIds = em.createQuery(cq).getResultList();
 		return docIds;
 	}
@@ -227,6 +227,7 @@ public class CmsPlan extends Plan {
 		}
 
 		public Boolean accessible = false;
+		public Boolean draft = false;
 		public String scope = SCOPE_CMS_INFO;
 		public List<AppInfoEntry> appInfoList = new TreeList<>();
 		public List<CategoryEntry> categoryInfoList = new TreeList<>();
@@ -348,12 +349,16 @@ public class CmsPlan extends Plan {
 			if (null == this.dateRange || (!this.dateRange.available())) {
 				return null;
 			}
+			Expression var1 = root.get(Document_.publishTime);
+			if(this.draft){
+				var1 = root.get(Document_.updateTime);
+			}
 			if (null == this.dateRange.start) {
-				return cb.lessThanOrEqualTo(root.get(Document_.publishTime), this.dateRange.completed);
+				return cb.lessThanOrEqualTo(var1, this.dateRange.completed);
 			} else if (null == this.dateRange.completed) {
-				return cb.greaterThanOrEqualTo(root.get(Document_.publishTime), this.dateRange.start);
+				return cb.greaterThanOrEqualTo(var1, this.dateRange.start);
 			} else {
-				return cb.between(root.get(Document_.publishTime), this.dateRange.start, this.dateRange.completed);
+				return cb.between(var1, this.dateRange.start, this.dateRange.completed);
 			}
 		}
 		

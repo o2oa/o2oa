@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,16 +16,14 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.utils.time.WorkTime;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class BeginProcessor extends AbstractBeginProcessor {
@@ -65,10 +66,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	protected void executingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			scriptHelper.eval(aeiObjects.getWork().getApplication(),
-					Objects.toString(aeiObjects.getProcess().getAfterBeginScript()),
-					Objects.toString(aeiObjects.getProcess().getAfterBeginScriptText()));
+			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+					aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
+			compiledScript.eval(aeiObjects.scriptContext());
 		}
 	}
 
@@ -151,9 +151,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	private void expireScript(AeiObjects aeiObjects) throws Exception {
-		ScriptHelper sh = ScriptHelperFactory.create(aeiObjects);
-		String str = Objects.toString(sh.eval(aeiObjects.getWork().getApplication(),
-				aeiObjects.getProcess().getExpireScript(), aeiObjects.getProcess().getExpireScriptText()), "");
+		CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+				aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
+		String str = Objects.toString(compiledScript.eval(aeiObjects.scriptContext()));
 		if (StringUtils.isNotEmpty(str)) {
 			ExpireScriptResult result = XGsonBuilder.instance().fromJson(str, ExpireScriptResult.class);
 			if (NumberTools.greaterThan(result.getWorkHour(), 0)) {

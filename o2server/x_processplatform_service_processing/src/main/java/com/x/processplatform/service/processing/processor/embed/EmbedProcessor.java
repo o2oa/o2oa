@@ -3,6 +3,8 @@ package com.x.processplatform.service.processing.processor.embed;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +12,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -17,9 +20,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.EmbedCreatorType;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.BindingPair;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -73,9 +74,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		if (this.hasAssginDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assginData));
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects, new BindingPair("assginData", wrap));
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), embed.getTargetAssginDataScript(),
-					embed.getTargetAssginDataScriptText());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), embed,
+					Business.EVENT_EMBEDTARGETASSIGNDATA).eval(scriptContext);
 			assginData = gson.fromJson(wrap.get(), AssginData.class);
 		}
 		logger.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}", embed.getName(),
@@ -86,8 +88,6 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			EmbedExecutor executor = new EmbedExecutor();
 			String embedWorkId = executor.execute(assginData);
 			aeiObjects.getWork().setEmbedTargetWork(embedWorkId);
-//			WoWorkId woWorkId = ThisApplication.context().applications()
-//					.postQuery(x_processplatform_service_processing.class, "work", assginData).getData(WoWorkId.class);
 		}
 
 		List<Work> results = new ArrayList<>();
@@ -129,9 +129,14 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			break;
 		}
 		if (this.hasIdentityScript(embed)) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects, new BindingPair("identity", value));
-			List<String> os = scriptHelper.evalExtrectDistinguishedName(aeiObjects.getWork().getApplication(),
-					embed.getTargetIdentityScript(), embed.getTargetIdentityScriptText());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_IDENTITY, value);
+
+			Object objectValue = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY)
+					.eval(scriptContext);
+			List<String> os = ScriptFactory.extrectDistinguishedNameList(objectValue);
+
 			os = ListTools.trim(os, true, false);
 			if (ListTools.isEmpty(os)) {
 				value = "";
@@ -145,13 +150,13 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	private String targetTitle(AeiObjects aeiObjects, Embed embed) throws Exception {
 		String value = "";
 		if (this.hasTitleScript(embed)) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			value = scriptHelper.evalAsString(aeiObjects.getWork().getApplication(), embed.getTargetTitleScript(),
-					embed.getTargetTitleScriptText());
+			Object objectValue = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETTITLE)
+					.eval(aeiObjects.scriptContext());
+			value = ScriptFactory.asString(objectValue);
 		}
 		if (StringUtils.isEmpty(value)) {
 			value = embed.getName() + ":" + aeiObjects.getWork().getTitle();
-			// target.setTitle(value);
 		}
 		return value;
 	}

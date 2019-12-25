@@ -19,6 +19,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.PersistenceProperties;
 
 @Entity
@@ -49,12 +50,14 @@ public class EmpowerLog extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+
+	}
+
+	public void setTitle(String title) {
+		this.title = StringTools.utf8SubString(title, JpaObject.length_255B);
 	}
 
 	/** 更新运行方法 */
-
-	/** flag标志位 */
-	/** 默认内容结束 */
 
 	public static final String fromPerson_FIELDNAME = "fromPerson";
 	@FieldDescribe("人员.")
@@ -136,13 +139,13 @@ public class EmpowerLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String work;
 
-	public static final String trustTime_FIELDNAME = "trustTime";
+	public static final String empowerTime_FIELDNAME = "empowerTime";
 	@FieldDescribe("委托时间.")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = ColumnNamePrefix + trustTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + trustTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + empowerTime_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + empowerTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Date trustTime;
+	private Date empowerTime;
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("标题.")
@@ -268,20 +271,16 @@ public class EmpowerLog extends SliceJpaObject {
 		this.work = work;
 	}
 
-	public Date getTrustTime() {
-		return trustTime;
+	public Date getEmpowerTime() {
+		return empowerTime;
 	}
 
-	public void setTrustTime(Date trustTime) {
-		this.trustTime = trustTime;
+	public void setEmpowerTime(Date empowerTime) {
+		this.empowerTime = empowerTime;
 	}
 
 	public String getTitle() {
 		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getActivity() {

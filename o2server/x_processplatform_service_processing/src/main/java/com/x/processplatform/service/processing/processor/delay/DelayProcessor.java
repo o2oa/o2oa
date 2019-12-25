@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import javax.sound.midi.Sequence;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -19,8 +17,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Delay;
 import com.x.processplatform.core.entity.element.DelayMode;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class DelayProcessor extends AbstractDelayProcessor {
@@ -82,9 +79,9 @@ public class DelayProcessor extends AbstractDelayProcessor {
 			}
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			Object o = scriptHelper.eval(aeiObjects.getWork().getApplication(), delay.getDelayScript(),
-					delay.getDelayScriptText());
+			Object o = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
+					.eval(aeiObjects.scriptContext());
 			if (null != o) {
 				if (o instanceof Date) {
 					return (Date) o;
@@ -105,9 +102,9 @@ public class DelayProcessor extends AbstractDelayProcessor {
 			return Integer.parseInt(Objects.toString(aeiObjects.getData().find(delay.getDelayDataPath()), ""));
 		} else if (StringUtils.isNotEmpty(delay.getDelayScript())
 				|| StringUtils.isNotEmpty(delay.getDelayScriptText())) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			Object o = scriptHelper.eval(aeiObjects.getWork().getApplication(), delay.getDelayScript(),
-					delay.getDelayScriptText());
+			Object o = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), delay, Business.EVENT_DELAY)
+					.eval(aeiObjects.scriptContext());
 			return Integer.parseInt(Objects.toString(o, ""));
 		}
 		return null;

@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.ScriptingEngine;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.BindingPair;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ParallelProcessor extends AbstractParallelProcessor {
@@ -66,10 +66,12 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 		List<Route> routes = new ArrayList<>();
 		/* 多条路由进行判断 */
 		for (Route o : aeiObjects.getRoutes()) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-					new BindingPair(ScriptingEngine.BINDINGNAME_ROUTE, o));
-			Object obj = scriptHelper.eval(aeiObjects.getWork().getApplication(), o.getScript(), o.getScriptText());
-			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(obj))) == true) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ROUTE, o);
+			Object objectValue = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
+					.eval(scriptContext);
+			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(objectValue))) == true) {
 				routes.add(o);
 			}
 		}
@@ -82,15 +84,11 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 				results.add(aeiObjects.getWork());
 			} else {
 				Work work = new Work(aeiObjects.getWork());
-				// aeiObjects.getWork().copyTo(work, JpaObject.id_FIELDNAME);
 				work.setDestinationRoute(route.getId());
 				work.setDestinationRouteName(route.getName());
-				// String activityToken = StringTools.uniqueToken();
-				// work.setActivityToken(activityToken);
 				/* 创建新的Token */
 				WorkLog workLog = new WorkLog(mainWorkLog);
 				workLog.setWork(work.getId());
-				// workLog.setFromActivityToken(activityToken);
 				aeiObjects.getCreateWorks().add(work);
 				aeiObjects.getCreateWorkLogs().add(workLog);
 				results.add(work);

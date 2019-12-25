@@ -26,11 +26,16 @@ class ActionCreateWithWork extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Work work = null;
+		if (ListTools.isEmpty(wi.getIdentityList())) {
+			throw new ExceptionEmptyIdentity();
+		}
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
+			work = emc.find(workId, Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -40,16 +45,14 @@ class ActionCreateWithWork extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
-			if (ListTools.isEmpty(wi.getIdentityList())) {
-				throw new ExceptionEmptyIdentity();
-			}
-			List<Wo> wos = ThisApplication.context().applications()
-					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							"read/work/" + URLEncoder.encode(work.getId(), DefaultCharset.name), wi)
-					.getDataAsList(Wo.class);
-			result.setData(wos);
-			return result;
 		}
+
+		List<Wo> wos = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						"read/work/" + URLEncoder.encode(work.getId(), DefaultCharset.name), wi, work.getJob())
+				.getDataAsList(Wo.class);
+		result.setData(wos);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

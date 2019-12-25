@@ -7,6 +7,21 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.dynamic.DynamicEntity;
@@ -14,14 +29,13 @@ import com.x.base.core.entity.dynamic.DynamicEntityBuilder;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.scripting.Scripting;
-import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
-import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.factory.QueryFactory;
 import com.x.query.assemble.designer.factory.RevealFactory;
@@ -34,16 +48,6 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
-import javax.tools.*;
 
 public class Business {
 
@@ -124,13 +128,6 @@ public class Business {
 		return reveal;
 	}
 
-	public ScriptingEngine createScriptEngine() {
-		ScriptingEngine engine = Scripting.getEngine();
-		engine.bindingOrganization(this.organization);
-		engine.bindingWebservicesClient(new WebservicesClient());
-		return engine;
-	}
-
 	public boolean controllable(EffectivePerson effectivePerson) throws Exception {
 		boolean result = false;
 		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
@@ -205,7 +202,7 @@ public class Business {
 		return result;
 	}
 
-	public boolean buildAllTable() throws Exception{
+	public boolean buildAllTable() throws Exception {
 		boolean result = false;
 		File dir = new File(Config.dir_local_temp_dynamic(true), StringTools.uniqueToken());
 		FileUtils.forceMkdir(dir);
@@ -229,7 +226,7 @@ public class Business {
 					builder.build();
 					classNames.add(dynamicEntity.className());
 				}
-                table.setBuildSuccess(true);
+				table.setBuildSuccess(true);
 				emc.commit();
 			} catch (Exception e) {
 				logger.error(e);
@@ -242,8 +239,8 @@ public class Business {
 					classNames);
 
 			List<File> classPath = new ArrayList<>();
-			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(),
-					FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
+			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(), FileFilterUtils.suffixFileFilter(DOT_JAR),
+					DirectoryFileFilter.INSTANCE));
 			classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
 					DirectoryFileFilter.INSTANCE));
 
@@ -255,8 +252,8 @@ public class Business {
 			fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(src, resources));
 			fileManager.setLocation(StandardLocation.CLASS_PATH, classPath);
 
-			Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH,
-					DynamicEntity.CLASS_PACKAGE, EnumSet.of(JavaFileObject.Kind.SOURCE), true);
+			Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH, DynamicEntity.CLASS_PACKAGE,
+					EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 

@@ -1,12 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -15,7 +15,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -26,11 +25,17 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workCompletedId, JsonElement jsonElement)
 			throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		WorkCompleted workCompleted = null;
+
+		if (ListTools.isEmpty(wi.getIdentityList())) {
+			throw new ExceptionEmptyIdentity();
+		}
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
+			workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
@@ -41,16 +46,14 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 				}
 			}
-			if (ListTools.isEmpty(wi.getIdentityList())) {
-				throw new ExceptionEmptyIdentity();
-			}
-			List<Wo> wos = ThisApplication.context().applications()
-					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							"read/workcompleted/" + URLEncoder.encode(workCompleted.getId(), DefaultCharset.name), wi)
-					.getDataAsList(Wo.class);
-			result.setData(wos);
-			return result;
 		}
+		List<Wo> wos = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("read", "workcompleted", workCompleted.getId()), wi,
+						workCompleted.getJob())
+				.getDataAsList(Wo.class);
+		result.setData(wos);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

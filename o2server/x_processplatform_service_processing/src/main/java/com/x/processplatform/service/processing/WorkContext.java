@@ -45,7 +45,7 @@ public class WorkContext {
 		this.processingAttributes = aeiObjects.getProcessingAttributes();
 	}
 
-	WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
+	public WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
 		this.business = business;
 		this.work = work;
 		this.activity = activity;
@@ -53,7 +53,7 @@ public class WorkContext {
 		this.task = task;
 	}
 
-	WorkContext(Business business, Work work, Activity activity, TaskCompleted taskCompleted) throws Exception {
+	public WorkContext(Business business, Work work, Activity activity, TaskCompleted taskCompleted) throws Exception {
 		this.business = business;
 		this.work = work;
 		this.activity = activity;

@@ -9,11 +9,13 @@ import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
 
@@ -29,7 +31,30 @@ public class ScriptFactory {
 
 	public static final String BINDING_NAME_RESOURCES = "resources";
 	public static final String BINDING_NAME_EFFECTIVEPERSON = "effectivePerson";
+	public static final String BINDING_NAME_WORKCONTEXT = "workContext";
+	public static final String BINDING_NAME_GSON = "gson";
+	public static final String BINDING_NAME_DATA = "data";
+	public static final String BINDING_NAME_ORGANIZATION = "organization";
+	public static final String BINDING_NAME_WEBSERVICESCLIENT = "webservicesClient";
+	public static final String BINDING_NAME_DICTIONARY = "dictionary";
+	public static final String BINDING_NAME_ROUTES = "routes";
+	public static final String BINDING_NAME_ROUTE = "routes";
+	public static final String BINDING_NAME_APPLICATIONS = "applications";
+
+	public static final String BINDING_NAME_ASSIGNDATA = "assignData";
+
+	public static final String BINDING_NAME_IDENTITY = "identity";
+
 	public static final String BINDING_NAME_PARAMETERS = "parameters";
+	public static final String BINDING_NAME_JAXRSRESPONSE = "jaxrsResponse";
+	public static final String BINDING_NAME_JAXWSRESPONSE = "jaxwsResponse";
+
+	public static final String BINDING_NAME_JAXRSBODY = "jaxrsBody";
+	public static final String BINDING_NAME_JAXRSHEAD = "jaxrsHead";
+
+	public static final String BINDING_NAME_SERVICEVALUE = "serviceValue";
+	public static final String BINDING_NAME_TASK = "task";
+	public static final String BINDING_NAME_EXPIRE = "expire";
 
 	public static CompiledScript initialServiceScriptText() throws Exception {
 		if (COMPILEDSCRIPT_INITIALSERVICESCRIPTTEXT == null) {
@@ -168,4 +193,65 @@ public class ScriptFactory {
 			iterator(o, results);
 		}
 	}
+
+	public static List<String> extrectDistinguishedNameList(Object o) throws Exception {
+		List<String> list = new ArrayList<>();
+		if (null != o) {
+			if (o instanceof CharSequence) {
+				list.add(Objects.toString(o, ""));
+			} else if (o instanceof JsonObject) {
+				JsonObject jsonObject = (JsonObject) o;
+				if (jsonObject.has(JpaObject.DISTINGUISHEDNAME)) {
+					list.add(jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString());
+				}
+			} else if (o instanceof JsonArray) {
+				for (JsonElement jsonElement : (JsonArray) o) {
+					if (jsonElement.isJsonObject()) {
+						JsonObject jsonObject = jsonElement.getAsJsonObject();
+						if (jsonObject.has(JpaObject.DISTINGUISHEDNAME)) {
+							list.add(jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString());
+						}
+					}
+				}
+			} else if (o instanceof Iterable) {
+				for (Object obj : (Iterable<?>) o) {
+					if (null != obj) {
+						if (obj instanceof CharSequence) {
+							list.add(Objects.toString(obj, ""));
+						} else {
+							Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+							if (null != d) {
+								list.add(Objects.toString(d, ""));
+							}
+						}
+					}
+				}
+			} else if (o instanceof ScriptObjectMirror) {
+				ScriptObjectMirror som = (ScriptObjectMirror) o;
+				if (som.isArray()) {
+					Object[] objs = (som.to(Object[].class));
+					for (Object obj : objs) {
+						if (null != obj) {
+							if (obj instanceof CharSequence) {
+								list.add(Objects.toString(obj, ""));
+							} else {
+								Object d = PropertyUtils.getProperty(obj, JpaObject.DISTINGUISHEDNAME);
+								if (null != d) {
+									list.add(Objects.toString(d, ""));
+								}
+							}
+						}
+					}
+				} else {
+					Object d = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
+					if (null != d) {
+						list.add(Objects.toString(d, ""));
+					}
+				}
+			}
+		}
+		return list;
+
+	}
+
 }

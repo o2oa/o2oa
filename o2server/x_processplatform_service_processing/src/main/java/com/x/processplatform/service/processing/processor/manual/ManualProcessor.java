@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -17,6 +21,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.EmpowerLog;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
@@ -32,10 +37,8 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
-import com.x.processplatform.service.processing.BindingPair;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ManualProcessor extends AbstractManualProcessor {
@@ -535,35 +538,41 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
-		ExpireScriptResult expire = new ExpireScriptResult();
-		ScriptHelper sh = ScriptHelperFactory.create(aeiObjects, new BindingPair("task", task),
-				new BindingPair("expire", expire));
-		sh.eval(aeiObjects.getWork().getApplication(), manual.getTaskExpireScript(), manual.getTaskExpireScriptText());
-
-		if (NumberTools.greaterThan(expire.getWorkHour(), 0)) {
-			Integer m = 0;
-			m += expire.getWorkHour() * 60;
-			if (m > 0) {
-				WorkTime wt = new WorkTime();
-				task.setExpireTime(wt.forwardMinutes(new Date(), m));
-			} else {
-				task.setExpireTime(null);
-			}
-		} else if (NumberTools.greaterThan(expire.getHour(), 0)) {
-			Integer m = 0;
-			m += expire.getHour() * 60;
-			if (m > 0) {
-				Calendar cl = Calendar.getInstance();
-				cl.add(Calendar.MINUTE, m);
-				task.setExpireTime(cl.getTime());
-			} else {
-				task.setExpireTime(null);
-			}
-		} else if (null != expire.getDate()) {
-			task.setExpireTime(expire.getDate());
+		ScriptContext scriptContext = aeiObjects.scriptContext();
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
+		Object objectValue = aeiObjects.business().element()
+				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
+				.eval(scriptContext);
+		WorkTime wt = new WorkTime();
+		if (NumberUtils.isCreatable(objectValue.toString())){
+			task.setExpireTime(wt.forwardMinutes(new Date(), NumberUtils.toInt(ScriptFactory.asString(objectValue))));
 		} else {
 			task.setExpireTime(null);
 		}
+
+//		if (NumberTools.greaterThan(expire.getWorkHour(), 0)) {
+//			Integer m = 0;
+//			m += expire.getWorkHour() * 60;
+//			if (m > 0) {
+//			} else {
+//				task.setExpireTime(null);
+//			}
+//		} else if (NumberTools.greaterThan(expire.getHour(), 0)) {
+//			Integer m = 0;
+//			m += expire.getHour() * 60;
+//			if (m > 0) {
+//				Calendar cl = Calendar.getInstance();
+//				cl.add(Calendar.MINUTE, m);
+//				task.setExpireTime(cl.getTime());
+//			} else {
+//				task.setExpireTime(null);
+//			}
+//		} else if (null != expire.getDate()) {
+//			task.setExpireTime(expire.getDate());
+//		} else {
+//			task.setExpireTime(null);
+//		}
 	}
 
 	private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
@@ -604,7 +613,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 				.setProcessName(work.getProcessName()).setTitle(work.getTitle()).setWork(work.getId())
 				.setJob(work.getJob()).setFromIdentity(fromIdentity).setToIdentity(toIdentity)
 				.setActivity(work.getActivity()).setActivityAlias(work.getActivityAlias())
-				.setActivityName(work.getActivityName()).setTrustTime(new Date());
+				.setActivityName(work.getActivityName()).setEmpowerTime(new Date());
 		return empowerLog;
 	}
 

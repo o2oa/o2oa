@@ -1,9 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
-import java.net.URLEncoder;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -19,10 +18,11 @@ import com.x.processplatform.core.entity.element.Process;
 class ActionManageDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		ReadCompleted readCompleted = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			ReadCompleted readCompleted = emc.find(id, ReadCompleted.class);
+			readCompleted = emc.find(id, ReadCompleted.class);
 			if (null == readCompleted) {
 				throw new ExceptionEntityNotExist(id, ReadCompleted.class);
 			}
@@ -32,13 +32,13 @@ class ActionManageDelete extends BaseAction {
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-					"readcompleted/" + URLEncoder.encode(readCompleted.getId(), "UTF-8"));
-			Wo wo = new Wo();
-			wo.setId(readCompleted.getId());
-			result.setData(wo);
-			return result;
 		}
+		ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("readcompleted", readCompleted.getId()), readCompleted.getJob());
+		Wo wo = new Wo();
+		wo.setId(readCompleted.getId());
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

@@ -1,7 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.net.URLEncoder;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;

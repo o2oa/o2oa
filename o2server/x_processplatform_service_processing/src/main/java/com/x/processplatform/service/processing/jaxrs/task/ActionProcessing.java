@@ -4,6 +4,11 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -17,12 +22,15 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
@@ -31,10 +39,11 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.ThisApplication;
+import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 
 class ActionProcessing extends BaseAction {
@@ -78,15 +87,21 @@ class ActionProcessing extends BaseAction {
 							if (StringUtils.isNotEmpty(manual.getManualBeforeTaskScript())
 									|| StringUtils.isNotEmpty(manual.getManualBeforeTaskScriptText())) {
 								Work work = emc.find(task.getWork(), Work.class);
+
 								Data data = new Data();
 								if (null != work) {
+
 									WorkDataHelper workDataHelper = new WorkDataHelper(
 											business.entityManagerContainer(), work);
 									data = workDataHelper.get();
-									ScriptHelper sh = ScriptHelperFactory.createWithTask(business, work, data, manual,
-											task);
-									sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
-											manual.getManualBeforeTaskScriptText());
+
+									ScriptContext scriptContext = scriptContext(business, manual, work, data, task);
+
+									CompiledScript cs = null;
+									cs = business.element().getCompiledScript(task.getApplication(), manual,
+											Business.EVENT_MANUALBEFORETASK);
+									cs.eval(scriptContext);
+
 									if (workDataHelper.update(data)) {
 										emc.commit();
 									}
@@ -126,10 +141,14 @@ class ActionProcessing extends BaseAction {
 								WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(),
 										work);
 								data = workDataHelper.get();
-								ScriptHelper sh = ScriptHelperFactory.createWithTaskCompleted(business, work, data,
-										manual, taskCompleted);
-								sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
-										manual.getManualAfterTaskScriptText());
+
+								ScriptContext scriptContext = scriptContext(business, manual, work, data, task);
+
+								CompiledScript cs = null;
+								cs = business.element().getCompiledScript(task.getApplication(), manual,
+										Business.EVENT_MANUALAFTERTASK);
+								cs.eval(scriptContext);
+
 								if (workDataHelper.update(data)) {
 									emc.commit();
 								}
@@ -146,6 +165,22 @@ class ActionProcessing extends BaseAction {
 
 		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
 
+	}
+
+	private ScriptContext scriptContext(Business business, Manual manual, Work work, Data data, Task task)
+			throws Exception {
+		ScriptContext scriptContext = new SimpleScriptContext();
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		bindings.put(ScriptFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(business, work, manual, task));
+		bindings.put(ScriptFactory.BINDING_NAME_GSON, XGsonBuilder.instance());
+		bindings.put(ScriptFactory.BINDING_NAME_DATA, data);
+		bindings.put(ScriptFactory.BINDING_NAME_ORGANIZATION, business.organization());
+		bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
+		bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
+				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+		bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+		ScriptFactory.initialScriptText().eval(scriptContext);
+		return scriptContext;
 	}
 
 	public static class Wo extends WoId {

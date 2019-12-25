@@ -8,6 +8,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.Identity;
@@ -24,7 +25,7 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 			Business business = new Business(emc);
 			Process process = business.process().pick(flag);
 			if (null == process) {
-				throw new ExceptionProcessNotExist(flag);
+				throw new ExceptionEntityNotExist(flag, Process.class);
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> dns = new ArrayList<>();

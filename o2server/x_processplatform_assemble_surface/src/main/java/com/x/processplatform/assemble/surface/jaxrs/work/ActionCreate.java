@@ -17,6 +17,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -55,13 +56,14 @@ class ActionCreate extends BaseAction {
 		/* 已存在草稿id */
 		String lastestWorkId = "";
 		String identity = null;
+		Process process = null;
 		List<Wo> wos = new ArrayList<>();
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			identity = this.decideCreatorIdentity(business, effectivePerson, wi);
-			Process process = business.process().pick(processFlag);
+			process = business.process().pick(processFlag);
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
@@ -77,13 +79,12 @@ class ActionCreate extends BaseAction {
 				lastestWorkId = this.latest(business, process, identity);
 				workId = lastestWorkId;
 			}
-			if (StringUtils.isEmpty(workId)) {
-				WoId woId = ThisApplication.context().applications()
-						.postQuery(x_processplatform_service_processing.class,
-								"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wi.getData())
-						.getData(WoId.class);
-				workId = woId.getId();
-			}
+		}
+		if (StringUtils.isEmpty(workId)) {
+			WoId woId = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("work", "process", process.getId()), wi.getData(), process.getId())
+					.getData(WoId.class);
+			workId = woId.getId();
 		}
 		/* 设置Work信息 */
 		if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {

@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.factory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -10,11 +11,18 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.script.CompiledScript;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.exception.ExceptionScriptEval;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -43,11 +51,14 @@ import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.service.processing.AbstractFactory;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.jaxrs.review.ReviewAction;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 public class ElementFactory extends AbstractFactory {
+
+	private static Logger logger = LoggerFactory.getLogger(ElementFactory.class);
 
 	public ElementFactory(Business business) throws Exception {
 		super(business);
@@ -444,37 +455,6 @@ public class ElementFactory extends AbstractFactory {
 		return ListTools.trim(ids, true, true);
 	}
 
-//	public List<Projection> listProjectionEffectiveWithApplicationAndProcess(String application, String process)
-//			throws Exception {
-//		final List<Projection> list = new ArrayList<>();
-//		Ehcache cache = ApplicationCache.instance().getCache(Projection.class);
-//		String cacheKey = ApplicationCache.concreteCacheKey(application, process, Application.class.getName(),
-//				Process.class.getName());
-//		Element element = cache.get(cacheKey);
-//		if (null != element) {
-//			list.addAll((List<Projection>) element.getObjectValue());
-//		} else {
-//			EntityManager em = this.entityManagerContainer().get(Projection.class);
-//			CriteriaBuilder cb = em.getCriteriaBuilder();
-//			CriteriaQuery<Projection> cq = cb.createQuery(Projection.class);
-//			Root<Projection> root = cq.from(Projection.class);
-//			Predicate p = cb.equal(root.get(Projection_.enable), true);
-//			p = cb.and(p, cb.equal(root.get(Projection_.application), application));
-//			p = cb.and(p, cb.or(cb.equal(root.get(Projection_.process), process),
-//					cb.equal(root.get(Projection_.process), ""), cb.isNull(root.get(Projection_.process))));
-//			List<Projection> os = em.createQuery(cq.where(p)).getResultList();
-//			os.stream().collect(Collectors.groupingBy(o -> {
-//				return o.getApplication() + o.getType();
-//			})).forEach((k, v) -> {
-//				list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
-//			});
-//			if (!list.isEmpty()) {
-//				cache.put(new Element(cacheKey, list));
-//			}
-//		}
-//		return list;
-//	}
-
 	public List<Mapping> listMappingEffectiveWithApplicationAndProcess(String application, String process)
 			throws Exception {
 		final List<Mapping> list = new ArrayList<>();
@@ -504,5 +484,267 @@ public class ElementFactory extends AbstractFactory {
 			}
 		}
 		return list;
+	}
+
+	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
+		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
+		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
+		Element element = cache.get(cacheKey);
+		CompiledScript compiledScript = null;
+		if (null != element && null != element.getObjectValue()) {
+			compiledScript = (CompiledScript) element.getObjectValue();
+		} else {
+			String scriptName = null;
+			String scriptText = null;
+			switch (event) {
+			case Business.EVENT_BEFOREARRIVE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeArriveScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTERARRIVE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterArriveScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_BEFOREEXECUTE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeExecuteScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTEREXECUTE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterExecuteScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_BEFOREINQUIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.beforeInquireScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTERINQUIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.afterInquireScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALTASKEXPIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskExpireScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALTASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.taskScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALSTAY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualStayScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALBEFORETASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScript_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Manual.manualBeforeTaskScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALAFTERTASK:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXWSPARAMETER:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXRSPARAMETER:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsParameterScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXWSRESPONSE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsResponseScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXRSRESPONSE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsResponseScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXRSBODY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_INVOKEJAXRSHEAD:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_READ:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.readScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.readScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_REVIEW:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.reviewScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AGENT:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.script_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.scriptText_FIELDNAME));
+				break;
+			case Business.EVENT_SERVICE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Service.script_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Service.scriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AGENTINTERRUPT:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Agent.agentInterruptScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_DELAY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Delay.delayScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_EMBEDTARGETASSIGNDATA:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetAssginDataScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_EMBEDTARGETIDENTITY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetIdentityScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_EMBEDTARGETTITLE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Embed.targetTitleScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_SPLIT:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Split.script_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Split.scriptText_FIELDNAME));
+				break;
+			default:
+				break;
+			}
+			StringBuffer sb = new StringBuffer();
+			try {
+				sb.append("(function(){").append(System.lineSeparator());
+				if (StringUtils.isNotEmpty(scriptName)) {
+					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
+					for (Script script : list) {
+						sb.append(script.getText()).append(System.lineSeparator());
+					}
+				}
+				if (StringUtils.isNotEmpty(scriptText)) {
+					sb.append(scriptText).append(System.lineSeparator());
+				}
+				sb.append("}).apply(bind);");
+				compiledScript = ScriptFactory.compile(sb.toString());
+				cache.put(new Element(cacheKey, compiledScript));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+		return compiledScript;
+	}
+
+	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
+		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
+		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
+		Element element = cache.get(cacheKey);
+		CompiledScript compiledScript = null;
+		if (null != element && null != element.getObjectValue()) {
+			compiledScript = (CompiledScript) element.getObjectValue();
+		} else {
+			String scriptName = null;
+			String scriptText = null;
+			switch (event) {
+			case Business.EVENT_ROUTEAPPENDTASKIDENTITY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScript_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Route.appendTaskIdentityScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_ROUTE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Route.script_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Route.scriptText_FIELDNAME));
+				break;
+			default:
+				break;
+			}
+			StringBuffer sb = new StringBuffer();
+			try {
+				sb.append("(function(){").append(System.lineSeparator());
+				if (StringUtils.isNotEmpty(scriptName)) {
+					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
+					for (Script script : list) {
+						sb.append(script.getText()).append(System.lineSeparator());
+					}
+				}
+				if (StringUtils.isNotEmpty(scriptText)) {
+					sb.append(scriptText).append(System.lineSeparator());
+				}
+				sb.append("}).apply(bind);");
+				compiledScript = ScriptFactory.compile(sb.toString());
+				cache.put(new Element(cacheKey, compiledScript));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+		return compiledScript;
+	}
+
+	public CompiledScript getCompiledScript(String applicationId, Process o, String event) throws Exception {
+		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
+		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
+		Element element = cache.get(cacheKey);
+		CompiledScript compiledScript = null;
+		if (null != element && null != element.getObjectValue()) {
+			compiledScript = (CompiledScript) element.getObjectValue();
+		} else {
+			String scriptName = null;
+			String scriptText = null;
+			switch (event) {
+			case Business.EVENT_BEFOREARRIVE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeArriveScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTERARRIVE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterArriveScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_BEFOREEXECUTE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeExecuteScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTEREXECUTE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterExecuteScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_BEFOREINQUIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.beforeInquireScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_AFTERINQUIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterInquireScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_PROCESSAFTERBEGIN:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterBeginScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_PROCESSAFTEREND:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.afterEndScriptText_FIELDNAME));
+				break;
+			case Business.EVENT_PROCESSEXPIRE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.expireScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Process.expireScriptText_FIELDNAME));
+				break;
+			default:
+				break;
+			}
+			StringBuffer sb = new StringBuffer();
+			try {
+				sb.append("(function(){").append(System.lineSeparator());
+				if (StringUtils.isNotEmpty(scriptName)) {
+					List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
+					for (Script script : list) {
+						sb.append(script.getText()).append(System.lineSeparator());
+					}
+				}
+				if (StringUtils.isNotEmpty(scriptText)) {
+					sb.append(scriptText).append(System.lineSeparator());
+				}
+				sb.append("}).apply(bind);");
+				compiledScript = ScriptFactory.compile(sb.toString());
+				cache.put(new Element(cacheKey, compiledScript));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+		return compiledScript;
 	}
 }

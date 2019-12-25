@@ -31,14 +31,16 @@ class ActionPress extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionPress.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		TaskCompleted taskCompleted = null;
+		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
+			work = emc.find(workId, Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			TaskCompleted taskCompleted = emc
+			taskCompleted = emc
 					.listEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
 							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob())
 					.stream().sorted(Comparator.comparing(TaskCompleted::getCompletedTime,
@@ -63,15 +65,14 @@ class ActionPress extends BaseAction {
 			}
 			if (emc.countEqual(Task.class, Task.work_FIELDNAME, work.getId()) == 0) {
 				throw new ExceptionPressNoneTask(work.getId());
-
 			}
-			Wo wo = ThisApplication
-					.context().applications().getQuery(x_processplatform_service_processing.class, Applications
-							.joinQueryUri("taskcompleted", taskCompleted.getId(), "press", "work", work.getId()))
-					.getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications()
+				.getQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("taskcompleted",
+						taskCompleted.getId(), "press", "work", work.getId()), taskCompleted.getJob())
+				.getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WrapStringList {

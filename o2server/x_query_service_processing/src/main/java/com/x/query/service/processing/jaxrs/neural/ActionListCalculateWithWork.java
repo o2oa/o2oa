@@ -7,6 +7,9 @@ import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
@@ -25,7 +28,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.ScriptHelper;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ByteTools;
 import com.x.base.core.project.tools.DoubleTools;
 import com.x.base.core.project.tools.MapTools;
@@ -106,7 +109,7 @@ class ActionListCalculateWithWork extends BaseAction {
 	}
 
 	private TreeSet<String> convert(Business business, Model model, Work work) throws Exception {
-		ScriptHelper scriptHelper = new ScriptHelper();
+//		ScriptHelper scriptHelper = new ScriptHelper();
 		LanguageProcessingHelper lph = new LanguageProcessingHelper();
 		DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
 		List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
@@ -147,8 +150,9 @@ class ActionListCalculateWithWork extends BaseAction {
 			break;
 		}
 		if (StringUtils.isNotBlank(model.getInValueScriptText())) {
-			scriptHelper.put(PROPERTY_INVALUES, inValue);
-			scriptHelper.eval(model.getInValueScriptText());
+			ScriptContext scriptContext = new SimpleScriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(PROPERTY_INVALUES, inValue);
+			ScriptFactory.scriptEngine.eval(model.getInValueScriptText(), scriptContext);
 		}
 		return inValue;
 	}

@@ -3,16 +3,19 @@ package com.x.processplatform.service.processing.processor.agent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class AgentProcessor extends AbstractAgentProcessor {
@@ -36,8 +39,9 @@ public class AgentProcessor extends AbstractAgentProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Agent agent) throws Exception {
 		List<Work> results = new ArrayList<>();
 		if (StringUtils.isNotEmpty(agent.getScript()) || StringUtils.isNotEmpty(agent.getScriptText())) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), agent.getScript(), agent.getScriptText());
+			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_AGENT);
+			compiledScript.eval(aeiObjects.scriptContext());
 		}
 		results.add(aeiObjects.getWork());
 		return results;
