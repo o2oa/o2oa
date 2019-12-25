@@ -19,3 +19,4 @@ console.jar
 **/.DS_Store
 .DS_Store
 /commons/ext/manifest.cfg
+gulpfile.js
