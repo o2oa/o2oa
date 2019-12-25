@@ -47,7 +47,7 @@ public class EmpowerLog extends GsonPropertyObject {
 	private String work;
 
 	@FieldDescribe("委托时间.")
-	private Date trustTime;
+	private Date empowerTime;
 
 	@FieldDescribe("标题.")
 	private String title;
@@ -107,8 +107,8 @@ public class EmpowerLog extends GsonPropertyObject {
 		return this;
 	}
 
-	public EmpowerLog setTrustTime(Date trustTime) {
-		this.trustTime = trustTime;
+	public EmpowerLog setEmpowerTime(Date empowerTime) {
+		this.empowerTime = empowerTime;
 		return this;
 	}
 
@@ -167,8 +167,8 @@ public class EmpowerLog extends GsonPropertyObject {
 		return work;
 	}
 
-	public Date getTrustTime() {
-		return trustTime;
+	public Date getEmpowerTime() {
+		return empowerTime;
 	}
 
 	public String getTitle() {

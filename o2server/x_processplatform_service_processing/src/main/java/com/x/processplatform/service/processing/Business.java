@@ -17,6 +17,39 @@ import com.x.processplatform.service.processing.factory.WorkLogFactory;
 
 public class Business {
 
+	public static final String EVENT_MANUALTASKEXPIRE = "manualTaskExpire";
+	public static final String EVENT_MANUALTASK = "manualTask";
+	public static final String EVENT_MANUALSTAY = "manualStay";
+	public static final String EVENT_MANUALBEFORETASK = "manualBeforeTask";
+	public static final String EVENT_MANUALAFTERTASK = "manualAfterTask";
+	public static final String EVENT_BEFOREARRIVE = "beforeArrive";
+	public static final String EVENT_AFTERARRIVE = "afterArrive";
+	public static final String EVENT_BEFOREEXECUTE = "beforeExecute";
+	public static final String EVENT_AFTEREXECUTE = "afterExecute";
+	public static final String EVENT_BEFOREINQUIRE = "beforeInquire";
+	public static final String EVENT_AFTERINQUIRE = "afterInquire";
+	public static final String EVENT_INVOKEJAXWSPARAMETER = "invokeJaxwsParameter";
+	public static final String EVENT_INVOKEJAXRSPARAMETER = "invokeJaxrsParameter";
+	public static final String EVENT_INVOKEJAXWSRESPONSE = "invokeJaxwsResponse";
+	public static final String EVENT_INVOKEJAXRSRESPONSE = "invokeJaxrsResponse";
+	public static final String EVENT_INVOKEJAXRSBODY = "invokeJaxrsBody";
+	public static final String EVENT_INVOKEJAXRSHEAD = "invokeJaxrsHead";
+	public static final String EVENT_SERVICE = "service";
+	public static final String EVENT_ROUTE = "route";
+	public static final String EVENT_ROUTEAPPENDTASKIDENTITY = "routeAppendTaskIdentity";
+	public static final String EVENT_READ = "read";
+	public static final String EVENT_REVIEW = "review";
+	public static final String EVENT_AGENT = "agent";
+	public static final String EVENT_AGENTINTERRUPT = "agentInterrupt";
+	public static final String EVENT_DELAY = "delay";
+	public static final String EVENT_EMBEDTARGETASSIGNDATA = "embedTargetAssignData";
+	public static final String EVENT_EMBEDTARGETIDENTITY = "embedTargetIdentity";
+	public static final String EVENT_EMBEDTARGETTITLE = "embedTargetTitle";
+	public static final String EVENT_PROCESSAFTERBEGIN = "processAfterBegin";
+	public static final String EVENT_PROCESSAFTEREND = "processAfterEnd";
+	public static final String EVENT_PROCESSEXPIRE = "processExpire";
+	public static final String EVENT_SPLIT = "split";
+
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) throws Exception {

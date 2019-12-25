@@ -31,6 +31,9 @@ import com.x.processplatform.service.processing.jaxrs.work.WorkAction;
 @JaxrsDescribe("参阅")
 public class ReviewAction extends StandardJaxrsAction {
 
+	
+	private static Logger logger = LoggerFactory.getLogger(ReviewAction.class);
+	
 	@JaxrsMethodDescribe(value = "删除参阅.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -49,7 +52,7 @@ public class ReviewAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(WorkAction.class);
+
 
 	@JaxrsMethodDescribe(value = "根据workCompleted批量创建review.", action = ActionCreateWithWorkCompleted.class)
 	@POST

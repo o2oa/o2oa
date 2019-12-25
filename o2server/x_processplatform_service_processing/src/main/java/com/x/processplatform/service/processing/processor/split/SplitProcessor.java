@@ -8,14 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class SplitProcessor extends AbstractSplitProcessor {
@@ -89,9 +89,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			List<String> os = scriptHelper.evalExtrectDistinguishedName(aeiObjects.getWork().getApplication(),
-					split.getScript(), split.getScriptText());
+			Object objectValue = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), split, Business.EVENT_SPLIT).eval(aeiObjects.scriptContext());	
+			List<String> os =ScriptFactory.extrectDistinguishedNameList(objectValue);
 			if (ListTools.isNotEmpty(os)) {
 				list.addAll(os);
 			}

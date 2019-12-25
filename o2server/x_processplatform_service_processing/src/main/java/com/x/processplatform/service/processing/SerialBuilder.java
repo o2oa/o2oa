@@ -11,6 +11,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -23,6 +26,7 @@ import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.SerialNumber;
@@ -68,12 +72,14 @@ public class SerialBuilder {
 		if (StringUtils.isNotEmpty(data)) {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
 			if (!list.isEmpty()) {
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair("serial", this.serial), new BindingPair("process", this.process));
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+				bindings.put("serial", this.serial);
+				bindings.put("process", this.process);
 				for (SerialTextureItem o : list) {
 					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
 							&& StringUtils.isNotEmpty(o.getScript())) {
-						Object v = scriptHelper.eval(o.getScript());
+						Object v = ScriptFactory.scriptEngine.eval(o.getScript(), scriptContext);
 						itemResults.add(v);
 					} else {
 						itemResults.add("");
@@ -82,7 +88,7 @@ public class SerialBuilder {
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
 					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
-						Object v = scriptHelper.eval(o.getScript());
+						Object v = ScriptFactory.scriptEngine.eval(o.getScript(), scriptContext);
 						itemResults.set(i, v);
 					}
 				}

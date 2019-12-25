@@ -33,68 +33,70 @@ import com.x.organization.core.entity.Unit;
 class ActionCreate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Person person = business.person().pick(wi.getPerson());
-			if (null == person) {
-				throw new ExceptionPersonNotExist(wi.getPerson());
-			}
-			person = emc.find(person.getId(), Person.class);
-			Unit unit = business.unit().pick(wi.getUnit());
-			if (null == unit) {
-				throw new ExceptionUnitNotExist(wi.getUnit());
-			}
-			if (!business.editable(effectivePerson, unit)) {
-				throw new ExceptionAccessDenied(effectivePerson, unit);
-			}
-			if (this.existedWithPersonWithUnit(business, person, unit)) {
-				throw new ExceptionExistInUnit(person, unit);
-			}
-			if (StringUtils.isEmpty(wi.getName())) {
-				throw new ExceptionNameEmpty();
-			}
-			Identity identity = new Identity();
-			Wi.copier.copy(wi, identity);
-			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
-			if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
-				throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
-			}
-			identity.setUnit(unit.getId());
-			identity.setUnitLevel(unit.getLevel());
-			identity.setUnitLevelName(unit.getLevelName());
-			identity.setUnitName(unit.getName());
-			identity.setPerson(person.getId());
-			/* 设置主身份 */
-			List<Identity> others = emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson());
-			if (others.isEmpty()) {
-				identity.setMajor(true);
-			} else {
-				if (BooleanUtils.isTrue(identity.getMajor())) {
-					for (Identity o : others) {
-						if (!StringUtils.equals(identity.getId(), o.getId())) {
-							o.setMajor(false);
+		/* 前端在添加人员时重复执行,所以需要同步执行 */
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
+		synchronized (ActionCreate.class) {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+				Person person = business.person().pick(wi.getPerson());
+				if (null == person) {
+					throw new ExceptionPersonNotExist(wi.getPerson());
+				}
+				person = emc.find(person.getId(), Person.class);
+				Unit unit = business.unit().pick(wi.getUnit());
+				if (null == unit) {
+					throw new ExceptionUnitNotExist(wi.getUnit());
+				}
+				if (!business.editable(effectivePerson, unit)) {
+					throw new ExceptionAccessDenied(effectivePerson, unit);
+				}
+				if (this.existedWithPersonWithUnit(business, person, unit)) {
+					throw new ExceptionExistInUnit(person, unit);
+				}
+				if (StringUtils.isEmpty(wi.getName())) {
+					throw new ExceptionNameEmpty();
+				}
+				Identity identity = new Identity();
+				Wi.copier.copy(wi, identity);
+				/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
+				if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
+					throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
+				}
+				identity.setUnit(unit.getId());
+				identity.setUnitLevel(unit.getLevel());
+				identity.setUnitLevelName(unit.getLevelName());
+				identity.setUnitName(unit.getName());
+				identity.setPerson(person.getId());
+				/* 设置主身份 */
+				List<Identity> others = emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson());
+				if (others.isEmpty()) {
+					identity.setMajor(true);
+				} else {
+					if (BooleanUtils.isTrue(identity.getMajor())) {
+						for (Identity o : others) {
+							if (!StringUtils.equals(identity.getId(), o.getId())) {
+								o.setMajor(false);
+							}
 						}
 					}
 				}
+
+				emc.beginTransaction(Identity.class);
+				emc.beginTransaction(Person.class);
+
+				emc.persist(identity, CheckPersistType.all);
+				List<Unit> topUnits = business.unit().pick(
+						ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
+				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
+				emc.persist(person, CheckPersistType.all);
+
+				emc.commit();
+				wo.setId(identity.getId());
 			}
-
-			emc.beginTransaction(Identity.class);
-			emc.beginTransaction(Person.class);
-
-			emc.persist(identity, CheckPersistType.all);
-			List<Unit> topUnits = business.unit()
-					.pick(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
-			person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
-			emc.persist(person, CheckPersistType.all);
-
-			emc.commit();
-
 			ApplicationCache.notify(Identity.class);
 			ApplicationCache.notify(Person.class);
-			Wo wo = new Wo();
-			wo.setId(identity.getId());
 			result.setData(wo);
 			return result;
 		}

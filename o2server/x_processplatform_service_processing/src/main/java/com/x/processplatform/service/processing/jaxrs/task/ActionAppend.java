@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,18 +22,22 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.ThisApplication;
+import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentities;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
@@ -80,10 +89,16 @@ class ActionAppend extends BaseAction {
 								WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(),
 										work);
 								data = workDataHelper.get();
-								ScriptHelper scriptHelper = ScriptHelperFactory.createWithTask(business, work, data,
-										manual, task);
-								List<String> os = scriptHelper.evalExtrectDistinguishedName(work.getApplication(),
-										route.getAppendTaskIdentityScript(), route.getAppendTaskIdentityScriptText());
+
+								ScriptContext scriptContext = scriptContext(business, work, data, manual, task);
+
+								CompiledScript compiledScript = business.element().getCompiledScript(
+										task.getApplication(), route, Business.EVENT_ROUTEAPPENDTASKIDENTITY);
+
+								Object objectValue = compiledScript.eval(scriptContext);
+
+								List<String> os = ScriptFactory.extrectDistinguishedNameList(objectValue);
+
 								if (ListTools.isNotEmpty(os)) {
 									identities.addAll(os);
 								}
@@ -129,6 +144,40 @@ class ActionAppend extends BaseAction {
 
 		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
 	}
+
+	public static ScriptContext scriptContext(Business business, Work work, Data data, Activity activity, Task task)
+			throws Exception {
+		ScriptContext scriptContext = new SimpleScriptContext();
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		WorkContext workContext = new WorkContext(business, work, activity, task);
+		bindings.put(ScriptFactory.BINDING_NAME_WORKCONTEXT, workContext);
+		bindings.put(ScriptFactory.BINDING_NAME_DATA, data);
+		bindings.put(ScriptFactory.BINDING_NAME_ORGANIZATION, business.organization());
+		bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
+		bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
+				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+		bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
+		ScriptFactory.initialScriptText().eval(scriptContext);
+		return scriptContext;
+	}
+
+//	public static ScriptHelper createWithTask(Business business, Work work, Data data, Activity activity, Task task,
+//			BindingPair... bindingPairs) throws Exception {
+//		WorkContext workContext = new WorkContext(business, work, activity, task);
+//		Map<String, Object> map = new HashMap<>();
+//		map.put(ScriptingEngine.BINDINGNAME_WORKCONTEXT, workContext);
+//		map.put(ScriptingEngine.BINDINGNAME_DATA, data);
+//		map.put(ScriptingEngine.BINDINGNAME_ORGANIZATION, new Organization(ThisApplication.context()));
+//		map.put(ScriptingEngine.BINDINGNAME_WEBSERVICESCLIENT, new WebservicesClient());
+//		map.put(ScriptingEngine.BINDINGNAME_DICTIONARY,
+//				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+//		map.put(ScriptingEngine.BINDINGNAME_APPLICATIONS, ThisApplication.context().applications());
+//		for (BindingPair o : bindingPairs) {
+//			map.put(o.getName(), o.getValue());
+//		}
+//		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
+//		return sh;
+//	}
 
 	private TaskIdentities empower(Business business, Task task, List<String> identities) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();

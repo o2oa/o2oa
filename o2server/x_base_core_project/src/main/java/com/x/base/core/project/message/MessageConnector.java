@@ -171,7 +171,6 @@ public class MessageConnector {
 					e.printStackTrace();
 				}
 			}
-			LoggerFactory.print(MessageConnector.class, "connectorThread on {} stoped!", context.path());
 		}
 	}
 

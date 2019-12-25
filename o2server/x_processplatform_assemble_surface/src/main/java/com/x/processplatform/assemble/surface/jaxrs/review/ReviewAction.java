@@ -207,7 +207,7 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
-		ActionResult<ActionCreateWithWork.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionCreateWithWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateWithWork().execute(effectivePerson, jsonElement);
@@ -225,7 +225,7 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, JsonElement jsonElement) {
-		ActionResult<ActionCreateWithWorkCompleted.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionCreateWithWorkCompleted.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateWithWorkCompleted().execute(effectivePerson, jsonElement);

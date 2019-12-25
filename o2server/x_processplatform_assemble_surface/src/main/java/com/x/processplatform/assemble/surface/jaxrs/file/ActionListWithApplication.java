@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.file;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -7,7 +8,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -19,18 +19,19 @@ import com.x.processplatform.core.entity.element.File;
 class ActionListWithApplication extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag) throws Exception {
+		List<Wo> wos = new ArrayList<>();
+		ActionResult<List<Wo>> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			ActionResult<List<Wo>> result = new ActionResult<>();
 			Application application = business.application().pick(applicationFlag);
 			if (null == application) {
 				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
 			}
-			List<Wo> wos = emc.fetchEqual(File.class, Wo.copier, File.application_FIELDNAME, application.getId());
+			wos = emc.fetchEqual(File.class, Wo.copier, File.application_FIELDNAME, application.getId());
 			wos = business.file().sort(wos);
-			result.setData(wos);
-			return result;
 		}
+		result.setData(wos);
+		return result;
 	}
 
 	public static class Wo extends File {

@@ -10,10 +10,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.scripting.Scripting;
-import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.surface.factory.QueryFactory;
 import com.x.query.assemble.surface.factory.RevealFactory;
@@ -110,13 +107,7 @@ public class Business {
 		}
 	}
 
-	public ScriptingEngine createScriptEngine() {
-		ScriptingEngine engine = Scripting.getEngine();
-		engine.bindingOrganization(this.organization);
-		engine.bindingWebservicesClient(new WebservicesClient());
-		return engine;
-	}
-
+ 
 	public boolean readable(EffectivePerson effectivePerson, Query query) throws Exception {
 		if (null == query) {
 			return false;

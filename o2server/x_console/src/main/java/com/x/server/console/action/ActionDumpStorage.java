@@ -172,10 +172,12 @@ public class ActionDumpStorage {
 				for (T t : list) {
 					name = t.getStorage();
 					mapping = storageMappings.get(cls, name);
-					if (null == mapping && Config.dumpRestoreStorage().getExceptionInvalidStorage()) {
-						throw new Exception("can not find storageMapping class: " + cls.getName() + ", storage: " + name
-								+ ", id: " + t.getId() + ", name: " + t.getName()
-								+ ", set exceptionInvalidStorage to false will ignore item.");
+					if(StringUtils.isNotEmpty(name)) {
+						if (null == mapping && Config.dumpRestoreStorage().getExceptionInvalidStorage()) {
+							throw new Exception("can not find storageMapping class: " + cls.getName() + ", storage: " + name
+									+ ", id: " + t.getId() + ", name: " + t.getName()
+									+ ", set exceptionInvalidStorage to false will ignore item.");
+						}
 					}
 					if (null != mapping) {
 						File file = new File(directory, FilenameUtils.getName(t.path()));

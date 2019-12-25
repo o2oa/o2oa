@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +26,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Hint;
@@ -43,10 +49,12 @@ import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
+import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
+import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
@@ -110,6 +118,8 @@ public class AeiObjects extends GsonPropertyObject {
 	private WorkDataHelper workDataHelper = null;
 	/* 使用用懒加载,初始为null */
 	private Data data = null;
+	/* 使用用懒加载,初始为null */
+	private ScriptContext scriptContext = null;
 
 	private List<Work> createWorks = new ArrayList<>();
 	private List<Work> updateWorks = new ArrayList<>();
@@ -1286,6 +1296,23 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<JpaObject> getDeleteDynamicEntities() {
 		return deleteDynamicEntities;
+	}
+
+	public ScriptContext scriptContext() throws Exception {
+		if (null == this.scriptContext) {
+			this.scriptContext = new SimpleScriptContext();
+			Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put(ScriptFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
+			bindings.put(ScriptFactory.BINDING_NAME_GSON, XGsonBuilder.instance());
+			bindings.put(ScriptFactory.BINDING_NAME_DATA, this.getData());
+			bindings.put(ScriptFactory.BINDING_NAME_ORGANIZATION, this.business().organization());
+			bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
+			bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
+					new ApplicationDictHelper(this.entityManagerContainer(), this.getWork().getApplication()));
+			bindings.put(ScriptFactory.BINDING_NAME_ROUTES, this.getRoutes());
+			ScriptFactory.initialScriptText().eval(scriptContext);
+		}
+		return this.scriptContext;
 	}
 
 }

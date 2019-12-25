@@ -267,4 +267,23 @@ public class EmpowerAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理员根据条件查询授权记录.", action = ActionManagerListPaging.class)
+	@POST
+	@Path("manager/list/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse,
+								  @Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+								  @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionManagerListPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerListPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

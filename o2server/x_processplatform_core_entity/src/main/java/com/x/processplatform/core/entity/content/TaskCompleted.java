@@ -263,6 +263,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 //		}
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
+		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -401,6 +402,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + empowerToIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empowerToIdentity;
+
+	public static final String empowerFromIdentity_FIELDNAME = "empowerFromIdentity";
+	@FieldDescribe("授权自Identity")
+	@Column(length = length_255B, name = ColumnNamePrefix + empowerFromIdentity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + empowerFromIdentity_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String empowerFromIdentity;
 
 	public static final String unit_FIELDNAME = "unit";
 	@FieldDescribe("当前处理人所在部门.")
@@ -1408,6 +1416,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setEmpowerToIdentity(String empowerToIdentity) {
 		this.empowerToIdentity = empowerToIdentity;
+	}
+
+	public String getEmpowerFromIdentity() {
+		return empowerFromIdentity;
+	}
+
+	public void setEmpowerFromIdentity(String empowerFromIdentity) {
+		this.empowerFromIdentity = empowerFromIdentity;
 	}
 
 }

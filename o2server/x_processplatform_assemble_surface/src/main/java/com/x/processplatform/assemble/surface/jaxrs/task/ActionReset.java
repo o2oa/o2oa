@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
@@ -27,11 +28,13 @@ import com.x.processplatform.core.entity.content.Task;
 public class ActionReset extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Task task = null;
+		List<String> identites = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Task task = emc.find(id, Task.class);
+			task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
@@ -42,7 +45,7 @@ public class ActionReset extends BaseAction {
 			}
 
 			/* 检查reset人员 */
-			List<String> identites = business.organization().identity().list(wi.getIdentityList());
+			identites = business.organization().identity().list(wi.getIdentityList());
 
 			/* 在新增待办人员中删除当前的处理人 */
 			identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
@@ -59,14 +62,18 @@ public class ActionReset extends BaseAction {
 				}
 				emc.commit();
 				wi.setIdentityList(identites);
-				ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", task.getId(), "reset"), wi);
 			}
-			Wo wo = new Wo();
-			wo.setId(task.getWork());
-			result.setData(wo);
-			return result;
 		}
+
+		if (!identites.isEmpty()) {
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("task", task.getId(), "reset"), wi, task.getJob());
+		}
+
+		Wo wo = new Wo();
+		wo.setId(task.getWork());
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {

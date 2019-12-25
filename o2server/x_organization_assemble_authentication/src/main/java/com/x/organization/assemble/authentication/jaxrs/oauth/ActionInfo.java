@@ -4,7 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngine;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.Scripting;
-import com.x.base.core.project.scripting.ScriptingEngine;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 import com.x.organization.core.entity.Person;
@@ -68,13 +68,14 @@ class ActionInfo extends BaseAction {
 		WoInfo woInfo = new WoInfo();
 		if (Config.token().isInitialManager(oauthCode.getPerson())) {
 			InitialManager initialManager = Config.token().initialManagerInstance();
-			ScriptingEngine engine = Scripting.getEngine();
-			engine.binding("person", initialManager);
+			ScriptContext scriptContext = new SimpleScriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("person", initialManager);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = oauth.getMapping().get(str);
 				String value = "";
 				if (SCRIPT_PATTERN.matcher(property).find()) {
-					value = Objects.toString(engine.eval(property));
+					value = Objects
+							.toString(ScriptFactory.asString(ScriptFactory.scriptEngine.eval(property, scriptContext)));
 				} else {
 					value = Objects.toString(PropertyUtils.getProperty(initialManager, property));
 				}
@@ -83,17 +84,17 @@ class ActionInfo extends BaseAction {
 			}
 		} else {
 			Person person = business.entityManagerContainer().find(oauthCode.getPerson(), Person.class);
-			ScriptingEngine engine = Scripting.getEngine();
-			engine.binding("person", person);
+			ScriptContext scriptContext = new SimpleScriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("person", person);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = oauth.getMapping().get(str);
 				String value = "";
 				if (SCRIPT_PATTERN.matcher(property).find()) {
-					value = Objects.toString(engine.eval(property));
+					value = Objects
+							.toString(ScriptFactory.asString(ScriptFactory.scriptEngine.eval(property, scriptContext)));
 				} else {
 					value = Objects.toString(PropertyUtils.getProperty(person, property));
 				}
-				// value = new String(value.getBytes(), "GB2312");
 				woInfo.put(str, value);
 			}
 		}

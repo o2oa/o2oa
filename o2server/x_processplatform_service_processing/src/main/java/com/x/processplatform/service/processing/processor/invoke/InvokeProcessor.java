@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,14 +21,12 @@ import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.RunningException;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.ScriptingEngine;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.BindingPair;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -91,10 +92,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			Object response = executor.execute(jaxwsObject);
 			if ((StringUtils.isNotEmpty(invoke.getJaxwsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxwsResponseScriptText()))) {
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair(ScriptingEngine.BINDINGNAME_JAXWSRESPONSE, response));
-				scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxwsResponseScript(),
-						invoke.getJaxwsResponseScriptText());
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
+						response);
+				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
+						Business.EVENT_INVOKEJAXWSRESPONSE);
+				cs.eval(scriptContext);
 			}
 		}
 	}
@@ -103,10 +107,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		List<?> parameters = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxwsParameterScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxwsParameterScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-					new BindingPair(ScriptingEngine.BINDINGNAME_PARAMETERS, parameters));
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxwsParameterScript(),
-					invoke.getJaxwsParameterScriptText());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+					parameters);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
+			cs.eval(scriptContext);
 		}
 		return parameters.toArray();
 	}
@@ -203,14 +209,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 						aeiObjects.getWork().getId());
 			}
 			WrapScriptObject jaxrsResponse = new WrapScriptObject();
-			// LinkedHashMap<?, ?> map = resp.getData(LinkedHashMap.class);
 			jaxrsResponse.set(gson.toJson(resp.getData()));
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair(ScriptingEngine.BINDINGNAME_JAXRSRESPONSE, jaxrsResponse));
-				scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsResponseScript(),
-						invoke.getJaxrsResponseScriptText());
+
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+						jaxrsResponse);
+				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
+						Business.EVENT_INVOKEJAXRSRESPONSE);
+				cs.eval(scriptContext);
 			}
 		}
 	}
@@ -290,10 +299,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsResponse.set(result);
 			if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair(ScriptingEngine.BINDINGNAME_JAXRSRESPONSE, jaxrsResponse));
-				scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsResponseScript(),
-						invoke.getJaxrsResponseScriptText());
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
+						jaxrsResponse);
+				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
+						Business.EVENT_INVOKEJAXRSRESPONSE);
+				cs.eval(scriptContext);
 			}
 		}
 	}
@@ -303,10 +315,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		Map<String, String> parameters = new HashMap<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsParameterScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsParameterScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-					new BindingPair("parameters", parameters));
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsParameterScript(),
-					invoke.getJaxrsParameterScriptText());
+
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
+					parameters);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
+			cs.eval(scriptContext);
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			url = StringUtils.replace(url, "{" + entry.getKey() + "}", entry.getValue());
@@ -318,10 +333,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		JaxrsBody jaxrsBody = new JaxrsBody();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsBodyScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsBodyScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects, new BindingPair("jaxrsBody", jaxrsBody));
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsBodyScript(),
-					invoke.getJaxrsBodyScriptText());
 
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
+			cs.eval(scriptContext);
 		}
 		return jaxrsBody.get();
 	}
@@ -330,9 +347,13 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		Map<String, String> map = new LinkedHashMap<>();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsHeadScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsHeadScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects, new BindingPair("jaxrsHead", map));
-			scriptHelper.eval(aeiObjects.getWork().getApplication(), invoke.getJaxrsHeadScript(),
-					invoke.getJaxrsHeadScriptText());
+
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
+			cs.eval(scriptContext);
+
 		}
 		return map;
 	}

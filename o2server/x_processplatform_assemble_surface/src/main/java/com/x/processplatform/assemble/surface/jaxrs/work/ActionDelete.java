@@ -19,10 +19,11 @@ import com.x.processplatform.core.entity.content.Work;
 class ActionDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
@@ -31,11 +32,11 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}
-			Wo wo = ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name)).getData(Wo.class);
-			result.setData(wo);
-			return result;
 		}
+		Wo wo = ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+				"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name)).getData(Wo.class);
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wo extends WoId {

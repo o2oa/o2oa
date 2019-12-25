@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonArray;
@@ -12,13 +15,12 @@ import com.google.gson.JsonObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
 
 /**
  * 在Manual环节计算所有的待阅人的Identity
@@ -81,14 +83,15 @@ public class TranslateReadIdentityTools {
 	private static List<String> duty(AeiObjects aeiObjects) throws Exception {
 		List<String> list = new ArrayList<>();
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getReadDuty())) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
 			JsonArray array = XGsonBuilder.instance().fromJson(aeiObjects.getActivity().getReadDuty(), JsonArray.class);
 			Iterator<JsonElement> iterator = array.iterator();
 			while (iterator.hasNext()) {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				List<String> ds = scriptHelper.evalExtrectDistinguishedName(aeiObjects.getWork().getApplication(), null,
-						o.get("code").getAsString());
+				Object objectValue = ScriptFactory.scriptEngine
+						.eval(ScriptFactory.functionalization(o.get("code").getAsString()), scriptContext);
+				List<String> ds = ScriptFactory.extrectDistinguishedNameList(objectValue);
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
@@ -108,9 +111,11 @@ public class TranslateReadIdentityTools {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(aeiObjects.getActivity().getReadScript()))
 				|| (StringUtils.isNotEmpty(aeiObjects.getActivity().getReadScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-			List<String> os = scriptHelper.evalExtrectDistinguishedName(aeiObjects.getWork().getApplication(),
-					aeiObjects.getActivity().getReadScript(), aeiObjects.getActivity().getReadScriptText());
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
+					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_READ);
+			Object objectValue = compiledScript.eval(scriptContext);
+			List<String> os = ScriptFactory.extrectDistinguishedNameList(objectValue);
 			if (ListTools.isNotEmpty(os)) {
 				list.addAll(os);
 			}

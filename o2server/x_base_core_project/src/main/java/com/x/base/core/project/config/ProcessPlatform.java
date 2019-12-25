@@ -46,9 +46,9 @@ public class ProcessPlatform extends ConfigObject {
 		this.formVersionCount = DEFAULT_FORMVERSIONCOUNT;
 		this.processVersionCount = DEFAULT_PROCESSVERSIONCOUNT;
 		this.scriptVersionCount = DEFAULT_SCRIPTVERSIONCOUNT;
-		this.formVersionPeriod = DEFAULT_FORMVERSIONPERIOD;
-		this.processVersionPeriod = DEFAULT_PROCESSVERSIONPERIOD;
-		this.scriptVersionPeriod = DEFAULT_SCRIPTVERSIONPERIOD;
+//		this.formVersionPeriod = DEFAULT_FORMVERSIONPERIOD;
+//		this.processVersionPeriod = DEFAULT_PROCESSVERSIONPERIOD;
+//		this.scriptVersionPeriod = DEFAULT_SCRIPTVERSIONPERIOD;
 		this.docToWordType = DEFAULT_DOCTOWORDTYPE;
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
@@ -75,14 +75,14 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("脚本历史版本保留数量,0为不保留.")
 	private Integer scriptVersionCount;
 
-	@FieldDescribe("表单历史版本保留天数.")
-	private Integer formVersionPeriod;
-
-	@FieldDescribe("流程历史版本保留天数.")
-	private Integer processVersionPeriod;
-
-	@FieldDescribe("脚本历史版本保留天数.")
-	private Integer scriptVersionPeriod;
+//	@FieldDescribe("表单历史版本保留天数.")
+//	private Integer formVersionPeriod;
+//
+//	@FieldDescribe("流程历史版本保留天数.")
+//	private Integer processVersionPeriod;
+//
+//	@FieldDescribe("脚本历史版本保留天数.")
+//	private Integer scriptVersionPeriod;
 
 	@FieldDescribe("HTML版式公文转换成Word文件方式,local,cloud.")
 	private String docToWordType;
@@ -112,20 +112,20 @@ public class ProcessPlatform extends ConfigObject {
 		return scriptVersionCount == null ? DEFAULT_SCRIPTVERSIONCOUNT : this.scriptVersionCount;
 	}
 
-	public Integer getFormVersionPeriod() {
-		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD
-				: this.formVersionPeriod;
-	}
-
-	public Integer getProcessVersionPeriod() {
-		return (processVersionPeriod == null || processVersionPeriod < 1) ? DEFAULT_PROCESSVERSIONPERIOD
-				: this.processVersionPeriod;
-	}
-
-	public Integer getScriptVersionPeriod() {
-		return (scriptVersionPeriod == null || scriptVersionPeriod < 1) ? DEFAULT_SCRIPTVERSIONPERIOD
-				: this.scriptVersionPeriod;
-	}
+//	public Integer getFormVersionPeriod() {
+//		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD
+//				: this.formVersionPeriod;
+//	}
+//
+//	public Integer getProcessVersionPeriod() {
+//		return (processVersionPeriod == null || processVersionPeriod < 1) ? DEFAULT_PROCESSVERSIONPERIOD
+//				: this.processVersionPeriod;
+//	}
+//
+//	public Integer getScriptVersionPeriod() {
+//		return (scriptVersionPeriod == null || scriptVersionPeriod < 1) ? DEFAULT_SCRIPTVERSIONPERIOD
+//				: this.scriptVersionPeriod;
+//	}
 
 	public String getDocToWordType() {
 		return StringUtils.isEmpty(docToWordType) ? DEFAULT_DOCTOWORDTYPE : docToWordType;
@@ -535,10 +535,10 @@ public class ProcessPlatform extends ConfigObject {
 		public final static Integer DEFAULT_COUNT = 3;
 
 		@FieldDescribe("提醒间隔(分钟)")
-		private Integer intervalMinutes;
+		private Integer intervalMinutes = DEFAULT_INTERVALMINUTES;
 
 		@FieldDescribe("提醒数量限制.")
-		private Integer count;
+		private Integer count = DEFAULT_COUNT;
 
 		public Integer getIntervalMinutes() {
 			return (intervalMinutes == null || intervalMinutes < 1) ? DEFAULT_INTERVALMINUTES : this.intervalMinutes;

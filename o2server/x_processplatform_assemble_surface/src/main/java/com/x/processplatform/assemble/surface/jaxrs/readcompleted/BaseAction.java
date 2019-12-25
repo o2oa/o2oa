@@ -6,30 +6,22 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.wrapout.content.WrapOutReadCompleted;
-import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWork;
-import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	static WrapCopier<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = WrapCopierFactory
-			.wo(ReadCompleted.class, WrapOutReadCompleted.class, null, WrapOutReadCompleted.FieldsInvisible);
-
-	static WrapCopier<Work, WrapOutWork> workOutCopier = WrapCopierFactory.wo(Work.class, WrapOutWork.class, null,
-			WrapOutWork.Excludes);
-
-	static WrapCopier<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = WrapCopierFactory
-			.wo(WorkCompleted.class, WrapOutWorkCompleted.class, null, WrapOutWorkCompleted.Excludes);
-
+//	static WrapCopier<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = WrapCopierFactory
+//			.wo(ReadCompleted.class, WrapOutReadCompleted.class, null, WrapOutReadCompleted.FieldsInvisible);
+//
+//	static WrapCopier<Work, WrapOutWork> workOutCopier = WrapCopierFactory.wo(Work.class, WrapOutWork.class, null,
+//			WrapOutWork.Excludes);
+//
+//	static WrapCopier<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = WrapCopierFactory
+//			.wo(WorkCompleted.class, WrapOutWorkCompleted.class, null, WrapOutWorkCompleted.Excludes);
 	
 
 	Long countWithApplication(Business business, EffectivePerson effectivePerson, String id) throws Exception {

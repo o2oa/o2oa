@@ -10,7 +10,12 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,8 +35,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.Scripting;
-import com.x.base.core.project.scripting.ScriptingEngine;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
@@ -89,11 +93,12 @@ class ActionInput extends BaseAction {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(Config.person().getPassword());
 		if (matcher.matches()) {
-			String eval = matcher.group(1);
-			ScriptingEngine engine = Scripting.getEngine();
+			String eval = ScriptFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			for (PersonItem o : people) {
-				engine.binding("person", o);
-				String pass = engine.eval(eval).toString();
+				bindings.put("person", o);
+				String pass = ScriptFactory.scriptEngine.eval(eval, scriptContext).toString();
 				o.setPassword(pass);
 			}
 		} else {

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -14,6 +15,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -70,38 +72,38 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "获取当前人员的委托日志.", action = ActionListWithCurrentPersonPaging.class)
-	@GET
+	@POST
 	@Path("list/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithCurrentPersonPaging(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<List<ActionListWithCurrentPersonPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithCurrentPersonPaging().execute(effectivePerson, page, size);
+			result = new ActionListWithCurrentPersonPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取当前人员的被委托日志.", action = ActionListToCurrentPersonPaging.class)
-	@GET
+	@POST
 	@Path("list/to/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listToCurrentPersonPaging(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+			@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
 		ActionResult<List<ActionListToCurrentPersonPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListToCurrentPersonPaging().execute(effectivePerson, page, size);
+			result = new ActionListToCurrentPersonPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -119,6 +121,25 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员根据条件查询委托日志.", action = ActionManagerListPaging.class)
+	@POST
+	@Path("manager/list/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerlistPaging(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+											@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionManagerListPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerListPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

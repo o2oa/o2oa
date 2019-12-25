@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import com.x.base.core.entity.annotation.CheckPersistType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;

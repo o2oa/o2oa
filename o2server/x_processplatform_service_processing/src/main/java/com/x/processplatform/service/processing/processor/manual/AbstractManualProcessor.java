@@ -1,21 +1,22 @@
 package com.x.processplatform.service.processing.processor.manual;
 
 import java.util.List;
-import java.util.Objects;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.service.processing.ScriptHelper;
-import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -46,10 +47,11 @@ public abstract class AbstractManualProcessor extends AbstractProcessor {
 		if (ListTools.isEmpty(os)) {
 			/** Manual Work 还没有处理完 发生了停留,出发了停留事件 */
 			if (this.hasManualStayScript(manual)) {
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
-				scriptHelper.eval(aeiObjects.getWork().getApplication(),
-						Objects.toString(PropertyUtils.getProperty(manual, Manual.manualStayScript_FIELDNAME)),
-						Objects.toString(PropertyUtils.getProperty(manual, Manual.manualStayScriptText_FIELDNAME)));
+				ScriptContext scriptContext = aeiObjects.scriptContext();
+				CompiledScript cs = null;
+				cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+						aeiObjects.getActivity(), Business.EVENT_MANUALSTAY);
+				cs.eval(scriptContext);
 			}
 		}
 		return os;

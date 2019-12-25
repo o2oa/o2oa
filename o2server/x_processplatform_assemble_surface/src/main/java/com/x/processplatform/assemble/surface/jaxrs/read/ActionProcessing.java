@@ -1,12 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.net.URLEncoder;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -45,7 +44,7 @@ class ActionProcessing extends BaseAction {
 		/* processing read */
 		Wo wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null, read.getJob())
+						Applications.joinQueryUri("read", read.getId(), "processing"), null, read.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;
