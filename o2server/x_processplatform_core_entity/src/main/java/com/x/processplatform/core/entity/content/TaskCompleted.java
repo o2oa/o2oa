@@ -210,8 +210,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
-		// this.manualMode = manual.getManualMode();
-		this.processingType = ProcessingType.sameTarget;
+		// this.processingType = ProcessingType.sameTarget;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
@@ -595,6 +594,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + joinInquire_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean joinInquire;
+
+	public static final String nextTaskIdentityListText_FIELDNAME = "nextTaskIdentityListText";
+	@FieldDescribe("下一环节处理人记录,记录前台处理待办产生的提示.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + nextTaskIdentityListText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String nextTaskIdentityListText;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1424,6 +1431,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setEmpowerFromIdentity(String empowerFromIdentity) {
 		this.empowerFromIdentity = empowerFromIdentity;
+	}
+
+	public String getNextTaskIdentityListText() {
+		return nextTaskIdentityListText;
+	}
+
+	public void setNextTaskIdentityListText(String nextTaskIdentityListText) {
+		this.nextTaskIdentityListText = nextTaskIdentityListText;
 	}
 
 }

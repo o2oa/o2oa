@@ -97,7 +97,7 @@ class ActionAppend extends BaseAction {
 
 								Object objectValue = compiledScript.eval(scriptContext);
 
-								List<String> os = ScriptFactory.extrectDistinguishedNameList(objectValue);
+								List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
 
 								if (ListTools.isNotEmpty(os)) {
 									identities.addAll(os);
@@ -120,22 +120,20 @@ class ActionAppend extends BaseAction {
 								o.setProcessingType(ProcessingType.beAppendedTask);
 							}
 						}
-					}
-					/* 后面还要合并,clone一个新实例 */
-					wo.getValueList().addAll(new ArrayList<>(identities));
-					identities = ListUtils.sum(
-							ListUtils.subtract(work.getManualTaskIdentityList(), ListTools.toList(task.getIdentity())),
-							identities);
-					identities = business.organization().identity().list(ListTools.trim(identities, true, true));
-					emc.beginTransaction(Work.class);
-					for (TaskIdentity o : taskIdentities) {
-						if (StringUtils.isNotEmpty(o.getFromIdentity())) {
-							work.getManualEmpowerMap().put(task.getIdentity(), o.getFromIdentity());
+						/* 后面还要合并,clone一个新实例 */
+						wo.getValueList().addAll(new ArrayList<>(identities));
+						identities = ListUtils.sum(ListUtils.subtract(work.getManualTaskIdentityList(),
+								ListTools.toList(task.getIdentity())), identities);
+						identities = business.organization().identity().list(ListTools.trim(identities, true, true));
+						emc.beginTransaction(Work.class);
+						for (TaskIdentity o : taskIdentities) {
+							if (StringUtils.isNotEmpty(o.getFromIdentity())) {
+								work.getManualEmpowerMap().put(o.getIdentity(), o.getFromIdentity());
+							}
 						}
+						work.setManualTaskIdentityList(identities);
+						emc.commit();
 					}
-					work.setManualTaskIdentityList(identities);
-					emc.commit();
-
 					result.setData(wo);
 				}
 				return result;
@@ -160,24 +158,6 @@ class ActionAppend extends BaseAction {
 		ScriptFactory.initialScriptText().eval(scriptContext);
 		return scriptContext;
 	}
-
-//	public static ScriptHelper createWithTask(Business business, Work work, Data data, Activity activity, Task task,
-//			BindingPair... bindingPairs) throws Exception {
-//		WorkContext workContext = new WorkContext(business, work, activity, task);
-//		Map<String, Object> map = new HashMap<>();
-//		map.put(ScriptingEngine.BINDINGNAME_WORKCONTEXT, workContext);
-//		map.put(ScriptingEngine.BINDINGNAME_DATA, data);
-//		map.put(ScriptingEngine.BINDINGNAME_ORGANIZATION, new Organization(ThisApplication.context()));
-//		map.put(ScriptingEngine.BINDINGNAME_WEBSERVICESCLIENT, new WebservicesClient());
-//		map.put(ScriptingEngine.BINDINGNAME_DICTIONARY,
-//				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
-//		map.put(ScriptingEngine.BINDINGNAME_APPLICATIONS, ThisApplication.context().applications());
-//		for (BindingPair o : bindingPairs) {
-//			map.put(o.getName(), o.getValue());
-//		}
-//		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
-//		return sh;
-//	}
 
 	private TaskIdentities empower(Business business, Task task, List<String> identities) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();

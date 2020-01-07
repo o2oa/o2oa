@@ -35,7 +35,7 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
+			if (!business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
 					attachment.getProcess())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}

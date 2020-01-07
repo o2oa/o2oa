@@ -49,6 +49,9 @@ public class Business {
 	public static final String EVENT_PROCESSAFTEREND = "processAfterEnd";
 	public static final String EVENT_PROCESSEXPIRE = "processExpire";
 	public static final String EVENT_SPLIT = "split";
+	public static final String EVENT_TASKDUTY = "taskDuty";
+	public static final String EVENT_READDUTY = "readDuty";
+	public static final String EVENT_REVIEWDUTY = "reviewDuty";
 
 	private EntityManagerContainer emc;
 

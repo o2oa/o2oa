@@ -1,7 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -17,7 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Process;
@@ -34,9 +31,17 @@ class ActionCloseCheck extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			work = emc.find(id, Work.class);
-			process = business.process().pick(work.getProcess());
+			if (null != work) {
+				process = business.process().pick(work.getProcess());
+			}
 		}
-		wo.setDraft(this.draft(effectivePerson, work, process));
+		if (null != work && null != process) {
+			wo.setDraft(this.draft(effectivePerson, work, process));
+		} else {
+			WoDraft woDraft = new WoDraft();
+			woDraft.setValue(false);
+			wo.setDraft(woDraft);
+		}
 		result.setData(wo);
 		return result;
 	}
@@ -106,30 +111,6 @@ class ActionCloseCheck extends BaseAction {
 	}
 
 	public static class WoDraft extends WrapBoolean {
-
-	}
-
-	public static class WoGrabRelease extends GsonPropertyObject {
-
-		private List<Task> taskList = new ArrayList<>();
-
-		private Boolean release = false;
-
-		public List<Task> getTaskList() {
-			return taskList;
-		}
-
-		public void setTaskList(List<Task> taskList) {
-			this.taskList = taskList;
-		}
-
-		public Boolean getRelease() {
-			return release;
-		}
-
-		public void setRelease(Boolean release) {
-			this.release = release;
-		}
 
 	}
 

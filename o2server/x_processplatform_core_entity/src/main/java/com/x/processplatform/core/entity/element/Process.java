@@ -465,6 +465,26 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String afterInquireScriptText;
 
+	public static final String edition_FIELDNAME = "edition";
+	@FieldDescribe("版本,唯一编码.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
+	private String edition;
+
+	public static final String editionName_FIELDNAME = "editionName";
+	@FieldDescribe("版本名")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + editionName_FIELDNAME)
+	private String editionName;
+
+	public static final String editionEnable_FIELDNAME = "editionEnable";
+	@FieldDescribe("启用版本")
+	@Column(name = ColumnNamePrefix + editionEnable_FIELDNAME)
+	private Boolean editionEnable;
+
+	public static final String editionNumber_FIELDNAME = "editionNumber";
+	@FieldDescribe("版本名")
+	@Column(name = ColumnNamePrefix + editionNumber_FIELDNAME)
+	private Double editionNumber;
+
 	/* flag标志位 */
 
 	public String getName() {
@@ -761,6 +781,38 @@ public class Process extends SliceJpaObject {
 
 	public void setAfterInquireScriptText(String afterInquireScriptText) {
 		this.afterInquireScriptText = afterInquireScriptText;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
+
+	public String getEditionName() {
+		return editionName;
+	}
+
+	public void setEditionName(String editionName) {
+		this.editionName = editionName;
+	}
+
+	public Boolean getEditionEnable() {
+		return editionEnable;
+	}
+
+	public void setEditionEnable(Boolean editionEnable) {
+		this.editionEnable = editionEnable;
+	}
+
+	public Double getEditionNumber() {
+		return editionNumber;
+	}
+
+	public void setEditionNumber(Double editionNumber) {
+		this.editionNumber = editionNumber;
 	}
 
 }

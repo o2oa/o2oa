@@ -156,7 +156,7 @@ class ActionProcessing extends BaseAction {
 						}
 					}
 					MessageFactory.task_to_taskCompleted(taskCompleted);
-					wo.setId(task.getId());
+					wo.setId(taskCompleted.getId());
 				}
 				result.setData(wo);
 				return result;

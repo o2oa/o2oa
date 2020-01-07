@@ -34,9 +34,9 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
-class ActionListWithWorkOrWorkCompleted extends BaseAction {
+class ActionListWithWorkOrWorkCompleted2 extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted2.class);
 
 	private final static String taskList_FIELDNAME = "taskList";
 	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
@@ -76,7 +76,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			List<WoRead> reads = future_reads.get();
 			List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
 			List<WorkLog> workLogs = future_workLogs.get();
-
 			WorkLogTree tree = new WorkLogTree(workLogs);
 
 			List<Wo> wos = new ArrayList<>();
@@ -104,20 +103,21 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						for (Node n : nodes) {
 							tasks.stream().filter(t -> StringUtils.equals(t.getActivityToken(),
 									n.getWorkLog().getFromActivityToken())).forEach(t -> {
-										wo.getNextTaskIdentityList().add(t.getIdentity());
+										wo.getNextManualTaskIdentityList().add(t.getIdentity());
 									});
 							taskCompleteds.stream()
 									.filter(t -> BooleanUtils.isTrue(t.getJoinInquire()) && StringUtils
 											.equals(t.getActivityToken(), n.getWorkLog().getFromActivityToken()))
 									.forEach(t -> {
-										wo.getNextTaskCompletedIdentityList().add(t.getIdentity());
+										wo.getNextManualTaskCompletedIdentityList().add(t.getIdentity());
 									});
 						}
 					}
 				}
 				/* 下一环节处理人可能是重复处理导致重复的,去重 */
-				wo.setNextTaskIdentityList(ListTools.trim(wo.getNextTaskIdentityList(), true, true));
-				wo.setNextTaskCompletedIdentityList(ListTools.trim(wo.getNextTaskCompletedIdentityList(), true, true));
+				wo.setNextManualTaskIdentityList(ListTools.trim(wo.getNextManualTaskIdentityList(), true, true));
+				wo.setNextManualTaskCompletedIdentityList(
+						ListTools.trim(wo.getNextManualTaskCompletedIdentityList(), true, true));
 				wos.add(wo);
 			}
 			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
@@ -223,9 +223,9 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		private List<WoReadCompleted> readCompletedList = new ArrayList<>();
 
-		private List<String> nextTaskIdentityList = new ArrayList<>();
+		private List<String> nextManualTaskIdentityList = new ArrayList<>();
 
-		private List<String> nextTaskCompletedIdentityList = new ArrayList<>();
+		private List<String> nextManualTaskCompletedIdentityList = new ArrayList<>();
 
 		public List<WoTask> getTaskList() {
 			return taskList;
@@ -259,20 +259,20 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			this.readCompletedList = readCompletedList;
 		}
 
-		public List<String> getNextTaskIdentityList() {
-			return nextTaskIdentityList;
+		public List<String> getNextManualTaskIdentityList() {
+			return nextManualTaskIdentityList;
 		}
 
-		public void setNextTaskIdentityList(List<String> nextTaskIdentityList) {
-			this.nextTaskIdentityList = nextTaskIdentityList;
+		public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+			this.nextManualTaskIdentityList = nextManualTaskIdentityList;
 		}
 
-		public List<String> getNextTaskCompletedIdentityList() {
-			return nextTaskCompletedIdentityList;
+		public List<String> getNextManualTaskCompletedIdentityList() {
+			return nextManualTaskCompletedIdentityList;
 		}
 
-		public void setNextTaskCompletedIdentityList(List<String> nextTaskCompletedIdentityList) {
-			this.nextTaskCompletedIdentityList = nextTaskCompletedIdentityList;
+		public void setNextManualTaskCompletedIdentityList(List<String> nextManualTaskCompletedIdentityList) {
+			this.nextManualTaskCompletedIdentityList = nextManualTaskCompletedIdentityList;
 		}
 
 	}
@@ -302,8 +302,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
 						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME,
-						TaskCompleted.empowerFromIdentity_FIELDNAME, TaskCompleted.joinInquire_FIELDNAME,
-						TaskCompleted.nextTaskIdentityListText_FIELDNAME),
+						TaskCompleted.joinInquire_FIELDNAME),
 				null);
 	}
 

@@ -488,7 +488,7 @@ public class ElementFactory extends AbstractFactory {
 
 	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
 		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
-		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
+		Ehcache cache = ApplicationCache.instance().getCache(o.getClass());
 		Element element = cache.get(cacheKey);
 		CompiledScript compiledScript = null;
 		if (null != element && null != element.getObjectValue()) {
@@ -633,7 +633,7 @@ public class ElementFactory extends AbstractFactory {
 
 	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
 		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
-		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
+		Ehcache cache = ApplicationCache.instance().getCache(Route.class);
 		Element element = cache.get(cacheKey);
 		CompiledScript compiledScript = null;
 		if (null != element && null != element.getObjectValue()) {
@@ -737,6 +737,30 @@ public class ElementFactory extends AbstractFactory {
 				}
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
+				}
+				sb.append("}).apply(bind);");
+				compiledScript = ScriptFactory.compile(sb.toString());
+				cache.put(new Element(cacheKey, compiledScript));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+		return compiledScript;
+	}
+
+	public CompiledScript getCompiledScript(Activity activity, String event, String name, String code) {
+		String cacheKey = ApplicationCache.concreteCacheKey(activity.getId(), event, name, code);
+		Ehcache cache = ApplicationCache.instance().getCache(activity.getClass());
+		Element element = cache.get(cacheKey);
+		CompiledScript compiledScript = null;
+		if (null != element && null != element.getObjectValue()) {
+			compiledScript = (CompiledScript) element.getObjectValue();
+		} else {
+			StringBuffer sb = new StringBuffer();
+			try {
+				sb.append("(function(){").append(System.lineSeparator());
+				if (StringUtils.isNotEmpty(code)) {
+					sb.append(code).append(System.lineSeparator());
 				}
 				sb.append("}).apply(bind);");
 				compiledScript = ScriptFactory.compile(sb.toString());
