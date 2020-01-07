@@ -55,6 +55,8 @@ public class ScriptFactory {
 	public static final String BINDING_NAME_SERVICEVALUE = "serviceValue";
 	public static final String BINDING_NAME_TASK = "task";
 	public static final String BINDING_NAME_EXPIRE = "expire";
+	public static final String BINDING_NAME_SERIAL = "serial";
+	public static final String BINDING_NAME_PROCESS = "process";
 
 	public static CompiledScript initialServiceScriptText() throws Exception {
 		if (COMPILEDSCRIPT_INITIALSERVICESCRIPTTEXT == null) {
@@ -194,7 +196,7 @@ public class ScriptFactory {
 		}
 	}
 
-	public static List<String> extrectDistinguishedNameList(Object o) throws Exception {
+	public static List<String> asDistinguishedNameList(Object o) throws Exception {
 		List<String> list = new ArrayList<>();
 		if (null != o) {
 			if (o instanceof CharSequence) {
