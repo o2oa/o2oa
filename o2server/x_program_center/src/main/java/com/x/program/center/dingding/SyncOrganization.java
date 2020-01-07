@@ -190,8 +190,10 @@ public class SyncOrganization {
 		emc.beginTransaction(Unit.class);
 		unit.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(department)));
 		unit.setName(department.getName());
+		business.unit().adjustInherit(unit);
 		emc.check(unit, CheckPersistType.all);
 		emc.commit();
+		this.updateIdentityUnitNameAndUnitLevelName(business, unit);
 		result.getUpdateUnitList().add(unit.getDistinguishedName());
 		return unit;
 	}
@@ -435,6 +437,39 @@ public class SyncOrganization {
 			}
 		}
 		return identity;
+	}
+
+	private void updateIdentityUnitNameAndUnitLevelName(Business business, Unit unit) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		List<Unit> os = new ArrayList<>();
+		os.add(unit);
+		os.addAll(business.unit().listSubNestedObject(unit));
+
+		for (Unit u : os) {
+			List<Identity> identityList = this.pickIdentitiesByUnit(business, u.getId());
+			if (ListTools.isNotEmpty(identityList)) {
+				String _unitName = u.getName();
+				String _unitLevelName = u.getLevelName();
+
+				emc.beginTransaction(Identity.class);
+				for (Identity i : identityList) {
+					i.setUnitName(_unitName);
+					i.setUnitLevelName(_unitLevelName);
+					emc.check(i, CheckPersistType.all);
+				}
+				emc.commit();
+			}
+
+		}
+	}
+
+	private List<Identity> pickIdentitiesByUnit(Business business, String unit) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = cb.equal(root.get(Identity_.unit), unit);
+		return em.createQuery(cq.select(root).where(p)).getResultList();
 	}
 
 	private void clean(Business business, PullResult result, List<Unit> units, List<Person> people,

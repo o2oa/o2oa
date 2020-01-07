@@ -172,8 +172,10 @@ public class SyncOrganization {
 		emc.beginTransaction(Unit.class);
 		unit.setQiyeweixinHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(department)));
 		unit.setName(department.getName());
+		business.unit().adjustInherit(unit);
 		emc.check(unit, CheckPersistType.all);
 		emc.commit();
+		this.updateIdentityUnitNameAndUnitLevelName(business, unit);
 		result.getUpdateUnitList().add(unit.getDistinguishedName());
 		return unit;
 	}
@@ -191,27 +193,41 @@ public class SyncOrganization {
 	}
 
 	private void removeSingleUnit(Business business, PullResult result, Unit unit) throws Exception {
-		logger.print("正在删除单个组织{}.", unit.getDistinguishedName());
+
+		logger.print("正在检查下级组织{}，如果存在下级组织，则先删除下级组织.", unit.getDistinguishedName());
+		List<Unit> subUnits = business.unit().listSubNestedObject(unit);
+		if( ListTools.isNotEmpty( subUnits )){
+			for( Unit subUnit : subUnits ){
+				removeSingleUnit( business, result, subUnit );
+			}
+		}
+
+		logger.print("正在尝试删除单个组织{}.", unit.getDistinguishedName());
 		EntityManagerContainer emc = business.entityManagerContainer();
-		emc.beginTransaction(UnitAttribute.class);
-		emc.beginTransaction(UnitDuty.class);
-		emc.beginTransaction(Identity.class);
-		emc.beginTransaction(Unit.class);
-		for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
-			emc.remove(o, CheckRemoveType.all);
-			result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
+		//检查一下，该组织是否已经被删除过了
+		unit = emc.find( unit.getId(), Unit.class );
+		if( unit != null ){
+			emc.beginTransaction(UnitAttribute.class);
+			emc.beginTransaction(UnitDuty.class);
+			emc.beginTransaction(Identity.class);
+			emc.beginTransaction(Unit.class);
+			for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
+				emc.remove(o, CheckRemoveType.all);
+				result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
+			}
+			for (UnitDuty o : emc.listEqual(UnitDuty.class, UnitDuty.unit_FIELDNAME, unit.getId())) {
+				emc.remove(o, CheckRemoveType.all);
+				result.getRemoveUnitDutyList().add(o.getDistinguishedName());
+			}
+			for (Identity o : emc.listEqual(Identity.class, Identity.unit_FIELDNAME, unit.getId())) {
+				emc.remove(o, CheckRemoveType.all);
+				result.getRemoveIdentityList().add(o.getDistinguishedName());
+			}
+			emc.remove(unit, CheckRemoveType.all);
+			emc.commit();
+			result.getRemoveUnitList().add(unit.getDistinguishedName());
 		}
-		for (UnitDuty o : emc.listEqual(UnitDuty.class, UnitDuty.unit_FIELDNAME, unit.getId())) {
-			emc.remove(o, CheckRemoveType.all);
-			result.getRemoveUnitDutyList().add(o.getDistinguishedName());
-		}
-		for (Identity o : emc.listEqual(Identity.class, Identity.unit_FIELDNAME, unit.getId())) {
-			emc.remove(o, CheckRemoveType.all);
-			result.getRemoveIdentityList().add(o.getDistinguishedName());
-		}
-		emc.remove(unit, CheckRemoveType.all);
-		emc.commit();
-		result.getRemoveUnitList().add(unit.getDistinguishedName());
+
 	}
 
 	private Person checkPerson(Business business, PullResult result, String accessToken, User user) throws Exception {
@@ -425,6 +441,39 @@ public class SyncOrganization {
 			}
 		}
 		return identity;
+	}
+
+	private void updateIdentityUnitNameAndUnitLevelName(Business business, Unit unit) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		List<Unit> os = new ArrayList<>();
+		os.add(unit);
+		os.addAll(business.unit().listSubNestedObject(unit));
+
+		for (Unit u : os) {
+			List<Identity> identityList = this.pickIdentitiesByUnit(business, u.getId());
+			if (ListTools.isNotEmpty(identityList)) {
+				String _unitName = u.getName();
+				String _unitLevelName = u.getLevelName();
+
+				emc.beginTransaction(Identity.class);
+				for (Identity i : identityList) {
+					i.setUnitName(_unitName);
+					i.setUnitLevelName(_unitLevelName);
+					emc.check(i, CheckPersistType.all);
+				}
+				emc.commit();
+			}
+
+		}
+	}
+
+	private List<Identity> pickIdentitiesByUnit(Business business, String unit) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = cb.equal(root.get(Identity_.unit), unit);
+		return em.createQuery(cq.select(root).where(p)).getResultList();
 	}
 
 	private void clean(Business business, PullResult result, List<Unit> units, List<Person> people,

@@ -60,11 +60,12 @@ class ActionExecute extends BaseAction {
 					resources.setApplications(ThisApplication.context().applications());
 					resources.setWebservicesClient(new WebservicesClient());
 					bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
+					bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
 					String cacheKey = ApplicationCache.concreteCacheKey(ActionExecute.class, agent.getId());
 					Element element = CACHE.get(cacheKey);
 					CompiledScript compiledScript = null;
 					if ((null != element) && (null != element.getObjectValue())) {
-						logger.print("has agent cache {}",agent.getId());
+						logger.print("has agent cache {}", agent.getId());
 					}
 					compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
 					CACHE.put(new Element(cacheKey, compiledScript));
