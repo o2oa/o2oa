@@ -560,7 +560,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "将工作召回。", action = ActionReroute.class)
+	@JaxrsMethodDescribe(value = "将工作调度。", action = ActionReroute.class)
 	@PUT
 	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

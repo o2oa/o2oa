@@ -371,7 +371,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取制定人员的已办数量,没有权限限制.", action = ActionCountWithPerson.class)
+	@JaxrsMethodDescribe(value = "获取指定人员的已办数量,没有权限限制.", action = ActionCountWithPerson.class)
 	@GET
 	@Path("count/{credential}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

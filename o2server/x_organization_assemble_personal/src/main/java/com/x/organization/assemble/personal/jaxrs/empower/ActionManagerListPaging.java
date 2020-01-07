@@ -11,8 +11,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.personal.Business;
-import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.accredit.Empower;
 import com.x.organization.core.entity.accredit.Empower_;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +31,6 @@ class ActionManagerListPaging extends BaseAction {
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			EntityManager em = emc.get(Empower.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -40,10 +39,8 @@ class ActionManagerListPaging extends BaseAction {
 			Predicate p = cb.conjunction();
 			if(effectivePerson.isManager()) {
 				if (StringUtils.isNotEmpty(wi.getFromPerson())) {
-					Person person = business.person().pick(wi.getFromPerson());
-					if (person != null){
-						p = cb.and(p, cb.equal(root.get(Empower_.fromPerson), person.getDistinguishedName()));
-					}
+					String key = "%" + StringTools.escapeSqlLikeKey(wi.getFromPerson()) + "%";
+					p = cb.and(p, cb.like(root.get(Empower_.fromPerson), key, StringTools.SQL_ESCAPE_CHAR));
 				}
 			}else{
 				p = cb.and(p, cb.equal(root.get(Empower_.fromPerson), effectivePerson.getDistinguishedName()));
@@ -67,8 +64,8 @@ class ActionManagerListPaging extends BaseAction {
 
 		private static final long serialVersionUID = 4279205128463146835L;
 
-		static WrapCopier<Empower, Wo> copier = WrapCopierFactory.wi(Empower.class, Wo.class,
-				JpaObject.singularAttributeField(Empower.class, true, true), null);
+		static WrapCopier<Empower, Wo> copier = WrapCopierFactory.wi(Empower.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 

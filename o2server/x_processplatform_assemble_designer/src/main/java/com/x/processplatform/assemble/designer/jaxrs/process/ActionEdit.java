@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -88,6 +89,7 @@ class ActionEdit extends BaseAction {
 			update_route(business, wrap.getRouteList(), process);
 			update_service(business, wrap.getServiceList(), process);
 			update_split(business, wrap.getSplitList(), process);
+			this.updateEdition(business, process);
 			emc.commit();
 			cacheNotify();
 			/* 保存历史版本 */
@@ -112,6 +114,16 @@ class ActionEdit extends BaseAction {
 			process.setCreatorPerson(effectivePerson.getDistinguishedName());
 		} else {
 			process.setCreatorPerson(name);
+		}
+	}
+
+	private void updateEdition(Business business, Process process) throws Exception {
+		if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isTrue(process.getEditionEnable())) {
+			for (Process p : business.entityManagerContainer().listEqual(Process.class, Process.edition_FIELDNAME,
+					process.getEdition())) {
+				p.setEditionEnable(false);
+				p.setEditionName(process.getEditionName());
+			}
 		}
 	}
 }

@@ -454,7 +454,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	private Boolean first;
 
 	public static final String workCreateType_FIELDNAME = "workCreateType";
-	@FieldDescribe("工作创建类型,surface,assgin")
+	@FieldDescribe("工作创建类型,surface,assign")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + workCreateType_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + workCreateType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

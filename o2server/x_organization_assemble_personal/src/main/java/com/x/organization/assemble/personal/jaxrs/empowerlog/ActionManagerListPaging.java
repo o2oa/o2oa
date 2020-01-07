@@ -41,10 +41,8 @@ class ActionManagerListPaging extends BaseAction {
 			Predicate p = cb.conjunction();
 			if(effectivePerson.isManager()) {
 				if (StringUtils.isNotEmpty(wi.getFromPerson())) {
-					Person person = business.person().pick(wi.getFromPerson());
-					if (person != null){
-						p = cb.and(p, cb.equal(root.get(EmpowerLog_.fromPerson), person.getDistinguishedName()));
-					}
+					String key = "%" + StringTools.escapeSqlLikeKey(wi.getFromPerson()) + "%";
+					p = cb.and(p, cb.like(root.get(EmpowerLog_.fromPerson), key, StringTools.SQL_ESCAPE_CHAR));
 				}
 			}else{
 				p = cb.and(p, cb.equal(root.get(EmpowerLog_.fromPerson), effectivePerson.getDistinguishedName()));

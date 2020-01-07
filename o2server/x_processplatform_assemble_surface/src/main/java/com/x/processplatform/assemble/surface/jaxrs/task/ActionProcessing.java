@@ -21,6 +21,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
@@ -30,6 +31,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
@@ -48,6 +50,8 @@ class ActionProcessing extends BaseAction {
 		Audit audit = logger.audit(effectivePerson);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Task task = null;
+		String taskCompletedId = null;
+		String nextTaskIdentityListText = null;
 		boolean appendTask = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -58,20 +62,22 @@ class ActionProcessing extends BaseAction {
 			if (!StringUtils.equalsIgnoreCase(task.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
-			emc.beginTransaction(Task.class);
-			/* 如果有输入新的路由决策覆盖原有决策 */
-			if (StringUtils.isNotEmpty(wi.getRouteName())) {
-				task.setRouteName(wi.getRouteName());
+			if (StringUtils.isNotEmpty(wi.getRouteName()) || StringUtils.isNotEmpty(wi.getOpinion())
+					|| (!StringUtils.equals(task.getMediaOpinion(), wi.getMediaOpinion()))) {
+				emc.beginTransaction(Task.class);
+				/* 如果有输入新的路由决策覆盖原有决策 */
+				if (StringUtils.isNotEmpty(wi.getRouteName())) {
+					task.setRouteName(wi.getRouteName());
+				}
+				/* 如果有新的流程意见那么覆盖原有流程意见 */
+				if (StringUtils.isNotEmpty(wi.getOpinion())) {
+					task.setOpinion(wi.getOpinion());
+				}
+				/* 强制覆盖多媒体意见 */
+				task.setMediaOpinion(wi.getMediaOpinion());
+				emc.commit();
 			}
-			/* 如果有新的流程意见那么覆盖原有流程意见 */
-			if (StringUtils.isNotEmpty(wi.getOpinion())) {
-				task.setOpinion(wi.getOpinion());
-			}
-			/* 强制覆盖多媒体意见 */
-			task.setMediaOpinion(wi.getMediaOpinion());
-			emc.commit();
-
-			appendTask = this.appendTask(business, task, wi);
+			appendTask = this.ifAppendTask(business, task, wi);
 		}
 		if (appendTask) {
 			ReqAppendTask req = new ReqAppendTask();
@@ -94,6 +100,9 @@ class ActionProcessing extends BaseAction {
 				.getData(WoId.class);
 		if (StringUtils.isBlank(taskProcessingResp.getId())) {
 			throw new ExceptionTaskProcessing(task.getId());
+		} else {
+			/* 获得已办id */
+			taskCompletedId = taskProcessingResp.getId();
 		}
 
 		WoId workProcessingResp = ThisApplication.context().applications()
@@ -119,15 +128,18 @@ class ActionProcessing extends BaseAction {
 				Node node = tree.find(currentWorkLog);
 				if (null != node) {
 					List<WoTask> woTasks = new ArrayList<>();
-					List<String> activityTokens = new ArrayList<>();
-					for (Node n : node.downNextManual()) {
-						activityTokens.add(n.getWorkLog().getFromActivityToken());
+					woTasks.addAll(emc.fetchEqualAndEqual(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
+							Task.work_FIELDNAME, node.getWorkLog().getWork()));
+					if (woTasks.isEmpty()) {
+						List<String> activityTokens = new ArrayList<>();
+						for (Node n : node.downNextManual()) {
+							activityTokens.add(n.getWorkLog().getFromActivityToken());
+						}
+						woTasks.addAll(emc.fetchEqualAndIn(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
+								Task.activityToken_FIELDNAME, activityTokens));
 					}
-					woTasks.addAll(emc.fetchEqualAndIn(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
-							Task.activityToken_FIELDNAME, activityTokens));
-//					woTasks.addAll(emc.fetchEqualAndEqual(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
-//							Task.work_FIELDNAME, node.getWorkLog().getWork()));
 					woTasks = ListTools.trim(woTasks, true, true);
+					List<String> identities = new ArrayList<>();
 					for (Entry<String, List<WoTask>> en : woTasks.stream()
 							.collect(Collectors.groupingBy(WoTask::getActivity)).entrySet()) {
 						Wo wo = new Wo();
@@ -135,16 +147,31 @@ class ActionProcessing extends BaseAction {
 						wo.setActivityName(en.getValue().get(0).getActivityName());
 						wo.setTaskList(en.getValue());
 						wos.add(wo);
+						for (WoTask o : en.getValue()) {
+							identities.add(o.getIdentity());
+						}
 					}
+					nextTaskIdentityListText = StringUtils.join(ListTools.trim(identities, true, true), ",");
 				}
 			}
 			result.setData(wos);
 		}
+		/* 记录下一处理人信息 */
+		if (StringUtils.isNotEmpty(taskCompletedId) && StringUtils.isNotEmpty(nextTaskIdentityListText)) {
+			TaskCompleted taskCompletedUdateReq = new TaskCompleted();
+			taskCompletedUdateReq.setNextTaskIdentityListText(nextTaskIdentityListText);
+			ThisApplication.context().applications()
+					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+							Applications.joinQueryUri("taskcompleted", taskCompletedId, "nexttaskidentitylisttext"),
+							taskCompletedUdateReq, task.getJob())
+					.getData(WrapBoolean.class);
+		}
+
 		audit.log(null, "审批");
 		return result;
 	}
 
-	private boolean appendTask(Business business, Task task, Wi wi) throws Exception {
+	private boolean ifAppendTask(Business business, Task task, Wi wi) throws Exception {
 		Manual manual = business.manual().pick(task.getActivity());
 		if (null != manual) {
 			Route route = null;
@@ -201,7 +228,7 @@ class ActionProcessing extends BaseAction {
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
 				ListTools.toList(Task.id_FIELDNAME, Task.activity_FIELDNAME, Task.activityName_FIELDNAME,
-						Task.person_FIELDNAME, Task.unit_FIELDNAME),
+						Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME),
 				null);
 
 	}
