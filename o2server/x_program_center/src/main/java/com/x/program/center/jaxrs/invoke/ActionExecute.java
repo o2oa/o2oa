@@ -89,6 +89,7 @@ class ActionExecute extends BaseAction {
 			bindings.put("requestText", gson.toJson(jsonElement));
 			bindings.put("request", request);
 			bindings.put("effectivePerson", effectivePerson);
+			bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
 			CustomResponse customResponse = new CustomResponse();
 			bindings.put("customResponse", customResponse);
 			Wo wo = new Wo();
