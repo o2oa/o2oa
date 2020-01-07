@@ -12,7 +12,6 @@ ext {
     signingConfigStorePassword = ""
 
     jpushAppKey = ""
-    pgyAppId = ""
     baiduSpeechAppId = ""
     baiduSpeechSecret = ""
     baiduSpeechAppKey = ""
@@ -33,7 +32,6 @@ def loadProperties() {
 
     //release key
     project.jpushAppKey = properties.getProperty("JPUSH_APPKEY")
-    project.pgyAppId = properties.getProperty("PGY_APP_ID")
     project.baiduSpeechAppId = properties.getProperty("BAIDU_SPEECH_APPID")
     project.baiduSpeechSecret = properties.getProperty("BAIDU_SPEECH_SECRET")
     project.baiduSpeechAppKey = properties.getProperty("BAIDU_SPEECH_APPKEY")
@@ -107,13 +105,12 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "Boolean", "InnerServer", "false"
+            buildConfigField "Boolean", "InnerServer", "true"
             buildConfigField "Boolean", "LOG_ENABLE", "true"
             buildConfigField "Boolean", "LOG_FILE", "true"
             manifestPlaceholders = [JPUSH_PKGNAME      : defaultConfig.applicationId,
                                     JPUSH_APPKEY       : project.jpushAppKey,
                                     JM_IM_USER_PASSWORD: project.jpushIMPassword,
-                                    PGY_APP_ID         : project.pgyAppId,
                                     BAIDU_SPEECH_APPID : project.baiduSpeechAppId,
                                     BAIDU_SPEECH_SECRET: project.baiduSpeechSecret,
                                     BAIDU_SPEECH_APPKEY: project.baiduSpeechAppKey,
@@ -128,7 +125,6 @@ android {
             manifestPlaceholders = [JPUSH_PKGNAME      : defaultConfig.applicationId,
                                     JPUSH_APPKEY       : project.jpushAppKey,
                                     JM_IM_USER_PASSWORD: project.jpushIMPassword,
-                                    PGY_APP_ID         : project.pgyAppId,
                                     BAIDU_SPEECH_APPID : project.baiduSpeechAppId,
                                     BAIDU_SPEECH_SECRET: project.baiduSpeechSecret,
                                     BAIDU_SPEECH_APPKEY: project.baiduSpeechAppKey,
@@ -200,13 +196,13 @@ dependencies {
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/bdasr_V3_20180320_9066860.jar')
     implementation files('libs/com.baidu.tts_2.3.1.20170808_e39ea89.jar')
-    implementation files('libs/pgyer_sdk_2.2.2.jar')
     implementation files('libs/zxing.jar')
     implementation files('libs/pinyin4j-2.5.0.jar')
     implementation files('libs/universal-image-loader-1.9.5.jar')
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1072_43646_sharewithdownloadwithfile_withoutGame_obfs_20190429_175122.jar')
     implementation(name: 'material-calendarview-fancy-1.1', ext: 'aar')
-    implementation(name: 'o2_auth_sdk-release', ext: 'aar')
+//    implementation(name: 'o2_auth_sdk-release', ext: 'aar')
+    implementation project(path: ':o2_auth_sdk')
 
     implementation(name: 'flutterpack-release', ext: 'aar')
     implementation(name: 'shared_preferences-release', ext: 'aar')
@@ -251,7 +247,10 @@ dependencies {
 
     implementation 'com.tencent.bugly:crashreport:2.6.6'
 
-    //极光推送
+
+
+
+    //
     implementation 'cn.jiguang.sdk:jpush:3.1.2'
     implementation 'cn.jiguang.sdk:jmessage:2.5.0'
 
@@ -270,7 +269,7 @@ dependencies {
     //滚动选择器
     implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
 
-    //activity result
+    //链式方式获取Activity返回结果
     implementation 'com.github.lwugang:ActivityResult:59b23e3682'
 
     //google architecture component
@@ -297,6 +296,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     implementation 'com.google.code.gson:gson:2.8.5'
+
 
 
 }

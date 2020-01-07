@@ -33,6 +33,7 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
 
 
     override fun save(workId: String, formData: String) {
+        XLog.debug("save ....... workid:$workId formData:$formData")
         if (TextUtils.isEmpty(workId) || TextUtils.isEmpty(formData)) {
             mView?.invalidateArgs()
             XLog.error("arguments is null  workid:$workId， formData:$formData")

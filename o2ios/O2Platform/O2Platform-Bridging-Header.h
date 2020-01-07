@@ -7,8 +7,7 @@
 #import "MJRefresh.h"
 #import "InputView.h"
 
-#import <PgySDK/PgyManager.h>
-#import <PgyUpdate/PgyUpdateManager.h>
+
 #import "SZKCleanCache.h"
 #import "ZSSRichTextEditor.h"
 //jPush

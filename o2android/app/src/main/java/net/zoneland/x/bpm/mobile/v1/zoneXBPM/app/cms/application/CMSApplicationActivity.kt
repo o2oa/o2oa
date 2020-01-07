@@ -173,6 +173,7 @@ class CMSApplicationActivity : BaseMVPActivity<CMSApplicationContract.View, CMSA
 
 
     private fun showPublishCategoriesList() {
+        //处理绑定流程的那些发布
         val items = canPublishCategories.map { it.categoryName }
         BottomSheetMenu(this)
                 .setTitle("选择发布的分类")

@@ -13,8 +13,6 @@ import Foundation
 let O2IsConnect2Collect = true
 
 //一些常量
-//友盟及蒲公英相应的KEY
-let PGY_APP_ID = "84492f465f8f4fb11b8486dc50bf4a38"
 //bugly
 let BUGLY_ID = "0bc87f457b"
 //极光

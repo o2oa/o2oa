@@ -42,8 +42,13 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
         initBiometryAuthView()
 
 
-        rl_account_security_bind_device_btn.setOnClickListener {
-            go<DeviceManagerActivity>()
+        if (BuildConfig.InnerServer) {
+            ll_account_security_bind_device_layout.gone()
+        }else {
+            ll_account_security_bind_device_layout.visible()
+            rl_account_security_bind_device_btn.setOnClickListener {
+                go<DeviceManagerActivity>()
+            }
         }
 
     }

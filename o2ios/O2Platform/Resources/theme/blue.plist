@@ -15,12 +15,12 @@
 		<string>pic_oval_blue</string>
 		<key>icon_yingyong_pro</key>
 		<string>icon_yingyong_pro_blue</string>
-		<key>icon_daka_pro</key>
-		<string>icon_daka_pro_blue</string>
-		<key>icon_tongji_pro</key>
-		<string>icon_tongji_pro_blue</string>
-		<key>icon_setup_pre</key>
-		<string>icon_setup_pre_blue</string>
+		<key>at_daka</key>
+		<string>at_daka_blue</string>
+		<key>at_tongji</key>
+		<string>at_tongji_blue</string>
+		<key>at_setting</key>
+		<string>at_setting_blue</string>
 		<key>Shapes</key>
 		<string>Shapes_blue</string>
 		<key>pic_beijing1</key>

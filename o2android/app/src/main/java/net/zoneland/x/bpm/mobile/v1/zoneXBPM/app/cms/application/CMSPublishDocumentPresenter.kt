@@ -1,8 +1,13 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.application
 
+import android.text.TextUtils
+import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessStartBo
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessWorkData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import okhttp3.MediaType
@@ -48,14 +53,39 @@ class CMSPublishDocumentPresenter : BasePresenterImpl<CMSPublishDocumentContract
                         if (id!=null) {
                             mView?.newDocumentId(id.id)
                         }else {
-                            mView?.newDocumentFail()
+                            mView?.newDocumentFail("没有返回文档Id！")
                         }
                     }
                     onError { e, isNetworkError ->
                         XLog.error("保存文档错误, netErr: $isNetworkError", e)
-                        mView?.newDocumentFail()
+                        mView?.newDocumentFail(e?.message ?: "")
                     }
                 }
+    }
+
+    override fun startProcess(title: String, identifyId: String, processId: String) {
+        if (TextUtils.isEmpty(identifyId) || TextUtils.isEmpty(processId)) {
+            mView?.startProcessFail("传入参数为空，无法启动流程，identity:$identifyId,processId:$processId")
+            return
+        }
+        val body = ProcessStartBo()
+        body.title = title
+        body.identity = identifyId
+        getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service ->
+            service.startProcess(processId, body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ResponseHandler<List<ProcessWorkData>> { list ->
+                        try {
+                            mView?.startProcessSuccess(list[0].taskList[0].work, title)
+                        } catch (e: Exception) {
+                            XLog.error("", e)
+                            mView?.startProcessFail("返回数据异常！${e.message}")
+                        }
+                    }, ExceptionHandler(mView?.getContext()) { e ->
+                        mView?.startProcessFail(e.message ?: "")
+                    })
+        }
     }
 
 }

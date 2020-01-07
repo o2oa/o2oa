@@ -1,0 +1,86 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "27.0.3"
+
+
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    //http框架
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'io.reactivex:rxjava:1.1.6'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+
+    implementation('com.github.bumptech.glide:glide:3.7.0') {
+        force = true
+    }
+}
+
+//添加以下方法
+//在 build/libs 目录下生成 makeKotlinJar.jar 文件
+// 这种方式生成的jar文件如果被kotlin app项目引用,则会出现kotlin库重复的错误,所以生成的jar
+//task makeJar(type: Jar) {
+//    delete('build/libs/o2_auth_sdk.jar')
+//    archiveName 'o2_auth_sdk.jar'
+//    //添加项目中java生成的class文件目录
+//    from('build/intermediates/classes/release/')
+//    //添加项目中kotlin生成的class文件目录
+//    from('build/tmp/kotlin-classes/release')
+////    添加Kotlin库(方法1)
+//    from {
+//        String[] include = [
+//                "kotlin-stdlib-${kotlin_version}.jar"
+//        ]
+//        configurations.compile
+//                .findAll { include.contains(it.name) }
+//                .collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//
+//    destinationDir = file('build/libs')
+//
+//    exclude('android/**')
+//
+//    include('**/**')
+//
+//}
+//
+//makeJar.dependsOn(build)
+
+// 将打包好的aar包拷贝到app下
+task copy2App(type: Copy) {
+    from 'build/outputs/aar/o2_auth_sdk-release.aar'
+    into '../app/libs'
+}
+
+copy2App.dependsOn(assemble)
+

@@ -12,8 +12,37 @@ import O2OA_Auth_SDK
 
 // MARK:- 所有调用的API枚举
 enum OOCloudStorageAPI {
-    // 获取当前人员的顶层文件 - jaxrs/complex/top
+    //新版
     case listTop
+    case listFolderTop
+    case listByFolder(String)
+    case listFolderByFolder(String)
+    case createFolder(String, String)
+    case getFile(String)
+    // folderId, fileName , file
+    case uploadFile(String, String, Data)
+    //fileId, file
+    case updateFile(String, OOAttachment)
+    //folderId folder
+    case updateFolder(String, OOFolder)
+    case deleteFolder(String)
+    case deleteFile(String)
+    //分享
+    case share(OOShareForm)
+    //分类查询 分页 type: String, page: Int, count: Int
+    case listTypeByPage(String, Int, Int)
+    case downloadFile(OOAttachment)
+    //fileType = attachment | folder
+    case shareToMe(String)
+    //fileType = attachment | folder
+    case myShareList(String)
+    case shareFileListWithFolderId(String, String)
+    case shareFolderListWithFolderId(String, String)
+    case shieldShare(String)
+    case deleteMyShare(String)
+    
+    
+    //老版
     //获取当前人员顶层文件夹 - jaxrs/complex/folder/##id##
     case listFolder(String)
     //jaxrs/share/list
@@ -61,11 +90,48 @@ extension OOCloudStorageAPI:TargetType{
         let baseURLString = "\(model?.httpProtocol ?? "http")://\(model?.host ?? ""):\(model?.port ?? 0)\(model?.context ?? "")"
         return URL(string: baseURLString)!
     }
-    
+   
     var path: String {
         switch self {
         case .listTop:
-            return "/jaxrs/complex/top"
+            return "/jaxrs/attachment2/list/top"
+        case .listFolderTop:
+            return "/jaxrs/folder2/list/top"
+        case .listByFolder(let folderId):
+            return "/jaxrs/attachment2/list/folder/\(folderId)"
+        case .listFolderByFolder(let folderId):
+            return "/jaxrs/folder2/list/\(folderId)"
+        case .createFolder(_, _):
+            return "/jaxrs/folder2"
+        case .uploadFile(let folderId, _, _):
+            return "/jaxrs/attachment2/upload/folder/\(folderId)"
+        case .updateFile(let fileId, _), .deleteFile(let fileId):
+            return "/jaxrs/attachment2/\(fileId)"
+        case .getFile(let fileId):
+            return "jaxrs/attachment2/\(fileId)"
+        case .updateFolder(let folderId, _), .deleteFolder(let folderId):
+            return "/jaxrs/folder2/\(folderId)"
+        case .share(_):
+            return "/jaxrs/share"
+        case .listTypeByPage(_, let page, let count):
+            return "/jaxrs/attachment2/list/type/\(page)/size/\(count)"
+        case .downloadFile(let file):
+            return "/jaxrs/attachment2/\(file.id!)/download/stream"
+        case .shareToMe(let fileType):
+            return "/jaxrs/share/list/to/me2/\(fileType)"
+        case .myShareList(let fileType):
+            return "/jaxrs/share/list/my2/member/\(fileType)"
+        case .shareFolderListWithFolderId(let shareId, let folderId):
+            return "/jaxrs/share/list/folder/share/\(shareId)/folder/\(folderId)/"
+        case .shareFileListWithFolderId(let shareId, let folderId):
+            return "/jaxrs/share/list/att/share/\(shareId)/folder/\(folderId)/"
+        case .shieldShare(let shareId):
+            return "/jaxrs/share/shield/\(shareId)"
+        case .deleteMyShare(let shareId):
+            return "/jaxrs/share/\(shareId)"
+            
+            
+            
         case .listFolder(let folderId):
             return "/jaxrs/complex/folder/\(folderId)"
         case .listMyShare:
@@ -93,9 +159,9 @@ extension OOCloudStorageAPI:TargetType{
     
     var method: Moya.Method {
         switch self {
-        case .listTop:
+        case .listTop, .listFolderTop, .listByFolder(_), .listFolderByFolder(_), .downloadFile(_), .getFile(_):
            return .get
-        case .listFolder(_):
+        case .listFolder(_), .shareToMe(_), .myShareList(_), .shareFileListWithFolderId(_, _), .shareFolderListWithFolderId(_, _), .shieldShare(_):
             return .get
         case .listMyShare:
             return .get
@@ -109,88 +175,60 @@ extension OOCloudStorageAPI:TargetType{
             return .get
         case .getPicItemURL(_):
             return .get
-        case .deleteAttachement(_):
+        case .deleteAttachement(_), .updateFolder(_, _), .updateFile(_, _):
             return .put
-        case .renameAttachment(_):
+        case .uploadAttachment(_), .downloadAttachment(_),
+            .renameAttachment(_), .createFolder(_, _), .uploadFile(_,_,_), .share(_),.listTypeByPage(_, _, _):
             return .post
-        case .downloadAttachment(_):
-            return .post
-        case .uploadAttachment(_):
-            return .post
+        case .deleteFolder(_), .deleteFile(_), .deleteMyShare(_):
+            return .delete
         }
     }
     
     var sampleData: Data {
-        switch self {
-        case .listTop:
-            if let topFile = Bundle.main.path(forResource: "toplist", ofType: "json") {
-                return FileManager.default.contents(atPath: topFile)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .listFolder(_):
-            if let folderFile = Bundle.main.path(forResource: "folder", ofType: "json") {
-                return FileManager.default.contents(atPath: folderFile)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .listMyShare:
-            if let file = Bundle.main.path(forResource: "myshareEditorList", ofType: "json") {
-                return FileManager.default.contents(atPath: file)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .listMyEditor:
-            if let file = Bundle.main.path(forResource: "myshareEditorList", ofType: "json") {
-                return FileManager.default.contents(atPath: file)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .listMyShareByPerson(_):
-            if let file = Bundle.main.path(forResource: "myshareEditorByPerson", ofType: "json") {
-                return FileManager.default.contents(atPath: file)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .listMyEditorByPerson(_):
-            if let file = Bundle.main.path(forResource: "myshareEditorByPerson", ofType: "json") {
-                return FileManager.default.contents(atPath: file)!
-            }else{
-                return "".data(using: String.Encoding.utf8)!
-            }
-        case .getAttachment(_):
-            return "".data(using: String.Encoding.utf8)!
-        case .getPicItemURL(_):
-            return "".data(using: String.Encoding.utf8)!
-        case .deleteAttachement(_):
-            return "".data(using: String.Encoding.utf8)!
-        case .renameAttachment(_):
-            return "".data(using: String.Encoding.utf8)!
-        case .downloadAttachment(_):
-            return "".data(using: String.Encoding.utf8)!
-        case .uploadAttachment(_):
-            return "".data(using: String.Encoding.utf8)!
-        }
+        return "".data(using: String.Encoding.utf8)!
     }
     
     var task: Task {
         switch self {
-        case .listTop,.listFolder(_),.listMyEditorByPerson(_),.listMyShareByPerson(_),
-             .listMyEditor,.listMyShare,.getAttachment(_),.deleteAttachement(_),.getPicItemURL(_):
+        case .listFolderByFolder(_), .listByFolder(_), .listTop,.listFolderTop,.listFolder(_),.listMyEditorByPerson(_),.listMyShareByPerson(_),
+             .listMyEditor,.listMyShare,.getAttachment(_),.deleteAttachement(_),.getPicItemURL(_), .deleteFolder(_), .deleteFile(_),
+             .getFile(_), .shareFileListWithFolderId(_, _), .shareFolderListWithFolderId(_, _):
             return .requestPlain
+        case .shareToMe(_):
+            return .requestPlain
+        case .myShareList(_), .deleteMyShare(_), .shieldShare(_):
+            return .requestPlain
+        case .downloadFile(let attachment):
+            let myDest = getDownDest(attachment)
+            return .downloadDestination(myDest)
         case .downloadAttachment(let attachment):
-//            let myDest:DownloadDestination = { temporaryURL, response in
-//                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//                let fileName = "\(attachment.name!).\(attachment.`extension`!)"
-//                let fileURL = documentsURL.appendingPathComponent("O2").appendingPathComponent(fileName)
-//                return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
-//            }
             let myDest = getDownDest(attachment)
             return .downloadDestination(myDest)
         case .renameAttachment(_):
             return .requestPlain
         case .uploadAttachment(_):
             return .requestPlain
+            
+        //新接口
+        case .createFolder(let name, let superior):
+            return .requestParameters(parameters: ["name":name, "superior": superior], encoding: JSONEncoding.default)
+        case .uploadFile(_, let fileName, let data):
+            //字符串类型 文件名
+            let strData = fileName.data(using: .utf8)
+            let fileNameData = MultipartFormData(provider: .data(strData!), name: "fileName")
+            //文件类型
+            let fileData = MultipartFormData(provider: .data(data), name: "file", fileName: fileName)
+            return .uploadMultipart([fileData, fileNameData])
+            
+        case .updateFolder(_, let folder):
+            return .requestParameters(parameters: folder.toJSON()!, encoding: JSONEncoding.default)
+        case .updateFile(_, let file):
+            return .requestParameters(parameters: file.toJSON()!, encoding: JSONEncoding.default)
+        case .share(let form):
+            return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
+        case .listTypeByPage(let type, _, _):
+            return .requestParameters(parameters: ["fileType": type], encoding: JSONEncoding.default)
         }
     }
     
@@ -200,11 +238,8 @@ extension OOCloudStorageAPI:TargetType{
     
     func getDownDest(_ attachment:OOAttachment) -> DownloadDestination {
         let myDest:DownloadDestination = { temporaryURL, response in
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let fileName = "\(attachment.name!).\(attachment.`extension`!)"
-            let fileURL = documentsURL.appendingPathComponent("O2").appendingPathComponent("cloud").appendingPathComponent(fileName)
+            let fileURL = O2CloudFileManager.shared.cloudFileLocalPath(file: attachment)
             return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
-            
         }
         return myDest
     }

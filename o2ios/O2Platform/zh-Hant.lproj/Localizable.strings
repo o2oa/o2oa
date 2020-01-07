@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  O2Platform
+
+  Created by FancyLou on 2019/4/18.
+  Copyright © 2019 zoneland. All rights reserved.
+*/
+"Done" = "完成";
+"OK" = "確定";
+"Cancel" = "取消";
+"Title" = "標題";
+"Update" = "更新";
+"Clear Photo" = "清除照片";
+"Share" = "分享";
+"Delete" = "刪除";
+"Alert" = "提示";
+"Choose" = "選擇";
+
+//云盘
+"Cloud Files" = "雲盤";
+"All File" = "全部文件";
+"Upload File" = "上載文件";
+"New Folder" = "新建文件夾";
+"New" = "新建";
+"Create Folder Error Message" = "創建文件夾失敗！";
+"Rename" = "重命名";
+"Move" = "移動";
+"Share Delete" = "撤回分享";
+"Shield Share" = "屏蔽分享";
+"Empty name Error Message" = "名稱不能為空 ！";
+"Delete Items Confirm Message" = "確定要刪除這些數據嗎？";
+"Choose Move Position" = "選擇移動位置";
+"Cloud File Type Image" = "圖片";
+"Cloud File Type Video" = "視頻";
+"Cloud File Type Music" = "音樂";
+"Cloud File Type Document" = "文檔";
+"Cloud File Type Other" = "其它";
+"Cloud File Share To Me" = "分享給我的";
+"Cloud File My Share Files" = "我分享的";
+"Delete My Share File Confirm Message" = "確定要取消這些分享數據嗎？";
+"Shield Share File Confirm Message" = "確定要屏蔽這些分享給你的數據嗎？";

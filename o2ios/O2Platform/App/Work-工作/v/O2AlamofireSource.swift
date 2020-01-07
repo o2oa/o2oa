@@ -74,6 +74,7 @@ public class O2AlamofireSource: NSObject, InputSource {
         var urlRequest = URLRequest(url: self.url)
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         imageView.af_setImage(withURLRequest: urlRequest, placeholderImage: UIImage(named: "pic_lunbo_1"), filter: imageFilter, progress: nil, progressQueue: DispatchQueue.main, imageTransition: .crossDissolve(0.1), runImageTransitionIfCached: false) { (response) in
+            print(response)
             if let value = response.result.value {
                 let newImage = value
                 // let newImage = UIImage.scaleTo(image: value, w: SCREEN_WIDTH , h: self.imageHeight)

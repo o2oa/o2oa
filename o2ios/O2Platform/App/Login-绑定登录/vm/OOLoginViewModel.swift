@@ -59,7 +59,7 @@ extension OOLoginViewModel {
                     nativeList.forEachEnumerated { (index, app) in
                         if app.enable == true {
                             let nApp = O2App(title: app.name, appId: app.key, storyBoard: app.iOS?.storyboard, vcName: app.iOS?.vcname, segueIdentifier: nil, normalIcon: "icon_\(app.key!)", selectedIcon: "icon_\(app.key!)", customParameter: nil, order: currentIndex, mainOrder: currentIndex)
-                            OOAppsInfoDB.shareInstance.insertData(nApp)
+                            DBManager.shared.insertData(nApp)
                             currentIndex += 1
                             existApps.append(app.key!)
                         }
@@ -71,14 +71,14 @@ extension OOLoginViewModel {
                         let status = "{'portalId':'"+o2app2.id!+"'}"
                         let weburl = AppDelegate.o2Collect.genrateURLWithWebContextKey(DesktopContext.DesktopContextKey, query: DesktopContext.appDetailQuery, parameter: ["##status##":status as AnyObject],covertd:false)
                         let app = O2App(title: o2app2.name!, appId:o2app2.id!, storyBoard: "webview", vcName: weburl!, segueIdentifier: "showMailSegue", normalIcon: "icon_youjian", selectedIcon: "icon_youjian", order: currentIndex, mainOrder: currentIndex)
-                        OOAppsInfoDB.shareInstance.insertData(app)
+                        DBManager.shared.insertData(app)
                         currentIndex += 1
                         existApps.append(o2app2.id!)
                     }
                 }
                 
                 // 删除配置中不存在的 或者 不需要显示的应用
-                OOAppsInfoDB.shareInstance.deleteNotExistApp(existApps)
+                DBManager.shared.deleteNotExistApp(existApps)
             }
         }else {
             DDLogError("不需要更新数据？？？？？？？")

@@ -44,9 +44,9 @@ extension O2DesktopAPI:TargetType {
     var path: String {
         switch self {
         case .todoItemDetail(let workid):
-            return "/workmobile.html?workid=\(workid)&\(String.randomString(length: 6))"
+            return "/workmobilewithaction.html?workid=\(workid)&\(String.randomString(length: 6))"
         case .todoedItemDetail(let workCompletedId):
-            return "/workmobile.html?workCompletedId=\(workCompletedId)&\(String.randomString(length: 6))"
+            return "/workmobilewithaction.html?workcompletedid=\(workCompletedId)&\(String.randomString(length: 6))"
         case .bbsItemDetail(let subjectId):
             return "/forumdocMobile.html?id=\(subjectId)&\(String.randomString(length: 6))"
         case .cmsItemDetail(let documentId):

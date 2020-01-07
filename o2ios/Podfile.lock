@@ -36,7 +36,6 @@ PODS:
   - ImageSlideshow/Core (1.7.0)
   - IQKeyboardManagerSwift (6.2.0)
   - JTCalendar (2.2.3)
-  - JZCalendarWeekView (0.5.4)
   - MBProgressHUD (1.0.0)
   - MJRefresh (3.2.0)
   - Moya (13.0.1):
@@ -92,7 +91,6 @@ DEPENDENCIES:
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
   - JTCalendar (~> 2.0)
-  - JZCalendarWeekView (~> 0.4)
   - MBProgressHUD (~> 1.0.0)
   - MJRefresh
   - Moya (~> 13.0)
@@ -132,7 +130,6 @@ SPEC REPOS:
     - ImageSlideshow
     - IQKeyboardManagerSwift
     - JTCalendar
-    - JZCalendarWeekView
     - MBProgressHUD
     - MJRefresh
     - Moya
@@ -184,7 +181,6 @@ SPEC CHECKSUMS:
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
-  JZCalendarWeekView: 6a2e05ce2ae77d98c719d4236385edcef3da28e0
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MJRefresh: ed450d6eb9d3346a2cb033ab7eb6de090aeef437
   Moya: f4a4b80ff2f8a4ffc208dfb31cd91636622fee6e
@@ -206,6 +202,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: 5c693709a94fd1b732b9b1f3e27732c673d2c11b
+PODFILE CHECKSUM: db6dc37779e3ff6c2f895a785cf1e5e8d9415f5c
 
 COCOAPODS: 1.5.0

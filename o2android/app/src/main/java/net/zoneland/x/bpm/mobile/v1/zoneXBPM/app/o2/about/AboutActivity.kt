@@ -9,15 +9,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.widget.TextView
-import com.pgyersdk.update.PgyUpdateManager
-import com.pgyersdk.update.UpdateManagerListener
 import kotlinx.android.synthetic.main.content_about.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2CustomStyle
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.DownloadAPKFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.DownloadAPKService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.PgyUpdateBean
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.O2AppUpdateBean
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
@@ -59,11 +55,6 @@ class AboutActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        PgyUpdateManager.unregister()
-    }
-
 
     /**
      * 检查应用是否需要更新
@@ -102,39 +93,26 @@ class AboutActivity : AppCompatActivity() {
         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
         startActivityForResult(intent, 10086)
     }
-    private fun checkAppUpdate(noUpdateIsNotify: Boolean = false, callbackContinue:((flag: Boolean)->Unit)? = null) {
-        PgyUpdateManager.register(this, object : UpdateManagerListener() {
-            override fun onUpdateAvailable(p0: String?) {
-                XLog.debug("onUpdateAvailable $p0")
-                val bean = O2SDKManager.instance().gson.fromJson(p0, PgyUpdateBean::class.java)
-                versionName = bean.data.versionName
-                downloadUrl = bean.data.downloadURL
+    private fun checkAppUpdate(callbackContinue:((flag: Boolean)->Unit)? = null) {
+        O2AppUpdateManager.instance().checkUpdate(this, object : O2AppUpdateCallback {
+            override fun onUpdate(version: O2AppUpdateBean) {
+                XLog.debug("onUpdateAvailable $version")
+                versionName = version.versionName
+                downloadUrl = version.downloadUrl
                 XLog.info("versionName:$versionName, downloadUrl:$downloadUrl")
-                if (bean != null) {
-                    val currentversionName = AndroidUtils.getAppVersionName(this@AboutActivity)
-                    if (currentversionName != versionName) {
-                        O2DialogSupport.openConfirmDialog(this@AboutActivity,"版本 $versionName 更新："+ bean.data.releaseNote, listener = { _ ->
-                            XLog.info("notification is true..........")
-                            callbackContinue?.invoke(true)
-                        }, icon = O2AlertIconEnum.UPDATE, negativeListener = { _->
-                            callbackContinue?.invoke(false)
-                        })
-
-                    } else {
-                        callbackContinue?.invoke(false)
-                        XLog.info("versionName is same , do not show dialog! versionName:$versionName ")
-                    }
-                }else {
+                O2DialogSupport.openConfirmDialog(this@AboutActivity,"版本 $versionName 更新："+version.content, listener = { _ ->
+                    XLog.info("notification is true..........")
+                    callbackContinue?.invoke(true)
+                }, icon = O2AlertIconEnum.UPDATE, negativeListener = {_->
                     callbackContinue?.invoke(false)
-                }
-
+                })
             }
 
-            override fun onNoUpdateAvailable() {
-                XLog.info("没有发现新版本！")
-                XToast.toastShort(this@AboutActivity, "没有发现新版本！")
+            override fun onNoneUpdate(error: String) {
+                XLog.info(error)
                 callbackContinue?.invoke(false)
             }
+
         })
     }
     private fun downloadServiceStart() {

@@ -173,13 +173,16 @@ class JCConversationListViewController: UIViewController {
             }
             self.datas = conversatios as! [JMSGConversation]
             self.datas = self.sortConverstaions(self.datas)
-            self.tableview.reloadData()
-            if self.datas.count == 0 {
-                self.emptyView.isHidden = false
-            } else {
-                self.emptyView.isHidden = true
+            DispatchQueue.main.async {
+                self.tableview.reloadData()
+                if self.datas.count == 0 {
+                    self.emptyView.isHidden = false
+                } else {
+                    self.emptyView.isHidden = true
+                }
+                self._updateBadge()
             }
-            self._updateBadge()
+            
         }
     }
     
@@ -569,16 +572,23 @@ extension JCConversationListViewController {
     
     @objc func connectClose() {
         isConnecting = false
-        titleTipsView.isHidden = true
+        DispatchQueue.main.async {
+            self.titleTipsView.isHidden = true
+        }
+        
     }
     
     @objc func connectSucceed() {
         isConnecting = false
-        titleTipsView.isHidden = true
+        DispatchQueue.main.async {
+            self.titleTipsView.isHidden = true
+        }
     }
     
     @objc func connecting() {
-        _connectingSate()
+        DispatchQueue.main.async {
+            self._connectingSate()
+        }
     }
     
     func _connectingSate() {

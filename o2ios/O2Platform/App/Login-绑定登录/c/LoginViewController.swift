@@ -175,7 +175,7 @@ class LoginViewController: UIViewController {
     private func rebind() {
         O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
             DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
-            OOAppsInfoDB.shareInstance.removeAll()
+            DBManager.shared.removeAll()
             DispatchQueue.main.async {
                 self.forwardToSegue("bindPhoneSegue")
             }

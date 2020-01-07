@@ -38,10 +38,8 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.dip
 import android.support.annotation.RequiresApi
-import com.pgyersdk.update.PgyUpdateManager
-import com.pgyersdk.update.UpdateManagerListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.DownloadAPKService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.PgyUpdateBean
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.O2AppUpdateBean
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 
 
@@ -210,40 +208,26 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
         startActivityForResult(intent, 10086)
     }
-    private fun checkAppUpdate(noUpdateIsNotify: Boolean = false, callbackContinue:((flag: Boolean)->Unit)? = null) {
-        PgyUpdateManager.register(this, object : UpdateManagerListener() {
-            override fun onUpdateAvailable(p0: String?) {
-                XLog.debug("onUpdateAvailable $p0")
-                val bean = O2SDKManager.instance().gson.fromJson(p0, PgyUpdateBean::class.java)
-                versionName = bean.data.versionName
-                downloadUrl = bean.data.downloadURL
+    private fun checkAppUpdate(callbackContinue:((flag: Boolean)->Unit)? = null) {
+        O2AppUpdateManager.instance().checkUpdate(this, object : O2AppUpdateCallback {
+            override fun onUpdate(version: O2AppUpdateBean) {
+                XLog.debug("onUpdateAvailable $version")
+                versionName = version.versionName
+                downloadUrl = version.downloadUrl
                 XLog.info("versionName:$versionName, downloadUrl:$downloadUrl")
-                if (bean != null) {
-                    val currentversionName = AndroidUtils.getAppVersionName(this@LaunchActivity)
-                    if (currentversionName != versionName) {
-                        O2DialogSupport.openConfirmDialog(this@LaunchActivity,"版本 $versionName 更新："+ bean.data.releaseNote, listener = { _ ->
-                            XLog.info("notification is true..........")
-                            callbackContinue?.invoke(true)
-//                            toDownloadService(activity)
-                        }, icon = O2AlertIconEnum.UPDATE, negativeListener = {_->
-                            callbackContinue?.invoke(false)
-                        })
-
-                    } else {
-                        callbackContinue?.invoke(false)
-                        XLog.info("versionName is same , do not show dialog! versionName:$versionName ")
-                    }
-                }else {
+                O2DialogSupport.openConfirmDialog(this@LaunchActivity,"版本 $versionName 更新："+version.content, listener = { _ ->
+                    XLog.info("notification is true..........")
+                    callbackContinue?.invoke(true)
+                }, icon = O2AlertIconEnum.UPDATE, negativeListener = {_->
                     callbackContinue?.invoke(false)
-                }
-
+                })
             }
 
-            override fun onNoUpdateAvailable() {
-                XLog.info("没有发现新版本！")
-
+            override fun onNoneUpdate(error: String) {
+                XLog.info(error)
                 callbackContinue?.invoke(false)
             }
+
         })
     }
     private fun downloadServiceStart() {

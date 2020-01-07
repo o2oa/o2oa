@@ -173,6 +173,8 @@
     </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_account_security_bind_device_layout"
+            android:visibility="visible"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

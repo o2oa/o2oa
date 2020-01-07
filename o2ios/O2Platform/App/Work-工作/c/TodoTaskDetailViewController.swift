@@ -112,6 +112,7 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         }
         
         //添加工作页面特殊的js处理
+        addScriptMessageHandler(key: "closeWork", handler: self)
         addScriptMessageHandler(key: "appFormLoaded", handler: self)
         addScriptMessageHandler(key: "uploadAttachment", handler: self)
         addScriptMessageHandler(key: "downloadAttachment", handler: self)
@@ -145,7 +146,7 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         self.webViewContainer.addConstraints([top, bottom, trailing, leading])
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        DDLogDebug("url:\(loadUrl)")
+        DDLogDebug("url:\(String(describing: loadUrl))")
         webView.load(Alamofire.request(loadUrl!).request!)
         webView.allowsBackForwardNavigationGestures = true
     }
@@ -186,14 +187,29 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
 //MARK: - private func
     
     @objc func goBack() {
-        DDLogError("backFlag = \(backFlag)")
+        DDLogDebug("backFlag = \(backFlag)")
         switch backFlag {
         case 1:
             self.performSegue(withIdentifier: "backMainTask", sender: nil)
             break
-        case 2:
-            self.performSegue(withIdentifier: "backToTodoTask", sender: nil)
-            break
+//        case 2:
+//            self.performSegue(withIdentifier: "backToTodoTask", sender: nil)
+//            break
+            //5是处理内容管理创建过来的流程 因为有一个创建页面 所以需要跳两层回去
+        case 4, 5:
+            if let index = self.navigationController?.viewControllers.firstIndex(of: self) {
+                DDLogDebug("返回两层。。。。。")
+                if let secVC = self.navigationController?.viewControllers.get(at: index - 2) {
+                    self.navigationController?.popToViewController(secVC, animated: true)
+                }else {
+                    DDLogError("返回两层 错误 没有获取到VC。。。。。")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }else {
+                DDLogError("返回两层 错误 当前index。。。。。")
+                self.navigationController?.popViewController(animated: true)
+            }
+             break
         default: // 3,4都用隐藏 除非删除 删除结束有特殊处理了。
             self.navigationController?.popViewController(animated: true)
             break
@@ -748,23 +764,27 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
     func userController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         let name = message.name
         switch name {
+        case "closeWork":
+            DDLogError("执行了closeWork。。。。。。。。。。")
+            self.goBack()
+            break
         case "appFormLoaded":
-             DDLogDebug("appFormLoaded start。。。。")
-            if let newControls = (message.body as? NSString) {
-                let str = newControls as String
-                DDLogDebug("appFormLoaded , controls :\(str)")
-                if str != "true" {
-                    myNewControls.removeAll()
-                    if let controls = [WorkNewActionItem].deserialize(from: str) {
-                        controls.forEach { (item) in
-                            if item != nil {
-                                myNewControls.append(item!)
-                            }
-                        }
-                    }
-                }
-            }
-            self.loadDataFromWork()
+             DDLogDebug("appFormLoaded 当前方法已经弃用。。。。")
+//            if let newControls = (message.body as? NSString) {
+//                let str = newControls as String
+//                DDLogDebug("appFormLoaded , controls :\(str)")
+//                if str != "true" {
+//                    myNewControls.removeAll()
+//                    if let controls = [WorkNewActionItem].deserialize(from: str) {
+//                        controls.forEach { (item) in
+//                            if item != nil {
+//                                myNewControls.append(item!)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            self.loadDataFromWork()
             break
         case "uploadAttachment":
             ZonePermissions.requestImagePickerAuthorization(callback: { (zoneStatus) in

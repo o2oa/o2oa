@@ -1,0 +1,28 @@
+
+/* Class = "UILabel"; text = "Share"; ObjectID = "LdN-Iz-R2W"; */
+"LdN-Iz-R2W.text" = "分享";
+
+/* Class = "UILabel"; text = "Other"; ObjectID = "Qzp-9l-DNq"; */
+"Qzp-9l-DNq.text" = "其它";
+
+/* Class = "UILabel"; text = "Music"; ObjectID = "X5O-Qf-7hD"; */
+"X5O-Qf-7hD.text" = "音乐";
+
+/* Class = "UILabel"; text = "All File"; ObjectID = "XF2-0D-yb1"; */
+"XF2-0D-yb1.text" = "全部文件";
+
+/* Class = "UINavigationItem"; title = "CloudFile"; ObjectID = "hae-9Y-hGS"; */
+"hae-9Y-hGS.title" = "云盘";
+
+/* Class = "UILabel"; text = "Picture"; ObjectID = "pfT-T1-pf1"; */
+"pfT-T1-pf1.text" = "图片";
+
+/* Class = "UILabel"; text = "Video"; ObjectID = "sTU-0k-UMA"; */
+"sTU-0k-UMA.text" = "视频";
+
+/* Class = "UIBarButtonItem"; title = "Close"; ObjectID = "vHS-Wt-b3q"; */
+"vHS-Wt-b3q.title" = "关闭";
+
+/* Class = "UILabel"; text = "Document"; ObjectID = "zaI-cL-Qsf"; */
+"zaI-cL-Qsf.text" = "文档";
+

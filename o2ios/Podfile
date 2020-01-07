@@ -75,8 +75,8 @@ target 'O2Platform' do
     #segmentedControl
     pod 'BetterSegmentedControl', '~> 1.2'
     pod 'FSCalendar'
-    pod 'JZCalendarWeekView', '~> 0.4'
-    
+#    pod 'JZCalendarWeekView', '~> 0.4'
+
     
     # 日历控件
     pod 'JTCalendar', '~> 2.0'

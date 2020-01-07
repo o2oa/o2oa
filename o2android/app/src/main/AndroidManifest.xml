@@ -427,10 +427,7 @@
         <meta-data
             android:name="JM_IM_USER_PASSWORD"
             android:value="${JM_IM_USER_PASSWORD}" /> <!-- ```````````````````meta```````````````````` -->
-        <!-- 蒲公英 appid -->
-        <meta-data
-            android:name="PGYER_APPID"
-            android:value="${PGY_APP_ID}" /> <!-- bugly -->
+        <!-- bugly -->
         <!-- 配置APP ID -->
         <meta-data
             android:name="BUGLY_APPID"

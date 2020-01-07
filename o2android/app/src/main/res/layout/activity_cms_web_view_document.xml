@@ -68,6 +68,30 @@
                     android:visibility="gone"
                     android:onClick="publishDocument"
                     />
+                <TextView
+                    android:id="@+id/tv_cms_form_edit_btn"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/cms_work_form_edit"
+                    android:textColor="@color/z_color_primary"
+                    android:textSize="@dimen/font_large"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:onClick="editDocument"
+                    />
+                <TextView
+                    android:id="@+id/tv_cms_form_save_btn"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/cms_work_form_save"
+                    android:textColor="@color/z_color_primary"
+                    android:textSize="@dimen/font_large"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:onClick="saveDocument"
+                    />
 
             </LinearLayout>
         </FrameLayout>

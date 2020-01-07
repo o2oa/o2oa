@@ -32,15 +32,15 @@ class UnitBreadcrumbViewCell: UITableViewCell {
         if breadcrumbList.count > 0 {
             self.breadcrumbScrollView.removeSubviews()
             var oX = CGFloat(4.0)
+            let arrowW = CGFloat(24)
+            let arrowH = CGFloat(32)
             breadcrumbList.forEachEnumerated { (index, bar) in
-                var name: String
+                let name = bar.name
                 var textColor:UIColor
                 if breadcrumbList.count == (index+1) {
-                    name = bar.name
-                    textColor = base_color
+                    textColor = UIColor(hex:"#666666")
                 }else {
-                    name = bar.name + " > "
-                    textColor = UIColor(hex:"#333333")
+                    textColor = base_color
                 }
                 let firstSize = name.getSize(with: 15)
                 let oY = (self.breadcrumbScrollView.bounds.height - firstSize.height) / 2
@@ -51,6 +51,14 @@ class UnitBreadcrumbViewCell: UITableViewCell {
                 firstLabel.sizeToFit()
                 oX += firstSize.width
                 self.breadcrumbScrollView.addSubview(firstLabel)
+                if breadcrumbList.count != (index+1) {
+                    let arrowY = (self.breadcrumbScrollView.bounds.height - arrowH) / 2
+                    let arrowImage = UIImageView(frame: CGRect(x: CGFloat(oX), y: arrowY, width: arrowW, height: arrowH))
+                    arrowImage.image = UIImage(named: "arrow_r")
+                    arrowImage.contentMode = .scaleAspectFit
+                    self.breadcrumbScrollView.addSubview(arrowImage)
+                    oX += arrowW
+                }
                 firstLabel.addTapGesture(action: { (rec) in
                     DDLogDebug("点击了 \(index)")
                     if breadcrumbList.count != (index+1) {

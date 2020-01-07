@@ -16,7 +16,7 @@ import CocoaLumberjack
 
 class MailViewController: BaseWebViewUIViewController {
     
-    static var app:O2App?
+    var app:O2App?
     // 首页显示门户 默认没有NavigationBar
     var isIndexShow:Bool = false
     // 门户内部是否有显示NavigationBar
@@ -29,7 +29,7 @@ class MailViewController: BaseWebViewUIViewController {
         if self.isIndexShow {
             self.navigationItem.leftBarButtonItems = []
         }else {
-            self.title = MailViewController.app!.title!
+            self.title = self.app?.title ?? ""
             let closeBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
             closeBtn.setImage(UIImage(named: "icon_off_white2"), for: .normal)
             closeBtn.addTapGesture { (tap) in
@@ -78,11 +78,14 @@ class MailViewController: BaseWebViewUIViewController {
     }
   
     @objc func loadDetailSubject(){
-        if let req = Alamofire.request((MailViewController.app?.vcName?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!).request {
-            self.webView?.load(req)
-            
-        }else{
-            MBProgressHUD_JChat.show(text: "加载出错，请重试", view: webView, 3.0)
+        if let url = self.app?.vcName?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            if  let req = Alamofire.request(url).request {
+             self.webView?.load(req)
+            }else {
+                self.showError(title: "URL请求异常")
+            }
+        }else {
+            self.showError(title: "没有获取到URL")
         }
     }
     

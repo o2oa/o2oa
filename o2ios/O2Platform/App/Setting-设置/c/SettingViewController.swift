@@ -36,9 +36,9 @@ class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDat
         let item2 = SettingHomeCellModel(iconName: "setting_newMessage", title: "新消息通知", status: nil,segueIdentifier:"showMessageNotiSegue")
         let item3 = SettingHomeCellModel(iconName: "setting_common", title: "通用", status: nil,segueIdentifier:"showCommonSegue")
 //        let item4 = SettingHomeCellModel(iconName: "setting_myCRM", title: "我的客服", status: nil,segueIdentifier:"showServiceSegue")
-        let item5 = SettingHomeCellModel(iconName: "setting_ideaback", title: "意见反馈", status: nil,segueIdentifier:"showIdeaBackSegue")
+//        let item5 = SettingHomeCellModel(iconName: "setting_ideaback", title: "意见反馈", status: nil,segueIdentifier:"showIdeaBackSegue")
         let item6 = SettingHomeCellModel(iconName: "setting_about", title: "关于", status: nil,segueIdentifier:"showAboutSegue")
-        return [0:[item1],1:[itemSkin, item2,item3,item5],2:[item6]]
+        return [0:[item1],1:[itemSkin, item2,item3],2:[item6]]
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,7 +95,7 @@ class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDat
         let cellModel = self.itemModels[indexPath.section]?[indexPath.row]
         if let segue = cellModel?.segueIdentifier {
             if segue == "showIdeaBackSegue" {
-                PgyManager.shared().showFeedbackView()
+//                PgyManager.shared().showFeedbackView()
 //                self.testShowPicker()
             }else{
                 self.performSegue(withIdentifier: segue, sender: nil)

@@ -89,8 +89,8 @@ class TodoTaskProcessViewController:FormViewController {
     
     
     private func finishSubmit() {
-        if self.backFlag != 1 && self.backFlag != 2 {
-            // 门户页面跳过来的情况
+        if self.backFlag != 1 && self.backFlag != 2 && self.backFlag != 5 {
+            // 3， 4 特殊处理 门户页面跳过来的情况
             self.navigationController?.popToRootViewController(animated: true)
         }else {
             //原路返回
@@ -145,14 +145,14 @@ class TodoTaskProcessViewController:FormViewController {
                 return self.submitWork()
             }).then { (result) in
                 DDLogDebug("submit work is success....\(result)")
-                DispatchQueue.main.async {
-                    self.showSuccess(title: "提交成功")
-                    self.finishSubmit()
-                }
+                self.showSuccess(title: "提交成功")
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3, execute: {
+                     self.finishSubmit()
+                })
             }.catch { (err) in
                 DDLogError("提交异常。。。。\(err.localizedDescription)")
                 DispatchQueue.main.async {
-                    self.showError(title: "提交失败")
+                    self.showError(title: "提交失败，\(err.localizedDescription)")
                 }
             }
     }

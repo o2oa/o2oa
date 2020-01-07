@@ -95,6 +95,7 @@ class OOLoginViewController: OOBaseViewController {
         self.passwordField.themeUpdate(leftImage: O2ThemeManager.image(for: "Icon.icon_verification_code_nor"), leftLightImage: O2ThemeManager.image(for: "Icon.icon_verification_code_sel"), lineColor: baseColor.alpha(0.4), lineLightColor: baseColor)
         self.userNameTextField.themeUpdate(leftImage: O2ThemeManager.image(for: "Icon.icon_user_nor"), leftLightImage: O2ThemeManager.image(for: "Icon.icon_user_sel"), lineColor: baseColor.alpha(0.4), lineLightColor: baseColor)
         
+        self.passwordField.isSecureTextEntry = true
         self.passwordTextField.keyboardType = .numberPad
         self.userNameTextField.returnKeyType = .next
         self.userNameTextField.returnNextDelegate = self
@@ -150,7 +151,7 @@ class OOLoginViewController: OOBaseViewController {
         self.showSystemAlert(title: "重新绑定", message: "重新绑定到新的服务节点，原节点信息将被清空，确认吗？") { (action) in
             O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
                 DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
-                OOAppsInfoDB.shareInstance.removeAll()
+                DBManager.shared.removeAll()
                 DispatchQueue.main.async {
                     self.forwardDestVC("login", nil)
                 }
