@@ -106,29 +106,41 @@ if [ -d ${current_dir}/local/update ]; then
 		if [ -f ${current_dir}/console_aix.sh ]; then
 			sudo cp -f ${current_dir}/local/update/o2server/console_aix.sh ${current_dir}/
 		fi
-		if [ -f ${current_dir}/start_neokylin_loongson.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/start_neokylin_loongson.sh ${current_dir}/
-		fi
-		if [ -f ${current_dir}/start_neokylin_loongson_debug.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/start_neokylin_loongson_debug.sh ${current_dir}/
-		fi
-		if [ -f ${current_dir}/stop_neokylin_loongson.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/stop_neokylin_loongson.sh ${current_dir}/
-		fi
-		if [ -f ${current_dir}/console_neokylin_loongson.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/console_neokylin_loongson.sh ${current_dir}/
-		fi
 		if [ -f ${current_dir}/start_raspberrypi.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/start_raspberrypi.sh ${current_dir}/
+			cp -f ${current_dir}/local/update/o2server/start_raspberrypi.sh ${current_dir}/
 		fi
 		if [ -f ${current_dir}/start_raspberrypi_debug.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/start_raspberrypi_debug.sh ${current_dir}/
+			cp -f ${current_dir}/local/update/o2server/start_raspberrypi_debug.sh ${current_dir}/
 		fi
 		if [ -f ${current_dir}/stop_raspberrypi.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/stop_raspberrypi.sh ${current_dir}/
+			cp -f ${current_dir}/local/update/o2server/stop_raspberrypi.sh ${current_dir}/
 		fi
 		if [ -f ${current_dir}/console_raspberrypi.sh ]; then
-			sudo cp -f ${current_dir}/local/update/o2server/console_raspberrypi.sh ${current_dir}/
+			cp -f ${current_dir}/local/update/o2server/console_raspberrypi.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/start_neokylin_loongson.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_neokylin_loongson.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/start_neokylin_loongson_debug.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_neokylin_loongson_debug.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/stop_neokylin_loongson.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_neokylin_loongson.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/console_neokylin_loongson.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_neokylin_loongson.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/start_kylinos_phytium.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_kylinos_phytium.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/start_kylinos_phytium_debug.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/start_kylinos_phytium_debug.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/stop_kylinos_phytium.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/stop_kylinos_phytium.sh ${current_dir}/
+		fi
+		if [ -f ${current_dir}/console_kylinos_phytium.sh ]; then
+			cp -f ${current_dir}/local/update/o2server/console_kylinos_phytium.sh ${current_dir}/
 		fi
 		sudo cp ${current_dir}/local/update/o2server/version.o2 ${current_dir}/
 		sudo rm -Rf ${current_dir}/local/update

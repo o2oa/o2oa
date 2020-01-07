@@ -357,7 +357,6 @@
 					<version>3.8.1</version>
 				</plugin>
 			</plugins>
-
 		</pluginManagement>
 		<plugins>
 			<plugin>
@@ -851,6 +850,10 @@
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
+		<repository>
+			<id>nexus-aliyun</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
 		<repository>
 			<id>mvnrepository.com</id>
 			<url>https://mvnrepository.com/repos</url>

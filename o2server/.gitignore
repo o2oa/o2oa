@@ -22,5 +22,5 @@ console.jar
 /jvm/
 *.zip
 *.swap
-/version.o2
+version.o2
 
