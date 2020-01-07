@@ -38,7 +38,7 @@ public class Calendar_EventComment extends SliceJpaObject {
 
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
-	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME, unique = true)
+	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME )
 	private String id = createId();
 
 	public void onPersist() throws Exception {
