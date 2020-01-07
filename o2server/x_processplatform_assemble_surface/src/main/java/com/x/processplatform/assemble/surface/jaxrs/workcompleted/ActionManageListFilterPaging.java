@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.StringUtils;
@@ -85,16 +86,9 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(WorkCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(WorkCompleted_.title), "%" + key + "%"),
-						cb.like(root.get(WorkCompleted_.serial), "%" + key + "%"),
-						cb.like(root.get(WorkCompleted_.creatorPerson), "%" + key + "%"),
-						cb.like(root.get(WorkCompleted_.creatorUnit), "%" + key + "%")));
-			}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(WorkCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get(WorkCompleted_.startTime)));
 		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
@@ -135,15 +129,9 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(WorkCompleted_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(WorkCompleted_.title), "%" + key + "%"),
-								cb.like(root.get(WorkCompleted_.serial), "%" + key + "%"),
-								cb.like(root.get(WorkCompleted_.creatorPerson), "%" + key + "%")));
-			}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(WorkCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}

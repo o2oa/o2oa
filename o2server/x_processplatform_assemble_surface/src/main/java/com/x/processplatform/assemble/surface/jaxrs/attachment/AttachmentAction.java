@@ -2,15 +2,9 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import javax.jws.WebParam;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -192,11 +186,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWork.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId);
+			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -210,11 +205,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkWithExtension(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWork.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId);
+			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -228,11 +224,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkStream(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkStream().execute(effectivePerson, id, workId);
+			result = new ActionDownloadWithWorkStream().execute(effectivePerson, id, workId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -246,11 +243,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkStreamWithExtension(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkStream().execute(effectivePerson, id, workId);
+			result = new ActionDownloadWithWorkStream().execute(effectivePerson, id, workId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -264,11 +262,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkCompleted().execute(effectivePerson, id, workCompletedId);
+			result = new ActionDownloadWithWorkCompleted().execute(effectivePerson, id, workCompletedId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -282,11 +281,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkCompletedWithExtension(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkCompleted().execute(effectivePerson, id, workCompletedId);
+			result = new ActionDownloadWithWorkCompleted().execute(effectivePerson, id, workCompletedId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -300,11 +300,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkCompletedStream(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkCompletedStream().execute(effectivePerson, id, workCompletedId);
+			result = new ActionDownloadWithWorkCompletedStream().execute(effectivePerson, id, workCompletedId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -318,11 +319,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadWithWorkCompletedStreamWithExtension(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId) {
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionDownloadWithWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDownloadWithWorkCompletedStream().execute(effectivePerson, id, workCompletedId);
+			result = new ActionDownloadWithWorkCompletedStream().execute(effectivePerson, id, workCompletedId, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

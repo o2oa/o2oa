@@ -68,6 +68,7 @@ public class PackageO2server {
 			compress(outputStream, base.getAbsolutePath(), "start_kylinos_phytium_debug.sh");
 			compress(outputStream, base.getAbsolutePath(), "stop_kylinos_phytium.sh");
 			compress(outputStream, base.getAbsolutePath(), "console_kylinos_phytium.sh");
+			compress(outputStream, base.getAbsolutePath(), "version.o2");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -12,11 +12,9 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.TaskCompleted_;
-import com.x.processplatform.core.entity.content.Task_;
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -91,17 +89,9 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(TaskCompleted_.title), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.opinion), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.serial), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.creatorPerson), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.creatorUnit), "%" + key + "%")));
-			}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get(TaskCompleted_.startTime)));
 		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
@@ -145,17 +135,9 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(TaskCompleted_.title), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.opinion), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.serial), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.creatorPerson), "%" + key + "%"),
-								cb.like(root.get(TaskCompleted_.creatorUnit), "%" + key + "%")));
-			}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}

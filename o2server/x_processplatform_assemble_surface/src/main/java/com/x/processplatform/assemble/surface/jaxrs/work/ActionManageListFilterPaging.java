@@ -11,9 +11,9 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.DateRange;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 class ActionManageListFilterPaging extends BaseAction {
@@ -82,16 +81,18 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(person_ids)) {
 			p = cb.and(p, root.get(Work_.creatorPerson).in(person_ids));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(Work_.title), "%" + key + "%"),
-						cb.like(root.get(Work_.serial), "%" + key + "%"),
-						cb.like(root.get(Work_.creatorPerson), "%" + key + "%"),
-						cb.like(root.get(Work_.creatorUnit), "%" + key + "%")));
-			}
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
+		}
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
+		}
+		if (ListTools.isNotEmpty(wi.getWorkStatusList())) {
+			p = cb.and(p, root.get(Work_.workStatus).in(wi.getWorkStatusList()));
+		}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Work_.startTime)));
 		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
@@ -138,15 +139,9 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getWorkStatusList())) {
 			p = cb.and(p, root.get(Work_.workStatus).in(wi.getWorkStatusList()));
 		}
-		if (StringUtils.isNotEmpty(wi.getKey())) {
-			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
-			if (StringUtils.isNotEmpty(key)) {
-				key = StringUtils.replaceEach(key, new String[] { "?", "%" }, new String[] { "", "" });
-				p = cb.and(p,
-						cb.or(cb.like(root.get(Work_.title), "%" + key + "%"),
-								cb.like(root.get(Work_.serial), "%" + key + "%"),
-								cb.like(root.get(Work_.creatorPerson), "%" + key + "%")));
-			}
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p,cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
