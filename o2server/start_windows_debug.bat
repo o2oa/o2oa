@@ -103,6 +103,18 @@ if exist "%~dp0local\update" (
 		if exist "%~dp0console_aix.sh" (
 			copy "%~dp0local\update\o2server\console_aix.sh" "%~dp0"
 		)
+		if exist "%~dp0start_raspberrypi.sh" (
+			copy "%~dp0local\update\o2server\start_raspberrypi.sh" "%~dp0"
+		)
+		if exist "%~dp0start_raspberrypi_debug.sh" (
+			copy "%~dp0local\update\o2server\start_raspberrypi_debug.sh" "%~dp0"
+		)
+		if exist "%~dp0stop_raspberrypi.sh" (
+			copy "%~dp0local\update\o2server\stop_raspberrypi.sh" "%~dp0"
+		)
+		if exist "%~dp0console_raspberrypi.sh" (
+			copy "%~dp0local\update\o2server\console_raspberrypi.sh" "%~dp0"
+		)
 		if exist "%~dp0start_neokylin_loongson.sh" (
 			copy "%~dp0local\update\o2server\start_neokylin_loongson.sh" "%~dp0"
 		)
@@ -115,17 +127,17 @@ if exist "%~dp0local\update" (
 		if exist "%~dp0console_neokylin_loongson.sh" (
 			copy "%~dp0local\update\o2server\console_neokylin_loongson.sh" "%~dp0"
 		)
-		if exist "%~dp0start_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\start_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0start_kylinos_phytium.sh" (
+			copy "%~dp0local\update\o2server\start_kylinos_phytium.sh" "%~dp0"
 		)
-		if exist "%~dp0start_raspberrypi_debug.sh" (
-			copy "%~dp0local\update\o2server\start_raspberrypi_debug.sh" "%~dp0"
+		if exist "%~dp0start_kylinos_phytium_debug.sh" (
+			copy "%~dp0local\update\o2server\start_kylinos_phytium_debug.sh" "%~dp0"
 		)
-		if exist "%~dp0stop_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\stop_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0stop_kylinos_phytium.sh" (
+			copy "%~dp0local\update\o2server\stop_kylinos_phytium.sh" "%~dp0"
 		)
-		if exist "%~dp0console_raspberrypi.sh" (
-			copy "%~dp0local\update\o2server\console_raspberrypi.sh" "%~dp0"
+		if exist "%~dp0console_kylinos_phytium.sh" (
+			copy "%~dp0local\update\o2server\console_kylinos_phytium.sh" "%~dp0"
 		)
 		copy "%~dp0local\update\o2server\version.o2" "%~dp0"
 		rmdir /S/Q "%~dp0local\update"
