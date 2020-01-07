@@ -821,8 +821,6 @@ public class AeiObjects extends GsonPropertyObject {
 					this.getTaskCompleteds().stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
 							.forEach(p -> p.setLatest(false));
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-					/* 发送创建已办消息 */
-					// MessageFactory.taskCompleted_create(o);
 					/* 创建已办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
 				} catch (Exception e) {
@@ -847,8 +845,6 @@ public class AeiObjects extends GsonPropertyObject {
 					obj = this.business.entityManagerContainer().find(o.getId(), TaskCompleted.class);
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-						/* 发送删除已办消息 */
-						// MessageFactory.taskCompleted_delete(obj);
 					}
 				} catch (Exception e) {
 					logger.error(e);
@@ -1309,8 +1305,9 @@ public class AeiObjects extends GsonPropertyObject {
 			bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
 			bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
 					new ApplicationDictHelper(this.entityManagerContainer(), this.getWork().getApplication()));
+			bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
 			bindings.put(ScriptFactory.BINDING_NAME_ROUTES, this.getRoutes());
-			ScriptFactory.initialScriptText().eval(scriptContext);
+			ScriptFactory.initialScriptText().eval(this.scriptContext);
 		}
 		return this.scriptContext;
 	}

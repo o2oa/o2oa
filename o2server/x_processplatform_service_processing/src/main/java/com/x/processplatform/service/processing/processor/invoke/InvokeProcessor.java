@@ -95,6 +95,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXWSRESPONSE,
 						response);
+				/* 重新注入对象需要重新运行 */
+				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXWSRESPONSE);
@@ -110,6 +112,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
 					parameters);
+			/* 重新注入对象需要重新运行 */
+			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
 			cs.eval(scriptContext);
@@ -216,6 +220,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
+				/* 重新注入对象需要重新运行 */
+				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
@@ -302,6 +308,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSRESPONSE,
 						jaxrsResponse);
+				/* 重新注入对象需要重新运行 */
+				ScriptFactory.initialScriptText().eval(scriptContext);
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(),
 						Business.EVENT_INVOKEJAXRSRESPONSE);
@@ -319,6 +327,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_PARAMETERS,
 					parameters);
+			/* 重新注入对象需要重新运行 */
+			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
 			cs.eval(scriptContext);
@@ -336,6 +346,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
+			/* 重新注入对象需要重新运行 */
+			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
 			cs.eval(scriptContext);
@@ -350,6 +362,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_JAXRSHEAD, map);
+			/* 重新注入对象需要重新运行 */
+			ScriptFactory.initialScriptText().eval(scriptContext);
 			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
 			cs.eval(scriptContext);
