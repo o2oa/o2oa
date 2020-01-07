@@ -1,6 +1,0 @@
-framework module path_provider {
-  umbrella header "path_provider-umbrella.h"
-
-  export *
-  module * { export * }
-}
