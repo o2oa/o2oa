@@ -83,15 +83,16 @@ public class TranslateReadIdentityTools {
 	private static List<String> duty(AeiObjects aeiObjects) throws Exception {
 		List<String> list = new ArrayList<>();
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getReadDuty())) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
 			JsonArray array = XGsonBuilder.instance().fromJson(aeiObjects.getActivity().getReadDuty(), JsonArray.class);
 			Iterator<JsonElement> iterator = array.iterator();
 			while (iterator.hasNext()) {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
-				Object objectValue = ScriptFactory.scriptEngine
-						.eval(ScriptFactory.functionalization(o.get("code").getAsString()), scriptContext);
-				List<String> ds = ScriptFactory.extrectDistinguishedNameList(objectValue);
+				String code = o.get("code").getAsString();
+				CompiledScript compiledScript = aeiObjects.business().element()
+						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_READDUTY, name, code);
+				Object objectValue = compiledScript.eval(aeiObjects.scriptContext());
+				List<String> ds = ScriptFactory.asDistinguishedNameList(objectValue);
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
@@ -115,7 +116,7 @@ public class TranslateReadIdentityTools {
 			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
 					aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_READ);
 			Object objectValue = compiledScript.eval(scriptContext);
-			List<String> os = ScriptFactory.extrectDistinguishedNameList(objectValue);
+			List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
 			if (ListTools.isNotEmpty(os)) {
 				list.addAll(os);
 			}

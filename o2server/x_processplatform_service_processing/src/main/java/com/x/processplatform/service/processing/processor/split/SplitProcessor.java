@@ -90,7 +90,7 @@ public class SplitProcessor extends AbstractSplitProcessor {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
 			Object objectValue = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), split, Business.EVENT_SPLIT).eval(aeiObjects.scriptContext());	
-			List<String> os =ScriptFactory.extrectDistinguishedNameList(objectValue);
+			List<String> os =ScriptFactory.asDistinguishedNameList(objectValue);
 			if (ListTools.isNotEmpty(os)) {
 				list.addAll(os);
 			}

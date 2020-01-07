@@ -13,7 +13,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -22,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Context;
-import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -45,8 +44,14 @@ public class SerialBuilder {
 			throws Exception {
 		this.context = context;
 		this.emc = emc;
-		process = emc.find(processId, Process.class, ExceptionWhen.not_found);
-		work = emc.find(workId, Work.class, ExceptionWhen.not_found);
+		process = emc.find(processId, Process.class);
+		if (null == process) {
+			throw new ExceptionEntityNotExist(processId, Process.class);
+		}
+		work = emc.find(workId, Work.class);
+		if (null == work) {
+			throw new ExceptionEntityNotExist(workId, Work.class);
+		}
 		serial = new Serial();
 		this.date = new Date();
 	}
@@ -74,12 +79,13 @@ public class SerialBuilder {
 			if (!list.isEmpty()) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-				bindings.put("serial", this.serial);
-				bindings.put("process", this.process);
+				bindings.put(ScriptFactory.BINDING_NAME_SERIAL, this.serial);
+				bindings.put(ScriptFactory.BINDING_NAME_PROCESS, this.process);
 				for (SerialTextureItem o : list) {
 					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
 							&& StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(o.getScript(), scriptContext);
+						Object v = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(o.getScript()),
+								scriptContext);
 						itemResults.add(v);
 					} else {
 						itemResults.add("");
@@ -88,7 +94,8 @@ public class SerialBuilder {
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
 					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(o.getScript(), scriptContext);
+						Object v = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(o.getScript()),
+								scriptContext);
 						itemResults.set(i, v);
 					}
 				}

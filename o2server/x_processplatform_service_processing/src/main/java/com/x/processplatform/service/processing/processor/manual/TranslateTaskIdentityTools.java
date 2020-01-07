@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import javax.script.CompiledScript;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -78,9 +81,11 @@ public class TranslateTaskIdentityTools {
 			while (iterator.hasNext()) {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
-				Object objectValue = ScriptFactory.scriptEngine
-						.eval(ScriptFactory.functionalization(o.get("code").getAsString()), aeiObjects.scriptContext());
-				List<String> ds = ScriptFactory.extrectDistinguishedNameList(objectValue);
+				String code = o.get("code").getAsString();
+				CompiledScript compiledScript = aeiObjects.business().element()
+						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_TASKDUTY, name, code);
+				Object objectValue = compiledScript.eval(aeiObjects.scriptContext());
+				List<String> ds = ScriptFactory.asDistinguishedNameList(objectValue);
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
