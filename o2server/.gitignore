@@ -23,4 +23,6 @@ console.jar
 *.zip
 *.swap
 version.o2
+/custom/
+/dynamic/
 
