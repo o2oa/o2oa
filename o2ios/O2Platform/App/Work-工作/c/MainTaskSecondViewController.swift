@@ -70,15 +70,12 @@ class MainTaskSecondViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
+        self.tableView.delegate = self
         loadHomeApps()
         loadPlayerList()
         loadNewPublish(newPublishPageModel)
         //self.initBarManager()
-        
-        
-        
-        self.navigationController?.navigationBar.isHidden = true
-        self.tableView.delegate = self
     }
     
     
@@ -86,8 +83,6 @@ class MainTaskSecondViewController: UIViewController {
         super.viewWillDisappear(animated)
         self.tableView.delegate = nil
         self.navigationController?.navigationBar.isHidden = false
-        //ZoneNavigationBarManager.reStoreToSystemNavigationBar()
-        
     }
 
     override func viewDidLoad() {
@@ -192,7 +187,7 @@ class MainTaskSecondViewController: UIViewController {
     
     //读取数据待办数据
     fileprivate func loadMainTodo(_ pageModel:CommonPageModel,_ isFirst:Bool = true){
-        //pageModel.pageSize = MainTaskSecondViewController.PAGE_SIZE
+        DDLogDebug("loadMainTodo ...........................")
         self.showLoading(title: "加载中...")
         //ZoneHUD.showNormalHUD((self.navigationController?.view!)!)
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(TaskContext.taskContextKey, query: TaskContext.todoTaskListQuery, parameter: pageModel.toDictionary() as [String : AnyObject]?)
@@ -207,20 +202,14 @@ class MainTaskSecondViewController: UIViewController {
                     self.todoTasks.append(contentsOf: tTasks)
                     //let count:Int = JSON(val)["count"].int ?? 0
                     self.newTaskPageModel.setPageTotal(tTasks.count)
-                    
-                    //ZoneHUD.dismissNormalHUD()
                     self.hideLoading()
-                    DispatchQueue.main.async {
-                        self.tableView.beginUpdates()
-                        self.tableView.reloadSections(IndexSet.init(integer: 1), with: .automatic)
-                        self.tableView.endUpdates()
-                    }
+                    self.tableView.beginUpdates()
+                    self.tableView.reloadSections(IndexSet.init(integer: 1), with: .automatic)
+                    self.tableView.endUpdates()
                 }
-                //ProgressHUD.showSuccess("读取待办完成")
             case .failure(let err):
                 DispatchQueue.main.async {
                     self.showSuccess(title: "加载待办失败")
-                    //ZoneHUD.showErrorHUD(errorText: "待办列表出错", 0.5)
                     DDLogError(err.localizedDescription)
                 }
             }
@@ -229,13 +218,16 @@ class MainTaskSecondViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showMailSegue" {
-            MailViewController.app = sender as? O2App
+            if let mail = segue.destination as? MailViewController {
+                mail.app = sender as? O2App
+            }
         }
     }
     
     //读取首页应用
     private func loadHomeApps() {
-        let apps = OOAppsInfoDB.shareInstance.queryMainData()
+        DDLogDebug("loadHomeApps ...........................")
+        let apps = DBManager.shared.queryMainData()
         homeApps.removeAll()
         if apps.isEmpty {
             homeApps.append(contentsOf: O2AppUtil.defaultMainApps)
@@ -250,13 +242,14 @@ class MainTaskSecondViewController: UIViewController {
     
     //读取最新公告
     fileprivate func loadNewPublish(_ pageModel:CommonPageModel,_ isFirst:Bool = true){
-        //ZoneHUD.showNormalHUD((self.navigationController?.view!)!)
+        DDLogDebug("loadNewPublish ...........................")
         self.showLoading(title: "加载中...")
         let npURL = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsCategoryDetailQuery, parameter: pageModel.toDictionary() as[String:AnyObject]?)
         if isFirst {
             self.newPublishInfos.removeAll()
         }
         Alamofire.request(npURL!, method: .put, parameters:[String:Any](), encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
+            DDLogDebug(response.debugDescription)
             switch response.result {
             case .success(let val):
                 let json = JSON(val)["data"]
@@ -278,7 +271,6 @@ class MainTaskSecondViewController: UIViewController {
                     }
                 }else{
                     DispatchQueue.main.async {
-                        //ZoneHUD.showErrorHUD(errorText: "新闻列表出错", 0.5)
                         self.showError(title: "新闻列表出错")
                         DDLogError(json.description)
                     }
@@ -299,6 +291,7 @@ class MainTaskSecondViewController: UIViewController {
     
     //热点图片新闻
     private func loadPlayerList(){
+        DDLogDebug("loadPlayerList ...........................")
         self.taskImageshowEntitys.removeAll(keepingCapacity: true)
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(HotpicContext.hotpicContextKey, query: HotpicContext.hotpicAllListQuery, parameter: ["##page##":"0" as AnyObject,"##count##":"8" as AnyObject])
         Alamofire.request(url!, method: .put, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
@@ -469,7 +462,7 @@ extension MainTaskSecondViewController:UITableViewDataSource,UITableViewDelegate
         let taskStoryboard = UIStoryboard(name: "task", bundle: Bundle.main)
         let todoTaskDetailVC = taskStoryboard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
         todoTaskDetailVC.todoTask = todoTask
-        todoTaskDetailVC.backFlag = 1
+        todoTaskDetailVC.backFlag = 3
         self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
     }
 }

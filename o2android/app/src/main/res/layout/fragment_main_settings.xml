@@ -243,40 +243,40 @@
                             android:visibility="visible"/>
                     </RelativeLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/z_color_split_line_ddd"
-                        android:padding="0dp" />
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/z_color_split_line_ddd"-->
+<!--                        android:padding="0dp" />-->
                     <!--反馈-->
-                    <RelativeLayout
-                        android:id="@+id/setting_button_feedback_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/white_background_selector">
-                        <ImageView
-                            android:id="@+id/setting_image_advice_icon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_centerVertical="true"
-                            android:src="@mipmap/icon_setting_feedback_22dp"
-                            android:layout_alignParentLeft="true"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/setting_image_advice_icon"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:text="意见反馈"
-                            android:textSize="15sp"
-                            android:textColor="@color/z_color_text_primary_dark"/>
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:src="@mipmap/icon_arrow_22dp"/>
-                    </RelativeLayout>
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/setting_button_feedback_id"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="44dp"-->
+<!--                        android:background="@drawable/white_background_selector">-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/setting_image_advice_icon"-->
+<!--                            android:layout_width="22dp"-->
+<!--                            android:layout_height="22dp"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:src="@mipmap/icon_setting_feedback_22dp"-->
+<!--                            android:layout_alignParentLeft="true"/>-->
+<!--                        <TextView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_toRightOf="@id/setting_image_advice_icon"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginLeft="10dp"-->
+<!--                            android:text="意见反馈"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textColor="@color/z_color_text_primary_dark"/>-->
+<!--                        <ImageView-->
+<!--                            android:layout_width="22dp"-->
+<!--                            android:layout_height="22dp"-->
+<!--                            android:layout_alignParentRight="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:src="@mipmap/icon_arrow_22dp"/>-->
+<!--                    </RelativeLayout>-->
 
                 </LinearLayout>
 

@@ -30,8 +30,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     
     //中心服务器节点类
     public static let o2Collect = O2Collect()
-    //中心服务器绑定数据信息
-    public static var deviceData = CollectDeviceData()
     //网络监听
     public let o2ReachabilityManager = O2ReachabilityManager.sharedInstance
     // flutter engine
@@ -39,6 +37,9 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        if #available(iOS 13.0, *) {
+            window.overrideUserInterfaceStyle = .light
+        }
         
         let themeName = AppConfigSettings.shared.themeName
         if themeName != "" {
@@ -53,8 +54,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         UISearchBar.appearance().tintColor = UIColor.white
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).theme_tintColor = ThemeColorPicker(keyPath: "Base.base_color")
         
-        
-        
+    
         //启动日志管理器
         O2Logger.startLogManager()
         //日志文件
@@ -65,7 +65,8 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         //Alamofire
         NetworkActivityIndicatorManager.shared.isEnabled = true
         
-        
+        //db
+        let _ = DBManager.shared
         
         //设置一个是否第一授权的标志
         if #available(iOS 10.0, *){
@@ -93,16 +94,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
             UIApplication.shared.registerUserNotificationSettings(setting)
         }
         
-        //UMessage.setLogEnabled(true)
-        //蒲公英
-        let pgyAppId = PGY_APP_ID
-        PgyManager.shared().themeColor  = base_color
-        PgyManager.shared().feedbackActiveType = KPGYFeedbackActiveType.pgyFeedbackActiveTypeThreeFingersPan
-        PgyManager.shared().start(withAppId: pgyAppId)
-        PgyUpdateManager.sharedPgy().start(withAppId: pgyAppId)
-        if UIDevice.deviceModelReadable() == "Simulator" {
-            AppDelegate.deviceData.name = UIDevice.idForVendor()!
-        }
+ 
         //Buglyy异常上报
         Bugly.start(withAppId: BUGLY_ID)
         
@@ -121,7 +113,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         JPUSHService.registrationIDCompletionHandler { (resCode, registrationID) in
             if resCode == 0 {
                 O2Logger.debug("registrationID获取成功\(registrationID ?? "")")
-                 //AppDelegate.deviceData.name = registrationID
                 O2AuthSDK.shared.setDeviceToken(token: registrationID ?? "registrationIDerror0x0x")
             }else{
                 O2Logger.debug("registrationID获取失败，code:\(resCode)")
@@ -151,7 +142,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     
     // MARK: - private func
     private func _setupJMessage() {
-        JMessage.setDebugMode()
+//        JMessage.setDebugMode()
         JMessage.add(self, with: nil)
         JMessage.register(forRemoteNotificationTypes:
             UNAuthorizationOptions.badge.rawValue |
@@ -191,20 +182,15 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     
     //实现注册 APNs 失败接口
     override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        DDLogError(error.localizedDescription)
-        AppDelegate.deviceData.name = "104C9F7F-7403-4B3E-B6A2-C222C82074FF"
+        DDLogError("didFailToRegisterForRemoteNotificationsWithError: \(error.localizedDescription)")
     }
     
     override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         JPUSHService.handleRemoteNotification(userInfo)
-        O2Logger.debug("收到通知,\(userInfo)")
-        NotificationCenter.default.post(name: Notification.Name(rawValue: "AddNotificationCount"), object: nil)  //把  要addnotificationcount
+        DDLogDebug("收到通知,\(userInfo)")
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "AddNotificationCount"), object: nil)
     }
     
-//
-//    override func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-//        JPUSHService.showLocalNotification(atFront: notification, identifierKey: nil)
-//    }
     
     override func applicationWillEnterForeground(_ application: UIApplication) {
         application.applicationIconBadgeNumber = 0
@@ -212,10 +198,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     }
     
     override func applicationDidBecomeActive(_ application: UIApplication) {
-        if UIDevice.deviceModelReadable() != "Simulator" {
-            PgyUpdateManager.sharedPgy().checkUpdate(withDelegete: self, selector: #selector(updateVersion(_:)))
-        }
-        
     }
    
     override func applicationDidEnterBackground(_ application: UIApplication) {
@@ -242,18 +224,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         }
     }
     
-    
-//
-//    @available(iOS 12.0, *)
-//    func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
-//        if (notification != nil && (notification?.request.trigger?.isKind(of: UNPushNotificationTrigger.self) == true) ) {
-//            //从通知界面直接进入应用
-//            DDLogInfo("从通知界面直接进入应用............")
-//        }else{
-//            //从通知设置界面进入应用
-//             DDLogInfo("从通知设置界面进入应用............")
-//        }
-//    }
     
     @available(iOS 10.0, *)
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!,
@@ -303,21 +273,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     }
     
     
-    @objc private func updateVersion(_ response:AnyObject?){
-        O2Logger.debug("update be callbacked")
-        if let obj = response {
-            //ProgressHUD.dismiss()
-            //print(obj)
-            let appURLString = (obj as! NSDictionary)["downloadURL"]
-            if  let appURL = URL(string: appURLString as! String) {
-                if UIApplication.shared.canOpenURL(appURL) {
-                    if UIApplication.shared.openURL(appURL) {
-                        PgyUpdateManager.sharedPgy().updateLocalBuildNumber()
-                    }
-                }
-            }
-        }
-    }
+    
 }
 
 //MARK: - JMessage Delegate
@@ -391,9 +347,7 @@ extension AppDelegate: JMessageDelegate {
         JMSGUser.logout(nil)
         JCVerificationInfoDB.shareInstance.queue = nil
         UserDefaults.standard.removeObject(forKey: kCurrentUserName)
-        
-//        let alertView = UIAlertView(title: "您的账号在其它设备上登录", message: "", delegate: self, cancelButtonTitle: "取消", otherButtonTitles: "重新登录")
-//        alertView.show()
+ 
     }
     
     func _reLogin() {

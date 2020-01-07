@@ -52,6 +52,7 @@ extension O2BBSAPI:OOAccessTokenAuthorizable {
 }
 
 
+
 extension O2BBSAPI:TargetType{
     var baseURL: URL {
         let model = O2AuthSDK.shared.o2APIServer(context: .x_bbs_assemble_control)

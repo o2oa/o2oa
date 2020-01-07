@@ -54,7 +54,7 @@ class SMobileChangeViewController: UIViewController {
                 DDLogDebug("unbind callback result:\(result) , error:\(error ?? "")")
                 O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
                     DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
-                    OOAppsInfoDB.shareInstance.removeAll()
+                    DBManager.shared.removeAll()
                     DispatchQueue.main.async {
                         self.forwardDestVC("login", "bindVC")
                     }

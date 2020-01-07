@@ -36,12 +36,12 @@ class OOAppEditController: UITableViewController {
     @objc private func _saveCustomApps() {
         mainApps.forEachEnumerated { (i, app) in
             app.mainOrder = i
-            OOAppsInfoDB.shareInstance.updateData(app, 1)
+            DBManager.shared.updateData(app, 1)
         }
         
         noMainApps.forEachEnumerated { (i, app) in
             app.order = i
-            OOAppsInfoDB.shareInstance.updateData(app, 0)
+            DBManager.shared.updateData(app, 0)
         }
         
         delegate?.appEditControllerUpdater()
@@ -49,8 +49,8 @@ class OOAppEditController: UITableViewController {
     }
     
     func loadData() {
-        mainApps =  OOAppsInfoDB.shareInstance.queryMainData()
-        noMainApps = OOAppsInfoDB.shareInstance.queryNoMainData()
+        mainApps =  DBManager.shared.queryMainData()
+        noMainApps = DBManager.shared.queryNoMainData()
         tableView.reloadData()
     }
 

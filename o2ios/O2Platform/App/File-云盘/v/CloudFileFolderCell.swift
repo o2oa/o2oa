@@ -15,6 +15,8 @@ class CloudFileFolderCell: UITableViewCell {
     @IBOutlet weak var checkBoxImage: UIImageView!
     
     
+    var checkDelegate: CloudFileCheckDelegate?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -22,8 +24,16 @@ class CloudFileFolderCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    func setData(folder: OOFolder) {
+        self.folderNameLabel.text = folder.name ?? ""
+        self.folderUpdateTimeLabel.text = folder.updateTime ?? ""
+        if self.checkDelegate != nil {
+            self.checkBoxImage.addTapGesture { (tap) in
+                self.checkDelegate?.checkItem(folder)
+            }
+        }
     }
 
 }

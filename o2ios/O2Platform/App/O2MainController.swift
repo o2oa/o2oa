@@ -33,11 +33,19 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if UIDevice.deviceModelReadable() != "Simulator" {
+            self.checkAppVersion()
+        }
+        
         self.delegate = self
         _initControllers()
         selectedIndex = 2
         currentIndex = 2
         _loginIM()
+        if O2IsConnect2Collect == false {
+            //处理内部直连的时候推送的设备绑定
+            O2JPushManager.shared.o2JPushBind()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -55,19 +63,19 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
     
     //MARK: -- delegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if currentIndex == 2 && tabBarController.selectedIndex == 2 {
-            if tabBarController.selectedViewController is ZLNavigationController {
-                (tabBarController.selectedViewController as! ZLNavigationController).viewControllers.forEach { (vc) in
-                    if vc is MailViewController {
-                        DDLogDebug("点击了首页 portal")
-                        (vc as! MailViewController).loadDetailSubject()
-                    }
-                    if vc is MainTaskSecondViewController {
-                        DDLogDebug("点击了首页index")
-                    }
-                }
-            }
-        }
+//        if currentIndex == 2 && tabBarController.selectedIndex == 2 {
+//            if tabBarController.selectedViewController is ZLNavigationController {
+//                (tabBarController.selectedViewController as! ZLNavigationController).viewControllers.forEach { (vc) in
+//                    if vc is MailViewController {
+//                        DDLogDebug("点击了首页 portal")
+//                        (vc as! MailViewController).loadDetailSubject()
+//                    }
+//                    if vc is MainTaskSecondViewController {
+//                        DDLogDebug("点击了首页index")
+//                    }
+//                }
+//            }
+//        }
         self.currentIndex = tabBarController.selectedIndex
     }
     
@@ -113,12 +121,17 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         let appid = O2AuthSDK.shared.customStyle()?.indexPortal
         let indexType = O2AuthSDK.shared.customStyle()?.indexType ?? "default"
         if indexType == "portal" {
-            let app = OOAppsInfoDB.shareInstance.queryData(appid!)
+            let app = DBManager.shared.queryData(appid!)
             let destVC = OOTabBarHelper.getVC(storyboardName: "apps", vcName: "OOMainWebVC")
-            MailViewController.app = app
-            (destVC as? MailViewController)?.isIndexShow = true
-            let nav = ZLNavigationController(rootViewController: destVC)
-            return nav
+            if let mail = destVC as? MailViewController {
+                mail.app = app
+                mail.isIndexShow = true
+                let nav = ZLNavigationController(rootViewController: mail)
+                return nav
+            }else {
+                let nav = ZLNavigationController(rootViewController: destVC)
+                return nav
+            }
         }else{
             let destVC = OOTabBarHelper.getVC(storyboardName: "task", vcName: nil)
             let nav = ZLNavigationController(rootViewController: destVC)
@@ -145,6 +158,26 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
                 default:
                     break
                 }
+        }
+    }
+    
+    private func checkAppVersion() {
+        O2VersionManager.shared.checkAppUpdate { (info, error) in
+            if let iosInfo = info {
+                DDLogDebug(iosInfo.toJSONString() ?? "")
+                let alertController = UIAlertController(title: "版本更新", message: "更新内容：\(iosInfo.content ?? "")", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "确定", style: .default, handler: { ok in
+                    O2VersionManager.shared.updateAppVersion(info?.downloadUrl)
+                })
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: { c in
+                    //
+                })
+                alertController.addAction(cancelAction)
+                alertController.addAction(okAction)
+                UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+            }else {
+                DDLogInfo("没有版本更新：\(error ?? "")")
+            }
         }
     }
     

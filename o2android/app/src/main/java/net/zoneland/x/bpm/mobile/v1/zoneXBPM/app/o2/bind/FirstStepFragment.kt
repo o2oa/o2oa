@@ -66,6 +66,10 @@ class FirstStepFragment : BaseMVPFragment<FirstStepContract.View, FirstStepContr
     }
 
     override fun receiveUnitList(list: List<CollectUnitData>) {
+        if (list.isEmpty()) {
+            XToast.toastShort(activity, "没有获取到绑定服务器列表！")
+            return
+        }
         if (list.size == 1) {
             autoBind(list[0])
         }else {

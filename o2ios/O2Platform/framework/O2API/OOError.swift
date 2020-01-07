@@ -21,6 +21,7 @@ public enum OOAppError:Swift.Error {
     case encodableMapping(Swift.Error)
     case parameterEncoding(Swift.Error)
     case apiResponseError(String)
+    case apiEmptyResultError
 }
 
 extension OOAppError:LocalizedError {
@@ -49,6 +50,8 @@ extension OOAppError:LocalizedError {
             return "Moay.Error:parameterEncoding,error=\(err)"
         case .apiResponseError(let err):
             return "API.Error:apiResponseError,error=\(err)"
+        case .apiEmptyResultError:
+            return "API 返回结果为空"
         }
     }
     
@@ -76,6 +79,8 @@ extension OOAppError:LocalizedError {
             return err.localizedDescription
         case .apiResponseError(let err):
             return err
+        case .apiEmptyResultError:
+            return "API 返回结果为空"
         }
     }
     

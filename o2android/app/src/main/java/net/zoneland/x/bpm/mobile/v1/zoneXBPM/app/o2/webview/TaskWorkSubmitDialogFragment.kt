@@ -131,7 +131,14 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
                             taskData.routeName = routeName
                             taskData.opinion = opinion
                             loadingDialog.show()
-                            presenter.submit(sign, taskData, workId, formData)
+
+                            //执行beforeProcess beforeSave
+                            (activity as TaskWebViewActivity).evaluateJavascriptBeforeSave {
+                                (activity as TaskWebViewActivity).evaluateJavascriptBeforeProcess{
+                                    presenter.submit(sign, taskData, workId, formData)
+                                }
+                            }
+
                         }else {
                             XToast.toastShort(activity, "表单校验不通过！")
                             closeSelf()
@@ -168,7 +175,11 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
         loadingDialog.dismiss()
         if (result) {
             if (activity != null && activity is TaskWebViewActivity) {
-                (activity as TaskWebViewActivity).finishSubmit(site)
+                (activity as TaskWebViewActivity).evaluateJavascriptAfterSave {
+                    (activity as TaskWebViewActivity).evaluateJavascriptAfterProcess {
+                        (activity as TaskWebViewActivity).finishSubmit(site)
+                    }
+                }
             }
             closeSelf()
         }else {

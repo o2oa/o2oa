@@ -9,13 +9,10 @@
 import UIKit
 
 class CloudFileShareViewController: UITableViewController {
-
-    @IBAction func clickCloseAction(_ sender: UIBarButtonItem) {
-        print("点击了关闭按钮。。。。。。。。。。。")
-    }
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -34,7 +31,10 @@ class CloudFileShareViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
-
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView(frame: CGRect.zero)
+    }
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)

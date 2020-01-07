@@ -27,6 +27,7 @@ class CMSWrapOutCategoryList : NSObject, NSCoding, Mappable{
 	var readFormName : String?
 	var sequence : String?
 	var updateTime : String?
+    var workflowFlag: String? //流程id 绑定流程的时候会有
 
 
 	class func newInstance(map: Map) -> Mappable?{
@@ -56,6 +57,7 @@ class CMSWrapOutCategoryList : NSObject, NSCoding, Mappable{
 		readFormName <- map["readFormName"]
 		sequence <- map["sequence"]
 		updateTime <- map["updateTime"]
+        workflowFlag <- map["workflowFlag"]
 		
 	}
 
@@ -83,6 +85,7 @@ class CMSWrapOutCategoryList : NSObject, NSCoding, Mappable{
          readFormName = aDecoder.decodeObject(forKey: "readFormName") as? String
          sequence = aDecoder.decodeObject(forKey: "sequence") as? String
          updateTime = aDecoder.decodeObject(forKey: "updateTime") as? String
+         workflowFlag = aDecoder.decodeObject(forKey: "workflowFlag") as? String
 
 	}
 
@@ -146,6 +149,9 @@ class CMSWrapOutCategoryList : NSObject, NSCoding, Mappable{
 		if updateTime != nil{
 			aCoder.encode(updateTime, forKey: "updateTime")
 		}
+        if workflowFlag != nil {
+            aCoder.encode(workflowFlag, forKey: "workflowFlag")
+        }
 
 	}
 

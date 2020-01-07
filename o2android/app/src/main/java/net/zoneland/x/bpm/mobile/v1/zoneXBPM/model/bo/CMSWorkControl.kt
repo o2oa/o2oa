@@ -11,5 +11,6 @@ class CMSWorkControl(
         var allowEditDocument: Boolean = false,
         var allowDeleteDocument: Boolean = false,
         var allowArchiveDocument: Boolean = false,
-        var allowRedraftDocument: Boolean = false
+        var allowRedraftDocument: Boolean = false,
+        var currentMode: String = "read" //edit read 编辑表单和阅读表单
 )

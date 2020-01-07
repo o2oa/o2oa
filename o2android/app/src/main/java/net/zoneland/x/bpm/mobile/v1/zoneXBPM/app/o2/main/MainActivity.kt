@@ -18,15 +18,12 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.View
-import com.pgyersdk.update.PgyUpdateManager
+import cn.jpush.android.api.JPushInterface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_bottom_bar_image.*
 import net.muliba.changeskin.FancySkinManager
 import net.muliba.fancyfilepickerlibrary.PicturePicker
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2CustomStyle
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.my.ClipAvatarActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.MainActivityFragmentAdapter
@@ -168,13 +165,16 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                 }
             }
         }
+        if (BuildConfig.InnerServer) {
+            val token = JPushInterface.getRegistrationID(this)
+            mPresenter.jPushBindDevice(token)
+        }
     }
 
 
     override fun onPause() {
         super.onPause()
         pictureLoaderService?.close()
-        PgyUpdateManager.unregister()//点击太快 进入main后马上跳到别的Activity去有可能会出错 需要这个unregister
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

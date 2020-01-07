@@ -58,7 +58,6 @@ class PortalWebViewActivity : BaseMVPActivity<PortalWebViewContract.View, Portal
                 }
             }
         }
-        toolbar?.visibility = View.GONE
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

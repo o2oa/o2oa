@@ -263,8 +263,8 @@ struct BBSContext {
 
 struct DesktopContext {
     static let DesktopContextKey = "x_desktop"
-    static let todoDesktopQuery = "workmobile.html?workid=##workid##"
-    static let todoedDestopQuery = "workmobile.html?workCompletedId=##workCompletedId##"
+    static let todoDesktopQuery = "workmobilewithaction.html?workid=##workid##"
+    static let todoedDestopQuery = "workmobilewithaction.html?workcompletedid=##workCompletedId##"
     static let bbsItemDetailQuery  = "forumdocMobile.html?id=##subjectId##"
     static let cmsItemDetailQuery = "cmsdocMobile.html?id=##documentId##"
     static let appDetailQuery = "appMobile.html?app=portal.Portal&status=##status##"

@@ -8,6 +8,7 @@
 
 import UIKit
 import WebKit
+import CocoaLumberjack
 
 class SCommonViewController: UITableViewController {
     
@@ -26,29 +27,31 @@ class SCommonViewController: UITableViewController {
     }
     
     
-
-    
-    
     @IBAction func checkUpdateVersion(_ sender: UIButton) {
-        PgyUpdateManager.sharedPgy().checkUpdate(withDelegete: self, selector: #selector(updateVersion(_:)))
         self.showLoading(title: "更新校验中，请稍候...")
+        self.checkAppVersion()
     }
     
-    @objc private func updateVersion(_ response:AnyObject?){
-        print("update be callbacked")
-        if let obj = response {
+     
+    
+    private func checkAppVersion() {
+        O2VersionManager.shared.checkAppUpdate { (info, error) in
             self.hideLoading()
-            //print(obj)
-            let appURLString = obj["downloadURL"]
-            if  let appURL = URL(string: appURLString as! String) {
-                if UIApplication.shared.canOpenURL(appURL) {
-                    if UIApplication.shared.openURL(appURL) {
-                        PgyUpdateManager.sharedPgy().updateLocalBuildNumber()
-                    }
-                }
+            if let iosInfo = info {
+                DDLogDebug(iosInfo.toJSONString() ?? "")
+                let alertController = UIAlertController(title: "版本更新", message: "更新内容：\(iosInfo.content ?? "")", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "确定", style: .default, handler: { ok in
+                    O2VersionManager.shared.updateAppVersion(info?.downloadUrl)
+                })
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: { c in
+                    //
+                })
+                alertController.addAction(cancelAction)
+                alertController.addAction(okAction)
+                UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+            }else {
+                DDLogInfo("没有版本更新：\(error ?? "")")
             }
-        }else{
-            self.showSuccess(title: "已经是最新版本")
         }
     }
     
@@ -57,7 +60,6 @@ class SCommonViewController: UITableViewController {
         self.showLoading(title: "正在收集...")
         let fileSize = SZKCleanCache.folderSizeAtPath()
         let msg = "检测到可以清理的缓存大小为\(fileSize)M，是否立即清除？"
-        //let msgAttrib = msg.color(RGB(155, g: 155, b: 155))
         let alertController = UIAlertController(title: "", message: msg, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "确定", style: .default) { (action) in
             self.clearCache()

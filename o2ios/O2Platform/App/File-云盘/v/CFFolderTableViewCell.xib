@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="KGk-i7-Jjw" customClass="CFFolderTableViewCell" customModule="O2Platform" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="72"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="71.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_wenjianjia" translatesAutoresizingMaskIntoConstraints="NO" id="Yyg-BN-onK">
+                        <rect key="frame" x="12" y="18.5" width="40" height="34.5"/>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="mIc-Qh-WKz">
+                        <rect key="frame" x="76" y="10" width="115" height="51.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="文件夹" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCW-rR-I4P">
+                                <rect key="frame" x="0.0" y="0.0" width="49" height="29.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="2019-10-08 12:12" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYM-XA-6nz">
+                                <rect key="frame" x="0.0" y="34.5" width="115" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1kf-Pq-3j6">
+                        <rect key="frame" x="256" y="0.0" width="64" height="71.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="64" id="BB2-5G-DYk"/>
+                        </constraints>
+                        <state key="normal" image="icon_circle"/>
+                        <connections>
+                            <action selector="clickCheckAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="a3S-oF-FcD"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="1kf-Pq-3j6" secondAttribute="bottom" id="CCS-em-dxI"/>
+                    <constraint firstItem="mIc-Qh-WKz" firstAttribute="leading" secondItem="Yyg-BN-onK" secondAttribute="trailing" constant="24" id="Ei5-QG-bQv"/>
+                    <constraint firstAttribute="bottom" secondItem="mIc-Qh-WKz" secondAttribute="bottom" constant="10" id="Wdh-15-9Qg"/>
+                    <constraint firstAttribute="trailing" secondItem="1kf-Pq-3j6" secondAttribute="trailing" id="gac-bl-92e"/>
+                    <constraint firstItem="Yyg-BN-onK" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="hYF-FN-DgR"/>
+                    <constraint firstItem="mIc-Qh-WKz" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="qjy-o3-9t2"/>
+                    <constraint firstItem="Yyg-BN-onK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="vnG-gB-7jg"/>
+                    <constraint firstItem="1kf-Pq-3j6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="xEW-BB-zCp"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="checkBoxButton" destination="1kf-Pq-3j6" id="INZ-jS-NMn"/>
+                <outlet property="folderNameLabel" destination="LCW-rR-I4P" id="1MS-pL-eWW"/>
+                <outlet property="timeLabel" destination="NYM-XA-6nz" id="03P-1w-Hg5"/>
+            </connections>
+            <point key="canvasLocation" x="-88.405797101449281" y="81.696428571428569"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="icon_circle" width="22" height="22"/>
+        <image name="icon_wenjianjia" width="40" height="34.5"/>
+    </resources>
+</document>

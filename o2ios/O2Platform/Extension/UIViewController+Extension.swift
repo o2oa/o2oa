@@ -8,6 +8,7 @@
 
 import UIKit
 import Chrysan
+import Photos
 
 
 extension UIViewController {
@@ -135,6 +136,27 @@ extension UIViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
+    
+    ///
+    ///系统弹出窗 可以输入文字
+    ///
+    func showPromptAlert(title: String, message: String, inputText: String, okHandler: @escaping ((UIAlertAction, String) -> Void))  {
+        let promptController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        promptController.addTextField { (textField) in
+            textField.placeholder = "请输入..."
+            textField.text = inputText
+        }
+        let okAction = UIAlertAction(title: "确定", style: .default) { (ok) in
+            let value = promptController.textFields?.first?.text ?? ""
+            okHandler(ok, value)
+        }
+        let cancelAction = UIAlertAction(title:"取消", style: .cancel,  handler: nil)
+        promptController.addAction(okAction)
+        promptController.addAction(cancelAction)
+        self.present(promptController, animated: true, completion: nil)
+    }
+    
+    
     // actionSheet 形式的弹出提示框  可以传入多个Action 已经有取消Action了
     func showSheetAction(title: String?, message: String?, actions: [UIAlertAction]) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
@@ -155,9 +177,36 @@ extension UIViewController {
     }
     
     
+    //通讯录选择器
+    func showContactPicker(modes: [ContactPickerType],
+                           callback: @escaping (O2BizContactPickerResult) -> Void,
+        topUnitList: [String] = [],
+        maxNumber: Int = 0,
+        multiple: Bool = true,
+        initDeptPickedArray:[String] = [],
+        initIdPickedArray:[String] = [],
+        initGroupPickedArray:[String] = [],
+        initUserPickedArray:[String] = []) {
+        if let v = ContactPickerViewController.providePickerVC(
+            pickerModes:modes,
+            topUnitList: topUnitList,
+            unitType: "",
+            maxNumber: maxNumber,
+            multiple: multiple,
+            dutyList: [],
+            initDeptPickedArray: initDeptPickedArray,
+            initIdPickedArray: initIdPickedArray,
+            initGroupPickedArray: initGroupPickedArray,
+            initUserPickedArray: initUserPickedArray,
+            pickedDelegate: callback
+            ) {
+            self.navigationController?.pushViewController(v, animated: true)
+        }
+    }
+    
     
     func datePickerTapped(_ title:String,_ dateType:UIDatePicker.Mode,_ format:String,callBackResult:((_ result:Date) -> Void)?) {
-        let locale = Locale(identifier: "zh")
+        let locale = Locale.current
         let theDate = Date()
         var dateComponents = DateComponents()
         dateComponents.month = -12
@@ -193,33 +242,63 @@ extension UIViewController {
 // MARK:- ProgressHUD
 extension UIViewController {
     
+    func showMessage(msg: String) {
+        DispatchQueue.main.async {
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.show(.plain, message: msg, hideDelay: 1)
+            }else {
+                self.chrysan.show(.plain, message: msg, hideDelay: 1)
+            }
+        }
+    }
+    
     func showSuccess(title:String) {
         DispatchQueue.main.async {
-             self.chrysan.show(.succeed, message: title, hideDelay: 1)
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.show(.succeed, message: title, hideDelay: 1)
+            }else {
+                self.chrysan.show(.succeed, message: title, hideDelay: 1)
+            }
         }
     }
     
     func showError(title:String){
         DispatchQueue.main.async {
-            self.chrysan.show(.error, message: title, hideDelay: 1)
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.show(.error, message: title, hideDelay: 1)
+            }else {
+                self.chrysan.show(.error, message: title, hideDelay: 1)
+            }
         }
     }
     
     func showLoading(title:String){
         DispatchQueue.main.async {
-            self.chrysan.show(.running, message: title)
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.show(.running, message: title)
+            }else {
+                self.chrysan.show(.running, message: title)
+            }
         }
     }
     
     func showLoading()  {
         DispatchQueue.main.async {
-            self.chrysan.show()
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.show()
+            }else {
+                self.chrysan.show()
+            }
         }
     }
     
     func hideLoading() {
         DispatchQueue.main.async {
-            self.chrysan.hide()
+            if self.navigationController != nil {
+                self.navigationController?.chrysan.hide()
+            }else {
+                self.chrysan.hide()
+            }
         }
     }
     
@@ -243,8 +322,91 @@ extension UIViewController {
     }
 }
 
+// MARK: - 业务工具
+extension UIViewController {
+    
+    //照片选择器
+    func choosePhotoWithImagePicker(callback: @escaping (String, Data)-> Void) {
+        let chooseImage = FileBSImagePickerViewController()
+        self.bs_presentImagePickerController(chooseImage, animated: true, select: nil, deselect: nil, cancel: nil, finish: {
+            (arr) in
+            let count = arr.count
+            print("选择了照片数量：\(count)")
+            if count > 0 {
+                //获取照片
+                let asset = arr[0]
+                switch asset.mediaType {
+                case .image:
+                    let options = PHImageRequestOptions()
+//                    options.isSynchronous = true
+                    options.deliveryMode = .fastFormat
+                    options.isNetworkAccessAllowed = true
+                    options.resizeMode = .none
+                    options.progressHandler = { progress, error, p, d in
+                            print("下载进度。。。\(progress)")
+                        print("下载错误。。。\(String(describing: error))")
+                    }
+                    PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: options, resultHandler: { (image, dict) in
+                        if image == nil {
+                            print("选择照片出错 is nil")
+                        } else {
+                            //处理图片旋转的问题
+                            let newImage = image?.fixOrientation()
+                            let newData = newImage!.hnk_data()
+                            if newData == nil {
+                                print("照片旋转出错")
+                            }else {
+                                var fileName = "unkownFile"
+                                if let fileURL = dict?["PHImageFileURLKey"] as? URL {
+                                    fileName = fileURL.lastPathComponent
+                                }
+                                callback(fileName, newData!)
+                            }
+                        }
+                    })
+                    
+                    
+                    //选择iCloud上的照片获取不到data
+//                    PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: { (imageData, result, imageOrientation, dict) in
+//                        if imageData == nil {
+//                            print("选择照片出错")
+//                        }else {
+//                            var newData = imageData
+//                            //处理图片旋转的问题
+//                            if imageOrientation != UIImage.Orientation.up && imageData != nil {
+//                                let newImage = UIImage(data: imageData!)?.fixOrientation()
+//                                if newImage != nil {
+//                                    newData = newImage?.pngData()
+//                                }
+//                            }
+//                            if newData == nil {
+//                                print("照片旋转出错")
+//                            }else {
+//                                var fileName = "unkownFile"
+//                                if let fileURL = dict?["PHImageFileURLKey"] as? URL {
+//                                    fileName = fileURL.lastPathComponent
+//                                }
+//                                callback(fileName, newData!)
+//                            }
+//                        }
+//                    })
+                    break
+                case .video:
+                     print("视频文件。还不支持。。。。。")
+                    break
+                default :
+                    print("未知类型的文件。。。。。。")
+                    break
+                }
+            }
+            
+            
+        }, completion: nil)
+    }
+}
 
-//MARK: - 
+
+//MARK: - Notification
 extension UIViewController {
     
     ///EZSE: Adds an NotificationCenter with name and Selector

@@ -54,9 +54,9 @@ class O2AppViewController: UIViewController{
     }
     
     func loadAppConfigDb() {
-        let mainApps = OOAppsInfoDB.shareInstance.queryMainData()
+        let mainApps = DBManager.shared.queryMainData()
         o2apps = mainApps
-        let allApps = OOAppsInfoDB.shareInstance.queryData()
+        let allApps = DBManager.shared.queryData()
         apps2 = [mainApps,allApps]
         self.collectionViewDelegate.apps = apps2
         DispatchQueue.main.async {
@@ -75,7 +75,16 @@ class O2AppViewController: UIViewController{
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showMailSegue" {
-            MailViewController.app = sender as? O2App
+            if let nav = segue.destination as? ZLNavigationController {
+                nav.viewControllers.forEach { (vc) in
+                    if vc is MailViewController {
+                        DDLogDebug("显示门户。。。。")
+                        (vc as! MailViewController).app = sender as? O2App
+                    }
+                }
+            }else if let mail = segue.destination as? MailViewController {
+                mail.app = sender as? O2App
+            }
         }
     }
 
@@ -131,6 +140,11 @@ extension O2AppViewController:ZLCollectionViewDelegate{
                         storyBoardName = story?.storyBoard
                     }
                     DDLogDebug("storyboard: \(storyBoardName!) , app:\(app.appId!)")
+                    ///新版云盘 2019-11-20
+                    if storyBoardName == "cloudStorage" {
+                        storyBoardName = "CloudFile"
+                    }
+                    ////
                     let storyBoard = UIStoryboard(name: storyBoardName!, bundle: nil)
                     var destVC:UIViewController!
                     if let vcname = app.vcName,vcname.isEmpty == false {
@@ -151,6 +165,7 @@ extension O2AppViewController:ZLCollectionViewDelegate{
                         }
                     }
                     if destVC.isKind(of: ZLNavigationController.self) {
+                        DDLogInfo("cloudFIle 进来了？")
                         self.show(destVC, sender: nil)
                     }else{
                         self.navigationController?.pushViewController(destVC, animated: true)

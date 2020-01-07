@@ -8,4 +8,6 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 interface BasePresenter<in V : BaseView> {
     fun attachView(view: V)
     fun detachView()
+    fun jPushBindDevice(deviceToken: String)
+    fun jPushUnBindDevice(deviceToken: String)
 }

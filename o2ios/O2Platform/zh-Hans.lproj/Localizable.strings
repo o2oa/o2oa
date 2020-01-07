@@ -6,3 +6,38 @@
   Copyright © 2019 zoneland. All rights reserved.
 */
 "Done" = "完成";
+"OK" = "確定";
+"Cancel" = "取消";
+"Title" = "标题";
+"Update" = "更新";
+"Clear Photo" = "清除照片";
+"Share" = "分享";
+"Delete" = "删除";
+"Alert" = "提示";
+"Choose" = "选择";
+
+//云盘
+"Cloud Files" = "云盘";
+"All File" = "全部文件";
+"Upload File" = "上传文件";
+"New Folder" = "新建文件夹";
+"New" = "新建";
+"Create Folder Error Message" = "创建文件夹失败！";
+"Rename" = "重命名";
+"Move" = "移动";
+"Share Delete" = "取消分享";
+"Shield Share" = "屏蔽共享";
+"Empty name Error Message" = "名称不能为空！";
+"Delete Items Confirm Message" = "确定要删除这些数据吗？";
+"Choose Move Position" = "选择移动位置";
+"Cloud File Type Image" = "图片";
+"Cloud File Type Video" = "视频";
+"Cloud File Type Music" = "音乐";
+"Cloud File Type Document" = "文档";
+"Cloud File Type Other" = "其它";
+"Cloud File Share To Me" = "分享给我的";
+"Cloud File My Share Files" = "我分享的文件";
+"Delete My Share File Confirm Message" = "确定要取消这些分享的数据吗？";
+"Shield Share File Confirm Message" = "确定要屏蔽这些分享给你的数据吗？";
+
+

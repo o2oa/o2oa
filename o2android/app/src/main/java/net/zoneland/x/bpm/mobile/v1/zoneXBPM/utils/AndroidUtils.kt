@@ -224,6 +224,20 @@ object AndroidUtils {
     }
 
     /**
+     * 获取当前应用的版本号
+     *
+     */
+    fun getAppVersionCode(context: Context): Int {
+        val versionCode: Int
+        try {
+            versionCode = context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        }catch (e: PackageManager.NameNotFoundException) {
+            throw java.lang.RuntimeException(this.javaClass.simpleName + " this application not found! ")
+        }
+        return versionCode
+    }
+
+    /**
      * 实现文本复制功能
      * @param content
      */

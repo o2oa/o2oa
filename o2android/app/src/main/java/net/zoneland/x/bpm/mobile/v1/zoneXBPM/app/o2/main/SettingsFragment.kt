@@ -1,27 +1,24 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main
 
-import android.Manifest
 import android.text.TextUtils
 import android.view.View
-import com.pgyersdk.feedback.PgyFeedback
-import com.pgyersdk.views.PgyerDialog
+import cn.jpush.android.api.JPushInterface
 import kotlinx.android.synthetic.main.fragment_main_settings.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.about.AboutActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.login.LoginActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.notice.NoticeSettingActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.security.AccountSecurityActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.skin.SkinManagerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.BitmapUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.HttpCacheUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goAndClearBefore
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.AndroidShareDialog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 
@@ -58,7 +55,7 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
             setting_button_customer_service_id.setOnClickListener(this)
         }
 
-        setting_button_feedback_id.setOnClickListener(this)
+//        setting_button_feedback_id.setOnClickListener(this)
         myInfo_logout_btn_id.setOnClickListener(this)
 
         val path = O2CustomStyle.setupAboutImagePath(activity)
@@ -80,7 +77,7 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
                 }, O2AlertIconEnum.CLEAR)
             }
             R.id.setting_button_customer_service_id -> shareDialog.show()
-            R.id.setting_button_feedback_id -> startFeedBack()
+//            R.id.setting_button_feedback_id -> startFeedBack()
             R.id.setting_button_about_id -> activity.go<AboutActivity>()
             R.id.myInfo_logout_btn_id -> logout()
 
@@ -101,30 +98,33 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
     }
 
     private fun logout() {
-        XLog.debug("acti ity: ${activity == null}")
         O2DialogSupport.openConfirmDialog(activity, "确定要退出登录吗？", {
+            if (BuildConfig.InnerServer) {
+                val token = JPushInterface.getRegistrationID(activity)
+                mPresenter.jPushUnBindDevice(token)
+            }
             mPresenter.logout()
         })
     }
 
-    private fun startFeedBack() {
-        PermissionRequester(activity)
-                .request(Manifest.permission.RECORD_AUDIO)
-                .o2Subscribe {
-                    onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
-                        XLog.info("granted:$granted , shouldShowRequest:$shouldShowRequestPermissionRationale, denied:$deniedPermissions")
-                        if (!granted) {
-                            O2DialogSupport.openAlertDialog(activity, "需要麦克风权限才能进行语音反馈!")
-                        } else {
-                            PgyerDialog.setDialogTitleBackgroundColor("#FB4747")
-                            PgyFeedback.getInstance().showDialog(activity)
-                        }
-                    }
-                    onError { e, _ ->
-                        XLog.error("麦克风权限验证异常", e)
-                    }
-                }
-    }
+//    private fun startFeedBack() {
+//        PermissionRequester(activity)
+//                .request(Manifest.permission.RECORD_AUDIO)
+//                .o2Subscribe {
+//                    onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
+//                        XLog.info("granted:$granted , shouldShowRequest:$shouldShowRequestPermissionRationale, denied:$deniedPermissions")
+//                        if (!granted) {
+//                            O2DialogSupport.openAlertDialog(activity, "需要麦克风权限才能进行语音反馈!")
+//                        } else {
+//                            PgyerDialog.setDialogTitleBackgroundColor("#FB4747")
+//                            PgyFeedback.getInstance().showDialog(activity)
+//                        }
+//                    }
+//                    onError { e, _ ->
+//                        XLog.error("麦克风权限验证异常", e)
+//                    }
+//                }
+//    }
 
     private fun logoutThenJump2Login() {
         O2SDKManager.instance().logoutCleanCurrentPerson()

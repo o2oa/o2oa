@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  O2Platform
+
+  Created by FancyLou on 2019/4/18.
+  Copyright © 2019 zoneland. All rights reserved.
+*/
+"Done" = "Done";
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Title" = "Title";
+"Update" = "Update";
+"Clear Photo" = "Clear Photo";
+"Share" = "Share";
+"Delete" = "Delete";
+"Alert" = "Alert";
+"Choose" = "Choose";
+
+"Cloud Files" = "Cloud File";
+"All File" = "All File";
+"Upload File" = "Upload File";
+"New Folder" = "New Folder";
+"New" = "New";
+"Create Folder Error Message" = "Create Folder Error Message !";
+"Rename" = "Rename";
+"Move" = "Move";
+"Share Delete" = "Take Back";
+"Shield Share" = "Shield Share";
+"Empty name Error Message" = "name is not empty !";
+"Delete Items Confirm Message" = "Delete these items , are you sure ?";
+"Choose Move Position" = "Move To";
+"Cloud File Type Image" = "Image";
+"Cloud File Type Video" = "Video";
+"Cloud File Type Music" = "Music";
+"Cloud File Type Document" = "Document";
+"Cloud File Type Other" = "Other";
+"Cloud File Share To Me" = "Share To Me";
+"Cloud File My Share Files" = "My Share Files";
+"Delete My Share File Confirm Message" = "Cancel these share items, are you sure ?";
+"Shield Share File Confirm Message" = "Dismiss these share items, are you sure ?";

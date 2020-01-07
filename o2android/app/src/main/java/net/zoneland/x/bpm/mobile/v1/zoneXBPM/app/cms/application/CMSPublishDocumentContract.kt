@@ -15,11 +15,14 @@ object CMSPublishDocumentContract {
     interface View : BaseView {
         fun currentPersonIdentities(list: List<WoIdentityListItem>)
         fun newDocumentId(id: String)
-        fun newDocumentFail()
+        fun newDocumentFail(msg: String)
+        fun startProcessSuccess(workId:String, title: String)
+        fun startProcessFail(message:String)
     }
 
     interface Presenter : BasePresenter<View> {
         fun findCurrentPersonIdentity()
         fun newDocument(doc: CMSDocumentInfoJson)
+        fun startProcess(title: String, identifyId: String, processId: String)
     }
 }

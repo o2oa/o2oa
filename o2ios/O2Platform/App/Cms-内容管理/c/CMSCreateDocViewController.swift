@@ -115,40 +115,80 @@ class CMSCreateDocViewController: FormViewController {
     
     func createDocument(_ title: String, _ identity: String) {
         debugPrint("创建文档：\(title), \(identity)")
-        var json:[String: Any] = [:]
-        json["title"] = title
-        json["appId"] = self.category?.appId
-        json["categoryId"] = self.category?.id
-        json["categoryAlias"] = self.category?.categoryAlias
-        json["categoryName"] = self.category?.categoryName
-        json["creatorIdentity"] = identity
-        json["docStatus"] = "draft"
-        json["isNewDocument"] = true
-        let doc = CMSCategoryItemData(JSON: json)
-        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsDocumentPost, parameter: nil)
-        Alamofire.request(url!, method: .post, parameters: doc?.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
-            switch response.result {
-            case .success(let val):
-                let type = JSON(val)["type"]
-                if type == "success" {
-                    let docId = JSON(val)["data"]["id"].string!
-                    DispatchQueue.main.async {
-                        self.showSuccess(title: "创建文档成功")
-                        self.performSegue(withIdentifier: "openDocument", sender: docId)
+        if self.category?.workflowFlag != nil && self.category?.workflowFlag != "" {
+            self.createProcess(title, identity: identity, processId: self.category!.workflowFlag!)
+        }else {
+            var json:[String: Any] = [:]
+            json["title"] = title
+            json["appId"] = self.category?.appId
+            json["categoryId"] = self.category?.id
+            json["categoryAlias"] = self.category?.categoryAlias
+            json["categoryName"] = self.category?.categoryName
+            json["creatorIdentity"] = identity
+            json["docStatus"] = "draft"
+            json["isNewDocument"] = true
+            let doc = CMSCategoryItemData(JSON: json)
+            let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsDocumentPost, parameter: nil)
+            Alamofire.request(url!, method: .post, parameters: doc?.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
+                switch response.result {
+                case .success(let val):
+                    let type = JSON(val)["type"]
+                    if type == "success" {
+                        let docId = JSON(val)["data"]["id"].string!
+                        DispatchQueue.main.async {
+                            self.showSuccess(title: "创建文档成功")
+                            self.performSegue(withIdentifier: "openDocument", sender: docId)
+                        }
+                    }else{
+                        DispatchQueue.main.async {
+                            DDLogError(JSON(val).description)
+                            self.showError(title: "创建文档失败")
+                        }
                     }
-                }else{
+                case .failure(let err):
                     DispatchQueue.main.async {
-                        DDLogError(JSON(val).description)
+                        DDLogError(err.localizedDescription)
                         self.showError(title: "创建文档失败")
                     }
                 }
-            case .failure(let err):
-                DispatchQueue.main.async {
-                    DDLogError(err.localizedDescription)
-                    self.showError(title: "创建文档失败")
-                }
+                
             }
-            
+        }
+    }
+    
+    
+    func createProcess(_ title:String,identity:String, processId: String){
+        DDLogDebug("title = \(title),identity = \(identity)")
+        let bean = CreateProcessBean()
+        bean.title = title
+        bean.identity = identity
+        let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":processId as AnyObject])
+        self.showLoading(title: "创建中，请稍候...")
+        Alamofire.request(createURL!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
+            debugPrint(response.result)
+            switch response.result {
+            case .success(let val):
+                let taskList = JSON(val)["data"][0]
+                DDLogDebug(taskList.description)
+                if let tasks = Mapper<TodoTask>().mapArray(JSONString:taskList["taskList"].debugDescription) , tasks.count > 0 {
+                    let taskStoryboard = UIStoryboard(name: "task", bundle: Bundle.main)
+                    let todoTaskDetailVC = taskStoryboard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
+                    todoTaskDetailVC.todoTask = tasks[0]
+                    todoTaskDetailVC.backFlag = 5
+                    self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
+                    DispatchQueue.main.async {
+                        self.hideLoading()
+                    }
+                    
+                } else {
+                    self.showError(title: "创建失败")
+                }
+            case .failure(let err):
+                DDLogError(err.localizedDescription)
+                self.showError(title: "创建失败")
+
+            }
+           
         }
     }
     

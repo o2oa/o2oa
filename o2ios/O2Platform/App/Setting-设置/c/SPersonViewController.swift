@@ -229,6 +229,11 @@ class SPersonViewController: FormViewController {
                 print("IM退出失败,error = \(String(describing: errMsg))")
             }
         }
+        if O2IsConnect2Collect == false {
+            //解除绑定 设备号 内网直连版本
+            O2JPushManager.shared.O2JPushUnBind()
+        }
+        
         self.forwardDestVC("login", "loginVC")
     }
     

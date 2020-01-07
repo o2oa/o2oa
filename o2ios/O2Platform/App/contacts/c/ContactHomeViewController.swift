@@ -254,7 +254,7 @@ class ContactHomeViewController: UITableViewController {
         let collectTitle = HeadTitle(name:"常用联系人", icon: O2ThemeManager.string(for: "Icon.icon_linkman")!)
         let collectVMT = CellViewModel(name: collectTitle.name, sourceObject: collectTitle)
         self.contacts[2]?.append(collectVMT)
-        let collectPersons = OOContactsInfoDB.shareInstance.queryData((O2AuthSDK.shared.myInfo()?.id)!)
+        let collectPersons = DBManager.shared.queryContactData((O2AuthSDK.shared.myInfo()?.id)!)
         collectPersons.forEach { (p) in
             let vm = CellViewModel(name: p.name!, sourceObject: p)
             self.contacts[2]?.append(vm)

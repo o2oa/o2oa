@@ -59,15 +59,11 @@ class ScanLoginActivity : BaseMVPActivity<ScanLoginContract.View, ScanLoginContr
 
     private fun parseResult() {
         if (StringUtil.isUrl(result)) {
-            if (result.contains("pgyer.com")) {
-                parseMeta()
-                if (!TextUtils.isEmpty(meta)) {
-                    title = getString(net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.string.scan_login_confirm_title)
-                    activity_scan_login.visible()
-                    tv_scan_login_text_content.gone()
-                }else{
-                    gotoDefaultBrowser()
-                }
+            parseMeta()
+            if (!TextUtils.isEmpty(meta)) {
+                title = getString(net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.string.scan_login_confirm_title)
+                activity_scan_login.visible()
+                tv_scan_login_text_content.gone()
             }else if (result.contains("x_meeting_assemble_control") && result.contains("/checkin")){
                 meetingCheckin(result)//会议签到
             }else{

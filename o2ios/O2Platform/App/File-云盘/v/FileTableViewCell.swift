@@ -45,7 +45,7 @@ class FileTableViewCell: UITableViewCell {
         }
     }
     
-    func btnActionClick(_ sender:AnyObject?){
+    @objc func btnActionClick(_ sender:AnyObject?){
         //let imageView = sender as? UIImageView
         DDLogDebug("btn action Clicked")
         DDLogDebug("cell frame = \(self.frame),cell center = \(self.center)")

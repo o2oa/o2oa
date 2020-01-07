@@ -34,6 +34,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.AttachmentItemVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
@@ -258,6 +259,26 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
         })
     }
 
+    /**
+     * 编辑文档
+     * 点击把文档从阅读表单变成编辑表单
+     */
+    fun editDocument(view: View?) {
+        web_view_cms_document_content.evaluateJavascript("layout.appForm.editDocumentForMobile()") { value ->
+            XLog.info("转成编辑表单，返回：$value")
+        }
+    }
+
+    /**
+     * 保存文档
+     *
+     */
+    fun saveDocument(view: View?) {
+        web_view_cms_document_content.evaluateJavascript("layout.appForm.saveDocument(layout.close)") { value ->
+            XLog.info("保存表单，返回：$value")
+        }
+    }
+
 
     //MARK: javascript interface
 
@@ -282,7 +303,8 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
         //                        "allowEditDocument":  isControl && !this.document.wf_workId,
         //                        "allowDeleteDocument":  isControl && !this.document.wf_workId,
         //                        "allowArchiveDocument" : false,
-        //                        "allowRedraftDocument" : false
+        //                        "allowRedraftDocument" : false,
+        //                        "currentMode": "read" //edit 编辑表单还是阅读表单
         //                    };
         XLog.debug("表单加载完成回调：$control")
         if (!TextUtils.isEmpty(control)) {
@@ -297,6 +319,20 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
                     if (cmsWorkControl.allowPublishDocument) {
                         tv_cms_form_publish_btn.visible()
                         i++
+                    }else {
+                        if (cmsWorkControl.allowEditDocument && cmsWorkControl.allowSave) {
+                            if (cmsWorkControl.currentMode == "read") {
+                                tv_cms_form_edit_btn.visible()
+                                tv_cms_form_save_btn.gone()
+                            }else if (cmsWorkControl.currentMode == "edit") {
+                                tv_cms_form_edit_btn.gone()
+                                tv_cms_form_save_btn.visible()
+                            }
+                            i++
+                        }else {
+                            tv_cms_form_edit_btn.gone()
+                            tv_cms_form_save_btn.gone()
+                        }
                     }
                     if (i>0) {
                         fl_bottom_operation_bar.visible()

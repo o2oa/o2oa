@@ -10,15 +10,14 @@ import kotlinx.android.synthetic.main.activity_cms_publish_document.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.TaskWebViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.WoIdentityListItem
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import org.jetbrains.anko.dip
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CMSPublishDocumentActivity : BaseMVPActivity<CMSPublishDocumentContract.View, CMSPublishDocumentContract.Presenter>(),
@@ -95,6 +94,7 @@ class CMSPublishDocumentActivity : BaseMVPActivity<CMSPublishDocumentContract.Vi
     }
 
     override fun newDocumentId(id: String) {
+        hideLoadingDialog()
         if (!TextUtils.isEmpty(id)) {
             val title = edit_cms_publish_title.text.toString()
             goThenKill<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(id, title))
@@ -103,9 +103,24 @@ class CMSPublishDocumentActivity : BaseMVPActivity<CMSPublishDocumentContract.Vi
         }
     }
 
-    override fun newDocumentFail() {
-        XToast.toastShort(this, "保存失败！")
+    override fun newDocumentFail(msg: String) {
+        hideLoadingDialog()
+        XToast.toastShort(this, msg)
     }
+
+    override fun startProcessSuccess(workId: String, title: String) {
+        hideLoadingDialog()
+        val bundle = Bundle()
+        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
+        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, title)
+        goThenKill<TaskWebViewActivity>(bundle)
+    }
+
+    override fun startProcessFail(message: String) {
+        XToast.toastShort(this, "启动流程失败, $message")
+        hideLoadingDialog()
+    }
+
 
     private fun createDocument() {
         val title = edit_cms_publish_title.text.toString()
@@ -117,18 +132,22 @@ class CMSPublishDocumentActivity : BaseMVPActivity<CMSPublishDocumentContract.Vi
             XToast.toastShort(this, "身份不能为空！")
             return
         }
-        val document = CMSDocumentInfoJson()
-//        document.id = UUID.randomUUID().toString()
-        document.title = title
-        document.appId = category!!.appId
-        document.categoryId = category!!.id
-        document.categoryAlias = category!!.categoryAlias
-        document.categoryName = category!!.categoryName
-        document.creatorIdentity = identity
-        document.docStatus = "draft"
-        document.isNewDocument = true
-        XLog.info(document.toString())
-        mPresenter.newDocument(document)
+        showLoadingDialog()
+        if (category?.workflowFlag != null && "" != category?.workflowFlag) {
+            mPresenter.startProcess(title, identity, category?.workflowFlag!!)
+        }else {
+            val document = CMSDocumentInfoJson()
+            document.title = title
+            document.appId = category!!.appId
+            document.categoryId = category!!.id
+            document.categoryAlias = category!!.categoryAlias
+            document.categoryName = category!!.categoryName
+            document.creatorIdentity = identity
+            document.docStatus = "draft"
+            document.isNewDocument = true
+            XLog.info(document.toString())
+            mPresenter.newDocument(document)
+        }
 
     }
 

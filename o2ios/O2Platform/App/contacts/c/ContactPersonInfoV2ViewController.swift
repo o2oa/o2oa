@@ -34,10 +34,10 @@ class ContactPersonInfoV2ViewController: UITableViewController {
         let me = O2AuthSDK.shared.myInfo()
         if personCollect.isSelected == true {
             //删除
-            OOContactsInfoDB.shareInstance.deleteData(contact!, (me?.id)!)
+            DBManager.shared.deleteContactData(contact!, (me?.id)!)
         }else{
             //增加
-            OOContactsInfoDB.shareInstance.insertData(contact!, (me?.id)!)
+            DBManager.shared.insertContactData(contact!, (me?.id)!)
         }
         personCollect.isSelected = !personCollect.isSelected
         
@@ -254,7 +254,7 @@ class ContactPersonInfoV2ViewController: UITableViewController {
                 self.contact = Mapper<PersonV2>().map(JSONString:json.description)!
                 //OOCon
                 let me = O2AuthSDK.shared.myInfo()
-                self.isCollect = OOContactsInfoDB.shareInstance.isCollect(self.contact!, (me?.id)!)
+                self.isCollect = DBManager.shared.isCollect(self.contact!, (me?.id)!)
                 if self.isCollect == true {
                     self.personCollect.isSelected = true
                 }else{

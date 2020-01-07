@@ -9,6 +9,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
@@ -21,7 +23,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
 import com.google.gson.reflect.TypeToken
-import com.tencent.smtt.sdk.QbSdk
 import kotlinx.android.synthetic.main.activity_work_web_view.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.muliba.fancyfilepickerlibrary.PicturePicker
@@ -33,7 +34,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.WorkNewActionItem
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.WorkControl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkOpinionData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
@@ -46,7 +46,14 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.WebChromeClientWithProgressAndValueCallback
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.doAsync
+import rx.Observable
+import rx.Scheduler
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 
 class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebViewContract.Presenter>(), TaskWebViewContract.View {
@@ -196,38 +203,63 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         }
     }
 
-    //MARK: - click operation button event
+    //MARK：- 表单处理
 
+    //region 表单处理按钮
+
+    /**
+     * 删除工作
+     */
     fun formDeleteBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.delete_work_confirm_message), listener =  {
             showLoadingDialog()
             mPresenter.delete(workId)
         })
     }
+
+    /**
+     * 保存工作
+     */
     fun formSaveBtnClick(view: View?) {
         XLog.debug("click save button")
         web_view.clearFocus()
-        evaluateJavascriptGetFormData()
+        evaluateJavascriptGetFormDataAndSave()
     }
+
+    /**
+     * 继续流转
+     */
     fun formGoNextBtnClick(view: View?) {
         XLog.debug("click submit button")
         web_view.clearFocus()
-        formData()
-        getFormOpinion()
-        submitData()
+        formData{
+            getFormOpinion{
+                submitData()
+            }
+        }
     }
+
+    /**
+     * 标记为已阅
+     */
     fun formSetReadBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.read_complete_confirm_message), listener =  {
             showLoadingDialog()
             mPresenter.setReadComplete(read)
         })
     }
+
+    /**
+     * 撤回工作
+     */
     fun formRetractBtnClick(view: View?) {
         O2DialogSupport.openConfirmDialog(this@TaskWebViewActivity, getString(R.string.retract_confirm_message), listener = {
             showLoadingDialog()
             mPresenter.retractWork(workId)
         })
     }
+
+    //endregion
 
     // MARK: - finish submit callback webview javascript
     /**
@@ -243,58 +275,66 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     // MARK: - javascriptInterface
 
+    //region javascriptInterface
+    @JavascriptInterface
+    fun closeWork(result: String) {
+        XLog.debug("关闭表单 closeWork ：$result")
+        finish()
+    }
+
     /**
      * 表单加载完成后回调
      */
     @JavascriptInterface
     fun appFormLoaded(result: String) {// 获取control 动态生成操作按钮
         XLog.debug("表单加载完成回调：$result")// 20190520 result改成了操作按钮列表 如果是result是true就是老系统，用原来的方式。。。。。。。。得兼容老方式诶
-        runOnUiThread {
-            if (TextUtils.isEmpty(title)) {
-                web_view.evaluateJavascript("layout.appForm.businessData.work.title") { value ->
-                    XLog.debug("title: $title")
-                    try {
-                        title = O2SDKManager.instance().gson.fromJson(value, String::class.java)
-                        updateToolbarTitle(title)
-                    } catch (e: Exception) {
-                    }
-                }
-            }
-
-            if (result == "true") { // 老版本的操作
-                // 获取control 生成操作按钮
-                web_view.evaluateJavascript("layout.appForm.businessData.control") { value ->
-                    XLog.debug("control: $value")
-                    try {
-                        control = O2SDKManager.instance().gson.fromJson(value, WorkControl::class.java)
-                    } catch (e: Exception) {
-                    }
-                    initOptionBar()
-                }
-            }else {// 2019-05-21 增加新版操作按钮
-                // 解析result 操作按钮列表
-                if (!TextUtils.isEmpty(result)) {
-                    try {
-                        val type = object : TypeToken<List<WorkNewActionItem>>() {}.type
-                        val list: List<WorkNewActionItem> = O2SDKManager.instance().gson.fromJson(result, type)
-                        initOptionBarNew(list)
-                    }catch (e: Exception){
-                        XLog.error("解析操作按钮结果列表出错", e)
-                    }
-                }else {
-                    XLog.error("操作按钮结果为空")
-                }
-
-            }
-
-            web_view.evaluateJavascript("layout.appForm.businessData.read") { value ->
-                XLog.debug("read: $value")
-                try {
-                    read = O2SDKManager.instance().gson.fromJson(value, ReadData::class.java)
-                } catch (e: Exception) {
-                }
-            }
-        }
+        //2019-12-09 使用workwithaction的html 不用移动端的相关操作按钮了
+//        runOnUiThread {
+//            if (TextUtils.isEmpty(title)) {
+//                web_view.evaluateJavascript("layout.app.appForm.businessData.work.title") { value ->
+//                    XLog.debug("title: $title")
+//                    try {
+//                        title = O2SDKManager.instance().gson.fromJson(value, String::class.java)
+//                        updateToolbarTitle(title)
+//                    } catch (e: Exception) {
+//                    }
+//                }
+//            }
+//
+//            if (result == "true") { // 老版本的操作
+//                // 获取control 生成操作按钮
+//                web_view.evaluateJavascript("layout.app.appForm.businessData.control") { value ->
+//                    XLog.debug("control: $value")
+//                    try {
+//                        control = O2SDKManager.instance().gson.fromJson(value, WorkControl::class.java)
+//                    } catch (e: Exception) {
+//                    }
+//                    initOptionBar()
+//                }
+//            }else {// 2019-05-21 增加新版操作按钮
+//                // 解析result 操作按钮列表
+//                if (!TextUtils.isEmpty(result)) {
+//                    try {
+//                        val type = object : TypeToken<List<WorkNewActionItem>>() {}.type
+//                        val list: List<WorkNewActionItem> = O2SDKManager.instance().gson.fromJson(result, type)
+//                        initOptionBarNew(list)
+//                    }catch (e: Exception){
+//                        XLog.error("解析操作按钮结果列表出错", e)
+//                    }
+//                }else {
+//                    XLog.error("操作按钮结果为空")
+//                }
+//
+//            }
+//
+//            web_view.evaluateJavascript("layout.app.appForm.businessData.read") { value ->
+//                XLog.debug("read: $value")
+//                try {
+//                    read = O2SDKManager.instance().gson.fromJson(value, ReadData::class.java)
+//                } catch (e: Exception) {
+//                }
+//            }
+//        }
     }
 
 
@@ -399,17 +439,23 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
             }
         }
     }
-
+    //endregion
 
     //MARK: - view implements
 
+    //region view implements
+
     override fun finishLoading() {
+        XLog.debug("finishLoading.........")
         hideLoadingDialog()
     }
 
     override fun saveSuccess() {
-        hideLoadingDialog()
-        XToast.toastShort(this, "保存成功！")
+        XLog.debug("savesucess.........")
+        evaluateJavascriptAfterSave {
+            hideLoadingDialog()
+            XToast.toastShort(this, "保存成功！")
+        }
     }
     override fun submitSuccess() {
         hideLoadingDialog()
@@ -446,7 +492,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     override fun uploadAttachmentSuccess(attachmentId: String, site: String) {
         XLog.debug("uploadAttachmentResponse attachmentId:$attachmentId, site:$site")
         hideLoadingDialog()
-        web_view.evaluateJavascript("layout.appForm.uploadedAttachment(\"$site\", \"$attachmentId\")"){
+        web_view.evaluateJavascript("layout.app.appForm.uploadedAttachment(\"$site\", \"$attachmentId\")"){
             value -> XLog.debug("uploadedAttachment， onReceiveValue value=$value")
         }
     }
@@ -454,7 +500,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     override fun replaceAttachmentSuccess(attachmentId: String, site: String) {
         XLog.debug("replaceAttachmentResponse attachmentId:$attachmentId, site:$site")
         hideLoadingDialog()
-        web_view.evaluateJavascript("layout.appForm.replacedAttachment(\"$site\", \"$attachmentId\")"){
+        web_view.evaluateJavascript("layout.app.appForm.replacedAttachment(\"$site\", \"$attachmentId\")"){
             value -> XLog.debug("replacedAttachment， onReceiveValue value=$value")
         }
     }
@@ -501,8 +547,10 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
             XLog.error("图片控件对象不存在。。。。。。。。")
         }
     }
+    //endregion
 
-    //MARK: - private function
+
+    //region  private function
 
     /**
      * 生成操作按钮
@@ -546,9 +594,8 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      * 生成操作按钮 新版
      */
     private fun initOptionBarNew(list: List<WorkNewActionItem>) {
-        if(!list.isEmpty()) {
-            val len = list.count()
-            when(len) {
+        if(list.isNotEmpty()) {
+            when(list.count()) {
                 1 -> {
                     val menuItem = list[0]
                     tv_work_form_bottom_first_action.text = menuItem.text
@@ -673,11 +720,14 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         return button
     }
 
+    /**
+     * 提交数据
+     */
     private fun submitData() {
-        web_view.evaluateJavascript("layout.appForm.formValidation(\"\", \"\")") { value ->
+        web_view.evaluateJavascript("layout.app.appForm.formValidation(\"\", \"\")") { value ->
             XLog.debug("formValidation，value:$value")
             if (value == "true") {
-                web_view.evaluateJavascript("layout.appForm.businessData.task") { task ->
+                web_view.evaluateJavascript("layout.app.appForm.businessData.task") { task ->
                     XLog.debug("submitData, onReceiveValue value=$task")
                     try {
                         XLog.debug("submitData，TaskData:$task")
@@ -702,7 +752,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      * 选择路由和填写意见后，提交工作前
      */
     fun validateFormForSubmitDialog(route: String, opinion: String, callback:(Boolean)->Unit) {
-        web_view.evaluateJavascript("layout.appForm.formValidation(\"$route\", \"$opinion\")") { value ->
+        web_view.evaluateJavascript("layout.app.appForm.formValidation(\"$route\", \"$opinion\")") { value ->
             if (value == "true") {
                 callback(true)
             }else {
@@ -717,15 +767,16 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     }
 
 
-    private fun formData() {
-        web_view.evaluateJavascript("layout.appForm.getData()") { value ->
+    private fun formData(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.getData()") { value ->
             XLog.debug("evaluateJavascriptGetFormData， onReceiveValue form value=$value")
             formData = value
+            callback()
         }
     }
 
-    private fun getFormOpinion() {
-        web_view.evaluateJavascript("layout.appForm.getOpinion()") { value ->
+    private fun getFormOpinion(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.getOpinion()") { value ->
             XLog.debug("evaluateJavascript get from Opinion， onReceiveValue form value=$value")
             if (!TextUtils.isEmpty(value)) {
                 formOpinion = if (value == "\"\"") {
@@ -741,73 +792,68 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 }
 
             }
+            callback()
         }
     }
 
-    private fun evaluateJavascriptGetFormData() {
-        web_view.evaluateJavascript("layout.appForm.getData()") { value ->
-            XLog.debug("evaluateJavascriptGetFormData， onReceiveValue save value=$value")
-            if (value == null) {
-                runOnUiThread {
-                    XToast.toastShort(getContext(), "没有获取到表单数据！")
-                }
-                return@evaluateJavascript
-            }
+
+    private fun evaluateJavascriptGetFormDataAndSave() {
+        showLoadingDialog()
+        web_view.evaluateJavascript("(layout.app.appForm.fireEvent(\"beforeSave\");return layout.app.appForm.getData();)") { value ->
+            XLog.debug("evaluateJavascriptGetFormDataAndSave， onReceiveValue save value=$value")
             formData = value
-            showLoadingDialog()
-            mPresenter.save(workId, value)
+            XLog.debug("执行完成。。。。")
+            runOnUiThread {
+                XLog.debug("runOnUiThread  ....................")
+                if (formData == null || "" == formData) {
+                    XLog.debug("formData is null")
+                    hideLoadingDialog()
+                    XToast.toastShort(this@TaskWebViewActivity, "没有获取到表单数据！")
+                }else {
+                    evaluateJavascriptBeforeSave {
+                        mPresenter.save(workId, formData!!)
+                    }
+                }
+            }
         }
     }
+
+
 
     /**
-     * 继续流转 路由选择弹出窗
-     *
-     * @param data
+     * 执行beforeSave
      */
-    private fun openChooseRouterDialog(data: TaskData) {
-        val dialog = O2DialogSupport.openCustomViewDialog(this,
-                getString(R.string.work_form_submit),
-                getString(R.string.work_form_submit_button),
-                getString(R.string.work_form_cancel_button),
-                R.layout.dialog_approve_router_choose,
-                { dialog ->
-                    val text = dialog.findViewById<EditText>(R.id.edit_approve_router_opinion)
-                    val opinion = text.text.toString()
-                    XLog.debug("Positive，opinion: $opinion")
-                    val group = dialog.findViewById<RadioGroup>(R.id.radio_group_approve_router_choose)
-                    XLog.debug("Positvie，checked id:" + group.checkedRadioButtonId)
-                    val radio = dialog.findViewById<RadioButton>(group.checkedRadioButtonId)
-                    val routeName = radio.text.toString()
-                    XLog.debug("Positive，radio, $routeName")
-                    validateFormBeforeSubmit(routeName, opinion, data)
-                    dialog.dismiss()
-                },
-                { _ ->
-                    hideLoadingDialog()
-                })
-        val opinionText = dialog.findViewById<EditText>(R.id.edit_approve_router_opinion)
-        opinionText.setText(formOpinion)
-        val group = dialog.findViewById<RadioGroup>(R.id.radio_group_approve_router_choose)
-        routeNameList.mapIndexed { index, s ->
-            val tempButton = RadioButton(this@TaskWebViewActivity)
-            tempButton.text = s
-            tempButton.isChecked = routeNameList.size==1
-            tempButton.id = index+ 100
-            group.addView(tempButton, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+    fun evaluateJavascriptBeforeSave(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.fireEvent(\"beforeSave\")") { value ->
+            XLog.info("执行beforeSave ， result: $value")
+            callback()
         }
     }
-
-    private fun validateFormBeforeSubmit(routeName: String, opinion: String, data: TaskData) {
-        web_view.evaluateJavascript("layout.appForm.formValidation(\"$routeName\", \"$opinion\")") { value ->
-            XLog.debug("validateFormBeforeSubmit,value:$value")
-            if ("true" == value) {
-                data.opinion = opinion
-                data.routeName = routeName
-                showLoadingDialog()
-                mPresenter.submit(data, workId, formData)
-            }else {
-                XToast.toastShort(this@TaskWebViewActivity, "请检查表单填写是否正确！")
-            }
+    /**
+     * 执行 afterSave
+     */
+    fun evaluateJavascriptAfterSave(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.fireEvent(\"afterSave\")") { value ->
+            XLog.info("执行afterSave ， result: $value")
+            callback()
+        }
+    }
+    /**
+     * 执行 beforeProcess
+     */
+    fun evaluateJavascriptBeforeProcess(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.fireEvent(\"beforeProcess\")") { value ->
+            XLog.info("执行 beforeProcess ， result: $value")
+            callback()
+        }
+    }
+    /**
+     * 执行 afterProcess
+     */
+    fun evaluateJavascriptAfterProcess(callback: () -> Unit) {
+        web_view.evaluateJavascript("layout.app.appForm.fireEvent(\"afterProcess\")") { value ->
+            XLog.info("执行 afterProcess ， result: $value")
+            callback()
         }
     }
 
@@ -882,5 +928,6 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         }
     }
 
+    //endregion
 
 }
