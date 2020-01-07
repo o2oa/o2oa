@@ -9,6 +9,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.meeting.assemble.control.Business;
+import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Room;
@@ -38,6 +39,9 @@ class ActionConfirmAllow extends BaseAction {
 			meeting.setConfirmStatus(ConfirmStatus.allow);
 			emc.check(meeting, CheckPersistType.all);
 			emc.commit();
+			for (String _s : meeting.getInvitePersonList()) {
+				MessageFactory.meeting_invite(_s, meeting, room);
+			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
 			result.setData(wo);

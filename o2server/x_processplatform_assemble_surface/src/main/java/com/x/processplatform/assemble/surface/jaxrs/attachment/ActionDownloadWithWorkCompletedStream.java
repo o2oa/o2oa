@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,9 +17,10 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionDownloadWithWorkCompletedStream extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId, String fileName) throws Exception {
 		
 		ActionResult<Wo> result = new ActionResult<>();
 		WorkCompleted workCompleted = null;
@@ -47,8 +49,16 @@ class ActionDownloadWithWorkCompletedStream extends BaseAction {
 		}
 		StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 				attachment.getStorage());
-		Wo wo = new Wo(attachment.readContent(mapping), this.contentType(true, attachment.getName()),
-				this.contentDisposition(true, attachment.getName()));
+		if(StringUtils.isBlank(fileName)){
+			fileName = attachment.getName();
+		}else{
+			String extension = FilenameUtils.getExtension(fileName);
+			if(StringUtils.isEmpty(extension)){
+				fileName = fileName+ "." + attachment.getExtension();
+			}
+		}
+		Wo wo = new Wo(attachment.readContent(mapping), this.contentType(true, fileName),
+				this.contentDisposition(true, fileName));
 		result.setData(wo);
 		return result;
 	}
