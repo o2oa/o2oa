@@ -80,17 +80,19 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
 # 最新版本服务器安装包下载[o2server_V4.2698]\:
 
-windows 64Bit : http://download.o2oa.net/download/o2server_20191103191129_windows.zip
+windows 64Bit : http://download.o2oa.net/download/o2server_20200107232400_windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/o2server_20191103191129_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/o2server_20200107232400_linux.zip
 
-MacOS : http://download.o2oa.net/download/o2server_20191103191129_macos.zip
+MacOS : http://download.o2oa.net/download/o2server_20200107232400_macos.zip
 
-AIX : http://download.o2oa.net/download/o2server_20191103191129_aix.zip
+AIX : http://download.o2oa.net/download/o2server_20200107232400_aix.zip
 
-中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20191103191129_neokylin_loongson.zip
+中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20200107232400_neokylin_loongson.zip
 
-raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20191103191129_raspberrypi.zip
+银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200107230503_kylinos_phytium.zip
+
+raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20200107232400_raspberrypi.zip
 
 
 
@@ -101,222 +103,156 @@ raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_201911031911
 腾讯微云：https://share.weiyun.com/5krUMjj
 
 
-# 最新版本 v4.2698\:
+# 最新版本 v4.3355\:
 
-新增功能：[文档发布]新增GitBook，并且持续更新：https://o2oa.gitbook.io/course/。
+新增功能：[流程引擎]公文版式文件功能，支持所有浏览器的在线国标公文编辑。
 
-新增功能：[流程管理]在线编辑，增加符合国家党政机关公文格式GB/T 9704-2012版式文件。
+新增功能：[流程引擎]将数据映射移到流程配置中。
 
-新增功能：[流程管理]引擎强化，增加流程处理授权功能。
+新增功能：[系统架构]集成阿里durid，提供SQL及请求监控统计能力。
 
-新增功能：[流程管理]引擎强化，增加拆分任务合并的业务场景。
+新增功能：[流程管理]增加审批意见修改和管理功能。
 
-新增功能：[流程管理]引擎强化，增加支持不对称的拆分合并应用场景。
+新增功能：[流程管理]流程处理时增加提交时选择处理人的功能。
 
-新增功能：[流程管理]引擎强化，实现添加流程环节额外处理人业务场景，临时添加处理人。
+新增功能：[流程管理]流程处理时增加决策组功能。
 
-新增功能：[流程管理]引擎强化，工作流转日志增加身份的输出。
+新增功能：[流程管理]手写板根据屏幕大小自适应。
 
-新增功能：[流程管理]引擎强化，添加路由类型，通过路由添加处理人，实现转派的业务场景。
+新增功能：[流程管理]附件支持背靠背权限设置。
 
-新增功能：[流程管理]功能强化，流程平台提交界面中增加选择人员的功能。
+新增功能：[内容管理]内容管理增加个隐藏所有分类的选项。
 
-新增功能：[平台能力]集群强化，消除Center单点，支持多Center集群结构。
+新增功能：[内容管理]流程数据获取服务。
 
-新增功能：[平台能力]文件存储，支持外部存储，支持webdav。
+新增功能：[内容管理]新增添加视图时配置编辑表单的功能。
 
-新增功能：[平台能力]在线编辑，支持Html转Word功能。
+新增功能：[内容管理]视图增加是否显示内容管理草稿配置。
 
-新增功能：[平台能力]在线编辑，支持odf格式版式文件。
+新增功能：[组织管理]增加组织查询排序。
 
-新增功能：[平台能力]系统支持，新增加树莓派版本，支持3B+以上版本。
+新增功能：[论坛管理]BBS添加一个配置，以支持HTML的标题后固定的尾部信息展现，如“企业论坛 - O2OA办公软件管理系统”。
 
-新增功能：[平台能力]数据中心，增加Projection映射功能，可以自定义数据到表的映射。
+新增功能：[云文件]云文件分享给组织和群组。
 
-新增功能：[平台能力]组织架构，实现多组织隔离，可以在同一台服务器上运行多个不同的组织。
+新增功能：[移动APP]移动表单流程处理时提交加了决策组功能。
 
-新增功能：[平台能力]消息管理，增加webSocket的心跳信号，解决Jetty关闭webSocket问题。
+新增功能：[移动APP]增加直连版本添加极光推送功能。
 
-新增功能：[服务管理]定时任务，触发添加锁定，防止耗时长的任务反复执行。
+系统优化：[系统架构]数据库连接池性能优化。
 
-新增功能：[服务管理]定时任务，添加定时任务执行日志，自动记录运行失败的任务。
+系统优化：[系统架构]系统优码优化，内存控制能力优化。
 
-新增功能：[源码结构]结构优化，支持自定义web程序模块开发。
+系统优化：[系统架构]脚本预编译，提升脚本执行效率。
 
-新增功能：[门户管理]前端组件增加，门户管理中加入部件设计，增加设计成果的复用度。
+系统优化：[系统架构]服务请求响应能力优化，支持ETag，提升请求响应性能。
 
-新增功能：[内容管理]前端组件增加，内容管理增加评论组件。
+系统优化：[系统架构]删除Calendar_EventComment实体ID上的unque=true，避免Oracle数据库因主键和唯一索引重复导致数据表创建失败。
 
-新增功能：[内容管理]新增CMS服务：getControl，根据ID获取人员对CMS文档的访问控制信息
+系统优化：[流程管理]用户下载附件的时候，NTKO正文名称是 file+控件Id+workId，支持让用户指定名称。
 
-新增功能：[内容管理]更新文档保存方法，支持录入发布时间，支持使用published状态把文档设置为发布状态
+系统优化：[流程管理]优化企业微信启动流程功能。
 
-新增功能：[内容管理]CMS新增通过表单标识和栏目标识获取表单对象的服务
+系统优化：[流程管理]附件允许排序。
 
-新增功能：[移动办公IOS]切换了新的企业证书，需要重新下载IOS客户端，否则无法正常登录使用。
+系统优化：[流程管理]流程索引视图，加速视图展现效率。
 
-新增功能：[移动办公IOS]添加JSAPI，通讯录选择器功能，可以支持流程、门户调用IOS源生的选择器，人员、组织、身份、群组单个或者复合选择
+系统优化：[流程管理]增加用户批量查询人员身份服务的服务。
 
-新增功能：[移动办公IOS]添加会议管理扫码签到功能
+系统优化：[内容管理]内容管理获取脚本服务优化。
 
-新增功能：[移动办公IOS]添加登录方式切换功能
+系统优化：[内容管理]内容管理列表默认按发布时间倒序相关优化。
 
-新增功能：[移动办公Android]添加JSAPI，通讯录选择器功能，可以支持流程、门户调用Android源生的选择器，人员、组织、身份、群组单个或者复合选择。
+系统优化：[内容管理]栏目信息（AppInfo）增加是否显示'全部文档'视图导航。
 
-新增功能：[移动办公Android]添加会议管理扫码签到功能。
+系统优化：[组织管理]添加职务参数功能优化。
 
-新增功能：[移动办公Android]添加登录方式切换功能。
+系统优化：[组织同步]同步组织变更时同时更新组织下身份及下级组织信息。
 
-系统优化：[流程管理]引擎优化，合并节点由保留等待合并改为优先删除。
+系统优化：[组织同步]微信同步过程中删除组织时判断是否有下级组织，如果有下级组织，先删除下级组织。
 
-系统优化：[平台能力]源码依赖调整，Apache Tika升级到1.22。
+系统优化：[钉钉微信]钉钉,政务钉钉,企业微信初始化密码转义。
 
-系统优化：[平台能力]源码依赖调整，POI降级版本4.10->4.01以匹配Tika版本。
+系统优化：[移动APP]云文件APP版本更新。
 
-系统优化：[源码结构]结构优化，修改编译pom，取消编译时ant的使用,编译不再需要ant支持。
+系统优化：[移动APP]内容管理支持关联流程发布信息。
 
-系统优化：[内容管理]提交代码cms_express
+系统优化：[移动APP]内容管理支持发布和修改信息。
 
-系统优化：[内容管理]优化CMS附件权限控制服务
+系统优化：[移动APP]流程表单提交功能相关优化。
 
-系统优化：[内容管理]优化附件管理，为CMS的附件添加xtype和xtext列
+系统优化：[移动APP]APP支持流程提交后选择人员。
 
-系统优化：[内容管理]将CMS所有的action服务响应统一换成了asyncResponse
+系统优化：[移动APP]应用内更新方式优化，取消第三方平台管理。
 
-系统优化：[内容管理]取消CMS文档获取服务返回数据中的attachmentList，由前端采用单独的服务异步获取。
+系统优化：[移动APP]IOS适配XCODE11。
 
-系统优化：[内容管理]内容管理和流程平台的选人/组织进行了整合。
+问题修复：[流程管理]流程的删除文档BUG。
 
-系统优化：[系统能力]erase content CMS加入新增的Review相关数据表
+问题修复：[流程管理]工作撤回不了，会一直卡在loading界面，F12也没有报错的BUG。
 
-系统优化：[内容管理]CMS视图适应scopeType="全部"
+问题修复：[流程管理]关于服务调用发生网络异常和服务器异常的捕获。
 
-系统优化：[内容管理]CMS添加附件权限控制服务，优化附件相关缓存设计
+问题修复：[流程管理]处理人是组织的话，该组织下的人没有收到待办。
 
-系统优化：[移动办公IOS]优化会议管理选择会议室、选择人员的界面
+问题修复：[流程管理]修复了编号配置添加了脚本，代码丢失。并且编号也出错的问题。
 
-系统优化：[移动办公Android]首页界面整体调整和IOS双端尽量一致
+问题修复：[流程管理]流程节点为定时节点，运行报错的问题。
 
-系统优化：[移动办公Android]优化会议管理选择会议室、选择人员的界面
+问题修复：[流程管理]打印表单样式不正确的问题。
 
-问题修复：[流程管理]修复通过data update 接口更新数据导致workId,workCompletedId,completed字段被覆盖的问题。
+问题修复：[流程管理]修复公文版式文件保存问题。
 
-问题修复：[流程管理]修复拆分合并不匹配的情况下无法正常合并的问题。
+问题修复：[流程管理]流程处理时意见未填，意见显示 undefined 的问题。
 
-问题修复：[平台能力]调整模块启动顺序，修复服务器启动后立即访问报错的问题。
+问题修复：[流程管理]修复意见过长时修改意见无效的问题。
 
-问题修复：[平台能力]修正钉钉同步人员没有列入白名单错误提示。
+问题修复：[流程管理]系统更新后有一定的机率会造成H2数据库无法连接成功。
 
-问题修复：[平台能力]修正自定义数据表增加草稿后无法正常编译的问题。
+问题修复：[表单设计]动态表格，人员选择字段设置为可输入错误。
 
-问题修复：[平台能力]修正使用神经网络数据集找不到的问题。
+问题修复：[内容管理]信息发布栏目排序问题。
 
-问题修复：[平台能力]修复某些情况下H2数据自动创建数据库失败的问题。
+问题修复：[内容管理]修复CMS中文档取消置顶后，视图内置顶标识仍是置顶状态的问题。
 
-问题修复：平台能力]修复Center节点选举升序的问题。
+问题修复：[内容管理]内容管理文档置顶后排序的问题。
 
-问题修复：[平台能力]修正某些情况下piped read end导致的服务器CPU异常高占用。
+问题修复：[内容管理]修复CMS新建发布时权限控制的问题。
 
-问题修复：[数据中心]修复某些情况下视图根据日期范围选择数据无效的问题。
+问题修复：[内容管理]导入应用后内容管理分类与视图的绑定丢失的问题。
 
-问题修复：[服务管理]修复后台代理添加个人属性权限不足的问题。
+问题修复：[系统架构]消息机制优化-websocket的优化，还是有连不上的问题。
 
-问题修复：[考勤管理]修复考勤打卡分析的问题。
+问题修复：[数据中心]自建表编译在已发布状体下没有规律的会变成草稿状态，导致自建表相关操作会出现问题。
 
-问题修复：[社区管理]修复投票贴缓存引起的无法投票的问题。
+问题修复：[消息管理]修复消息消费后仍然存在的问题。
 
-问题修复：[社区管理]修复BBS分区和版块可见权限保存后，内容仍显示为空的问题。
+问题修复：[系统架构]使用外部达梦(DM7)数据库报错的问题。
 
-问题修复：[内容管理]修复CMS文档置顶标识未写入item导致视图里的$document.isTop一直是false的问题。
+问题修复：[后台维护]如果附件名不为attachment，后台管理（维护工作）附件修改出错。
 
-问题修复：[内容管理]修复发布文档时的问题，修复API测试页面，Post的时候data为空时的报错。
+问题修复：[系统配置]修复配置图片上传不了png问题。
 
-问题修复：[内容管理]修复CMS中栏目可见范围在某些情况下不生效的问题。
+问题修复：[调度中心]Program_Center，在人员同步时人员的手机号为空，无法完成同步的问题。
 
-问题修复：[内容管理]修复CMS定时任务运行时产生的的一个错误。
+问题修复：[会议管理]发送会议邀请时，对方未收到会议邀请的ws消息。
 
-问题修复：[内容管理]修复CMS栏目和分类有管理权限的组织内人员无法管理文档的问题。
+问题修复：[论坛管理]论坛投票不够严谨，在浏览器多开的情况下，有可能一个人多次投票的问题。
 
-问题修复：[内容管理]修复CMS在某些情况下权限不正确的问题。
+问题修复：[论坛管理]社区新增发贴和回贴消息推送服务。
 
-问题修复：[移动办公IOS]修复某些情况下会议管理的关联流程失败的问题。
+问题修复：[论坛管理]修改版主设定时的一个BUG。
 
-问题修复：[移动办公IOS]修复某些机型下IM聊天选择图片闪退的问题。
+问题修复：[考勤管理]考勤管理修复在未设置申诉审批人的情况下，申请无法启动，后台报错的问题。
 
-问题修复：[移动办公Android]修复某些情况下会议管理的关联流程失败的问题。
+问题修复：[日程管理]日程管理事件从重复事件转为不重复事件时逻辑不正确的问题。
 
-问题修复：[移动办公Android]修复结束工作下载附件失败的问题。
+问题修复：[日程管理]日程系统内，内容字数过多系统报错的问题。
 
-问题修复：[移动办公Android]修复某些情况下IM聊天选人的问题。
 
 # 配置编译环境\:
 
-强烈建议将项目Fork到自己的仓库里，Clone到本地后进行编译和打包，偶尔会发现下载zip文件后，commons/ext目录里的jar包不可用，全部只有1k大小。
-
-下载源码建议安装 git lfs，然后 Clone, 这样获取的源码可以编译。https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
-
-
-
-## 安装NodeJS
-
-1、访问nodejs的官方网站的downdolad，网址：https://nodejs.org/en/download/，获取Linux Binaries (x64)安装包下载链接：
-
-      wget https://nodejs.org/dist/v10.15.0/node-v10.15.0-linux-x64.tar.xz
-
-2、解压安装：
-
-	# yum search xz
-	# yum install xz.i386
-	# xz -d node-v10.15.0-linux-x64.tar.xz
-	# tar -xf node-v10.15.0-linux-x64.tar
-	# mv node-v10.15.0-linux-x64 node-v10.15.0
-
-3、配置nodejs（略）
-
-## 安装 Java8 及配置Java环境 
-
-    略
-	
-## 安装 apache-maven-3.6.0 及配置maven环境 
-
-    wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-	
-    yum -y install apache-maven
-	
-	
-## 安装 apache-ant-1.10.5 ant 	
-
-    yum -y install ant
-    
-
-# 源码编译
-
-1、打开命令提示工具，cd到o2oa/o2server目录
-
-    cd /usr/o2oa/o2server
-
-2、执行命令进行编译：mvn install，开始进行源码编译
-
-    mvn install
-
-3、打包安装程序： ant
-
-    ant
-
-## 关于编译错误
-第一次使用maven进行项目编译执行 mvn install 可能会发生异常，原因是编译生成的META-INF/persistence.xml来不及加载。这种情况下，您可以再执行一次mvn install即可完成对项目的编译。
-
-[ERROR] Failed to execute goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance(enhanncer) on project x_base_core_project: Exception enhancer of goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance failed: MetaDataFactory could not be configured (conf.newMetaDataFactoryInstance() returned null). This might mean that no configuration properties were fount. Ensured that you have a META-INF/persistence.xml file, that it is  available in your classpath, or that the properties file you are using for configuration is available. If you are using Ant, please see the <properties> or <propertiesFile> attributes of the task's nested <config> element. This can also occur if your OpenJPA distribution jars are corrupt, or if your security policy is overly strict. 
-
--> [Help 1][ERROR]......
-
-如果在编译的时候遇到上述错误，直接重新再 mvn install 就可以了。
-
-## 关于编译打包结果
-
-o2oa/o2server/target目录下会有打包好的zip包，将此zip包Copy到其他目录解压（避免目录层级太深造成启动异常），然后启动服务即可。
-
-服务器部署和启动相关的教程文档，请移步系列教程：https://my.oschina.net/u/3931542/blog/2209110
+## 操作教程：http://www.o2oa.net/course/ng5iqb.html
 
 
 # 服务器部署
@@ -340,6 +276,8 @@ o2oa/o2server/target目录下会有打包好的zip包，将此zip包Copy到其�
 6.启动完成后打开浏览器访问http://127.0.0.1。
 
 7.输入用户名xadmin密码o2登陆系统。
+
+# 温馨提醒
 
 O2OA自带的H2数据库是一个内嵌式的内存数据库，比适合用于开发环境、功能演示环境，并不适合用作正式环境使用。
 
