@@ -432,4 +432,4 @@ gulp.task("o2:new-v:o2", function () {
 });
 gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
 
-gulp.task("default", gulp.series("clean", gulp.parallel(minTasks, moveTasks, 'index'), "o2:new-v"));
+gulp.task("default", gulp.series("clean", gulp.series(minTasks, moveTasks, 'index'), "o2:new-v"));
