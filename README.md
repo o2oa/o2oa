@@ -90,7 +90,7 @@ AIX : http://download.o2oa.net/download/o2server_20200107232400_aix.zip
 
 中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20200107232400_neokylin_loongson.zip
 
-银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200107230503_kylinos_phytium.zip
+银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200107232400_kylinos_phytium.zip
 
 raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20200107232400_raspberrypi.zip
 
