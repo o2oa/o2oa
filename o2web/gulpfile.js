@@ -12,6 +12,7 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'),
     fs = require("fs");
 var assetRev = require('gulp-tm-asset-rev');
+var ftpconfig = require('./ftpconfig.js');
 
 var apps = [
     {"folder": "o2_lib",                                    "tasks": ["move", "clean"]},
@@ -113,21 +114,8 @@ var apps = [
     {"folder": "x_desktop",                                 "tasks": ["move", "min", "clean", "watch"]}
 ];
 
-var uploadOptions = {
-    'location': 'E:/o2server/servers/webServer/',
-    'host': 'dev.o2oa.net',
-    'user': 'xadmin',
-    'pass': 'o2No.one',
-    "remotePath": "/"
-};
-// var uploadOptions = {
-//     'location': 'E:/o2server/servers/webServer/',
-//     'host': '10.217.243.23',
-//     "port": "8022",
-//     'user': 'lande',
-//     'pass': 'Zone2009',
-//     "remotePath": "/data/o2server/servers/webServer/"
-// };
+var uploadOptions = ftpconfig;
+
 var options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["upload", "location", "host", "user", "pass", "port", "remotePath"]
 });
