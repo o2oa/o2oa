@@ -80,19 +80,19 @@ O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开�
 
 # 最新版本服务器安装包下载[o2server_V4.2698]\:
 
-windows 64Bit : http://download.o2oa.net/download/o2server_20200107232400_windows.zip
+windows 64Bit : http://download.o2oa.net/download/o2server_20200109184246_windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/o2server_20200107232400_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/o2server_20200109184246_linux.zip
 
-MacOS : http://download.o2oa.net/download/o2server_20200107232400_macos.zip
+MacOS : http://download.o2oa.net/download/o2server_20200109184246_macos.zip
 
-AIX : http://download.o2oa.net/download/o2server_20200107232400_aix.zip
+AIX : http://download.o2oa.net/download/o2server_20200109184246_aix.zip
 
-中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20200107232400_neokylin_loongson.zip
+中标麒麟（龙芯）：http://download.o2oa.net/download/o2server_20200109184246_neokylin_loongson.zip
 
-银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200107232400_kylinos_phytium.zip
+银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200109184246_kylinos_phytium.zip
 
-raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20200107232400_raspberrypi.zip
+raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20200109184246_raspberrypi.zip
 
 
 
