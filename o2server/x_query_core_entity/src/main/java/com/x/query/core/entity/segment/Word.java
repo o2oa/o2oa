@@ -59,6 +59,16 @@ public class Word extends SliceJpaObject {
 
 	}
 
+	public Word() {
+
+	}
+
+	public Word(Entry entry) {
+		this.setEntry(entry.getId());
+		this.setBundle(entry.getBundle());
+		this.setType(entry.getType());
+	}
+
 	/* 更新运行方法 */
 
 	public static final String value_FIELDNAME = "value";

@@ -20,6 +20,8 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
+import com.x.base.core.project.config.Dingding;
+import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -263,6 +265,40 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "企业微信oauth登录认证配置", action = ActionOauthQiyeweixinConfig.class)
+	@GET
+	@Path("oauth/qywx/config")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void qiyeweixinOauthConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<Qiyeweixin> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOauthQiyeweixinConfig().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "钉钉oauth登录认证配置", action = ActionOauthDingdingConfig.class)
+	@GET
+	@Path("oauth/dingding/config")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void dingdingOauthConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<Dingding> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOauthDingdingConfig().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "oauth登录认证地址", action = ActionOauthGet.class)
 	@GET
 	@Path("oauth/name/{name}")
@@ -301,6 +337,46 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "企业微信oauth登录", action = ActionOauthQiyeweixinLogin.class)
+	@GET
+	@Path("oauth/login/qywx/code/{code}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void oauthLoginQywx(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @Context HttpServletResponse response,
+						   @JaxrsParameterDescribe("code") @PathParam("code") String code) {
+		ActionResult<ActionOauthQiyeweixinLogin.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOauthQiyeweixinLogin().execute(request, response, effectivePerson, code);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+
+	@JaxrsMethodDescribe(value = "钉钉oauth登录", action = ActionOauthDingdingLogin.class)
+	@GET
+	@Path("oauth/login/dingding/code/{code}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void oauthLoginDingding(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   @Context HttpServletResponse response,
+							   @JaxrsParameterDescribe("code") @PathParam("code") String code) {
+		ActionResult<ActionOauthDingdingLogin.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOauthDingdingLogin().execute(request, response, effectivePerson, code);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 
 	@JaxrsMethodDescribe(value = "oauth账户绑定.", action = ActionOauthBind.class)
 	@GET

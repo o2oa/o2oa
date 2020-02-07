@@ -79,6 +79,7 @@ class ActionLoad extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("导入标识")
 		private List<String> importedList;
 
 		public List<String> getImportedList() {

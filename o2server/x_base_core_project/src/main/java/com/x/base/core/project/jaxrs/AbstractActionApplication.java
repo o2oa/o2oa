@@ -22,7 +22,7 @@ public abstract class AbstractActionApplication extends Application {
 		classes.add(LoggerAction.class);
 		classes.add(FireScheduleAction.class);
 		// providers
-		classes.add(WrapInMessageBodyReader.class);
+		classes.add(MessageBodyReaderImpl.class);
 		classes.add(MultiPartFeature.class);
 	}
 

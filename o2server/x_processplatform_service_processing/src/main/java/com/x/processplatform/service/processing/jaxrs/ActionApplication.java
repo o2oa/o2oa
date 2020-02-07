@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.processplatform.service.processing.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.service.processing.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.service.processing.jaxrs.data.DataAction;
+import com.x.processplatform.service.processing.jaxrs.documentversion.DocumentVersionAction;
 import com.x.processplatform.service.processing.jaxrs.job.JobAction;
 import com.x.processplatform.service.processing.jaxrs.read.ReadAction;
 import com.x.processplatform.service.processing.jaxrs.readcompleted.ReadCompletedAction;
@@ -33,6 +34,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(AttachmentAction.class);
 		classes.add(DataAction.class);
 		classes.add(ApplicationDictAction.class);
+		classes.add(DocumentVersionAction.class);
 		classes.add(TestAction.class);
 		return classes;
 	}

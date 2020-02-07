@@ -83,6 +83,7 @@ class ActionOrder extends BaseAction {
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
+			ApplicationCache.notify(Identity.class);
 			ApplicationCache.notify(Unit.class);
 			return result;
 		}

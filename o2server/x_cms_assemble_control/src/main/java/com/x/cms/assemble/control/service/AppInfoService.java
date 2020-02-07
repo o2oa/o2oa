@@ -1,9 +1,5 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -11,13 +7,23 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.element.AppDict;
-import com.x.cms.core.entity.element.AppDictItem;
-import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.element.ViewCategory;
-import com.x.cms.core.entity.element.ViewFieldConfig;
+import com.x.cms.core.entity.AppInfoConfig;
+import com.x.cms.core.entity.element.*;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 public class AppInfoService {
+
+	public AppInfoConfig getConfigObject(EntityManagerContainer emc, String id ) throws Exception {
+		Business business = new Business( emc );
+		return business.appInfoConfigFactory().get(id);
+	}
+
+	public String getConfigJson(EntityManagerContainer emc, String id ) throws Exception {
+		Business business = new Business( emc );
+		return business.appInfoConfigFactory().getContent(id);
+	}
 
 	public List<String> listAllIds(EntityManagerContainer emc, String documentType ) throws Exception {
 		Business business = new Business( emc );
@@ -38,6 +44,7 @@ public class AppInfoService {
 		Business business = new Business( emc );
 		
 		emc.beginTransaction( AppInfo.class );
+		emc.beginTransaction( AppInfoConfig.class );
 		emc.beginTransaction( AppDict.class );
 		emc.beginTransaction( AppDictItem.class );
 		emc.beginTransaction( View.class );
@@ -101,7 +108,13 @@ public class AppInfoService {
 				
 			}
 		}
-	
+
+		//删除栏目配置支持信息
+		AppInfoConfig appInfoConfig = business.appInfoConfigFactory().get( id );
+		if( appInfoConfig != null ){
+			emc.remove( appInfoConfig, CheckRemoveType.all );
+		}
+
 		//删除栏目信息
 		appInfo = emc.find( id, AppInfo.class );
 		if( appInfo != null ){
@@ -128,20 +141,31 @@ public class AppInfoService {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().countByAppId( id, documentType );
 	}
-	
-	public AppInfo save( EntityManagerContainer emc, AppInfo wrapIn ) throws Exception {
+
+	/**
+	 * 新增或者更新栏目信息
+	 * @param emc
+	 * @param wrapIn
+	 * @param config
+	 * @return
+	 * @throws Exception
+	 */
+	public AppInfo save( EntityManagerContainer emc, AppInfo wrapIn, String config ) throws Exception {
 		AppInfo appInfo = null;
+		AppInfoConfig appInfoConfig = null;
 		if( wrapIn.getId() == null ){
 			wrapIn.setId( AppInfo.createId() );
 		}
-		appInfo = emc.find( wrapIn.getId(), AppInfo.class );		
+		appInfo = emc.find( wrapIn.getId(), AppInfo.class );
+		appInfoConfig = emc.find( wrapIn.getId(), AppInfoConfig.class );
+
+		emc.beginTransaction( AppInfo.class );
 		if( appInfo == null ){//新增一个栏目信息
 			appInfo = new AppInfo();
 			wrapIn.copyTo( appInfo );
 			if( StringUtils.isNotEmpty( wrapIn.getId() ) ){
 				appInfo.setId( wrapIn.getId() );
 			}
-			emc.beginTransaction( AppInfo.class );
 			if( StringUtils.isEmpty( appInfo.getAppAlias() )) {
 				appInfo.setAppAlias( appInfo.getAppName() );
 			}
@@ -149,21 +173,67 @@ public class AppInfoService {
 				appInfo.setAppType( "未分类" );
 			}
 			emc.persist( appInfo, CheckPersistType.all);
-			emc.commit();
 		}else{
 			wrapIn.copyTo(appInfo, JpaObject.FieldsUnmodify );
 			appInfo.setAppIcon( appInfo.getAppIcon() );
 			if( StringUtils.isEmpty( appInfo.getAppAlias() )) {
 				appInfo.setAppAlias( appInfo.getAppName() );
 			}
-			emc.beginTransaction( AppInfo.class );
 			if( StringUtils.isEmpty( appInfo.getAppType() )) {
 				appInfo.setAppType( "未分类" );
 			}
-			emc.check( appInfo, CheckPersistType.all );	
-			emc.commit();
-		}		
+			emc.check( appInfo, CheckPersistType.all );
+		}
+
+		emc.beginTransaction( AppInfoConfig.class );
+		if( appInfoConfig == null ){
+			appInfoConfig = new AppInfoConfig();
+			appInfoConfig.setId( appInfo.getId() );
+			appInfoConfig.setConfig( config );
+			emc.beginTransaction( AppInfoConfig.class );
+			emc.persist( appInfoConfig, CheckPersistType.all);
+		}else{
+			appInfoConfig.setConfig( config );
+			emc.beginTransaction( AppInfoConfig.class );
+			emc.check( appInfoConfig, CheckPersistType.all );
+		}
+
+		emc.commit();
 		return appInfo;
+	}
+
+	/**
+	 * 新增或者更新栏目配置支持信息
+	 * @param emc
+	 * @param appId
+	 * @param config
+	 * @return
+	 * @throws Exception
+	 */
+	public AppInfoConfig saveConfig( EntityManagerContainer emc, String appId, String config ) throws Exception {
+		AppInfo appInfo = null;
+		AppInfoConfig appInfoConfig = null;
+		appInfo = emc.find( appId, AppInfo.class );
+		appInfoConfig = emc.find( appId, AppInfoConfig.class );
+
+		if( appInfo == null ){//新增一个栏目信息
+			throw new Exception("appinfo not exists!id=" + appId );
+		}
+
+		emc.beginTransaction( AppInfoConfig.class );
+		if( appInfoConfig == null ){
+			appInfoConfig = new AppInfoConfig();
+			appInfoConfig.setId( appInfo.getId() );
+			appInfoConfig.setConfig( config );
+			emc.beginTransaction( AppInfoConfig.class );
+			emc.persist( appInfoConfig, CheckPersistType.all);
+		}else{
+			appInfoConfig.setConfig( config );
+			emc.beginTransaction( AppInfoConfig.class );
+			emc.check( appInfoConfig, CheckPersistType.all );
+		}
+		emc.commit();
+		return appInfoConfig;
 	}
 
 	public List<String> listByAppName( EntityManagerContainer emc, String appName) throws Exception {

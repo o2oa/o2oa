@@ -10,6 +10,7 @@ import com.x.processplatform.assemble.surface.jaxrs.applicationdict.ApplicationD
 import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.assemble.surface.jaxrs.control.ControlAction;
 import com.x.processplatform.assemble.surface.jaxrs.data.DataAction;
+import com.x.processplatform.assemble.surface.jaxrs.documentversion.DocumentVersionAction;
 import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
 import com.x.processplatform.assemble.surface.jaxrs.job.JobAction;
@@ -53,6 +54,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ControlAction.class);
 		classes.add(RouteAction.class);
 		classes.add(KeyLockAction.class);
+		classes.add(DocumentVersionAction.class);
 		return classes;
 	}
 }

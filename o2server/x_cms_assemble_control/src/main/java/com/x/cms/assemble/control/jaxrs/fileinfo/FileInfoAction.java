@@ -191,13 +191,14 @@ public class FileInfoAction extends StandardJaxrsAction{
 	public void attachmentUpload(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, 
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpload)proxy.getProxy(ActionFileUpload.class)).execute(request, effectivePerson, docId, site, bytes, disposition);
+			result = ((ActionFileUpload)proxy.getProxy(ActionFileUpload.class)).execute(request, effectivePerson, docId, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -214,13 +215,14 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, 
 			@JaxrsParameterDescribe("附件ID") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpdate)proxy.getProxy(ActionFileUpdate.class)).execute(request, effectivePerson, docId, id, site, bytes, disposition);
+			result = ((ActionFileUpdate)proxy.getProxy(ActionFileUpdate.class)).execute(request, effectivePerson, docId, id, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -236,13 +238,14 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, 
 			@JaxrsParameterDescribe("回调函数名") @PathParam("callback") String callback,
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUploadCallback.Wo<ActionFileUploadCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUploadCallback)proxy.getProxy(ActionFileUploadCallback.class)).execute(request, effectivePerson, docId, callback, site, bytes, disposition);
+			result = ((ActionFileUploadCallback)proxy.getProxy(ActionFileUploadCallback.class)).execute(request, effectivePerson, docId, callback, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -260,13 +263,14 @@ public class FileInfoAction extends StandardJaxrsAction{
 			@JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId, 
 			@JaxrsParameterDescribe("附件ID") @PathParam("id") String id, 
 			@JaxrsParameterDescribe("回调函数名") @PathParam("callback") String callback,
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionFileUpdateCallback.Wo<ActionFileUpdateCallback.WoObject>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = ((ActionFileUpdateCallback)proxy.getProxy(ActionFileUpdateCallback.class)).execute(request, effectivePerson, docId, id, callback, site, bytes, disposition);
+			result = ((ActionFileUpdateCallback)proxy.getProxy(ActionFileUpdateCallback.class)).execute(request, effectivePerson, docId, id, callback, site, fileName, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

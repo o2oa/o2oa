@@ -9,6 +9,8 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	private JsonElement routeData;
 
+	private String type;
+
 	public Boolean getDebugger() {
 		return debugger;
 	}
@@ -23,6 +25,14 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public void setRouteData(JsonElement routeData) {
 		this.routeData = routeData;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

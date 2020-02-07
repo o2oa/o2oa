@@ -327,7 +327,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		CRC32 crc32 = new CRC32();
 		crc32.update(seed.getBytes(DefaultCharset.charset));
 		int idx = (int) crc32.getValue() % list.size();
-		return list.get(idx);
+		return list.get(Math.abs(idx));
 	}
 
 	public static String joinQueryUri(String... parts) {

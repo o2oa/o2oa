@@ -32,6 +32,10 @@ public class QiyeweixinFactory {
 		users = ListTools.trim(users, true, true);
 	}
 
+	public List<Department> getOrgs(){
+		return this.orgs;
+	}
+
 	public List<Department> roots() {
 		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
 	}

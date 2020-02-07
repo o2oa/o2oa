@@ -60,10 +60,10 @@ class ActionGet extends BaseAction {
 			List<Group> os = business.group().pick(wo.getGroupList());
 			wos = Wo.copier.copy(os);
 		}
-		wos = wos.stream()
+		/*wos = wos.stream()
 				.sorted(Comparator.comparing(Wo::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
 						.thenComparing(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
 		wo.setWoGroupList(wos);
 	}
 
@@ -73,11 +73,11 @@ class ActionGet extends BaseAction {
 			List<Person> os = business.person().pick(wo.getPersonList());
 			wos = WoPerson.copier.copy(os);
 		}
-		wos = wos.stream()
+		/*wos = wos.stream()
 				.sorted(Comparator.comparing(WoPerson::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
 						.thenComparing(
 								Comparator.comparing(WoPerson::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
 		wo.setWoPersonList(wos);
 	}
 
@@ -87,10 +87,10 @@ class ActionGet extends BaseAction {
 			List<Unit> os = business.unit().pick(wo.getUnitList());
 			wos = WoUnit.copier.copy(os);
 		}
-		wos = wos.stream()
+		/*wos = wos.stream()
 				.sorted(Comparator.comparing(WoUnit::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
 						.thenComparing(Comparator.comparing(WoUnit::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
 		wo.setWoUnitList(wos);
 	}
 

@@ -42,9 +42,11 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkContext;
-import com.x.processplatform.service.processing.WorkDataHelper;
+import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
+import com.x.processplatform.service.processing.processor.AeiObjects;
 
 class ActionProcessing extends BaseAction {
 
@@ -88,23 +90,19 @@ class ActionProcessing extends BaseAction {
 									|| StringUtils.isNotEmpty(manual.getManualBeforeTaskScriptText())) {
 								Work work = emc.find(task.getWork(), Work.class);
 
-								Data data = new Data();
+								AeiObjects aeiObjects = new AeiObjects(business, work, manual,
+										new ProcessingConfigurator(), new ProcessingAttributes());
+
 								if (null != work) {
 
-									WorkDataHelper workDataHelper = new WorkDataHelper(
-											business.entityManagerContainer(), work);
-									data = workDataHelper.get();
-
-									ScriptContext scriptContext = scriptContext(business, manual, work, data, task);
+									ScriptContext scriptContext = aeiObjects.scriptContext();
 
 									CompiledScript cs = null;
 									cs = business.element().getCompiledScript(task.getApplication(), manual,
 											Business.EVENT_MANUALBEFORETASK);
 									cs.eval(scriptContext);
 
-									if (workDataHelper.update(data)) {
-										emc.commit();
-									}
+									emc.commit();
 								}
 							}
 						}
@@ -136,22 +134,22 @@ class ActionProcessing extends BaseAction {
 						if (StringUtils.isNotEmpty(manual.getManualAfterTaskScript())
 								|| StringUtils.isNotEmpty(manual.getManualAfterTaskScriptText())) {
 							Work work = emc.find(task.getWork(), Work.class);
-							Data data = new Data();
-							if (null != work) {
-								WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(),
-										work);
-								data = workDataHelper.get();
 
-								ScriptContext scriptContext = scriptContext(business, manual, work, data, task);
+							if (null != work) {
+
+								AeiObjects aeiObjects = new AeiObjects(business, work, manual,
+										new ProcessingConfigurator(), new ProcessingAttributes());
+
+								ScriptContext scriptContext = aeiObjects.scriptContext();
 
 								CompiledScript cs = null;
 								cs = business.element().getCompiledScript(task.getApplication(), manual,
 										Business.EVENT_MANUALAFTERTASK);
-								cs.eval(scriptContext);
 
-								if (workDataHelper.update(data)) {
-									emc.commit();
-								}
+								cs.eval(scriptContext);
+								
+								emc.commit();
+							
 							}
 						}
 					}

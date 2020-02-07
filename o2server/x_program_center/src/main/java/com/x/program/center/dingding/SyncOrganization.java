@@ -190,6 +190,9 @@ public class SyncOrganization {
 		emc.beginTransaction(Unit.class);
 		unit.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(department)));
 		unit.setName(department.getName());
+        if (null != department.getOrder()) {
+            unit.setOrderNumber(department.getOrder().intValue());
+        }
 		business.unit().adjustInherit(unit);
 		emc.check(unit, CheckPersistType.all);
 		emc.commit();
@@ -216,7 +219,6 @@ public class SyncOrganization {
 		emc.beginTransaction(UnitAttribute.class);
 		emc.beginTransaction(UnitDuty.class);
 		emc.beginTransaction(Identity.class);
-		emc.beginTransaction(Unit.class);
 		for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
@@ -229,6 +231,9 @@ public class SyncOrganization {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveIdentityList().add(o.getDistinguishedName());
 		}
+		emc.commit();
+
+		emc.beginTransaction(Unit.class);
 		emc.remove(unit, CheckRemoveType.all);
 		emc.commit();
 		result.getRemoveUnitList().add(unit.getDistinguishedName());
@@ -360,13 +365,15 @@ public class SyncOrganization {
 
 	private void removePerson(Business business, PullResult result, Person person) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
-		emc.beginTransaction(Person.class);
 		emc.beginTransaction(PersonAttribute.class);
 		for (PersonAttribute o : emc.listEqual(PersonAttribute.class, PersonAttribute.person_FIELDNAME,
 				person.getId())) {
 			result.getRemovePersonAttributeList().add(o.getDistinguishedName());
 			emc.remove(o, CheckRemoveType.all);
 		}
+		emc.commit();
+
+		emc.beginTransaction(Person.class);
 		emc.remove(person, CheckRemoveType.all);
 		emc.commit();
 		result.getRemovePersonList().add(person.getDistinguishedName());

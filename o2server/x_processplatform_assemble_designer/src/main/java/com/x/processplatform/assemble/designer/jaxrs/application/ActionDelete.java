@@ -21,6 +21,7 @@ import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -82,6 +83,7 @@ class ActionDelete extends BaseAction {
 			this.delete_attachment(business, application, onlyRemoveNotCompleted);
 			this.delete_dataItem(business, application, onlyRemoveNotCompleted);
 			this.delete_serialNumber(business, application);
+			this.delete_documentVersion(business, application);
 			this.delete_work(business, application);
 			if (!onlyRemoveNotCompleted) {
 				this.delete_workCompleted(business, application);
@@ -413,6 +415,12 @@ class ActionDelete extends BaseAction {
 	private void delete_work(Business business, Application application) throws Exception {
 		List<String> ids = business.work().listWithApplication(application.getId());
 		this.delete_batch(business.entityManagerContainer(), Work.class, ids);
+	}
+
+	private void delete_documentVersion(Business business, Application application) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocumentVersion.class,
+				DocumentVersion.application_FIELDNAME, application.getId());
+		this.delete_batch(business.entityManagerContainer(), DocumentVersion.class, ids);
 	}
 
 	private void delete_workCompleted(Business business, Application application) throws Exception {

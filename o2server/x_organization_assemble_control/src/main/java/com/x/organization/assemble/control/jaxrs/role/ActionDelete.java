@@ -7,6 +7,7 @@ import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Role;
 
@@ -23,6 +24,11 @@ class ActionDelete extends BaseAction {
 			if (!business.editable(effectivePerson, role)) {
 				throw new ExceptionDenyDeleteRole(effectivePerson, flag);
 			}
+			if (OrganizationDefinition.DEFAULTROLES.contains(role.getName())) {
+				throw new ExceptionDenyDeleteDefaultRole(role.getName());
+
+			}
+
 			emc.beginTransaction(Role.class);
 			role = emc.find(role.getId(), Role.class);
 			emc.remove(role, CheckRemoveType.all);

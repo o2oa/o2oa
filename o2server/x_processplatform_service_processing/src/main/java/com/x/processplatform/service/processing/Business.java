@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.service.processing.factory.AttachmentFactory;
+import com.x.processplatform.service.processing.factory.DocumentVersionFactory;
 import com.x.processplatform.service.processing.factory.ElementFactory;
 import com.x.processplatform.service.processing.factory.HintFactory;
 import com.x.processplatform.service.processing.factory.ItemFactory;
@@ -151,6 +152,15 @@ public class Business {
 			this.workCompleted = new WorkCompletedFactory(this);
 		}
 		return workCompleted;
+	}
+
+	private DocumentVersionFactory documentVersion;
+
+	public DocumentVersionFactory documentVersion() throws Exception {
+		if (null == this.documentVersion) {
+			this.documentVersion = new DocumentVersionFactory(this);
+		}
+		return documentVersion;
 	}
 
 	private HintFactory hint;

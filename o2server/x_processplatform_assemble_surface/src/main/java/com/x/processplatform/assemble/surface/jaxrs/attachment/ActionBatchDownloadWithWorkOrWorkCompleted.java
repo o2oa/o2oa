@@ -2,9 +2,11 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -26,7 +28,7 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompleted.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -54,8 +56,10 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			List<Attachment> attachmentList;
 			if (StringUtils.isBlank(site) || EMPTY_SYMBOL.equals(site)) {
 				attachmentList = business.attachment().listWithJobObject(job);
-			}else{
+			}else if(site.indexOf("~")==-1){
 				attachmentList = emc.listEqualAndEqual(Attachment.class, Attachment.job_FIELDNAME, job, Attachment.site_FIELDNAME, site);
+			}else {
+				attachmentList = emc.listEqualAndIn(Attachment.class, Attachment.job_FIELDNAME, job, Attachment.site_FIELDNAME, Arrays.asList(site.split("~")));
 			}
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
@@ -66,13 +70,20 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 					readableAttachmentList.add(attachment);
 				}
 			}
-			String zipName = title + DateTools.format(new Date(),DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
-			logger.info("batchDown to {}，att size {}, from work {}",zipName, attachmentList.size(), workId);
+			if(StringUtils.isBlank(fileName)){
+				fileName = title + DateTools.format(new Date(),DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
+			}else{
+				String extension = FilenameUtils.getExtension(fileName);
+				if(StringUtils.isEmpty(extension)){
+					fileName = fileName + ".zip";
+				}
+			}
+			logger.info("batchDown to {}，att size {}, from work {}",fileName, attachmentList.size(), workId);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 				business.downToZip(readableAttachmentList, os);
 				byte[] bs = os.toByteArray();
-				Wo wo = new Wo(bs, this.contentType(false, zipName),
-						this.contentDisposition(false, zipName));
+				Wo wo = new Wo(bs, this.contentType(false, fileName),
+						this.contentDisposition(false, fileName));
 				result.setData(wo);
 			}
 

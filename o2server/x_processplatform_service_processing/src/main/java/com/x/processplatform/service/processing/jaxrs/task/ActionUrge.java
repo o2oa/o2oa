@@ -13,7 +13,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionUrge extends BaseAction {
@@ -29,7 +28,7 @@ class ActionUrge extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
-				throw new ExceptionEntityNotExist(id, Work.class);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			executorSeed = task.getJob();
 		}

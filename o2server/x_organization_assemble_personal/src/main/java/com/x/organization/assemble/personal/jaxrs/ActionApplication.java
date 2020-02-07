@@ -9,6 +9,7 @@ import com.x.organization.assemble.personal.jaxrs.custom.CustomAction;
 import com.x.organization.assemble.personal.jaxrs.definition.DefinitionAction;
 import com.x.organization.assemble.personal.jaxrs.empower.EmpowerAction;
 import com.x.organization.assemble.personal.jaxrs.empowerlog.EmpowerLogAction;
+import com.x.organization.assemble.personal.jaxrs.exmail.ExmailAction;
 import com.x.organization.assemble.personal.jaxrs.icon.IconAction;
 import com.x.organization.assemble.personal.jaxrs.password.PasswordAction;
 import com.x.organization.assemble.personal.jaxrs.person.PersonAction;
@@ -28,6 +29,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(CustomAction.class);
 		classes.add(EmpowerAction.class);
 		classes.add(EmpowerLogAction.class);
+		classes.add(ExmailAction.class);
 		return classes;
 	}
 }

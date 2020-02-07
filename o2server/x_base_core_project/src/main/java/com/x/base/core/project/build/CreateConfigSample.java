@@ -21,10 +21,12 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.AppStyle;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Communicate;
 import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.DumpRestoreStorage;
+import com.x.base.core.project.config.Exmail;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.Meeting;
@@ -70,6 +72,8 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(ExternalDataSource.class);
+		classes.add(Exmail.class);
+		classes.add(Communicate.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {

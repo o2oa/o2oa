@@ -61,6 +61,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class KeyLock {
 			public static final String table = "PP_C_KEYLOCK";
 		}
+
+		public static class DocumentVersion {
+			public static final String table = "PP_C_DOCUMENTVERSION";
+		}
 	}
 
 	public static class Element {

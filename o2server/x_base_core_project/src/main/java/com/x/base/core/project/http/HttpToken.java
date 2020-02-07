@@ -152,9 +152,10 @@ public class HttpToken {
 		if (StringUtils.isEmpty(token)) {
 			token = request.getHeader(X_Authorization);
 		}
-		if (StringUtils.isEmpty(token)) {
-			token = request.getParameter(X_Token);
-		}
+		// 此代码将导致input被关闭.
+//		if (StringUtils.isEmpty(token)) {
+//			token = request.getParameter(X_Token);
+//		}
 		return token;
 	}
 

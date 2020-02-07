@@ -6,8 +6,8 @@ if [ -d ${current_dir}/local/update ]; then
 	if [ ! -d ${current_dir}/config ]; then
 		mkdir ${current_dir}/config
 	fi
-	if [ ! -d ${current_dir}/config/sample ]; then
-		mkdir ${current_dir}/config/sample
+	if [ ! -d ${current_dir}/configSample ]; then
+		mkdir ${current_dir}/configSample
 	fi
 	if [ ! -d ${current_dir}/local ]; then
 		mkdir ${current_dir}/local
@@ -15,8 +15,8 @@ if [ -d ${current_dir}/local/update ]; then
 	if [ ! -d ${current_dir}/local ]; then
 		mkdir ${current_dir}/local
 	fi
-	if [ ! -d ${current_dir}/local/sample ]; then
-		mkdir ${current_dir}/local/sample
+	if [ ! -d ${current_dir}/localSample ]; then
+		mkdir ${current_dir}/localSample
 	fi
 	if [ ! -d ${current_dir}/jvm ]; then
 		mkdir ${current_dir}/jvm

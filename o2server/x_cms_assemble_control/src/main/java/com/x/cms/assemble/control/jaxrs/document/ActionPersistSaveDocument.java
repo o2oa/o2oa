@@ -71,14 +71,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(wi.getTitle()) ) {
-				check = false;
-				Exception exception = new ExceptionDocumentTitleEmpty();
-				result.error(exception);
-			}
-		}
-
-		if (check) {
 			if ( StringUtils.isEmpty( wi.getCategoryId() ) ) {
 				check = false;
 				Exception exception = new ExceptionDocumentCategoryIdEmpty();
@@ -118,7 +110,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		
+
 		// 查询分类设置的编辑表单
 		if (check) {
 			if ( StringUtils.isEmpty(categoryInfo.getFormId() )) {
@@ -221,7 +213,16 @@ public class ActionPersistSaveDocument extends BaseAction {
 				}
 			}
 		}
-		
+
+		if (check) {
+			if ( StringUtils.isEmpty(document.getTitle())) {
+//				check = false;
+//				Exception exception = new ExceptionDocumentTitleEmpty();
+//				result.error(exception);
+				document.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
+			}
+		}
+
 		if (check) {
 			try {
 				JsonElement dataJson = null;

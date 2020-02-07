@@ -12,6 +12,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.TaskCompleted",
 		"com.x.processplatform.core.entity.content.Work", "com.x.processplatform.core.entity.content.WorkCompleted",
 		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.KeyLock",
+		"com.x.processplatform.core.entity.content.DocumentVersion",
 		"com.x.processplatform.core.entity.element.Agent", "com.x.processplatform.core.entity.element.Application",
 		"com.x.processplatform.core.entity.element.ApplicationDict",
 		"com.x.processplatform.core.entity.element.ApplicationDictItem",

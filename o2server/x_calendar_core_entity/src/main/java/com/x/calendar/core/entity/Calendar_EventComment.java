@@ -38,7 +38,7 @@ public class Calendar_EventComment extends SliceJpaObject {
 
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
-	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME )
+	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
 	public void onPersist() throws Exception {
@@ -61,7 +61,7 @@ public class Calendar_EventComment extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("COMMENT信息的LOB值")
-	@Column(name = "xlobValue", length = JpaObject.length_10M)
+	@Column(name = lobValue_FIELDNAME, length = JpaObject.length_10M)
 	private String lobValue = "";
 
 	public static final String checkTime_FIELDNAME = "checkTime";
@@ -71,9 +71,13 @@ public class Calendar_EventComment extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Date checkTime = null;
 
-	public Date getCheckTime() { return checkTime; }
+	public Date getCheckTime() {
+		return checkTime;
+	}
 
-	public void setCheckTime(Date checkTime) { this.checkTime = checkTime; }
+	public void setCheckTime(Date checkTime) {
+		this.checkTime = checkTime;
+	}
 
 	public String getLobValue() {
 		return lobValue;

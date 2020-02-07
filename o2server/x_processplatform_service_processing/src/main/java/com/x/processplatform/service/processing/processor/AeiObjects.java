@@ -31,6 +31,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -99,6 +100,8 @@ public class AeiObjects extends GsonPropertyObject {
 	/* 使用用懒加载,初始为null */
 	private List<Hint> hints = null;
 	/* 使用用懒加载,初始为null */
+	private List<DocumentVersion> documentVersions = null;
+	/* 使用用懒加载,初始为null */
 	private List<Attachment> attachments = null;
 	/* 使用用懒加载,初始为null */
 	private List<WorkLog> workLogs = null;
@@ -156,6 +159,10 @@ public class AeiObjects extends GsonPropertyObject {
 	private List<Hint> createHints = new ArrayList<>();
 	private List<Hint> updateHints = new ArrayList<>();
 	private List<Hint> deleteHints = new ArrayList<>();
+
+	private List<DocumentVersion> createDocumentVersions = new ArrayList<>();
+	private List<DocumentVersion> updateDocumentVersions = new ArrayList<>();
+	private List<DocumentVersion> deleteDocumentVersions = new ArrayList<>();
 
 	private List<WorkLog> createWorkLogs = new ArrayList<>();
 	private List<WorkLog> updateWorkLogs = new ArrayList<>();
@@ -329,6 +336,14 @@ public class AeiObjects extends GsonPropertyObject {
 		return this.hints;
 	}
 
+	public List<DocumentVersion> getDocumentVersions() throws Exception {
+		if (null == this.documentVersions) {
+			this.documentVersions = this.business.entityManagerContainer().listEqual(DocumentVersion.class,
+					DocumentVersion.job_FIELDNAME, this.work.getJob());
+		}
+		return this.documentVersions;
+	}
+
 	public void createHint(Hint hint) {
 		this.createHints.add(hint);
 	}
@@ -452,6 +467,14 @@ public class AeiObjects extends GsonPropertyObject {
 		return deleteHints;
 	}
 
+	public List<DocumentVersion> getCreateDocumentVersions() {
+		return createDocumentVersions;
+	}
+
+	public List<DocumentVersion> getDeleteDocumentVersions() {
+		return deleteDocumentVersions;
+	}
+
 	public List<Task> getCreateTasks() {
 		return createTasks;
 	}
@@ -518,6 +541,7 @@ public class AeiObjects extends GsonPropertyObject {
 		/* review必须在task,taskCompleted,read,readCompleted之后提交,需要创建新的review */
 		this.commitReview();
 		this.commitHint();
+		this.commitDocumentVersion();
 		this.commitAttachment();
 		// this.getWorkDataHelper().update(this.getData());
 		this.commitData();
@@ -1003,6 +1027,32 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
+	private void commitDocumentVersion() throws Exception {
+		if (ListTools.isNotEmpty(this.getCreateDocumentVersions())
+				|| ListTools.isNotEmpty(this.getDeleteDocumentVersions())
+				|| ListTools.isNotEmpty(this.getUpdateDocumentVersions())) {
+			this.entityManagerContainer().beginTransaction(DocumentVersion.class);
+			this.getCreateDocumentVersions().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getDeleteDocumentVersions().stream().forEach(o -> {
+				DocumentVersion obj;
+				try {
+					obj = this.business.entityManagerContainer().find(o.getId(), DocumentVersion.class);
+					if (null != obj) {
+						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+		}
+	}
+
 	private void commitAttachment() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateAttachments()) || ListTools.isNotEmpty(this.getDeleteAttachments())
 				|| ListTools.isNotEmpty(this.getUpdateAttachments())) {
@@ -1244,6 +1294,10 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Hint> getUpdateHints() {
 		return updateHints;
+	}
+
+	public List<DocumentVersion> getUpdateDocumentVersions() {
+		return updateDocumentVersions;
 	}
 
 	public List<WorkLog> getCreateWorkLogs() {

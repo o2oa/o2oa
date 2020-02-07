@@ -12,6 +12,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 
+/**
+ * 获取Review
+ * 
+ * @author zhour
+ *
+ */
 class ActionGet extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {

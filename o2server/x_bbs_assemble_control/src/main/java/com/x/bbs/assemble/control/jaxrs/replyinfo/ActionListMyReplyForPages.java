@@ -23,9 +23,10 @@ import com.x.bbs.entity.BBSReplyInfo;
 
 public class ActionListMyReplyForPages extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionListMyReplyForPages.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListMyReplyForPages.class);
 
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count) throws Exception {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, Integer page,
+			Integer count) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		List<BBSReplyInfo> replyInfoList = null;
@@ -86,7 +87,7 @@ public class ActionListMyReplyForPages extends BaseAction {
 					replyInfoList_out.add(replyInfoList.get(i));
 				}
 			}
-			if ( ListTools.isNotEmpty( replyInfoList_out )) {
+			if (ListTools.isNotEmpty(replyInfoList_out)) {
 				try {
 					wraps = Wo.copier.copy(replyInfoList_out);
 				} catch (Exception e) {
@@ -98,13 +99,13 @@ public class ActionListMyReplyForPages extends BaseAction {
 			}
 		}
 		if (check) {
-			if( ListTools.isNotEmpty( wraps ) ) {
-				for( Wo wo : wraps ) {
-					if( StringUtils.isNotEmpty( wo.getCreatorName() ) ) {
-						wo.setCreatorNameShort( wo.getCreatorName().split( "@" )[0]);
+			if (ListTools.isNotEmpty(wraps)) {
+				for (Wo wo : wraps) {
+					if (StringUtils.isNotEmpty(wo.getCreatorName())) {
+						wo.setCreatorNameShort(wo.getCreatorName().split("@")[0]);
 					}
-					if( StringUtils.isNotEmpty( wo.getAuditorName() ) ) {
-						wo.setAuditorNameShort( wo.getAuditorName().split( "@" )[0]);
+					if (StringUtils.isNotEmpty(wo.getAuditorName())) {
+						wo.setAuditorNameShort(wo.getAuditorName().split("@")[0]);
 					}
 				}
 			}
@@ -113,19 +114,20 @@ public class ActionListMyReplyForPages extends BaseAction {
 		result.setCount(total);
 		return result;
 	}
-	
-	public static class Wo extends BBSReplyInfo{
-		
+
+	public static class Wo extends BBSReplyInfo {
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier< BBSReplyInfo, Wo > copier = WrapCopierFactory.wo( BBSReplyInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
-		@FieldDescribe( "创建人姓名" )
+
+		public static WrapCopier<BBSReplyInfo, Wo> copier = WrapCopierFactory.wo(BBSReplyInfo.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
+
+		@FieldDescribe("创建人姓名")
 		private String creatorNameShort = "";
-		
-		@FieldDescribe( "审核人姓名" )
+
+		@FieldDescribe("审核人姓名")
 		private String auditorNameShort = "";
 
 		public String getCreatorNameShort() {
@@ -144,12 +146,13 @@ public class ActionListMyReplyForPages extends BaseAction {
 			this.auditorNameShort = auditorNameShort;
 		}
 	}
-	
-	public static class Wi{
 
+	public static class Wi {
+
+		@FieldDescribe("主题Id")
 		private String subjectId = null;
-		
-		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
+
+		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 
 		public String getSubjectId() {
 			return subjectId;

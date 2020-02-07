@@ -3,6 +3,8 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.config.Dingding;
+import com.x.base.core.project.config.Qiyeweixin;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.config.Config;
@@ -37,6 +39,22 @@ class ActionOauthList extends BaseAction {
 					wos.add(wo);
 				}
 			}
+		}
+		//企业微信扫码登录
+		if (Config.qiyeweixin().getScanLoginEnable()) {
+			Wo wo = new Wo();
+			wo.setName("企业微信");
+			wo.setDisplayName("@O2企业微信");
+			wo.setIcon(Qiyeweixin.qywxLogo);
+			wos.add(wo);
+		}
+		//钉钉扫码登录
+		if (Config.dingding().getScanLoginEnable()) {
+			Wo wo = new Wo();
+			wo.setName("钉钉");
+			wo.setIcon(Dingding.dingdingLogo);
+			wo.setDisplayName("@O2钉钉");
+			wos.add(wo);
 		}
 		result.setData(wos);
 		return result;

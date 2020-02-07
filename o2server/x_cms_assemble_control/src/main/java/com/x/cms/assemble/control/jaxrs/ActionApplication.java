@@ -1,15 +1,12 @@
 package com.x.cms.assemble.control.jaxrs;
 
-import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.appdictdesign.AppDictDesignAction;
 import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoAction;
 import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoAnonymousAction;
+import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoConfigAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.comment.DocumentCommentInfoAction;
@@ -40,6 +37,9 @@ import com.x.cms.assemble.control.jaxrs.view.ViewAction;
 import com.x.cms.assemble.control.jaxrs.viewcategory.ViewCategoryAction;
 import com.x.cms.assemble.control.jaxrs.viewfieldconfig.ViewFieldConfigAction;
 
+import javax.ws.rs.ApplicationPath;
+import java.util.Set;
+
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
@@ -47,6 +47,7 @@ public class ActionApplication extends AbstractActionApplication {
 		
 		this.classes.add(TemplateFormAction.class);
 		this.classes.add(AppInfoAction.class);
+		this.classes.add(AppInfoConfigAction.class);
 		this.classes.add(CategoryInfoAction.class);
 		this.classes.add(DataAction.class);
 		this.classes.add(DocumentAction.class);

@@ -169,7 +169,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 				template.setTitle(  wi.getTitle() );
 			}else {
 				//暂不设置标题
-				template.setTitle( "" );
+				template.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
 			}
 			
 			if( StringUtils.isNotEmpty( wi.getIdentity() )) {

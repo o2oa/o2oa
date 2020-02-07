@@ -7,7 +7,7 @@ class ExceptionCrawlWorkCompleted extends PromptException {
 
 	private static final long serialVersionUID = -9089355008820123519L;
 
-	ExceptionCrawlWorkCompleted(Exception e, WorkCompleted workCompleted) {
-		super(e, "已完成工作索引失败,id:{}, title:{}.", workCompleted.getId(), workCompleted.getTitle());
+	ExceptionCrawlWorkCompleted(Exception e, String reference) {
+		super(e, "已完成工作索引失败:{}.", reference);
 	}
 }

@@ -12,7 +12,6 @@ import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -220,9 +219,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 		List<String> identities = aeiObjects.business().organization().identity()
 				.list(aeiObjects.getWork().getManualTaskIdentityList());
-
+		identities = aeiObjects.business().organization().identity().list(identities);
 		if (identities.isEmpty()) {
 			identities = calculateTaskIdentities(aeiObjects, manual);
+
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), identities);
 			/* 后面进行了identitis.remove()这里必须用一个新对象包装 */
@@ -547,20 +547,57 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+//	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
+//		ScriptContext scriptContext = aeiObjects.scriptContext();
+//		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+//		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
+//		Object objectValue = aeiObjects.business().element()
+//				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
+//				.eval(scriptContext);
+//		WorkTime wt = new WorkTime();
+//		if (NumberUtils.isCreatable(objectValue.toString())) {
+//			task.setExpireTime(wt.forwardMinutes(new Date(), NumberUtils.toInt(ScriptFactory.asString(objectValue))));
+//		} else {
+//			task.setExpireTime(null);
+//		}
+//
+//	}
+
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
+		ExpireScriptResult expire = new ExpireScriptResult();
 		ScriptContext scriptContext = aeiObjects.scriptContext();
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
-		Object objectValue = aeiObjects.business().element()
+		bindings.put(ScriptFactory.BINDING_NAME_EXPIRE, expire);
+		/* 重新注入对象需要重新运行 */
+		ScriptFactory.initialScriptText().eval(scriptContext);
+		aeiObjects.business().element()
 				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
 				.eval(scriptContext);
-		WorkTime wt = new WorkTime();
-		if (NumberUtils.isCreatable(objectValue.toString())) {
-			task.setExpireTime(wt.forwardMinutes(new Date(), NumberUtils.toInt(ScriptFactory.asString(objectValue))));
+		if (NumberTools.greaterThan(expire.getWorkHour(), 0)) {
+			Integer m = 0;
+			m += expire.getWorkHour() * 60;
+			if (m > 0) {
+				WorkTime wt = new WorkTime();
+				task.setExpireTime(wt.forwardMinutes(new Date(), m));
+			} else {
+				task.setExpireTime(null);
+			}
+		} else if (NumberTools.greaterThan(expire.getHour(), 0)) {
+			Integer m = 0;
+			m += expire.getHour() * 60;
+			if (m > 0) {
+				Calendar cl = Calendar.getInstance();
+				cl.add(Calendar.MINUTE, m);
+				task.setExpireTime(cl.getTime());
+			} else {
+				task.setExpireTime(null);
+			}
+		} else if (null != expire.getDate()) {
+			task.setExpireTime(expire.getDate());
 		} else {
 			task.setExpireTime(null);
 		}
-
 	}
 
 	private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {

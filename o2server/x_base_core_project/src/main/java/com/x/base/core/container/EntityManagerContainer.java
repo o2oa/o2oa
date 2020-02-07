@@ -521,6 +521,62 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new ArrayList<T>(query.getResultList());
 	}
 
+	public <T extends JpaObject> List<T> listNotEqual(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.or(cb.isNull(root.get(attribute)), cb.notEqual(root.get(attribute), value)));
+		List<T> os = em.createQuery(cq).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject, W extends Object> List<T> listIn(Class<T> cls, String attribute, Collection<W> values)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.isMember(root.get(attribute), cb.literal(values)));
+		List<T> os = em.createQuery(cq.distinct(true)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject> List<T> listIsMember(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.isMember(value, root.get(attribute)));
+		List<T> os = em.createQuery(cq).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject> T firstEqual(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.equal(root.get(attribute), value));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.isEmpty() ? null : os.get(0);
+	}
+
+	public <T extends JpaObject> T firstEqualAndEqual(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.isEmpty() ? null : os.get(0);
+	}
+
 	public <T extends JpaObject> Long count(Class<T> cls) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -662,40 +718,6 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.select(cb.count(root)).where(cb.and(cb.equal(root.get(attribute), value),
 				cb.or(cb.isNull(root.get(otherAttribute)), cb.notEqual(root.get(otherAttribute), otherValue))));
 		return em.createQuery(cq).getSingleResult();
-	}
-
-	public <T extends JpaObject> List<T> listNotEqual(Class<T> cls, String attribute, Object value) throws Exception {
-		EntityManager em = this.get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(cls);
-		Root<T> root = cq.from(cls);
-		cq.select(root).where(cb.or(cb.isNull(root.get(attribute)), cb.notEqual(root.get(attribute), value)));
-		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
-	}
-
-	public <T extends JpaObject, W extends Object> List<T> listIn(Class<T> cls, String attribute, Collection<W> values)
-			throws Exception {
-		EntityManager em = this.get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(cls);
-		Root<T> root = cq.from(cls);
-		cq.select(root).where(cb.isMember(root.get(attribute), cb.literal(values)));
-		List<T> os = em.createQuery(cq.distinct(true)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
-	}
-
-	public <T extends JpaObject> List<T> listIsMember(Class<T> cls, String attribute, Object value) throws Exception {
-		EntityManager em = this.get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(cls);
-		Root<T> root = cq.from(cls);
-		cq.select(root).where(cb.isMember(value, root.get(attribute)));
-		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
 	}
 
 	public <T extends JpaObject> List<String> ids(Class<T> cls) throws Exception {
@@ -1034,6 +1056,48 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			WrapCopier<T, W> copier) throws Exception {
 		List<T> os = this.fetch(ids, copier.getOrigClass(), copier.getCopyFields());
 		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetch(Class<T> clz, Predicate predicate)
+			throws Exception {
+		List<T> os = fetch(clz, JpaObject.singularAttributeField(clz, true, true), predicate);
+		return os;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetch(Class<T> clz, WrapCopier<T, W> copier,
+			Predicate predicate) throws Exception {
+		List<T> os = fetch(clz, copier.getCopyFields(), predicate);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetch(Class<T> clz, List<String> fetchAttributes,
+			Predicate predicate) throws Exception {
+		List<T> list = new ArrayList<>();
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		cq.multiselect(selections).where(predicate);
+//		if (StringUtils.isNotEmpty(orderAttribute)) {
+//			cq.orderBy(cb.desc(root.get(orderAttribute)));
+//		}
+		T t = null;
+		for (Tuple o : em.createQuery(cq).getResultList()) {
+			t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
 	}
 
 	public <T extends JpaObject> List<T> fetchEqual(Class<T> clz, String attribute, Object value) throws Exception {

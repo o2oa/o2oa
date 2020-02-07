@@ -105,7 +105,7 @@ public class ActionSendMessage  extends StandardJaxrsAction {
 
 
 
-        @FieldDescribe("设备id")
+        @FieldDescribe("人员")
         private String person;
 
         @FieldDescribe("消息内容")

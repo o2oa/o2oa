@@ -1,14 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.output;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,15 +13,17 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.element.AppDict;
-import com.x.cms.core.entity.element.AppDictItem;
-import com.x.cms.core.entity.element.AppDictItem_;
-import com.x.cms.core.entity.element.File;
-import com.x.cms.core.entity.element.Form;
-import com.x.cms.core.entity.element.Script;
+import com.x.cms.core.entity.element.*;
 import com.x.cms.core.entity.element.wrap.*;
-
 import net.sf.ehcache.Element;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionSelect extends BaseAction {
 
@@ -49,6 +42,12 @@ class ActionSelect extends BaseAction {
 			}
 
 			WrapCms wrapAppInfo = this.get(business, appInfo, wi);
+
+			//2020年1月16日 O2LEE 查询栏目信息对应的配置支持信息JSON以字符串形式放到WrapCms对象中输出 ---->start
+			if( wrapAppInfo != null ){
+				wrapAppInfo.setConfig( business.appInfoConfigFactory().getContent( appInfo.getId() ) );
+			}
+			//2020年1月16日 O2LEE 查询每个栏目信息对应的配置支持信息JSON以字符串形式放到WrapCms对象中输出 ---->end
 
 			OutputCacheObject outputCacheObject = new OutputCacheObject();
 			outputCacheObject.setName(appInfo.getAppName());

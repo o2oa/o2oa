@@ -69,6 +69,13 @@ public class TranslateTaskIdentityTools {
 		if (ListTools.isNotEmpty(groups)) {
 			taskIdentities.addIdentities(aeiObjects.business().organization().identity().listWithGroup(groups));
 		}
+		List<String> identities = aeiObjects.business().organization().identity().list(taskIdentities.identities());
+		Iterator<TaskIdentity> iterator = taskIdentities.iterator();
+		while (iterator.hasNext()) {
+			if (!identities.contains(iterator.next().getIdentity())) {
+				iterator.remove();
+			}
+		}
 		return taskIdentities;
 	}
 
