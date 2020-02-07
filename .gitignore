@@ -6,7 +6,7 @@
 /target/
 /o2custom/
 /.svn/
-/o2web/gulpfile.js
+/o2web/ftpconfig.js
 **/.DS_Store
 .DS_Store
 o2web/source/x_component_Selector/Identity_bak.js
