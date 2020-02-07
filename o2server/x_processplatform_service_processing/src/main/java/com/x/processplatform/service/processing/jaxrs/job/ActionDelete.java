@@ -28,11 +28,9 @@ public class ActionDelete extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 
-		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wos = new ArrayList<>();
-
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
+		Callable<ActionResult<List<Wo>>> callable = new Callable<ActionResult<List<Wo>>>() {
+			public ActionResult<List<Wo>> call() throws Exception {
+				List<Wo> wos = new ArrayList<>();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					emc.beginTransaction(Task.class);
 					emc.beginTransaction(TaskCompleted.class);
@@ -86,20 +84,20 @@ public class ActionDelete extends BaseAction {
 						wos.add(wo);
 					}
 					for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
+						emc.remove(o);
 						Wo wo = new Wo();
 						wo.setId(o.getId());
 						wos.add(wo);
 					}
 					emc.commit();
 				}
-				return "";
+				ActionResult<List<Wo>> result = new ActionResult<>();
+				result.setData(wos);
+				return result;
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(job).submit(callable).get();
-
-		result.setData(wos);
-		return result;
+		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
 	}
 

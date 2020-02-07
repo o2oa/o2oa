@@ -22,6 +22,12 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+/**
+ * 为指定的用户根据Work直接创建Review
+ * 
+ * @author zhour
+ *
+ */
 class ActionCreateWithWork extends BaseAction {
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)

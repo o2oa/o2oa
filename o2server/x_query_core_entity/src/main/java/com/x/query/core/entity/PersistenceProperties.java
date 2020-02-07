@@ -48,6 +48,13 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	}
 
+	public static class Program {
+
+		public static class Argument {
+			public static final String table = "QRY_PGM_ARGUMENT";
+		}
+	}
+
 	public static class Neural {
 
 		public static class Model {

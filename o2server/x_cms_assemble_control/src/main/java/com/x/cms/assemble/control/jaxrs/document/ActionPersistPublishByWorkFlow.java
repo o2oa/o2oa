@@ -59,14 +59,6 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(wi.getTitle())) {
-				check = false;
-				Exception exception = new ExceptionDocumentTitleEmpty();
-				result.error(exception);
-			}
-		}
-
-		if (check) {
 			if ( StringUtils.isEmpty(wi.getCategoryId())) {
 				check = false;
 				Exception exception = new ExceptionDocumentCategoryIdEmpty();
@@ -76,24 +68,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
-				appInfo = appInfoServiceAdv.get(wi.getAppId());
-				if (appInfo == null) {
-					check = false;
-					Exception exception = new ExceptionAppInfoNotExists(wi.getAppId());
-					result.error(exception);
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e,
-						"系统在根据ID查询应用栏目信息时发生异常！ID：" + wi.getAppId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			try {
-				categoryInfo = categoryInfoServiceAdv.get(wi.getCategoryId());
+				categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
 				if (categoryInfo == null) {
 					check = false;
 					Exception exception = new ExceptionCategoryInfoNotExists(wi.getCategoryId());
@@ -101,8 +76,23 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e,
-						"系统在根据ID查询分类信息时发生异常！ID：" + wi.getCategoryId());
+				Exception exception = new ExceptionDocumentInfoProcess(e,"系统在根据ID查询分类信息时发生异常！ID：" + wi.getCategoryId());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+
+		if (check) {
+			try {
+				appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
+				if (appInfo == null) {
+					check = false;
+					Exception exception = new ExceptionAppInfoNotExists(categoryInfo.getAppId());
+					result.error(exception);
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -196,6 +186,15 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
+			}
+		}
+
+		if (check) {
+			if ( StringUtils.isEmpty(wi.getTitle())) {
+//				check = false;
+//				Exception exception = new ExceptionDocumentTitleEmpty();
+//				result.error(exception);
+				wi.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
 			}
 		}
 

@@ -586,7 +586,7 @@ public class DocumentAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示符合过滤条件的已发布的信息内容, 下一页.", action = ActionQueryListWithFilterPaging.class)
+	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容.", action = ActionQueryListWithFilterPaging.class)
 	@PUT
 	@Path("filter/list/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

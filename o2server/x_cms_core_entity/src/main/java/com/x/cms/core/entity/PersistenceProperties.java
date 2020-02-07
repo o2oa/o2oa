@@ -43,7 +43,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class AppInfo {
 		public static final String table = "CMS_APPINFO";
 	}
-	
+
+	public static class AppInfoConfig {
+		public static final String table = "CMS_APPINFO_CONFIG";
+	}
+
 	public static class CategoryInfo {
 		public static final String table = "CMS_CATEGORYINFO";
 	}

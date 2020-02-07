@@ -1,43 +1,17 @@
 package com.x.cms.assemble.control;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
-import com.x.cms.assemble.control.factory.AppDictFactory;
-import com.x.cms.assemble.control.factory.AppDictItemFactory;
-import com.x.cms.assemble.control.factory.AppInfoFactory;
-import com.x.cms.assemble.control.factory.CategoryExtFactory;
-import com.x.cms.assemble.control.factory.CategoryInfoFactory;
-import com.x.cms.assemble.control.factory.CmsBatchOperationFactory;
-import com.x.cms.assemble.control.factory.DocumentCommendFactory;
-import com.x.cms.assemble.control.factory.DocumentCommentCommendFactory;
-import com.x.cms.assemble.control.factory.DocumentCommentInfoFactory;
-import com.x.cms.assemble.control.factory.DocumentFactory;
-import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
-import com.x.cms.assemble.control.factory.FileFactory;
-import com.x.cms.assemble.control.factory.FileInfoFactory;
-import com.x.cms.assemble.control.factory.FormFactory;
-import com.x.cms.assemble.control.factory.FormFieldFactory;
-import com.x.cms.assemble.control.factory.ItemFactory;
-import com.x.cms.assemble.control.factory.LogFactory;
-import com.x.cms.assemble.control.factory.ReviewFactory;
-import com.x.cms.assemble.control.factory.ScriptFactory;
-import com.x.cms.assemble.control.factory.SearchFactory;
-import com.x.cms.assemble.control.factory.TemplateFormFactory;
-import com.x.cms.assemble.control.factory.ViewCategoryFactory;
-import com.x.cms.assemble.control.factory.ViewFactory;
-import com.x.cms.assemble.control.factory.ViewFieldConfigFactory;
+import com.x.cms.assemble.control.factory.*;
 import com.x.cms.assemble.control.factory.element.QueryViewFactory;
 import com.x.cms.core.entity.AppInfo;
 import com.x.organization.core.express.Organization;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Business {
 
@@ -53,6 +27,7 @@ public class Business {
 
 	private TemplateFormFactory templateFormFactory;
 	private AppInfoFactory appInfoFactory;
+	private AppInfoConfigFactory appInfoConfigFactory;
 	private CategoryInfoFactory categoryInfoFactory;
 	private CategoryExtFactory categoryExtFactory;
 	private FileInfoFactory fileInfoFactory;
@@ -77,6 +52,13 @@ public class Business {
 	private DocumentCommentCommendFactory documentCommentCommendFactory;
 	private DocumentCommentInfoFactory documentCommentInfoFactory;
 	private ReviewFactory reviewFactory;
+
+	public AppInfoConfigFactory appInfoConfigFactory() throws Exception {
+		if (null == this.appInfoConfigFactory) {
+			this.appInfoConfigFactory = new AppInfoConfigFactory(this);
+		}
+		return appInfoConfigFactory;
+	}
 
 	public DocumentCommentCommendFactory documentCommentCommendFactory() throws Exception {
 		if (null == this.documentCommentCommendFactory) {

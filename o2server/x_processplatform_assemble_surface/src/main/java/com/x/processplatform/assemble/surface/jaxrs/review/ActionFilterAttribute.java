@@ -26,6 +26,12 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
 
+/**
+ * 可用于选择的过滤值
+ * 
+ * @author zhour
+ *
+ */
 class ActionFilterAttribute extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {

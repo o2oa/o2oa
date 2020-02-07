@@ -148,7 +148,7 @@ public class ActionSave extends BaseAction {
 			}
 			
 			try {
-				appInfo = appInfoServiceAdv.save( wi, effectivePerson );
+				appInfo = appInfoServiceAdv.save( wi, wi.getConfig(), effectivePerson );
 				Wo wo = new Wo();
 				wo.setId( appInfo.getId() );
 				result.setData( wo );
@@ -196,10 +196,14 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("指定用于操作的身份，可选参数")
 		private String identity = null;
 
+		@FieldDescribe("栏目配置支持信息，JSON")
+		private String config = "{}";
+
+		public String getConfig() { return this.config; }
+		public void setConfig(final String config) { this.config = config; }
 		public String getIdentity() {
 			return identity;
 		}
-
 		public void setIdentity(String identity) {
 			this.identity = identity;
 		}

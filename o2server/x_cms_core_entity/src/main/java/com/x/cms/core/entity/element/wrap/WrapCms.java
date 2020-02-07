@@ -1,14 +1,14 @@
 package com.x.cms.core.entity.element.wrap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WrapCms extends AppInfo {
 
@@ -53,8 +53,15 @@ public class WrapCms extends AppInfo {
 	private List<WrapScript> scriptList = new ArrayList<>();
 	
 	@FieldDescribe("导出的文件")
-	private List<WrapFile> fileList = new ArrayList<>();	
-	
+	private List<WrapFile> fileList = new ArrayList<>();
+
+	@FieldDescribe("导出的栏目配置支持信息，JSON配置项")
+	private String config = "{}";
+
+	public String getConfig() { return this.config; }
+
+	public void setConfig(final String config) { this.config = config; }
+
 	public List<WrapForm> getFormList() {
 		return formList;
 	}

@@ -50,6 +50,7 @@ public class Config {
 	public static final String PATH_CONFIG_DUMPRESTOREDATA = "config/dumpRestoreData.json";
 	public static final String PATH_CONFIG_DUMPRESTORESTORAGE = "config/dumpRestoreStorage.json";
 	public static final String PATH_CONFIG_MESSAGES = "config/messages.json";
+	public static final String PATH_CONFIG_MESSAGES_SEND_RULE = "config/messageSendRule.js";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -69,6 +70,7 @@ public class Config {
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
+	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -909,7 +911,8 @@ public class Config {
 					Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
 					if (null != custom) {
 						custom.entrySet().stream().forEach(o -> {
-							obj.put(o.getKey(), new Message(o.getValue().getConsumers()));
+							obj.put(o.getKey(),
+									new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
 						});
 					}
 					instance().messages = obj;
@@ -917,6 +920,23 @@ public class Config {
 			}
 		}
 		return instance().messages;
+	}
+
+	private String messageSendRuleScript;
+
+	public static String messageSendRuleScript() throws Exception {
+		if (null == instance().messageSendRuleScript) {
+			synchronized (Config.class) {
+				if (null == instance().messageSendRuleScript) {
+					String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
+					if (scriptStr == null) {
+						scriptStr = "";
+					}
+					instance().messageSendRuleScript = scriptStr;
+				}
+			}
+		}
+		return instance().messageSendRuleScript;
 	}
 
 	private PushConfig pushConfig;
@@ -1156,6 +1176,23 @@ public class Config {
 			}
 		}
 		return instance().slice;
+	}
+
+	public Exmail exmail;
+
+	public static Exmail exmail() throws Exception {
+		if (null == instance().exmail) {
+			synchronized (Config.class) {
+				if (null == instance().exmail) {
+					Exmail obj = BaseTools.readConfigObject(PATH_CONFIG_EXMAIL, Exmail.class);
+					if (null == obj) {
+						obj = Exmail.defaultInstance();
+					}
+					instance().exmail = obj;
+				}
+			}
+		}
+		return instance().exmail;
 	}
 
 	public static Object resource(String name) throws Exception {

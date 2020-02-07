@@ -19,6 +19,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -159,6 +160,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 	void delete_work(Business business, Process process) throws Exception {
 		List<String> ids = business.work().listWithProcess(process.getId());
 		this.delete_batch(business.entityManagerContainer(), Work.class, ids);
+	}
+
+	void delete_documentVersion(Business business, Process process) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocumentVersion.class,
+				DocumentVersion.process_FIELDNAME, process.getId());
+		this.delete_batch(business.entityManagerContainer(), DocumentVersion.class, ids);
 	}
 
 	void delete_workCompleted(Business business, Process process) throws Exception {

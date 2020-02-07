@@ -7,6 +7,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -52,6 +53,7 @@ class ActionProcessing extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("意见")
 		private String opinion;
 
 		public String getOpinion() {

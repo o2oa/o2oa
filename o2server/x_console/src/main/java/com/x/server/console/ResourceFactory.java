@@ -108,6 +108,8 @@ public class ResourceFactory {
 			dataSource.setPassword(ds.getPassword());
 			dataSource.setMaxPoolSize(ds.getMaxTotal());
 			dataSource.setMinPoolSize(ds.getMaxIdle());
+			/* 增加校验 */
+			dataSource.setTestConnectionOnCheckin(true);
 			dataSource.setAcquireIncrement(0);
 			if (ds.getStatEnable()) {
 				dataSource.setFilters(ds.getStatFilter());

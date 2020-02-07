@@ -1,34 +1,19 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
-import com.x.cms.assemble.control.service.AppDictServiceAdv;
-import com.x.cms.assemble.control.service.AppInfoServiceAdv;
-import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
-import com.x.cms.assemble.control.service.DocumentQueryService;
-import com.x.cms.assemble.control.service.FormServiceAdv;
-import com.x.cms.assemble.control.service.PermissionOperateService;
-import com.x.cms.assemble.control.service.PermissionQueryService;
-import com.x.cms.assemble.control.service.ScriptServiceAdv;
-import com.x.cms.assemble.control.service.UserManagerService;
-import com.x.cms.assemble.control.service.ViewServiceAdv;
+import com.x.cms.assemble.control.service.*;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
-
 import net.sf.ehcache.Ehcache;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class BaseAction extends StandardJaxrsAction {
 
@@ -213,9 +198,9 @@ public class BaseAction extends StandardJaxrsAction {
 		}
 		return wraps;
 	}
-		
+
 	public static class Wo extends AppInfo {
-		
+
 		private Long rank;
 
 		public Long getRank() {
@@ -225,32 +210,40 @@ public class BaseAction extends StandardJaxrsAction {
 		public void setRank(Long rank) {
 			this.rank = rank;
 		}
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 
+		@FieldDescribe("栏目下的分类信息列表")
 		private List<WoCategory> wrapOutCategoryList = null;
-		
+
+		@FieldDescribe("配置支持信息JSON内容")
+		private String config = null;
+
 		public List<WoCategory> getWrapOutCategoryList() {
 			return wrapOutCategoryList;
 		}
 		public void setWrapOutCategoryList(List<WoCategory> wrapOutCategoryList) {
 			this.wrapOutCategoryList = wrapOutCategoryList;
 		}
-		
+
+		public String getConfig() { return this.config; }
+
+		public void setConfig(final String config) { this.config = config; }
+
 		static WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo( AppInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
-		
+
 	}
-	
+
 	public static class WoCategory extends CategoryInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		static WrapCopier<CategoryInfo, WoCategory> copier = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class, null, ListTools.toList(JpaObject.FieldsInvisible));
-		
+
 	}
-			
+
 }

@@ -38,17 +38,20 @@ public class SyncOrganization {
 	private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
 
 	public PullResult execute(Business business) throws Exception {
-		logger.print("开始与企业微信同步人员,方向:拉入.");
+		logger.print("开始与企业微信同步人员组织,方向:拉入.");
 		PullResult result = new PullResult();
-		String accessToken = Config.qiyeweixin().corpAccessToken();
+		String accessToken = Config.qiyeweixin().syncAccessToken();
+		logger.print("开accessToken：" + accessToken);
 		List<Unit> units = new ArrayList<>();
 		List<Person> people = new ArrayList<>();
 		List<PersonAttribute> personAttributes = new ArrayList<>();
 		List<Identity> identities = new ArrayList<>();
 		QiyeweixinFactory factory = new QiyeweixinFactory(accessToken);
 		for (Department root : factory.roots()) {
+			logger.print("开始同步企业微信组织的信息:{}", XGsonBuilder.toJson(root));
 			this.check(business, result, units, people, personAttributes, identities, accessToken, factory, null, root);
 		}
+		logger.print("开始清理本地用户组织信息");
 		this.clean(business, result, units, people, identities);
 		ApplicationCache.notify(Person.class);
 		ApplicationCache.notify(PersonAttribute.class);
@@ -93,7 +96,7 @@ public class SyncOrganization {
 			logger.print("删除身份({}):{}.", result.getRemoveIdentityList().size(),
 					StringUtils.join(result.getRemoveIdentityList(), ","));
 		}
-		logger.print("从企业微信同步人员结束.");
+		logger.print("结束企业微信同步人员组织同步.");
 		return result;
 	}
 
@@ -140,6 +143,7 @@ public class SyncOrganization {
 			unit = this.createUnit(business, result, sup, org);
 		} else {
 			if (!StringUtils.equals(unit.getQiyeweixinHash(), DigestUtils.sha256Hex(XGsonBuilder.toJson(org)))) {
+				logger.print("组织【{}】的hash值变化，更新组织====",org.getName());
 				unit = this.updateUnit(business, result, unit, org);
 			}
 		}
@@ -172,6 +176,9 @@ public class SyncOrganization {
 		emc.beginTransaction(Unit.class);
 		unit.setQiyeweixinHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(department)));
 		unit.setName(department.getName());
+		if (null != department.getOrder()) {
+			unit.setOrderNumber(department.getOrder().intValue());
+		}
 		business.unit().adjustInherit(unit);
 		emc.check(unit, CheckPersistType.all);
 		emc.commit();
@@ -210,7 +217,6 @@ public class SyncOrganization {
 			emc.beginTransaction(UnitAttribute.class);
 			emc.beginTransaction(UnitDuty.class);
 			emc.beginTransaction(Identity.class);
-			emc.beginTransaction(Unit.class);
 			for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
 				emc.remove(o, CheckRemoveType.all);
 				result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
@@ -223,6 +229,9 @@ public class SyncOrganization {
 				emc.remove(o, CheckRemoveType.all);
 				result.getRemoveIdentityList().add(o.getDistinguishedName());
 			}
+			emc.commit();
+
+			emc.beginTransaction(Unit.class);
 			emc.remove(unit, CheckRemoveType.all);
 			emc.commit();
 			result.getRemoveUnitList().add(unit.getDistinguishedName());
@@ -371,13 +380,15 @@ public class SyncOrganization {
 
 	private void removePerson(Business business, PullResult result, Person person) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
-		emc.beginTransaction(Person.class);
 		emc.beginTransaction(PersonAttribute.class);
 		for (PersonAttribute o : emc.listEqual(PersonAttribute.class, PersonAttribute.person_FIELDNAME,
 				person.getId())) {
 			result.getRemovePersonAttributeList().add(o.getDistinguishedName());
 			emc.remove(o, CheckRemoveType.all);
 		}
+		emc.commit();
+
+		emc.beginTransaction(Person.class);
 		emc.remove(person, CheckRemoveType.all);
 		emc.commit();
 		result.getRemovePersonList().add(person.getDistinguishedName());
@@ -509,6 +520,7 @@ public class SyncOrganization {
 		List<Person> allPeople = this.listPerson(business);
 		/* 删除个人 */
 		for (Person person : ListUtils.subtract(allPeople, people)) {
+			logger.print("删除用户：{}",person.getDistinguishedName());
 			this.removePerson(business, result, person);
 		}
 	}

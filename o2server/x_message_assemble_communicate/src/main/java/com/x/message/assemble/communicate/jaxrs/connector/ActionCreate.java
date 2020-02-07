@@ -1,29 +1,40 @@
 package com.x.message.assemble.communicate.jaxrs.connector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static ConcurrentMap<String,CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		List<Message> messages = new ArrayList<>();
@@ -32,34 +43,74 @@ class ActionCreate extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			List<String> consumers = Config.messages().getConsumers(wi.getType());
-			Instant instant = this.instant(effectivePerson, business, wi, consumers);
-			if (ListTools.isNotEmpty(consumers)) {
-				for (String consumer : consumers) {
+			Map<String,String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
+			for(String consumer: consumers){
+				if(!consumersV2.containsKey(consumer)){
+					consumersV2.put(consumer,"");
+				}
+			}
+			Instant instant = this.instant(effectivePerson, business, wi, new ArrayList<>(consumersV2.keySet()));
+			if (!consumersV2.isEmpty()) {
+				for (String consumer : consumersV2.keySet()) {
+					Wi cpwi = wi;
+					String func = consumersV2.get(consumer);
+					try {
+						if(StringUtils.isNoneBlank(func)){
+							cpwi = (Wi)BeanUtils.cloneBean(wi);
+							JsonObject body = cpwi.getBody().deepCopy().getAsJsonObject();
+							CompiledScript compiledScript = scriptMap.get(func);
+							if(compiledScript == null) {
+								String eval = Config.messageSendRuleScript();
+								if(StringUtils.isNotEmpty(eval)) {
+									eval = "function" + StringUtils.substringAfter(eval, "function") + " " + func + "();";
+									compiledScript = ScriptFactory.compile(eval);
+									scriptMap.put(func, compiledScript);
+								}
+							}
+							if(compiledScript != null) {
+								ScriptContext scriptContext = new SimpleScriptContext();
+								Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+								bindings.put("body", body);
+								Object o = compiledScript.eval(scriptContext);
+								cpwi.setBody(body);
+								if (o != null) {
+									if (o instanceof Boolean) {
+										if (!((Boolean) o).booleanValue()) {
+											logger.info("消息类型{}.{}的消息[{}]不满足发送条件，跳过...", wi.getType(), consumer, wi.getTitle());
+											continue;
+										}
+									}
+								}
+							}
+						}
+					} catch (Exception e) {
+						logger.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
+					}
 					Message message = null;
 					switch (Objects.toString(consumer, "")) {
 					case MessageConnector.CONSUME_WS:
-						message = this.wsMessage(effectivePerson, business, wi, instant);
+						message = this.wsMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_PMS:
-						message = this.pmsMessage(effectivePerson, business, wi, instant);
+						message = this.pmsMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_PMS_INNER:
-						message = this.pmsInnerMessage(effectivePerson, business, wi, instant);
+						message = this.pmsInnerMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_DINGDING:
-						message = this.dingdingMessage(effectivePerson, business, wi, instant);
+						message = this.dingdingMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_ZHENGWUDINGDING:
-						message = this.zhegnwudingdingMessage(effectivePerson, business, wi, instant);
+						message = this.zhegnwudingdingMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_QIYEWEIXIN:
-						message = this.qiyeweixinMessage(effectivePerson, business, wi, instant);
+						message = this.qiyeweixinMessage(effectivePerson, business, cpwi, instant);
 						break;
 					case MessageConnector.CONSUME_CALENDAR:
-						message = this.calendarMessage(effectivePerson, business, wi, instant);
+						message = this.calendarMessage(effectivePerson, business, cpwi, instant);
 						break;
 					default:
-						message = this.defaultMessage(effectivePerson, business, wi, consumer, instant);
+						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
 						break;
 					}
 					messages.add(message);

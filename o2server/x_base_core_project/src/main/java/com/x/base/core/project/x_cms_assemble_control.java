@@ -11,7 +11,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.cms.core.entity.element.QueryView", "com.x.cms.core.entity.element.Script",
 		"com.x.cms.core.entity.element.TemplateForm", "com.x.cms.core.entity.element.View",
 		"com.x.cms.core.entity.element.ViewCategory", "com.x.cms.core.entity.element.ViewFieldConfig",
-		"com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.CategoryInfo", "com.x.cms.core.entity.CategoryExt",
+		"com.x.cms.core.entity.AppInfo", "com.x.cms.core.entity.AppInfoConfig", "com.x.cms.core.entity.CategoryInfo", "com.x.cms.core.entity.CategoryExt",
 		"com.x.cms.core.entity.Document", "com.x.cms.core.entity.DocumentViewRecord",
 		"com.x.cms.core.entity.element.File", "com.x.cms.core.entity.FileInfo", "com.x.cms.core.entity.Log",
 		"com.x.processplatform.core.entity.content.Attachment", "com.x.query.core.entity.Item",

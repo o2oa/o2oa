@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.tools.ListTools;
@@ -89,6 +90,11 @@ public class OrganizationDefinition {
 	public final static Pattern unitDuty_distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@UD$");
 
 	public final static Pattern distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
+
+	public final static List<String> DEFAULTROLES = new UnmodifiableList<String>(ListTools.toList(Manager,
+			AttendanceManager, OrganizationManager, PersonManager, GroupManager, UnitManager, RoleManager,
+			ProcessPlatformManager, ProcessPlatformCreator, MeetingManager, MeetingViewer, PortalManager, BBSManager,
+			CMSManager, OKRManager, CRMManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege));
 
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, "@")) {

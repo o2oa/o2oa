@@ -1,15 +1,15 @@
 package com.x.cms.assemble.control.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.AppInfoConfig;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * 对栏目信息进行管理的服务类（高级）
@@ -27,6 +27,28 @@ public class AppInfoServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return appInfoService.get(emc, id);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public AppInfoConfig getConfigObject(String id ) throws Exception {
+		if ( StringUtils.isEmpty(id )) {
+			throw new Exception("id is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.getConfigObject( emc, id );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public String getConfigJson(String id ) throws Exception {
+		if ( StringUtils.isEmpty(id )) {
+			throw new Exception("id is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.getConfigJson( emc, id );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -93,7 +115,15 @@ public class AppInfoServiceAdv {
 		}
 	}
 
-	public AppInfo save( AppInfo appInfo, EffectivePerson currentPerson) throws Exception {
+	/**
+	 * 栏目信息保存服务
+	 * @param appInfo
+	 * @param config
+	 * @param currentPerson
+	 * @return
+	 * @throws Exception
+	 */
+	public AppInfo save( AppInfo appInfo, String config, EffectivePerson currentPerson) throws Exception {
 		if ( appInfo == null) {
 			throw new Exception("appInfo is null.");
 		}
@@ -106,11 +136,25 @@ public class AppInfoServiceAdv {
 					appInfo.addManageablePerson( currentPerson.getDistinguishedName() );
 				}
 			}
-			appInfo = appInfoService.save( emc, appInfo );
+			appInfo = appInfoService.save( emc, appInfo, config );
 		} catch (Exception e) {
 			throw e;
 		}
 		return appInfo;
+	}
+
+	public AppInfoConfig saveConfig( String appId, String config, EffectivePerson currentPerson) throws Exception {
+		if ( StringUtils.isEmpty( appId )) {
+			throw new Exception("appId is null.");
+		}
+		if ( StringUtils.isEmpty( config )) {
+			throw new Exception("config content is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.saveConfig( emc, appId, config );
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	public List<String> listByAppName(String appName) throws Exception {
@@ -290,14 +334,16 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 
 	/**
 	 * 判断用户是否拥有指定栏目的发布者权限
 	 * @param appId
-	 * @param distinguishedName
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Boolean isAppInfoPublisher(String appId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -307,13 +353,15 @@ public class AppInfoServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 判断用户是否拥有指定栏目的访问权限
 	 * @param appId
-	 * @param distinguishedName
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Boolean isAppInfoViewer(String appId, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -353,13 +401,15 @@ public class AppInfoServiceAdv {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断用户是否拥有指定栏目的发布者权限
 	 * @param appInfo
-	 * @param distinguishedName
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Boolean isAppInfoPublisher( AppInfo appInfo, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		if( appInfo != null )  {
@@ -399,13 +449,15 @@ public class AppInfoServiceAdv {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断用户是否拥有指定栏目的访问权限
 	 * @param appInfo
-	 * @param distinguishedName
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Boolean isAppInfoViewer( AppInfo appInfo, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		if( appInfo != null ) {

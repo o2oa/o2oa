@@ -182,6 +182,9 @@ public class SyncOrganization {
 		emc.beginTransaction(Unit.class);
 		unit.setZhengwuDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(department)));
 		unit.setName(department.getName());
+		if (null != department.getOrder()) {
+			unit.setOrderNumber(department.getOrder().intValue());
+		}
 		business.unit().adjustInherit(unit);
 		emc.check(unit, CheckPersistType.all);
 		emc.commit();

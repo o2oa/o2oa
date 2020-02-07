@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -65,6 +66,7 @@ class ActionDelete extends BaseAction {
 					emc.beginTransaction(Item.class);
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(Hint.class);
+					emc.beginTransaction(DocumentVersion.class);
 					List<Task> tasks = emc.list(Task.class, business.task().listWithWork(work.getId()));
 					List<TaskCompleted> taskCompleteds = emc.list(TaskCompleted.class,
 							business.taskCompleted().listWithWork(work.getId()));
@@ -88,6 +90,7 @@ class ActionDelete extends BaseAction {
 					emc.delete(ReadCompleted.class, business.readCompleted().listWithWork(work.getId()));
 					emc.delete(Review.class, business.review().listWithWork(work.getId()));
 					emc.delete(Hint.class, business.hint().listWithWork(work.getId()));
+					emc.delete(DocumentVersion.class, business.hint().listWithWork(work.getId()));
 					// 判断附件是否有其他的Work在引用，如果没有那么删除
 					if (business.work().listWithJob(work.getJob()).size() == 1) {
 						List<Item> os = business.item().listWithJobWithPath(work.getJob());
@@ -103,7 +106,8 @@ class ActionDelete extends BaseAction {
 							}
 							emc.remove(o);
 						}
-						emc.delete(WorkLog.class, business.workLog().listWithWork(work.getId()));
+						emc.delete(WorkLog.class, business.workLog().listWithJob(work.getJob()));
+						emc.delete(DocumentVersion.class, business.documentVersion().listWithJob(work.getJob()));
 					}
 					emc.remove(work);
 					emc.commit();

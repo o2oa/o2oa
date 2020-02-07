@@ -31,14 +31,16 @@ public class ActionFileUpdate extends BaseAction {
 
 	@AuditLog(operation = "更新附件")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
-			String docId, String old_attId, String site, byte[] bytes, FormDataContentDisposition disposition) {
+			String docId, String old_attId, String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) {
 		ActionResult<Wo> result = new ActionResult<>();
 		FileInfo attachment = null;
 		Document document = null;
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
 		StorageMapping mapping = null;
-		String fileName = null;
+		if (StringUtils.isEmpty(fileName)) {
+			fileName = this.fileName(disposition);
+		}
 		Boolean check = true;	
 		
 		if( check ){
@@ -152,7 +154,6 @@ public class ActionFileUpdate extends BaseAction {
 		
 		if( check ){
 			try {
-				fileName = FilenameUtils.getName(new String(disposition.getFileName().getBytes(DefaultCharset.name_iso_8859_1), DefaultCharset.name));
 				/** 禁止不带扩展名的文件上传 */
 				if (StringUtils.isEmpty(fileName)) {
 					check = false;

@@ -20,6 +20,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -79,6 +81,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 			this.opinion = Objects.toString(this.getOpinion(), "");
 			this.opinionLob = null;
 		}
+		this.propertiesData = XGsonBuilder.toJson(this.properties());
 	}
 
 	public void setOpinion(String opinion) {
@@ -95,10 +98,24 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setTitle(String title) {
 		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(this.title, 252) + "...";
+			this.title = StringTools.utf8SubString(this.title, length_255B - 3) + "...";
 		} else {
 			this.title = Objects.toString(title, "");
 		}
+	}
+
+	@Transient
+	private TaskProperties properties;
+
+	public TaskProperties properties() {
+		if (null == properties) {
+			if (StringUtils.isEmpty(this.propertiesData)) {
+				this.properties = new TaskProperties();
+			} else {
+				this.properties = XGsonBuilder.instance().fromJson(this.propertiesData, TaskProperties.class);
+			}
+		}
+		return this.properties;
 	}
 
 	/* 更新运行方法 */
@@ -452,6 +469,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + first_FIELDNAME)
 	private Boolean first;
+
+	public static final String propertiesData_FIELDNAME = "propertiesData";
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + propertiesData_FIELDNAME)
+	private String propertiesData;
 
 	public static final String workCreateType_FIELDNAME = "workCreateType";
 	@FieldDescribe("工作创建类型,surface,assign")

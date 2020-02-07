@@ -166,6 +166,7 @@ public class ActionQueryListPrevWithFilter extends BaseAction {
 							int index = -1;
 							//放一页到searchResultList中进行返回
 							for( int i = 0; i< documentList.size(); i++ ) {
+								document = documentList.get(i);
 								if( StringUtils.isEmpty( id ) || document.getId().equalsIgnoreCase( id ) ) {
 									index = i;
 								}
@@ -189,11 +190,13 @@ public class ActionQueryListPrevWithFilter extends BaseAction {
 							int index = -1;
 							//放一页到searchResultList中进行返回
 							for( int i = 0; i< reviewList.size(); i++ ) {
+								review = reviewList.get(i);
 								if( StringUtils.isEmpty( id ) || review.getDocId().equalsIgnoreCase( id ) ) {
 									index = i;
 								}
 							}
 							for( ; index >=0; index-- ){
+								review = reviewList.get( index );
 								searchResultList.add(documentQueryService.get( review.getDocId() ) );
 								if( searchResultList.size() >= count ) { break; }
 							}

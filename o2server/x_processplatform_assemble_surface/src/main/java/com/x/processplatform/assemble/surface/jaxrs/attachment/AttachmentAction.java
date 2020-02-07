@@ -429,6 +429,25 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "更新Attachment信息", action = ActionUpdateContent.class)
+	@PUT
+	@Path("update/content/{id}/work/{workId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateContent(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+					   @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId, JsonElement jsonElement) {
+		ActionResult<ActionUpdateContent.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdateContent().execute(effectivePerson, id, workId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新附件,使用callback方式,为了与前台兼容使用POST方法.", action = ActionUpdateCallback.class)
 	@POST
 	@Path("update/{id}/work/{workId}/callback/{callback}")
@@ -689,12 +708,13 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void batchDownloadWithWorkOrWorkCompletedStream(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
-			@JaxrsParameterDescribe("附件框分类,(0)表示全部") @PathParam("site") String site) {
+			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site);
+			result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -708,12 +728,13 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void batchDownloadWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
-			@JaxrsParameterDescribe("附件框分类,(0)表示全部") @PathParam("site") String site) {
+			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site);
+			result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

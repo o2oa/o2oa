@@ -1,7 +1,6 @@
 package com.x.base.core.project.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.x.base.core.project.message.MessageConnector;
@@ -18,6 +17,12 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 
 	public static Messages defaultInstance() throws Exception {
 		Messages o = new Messages();
+
+		/* 示例 */
+		Map<String,String> map = new HashMap<>();
+		map.put(MessageConnector.CONSUME_QIYEWEIXIN, "excute");
+		map.put("describe","excute表示脚本messageRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务");
+		o.put("##sample##", new Message(map));
 
 		/* 文件通知 */
 		o.put(MessageConnector.TYPE_ATTACHMENT_SHARE,
@@ -126,6 +131,18 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			return list;
 		}
 		return new ArrayList<String>();
+	}
+
+	public Map<String,String> getConsumersV2(String type) {
+		Message o = this.get(type);
+		Map<String,String> map = new HashMap<>();
+		if (o != null) {
+			/* 这里必须复制内容,在消息处理中会对列表进行删除操作 */
+			if(o.getConsumersV2()!=null){
+				map.putAll(o.getConsumersV2());
+			}
+		}
+		return map;
 	}
 
 }

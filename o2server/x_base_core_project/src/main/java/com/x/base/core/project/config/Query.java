@@ -1,6 +1,8 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -22,11 +24,11 @@ public class Query extends ConfigObject {
 		this.crawlWorkCompleted = new CrawlWorkCompleted();
 		this.crawlWork = new CrawlWork();
 		this.crawlCms = new CrawlCms();
-		this.extractOffice = default_extractOffice;
-		this.extractPdf = default_extractPdf;
-		this.extractText = default_extractText;
-		this.extractImage = default_extractImage;
-		this.tessLanguage = default_tessLanguage;
+		this.extractOffice = DEFAULT_EXTRACTOFFICE;
+		this.extractPdf = DEFAULT_EXTRACTPDF;
+		this.extractText = DEFAULT_EXTRACTTEXT;
+		this.extractImage = DEFAULT_EXTRACTIMAGE;
+		this.tessLanguage = DEFAULT_TESSLANGUAGE;
 	}
 
 	@FieldDescribe("已完成工作收集器设置.")
@@ -53,11 +55,11 @@ public class Query extends ConfigObject {
 	@FieldDescribe("tess使用语言.")
 	private String tessLanguage = "chi_sim";
 
-	public static final Boolean default_extractOffice = true;
-	public static final Boolean default_extractPdf = true;
-	public static final Boolean default_extractText = true;
-	public static final Boolean default_extractImage = false;
-	public static final String default_tessLanguage = "chi_sim";
+	public static final Boolean DEFAULT_EXTRACTOFFICE = true;
+	public static final Boolean DEFAULT_EXTRACTPDF = true;
+	public static final Boolean DEFAULT_EXTRACTTEXT = true;
+	public static final Boolean DEFAULT_EXTRACTIMAGE = false;
+	public static final String DEFAULT_TESSLANGUAGE = "chi_sim";
 
 	public Boolean getExtractOffice() {
 		return BooleanUtils.isTrue(extractOffice);
@@ -76,7 +78,7 @@ public class Query extends ConfigObject {
 	}
 
 	public String getTessLanguage() {
-		return StringUtils.isNotEmpty(this.tessLanguage) ? this.tessLanguage : default_tessLanguage;
+		return StringUtils.isNotEmpty(this.tessLanguage) ? this.tessLanguage : DEFAULT_TESSLANGUAGE;
 	}
 
 	public CrawlCms getCrawlCms() {
@@ -109,6 +111,8 @@ public class Query extends ConfigObject {
 
 		public final static Integer DEFAULT_CONUT = 1000;
 
+		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
+
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
@@ -118,12 +122,33 @@ public class Query extends ConfigObject {
 		@FieldDescribe("每次处理的数量,默认为1000,同时每次将重爬最旧的25%以提高数据质量.")
 		private Integer count = DEFAULT_CONUT;
 
+		@FieldDescribe("忽略附件名称.")
+		private List<String> excludeAttachment = new ArrayList<>();
+
+		@FieldDescribe("忽略附件位置.")
+		private List<String> excludeSite = new ArrayList<>();
+
+		@FieldDescribe("最大附件大小.")
+		private Integer maxAttachmentSize = DEFAULT_MAXATTACHMENTSIZE;
+
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
 				return this.cron;
 			} else {
 				return DEFAULT_CRON;
 			}
+		}
+
+		public List<String> getExcludeAttachment() {
+			return excludeAttachment;
+		}
+
+		public List<String> getExcludeSite() {
+			return excludeSite;
+		}
+
+		public Integer getMaxAttachmentSize() {
+			return this.maxAttachmentSize == null ? DEFAULT_MAXATTACHMENTSIZE : this.maxAttachmentSize;
 		}
 
 		public Boolean getEnable() {
@@ -145,6 +170,19 @@ public class Query extends ConfigObject {
 		public void setCount(Integer count) {
 			this.count = count;
 		}
+
+		public void setExcludeAttachment(List<String> excludeAttachment) {
+			this.excludeAttachment = excludeAttachment;
+		}
+
+		public void setExcludeSite(List<String> excludeSite) {
+			this.excludeSite = excludeSite;
+		}
+
+		public void setMaxAttachmentSize(Integer maxAttachmentSize) {
+			this.maxAttachmentSize = maxAttachmentSize;
+		}
+
 	}
 
 	public static class CrawlWorkCompleted extends ConfigObject {
@@ -160,6 +198,8 @@ public class Query extends ConfigObject {
 
 		public final static Integer DEFAULT_CONUT = 5000;
 
+		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
+
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
@@ -169,12 +209,33 @@ public class Query extends ConfigObject {
 		@FieldDescribe("每次处理的数量,默认为5000,同时每次将重爬最旧的10%以提高数据质量.")
 		private Integer count = DEFAULT_CONUT;
 
+		@FieldDescribe("忽略附件名称.")
+		private List<String> excludeAttachment = new ArrayList<>();
+
+		@FieldDescribe("忽略附件位置.")
+		private List<String> excludeSite = new ArrayList<>();
+
+		@FieldDescribe("最大附件大小.")
+		private Integer maxAttachmentSize = DEFAULT_MAXATTACHMENTSIZE;
+
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
 				return this.cron;
 			} else {
 				return DEFAULT_CRON;
 			}
+		}
+
+		public List<String> getExcludeAttachment() {
+			return excludeAttachment;
+		}
+
+		public Integer getMaxAttachmentSize() {
+			return this.maxAttachmentSize == null ? DEFAULT_MAXATTACHMENTSIZE : this.maxAttachmentSize;
+		}
+
+		public List<String> getExcludeSite() {
+			return excludeSite;
 		}
 
 		public Boolean getEnable() {
@@ -196,6 +257,19 @@ public class Query extends ConfigObject {
 		public void setCount(Integer count) {
 			this.count = count;
 		}
+
+		public void setExcludeAttachment(List<String> excludeAttachment) {
+			this.excludeAttachment = excludeAttachment;
+		}
+
+		public void setExcludeSite(List<String> excludeSite) {
+			this.excludeSite = excludeSite;
+		}
+
+		public void setMaxAttachmentSize(Integer maxAttachmentSize) {
+			this.maxAttachmentSize = maxAttachmentSize;
+		}
+
 	}
 
 	public static class CrawlCms extends ConfigObject {
@@ -280,5 +354,4 @@ public class Query extends ConfigObject {
 	public void setTessLanguage(String tessLanguage) {
 		this.tessLanguage = tessLanguage;
 	}
-
 }

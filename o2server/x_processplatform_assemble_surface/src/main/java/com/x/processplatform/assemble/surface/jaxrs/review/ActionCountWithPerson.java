@@ -13,6 +13,12 @@ import com.x.base.core.project.jaxrs.WrapCount;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 
+/**
+ * 统计指定用户的Review数量,无权限限制
+ * 
+ * @author zhour
+ *
+ */
 class ActionCountWithPerson extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, JsonElement jsonElement)

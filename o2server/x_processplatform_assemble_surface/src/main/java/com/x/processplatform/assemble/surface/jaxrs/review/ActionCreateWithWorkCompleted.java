@@ -21,6 +21,12 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+/**
+ * 为指定的用户根据WorkCompleted直接创建WorkCompleted
+ * 
+ * @author zhour
+ *
+ */
 class ActionCreateWithWorkCompleted extends BaseAction {
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)

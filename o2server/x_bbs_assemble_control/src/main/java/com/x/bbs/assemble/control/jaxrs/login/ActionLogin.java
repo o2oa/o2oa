@@ -14,6 +14,7 @@ import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.login.exception.ExceptionInsufficientPermissions;
 import com.x.bbs.assemble.control.jaxrs.login.exception.ExceptionUserLogin;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
+
 /**
  * 手机用户访问论坛信息，首页所有的信息整合在一起 匿名用户可以访问
  * 
@@ -22,18 +23,19 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
  */
 public class ActionLogin extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionLogin.class);
-	
-	public ActionResult<RoleAndPermission> execute( @Context HttpServletRequest request, EffectivePerson effectivePerson ) {
-		
+	private static Logger logger = LoggerFactory.getLogger(ActionLogin.class);
+
+	public ActionResult<RoleAndPermission> execute(@Context HttpServletRequest request,
+			EffectivePerson effectivePerson) {
+
 		ActionResult<RoleAndPermission> result = new ActionResult<>();
 		Boolean isBBSManager = false;
 		String hostIp = request.getRemoteAddr();
 		String hostName = request.getRemoteAddr();
 		Boolean check = true;
-		
-		if( check ){
-			if ("anonymous".equalsIgnoreCase( effectivePerson.getTokenType().name())) {
+
+		if (check) {
+			if ("anonymous".equalsIgnoreCase(effectivePerson.getTokenType().name())) {
 				try {
 					operationRecordService.loginOperation("anonymous", hostIp, hostName);
 					result.setData(new RoleAndPermission());
@@ -45,32 +47,35 @@ public class ActionLogin extends BaseAction {
 			} else {
 				RoleAndPermission roleAndPermission = null;
 				try {
-					operationRecordService.loginOperation( effectivePerson.getDistinguishedName(), hostIp, hostName);
-					roleAndPermission = userPermissionService.getUserRoleAndPermissionForLogin( effectivePerson.getDistinguishedName());
+					operationRecordService.loginOperation(effectivePerson.getDistinguishedName(), hostIp, hostName);
+					roleAndPermission = userPermissionService
+							.getUserRoleAndPermissionForLogin(effectivePerson.getDistinguishedName());
 				} catch (Exception e) {
-					Exception exception = new ExceptionUserLogin( e, effectivePerson.getDistinguishedName());
+					Exception exception = new ExceptionUserLogin(e, effectivePerson.getDistinguishedName());
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
 				try {
-					isBBSManager = userManagerService.isHasPlatformRole( effectivePerson.getDistinguishedName(), ThisApplication.BBSMANAGER );
+					isBBSManager = userManagerService.isHasPlatformRole(effectivePerson.getDistinguishedName(),
+							ThisApplication.BBSMANAGER);
 				} catch (Exception e) {
-					Exception exception = new ExceptionInsufficientPermissions( effectivePerson.getDistinguishedName(), ThisApplication.BBSMANAGER );
+					Exception exception = new ExceptionInsufficientPermissions(effectivePerson.getDistinguishedName(),
+							ThisApplication.BBSMANAGER);
 					result.error(exception);
-					logger.error( e, effectivePerson, request, null );
+					logger.error(e, effectivePerson, request, null);
 				}
-				if ( roleAndPermission != null ) {
-					roleAndPermission.setIsBBSManager( isBBSManager );
+				if (roleAndPermission != null) {
+					roleAndPermission.setIsBBSManager(isBBSManager);
 				}
-				result.setData( roleAndPermission );
+				result.setData(roleAndPermission);
 			}
 		}
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject implements Serializable{
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-	}
+//	public static class Wi extends GsonPropertyObject implements Serializable {
+//
+//		private static final long serialVersionUID = -5076990764713538973L;
+//
+//	}
 }

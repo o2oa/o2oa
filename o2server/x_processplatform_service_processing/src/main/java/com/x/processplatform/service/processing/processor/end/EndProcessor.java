@@ -68,6 +68,7 @@ public class EndProcessor extends AbstractEndProcessor {
 			aeiObjects.getCreateWorkCompleteds().add(workCompleted);
 			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
 			aeiObjects.getHints().stream().forEach(o -> aeiObjects.getDeleteHints().add(o));
+			aeiObjects.getDocumentVersions().stream().forEach(o -> aeiObjects.getDeleteDocumentVersions().add(o));
 			aeiObjects.getTaskCompleteds().stream().forEach(o -> {
 				/* 已办的完成时间是不需要更新的 */
 				o.setCompleted(true);

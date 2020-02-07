@@ -73,12 +73,16 @@ class ActionListPrevWithFilter extends BaseAction {
 
 	public class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("结束年月")
 		private List<String> completedTimeMonthList;
 
+		@FieldDescribe("开始年月")
 		private List<String> startTimeMonthList;
 
+		@FieldDescribe("关键字")
 		private String key;
 
 		public List<String> getProcessList() {

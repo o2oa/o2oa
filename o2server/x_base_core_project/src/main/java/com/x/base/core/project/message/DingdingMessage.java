@@ -10,6 +10,7 @@ public class DingdingMessage extends GsonPropertyObject {
 	// dept_id_list String 可选 123,456 接收者的部门id列表，最大列表长度：20, 接收者是部门id下(包括子部门下的所有用户)
 	// to_all_user Boolean 可选 false 是否发送给企业全部用户(ISV不能设置true)
 	// msg Json 必须 {"msgtype":"text","text":{"content":"消息内容"}}
+	// msg markdown 消息格式 {"msgtype":"markdown","markdown":{"title":"消息内容", "text":"[这是一个链接](http://o2oa.net)"}}
 	// 消息内容，具体见“消息类型与数据格式”。最长不超过2048个字节。重复消息内容当日只能接收一次。
 
 	private Long agent_id = 0L;
@@ -29,6 +30,7 @@ public class DingdingMessage extends GsonPropertyObject {
 		// }
 		private String msgtype = "text";
 		private Text text = new Text();
+		private Markdown markdown = new Markdown();
 
 		public String getMsgtype() {
 			return msgtype;
@@ -46,6 +48,13 @@ public class DingdingMessage extends GsonPropertyObject {
 			this.text = text;
 		}
 
+		public Markdown getMarkdown() {
+			return markdown;
+		}
+
+		public void setMarkdown(Markdown markdown) {
+			this.markdown = markdown;
+		}
 	}
 
 	public static class Text {
@@ -60,6 +69,27 @@ public class DingdingMessage extends GsonPropertyObject {
 			this.content = content;
 		}
 
+	}
+
+	public static class Markdown {
+		private String title = "";//消息头 文字
+		private String text = "";//markdown格式的消息
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
 	}
 
 	public Long getAgent_id() {

@@ -23,6 +23,12 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
 
+/**
+ * 按应用统计当前用户可见的review数量
+ * 
+ * @author zhour
+ *
+ */
 class ActionCountWithApplication extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {

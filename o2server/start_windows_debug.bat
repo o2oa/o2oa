@@ -6,14 +6,14 @@ if exist "%~dp0local\update" (
 	if not exist "%~dp0config" (
 		mkdir "%~dp0config"
 	)
-	if not exist "%~dp0config/sample" (
-		mkdir "%~dp0config/sample"
+	if not exist "%~dp0configSample" (
+		mkdir "%~dp0configSample"
 	)
 	if not exist "%~dp0local" (
 		mkdir "%~dp0local"
 	)
-	if not exist "%~dp0local/sample" (
-		mkdir "%~dp0local/sample"
+	if not exist "%~dp0localSample" (
+		mkdir "%~dp0localSample"
 	)
 	if not exist "%~dp0jvm" (
 		mkdir "%~dp0jvm"

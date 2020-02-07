@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -55,8 +56,10 @@ class ActionLock extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		@FieldDescribe("是否成功")
 		private Boolean success;
 
+		@FieldDescribe("人员")
 		private String person;
 
 		public Boolean getSuccess() {
@@ -79,6 +82,7 @@ class ActionLock extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("所定值")
 		private String key;
 
 		public String getKey() {

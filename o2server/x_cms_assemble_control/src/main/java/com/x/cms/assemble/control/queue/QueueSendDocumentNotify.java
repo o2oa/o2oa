@@ -1,11 +1,4 @@
 package com.x.cms.assemble.control.queue;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -22,6 +15,12 @@ import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Document正式发布后，向所有的阅读者推送消息通知
@@ -97,8 +96,9 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 				}
 				logger.info("cms send publish notify for new document completed! " );
 				//}
+			}else{
+				logger.info("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
 			}
-			logger.info("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
 		}
 	}
 

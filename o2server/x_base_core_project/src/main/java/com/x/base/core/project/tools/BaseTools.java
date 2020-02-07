@@ -130,7 +130,8 @@ public class BaseTools {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
 		if ((!file.exists()) || file.isDirectory()) {
-			throw new Exception("can not get file with path:" + file.getAbsolutePath());
+			//throw new Exception("can not get file with path:" + file.getAbsolutePath());
+			return null;
 		}
 		return FileUtils.readFileToString(file, DefaultCharset.charset);
 	}

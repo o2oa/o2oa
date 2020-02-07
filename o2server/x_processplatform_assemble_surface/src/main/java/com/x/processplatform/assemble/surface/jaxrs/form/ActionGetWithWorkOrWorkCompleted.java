@@ -76,11 +76,8 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	private WoWorkCompletedForm workCompleted(Business business, WorkCompleted workCompleted) throws Exception {
 		WoWorkCompletedForm wo = new WoWorkCompletedForm();
-		if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
-			wo.setData(workCompleted.getFormData());
-		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
-			wo.setData(workCompleted.getFormMobileData());
-		} else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
+		/* 先使用当前库的表单,如果不存在使用储存的表单. */
+		if (StringUtils.isNotEmpty(workCompleted.getForm())) {
 			Form form = business.form().pick(workCompleted.getForm());
 			if (null != form) {
 				if (StringUtils.isNotEmpty(form.getData())) {
@@ -89,7 +86,26 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 					wo.setData(workCompleted.getFormMobileData());
 				}
 			}
+		} else if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
+			wo.setData(workCompleted.getFormData());
+		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
+			wo.setData(workCompleted.getFormMobileData());
 		}
+//		WoWorkCompletedForm wo = new WoWorkCompletedForm();
+//		if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
+//			wo.setData(workCompleted.getFormData());
+//		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
+//			wo.setData(workCompleted.getFormMobileData());
+//		} else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
+//			Form form = business.form().pick(workCompleted.getForm());
+//			if (null != form) {
+//				if (StringUtils.isNotEmpty(form.getData())) {
+//					wo.setData(form.getData());
+//				} else if (StringUtils.isNotEmpty(form.getMobileData())) {
+//					wo.setData(workCompleted.getFormMobileData());
+//				}
+//			}
+//		}
 		return wo;
 	}
 
