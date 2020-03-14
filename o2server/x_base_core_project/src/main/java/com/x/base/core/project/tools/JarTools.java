@@ -102,6 +102,50 @@ public class JarTools {
 		}
 	}
 
+	public static void unjar(File source, List<String> subs, File dist, boolean asNew) {
+		try (JarFile jarFile = new JarFile(source)) {
+			Enumeration<? extends JarEntry> entrys = jarFile.entries();
+			while (entrys.hasMoreElements()) {
+				JarEntry entry = entrys.nextElement();
+				String name = entry.getName();
+				if (name.length() < 2) {
+					continue;
+				}
+				if (subs != null) {
+					boolean flag = false;
+					for (String sub : subs) {
+						if (StringUtils.startsWith(name, sub)) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						continue;
+					}
+				}
+				if (entry.isDirectory()) {
+					File dir = new File(dist, name);
+					if (dir.exists() && name.indexOf("/") == name.lastIndexOf("/") && asNew) {
+						FileUtils.cleanDirectory(dir);
+					}
+					FileUtils.forceMkdir(dir);
+				} else {
+					File file = new File(dist, name);
+					if (file.exists()) {
+						file.delete();
+					}
+					if (!file.exists()) {
+						try (InputStream in = jarFile.getInputStream(entry)) {
+							FileUtils.copyInputStreamToFile(in, file);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static byte[] jar(File source) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				JarOutputStream jos = new JarOutputStream(baos)) {
@@ -217,6 +261,10 @@ public class JarTools {
 	public static void main(String[] args) throws Exception {
 		System.out.println(StringUtils.startsWith("asdfasdf", ""));
 		System.out.println(StringUtils.startsWith("asdfasdf", null));
+		File file = new File("/Users/chengjian/Desktop/temp/temp/cmcc.zip");
+		File dest = new File("/Users/chengjian/Desktop/temp/temp/update");
+		JarTools.unjar(file, "", dest, true);
+		System.out.println(StringUtils.startsWith("asdfasdf", ""));
 	}
 
 }

@@ -287,7 +287,7 @@ abstract class V2Base extends StandardJaxrsAction {
 		private static final long serialVersionUID = -3524184362067972066L;
 
 		static WrapCopier<Work, WoWork> copier = WrapCopierFactory.wo(Work.class, WoWork.class,
-				JpaObject.singularAttributeField(Work.class, true, true), null);
+				JpaObject.singularAttributeField(Work.class, true, false), null);
 
 	}
 
@@ -296,35 +296,35 @@ abstract class V2Base extends StandardJaxrsAction {
 		private static final long serialVersionUID = -5152927840647878662L;
 
 		static WrapCopier<WorkCompleted, WoWorkCompleted> copier = WrapCopierFactory.wo(WorkCompleted.class,
-				WoWorkCompleted.class, JpaObject.singularAttributeField(WorkCompleted.class, true, true), null);
+				WoWorkCompleted.class, JpaObject.singularAttributeField(WorkCompleted.class, true, false), null);
 	}
 
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 4162537947232564638L;
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				JpaObject.singularAttributeField(Task.class, true, true), null);
+				JpaObject.singularAttributeField(Task.class, true, false), null);
 	}
 
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = 5637570481005801834L;
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
-				WoTaskCompleted.class, JpaObject.singularAttributeField(TaskCompleted.class, true, true), null);
+				WoTaskCompleted.class, JpaObject.singularAttributeField(TaskCompleted.class, true, false), null);
 	}
 
 	public static class WoRead extends Read {
 
 		private static final long serialVersionUID = 2454895033462488060L;
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				JpaObject.singularAttributeField(Read.class, true, true), null);
+				JpaObject.singularAttributeField(Read.class, true, false), null);
 	}
 
 	public static class WoReadCompleted extends ReadCompleted {
 
 		private static final long serialVersionUID = 2480518072294759597L;
 		static WrapCopier<ReadCompleted, WoReadCompleted> copier = WrapCopierFactory.wo(ReadCompleted.class,
-				WoReadCompleted.class, JpaObject.singularAttributeField(ReadCompleted.class, true, true), null);
+				WoReadCompleted.class, JpaObject.singularAttributeField(ReadCompleted.class, true, false), null);
 	}
 
 	public static abstract class AbstractWo extends Review {

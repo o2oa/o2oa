@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import com.x.base.core.project.jaxrs.sysresource.SysResourceAction;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import com.x.base.core.project.jaxrs.cache.CacheAction;
@@ -21,6 +22,7 @@ public abstract class AbstractActionApplication extends Application {
 		classes.add(CacheAction.class);
 		classes.add(LoggerAction.class);
 		classes.add(FireScheduleAction.class);
+		classes.add(SysResourceAction.class);
 		// providers
 		classes.add(MessageBodyReaderImpl.class);
 		classes.add(MultiPartFeature.class);

@@ -23,7 +23,7 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
 				context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
+			if (BooleanUtils.isTrue(Config.query().getCrawlWorkCompleted().getEnable())) {
 				context.schedule(CrawlWorkCompleted.class, Config.query().getCrawlWorkCompleted().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.query().getCrawlCms().getEnable())) {

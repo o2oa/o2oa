@@ -3,6 +3,8 @@ package com.x.cms.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -27,7 +29,7 @@ public class QueryViewService {
 		}
 	}
 	
-	public List<String> listColumnsFormQueryView( String id ) throws Exception{
+	public List<String> listColumnsFromQueryView( String id ) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			View view = emc.find( id, View.class );
 			if (null == view) {
@@ -43,7 +45,7 @@ public class QueryViewService {
 		}
 	}
 	
-	public List<String> listColumnsFormQueryView( View view ) throws Exception{
+	public List<String> listColumnsFromQueryView( View view ) throws Exception{
 		if (null == view) {
 			throw new Exception("view is null");
 		}
@@ -52,6 +54,24 @@ public class QueryViewService {
 		List<String> columnNames = new ArrayList<>();
 		for (SelectEntry o : selectEntries ) {
 			columnNames.add( o.column );
+		}
+		return columnNames;
+	}
+	
+	public List<String> listColumnPathsFromQueryView( View view ) throws Exception{
+		if (null == view) {
+			throw new Exception("view is null");
+		}
+		CmsPlan cmsPlan = gson.fromJson( view.getData(), CmsPlan.class );
+		SelectEntries selectEntries = cmsPlan.selectList;
+		List<String> columnNames = new ArrayList<>();
+		for (SelectEntry o : selectEntries ) {
+			if( o.path != null ) {
+				o.path = o.path.trim();
+			}
+			if( StringUtils.isNotEmpty(o.path)) {
+				columnNames.add( o.path );
+			}
 		}
 		return columnNames;
 	}

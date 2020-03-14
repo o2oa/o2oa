@@ -154,6 +154,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 
 		@FieldDescribe("主题Id")
 		private String subjectId = null;
+		
 		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 
 		public String getSubjectId() {

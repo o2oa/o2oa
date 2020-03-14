@@ -203,7 +203,7 @@ class TaskListService {
 	}
 	
 	/**
-	 * 创建默认的工作任务列表
+	 * 创建默认的工作任务列表（四个）
 	 * @param emc
 	 * @param person
 	 * @param taskGroupId
@@ -215,35 +215,42 @@ class TaskListService {
 		TaskGroup taskGroup = emc.find( taskGroupId, TaskGroup.class );
 		
 		TaskList taskList = null;
+		
 		if( taskGroup != null ) {
 			emc.beginTransaction( TaskList.class );
 			
-			taskList = new TaskList();		
-			taskList.setId( TaskList.createId() );
-			taskList.setProject( taskGroup.getProject() );
-			taskList.setTaskGroup( taskGroupId );
-			taskList.setMemo( "" );
-			taskList.setName( "任务列表1" );
-			taskList.setOrder( 1 );
-			taskList.setCreatorPerson( "SYSTEM" );
-			taskList.setOwner( person );
+			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已规划的工作", 1, "SYSTEM", person, "" );
 			emc.persist( taskList, CheckPersistType.all );
 			taskLists.add( taskList );
 			
-			taskList = new TaskList();		
-			taskList.setId( TaskList.createId() );
-			taskList.setProject( taskGroup.getProject() );
-			taskList.setTaskGroup( taskGroupId );
-			taskList.setMemo( "" );
-			taskList.setName( "任务列表2" );
-			taskList.setOrder( 2 );
-			taskList.setCreatorPerson( "SYSTEM" );
-			taskList.setOwner( person );
+			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已分解的任务", 21, "SYSTEM", person, "" );
+			emc.persist( taskList, CheckPersistType.all );
+			taskLists.add( taskList );
+			
+			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "进行中的任务", 3, "SYSTEM", person, "" );
+			emc.persist( taskList, CheckPersistType.all );
+			taskLists.add( taskList );
+			
+			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已完成的任务", 4, "SYSTEM", person, "" );
 			emc.persist( taskList, CheckPersistType.all );
 			taskLists.add( taskList );
 			
 			emc.commit();
 		}
+		
 		return taskLists;
+	}
+	
+	private TaskList composeTaskListObject( String projectId, String taskGroupId, String listName, int orderNum, String creatorName, String owner, String memo ) {
+		TaskList taskList = new TaskList();		
+		taskList.setId( TaskList.createId() );
+		taskList.setProject( projectId );
+		taskList.setTaskGroup( taskGroupId );
+		taskList.setMemo( memo );
+		taskList.setName( listName );
+		taskList.setOrder( orderNum );
+		taskList.setCreatorPerson( creatorName );
+		taskList.setOwner( owner );
+		return taskList;
 	}
 }

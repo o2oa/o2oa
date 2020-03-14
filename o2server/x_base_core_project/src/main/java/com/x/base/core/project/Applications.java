@@ -282,6 +282,17 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
+	public Application findOneAppByNode(String node) throws Exception {
+		for(List<Application> apps : this.values()){
+			for (Application app : apps){
+				if(app.getNode().equals(node)){
+					return app;
+				}
+			}
+		}
+		return null;
+	}
+
 	public Application randomWithWeight(String className) throws Exception {
 		List<Application> list = this.get(className);
 		if (ListTools.isNotEmpty(list)) {

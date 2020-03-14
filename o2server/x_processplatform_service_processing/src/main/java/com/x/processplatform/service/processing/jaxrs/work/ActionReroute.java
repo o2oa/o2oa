@@ -22,7 +22,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -35,6 +37,7 @@ class ActionReroute extends BaseAction {
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
@@ -52,33 +55,46 @@ class ActionReroute extends BaseAction {
 					if (null == work) {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
-
 					Activity activity = business.element().getActivity(activityId);
 					if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
 						throw new ExceptionProcessNotMatch();
 					}
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(Task.class);
-					work.setForceRoute(true);
+					// work.setForceRoute(true);
+					work.setSplitting(false);
+					work.setSplitToken("");
+					work.getSplitTokenList().clear();
+					work.setSplitValue("");
 					work.setDestinationActivity(activity.getId());
 					work.setDestinationActivityType(activity.getActivityType());
 					work.setDestinationRoute("");
 					work.setDestinationRouteName("");
+					work.getProperties().getManualForceTaskIdentityList().clear();
+					work.getProperties().getManualForceTaskIdentityList().addAll(wi.getManualForceTaskIdentityList());
 					emc.check(work, CheckPersistType.all);
 					removeTask(business, work);
+					removeOtherWork(business, work);
+					removeOtherWorkLog(business, work);
 					emc.commit();
+					return "";
 				}
-				return "";
 			}
 		};
 
 		ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
-		wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", id, "processing"), null, job).getData(Wo.class);
+		wo = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", id, "processing"), new ProcessingAttributes(), job)
+				.getData(Wo.class);
 
 		result.setData(wo);
 		return result;
+	}
+
+	public static class Wi extends ProcessingAttributes {
+
 	}
 
 	public static class Wo extends WoId {
@@ -97,4 +113,31 @@ class ActionReroute extends BaseAction {
 			}
 		});
 	}
+
+	private void removeOtherWork(Business business, Work work) throws Exception {
+		List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
+				work.getJob(), Work.id_FIELDNAME, work.getId());
+		os.stream().forEach(o -> {
+			try {
+				business.entityManagerContainer().remove(o, CheckRemoveType.all);
+				MessageFactory.work_delete(o);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void removeOtherWorkLog(Business business, Work work) throws Exception {
+		List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
+				WorkLog.job_FIELDNAME, work.getJob(), WorkLog.connected_FIELDNAME, false,
+				WorkLog.fromActivity_FIELDNAME, work.getActivity());
+		os.stream().forEach(o -> {
+			try {
+				business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
 }

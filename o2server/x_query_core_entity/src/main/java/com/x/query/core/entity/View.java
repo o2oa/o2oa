@@ -247,6 +247,14 @@ public class View extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Integer pageSize;
 
+	public static final String toolbar_FIELDNAME = "toolbar";
+	@FieldDescribe("工具条.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + toolbar_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String toolbar;
+
 	public String getName() {
 		return name;
 	}
@@ -383,4 +391,11 @@ public class View extends SliceJpaObject {
 		this.pageSize = pageSize;
 	}
 
+	public String getToolbar() {
+		return toolbar;
+	}
+
+	public void setToolbar(String toolbar) {
+		this.toolbar = toolbar;
+	}
 }

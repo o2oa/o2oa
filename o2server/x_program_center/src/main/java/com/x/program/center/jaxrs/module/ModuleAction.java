@@ -227,4 +227,26 @@ public class ModuleAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "分发上传的静态资源", action = ActionDispatchResource.class)
+	@POST
+	@Path("dispatch/resource/as/new/{asNew}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void dispatchResource(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("覆盖类型：true删除原文件然后上传，false覆盖原文件") @PathParam("asNew") Boolean asNew,
+								 @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+								 @JaxrsParameterDescribe("附件存放目录(zip文件可以为空，其他不能为空)") @FormDataParam("filePath") String filePath,
+								 @JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
+								 @JaxrsParameterDescribe("上传zip文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionDispatchResource.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDispatchResource().execute(effectivePerson, asNew, fileName, filePath, bytes, disposition);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

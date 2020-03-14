@@ -58,7 +58,7 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 						&& StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken()))
 				.findFirst().orElse(null);
 		mainWorkLog.setSplitting(aeiObjects.getWork().getSplitting());
-		mainWorkLog.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
+		mainWorkLog.getProperties().setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
 		mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
 		mainWorkLog.setSplitValue(aeiObjects.getWork().getSplitValue());
 		aeiObjects.getUpdateWorkLogs().add(mainWorkLog);

@@ -195,7 +195,7 @@ public class Context extends AbstractContext {
 		context.contextPath = servletContext.getContextPath();
 		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
 		context.module = context.clazz.getAnnotation(Module.class);
-		context.name = getName(context.clazz);
+		context.name = context.module.name();
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();

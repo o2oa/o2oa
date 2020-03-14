@@ -16,7 +16,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath2.Wo;
 
 class ActionUpdateWithWorkPath3 extends BaseAction {
 

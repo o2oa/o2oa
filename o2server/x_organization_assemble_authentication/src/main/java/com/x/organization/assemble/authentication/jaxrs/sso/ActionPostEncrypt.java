@@ -9,6 +9,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Sso;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -52,8 +53,11 @@ class ActionPostEncrypt extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("客户标识")
 		private String client;
+		@FieldDescribe("用户标识")
 		private String credential;
+		@FieldDescribe("加密密钥")
 		private String key;
 
 		public String getClient() {
@@ -79,8 +83,6 @@ class ActionPostEncrypt extends BaseAction {
 		public void setCredential(String credential) {
 			this.credential = credential;
 		}
-
- 
 
 	}
 

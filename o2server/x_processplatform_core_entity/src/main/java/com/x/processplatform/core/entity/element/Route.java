@@ -37,6 +37,7 @@ public class Route extends SliceJpaObject {
 
 	public static final String TYPE_NORMAL = "normal";
 	public static final String TYPE_APPENDTASK = "appendTask";
+	public static final String TYPE_BACK = "back";
 
 	public static final String APPENDTASKIDENTITYTYPE_SCRIPT = "script";
 	public static final String APPENDTASKIDENTITYTYPE_CONFIG = "config";

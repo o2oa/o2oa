@@ -114,6 +114,26 @@ public class IdentityFactory {
 		return ActionGetWithPersonWithUnitObject.execute(context, person, unit);
 	}
 
+	/** 根据个人获取主身份 */
+	public String getMajorWithPerson(String person) throws Exception {
+		List<String> os = ActionListMajorWithPerson.execute(context, ListTools.toList(person));
+		if (ListTools.isEmpty(os)) {
+			return "";
+		} else {
+			return os.get(0);
+		}
+	}
+
+	/** 根据个人获取主身份 */
+	public Identity getMajorWithPersonObject(String person) throws Exception {
+		List<? extends Identity> os = ActionListMajorWithPersonObject.execute(context, ListTools.toList(person));
+		if (ListTools.isEmpty(os)) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
 	/** 根据个人和组织获取身份 */
 	public List<String> listWithPersonUnit(Collection<String> units, Collection<String> people) throws Exception {
 		return ActionListWithPersonUnit.execute(context, units, people);

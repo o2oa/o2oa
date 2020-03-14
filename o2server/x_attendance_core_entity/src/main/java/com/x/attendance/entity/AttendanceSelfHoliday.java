@@ -1,29 +1,14 @@
 package com.x.attendance.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @ContainerEntity
 @Entity
@@ -125,6 +110,15 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	@Column(name = "xdescription", length = JpaObject.length_255B)
 	@CheckPersist(allowEmpty = true)
 	private String description;
+
+	@FieldDescribe("录入批次标识：可以填写流程workId，jobId, CMS的文档ID，或者自定义信息，数据保存时会先根据batchFlag做删除，然后再保存新的数据")
+	@Column(name = "xbatchFlag", length = JpaObject.length_id)
+	@CheckPersist(allowEmpty = true)
+	private String batchFlag;
+
+	public String getBatchFlag() { return this.batchFlag; }
+
+	public void setBatchFlag(final String batchFlag) { this.batchFlag = batchFlag; }
 
 	public String getUnitName() {
 		return unitName;

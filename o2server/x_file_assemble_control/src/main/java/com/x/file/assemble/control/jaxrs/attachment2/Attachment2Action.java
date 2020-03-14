@@ -422,4 +422,22 @@ public class Attachment2Action extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "预览文件,输出html或pdf文件头信息，支持word、ppt、excel、pdf类型文件", action = ActionOfficePreview.class)
+	@GET
+	@Path("{id}/office/preview/type/{type}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void officePreview(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+							  @JaxrsParameterDescribe("输出文件类型：html|pdf") @PathParam("type") String type) {
+		ActionResult<ActionOfficePreview.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOfficePreview().execute(effectivePerson, id, type);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

@@ -19,7 +19,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -103,10 +105,11 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	/* 更新运行方法 */
 
 	public ReadCompleted() {
-
+		this.properties = new ReadCompletedProperties();
 	}
 
 	public ReadCompleted(Read read, Date completedTime, Long duration) {
+		this();
 		this.job = read.getJob();
 		this.work = read.getWork();
 		this.workCompleted = read.getWorkCompleted();
@@ -142,7 +145,12 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		this.copyProjectionFields(read);
 	}
 
-	/** 内容 */
+	public ReadCompletedProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new ReadCompletedProperties();
+		}
+		return this.properties;
+	}
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务.")
@@ -383,6 +391,14 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ReadCompletedProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1116,6 +1132,10 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setCurrentActivityName(String currentActivityName) {
 		this.currentActivityName = currentActivityName;
+	}
+
+	public void setProperties(ReadCompletedProperties properties) {
+		this.properties = properties;
 	}
 
 }

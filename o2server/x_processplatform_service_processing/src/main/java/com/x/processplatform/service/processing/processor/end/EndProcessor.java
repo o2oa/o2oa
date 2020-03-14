@@ -54,7 +54,6 @@ public class EndProcessor extends AbstractEndProcessor {
 			this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeHint(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
 			aeiObjects.getWorkLogs().stream()
@@ -67,7 +66,6 @@ public class EndProcessor extends AbstractEndProcessor {
 			workCompleted.setAllowRollback(end.getAllowRollback());
 			aeiObjects.getCreateWorkCompleteds().add(workCompleted);
 			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
-			aeiObjects.getHints().stream().forEach(o -> aeiObjects.getDeleteHints().add(o));
 			aeiObjects.getDocumentVersions().stream().forEach(o -> aeiObjects.getDeleteDocumentVersions().add(o));
 			aeiObjects.getTaskCompleteds().stream().forEach(o -> {
 				/* 已办的完成时间是不需要更新的 */
@@ -109,7 +107,7 @@ public class EndProcessor extends AbstractEndProcessor {
 			aeiObjects.getWorkLogs().stream().forEach(o -> {
 				o.setSplitting(false);
 				o.setSplitToken("");
-				o.setSplitTokenList(new ArrayList<String>());
+				o.getProperties().setSplitTokenList(new ArrayList<String>());
 				o.setSplitValue("");
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());

@@ -1,8 +1,12 @@
 package com.x.attendance.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.x.attendance.assemble.control.AbstractFactory;
+import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.selfholiday.WrapInFilter;
+import com.x.attendance.entity.AttendanceSelfHoliday;
+import com.x.attendance.entity.AttendanceSelfHoliday_;
+import com.x.base.core.project.exception.ExceptionWhen;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -10,15 +14,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.attendance.assemble.control.AbstractFactory;
-import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.jaxrs.selfholiday.WrapInFilter;
-import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.attendance.entity.AttendanceSelfHoliday_;
-import com.x.base.core.project.exception.ExceptionWhen;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 /**
  * 系统配置信息表基础功能服务类
  * @author liyi
@@ -54,6 +52,18 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 		CriteriaQuery<AttendanceSelfHoliday> cq = cb.createQuery(AttendanceSelfHoliday.class);
 		Root<AttendanceSelfHoliday> root = cq.from(AttendanceSelfHoliday.class);
 		Predicate p = root.get(AttendanceSelfHoliday_.id).in(ids);
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<AttendanceSelfHoliday> listWithBatchFlag( String batchFlag ) throws Exception {
+		if( StringUtils.isEmpty( batchFlag )){
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceSelfHoliday> cq = cb.createQuery(AttendanceSelfHoliday.class);
+		Root<AttendanceSelfHoliday> root = cq.from(AttendanceSelfHoliday.class);
+		Predicate p = cb.equal( root.get(AttendanceSelfHoliday_.batchFlag), batchFlag );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 

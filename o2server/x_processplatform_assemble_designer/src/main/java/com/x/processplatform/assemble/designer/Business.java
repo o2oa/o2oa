@@ -7,7 +7,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.designer.content.factory.AttachmentFactory;
-import com.x.processplatform.assemble.designer.content.factory.HintFactory;
 import com.x.processplatform.assemble.designer.content.factory.ItemFactory;
 import com.x.processplatform.assemble.designer.content.factory.ReadCompletedFactory;
 import com.x.processplatform.assemble.designer.content.factory.ReadFactory;
@@ -353,15 +352,6 @@ public class Business {
 			this.review = new ReviewFactory(this);
 		}
 		return review;
-	}
-
-	private HintFactory hint;
-
-	public HintFactory hint() throws Exception {
-		if (null == this.hint) {
-			this.hint = new HintFactory(this);
-		}
-		return hint;
 	}
 
 	private SerialNumberFactory serialNumber;

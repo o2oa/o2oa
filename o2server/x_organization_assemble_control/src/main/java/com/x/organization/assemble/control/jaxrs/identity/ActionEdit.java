@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,6 +21,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
@@ -52,6 +54,10 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Identity.class);
 			emc.beginTransaction(Person.class);
 			identity = emc.find(identity.getId(), Identity.class);
+			
+			Gson gsontool = new Gson();
+			String strIdentity = gsontool.toJson(identity);
+			
 			Wi.copier.copy(wi, identity);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
@@ -77,6 +83,12 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			ApplicationCache.notify(Identity.class);
 			ApplicationCache.notify(Person.class);
+			
+			/**创建 组织变更org消息通信 */
+			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("modfiy", "identity",strIdentity, identity, effectivePerson);
+			
+			
 			Wo wo = new Wo();
 			wo.setId(identity.getId());
 			result.setData(wo);

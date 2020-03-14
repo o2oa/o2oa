@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -332,6 +331,35 @@ public class Begin extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
+
+	@IdReference(Script.class)
+	@FieldDescribe("生成displayLog脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScript;
+
+	@FieldDescribe("生成displayLog脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + displayLogScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScriptText;
+
+	public String getDisplayLogScript() {
+		return displayLogScript;
+	}
+
+	public void setDisplayLogScript(String displayLogScript) {
+		this.displayLogScript = displayLogScript;
+	}
+
+	public String getDisplayLogScriptText() {
+		return displayLogScriptText;
+	}
+
+	public void setDisplayLogScriptText(String displayLogScriptText) {
+		this.displayLogScriptText = displayLogScriptText;
+	}
 
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)

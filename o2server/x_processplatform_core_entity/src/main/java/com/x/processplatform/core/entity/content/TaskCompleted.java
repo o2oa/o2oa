@@ -20,7 +20,9 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -32,7 +34,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 
 /**
@@ -52,6 +53,32 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	private static final long serialVersionUID = 3290580054829723177L;
 	private static final String TABLE = PersistenceProperties.Content.TaskCompleted.table;
+
+	/* 继续流转 */
+//	private static final String PROCESSINGTYPE_processing = "processing";
+	public static final String PROCESSINGTYPE_TASK = "task";
+	/* 开始 */
+	public static final String PROCESSINGTYPE_START = "start";
+	/* 调度 */
+	public static final String PROCESSINGTYPE_REROUTE = "reroute";
+	/* 召回 */
+	public static final String PROCESSINGTYPE_RETRACT = "retract";
+	/* 回滚 */
+	public static final String PROCESSINGTYPE_ROLLBACK = "rollback";
+	/* 重置处理人 */
+	public static final String PROCESSINGTYPE_RESET = "reset";
+	/* 智能流转 */
+	public static final String PROCESSINGTYPE_SAMETARGET = "sameTarget";
+	/* 超时流转 */
+	public static final String PROCESSINGTYPE_EXPIRE = "expire";
+	/* 管理员流转 */
+	public static final String PROCESSINGTYPE_CONTROL = "control";
+	/* 添加处理人 */
+	public static final String PROCESSINGTYPE_APPENDTASK = "appendTask";
+	/* 被添加处理人 */
+	public static final String PROCESSINGTYPE_BEAPPENDEDTASK = "beAppendedTask";
+	/* 授权,授权给他人处理 */
+	public static final String PROCESSINGTYPE_EMPOWER = "empower";
 
 	public String getId() {
 		return id;
@@ -87,14 +114,16 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			this.opinionLob = null;
 		}
 		if (Objects.isNull(this.processingType)) {
-			this.processingType = ProcessingType.processing;
+			this.processingType = PROCESSINGTYPE_TASK;
 		}
 		switch (this.processingType) {
-		case appendTask:
-		case beAppendedTask:
-		case reroute:
-		case retract:
-		case empower:
+		case PROCESSINGTYPE_APPENDTASK:
+		case PROCESSINGTYPE_BEAPPENDEDTASK:
+		case PROCESSINGTYPE_REROUTE:
+		case PROCESSINGTYPE_RETRACT:
+		case PROCESSINGTYPE_ROLLBACK:
+		case PROCESSINGTYPE_EMPOWER:
+		case PROCESSINGTYPE_RESET:
 			this.joinInquire = false;
 			break;
 		default:
@@ -134,10 +163,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	/* 更新运行方法 */
 
 	public TaskCompleted() {
+		this.properties = new TaskCompletedProperties();
 	}
 
 	/* 用于相同处理人流转时使用的创建TaskCompleted */
 	public TaskCompleted(Work work, Route route, TaskCompleted taskCompleted) {
+		this();
 		Date now = new Date();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -172,7 +203,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.task = "";
 		this.duration = 0L;
 		// this.manualMode = manual.getManualMode();
-		this.processingType = ProcessingType.sameTarget;
+		this.processingType = PROCESSINGTYPE_SAMETARGET;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
@@ -180,6 +211,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	/* 用于相同处理人流转时使用的创建TaskCompleted */
 	public TaskCompleted(Work work) {
+		this();
 		Date now = new Date();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -216,7 +248,8 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.copyProjectionFields(work);
 	}
 
-	public TaskCompleted(Task task, ProcessingType processingType, Date completedTime, Long duration) {
+	public TaskCompleted(Task task, String processingType, Date completedTime, Long duration) {
+		this();
 		this.job = task.getJob();
 		this.setTitle(task.getTitle());
 		this.startTime = task.getStartTime();
@@ -246,6 +279,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.routeName = task.getRouteName();
 		this.mediaOpinion = task.getMediaOpinion();
 		this.task = task.getId();
+		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
 		if ((null != this.expireTime) && (expireTime.before(completedTime))) {
 			this.expired = true;
 		} else {
@@ -263,6 +297,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
+	}
+
+	public TaskCompletedProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new TaskCompletedProperties();
+		}
+		return this.properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -534,13 +575,20 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = false)
 	private Long duration;
 
+//	public static final String processingType_FIELDNAME = "processingType";
+//	@FieldDescribe("流程流转类型")
+//	@Enumerated(EnumType.STRING)
+//	@Column(length = ProcessingType.length, name = ColumnNamePrefix + processingType_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + processingType_FIELDNAME)
+//	@CheckPersist(allowEmpty = false)
+//	private ProcessingType processingType;
+
 	public static final String processingType_FIELDNAME = "processingType";
 	@FieldDescribe("流程流转类型")
-	@Enumerated(EnumType.STRING)
-	@Column(length = ProcessingType.length, name = ColumnNamePrefix + processingType_FIELDNAME)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + processingType_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + processingType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private ProcessingType processingType;
+	private String processingType;
 
 	public static final String retractTime_FIELDNAME = "retractTime";
 	@FieldDescribe("retract时间.")
@@ -595,13 +643,21 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Boolean joinInquire;
 
-	public static final String nextTaskIdentityListText_FIELDNAME = "nextTaskIdentityListText";
-	@FieldDescribe("下一环节处理人记录,记录前台处理待办产生的提示.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + nextTaskIdentityListText_FIELDNAME)
+//	public static final String nextTaskIdentityListText_FIELDNAME = "nextTaskIdentityListText";
+//	@FieldDescribe("下一环节处理人记录,记录前台处理待办产生的提示.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + nextTaskIdentityListText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String nextTaskIdentityListText;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String nextTaskIdentityListText;
+	private TaskCompletedProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1037,13 +1093,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.startTimeMonth = startTimeMonth;
 	}
 
-	public ProcessingType getProcessingType() {
-		return processingType;
-	}
-
-	public void setProcessingType(ProcessingType processingType) {
-		this.processingType = processingType;
-	}
+//	public ProcessingType getProcessingType() {
+//		return processingType;
+//	}
+//
+//	public void setProcessingType(ProcessingType processingType) {
+//		this.processingType = processingType;
+//	}
 
 	public String getSerial() {
 		return serial;
@@ -1433,12 +1489,16 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.empowerFromIdentity = empowerFromIdentity;
 	}
 
-	public String getNextTaskIdentityListText() {
-		return nextTaskIdentityListText;
+	public void setProperties(TaskCompletedProperties properties) {
+		this.properties = properties;
 	}
 
-	public void setNextTaskIdentityListText(String nextTaskIdentityListText) {
-		this.nextTaskIdentityListText = nextTaskIdentityListText;
+	public String getProcessingType() {
+		return processingType;
+	}
+
+	public void setProcessingType(String processingType) {
+		this.processingType = processingType;
 	}
 
 }

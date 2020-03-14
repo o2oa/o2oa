@@ -52,6 +52,7 @@ var apps = [
     {"folder": "x_component_ForumPerson",                   "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_ForumSearch",                   "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_ForumSection",                  "tasks": ["move", "min", "clean", "watch"]},
+    {"folder": "x_component_Homepage",                      "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_HotArticle",                    "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_IM",                            "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_LogViewer",                     "tasks": ["move", "min", "clean", "watch"]},
@@ -432,4 +433,4 @@ gulp.task("o2:new-v:o2", function () {
 });
 gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
 
-gulp.task("default", gulp.series("clean", gulp.series(minTasks, moveTasks, 'index'), "o2:new-v"));
+gulp.task("default", gulp.series("clean", gulp.parallel(minTasks, moveTasks, 'index'), "o2:new-v"));

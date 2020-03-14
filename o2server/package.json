@@ -4,7 +4,7 @@
   "description": "a javascript library",
   "main": "o2.js",
   "scripts": {
-    "test": "gulp",
+    "build": "gulp",
     "report-coverage": "codecov"
   },
   "repository": {

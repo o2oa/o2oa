@@ -73,8 +73,8 @@ class ActionSelect extends BaseAction {
 
 		//添加CategoryExt信息导出内容逻辑
 		if( ListTools.isNotEmpty( wo.getCategoryInfoList() )){
-			CategoryExt categoryExt = null;
-			WrapCategoryExt wrapCategoryExt = null;
+//			CategoryExt categoryExt = null;
+//			WrapCategoryExt wrapCategoryExt = null;
 			for( WrapCategoryInfo wrapCategoryInfo : wo.getCategoryInfoList() ){
 				//查询Category对应的CategoryExt
 				wrapCategoryInfo.setCategoryExt( WrapCategoryExt.outCopier.copy( business.entityManagerContainer().find( wrapCategoryInfo.getId(), CategoryExt.class )));

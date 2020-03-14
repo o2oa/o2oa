@@ -9,6 +9,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.queue.DataImportStatus;
 import com.x.cms.common.excel.reader.DocumentExcelReader;
@@ -61,10 +62,14 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			result.error( exception );
 		}
 		
-		if( StringUtils.isNotEmpty( json_data ) ){
+		
+		if( StringUtils.isEmpty( json_data ) ){
+			json_data = "{}";			
+		}
+		try {
 			gson = XGsonBuilder.instance();
 			wi = gson.fromJson(json_data, Wi.class );
-		}else {
+		}catch( Exception e ) {
 			check = false;
 			Exception exception = new ExceptionDocumentInfoProcess( "参数不正确：json_data：" + json_data );
 			result.error( exception );
@@ -142,7 +147,12 @@ public class ActionPersistImportDataExcel extends BaseAction {
 		
 		if( check ){
 			try {
-				propertyNames = queryViewService.listColumnsFormQueryView(view);
+				propertyNames = queryViewService.listColumnPathsFromQueryView(view);
+				if( ListTools.isEmpty( propertyNames )) {
+					check = false;
+					Exception exception = new ExceptionDocumentInfoProcess( "请检查导入视图中的列配置，数据路径path必须配置才可以导入。VIEWID:" + viewId );
+					result.error( exception );
+				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess( e, "根据VIEWID查询数据视图中所有的列信息时发生异常。VIEWID:" + viewId );
@@ -156,6 +166,9 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			template.setAppId( categoryInfo.getAppId() );
 			template.setAppName( categoryInfo.getAppName() );
 			template.setAppAlias( appInfo.getAppAlias() );
+			if( StringUtils.isEmpty( template.getAppAlias() )) {
+				template.setAppAlias(appInfo.getAppName() );
+			}
 			template.setCategoryId(categoryId);
 			template.setCategoryName( categoryInfo.getCategoryName() );
 			template.setCategoryAlias( categoryInfo.getCategoryAlias() );
@@ -163,6 +176,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			template.setFormName( categoryInfo.getFormName() );
 			template.setReadFormId( categoryInfo.getReadFormId() );
 			template.setReadFormName( categoryInfo.getReadFormName() );
+			template.setDocStatus( "published" );
 			template.setPublishTime( new Date());
 			
 			if( StringUtils.isNotEmpty( wi.getTitle() ) && !"null".equalsIgnoreCase( wi.getTitle() )) {
@@ -194,7 +208,7 @@ public class ActionPersistImportDataExcel extends BaseAction {
 					template.setCreatorTopUnitName( "xadmin" );
 				}else {
 					try {
-						template.setCreatorIdentity( userManagerService.getIdentityWithPerson(personName) );
+						template.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson(personName) );
 						template.setCreatorPerson(  personName );
 						template.setCreatorUnitName( userManagerService.getUnitNameWithPerson(personName));
 						template.setCreatorTopUnitName( userManagerService.getTopUnitNameWithPerson(personName) );
@@ -240,8 +254,8 @@ public class ActionPersistImportDataExcel extends BaseAction {
 		@FieldDescribe( "新建数据的文档标题（前缀），选填" )
 		private String title = null;
 		
-		@FieldDescribe( "新建数据的文档标题（前缀）后面的数据（列名），选填" )
-		private String title_column = null;
+		@FieldDescribe( "新建数据的文档标题列索引，默认为0" )
+		private int titleColIndex = 0;
 		
 		@FieldDescribe( "创建者身份，选填." )
 		private String identity = null;
@@ -251,13 +265,13 @@ public class ActionPersistImportDataExcel extends BaseAction {
 		
 		@FieldDescribe( "传入的数据，导入的所有文档都会有." )
 		private List<WiParam> wiParameters = null;
-
-		public String getTitle_column() {
-			return title_column;
+		
+		public int getTitleColIndex() {
+			return titleColIndex;
 		}
 
-		public void setTitle_column(String title_column) {
-			this.title_column = title_column;
+		public void setTitleColIndex(int titleColIndex) {
+			this.titleColIndex = titleColIndex;
 		}
 
 		public String getTitle() {

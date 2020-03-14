@@ -1,5 +1,6 @@
 package com.x.server.console.action;
 
+import java.sql.DriverManager;
 import java.util.Date;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -46,7 +47,9 @@ public class ActionCompactData {
 			logger.print("data server is running.");
 			return false;
 		}
-		//Class.forName(SlicePropertiesBuilder.driver_h2).newInstance();
+		/* 需要注入驱动程序 */
+		// Class.forName(SlicePropertiesBuilder.driver_h2).newInstance();
+		DriverManager.registerDriver(new org.h2.Driver());
 		logger.print("compact data start at {}.", DateTools.format(start));
 		String dir = StringUtils.replace(Config.base(), "\\", "/") + "/local/repository/data";
 		String url = "jdbc:h2:" + dir + "/X;FILE_LOCK=NO";

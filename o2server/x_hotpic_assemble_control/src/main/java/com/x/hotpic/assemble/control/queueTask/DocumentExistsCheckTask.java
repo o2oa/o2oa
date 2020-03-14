@@ -17,7 +17,7 @@ public class DocumentExistsCheckTask extends AbstractQueue<DocumentCheckQueue> {
 	/**
 	 * 检查信息是否存在，如果不存在，则进行数据删除
 	 * 
-	 * @param wrapOutHotPictureInfo
+	 * @param documentCheckQueue
 	 * @throws Exception
 	 */
 	protected void execute( DocumentCheckQueue documentCheckQueue ) throws Exception {

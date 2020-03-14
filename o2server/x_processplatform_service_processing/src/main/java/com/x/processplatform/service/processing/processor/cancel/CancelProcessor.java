@@ -8,24 +8,14 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Hint;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
-import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class CancelProcessor extends AbstractCancelProcessor {
@@ -47,30 +37,27 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	public List<Work> executing(AeiObjects aeiObjects, Cancel cancel) throws Exception {
-		aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteTasks().add(o));
-		aeiObjects.getTaskCompleteds().stream()
-				.filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteTaskCompleteds().add(o));
-		aeiObjects.getReads().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteReads().add(o));
-		aeiObjects.getReadCompleteds().stream()
-				.filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteReadCompleteds().add(o));
-		aeiObjects.getReviews().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteReviews().add(o));
-		aeiObjects.getWorkLogs().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteWorkLogs().add(o));
-		aeiObjects.getHints().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteHints().add(o));
-		/* 附件删除单独处理,需要删除Attachment的二进制文件 */
-		aeiObjects.getAttachments().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
-				.forEach(o -> aeiObjects.getDeleteAttachments().add(o));
-		if (aeiObjects.getWorks().size() == 1) {
-			/** 如果只有一份数据，没有拆分，那么删除Data */
+		/* 唯一work处理 */
+		if (aeiObjects.getWorks().size() > 1) {
+			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
+			aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
+					.forEach(o -> aeiObjects.getDeleteTasks().add(o));
+		} else {
+			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
+			aeiObjects.getTaskCompleteds().stream().forEach(o -> aeiObjects.getDeleteTaskCompleteds().add(o));
+			aeiObjects.getReads().stream().forEach(o -> aeiObjects.getDeleteReads().add(o));
+			aeiObjects.getReadCompleteds().stream().forEach(o -> aeiObjects.getDeleteReadCompleteds().add(o));
+			aeiObjects.getReviews().stream().forEach(o -> aeiObjects.getDeleteReviews().add(o));
+			aeiObjects.getWorkLogs().stream().forEach(o -> aeiObjects.getDeleteWorkLogs().add(o));
+			aeiObjects.getDocumentVersions().stream().forEach(o -> aeiObjects.getDeleteDocumentVersions().add(o));
+			aeiObjects.getRecords().stream().forEach(o -> aeiObjects.getDeleteRecords().add(o));
+			aeiObjects.getWorkLogs().stream().forEach(o -> aeiObjects.getDeleteWorkLogs().add(o));
+			/* 附件删除单独处理,需要删除Attachment的二进制文件 */
+			aeiObjects.getAttachments().stream().forEach(o -> aeiObjects.getDeleteAttachments().add(o));
+			/* 如果只有一份数据，没有拆分，那么删除Data */
 			aeiObjects.getWorkDataHelper().remove();
+			aeiObjects.getWorks().stream().forEach(o -> aeiObjects.getDeleteWorks().add(o));
 		}
-		aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
 		return new ArrayList<>();
 	}
 

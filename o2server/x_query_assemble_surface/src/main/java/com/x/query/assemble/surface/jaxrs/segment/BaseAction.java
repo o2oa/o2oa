@@ -15,7 +15,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		for (Term term : HanLP.segment(key)) {
 			/* 字段不要太长 */
 			if (StringUtils.length(term.word) < 31) {
-				os.add(term.word);
+				os.add(StringUtils.lowerCase(term.word));
 			}
 		}
 		return os;

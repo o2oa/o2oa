@@ -10,7 +10,6 @@ import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.begin.AbstractBeginProcessor;
 
 public abstract class AbstractCancelProcessor extends AbstractProcessor {
 	

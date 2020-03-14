@@ -20,9 +20,9 @@ import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.SerialNumber;
 import com.x.processplatform.core.entity.content.Task;
@@ -111,11 +111,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		this.delete_batch(business.entityManagerContainer(), Review.class, ids);
 	}
 
-	void delete_hint(Business business, Process process) throws Exception {
-		List<String> ids = business.hint().listWithProcess(process.getId());
-		this.delete_batch(business.entityManagerContainer(), Hint.class, ids);
-	}
-
 	void delete_attachment(Business business, Process process, boolean onlyRemoveNotCompleted) throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.attachment().listWithProcessWithCompleted(process.getId(), false)
@@ -160,6 +155,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 	void delete_work(Business business, Process process) throws Exception {
 		List<String> ids = business.work().listWithProcess(process.getId());
 		this.delete_batch(business.entityManagerContainer(), Work.class, ids);
+	}
+
+	void delete_record(Business business, Process process) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.process_FIELDNAME,
+				process.getId());
+		this.delete_batch(business.entityManagerContainer(), Record.class, ids);
 	}
 
 	void delete_documentVersion(Business business, Process process) throws Exception {

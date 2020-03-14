@@ -1,5 +1,15 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.Date;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
@@ -10,19 +20,10 @@ import com.x.base.core.project.jaxrs.WoCallback;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.UUID;
 
 public class ActionFileUploadCallback extends BaseAction {
 	
@@ -48,20 +49,20 @@ public class ActionFileUploadCallback extends BaseAction {
 			}
 		}
 		
-		Boolean isAnonymous = effectivePerson.isAnonymous();
-		Boolean isManager = false;
-		if (check) {
-			try {
-				if ( effectivePerson.isManager() ) {
-					isManager = true;
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
+//		Boolean isAnonymous = effectivePerson.isAnonymous();
+//		Boolean isManager = false;
+//		if (check) {
+//			try {
+//				if ( effectivePerson.isManager() ) {
+//					isManager = true;
+//				}
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
 		
 		if( check ){//判断文档信息是否已经存在
 			try {

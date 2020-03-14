@@ -82,6 +82,8 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String scratchInteger_FIELDNAME = "scratchInteger";
 
+	public static final String JsonPropertiesValueHandler = "com.x.base.core.entity.annotation.JsonPropertiesValueHandler";
+
 	public static final List<String> FieldsUnmodify = ListUtils.unmodifiableList(Arrays.asList(id_FIELDNAME,
 			distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME, sequence_FIELDNAME,
 			scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
@@ -351,6 +353,9 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 			PropertyUtils.setProperty(t, fields.get(i), objects[i]);
 		}
 		return t;
+	}
+
+	public abstract static class EntityProperties {
 	}
 
 }

@@ -18,6 +18,7 @@ import com.x.processplatform.assemble.surface.jaxrs.keylock.KeyLockAction;
 import com.x.processplatform.assemble.surface.jaxrs.process.ProcessAction;
 import com.x.processplatform.assemble.surface.jaxrs.read.ReadAction;
 import com.x.processplatform.assemble.surface.jaxrs.readcompleted.ReadCompletedAction;
+import com.x.processplatform.assemble.surface.jaxrs.record.RecordAction;
 import com.x.processplatform.assemble.surface.jaxrs.review.ReviewAction;
 import com.x.processplatform.assemble.surface.jaxrs.route.RouteAction;
 import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
@@ -55,6 +56,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(RouteAction.class);
 		classes.add(KeyLockAction.class);
 		classes.add(DocumentVersionAction.class);
+		classes.add(RecordAction.class);
 		return classes;
 	}
 }

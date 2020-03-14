@@ -28,6 +28,14 @@ package com.x.query.service.processing.jaxrs.segment;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -39,6 +47,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.segment.Entry;
+import com.x.query.core.entity.segment.Entry_;
 import com.x.query.core.entity.segment.Word;
 import com.x.query.service.processing.Business;
 
@@ -46,7 +55,8 @@ class ActionClean extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionClean.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, Boolean cleanWork, Boolean cleanWorkCompleted,
+			Boolean cleanCms) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (!business.isManager(effectivePerson)) {
@@ -54,9 +64,12 @@ class ActionClean extends BaseAction {
 			}
 			emc.close();
 		}
+		if (BooleanUtils.isTrue(cleanWork) || BooleanUtils.isTrue(cleanWorkCompleted)
+				|| BooleanUtils.isTrue(cleanCms)) {
+			Job job = new Job(cleanWork, cleanWorkCompleted, cleanCms);
+			job.start();
+		}
 		ActionResult<Wo> result = new ActionResult<>();
-		Job job = new Job();
-		job.start();
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
@@ -64,28 +77,64 @@ class ActionClean extends BaseAction {
 	}
 
 	public class Job extends Thread {
+
+		private Boolean cleanWork;
+		private Boolean cleanWorkCompleted;
+		private Boolean cleanCms;
+
+		public Job(Boolean cleanWork, Boolean cleanWorkCompleted, Boolean cleanCms) {
+			this.cleanWork = cleanWork;
+			this.cleanWorkCompleted = cleanWorkCompleted;
+			this.cleanCms = cleanCms;
+		}
+
 		@Override
 		public void run() {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				List<String> ids = emc.ids(Entry.class);
-				int batch = 1;
-				for (List<String> list : ListTools.batch(ids, batchSize)) {
-					logger.debug("开始清空分词数据, 数据数量: {}, 批次大小: {}, 批次: {}.", ids.size(), batchSize, batch++);
-					emc.beginTransaction(Word.class);
-					for (Word wd : emc.listIn(Word.class, Word.entry_FIELDNAME, list)) {
-						emc.remove(wd, CheckRemoveType.all);
+			List<String> ids = null;
+			do {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Business business = new Business(emc);
+					ids = list(business, cleanWork, cleanWorkCompleted, cleanCms);
+					if (ListTools.isNotEmpty(ids)) {
+						emc.beginTransaction(Entry.class);
+						emc.beginTransaction(Word.class);
+						for (String id : ids) {
+							Entry entry = emc.find(id, Entry.class);
+							if (null != entry) {
+								for (Word word : emc.listEqual(Word.class, Word.entry_FIELDNAME, entry.getId())) {
+									emc.remove(word, CheckRemoveType.all);
+								}
+								emc.remove(entry, CheckRemoveType.all);
+							}
+						}
+						emc.commit();
 					}
-					emc.commit();
-					emc.beginTransaction(Entry.class);
-					for (Entry en : emc.list(Entry.class, list)) {
-						emc.remove(en, CheckRemoveType.all);
-					}
-					emc.commit();
+				} catch (Exception e) {
+					logger.error(e);
 				}
-			} catch (Exception e) {
-				logger.error(e);
-			}
+			} while (!ListTools.isEmpty(ids));
 		}
+	}
+
+	private List<String> list(Business business, Boolean cleanWork, Boolean cleanWorkCompleted, Boolean cleanCms)
+			throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Entry.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Entry> root = cq.from(Entry.class);
+		Predicate p = cb.disjunction();
+		if (BooleanUtils.isTrue(cleanWork)) {
+			p = cb.or(p, cb.equal(root.get(Entry_.type), Entry.TYPE_WORK));
+		}
+		if (BooleanUtils.isTrue(cleanWorkCompleted)) {
+			p = cb.or(p, cb.equal(root.get(Entry_.type), Entry.TYPE_WORKCOMPLETED));
+		}
+		if (BooleanUtils.isTrue(cleanCms)) {
+			p = cb.or(p, cb.equal(root.get(Entry_.type), Entry.TYPE_CMS));
+		}
+		cq.select(root.get(Entry_.id)).where(p);
+		List<String> os = em.createQuery(cq).setMaxResults(BATCHSIZE).getResultList();
+		return os;
 	}
 
 	public static class Wo extends WrapBoolean {

@@ -1,7 +1,5 @@
 package com.x.hotpic.assemble.control.service;
 
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -13,6 +11,8 @@ import com.x.hotpic.assemble.control.Business;
 import com.x.hotpic.assemble.control.ThisApplication;
 import com.x.hotpic.assemble.control.queueTask.queue.DocumentCheckQueue;
 import com.x.hotpic.entity.HotPictureInfo;
+
+import java.util.List;
 
 public class HotPictureInfoServiceAdv {
 	
@@ -38,7 +38,7 @@ public class HotPictureInfoServiceAdv {
 	
 	/**
 	 * 向数据库保存HotPictureInfo对象
-	 * @param HotPictureInfo
+	 * @param _hotPictureInfo
 	 */
 	public HotPictureInfo save( HotPictureInfo _hotPictureInfo ) throws Exception {
 		if( _hotPictureInfo  == null ){

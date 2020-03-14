@@ -97,6 +97,81 @@ public class Query extends ConfigObject {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QUERY);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 	}
+	
+	public static class CrawlCms extends ConfigObject {
+
+		public static CrawlCms defaultInstance() {
+			CrawlCms o = new CrawlCms();
+			return o;
+		}
+
+		public final static Boolean DEFAULT_ENABLE = true;
+
+		public final static String DEFAULT_CRON = "30 30 7-21 * * ?";
+
+		public final static Integer DEFAULT_CONUT = 100;
+
+		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式.")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为100,同时每次将重爬最旧的50%,按时间轮询50%.")
+		private Integer count = DEFAULT_CONUT;
+
+		@FieldDescribe("忽略附件名称.")
+		private List<String> excludeAttachment = new ArrayList<>();
+
+		@FieldDescribe("最大附件大小.")
+		private Integer maxAttachmentSize = DEFAULT_MAXATTACHMENTSIZE;
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public List<String> getExcludeAttachment() {
+			return excludeAttachment;
+		}
+
+		public Integer getMaxAttachmentSize() {
+			return this.maxAttachmentSize == null ? DEFAULT_MAXATTACHMENTSIZE : this.maxAttachmentSize;
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public Integer getCount() {
+			return ((null == this.count) || (count < 0)) ? DEFAULT_CONUT : this.count;
+		}
+
+		public void setCron(String cron) {
+			this.cron = cron;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+
+		public void setCount(Integer count) {
+			this.count = count;
+		}
+
+		public void setExcludeAttachment(List<String> excludeAttachment) {
+			this.excludeAttachment = excludeAttachment;
+		}
+
+		public void setMaxAttachmentSize(Integer maxAttachmentSize) {
+			this.maxAttachmentSize = maxAttachmentSize;
+		}
+	}
 
 	public static class CrawlWork extends ConfigObject {
 
@@ -107,9 +182,10 @@ public class Query extends ConfigObject {
 
 		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "45 45 * * * ?";
+		public final static String DEFAULT_CRON = "40 40 7-21 * * ?";
 
-		public final static Integer DEFAULT_CONUT = 1000;
+		/* 由于每小时运行,那么每次更新100份 */
+		public final static Integer DEFAULT_CONUT = 100;
 
 		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
 
@@ -119,7 +195,7 @@ public class Query extends ConfigObject {
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("每次处理的数量,默认为1000,同时每次将重爬最旧的25%以提高数据质量.")
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为100,同时每次将重爬最旧的50%,按时间轮询50%.")
 		private Integer count = DEFAULT_CONUT;
 
 		@FieldDescribe("忽略附件名称.")
@@ -194,9 +270,9 @@ public class Query extends ConfigObject {
 
 		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "50 50 21 * * ?";
+		public final static String DEFAULT_CRON = "50 50 22 * * ?";
 
-		public final static Integer DEFAULT_CONUT = 5000;
+		public final static Integer DEFAULT_CONUT = 2000;
 
 		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
 
@@ -206,7 +282,7 @@ public class Query extends ConfigObject {
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("每次处理的数量,默认为5000,同时每次将重爬最旧的10%以提高数据质量.")
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为2000,同时每次将重爬最旧的25%,按时间轮询25%.")
 		private Integer count = DEFAULT_CONUT;
 
 		@FieldDescribe("忽略附件名称.")
@@ -272,56 +348,7 @@ public class Query extends ConfigObject {
 
 	}
 
-	public static class CrawlCms extends ConfigObject {
-
-		public static CrawlCms defaultInstance() {
-			CrawlCms o = new CrawlCms();
-			return o;
-		}
-
-		public final static Boolean DEFAULT_ENABLE = true;
-
-		public final static String DEFAULT_CRON = "55 55 8/2 * * ?";
-
-		public final static Integer DEFAULT_CONUT = 1000;
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式.")
-		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("每次处理的数量,默认为1000,同时每次将重爬最旧的10%以提高数据质量.")
-		private Integer count = DEFAULT_CONUT;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public Integer getCount() {
-			return ((null == this.count) || (count < 0)) ? DEFAULT_CONUT : this.count;
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public void setCount(Integer count) {
-			this.count = count;
-		}
-	}
+	
 
 	public void setCrawlWorkCompleted(CrawlWorkCompleted crawlWorkCompleted) {
 		this.crawlWorkCompleted = crawlWorkCompleted;

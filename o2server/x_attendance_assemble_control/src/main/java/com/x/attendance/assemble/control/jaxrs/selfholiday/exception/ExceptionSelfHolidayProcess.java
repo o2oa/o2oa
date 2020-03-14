@@ -9,4 +9,7 @@ public class ExceptionSelfHolidayProcess extends PromptException {
 	public ExceptionSelfHolidayProcess( Throwable e, String message ) {
 		super("用户在进行考勤统计处理时发生异常！message:" + message, e );
 	}
+	public ExceptionSelfHolidayProcess( String message ) {
+		super( message );
+	}
 }

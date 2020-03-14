@@ -271,6 +271,10 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
+		case file:
+			// [file://] absolute-path
+			prefix = "file://";
+			break;
 		default:
 			break;
 		}
@@ -329,6 +333,8 @@ public abstract class StorageObject extends SliceJpaObject {
 			webdavBuilder.setSoTimeout(opts, 10000);
 			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
 			// webdavBuilder.setVersioning(opts, true);
+			break;
+		case file:
 			break;
 		default:
 			break;

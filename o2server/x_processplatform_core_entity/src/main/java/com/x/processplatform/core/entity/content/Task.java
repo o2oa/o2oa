@@ -20,14 +20,15 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.google.gson.annotations.SerializedName;
 import com.x.base.core.entity.JpaObject;
@@ -35,7 +36,6 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -81,7 +81,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 			this.opinion = Objects.toString(this.getOpinion(), "");
 			this.opinionLob = null;
 		}
-		this.propertiesData = XGsonBuilder.toJson(this.properties());
 	}
 
 	public void setOpinion(String opinion) {
@@ -104,27 +103,15 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		}
 	}
 
-	@Transient
-	private TaskProperties properties;
-
-	public TaskProperties properties() {
-		if (null == properties) {
-			if (StringUtils.isEmpty(this.propertiesData)) {
-				this.properties = new TaskProperties();
-			} else {
-				this.properties = XGsonBuilder.instance().fromJson(this.propertiesData, TaskProperties.class);
-			}
-		}
-		return this.properties;
-	}
-
 	/* 更新运行方法 */
 
 	public Task() {
+		this.properties = new TaskProperties();
 	}
 
 	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
 			Date expireTime, List<Route> routes, Boolean allowRapid) {
+		this();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
 		this.startTime = startTime;
@@ -154,6 +141,11 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		if (ListTools.isNotEmpty(routes)) {
 			routes.stream().sorted(Comparator.comparing(Route::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
 					.thenComparing(Route::getUpdateTime, Date::compareTo)).forEach(o -> {
+//						this.getProperties().getRouteList().add(o.getId());
+//						this.getProperties().getRouteNameList().add(o.getName());
+//						this.getProperties().getRouteOpinionList().add(StringUtils.trimToEmpty(o.getOpinion()));
+//						this.getProperties().getRouteDecisionOpinionList()
+//								.add(StringUtils.trimToEmpty(o.getDecisionOpinion()));
 						this.routeList.add(o.getId());
 						this.routeNameList.add(o.getName());
 						this.routeOpinionList.add(StringUtils.trimToEmpty(o.getOpinion()));
@@ -166,6 +158,13 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.viewed = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);
+	}
+
+	public TaskProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new TaskProperties();
+		}
+		return this.properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -470,11 +469,20 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Column(name = ColumnNamePrefix + first_FIELDNAME)
 	private Boolean first;
 
-	public static final String propertiesData_FIELDNAME = "propertiesData";
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + propertiesData_FIELDNAME)
-	private String propertiesData;
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private TaskProperties properties;
+
+	public static final String series_FIELDNAME = "series";
+	@FieldDescribe("操作序列号,同次操作将会有相同的序列号.")
+	@Column(length = length_id, name = ColumnNamePrefix + series_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + series_FIELDNAME)
+	private String series;
 
 	public static final String workCreateType_FIELDNAME = "workCreateType";
 	@FieldDescribe("工作创建类型,surface,assign")
@@ -725,7 +733,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.work = work;
 	}
 
-	@SerializedName("title")
+	// @SerializedName("title")
 	public String getTitle() {
 		return title;
 	}
@@ -754,13 +762,13 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.activityName = activityName;
 	}
 
-	public List<String> getRouteList() {
-		return routeList;
-	}
-
-	public void setRouteList(List<String> routeList) {
-		this.routeList = routeList;
-	}
+//	public List<String> getRouteList() {
+//		return routeList;
+//	}
+//
+//	public void setRouteList(List<String> routeList) {
+//		this.routeList = routeList;
+//	}
 
 	public Date getStartTime() {
 		return startTime;
@@ -802,13 +810,13 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.person = person;
 	}
 
-	public List<String> getRouteNameList() {
-		return routeNameList;
-	}
-
-	public void setRouteNameList(List<String> routeNameList) {
-		this.routeNameList = routeNameList;
-	}
+//	public List<String> getRouteNameList() {
+//		return routeNameList;
+//	}
+//
+//	public void setRouteNameList(List<String> routeNameList) {
+//		this.routeNameList = routeNameList;
+//	}
 
 	public String getApplication() {
 		return application;
@@ -1280,6 +1288,34 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
+	}
+
+	public void setProperties(TaskProperties properties) {
+		this.properties = properties;
+	}
+
+	public String getSeries() {
+		return series;
+	}
+
+	public void setSeries(String series) {
+		this.series = series;
+	}
+
+	public List<String> getRouteList() {
+		return routeList;
+	}
+
+	public void setRouteList(List<String> routeList) {
+		this.routeList = routeList;
+	}
+
+	public List<String> getRouteNameList() {
+		return routeNameList;
+	}
+
+	public void setRouteNameList(List<String> routeNameList) {
+		this.routeNameList = routeNameList;
 	}
 
 }

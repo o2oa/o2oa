@@ -116,6 +116,9 @@ public class MessageConnector {
 
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
+	//IM 聊天消息发送
+	public static final String TYPE_IM_CREATE = "im_create";
+
 	public static final String CONSUME_WS = "ws";
 
 	public static final String CONSUME_PMS = "pms";

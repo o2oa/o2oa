@@ -26,6 +26,9 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 		ExcelReadRuntime excelReadRuntime = dataRow.getExcelReadRuntime();
 		String batchName = excelReadRuntime.importBatchName;
 		DataImportStatus dataImportStatus = dataRow.getExcelReadRuntime().dataImportStatus;
+		int titleColIndex = excelReadRuntime.wi.getTitleColIndex();
+		String titleFlag = excelReadRuntime.wi.getTitle();
+		
 		//生成一个Document和Data
 		System.out.println(">>>>>>>>>>>>>>>>>>>QueueDataRowImport.execute正在处理第" + curRow + "行数据：" + printData( colmlist ) );
 		if( ListTools.isNotEmpty( colmlist ) ){
@@ -43,14 +46,23 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 				document.addReadPersonList( "所有人" );
 				document.addAuthorPersonList( excelReadRuntime.operatorName );
 						
-				if( StringUtils.isNotEmpty( colmlist.get( 0 )+"" )) {
-					document.setTitle( colmlist.get( 0 )+""  );
+				if( StringUtils.isNotEmpty( colmlist.get( titleColIndex )+"" )) {
+					if( StringUtils.isNotEmpty( titleFlag )) {
+						document.setTitle( titleFlag + colmlist.get( titleColIndex )+""  );
+					}else {
+						document.setTitle( colmlist.get( titleColIndex )+""  );
+					}					
 				}else {
-					document.setTitle( "无标题"  );
+					if( StringUtils.isNotEmpty( titleFlag )) {
+						document.setTitle( titleFlag + "无标题"  );
+					}else {
+						document.setTitle( "无标题"  );
+					}					
 				}
 						
 				try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 					emc.beginTransaction( Document.class );
+					document.setDocStatus( excelReadRuntime.template.getDocStatus() ); //已发布
 					emc.persist( document, CheckPersistType.all );
 							
 					DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
@@ -63,27 +75,27 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 							data.put( wiParam.getDataPath(), wiParam.getValue());
 						}
 					}
-							
+					
 					for( int i = 0 ; i< propertyNames.size(); i++  ) {
 						if( colmlist.size() > i && colmlist.get(i) != null ) {
 							data.put( propertyNames.get(i), colmlist.get(i).trim());
-							//处理标题
-							if( propertyNames.get(i).equalsIgnoreCase(excelReadRuntime.wi.getTitle_column())) {
-								if( StringUtils.isEmpty( document.getTitle() ) ) {
-									document.setTitle( colmlist.get(i).trim() );
-								}else {
-									document.setTitle( document.getTitle() + colmlist.get(i).trim() );
-								}
-							}
+//							//处理标题
+//							if( propertyNames.get(i).equalsIgnoreCase(excelReadRuntime.wi.getTitle_column())) {
+//								if( StringUtils.isEmpty( document.getTitle() ) ) {
+//									document.setTitle( colmlist.get(i).trim() );
+//								}else {
+//									document.setTitle( document.getTitle() + colmlist.get(i).trim() );
+//								}
+//							}
 						}else {
 							data.put( propertyNames.get(i),"");
 						}
 					}
-							
-					//处理标题
-					if( StringUtils.isEmpty( document.getTitle() )) {
-						document.setTitle( "无标题" );
-					}
+//							
+//					//处理标题
+//					if( StringUtils.isEmpty( document.getTitle() )) {
+//						document.setTitle( "无标题" );
+//					}
 							
 					emc.check( document, CheckPersistType.all );
 							
@@ -121,6 +133,7 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 		document.setId( Document.createId() );
 		document.setDocumentType( template.getDocumentType() );
 		document.setAppId( template.getAppId() );
+		document.setAppAlias( template.getAppAlias() );
 		document.setAppName( template.getAppName() );
 		document.setCategoryId( template.getCategoryId() );
 		document.setCategoryName( template.getCategoryName() );
@@ -139,6 +152,8 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 		document.setReadGroupList( template.getReadGroupList() );
 		document.setReadFormId( template.getReadFormId() );
 		document.setReadFormName( template.getReadFormName() );
+		
+		document.setDocStatus( template.getDocStatus() );
 		document.setPublishTime( template.getPublishTime());
 		
 		document.setForm( template.getForm() );

@@ -111,7 +111,8 @@ public class ProjectGroupPersistService {
 			return;
 		}
 		ProjectGroupRele projectGroupRele = null;
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			
 			//查询项目所有已经关联的项目组关联信息
 			List<ProjectGroupRele> reles = projectGroupService.listReleWithProject( emc, projectId );
 			

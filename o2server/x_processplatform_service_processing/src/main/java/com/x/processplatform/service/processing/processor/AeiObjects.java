@@ -32,9 +32,9 @@ import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -50,10 +50,10 @@ import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
@@ -98,9 +98,9 @@ public class AeiObjects extends GsonPropertyObject {
 	/* 使用用懒加载,初始为null */
 	private List<Review> reviews = null;
 	/* 使用用懒加载,初始为null */
-	private List<Hint> hints = null;
-	/* 使用用懒加载,初始为null */
 	private List<DocumentVersion> documentVersions = null;
+	/* 使用用懒加载,初始为null */
+	private List<Record> records = null;
 	/* 使用用懒加载,初始为null */
 	private List<Attachment> attachments = null;
 	/* 使用用懒加载,初始为null */
@@ -156,17 +156,17 @@ public class AeiObjects extends GsonPropertyObject {
 	private List<Attachment> updateAttachments = new ArrayList<>();
 	private List<Attachment> deleteAttachments = new ArrayList<>();
 
-	private List<Hint> createHints = new ArrayList<>();
-	private List<Hint> updateHints = new ArrayList<>();
-	private List<Hint> deleteHints = new ArrayList<>();
+	private List<WorkLog> createWorkLogs = new ArrayList<>();
+	private List<WorkLog> updateWorkLogs = new ArrayList<>();
+	private List<WorkLog> deleteWorkLogs = new ArrayList<>();
 
 	private List<DocumentVersion> createDocumentVersions = new ArrayList<>();
 	private List<DocumentVersion> updateDocumentVersions = new ArrayList<>();
 	private List<DocumentVersion> deleteDocumentVersions = new ArrayList<>();
 
-	private List<WorkLog> createWorkLogs = new ArrayList<>();
-	private List<WorkLog> updateWorkLogs = new ArrayList<>();
-	private List<WorkLog> deleteWorkLogs = new ArrayList<>();
+	private List<Record> createRecords = new ArrayList<>();
+	private List<Record> updateRecords = new ArrayList<>();
+	private List<Record> deleteRecords = new ArrayList<>();
 
 	private List<JpaObject> createDynamicEntities = new ArrayList<>();
 	private List<JpaObject> updateDynamicEntities = new ArrayList<>();
@@ -175,13 +175,13 @@ public class AeiObjects extends GsonPropertyObject {
 	public WorkLog getArriveWorkLog(Work work) throws Exception {
 		return this.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(o.getArrivedActivityToken(), work.getActivityToken())).findFirst()
-				.orElseThrow(null);
+				.orElse(null);
 	}
 
 	public WorkLog getFromWorkLog(Work work) throws Exception {
 		return this.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(o.getFromActivityToken(), work.getActivityToken())).findFirst()
-				.orElseThrow(null);
+				.orElse(null);
 	}
 
 	public WorkDataHelper getWorkDataHelper() throws Exception {
@@ -328,14 +328,6 @@ public class AeiObjects extends GsonPropertyObject {
 		return this.reviews;
 	}
 
-	public List<Hint> getHints() throws Exception {
-		if (null == this.hints) {
-			this.hints = this.business.entityManagerContainer().listEqual(Hint.class, Hint.job_FIELDNAME,
-					this.work.getJob());
-		}
-		return this.hints;
-	}
-
 	public List<DocumentVersion> getDocumentVersions() throws Exception {
 		if (null == this.documentVersions) {
 			this.documentVersions = this.business.entityManagerContainer().listEqual(DocumentVersion.class,
@@ -344,12 +336,12 @@ public class AeiObjects extends GsonPropertyObject {
 		return this.documentVersions;
 	}
 
-	public void createHint(Hint hint) {
-		this.createHints.add(hint);
-	}
-
-	public void deleteHint(Hint hint) {
-		this.deleteHints.add(hint);
+	public List<Record> getRecords() throws Exception {
+		if (null == this.records) {
+			this.records = this.business.entityManagerContainer().listEqual(Record.class, Record.job_FIELDNAME,
+					this.work.getJob());
+		}
+		return this.records;
 	}
 
 	public void createTask(Task task) {
@@ -459,14 +451,6 @@ public class AeiObjects extends GsonPropertyObject {
 		return work;
 	}
 
-	public List<Hint> getCreateHints() {
-		return createHints;
-	}
-
-	public List<Hint> getDeleteHints() {
-		return deleteHints;
-	}
-
 	public List<DocumentVersion> getCreateDocumentVersions() {
 		return createDocumentVersions;
 	}
@@ -523,6 +507,18 @@ public class AeiObjects extends GsonPropertyObject {
 		return deleteWorks;
 	}
 
+	public List<Record> getDeleteRecords() {
+		return deleteRecords;
+	}
+
+	public List<Record> getCreateRecords() {
+		return createRecords;
+	}
+
+	public List<Record> getUpdateRecords() {
+		return updateRecords;
+	}
+
 	public void commit() throws Exception {
 		this.modify();
 		try {
@@ -540,8 +536,8 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitReadCompleted();
 		/* review必须在task,taskCompleted,read,readCompleted之后提交,需要创建新的review */
 		this.commitReview();
-		this.commitHint();
 		this.commitDocumentVersion();
+		this.commitRecord();
 		this.commitAttachment();
 		// this.getWorkDataHelper().update(this.getData());
 		this.commitData();
@@ -723,6 +719,14 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新工作 */
+			this.getUpdateWorks().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
 			/* 删除工作 */
 			this.getDeleteWorks().stream().forEach(o -> {
 				Work obj;
@@ -746,6 +750,14 @@ public class AeiObjects extends GsonPropertyObject {
 			this.getCreateWorkCompleteds().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 更新完成工作 */
+			this.getUpdateWorkCompleteds().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -777,6 +789,14 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新工作日志 */
+			this.getUpdateWorkLogs().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
 			/* 删除工作日志 */
 			this.getDeleteWorkLogs().stream().forEach(o -> {
 				WorkLog obj;
@@ -799,20 +819,19 @@ public class AeiObjects extends GsonPropertyObject {
 			/* 保存待办 */
 			this.getCreateTasks().stream().forEach(o -> {
 				try {
+					o.setSeries(this.getProcessingAttributes().getSeries());
+					/* 写入本次操作串号 */
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-					/* 发送创建待办消息 */
-					// MessageFactory.task_create(o);
 					/* 创建待办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
-					/* 创建授权的review */
-					/* 业务逻辑修改后貌似不需要 */
-//					if (StringUtils.isNotEmpty(o.getTrustIdentity())) {
-//						String trustPerson = this.business().organization().person()
-//								.getWithIdentity(o.getTrustIdentity());
-//						if (StringUtils.isNotEmpty(trustPerson)) {
-//							this.createReview(new Review(this.getWork(), trustPerson));
-//						}
-//					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 更新待办 */
+			this.getUpdateTasks().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -847,6 +866,14 @@ public class AeiObjects extends GsonPropertyObject {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 					/* 创建已办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 更新已办 */
+			this.getUpdateTaskCompleteds().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -900,6 +927,14 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新待阅 */
+			this.getUpdateReads().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
 			/* 删除待阅 */
 			this.getDeleteReads().stream().forEach(o -> {
 				Read obj;
@@ -915,7 +950,6 @@ public class AeiObjects extends GsonPropertyObject {
 				}
 			});
 		}
-
 	}
 
 	private void commitReadCompleted() throws Exception {
@@ -939,6 +973,14 @@ public class AeiObjects extends GsonPropertyObject {
 						/* 如果逻辑上相同的已阅已经存在,覆盖内容. */
 						o.copyTo(obj, JpaObject.FieldsUnmodify);
 					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 更新已阅 */
+			this.getUpdateReadCompleteds().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -983,6 +1025,14 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新参阅 */
+			this.getUpdateReviews().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
 			/* 删除参阅 */
 			this.getDeleteReviews().stream().forEach(o -> {
 				Review obj;
@@ -1000,38 +1050,12 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void commitHint() throws Exception {
-		if (ListTools.isNotEmpty(this.getCreateHints()) || ListTools.isNotEmpty(this.getDeleteHints())
-				|| ListTools.isNotEmpty(this.getUpdateHints())) {
-			this.entityManagerContainer().beginTransaction(Hint.class);
-			/* 保存提示 */
-			this.getCreateHints().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除提示 */
-			this.getDeleteHints().stream().forEach(o -> {
-				Hint obj;
-				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), Hint.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-		}
-	}
-
 	private void commitDocumentVersion() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateDocumentVersions())
 				|| ListTools.isNotEmpty(this.getDeleteDocumentVersions())
 				|| ListTools.isNotEmpty(this.getUpdateDocumentVersions())) {
 			this.entityManagerContainer().beginTransaction(DocumentVersion.class);
+			/* 保存版式文件 */
 			this.getCreateDocumentVersions().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -1039,6 +1063,15 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新版式文件 */
+			this.getUpdateDocumentVersions().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 删除版式文件 */
 			this.getDeleteDocumentVersions().stream().forEach(o -> {
 				DocumentVersion obj;
 				try {
@@ -1053,15 +1086,45 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
+	private void commitRecord() throws Exception {
+		if (ListTools.isNotEmpty(this.getCreateRecords()) || ListTools.isNotEmpty(this.getDeleteRecords())
+				|| ListTools.isNotEmpty(this.getUpdateRecords())) {
+			this.entityManagerContainer().beginTransaction(Record.class);
+			/* 保存记录 */
+			this.getCreateRecords().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 删除记录 */
+			this.getUpdateRecords().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			this.getDeleteRecords().stream().forEach(o -> {
+				Record obj;
+				try {
+					obj = this.business.entityManagerContainer().find(o.getId(), Record.class);
+					if (null != obj) {
+						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+		}
+	}
+
 	private void commitAttachment() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateAttachments()) || ListTools.isNotEmpty(this.getDeleteAttachments())
 				|| ListTools.isNotEmpty(this.getUpdateAttachments())) {
 			this.entityManagerContainer().beginTransaction(Attachment.class);
-			/* 保存附件 */
-			// for (Attachment o : this.getCreateAttachments()) {
-			// this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-			// }
-			/* 删除附件 */
+			/* 保存,更新附件是不可能的,删除附件 */
 			this.getDeleteAttachments().stream().forEach(o -> {
 				Attachment obj;
 				try {
@@ -1097,6 +1160,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateDynamicEntities())
 				|| ListTools.isNotEmpty(this.getDeleteDynamicEntities())
 				|| ListTools.isNotEmpty(this.getUpdateDynamicEntities())) {
+			/* 保存自定义对象 */
 			this.getCreateDynamicEntities().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
@@ -1105,6 +1169,16 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
+			/* 更新自定义对象 */
+			this.getUpdateDynamicEntities().stream().forEach(o -> {
+				try {
+					this.business.entityManagerContainer().beginTransaction(o.getClass());
+					this.business.entityManagerContainer().check(o, CheckPersistType.all);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			});
+			/* 删除自定义对象 */
 			this.getDeleteDynamicEntities().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
@@ -1113,13 +1187,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			this.getUpdateDynamicEntities().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().beginTransaction(o.getClass());
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+
 		}
 	}
 
@@ -1290,10 +1358,6 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Review> getUpdateReviews() {
 		return updateReviews;
-	}
-
-	public List<Hint> getUpdateHints() {
-		return updateHints;
 	}
 
 	public List<DocumentVersion> getUpdateDocumentVersions() {

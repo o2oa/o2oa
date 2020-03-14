@@ -216,13 +216,6 @@ public class ActionSave extends BaseAction {
 				
 				taskListPersistService.addTaskToTaskListWithOrderNumber( task.getId(), wi.getTaskListIds(), null,  effectivePerson);
 				
-				// 更新缓存
-				ApplicationCache.notify( Task.class );
-				ApplicationCache.notify( TaskView.class );
-				ApplicationCache.notify( Review.class );	
-				ApplicationCache.notify( TaskGroup.class );	
-				ApplicationCache.notify( TaskList.class );
-				
 				wo.setId( task.getId() );			
 				
 			} catch (Exception e) {
@@ -359,6 +352,13 @@ public class ActionSave extends BaseAction {
 		if( ListTools.isEmpty( dynamics ) ) {
 			dynamics = new ArrayList<>();
 		}
+		
+		// 更新缓存
+		ApplicationCache.notify( Task.class );
+		ApplicationCache.notify( TaskList.class );
+		ApplicationCache.notify( TaskView.class );
+		ApplicationCache.notify( Review.class );	
+		ApplicationCache.notify( TaskGroup.class );	
 		
 		dynamics.addAll( tagDynamics );
 		wo.setDynamics( WoDynamic.copier.copy( dynamics ) );

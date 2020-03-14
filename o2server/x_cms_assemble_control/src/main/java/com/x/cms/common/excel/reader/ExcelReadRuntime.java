@@ -47,6 +47,7 @@ public class ExcelReadRuntime {
 		private String creatorIdentity;
 		private String creatorUnitName;
 		private String creatorTopUnitName;
+		private String docStatus;
 		private List<String> readPersonList;
 		private List<String> readUnitList;
 		private List<String> readGroupList;
@@ -55,6 +56,15 @@ public class ExcelReadRuntime {
 		private List<String> authorGroupList;
 		private List<String> managerList;
 		private Date publishTime;
+
+		
+		public String getDocStatus() {
+			return docStatus;
+		}
+
+		public void setDocStatus(String docStatus) {
+			this.docStatus = docStatus;
+		}
 
 		public Date getPublishTime() {
 			return publishTime;

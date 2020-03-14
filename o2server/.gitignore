@@ -9,7 +9,6 @@
 /x_build/
 /servers/
 command.swap
-/store/
 /node_modules/
 **/src/main/resources/META-INF/persistence.xml
 **/src/main/resources/META-INF/x_persistence.xml

@@ -69,6 +69,7 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 				if( ListTools.isNotEmpty( persons )) {
 					//有可能是*， 一般是所有的人员标识列表
 					if( persons.contains( "*" )) {
+						logger.info(">>>>>document.getCreatorTopUnitName()=" + document.getCreatorTopUnitName() );
 						List<String> allPersons = listPersonWithUnit( document.getCreatorTopUnitName() );
 						if( ListTools.isNotEmpty( allPersons )) {
 							for( String person : persons ) {

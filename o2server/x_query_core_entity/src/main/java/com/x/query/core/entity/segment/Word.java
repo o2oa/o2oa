@@ -36,6 +36,8 @@ public class Word extends SliceJpaObject {
 	public static final String TAG_TITLE = "title";
 	public static final String TAG_BODY = "body";
 	public static final String TAG_ATTACHMENT = "attachment";
+	public static final String TAG_KEYWORD = "keyword";
+	public static final String TAG_PHRASE = "phrase";
 
 	public String getId() {
 		return id;
@@ -89,7 +91,7 @@ public class Word extends SliceJpaObject {
 	@FieldDescribe("词性")
 	@Column(length = length_32B, name = ColumnNamePrefix + label_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + label_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private String label;
 
 	public static final String entry_FIELDNAME = "entry";

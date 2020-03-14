@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.unitduty;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,6 +16,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 
@@ -44,6 +46,10 @@ class ActionEdit extends BaseAction {
 			}
 			/** pick出来的需要重新find */
 			o = emc.find(o.getId(), UnitDuty.class);
+			
+			Gson gsontool = new Gson();
+			String strDuty = gsontool.toJson(o);
+			
 			emc.beginTransaction(UnitDuty.class);
 			Wi.copier.copy(wi, o);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
@@ -56,6 +62,11 @@ class ActionEdit extends BaseAction {
 			emc.check(o, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(UnitDuty.class);
+			
+			/**创建 组织变更org消息通信 */
+			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("modfiy", "duty",strDuty, o, effectivePerson);
+			
 			Wo wo = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);

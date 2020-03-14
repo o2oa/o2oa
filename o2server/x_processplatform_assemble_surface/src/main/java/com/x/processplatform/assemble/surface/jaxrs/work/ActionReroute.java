@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -28,40 +29,42 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.ProcessingAttributes;
 
 class ActionReroute extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String activityId, ActivityType activityType)
-			throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String activityId, ActivityType activityType,
+			JsonElement jsonElement) throws Exception {
+		Work work;
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class);
+			work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			Control control = this.getControl(business, effectivePerson, work);
-			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
-				throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} not allow reroute.");
-			}
 			Activity activity = business.getActivity(work);
 			Activity destinationActivity = business.getActivity(activityId, activityType);
-			/* 如果是管理员那么就不判断这里的条件了 */
-			if (effectivePerson.isNotManager() && (!BooleanUtils.isTrue(activity.getAllowReroute()))) {
+			Control control = this.getControl(business, effectivePerson, work);
+			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
 				throw new ExceptionRerouteDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						destinationActivity.getName());
 			}
 			if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
 				throw new ExceptionProcessNotMatch();
 			}
-			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", work.getId(), "reroute", "activity", destinationActivity.getId()),
-					null);
-			Wo wo = new Wo();
-			wo.setId(work.getId());
-			result.setData(wo);
-			return result;
 		}
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", work.getId(), "reroute", "activity", activityId), wi, work.getJob());
+		Wo wo = new Wo();
+		wo.setId(work.getId());
+		result.setData(wo);
+		return result;
+	}
+
+	public static class Wi extends ProcessingAttributes {
+
 	}
 
 	public static class Wo extends WoId {

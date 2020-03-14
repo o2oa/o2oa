@@ -1,10 +1,10 @@
 package com.x.attendance.assemble.control.service;
 
-import java.util.List;
-
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.base.core.container.EntityManagerContainer;
+
+import java.util.List;
 
 
 public class AttendanceSelfHolidayService {
@@ -32,5 +32,10 @@ public class AttendanceSelfHolidayService {
 	public List<String> getByPersonName(EntityManagerContainer emc, String personName) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceSelfHolidayFactory().getByPersonName( personName );
+	}
+
+	public List<AttendanceSelfHoliday> listWithBatchFlag(EntityManagerContainer emc, String batchFlag) throws Exception {
+		Business business = new Business(emc);
+		return business.getAttendanceSelfHolidayFactory().listWithBatchFlag( batchFlag );
 	}
 }

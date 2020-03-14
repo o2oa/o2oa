@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.organization.assemble.authentication.AbstractFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.CacheFactory;
@@ -118,7 +120,12 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.open4Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open5Id), credential));
 		cq.select(root.get(Person_.id));
+		Query query = em.createQuery(cq.where(p));
 		List<String> list = em.createQuery(cq.where(p).distinct(true)).getResultList();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(query);
+		System.out.println(XGsonBuilder.toJson(list));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		if (list.size() == 1) {
 			return list.get(0);
 		} else {

@@ -96,7 +96,7 @@ public class Audit {
 				String hostName = addr.getHostName();
 				String system = Objects.toString(Config.logLevel().audit().getSystem(), "OA");
 				String systemName = Objects.toString(Config.logLevel().audit().getSystemName(), "OA系统");
-				String companycode = Objects.toString(Config.logLevel().audit().getCompanycode(), "");
+				String extend1 = Objects.toString(Config.logLevel().audit().getExtend1(), "");
 				/*String mode = this.uri;
 				if(this.uri!=null) {
 					String[] uris = this.uri.split("/");
@@ -106,7 +106,7 @@ public class Audit {
 				}*/
 				PrintStream stream = (PrintStream) Config.resource(Config.RESOURCE_AUDITLOGPRINTSTREAM);
 				stream.printf("%tF %tT|2.0||1||%s|%s|%s|%s|%s||%s|true|%s|%d|%d|true|%s|%s|%s|%s|%s||", end, end, this.userId,
-						this.userId, systemName, system, this.uri, op, this.getParameter(op, system, companycode), end.getTime(), elapsed, hostAddress, hostName,
+						this.userId, systemName, system, this.uri, op, this.getParameter(op, system, extend1), end.getTime(), elapsed, hostAddress, hostName,
 						getTerminal(), this.remoteAddress, this.userAgent);
 				stream.println();
 			}
@@ -135,17 +135,17 @@ public class Audit {
 		return "PC";
 	}
 
-	public String getParameter(String op,String system,String companycode){
+	public String getParameter(String op,String system,String extend1){
 		StringBuffer parameter =new StringBuffer();
 		if("登录".equals(op)){
 			parameter.append("LOG_RESULT=0&interfacename=").append(system).append("_")
-					.append(getTerminal()).append("_LOGIN&errorCode=ok&companycode=").append(companycode).append("&LOGIN_ENTRY=0");
+					.append(getTerminal()).append("_LOGIN&errorCode=ok&extend1=").append(extend1).append("&LOGIN_ENTRY=0");
 		}else if("注销".equals(op)){
 			parameter.append("LOG_RESULT=0&interfacename=").append(system).append("_")
-					.append(getTerminal()).append("_LOGOUT&errorCode=ok&companycode=").append(companycode).append("&LOGOUT_ENTRY=0");
+					.append(getTerminal()).append("_LOGOUT&errorCode=ok&extend1=").append(extend1).append("&LOGOUT_ENTRY=0");
 		}else{
 			parameter.append("LOG_RESULT=0&interfacename=").append(system).append("_")
-					.append(getTerminal()).append("_OPERATION&errorCode=ok&companycode=").append(companycode);
+					.append(getTerminal()).append("_OPERATION&errorCode=ok&extend1=").append(extend1);
 		}
 		return parameter.toString();
 	}

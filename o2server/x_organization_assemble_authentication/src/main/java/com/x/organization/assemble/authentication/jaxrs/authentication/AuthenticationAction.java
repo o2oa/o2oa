@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -270,7 +271,8 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Path("oauth/qywx/config")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void qiyeweixinOauthConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void qiyeweixinOauthConfig(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
 		ActionResult<Qiyeweixin> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -344,8 +346,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void oauthLoginQywx(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @Context HttpServletResponse response,
-						   @JaxrsParameterDescribe("code") @PathParam("code") String code) {
+			@Context HttpServletResponse response, @JaxrsParameterDescribe("code") @PathParam("code") String code) {
 		ActionResult<ActionOauthQiyeweixinLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -357,15 +358,13 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-
 	@JaxrsMethodDescribe(value = "钉钉oauth登录", action = ActionOauthDingdingLogin.class)
 	@GET
 	@Path("oauth/login/dingding/code/{code}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void oauthLoginDingding(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							   @Context HttpServletResponse response,
-							   @JaxrsParameterDescribe("code") @PathParam("code") String code) {
+			@Context HttpServletResponse response, @JaxrsParameterDescribe("code") @PathParam("code") String code) {
 		ActionResult<ActionOauthDingdingLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -376,7 +375,6 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
 
 	@JaxrsMethodDescribe(value = "oauth账户绑定.", action = ActionOauthBind.class)
 	@GET
@@ -394,6 +392,24 @@ public class AuthenticationAction extends StandardJaxrsAction {
 			result = new ActionOauthBind().execute(request, response, effectivePerson, name, code, redirectUri);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "切换当前用户,需要系统管理员权限.", action = ActionSwitchUser.class)
+	@PUT
+	@Path("switchuser")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void switchUser(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, JsonElement jsonElement) {
+		ActionResult<ActionSwitchUser.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSwitchUser().execute(request, response, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

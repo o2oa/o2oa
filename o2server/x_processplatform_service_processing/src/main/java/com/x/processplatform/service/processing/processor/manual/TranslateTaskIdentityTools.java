@@ -23,7 +23,6 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -43,6 +42,7 @@ public class TranslateTaskIdentityTools {
 	/* 计算manual节点中所有的待办，全部翻译成Identity */
 	public static TaskIdentities translate(AeiObjects aeiObjects, Manual manual) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();
+		/* 正常执行 */
 		List<String> units = new ArrayList<>();
 		List<String> groups = new ArrayList<>();
 		/* 指定的身份 */
@@ -168,12 +168,25 @@ public class TranslateTaskIdentityTools {
 				Object o = data.find(str);
 				if (null != o) {
 					if (o instanceof CharSequence) {
-						taskIdentities.addIdentity(o.toString());
+						if (OrganizationDefinition.isUnitDistinguishedName(str)) {
+							units.add(str);
+						} else if (OrganizationDefinition.isGroupDistinguishedName(str)) {
+							groups.add(str);
+						} else {
+							taskIdentities.addIdentity(o.toString());
+						}
 					} else if (o instanceof Iterable) {
 						for (Object v : (Iterable<?>) o) {
 							if (null != v) {
 								if ((v instanceof CharSequence)) {
-									taskIdentities.addIdentity(v.toString());
+									String vs = v.toString();
+									if (OrganizationDefinition.isUnitDistinguishedName(vs)) {
+										units.add(vs);
+									} else if (OrganizationDefinition.isGroupDistinguishedName(vs)) {
+										groups.add(vs);
+									} else {
+										taskIdentities.addIdentity(vs);
+									}
 								} else {
 									addObjectToTaskIdentities(taskIdentities, units, groups, v);
 								}
@@ -201,7 +214,7 @@ public class TranslateTaskIdentityTools {
 		} else if (OrganizationDefinition.isUnitDistinguishedName(d)) {
 			units.add(d);
 		} else if (OrganizationDefinition.isGroupDistinguishedName(d)) {
-			units.add(d);
+			groups.add(d);
 		}
 	}
 

@@ -1,22 +1,9 @@
 package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.JaxrsDescribe;
+import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -31,11 +18,20 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
+
 @Path("cipher/hotpic")
+@JaxrsDescribe("热点信息管理（服务器间调用）")
 public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger(HotPictureInfoCipherAction.class);
@@ -46,6 +42,7 @@ public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 			.wo(HotPictureInfo.class, WrapOutHotPictureInfo.class, null, WrapOutHotPictureInfo.Excludes);
 	private Ehcache cache = ApplicationCache.instance().getCache(HotPictureInfo.class);
 
+	@JaxrsMethodDescribe(value = "根据ID获取单个热图信息", action= StandardJaxrsAction.class )
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -98,6 +95,7 @@ public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 	@SuppressWarnings("unchecked")
 	// @HttpMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页.", response =
 	// WrapOutHotPictureInfo.class, request = JsonElement.class )
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页", action= StandardJaxrsAction.class )
 	@PUT
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

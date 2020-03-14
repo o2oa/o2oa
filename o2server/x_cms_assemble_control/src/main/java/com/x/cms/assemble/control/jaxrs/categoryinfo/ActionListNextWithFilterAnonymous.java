@@ -80,17 +80,7 @@ public class ActionListNextWithFilterAnonymous extends BaseAction {
 		return result;
 	}
 
-	public static class Wo extends CategoryInfo {
-
-		private Long rank;
-
-		public Long getRank() {
-			return rank;
-		}
-
-		public void setRank(Long rank) {
-			this.rank = rank;
-		} 
+	public static class Wo extends CategoryInfo {		
 		
 		private static final long serialVersionUID = -5076990764713538973L;
 
@@ -101,6 +91,17 @@ public class ActionListNextWithFilterAnonymous extends BaseAction {
 
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
+		
+		private Long rank;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}
+		
 
 		public String getExtContent() {
 			return extContent;

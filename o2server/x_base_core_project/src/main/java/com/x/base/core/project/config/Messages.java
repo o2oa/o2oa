@@ -119,6 +119,10 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_MIND_FILESEND,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 
+		/* im聊天消息发送 */
+		o.put(MessageConnector.TYPE_IM_CREATE,
+				new Message(MessageConnector.CONSUME_WS));
+
 		return o;
 	}
 

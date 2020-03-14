@@ -12,6 +12,7 @@ import com.x.processplatform.service.processing.jaxrs.documentversion.DocumentVe
 import com.x.processplatform.service.processing.jaxrs.job.JobAction;
 import com.x.processplatform.service.processing.jaxrs.read.ReadAction;
 import com.x.processplatform.service.processing.jaxrs.readcompleted.ReadCompletedAction;
+import com.x.processplatform.service.processing.jaxrs.record.RecordAction;
 import com.x.processplatform.service.processing.jaxrs.review.ReviewAction;
 import com.x.processplatform.service.processing.jaxrs.task.TaskAction;
 import com.x.processplatform.service.processing.jaxrs.taskcompleted.TaskCompletedAction;
@@ -36,6 +37,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ApplicationDictAction.class);
 		classes.add(DocumentVersionAction.class);
 		classes.add(TestAction.class);
+		classes.add(RecordAction.class);
 		return classes;
 	}
 

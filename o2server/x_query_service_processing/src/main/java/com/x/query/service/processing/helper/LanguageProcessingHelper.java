@@ -33,29 +33,31 @@ public class LanguageProcessingHelper {
 				item.setLabel(t.nature.toString());
 				/* 去掉中文空格和空格 */
 				item.setValue(StringUtils.trimToEmpty(StringUtils.replace(t.word, "　", " ")));
-				items.add(item);
+				if (!skip(item)) {
+					items.add(item);
+				}
 			}
 		}
 		/*
 		 * b 区别词 c 连词 d 副词 e 叹词 f 方位词 h 前缀 k 后缀 o 拟声词 p 介词 q 量词 r 代词 u 组词 w 标点
 		 */
 		items = items.stream()
-				.filter(o -> (StringUtils.length(o.getValue()) > 1)
-						&& (!StringUtils.startsWithAny(o.getValue(), SKIP_START_WITH))
-						&& (!StringUtils.endsWithAny(o.getValue(), SKIP_END_WITH))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "b"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "c"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "d"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "e"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "f"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "h"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "k"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "o"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "p"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "q"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "r"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "u"))
-						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "w")) && (!label_skip_m(o)))
+//				.filter(o -> (StringUtils.length(o.getValue()) > 1)
+//						&& (!StringUtils.startsWithAny(o.getValue(), SKIP_START_WITH))
+//						&& (!StringUtils.endsWithAny(o.getValue(), SKIP_END_WITH))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "b"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "c"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "d"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "e"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "f"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "h"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "k"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "o"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "p"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "q"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "r"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "u"))
+//						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "w")) && (!label_skip_m(o)))
 				.collect(Collectors.toList());
 		Map<Item, Long> map = items.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 		List<Item> list = new ArrayList<>();
@@ -65,6 +67,27 @@ public class LanguageProcessingHelper {
 			list.add(t);
 		});
 		return list;
+	}
+
+	private boolean skip(Item o) {
+		if ((StringUtils.length(o.getValue()) > 1) && (!StringUtils.startsWithAny(o.getValue(), SKIP_START_WITH))
+				&& (!StringUtils.endsWithAny(o.getValue(), SKIP_END_WITH))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "b"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "c"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "d"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "e"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "f"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "h"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "k"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "o"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "p"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "q"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "r"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "u"))
+				&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "w")) && (!label_skip_m(o))) {
+			return false;
+		}
+		return true;
 	}
 
 	private boolean label_skip_m(Item item) {

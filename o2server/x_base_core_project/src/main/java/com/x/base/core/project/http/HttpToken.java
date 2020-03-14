@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DomainTools;
+import com.x.base.core.project.tools.URLTools;
 
 public class HttpToken {
 
@@ -151,6 +152,9 @@ public class HttpToken {
 		}
 		if (StringUtils.isEmpty(token)) {
 			token = request.getHeader(X_Authorization);
+		}
+		if (StringUtils.isEmpty(token)) {
+			token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);
 		}
 		// 此代码将导致input被关闭.
 //		if (StringUtils.isEmpty(token)) {

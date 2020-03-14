@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate;
 
+import com.x.base.core.project.message.MessageConnector;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -58,6 +59,9 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 				pmsInnerConsumeQueue.start();
 			}
+
+			MessageConnector.start(context());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,6 +76,7 @@ public class ThisApplication {
 			zhengwuDingdingConsumeQueue.stop();
 			dingdingConsumeQueue.stop();
 			pmsInnerConsumeQueue.stop();
+			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

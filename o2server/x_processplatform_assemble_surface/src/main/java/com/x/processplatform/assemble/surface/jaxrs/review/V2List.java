@@ -24,7 +24,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
 
-public class V2List extends V2Base {
+class V2List extends V2Base {
 
 	public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -81,6 +81,6 @@ public class V2List extends V2Base {
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
 		static WrapCopier<Review, Wo> copier = WrapCopierFactory.wo(Review.class, Wo.class,
-				JpaObject.singularAttributeField(Review.class, true, true), JpaObject.FieldsInvisible);
+				JpaObject.singularAttributeField(Review.class, true, false), JpaObject.FieldsInvisible);
 	}
 }

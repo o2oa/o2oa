@@ -3,6 +3,7 @@ package com.x.message.assemble.communicate;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.instrument.Instrument;
+import com.x.message.assemble.communicate.factory.IMConversationFactory;
 import com.x.message.assemble.communicate.factory.MessageFactory;
 import com.x.organization.core.express.Organization;
 
@@ -43,6 +44,15 @@ public class Business {
 			this.message = new MessageFactory(this);
 		}
 		return message;
+	}
+
+	private IMConversationFactory imConversationFactory;
+
+	public IMConversationFactory imConversationFactory() throws Exception {
+		if (null == this.imConversationFactory) {
+			this.imConversationFactory = new IMConversationFactory(this);
+		}
+		return imConversationFactory;
 	}
 
 }

@@ -76,7 +76,7 @@ public class TaskListFactory extends AbstractFactory {
 	}
 
 	/**
-	 * 根据用户和项目ID查询工作任务列表
+	 * 根据用户和项目ID查询工作任务列表(泳道)
 	 * @param person
 	 * @param projectId
 	 * @return

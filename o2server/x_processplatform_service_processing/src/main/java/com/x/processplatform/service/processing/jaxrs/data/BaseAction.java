@@ -147,7 +147,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			/* 基于前面的原因,这里进行单独提交 */
 			business.entityManagerContainer().commit();
 		}
-	}
+	} 
 
 	void updateData(Business business, WorkCompleted workCompleted, JsonElement jsonElement, String... paths)
 			throws Exception {

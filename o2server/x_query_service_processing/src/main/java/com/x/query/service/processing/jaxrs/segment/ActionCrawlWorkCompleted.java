@@ -77,8 +77,8 @@ class ActionCrawlWorkCompleted extends BaseAction {
 				emc.beginTransaction(Entry.class);
 				emc.beginTransaction(Word.class);
 				Entry entry = this.createEntry(business, workCompleted);
-				String summary = HanLP.getSummary(body + attachment, 10);
-				entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
+				this.setSummary(entry, body, attachment);
+				this.keywordPhraseToWord(business, title, body, attachment, entry);
 				this.titleToWord(business, title, entry);
 				this.bodyToWord(business, body, entry);
 				this.attachmentToWord(business, attachment, entry);
@@ -125,84 +125,9 @@ class ActionCrawlWorkCompleted extends BaseAction {
 		return StringUtils.deleteWhitespace(buffer.toString());
 	}
 
-	private void titleToWord(Business busienss, String title, Entry entry) throws Exception {
-		if (StringUtils.isNotEmpty(title)) {
-			for (LanguageProcessingHelper.Item o : languageProcessingHelper.word(title)) {
-				Word word = this.createWord(o, entry);
-				if (null != word) {
-					word.setTag(Word.TAG_TITLE);
-					busienss.entityManagerContainer().persist(word, CheckPersistType.all);
-				}
-			}
-		}
-	}
-
-	private void bodyToWord(Business busienss, String body, Entry entry) throws Exception {
-		if (StringUtils.isNotEmpty(body)) {
-			for (LanguageProcessingHelper.Item o : languageProcessingHelper.word(body)) {
-				Word word = this.createWord(o, entry);
-				if (null != word) {
-					word.setTag(Word.TAG_BODY);
-					busienss.entityManagerContainer().persist(word, CheckPersistType.all);
-				}
-			}
-		}
-	}
-
-	private void attachmentToWord(Business busienss, String attachment, Entry entry) throws Exception {
-		if (StringUtils.isNotEmpty(attachment)) {
-			for (LanguageProcessingHelper.Item o : languageProcessingHelper.word(attachment)) {
-				Word word = this.createWord(o, entry);
-				if (null != word) {
-					word.setTag(Word.TAG_ATTACHMENT);
-					busienss.entityManagerContainer().persist(word, CheckPersistType.all);
-				}
-			}
-		}
-	}
-
-	private Word createWord(LanguageProcessingHelper.Item item, Entry entry) {
-		if (StringUtils.length(item.getValue()) < 31) {
-			/* 可能产生过长的字比如...................................... */
-			Word word = new Word(entry);
-			word.setValue(item.getValue());
-			word.setLabel(item.getLabel());
-			word.setCount(item.getCount().intValue());
-			return word;
-		}
-		return null;
-	}
-
-	private String storageObjectToText(StorageObject storageObject) throws Exception {
-		if ((null != storageObject.getLength()) && (storageObject.getLength() > 0)
-				&& (storageObject.getLength() < Config.query().getCrawlWorkCompleted().getMaxAttachmentSize())) {
-			if (ExtractTextTools.support(storageObject.getName())) {
-				try {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							storageObject.getStorage());
-					if (null != mapping) {
-						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
-								Config.query().getExtractOffice(), Config.query().getExtractPdf(),
-								Config.query().getExtractText(), false);
-					} else {
-						logger.print(
-								"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",
-								storageObject.getId(), storageObject.getName());
-					}
-				} catch (Exception e) {
-					logger.print("error extract attachment text, storageObject:{}, name:{}.", storageObject.getId(),
-							storageObject.getName());
-				}
-			}
-		} else {
-			logger.print("忽略过大的附件:{}, size:{}, id:{}.", storageObject.getName(), storageObject.getLength(),
-					storageObject.getId());
-		}
-		return "";
-	}
-
 	private Entry createEntry(Business business, WorkCompleted o) {
 		Entry entry = new Entry();
+		entry.setType(Entry.TYPE_WORKCOMPLETED);
 		entry.setTitle(o.getTitle());
 		entry.setReference(o.getId());
 		entry.setBundle(o.getJob());

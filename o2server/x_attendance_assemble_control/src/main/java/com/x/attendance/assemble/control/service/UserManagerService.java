@@ -1,15 +1,14 @@
 package com.x.attendance.assemble.control.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.attendance.assemble.control.Business;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * 用户组织顶层组织信息管理服务类
@@ -117,7 +116,7 @@ public class UserManagerService {
 	
 	/**
 	 * 根据员工姓名获取顶层组织名称，多个身份只取第一个身份
-	 * @param employeeName
+	 * @param personName
 	 * @return
 	 * @throws Exception 
 	 */

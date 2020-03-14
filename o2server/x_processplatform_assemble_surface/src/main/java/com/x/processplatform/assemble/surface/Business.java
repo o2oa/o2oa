@@ -1207,7 +1207,7 @@ public class Business {
 	 * @param os
 	 * @throws Exception
 	 */
-	public void downToZip(List<Attachment> attachmentList, OutputStream os) throws Exception {
+	public void downToZip(List<Attachment> attachmentList, OutputStream os, Map<String, byte[]> otherAttMap) throws Exception {
 		Map<String, Attachment> filePathMap = new HashMap<>();
 		List<String> emptyFolderList = new ArrayList<>();
 		/* 生成zip压缩文件内的目录结构 */
@@ -1228,6 +1228,14 @@ public class Business {
 					zos.write(bs);
 				}
 			}
+
+			if(otherAttMap!=null){
+				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
+					zos.putNextEntry(new ZipEntry(entry.getKey()));
+					zos.write(entry.getValue());
+				}
+			}
+
 			// 往zip里添加空文件夹
 			for (String emptyFolder : emptyFolderList) {
 				zos.putNextEntry(new ZipEntry(emptyFolder));

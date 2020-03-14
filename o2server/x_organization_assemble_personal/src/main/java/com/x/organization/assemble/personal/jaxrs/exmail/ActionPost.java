@@ -113,7 +113,7 @@ class ActionPost extends BaseAction {
 	private void updateTitle(Business business, Person person, String time, String title, String fromUser)
 			throws Exception {
 		Date date = new Date();
-		date.setTime(Long.parseLong(time));
+		date.setTime(Long.parseLong(time) * 1000);
 		String text = DateTools.format(date, "MM-dd HH:mm") + " " + (StringUtils.isBlank(title) ? "..." : title) + " "
 				+ fromUser;
 		text = StringTools.utf8SubString(text, JpaObject.length_255B);

@@ -19,7 +19,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -59,6 +61,7 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	/* 更新运行方法 */
 	public void onPersist() throws Exception {
 		if (StringUtils.isEmpty(this.startTimeMonth) && (null != this.startTime)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
@@ -93,10 +96,11 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public Read() {
-
+		this.properties = new ReadProperties();
 	}
 
 	public Read(Work work, String identity, String unit, String person) {
+		this();
 		this.activity = work.getActivity();
 		this.activityName = work.getActivityName();
 		this.activityAlias = work.getActivityAlias();
@@ -126,6 +130,7 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public Read(WorkCompleted workCompleted, String identity, String unit, String person) {
+		this();
 		this.setApplication(workCompleted.getApplication());
 		this.setApplicationAlias(workCompleted.getApplicationAlias());
 		this.setApplicationName(workCompleted.getApplicationName());
@@ -148,7 +153,12 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 		this.copyProjectionFields(workCompleted);
 	}
 
-	/* 更新运行方法 */
+	public ReadProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new ReadProperties();
+		}
+		return this.properties;
+	}
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务.")
@@ -361,6 +371,14 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ReadProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -1062,6 +1080,10 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 
 	public void setCurrentActivityName(String currentActivityName) {
 		this.currentActivityName = currentActivityName;
+	}
+
+	public void setProperties(ReadProperties properties) {
+		this.properties = properties;
 	}
 
 }

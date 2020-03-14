@@ -303,7 +303,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
 						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME,
 						TaskCompleted.empowerFromIdentity_FIELDNAME, TaskCompleted.joinInquire_FIELDNAME,
-						TaskCompleted.nextTaskIdentityListText_FIELDNAME),
+						TaskCompleted.properties_FIELDNAME),
 				null);
 	}
 

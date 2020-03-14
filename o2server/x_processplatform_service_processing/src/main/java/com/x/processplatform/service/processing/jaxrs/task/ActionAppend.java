@@ -15,10 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
@@ -34,6 +32,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
 import com.x.processplatform.service.processing.ApplicationDictHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -112,12 +111,13 @@ class ActionAppend extends BaseAction {
 						List<TaskCompleted> os = emc.listEqualAndInAndNotEqual(TaskCompleted.class,
 								TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(),
 								TaskCompleted.identity_FIELDNAME, identities, TaskCompleted.joinInquire_FIELDNAME,
-								false);
+								true);
 						if (ListTools.isNotEmpty(os)) {
 							emc.beginTransaction(TaskCompleted.class);
 							for (TaskCompleted o : os) {
 								o.setJoinInquire(false);
-								o.setProcessingType(ProcessingType.beAppendedTask);
+								// o.setProcessingType(ProcessingType.beAppendedTask);
+								o.setProcessingType(TaskCompleted.PROCESSINGTYPE_BEAPPENDEDTASK);
 							}
 						}
 						/* 后面还要合并,clone一个新实例 */
@@ -128,7 +128,8 @@ class ActionAppend extends BaseAction {
 						emc.beginTransaction(Work.class);
 						for (TaskIdentity o : taskIdentities) {
 							if (StringUtils.isNotEmpty(o.getFromIdentity())) {
-								work.getManualEmpowerMap().put(o.getIdentity(), o.getFromIdentity());
+								// work.properties().getManualEmpowerMap().put(o.getIdentity(),
+								// o.getFromIdentity());
 							}
 						}
 						work.setManualTaskIdentityList(identities);
@@ -176,19 +177,7 @@ class ActionAppend extends BaseAction {
 		return null;
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("添加的待办身份.")
-		private List<String> identityList;
-
-		public List<String> getIdentityList() {
-			return identityList;
-		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
-
+	public static class Wi extends WrapAppend {
 	}
 
 	public static class Wo extends WrapStringList {

@@ -20,19 +20,34 @@ public class JobFactory extends AbstractFactory {
 	}
 
 	public String findWithWorkOrWorkCompleted(String workOrWorkCompleted) throws Exception {
-		Work work = this.entityManagerContainer().fetch(workOrWorkCompleted, Work.class,
-				ListTools.toList(Work.job_FIELDNAME));
+		String job = findWithWork(workOrWorkCompleted);
+		if (null != job) {
+			return job;
+		}
+		job = findWithWorkCompleted(workOrWorkCompleted);
+		if (null != job) {
+			return job;
+		}
+		return null;
+	}
+
+	public String findWithWork(String flag) throws Exception {
+		Work work = this.entityManagerContainer().fetch(flag, Work.class, ListTools.toList(Work.job_FIELDNAME));
 		if (null != work) {
 			return work.getJob();
 		}
-		WorkCompleted workCompleted = this.entityManagerContainer().fetch(workOrWorkCompleted, WorkCompleted.class,
+		return null;
+	}
+
+	public String findWithWorkCompleted(String flag) throws Exception {
+		WorkCompleted workCompleted = this.entityManagerContainer().fetch(flag, WorkCompleted.class,
 				ListTools.toList(WorkCompleted.job_FIELDNAME));
 		if (null != workCompleted) {
 			return workCompleted.getJob();
 		}
 		List<WorkCompleted> os = this.entityManagerContainer().fetchEqual(WorkCompleted.class,
-				ListTools.toList(Work.job_FIELDNAME), WorkCompleted.work_FIELDNAME, workOrWorkCompleted);
-		if (os.size() == 1) {
+				ListTools.toList(WorkCompleted.work_FIELDNAME), WorkCompleted.work_FIELDNAME, flag);
+		if (ListTools.isNotEmpty(os)) {
 			return os.get(0).getJob();
 		}
 		return null;

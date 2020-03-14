@@ -144,5 +144,5 @@ if exist "%~dp0local\update" (
 	)
 )
 @echo on
-"%~dp0jvm\windows\bin\java" -server -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
+"%~dp0jvm\windows\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
 pause

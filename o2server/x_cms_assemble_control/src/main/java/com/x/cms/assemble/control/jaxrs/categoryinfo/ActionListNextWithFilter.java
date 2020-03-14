@@ -90,6 +90,16 @@ public class ActionListNextWithFilter extends BaseAction {
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
 
+		private Long rank;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		}
+		
 		public String getExtContent() {
 			return extContent;
 		}

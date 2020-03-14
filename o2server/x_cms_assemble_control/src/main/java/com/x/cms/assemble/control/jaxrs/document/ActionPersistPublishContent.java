@@ -1,5 +1,14 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,18 +26,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
+import com.x.cms.assemble.control.jaxrs.permission.element.PermissionName;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 直接发布文档内容
@@ -170,11 +173,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
-					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
-					wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
-					wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
-				} else {
+				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
 					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
 						wi.setCreatorIdentity("cipher");
 						wi.setCreatorPerson("cipher");
@@ -185,7 +184,19 @@ public class ActionPersistPublishContent extends BaseAction {
 						wi.setCreatorPerson("xadmin");
 						wi.setCreatorUnitName("xadmin");
 						wi.setCreatorTopUnitName("xadmin");
-					} else {
+					}else {
+						//尝试一下根据当前用户获取用户的第一个身份
+						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+					}
+				}
+				
+				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
+					//说明是指定的发布者，并不使用cipher和xadmin代替
+					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
+						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
+						wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
+						wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
+					}else {
 						Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
 						result.error(exception);
 					}
@@ -198,9 +209,6 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			if ( StringUtils.isEmpty(wi.getTitle())) {
-//				check = false;
-//				Exception exception = new ExceptionDocumentTitleEmpty();
-//				result.error(exception);
 				wi.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
 			}
 		}
@@ -211,8 +219,8 @@ public class ActionPersistPublishContent extends BaseAction {
 				wi.setDocStatus("published");
 				if( wi.getPublishTime() == null ) {
 					wi.setPublishTime(new Date());
-				}			
-				document = documentPersistService.save(wi, docData );
+				}
+				document = documentPersistService.save(wi.copier.copy(wi), docData );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -356,13 +364,11 @@ public class ActionPersistPublishContent extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends Document {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
+	public static class Wi {
 		
 		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 		
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify);
+		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
 
 		@FieldDescribe( "文档操作者身份." )
 		private String identity = null;
@@ -379,21 +385,468 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe( "启动流程的附件列表." )
 		private String[] wf_attachmentIds = null;	
 		
-		@FieldDescribe( "文档数据." )
+		@FieldDescribe( "文档数据JSON对象." )
 		private Map<?, ?> docData = null;
 		
-		@FieldDescribe( "文档读者." )
+		@FieldDescribe( "文档读者，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
 		private List<PermissionInfo> readerList = null;
 		
-		@FieldDescribe( "文档编辑者." )
+		@FieldDescribe( "文档编辑者, ，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
 		private List<PermissionInfo> authorList = null;
 		
-		@FieldDescribe( "图片列表." )
 		private List<String> cloudPictures = null;
 		
-		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）." )
-		private Boolean skipPermission  = false;		
+		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）， True|False." )
+		private Boolean skipPermission  = false;
 		
+		@FieldDescribe("文档摘要，70字以内")
+		private String summary;
+
+		@FieldDescribe("文档标题，70字以内")
+		private String title;
+
+		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
+		private String documentType = "信息";
+
+		private String appId;
+
+		private String appName;
+
+		private String appAlias;
+
+		@FieldDescribe("分类ID")
+		private String categoryId;
+
+		private String categoryName;
+
+		private String categoryAlias;
+
+		private String form;
+
+		private String formName;
+
+		private String importBatchName;
+
+		private String readFormId;
+
+		private String readFormName;
+
+		private String creatorPerson;
+
+		private String creatorIdentity;
+
+		private String creatorUnitName;
+
+		private String creatorTopUnitName;
+
+		@FieldDescribe("文档状态: published | draft | checking | error")
+		private String docStatus = "draft";
+
+		private String description = null;
+
+		private Long viewCount = 0L;
+
+		private Long commendCount = 0L;
+
+		private Long commentCount = 0L;
+		
+		private Date publishTime;
+
+		private Date modifyTime;
+
+		@FieldDescribe("是否置顶")
+		private Boolean isTop = false;
+
+		private Boolean hasIndexPic = false;
+
+		private Boolean reviewed = false;
+
+		private String sequenceTitle = "";
+
+		private String sequenceAppAlias = "";
+
+		private String sequenceCategoryAlias = "";
+
+		private String sequenceCreatorPerson = "";
+
+		private String sequenceCreatorUnitName = "";
+
+		private List<String> readPersonList;
+
+		private List<String> readUnitList;
+
+		private List<String> readGroupList;
+
+		private List<String> authorPersonList;
+
+		private List<String> authorUnitList;
+
+		private List<String> authorGroupList;
+
+		private List<String> remindPersonList;
+
+		private List<String> remindUnitList;
+
+		private List<String> remindGroupList;
+
+		private List<String> managerList;
+
+		private List<String> pictureList;
+		
+		
+		
+		public String getSummary() {
+			return summary;
+		}
+
+		public void setSummary(String summary) {
+			this.summary = summary;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public String getDocumentType() {
+			return documentType;
+		}
+
+		public void setDocumentType(String documentType) {
+			this.documentType = documentType;
+		}
+
+		public String getAppId() {
+			return appId;
+		}
+
+		public void setAppId(String appId) {
+			this.appId = appId;
+		}
+
+		public String getAppName() {
+			return appName;
+		}
+
+		public void setAppName(String appName) {
+			this.appName = appName;
+		}
+
+		public String getAppAlias() {
+			return appAlias;
+		}
+
+		public void setAppAlias(String appAlias) {
+			this.appAlias = appAlias;
+		}
+
+		public String getCategoryId() {
+			return categoryId;
+		}
+
+		public void setCategoryId(String categoryId) {
+			this.categoryId = categoryId;
+		}
+
+		public String getCategoryName() {
+			return categoryName;
+		}
+
+		public void setCategoryName(String categoryName) {
+			this.categoryName = categoryName;
+		}
+
+		public String getCategoryAlias() {
+			return categoryAlias;
+		}
+
+		public void setCategoryAlias(String categoryAlias) {
+			this.categoryAlias = categoryAlias;
+		}
+
+		public String getForm() {
+			return form;
+		}
+
+		public void setForm(String form) {
+			this.form = form;
+		}
+
+		public String getFormName() {
+			return formName;
+		}
+
+		public void setFormName(String formName) {
+			this.formName = formName;
+		}
+
+		public String getImportBatchName() {
+			return importBatchName;
+		}
+
+		public void setImportBatchName(String importBatchName) {
+			this.importBatchName = importBatchName;
+		}
+
+		public String getReadFormId() {
+			return readFormId;
+		}
+
+		public void setReadFormId(String readFormId) {
+			this.readFormId = readFormId;
+		}
+
+		public String getReadFormName() {
+			return readFormName;
+		}
+
+		public void setReadFormName(String readFormName) {
+			this.readFormName = readFormName;
+		}
+
+		public String getCreatorPerson() {
+			return creatorPerson;
+		}
+
+		public void setCreatorPerson(String creatorPerson) {
+			this.creatorPerson = creatorPerson;
+		}
+
+		public String getCreatorIdentity() {
+			return creatorIdentity;
+		}
+
+		public void setCreatorIdentity(String creatorIdentity) {
+			this.creatorIdentity = creatorIdentity;
+		}
+
+		public String getCreatorUnitName() {
+			return creatorUnitName;
+		}
+
+		public void setCreatorUnitName(String creatorUnitName) {
+			this.creatorUnitName = creatorUnitName;
+		}
+
+		public String getCreatorTopUnitName() {
+			return creatorTopUnitName;
+		}
+
+		public void setCreatorTopUnitName(String creatorTopUnitName) {
+			this.creatorTopUnitName = creatorTopUnitName;
+		}
+
+		public String getDocStatus() {
+			return docStatus;
+		}
+
+		public void setDocStatus(String docStatus) {
+			this.docStatus = docStatus;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+		public Long getViewCount() {
+			return viewCount;
+		}
+
+		public void setViewCount(Long viewCount) {
+			this.viewCount = viewCount;
+		}
+
+		public Long getCommendCount() {
+			return commendCount;
+		}
+
+		public void setCommendCount(Long commendCount) {
+			this.commendCount = commendCount;
+		}
+
+		public Long getCommentCount() {
+			return commentCount;
+		}
+
+		public void setCommentCount(Long commentCount) {
+			this.commentCount = commentCount;
+		}
+
+		public Date getPublishTime() {
+			return publishTime;
+		}
+
+		public void setPublishTime(Date publishTime) {
+			this.publishTime = publishTime;
+		}
+
+		public Date getModifyTime() {
+			return modifyTime;
+		}
+
+		public void setModifyTime(Date modifyTime) {
+			this.modifyTime = modifyTime;
+		}
+
+		public Boolean getIsTop() {
+			return isTop;
+		}
+
+		public void setIsTop(Boolean isTop) {
+			this.isTop = isTop;
+		}
+
+		public Boolean getHasIndexPic() {
+			return hasIndexPic;
+		}
+
+		public void setHasIndexPic(Boolean hasIndexPic) {
+			this.hasIndexPic = hasIndexPic;
+		}
+
+		public Boolean getReviewed() {
+			return reviewed;
+		}
+
+		public void setReviewed(Boolean reviewed) {
+			this.reviewed = reviewed;
+		}
+
+		public String getSequenceTitle() {
+			return sequenceTitle;
+		}
+
+		public void setSequenceTitle(String sequenceTitle) {
+			this.sequenceTitle = sequenceTitle;
+		}
+
+		public String getSequenceAppAlias() {
+			return sequenceAppAlias;
+		}
+
+		public void setSequenceAppAlias(String sequenceAppAlias) {
+			this.sequenceAppAlias = sequenceAppAlias;
+		}
+
+		public String getSequenceCategoryAlias() {
+			return sequenceCategoryAlias;
+		}
+
+		public void setSequenceCategoryAlias(String sequenceCategoryAlias) {
+			this.sequenceCategoryAlias = sequenceCategoryAlias;
+		}
+
+		public String getSequenceCreatorPerson() {
+			return sequenceCreatorPerson;
+		}
+
+		public void setSequenceCreatorPerson(String sequenceCreatorPerson) {
+			this.sequenceCreatorPerson = sequenceCreatorPerson;
+		}
+
+		public String getSequenceCreatorUnitName() {
+			return sequenceCreatorUnitName;
+		}
+
+		public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
+			this.sequenceCreatorUnitName = sequenceCreatorUnitName;
+		}
+
+		public List<String> getReadPersonList() {
+			return readPersonList;
+		}
+
+		public void setReadPersonList(List<String> readPersonList) {
+			this.readPersonList = readPersonList;
+		}
+
+		public List<String> getReadUnitList() {
+			return readUnitList;
+		}
+
+		public void setReadUnitList(List<String> readUnitList) {
+			this.readUnitList = readUnitList;
+		}
+
+		public List<String> getReadGroupList() {
+			return readGroupList;
+		}
+
+		public void setReadGroupList(List<String> readGroupList) {
+			this.readGroupList = readGroupList;
+		}
+
+		public List<String> getAuthorPersonList() {
+			return authorPersonList;
+		}
+
+		public void setAuthorPersonList(List<String> authorPersonList) {
+			this.authorPersonList = authorPersonList;
+		}
+
+		public List<String> getAuthorUnitList() {
+			return authorUnitList;
+		}
+
+		public void setAuthorUnitList(List<String> authorUnitList) {
+			this.authorUnitList = authorUnitList;
+		}
+
+		public List<String> getAuthorGroupList() {
+			return authorGroupList;
+		}
+
+		public void setAuthorGroupList(List<String> authorGroupList) {
+			this.authorGroupList = authorGroupList;
+		}
+
+		public List<String> getRemindPersonList() {
+			return remindPersonList;
+		}
+
+		public void setRemindPersonList(List<String> remindPersonList) {
+			this.remindPersonList = remindPersonList;
+		}
+
+		public List<String> getRemindUnitList() {
+			return remindUnitList;
+		}
+
+		public void setRemindUnitList(List<String> remindUnitList) {
+			this.remindUnitList = remindUnitList;
+		}
+
+		public List<String> getRemindGroupList() {
+			return remindGroupList;
+		}
+
+		public void setRemindGroupList(List<String> remindGroupList) {
+			this.remindGroupList = remindGroupList;
+		}
+
+		public List<String> getManagerList() {
+			return managerList;
+		}
+
+		public void setManagerList(List<String> managerList) {
+			this.managerList = managerList;
+		}
+
+		public List<String> getPictureList() {
+			return pictureList;
+		}
+
+		public void setPictureList(List<String> pictureList) {
+			this.pictureList = pictureList;
+		}
+
 		public Boolean getSkipPermission() {
 			return skipPermission;
 		}

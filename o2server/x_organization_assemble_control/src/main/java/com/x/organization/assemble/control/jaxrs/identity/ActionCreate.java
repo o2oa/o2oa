@@ -25,6 +25,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Person;
@@ -94,9 +95,18 @@ class ActionCreate extends BaseAction {
 
 				emc.commit();
 				wo.setId(identity.getId());
+				
+				/**创建 组织变更org消息通信 */
+				OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+				orgMessageFactory.createMessageCommunicate("add", "identity", identity, effectivePerson);
+				
 			}
 			ApplicationCache.notify(Identity.class);
 			ApplicationCache.notify(Person.class);
+			
+		
+			
+			
 			result.setData(wo);
 			return result;
 		}
