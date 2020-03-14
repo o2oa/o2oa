@@ -97,7 +97,7 @@ class ActionAddSplit extends BaseAction {
 	}
 
 	private Node findSplitNode(WorkLogTree tree, Node currentNode) {
-		Nodes nodes = currentNode.upTo(ActivityType.split, ActivityType.manual);
+		Nodes nodes = currentNode.upTo(ActivityType.split, ActivityType.manual, ActivityType.choice);
 		if (!nodes.isEmpty()) {
 			return nodes.get(0);
 		}

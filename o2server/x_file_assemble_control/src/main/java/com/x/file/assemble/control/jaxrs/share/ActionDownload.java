@@ -50,14 +50,17 @@ class ActionDownload extends BaseAction {
 					}
 				}
 			}
-			if("attachment".equals(share.getFileType())) {
-				Attachment2 attachment = emc.find(fileId, Attachment2.class);
-				if (null == attachment) {
-					throw new ExceptionAttachmentNotExist(fileId);
+			Attachment2 attachment = emc.find(fileId, Attachment2.class);
+			Folder2 folder = emc.find(fileId, Folder2.class);
+			if(attachment == null && folder==null){
+				throw new ExceptionAttachmentNotExist(shareId, fileId);
+			}if(attachment!=null){
+				if(!attachment.getPerson().equals(share.getPerson())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 				OriginFile originFile = emc.find(attachment.getOriginFile(), OriginFile.class);
 				if (null == originFile) {
-					throw new ExceptionAttachmentNotExist(fileId, attachment.getOriginFile());
+					throw new ExceptionAttachmentNotExist(shareId, fileId);
 				}
 				String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), fileId);
 				Element element = cache.get(cacheKey);
@@ -83,9 +86,8 @@ class ActionDownload extends BaseAction {
 					}
 				}
 			}else{
-				Folder2 folder = emc.find(fileId, Folder2.class);
-				if (null == folder) {
-					throw new ExceptionFolderNotExist(fileId);
+				if(!folder.getPerson().equals(share.getPerson())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 				String zipName = folder.getName() + ".zip";
 				List<Folder2> folderList = new ArrayList<>();

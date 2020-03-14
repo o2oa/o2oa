@@ -6,16 +6,17 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "流程设计", packageName = "com.x.processplatform.assemble.designer", containerEntities = {
+		"com.x.processplatform.core.entity.content.DocumentVersion", "com.x.processplatform.core.entity.content.Draft",
 		"com.x.processplatform.core.entity.content.Attachment", "com.x.processplatform.core.entity.content.Read",
 		"com.x.processplatform.core.entity.content.ReadCompleted", "com.x.processplatform.core.entity.content.Review",
-		"com.x.processplatform.core.entity.content.Hint", "com.x.processplatform.core.entity.content.SerialNumber",
+		"com.x.processplatform.core.entity.content.Record", "com.x.processplatform.core.entity.content.SerialNumber",
 		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.TaskCompleted",
 		"com.x.processplatform.core.entity.content.Work", "com.x.processplatform.core.entity.content.WorkCompleted",
-		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.element.Invoke",
-		"com.x.processplatform.core.entity.element.Message", "com.x.processplatform.core.entity.element.Split",
-		"com.x.processplatform.core.entity.element.File", "com.x.processplatform.core.entity.element.Form",
-		"com.x.processplatform.core.entity.element.FormVersion", "com.x.processplatform.core.entity.element.FormField",
-		"com.x.processplatform.core.entity.element.TemplateForm",
+		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Record",
+		"com.x.processplatform.core.entity.element.Invoke", "com.x.processplatform.core.entity.element.Message",
+		"com.x.processplatform.core.entity.element.Split", "com.x.processplatform.core.entity.element.File",
+		"com.x.processplatform.core.entity.element.Form", "com.x.processplatform.core.entity.element.FormVersion",
+		"com.x.processplatform.core.entity.element.FormField", "com.x.processplatform.core.entity.element.TemplateForm",
 		"com.x.processplatform.core.entity.element.Application", "com.x.processplatform.core.entity.element.Script",
 		"com.x.processplatform.core.entity.element.ScriptVersion", "com.x.processplatform.core.entity.element.Merge",
 		"com.x.processplatform.core.entity.element.Agent", "com.x.processplatform.core.entity.element.Process",
@@ -29,8 +30,9 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.QueryView", "com.x.processplatform.core.entity.element.QueryStat",
 		"com.x.processplatform.core.entity.element.Mapping", "com.x.query.core.entity.Item",
 		"com.x.query.dynamic.entity.*" }, storeJars = { "x_organization_core_entity", "x_organization_core_express",
-				"x_processplatform_core_entity", "x_query_core_entity" }, dynamicJars = {
-						"x_query_dynamic_entity" }, storageTypes = { StorageType.processPlatform })
+				"x_processplatform_core_entity", "x_processplatform_core_express",
+				"x_query_core_entity" }, dynamicJars = {
+						"x_query_dynamic_entity", }, storageTypes = { StorageType.processPlatform })
 public class x_processplatform_assemble_designer extends Deployable {
 
 }

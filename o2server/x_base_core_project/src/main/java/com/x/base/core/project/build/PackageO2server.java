@@ -30,6 +30,7 @@ public class PackageO2server {
 		CreateConfigSample.main(base.getAbsolutePath());
 		CreateLocalSample.main(base.getAbsolutePath());
 		File file = new File(base, "o2server.zip");
+		FileUtils.forceMkdir(new File(base.getAbsolutePath(), "servers"));
 		try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file))) {
 			compress(outputStream, base.getAbsolutePath(), "configSample");
 			compress(outputStream, base.getAbsolutePath(), "jvm");

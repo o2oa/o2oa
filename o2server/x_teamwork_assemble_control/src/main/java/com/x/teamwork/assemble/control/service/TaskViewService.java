@@ -103,6 +103,7 @@ class TaskViewService {
 		view = new TaskView();
 		view.setId( TaskView.createId() );
 		view.setName( "所有工作" );
+		view.setExecuteCode( "VIEW_ALL_TASK" );
 		view.setProject(project);
 		view.setOwner( person );
 		view.setCreatorPerson( "System" );		
@@ -116,6 +117,7 @@ class TaskViewService {
 		view = new TaskView();		
 		view.setId( TaskView.createId() );
 		view.setName( "我负责的任务" );
+		view.setExecuteCode( "VIEW_MY_RESP_TASK" );
 		view.setProject(project);
 		view.setOwner( person );
 		view.setCreatorPerson( "System" );		
@@ -130,6 +132,7 @@ class TaskViewService {
 		view = new TaskView();		
 		view.setId( TaskView.createId() );
 		view.setName( "未完成的任务" );
+		view.setExecuteCode( "VIEW_PROCESSING_TASK" );
 		view.setProject(project);
 		view.setOwner( person );
 		view.setCreatorPerson( "System" );		
@@ -144,6 +147,7 @@ class TaskViewService {
 		view = new TaskView();		
 		view.setId( TaskView.createId() );
 		view.setName( "已完成的任务" );
+		view.setExecuteCode( "VIEW_COMPLETED_TASK" );
 		view.setProject(project);
 		view.setOwner( person );
 		view.setCreatorPerson( "System" );		
@@ -158,6 +162,7 @@ class TaskViewService {
 		view = new TaskView();		
 		view.setId( TaskView.createId() );
 		view.setName( "逾期的任务" );
+		view.setExecuteCode( "VIEW_TIMEOVER_TASK" );
 		view.setProject(project);
 		view.setOwner( person );
 		view.setCreatorPerson( "System" );		

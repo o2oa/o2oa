@@ -27,7 +27,7 @@ public class Node extends ConfigObject {
 		o.dumpStorage = new ScheduleDumpStorage();
 		o.restoreData = new ScheduleRestoreData();
 		o.restoreStorage = new ScheduleRestoreStorage();
-		o.nodeAgentEnable = false;
+		o.nodeAgentEnable = true;
 		o.nodeAgentEncrypt = true;
 		o.nodeAgentPort = default_nodeAgentPort;
 		o.quickStartWebApp = false;

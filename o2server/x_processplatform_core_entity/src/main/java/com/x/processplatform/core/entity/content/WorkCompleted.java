@@ -18,7 +18,9 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -88,13 +90,14 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	/* 更新运行方法 */
 
 	public WorkCompleted() {
-
+		this.properties = new WorkCompletedProperties();
 	}
 
 	/**
 	 * 通过Work创建WorkCompleted
 	 */
 	public WorkCompleted(Work work, Date completedTime, Long duration, String formData, String formMobileData) {
+		this();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
 		this.startTime = work.getStartTime();
@@ -123,6 +126,13 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		this.duration = duration;
 		this.copyProjectionFields(work);
+	}
+
+	public WorkCompletedProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new WorkCompletedProperties();
+		}
+		return this.properties;
 	}
 
 	public void setTitle(String title) {
@@ -336,6 +346,14 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private WorkCompletedProperties properties;
 
 	public static final String dataMerged_FIELDNAME = "dataMerged";
 	@FieldDescribe("业务数据是否从item表中合并至data字段")
@@ -1028,6 +1046,10 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setDataMerged(Boolean dataMerged) {
 		this.dataMerged = dataMerged;
+	}
+
+	public void setProperties(WorkCompletedProperties properties) {
+		this.properties = properties;
 	}
 
 }

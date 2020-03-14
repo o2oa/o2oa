@@ -24,6 +24,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class WorkContext {

@@ -73,6 +73,16 @@ public class ActionListPrevWithFilter extends BaseAction {
 
 	public static class Wo extends Form {
 
+		private Long rank;
+
+		public Long getRank() {
+			return rank;
+		}
+
+		public void setRank(Long rank) {
+			this.rank = rank;
+		} 
+		
 		private static final long serialVersionUID = -5076990764713538973L;
 
 		public static List<String> Excludes = new ArrayList<String>();

@@ -26,7 +26,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
- * 工作任务组信息
+ * 工作视图信息
  * 
  * @author O2LEE
  *
@@ -83,6 +83,11 @@ public class TaskView extends SliceJpaObject {
 	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	private String name;
+	
+	public static final String executeCode_FIELDNAME = "executeCode";
+	@FieldDescribe("任务视图执行代号，系统视图使用，自定义视图不使用")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + name_FIELDNAME)
+	private String executeCode;
 	
 	public static final String memo_FIELDNAME = "memo";
 	@FieldDescribe("列表描述")
@@ -268,4 +273,14 @@ public class TaskView extends SliceJpaObject {
 	public void setIsExcutor(Boolean isExcutor) {
 		this.isExcutor = isExcutor;
 	}
+
+	public String getExecuteCode() {
+		return executeCode;
+	}
+
+	public void setExecuteCode(String executeCode) {
+		this.executeCode = executeCode;
+	}
+	
+	
 }

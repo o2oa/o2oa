@@ -1,5 +1,6 @@
 package com.x.base.core.project.connection;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,6 +24,14 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 public class ConnectionAction {
 
@@ -186,6 +196,57 @@ public class ConnectionAction {
 			return response;
 		}
 		return read(response, connection);
+	}
+
+	public static ActionResponse multiFormPost(String address, List<NameValuePair> heads, String fileName, byte[] bytes, Map<String, String> map) throws Exception {
+		ActionResponse response = new ActionResponse();
+		try {
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost uploadFile = new HttpPost(address);
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			builder.addTextBody("fileName", fileName, ContentType.TEXT_PLAIN);
+			if(map!=null){
+				for(String key : map.keySet()){
+					builder.addTextBody(key, map.get(key), ContentType.TEXT_PLAIN);
+				}
+			}
+			builder.addBinaryBody(
+					"file",
+					bytes,
+					ContentType.APPLICATION_OCTET_STREAM,
+					fileName
+			);
+			HttpEntity multipart = builder.build();
+			uploadFile.setEntity(multipart);
+			if (ListTools.isNotEmpty(heads)) {
+				String name;
+				String value;
+				for (NameValuePair o : heads) {
+					name = Objects.toString(o.getName(), "");
+					value = Objects.toString(o.getValue(), "");
+					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+						uploadFile.addHeader(name, value);
+					}
+				}
+			}
+			CloseableHttpResponse httpResponse = httpClient.execute(uploadFile);
+			HttpEntity responseEntity = httpResponse.getEntity();
+			String value= EntityUtils.toString(responseEntity, DefaultCharset.name);
+			try {
+				response = gson.fromJson(value, ActionResponse.class);
+			} catch (Exception e) {
+				response.setType(ActionResponse.Type.connectFatal);
+				response.setMessage("convert to json error, address:" + address
+						+ ", method: multiFormPost, because:" + e.getMessage() + ", value:"
+						+ value + ".");
+			}
+		} catch (Exception e) {
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction multiFormPost output error: [" + address + "], " + e.getClass().getName() + ".");
+			return response;
+		}
+		return response;
 	}
 
 	private static String extractErrorMessageIfExist(String str) {

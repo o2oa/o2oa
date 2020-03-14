@@ -68,7 +68,10 @@ public class Process extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-
+		/* 默认流程名称作为意见为'是' */
+		if (this.routeNameAsOpinion == null) {
+			this.routeNameAsOpinion = true;
+		}
 	}
 
 	public Boolean getProjectionFully() {

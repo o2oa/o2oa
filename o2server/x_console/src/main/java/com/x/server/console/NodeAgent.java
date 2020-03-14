@@ -1,16 +1,16 @@
 package com.x.server.console;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -49,38 +49,131 @@ public class NodeAgent extends Thread {
 
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
 
+	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$", Pattern.CASE_INSENSITIVE);
+
 	@Override
 	public void run() {
 		try (ServerSocket serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort())) {
 			Matcher matcher;
 			while (true) {
-				try (Socket client = serverSocket.accept()) {
-					try (OutputStream outputStream = client.getOutputStream();
-							InputStream inputStream = client.getInputStream()) {
-						String json = IOUtils.toString(inputStream, DefaultCharset.charset_utf_8);
+				try (Socket socket = serverSocket.accept()) {
+					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+						String json = dis.readUTF();
+						logger.print("receive socket json={}",json);
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
 							if (!StringUtils.startsWith(decrypt, "o2@")) {
-								IOUtils.write("error decrypt!", outputStream, DefaultCharset.charset_utf_8);
+								dos.writeUTF("failure:error decrypt!");
+								dos.flush();
 								continue;
 							}
 						}
+
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							byte[] bytes = Base64.decodeBase64(commandObject.getBody());
 							String result = this.redeploy(matcher.group(1), bytes);
-							IOUtils.write(result, outputStream, DefaultCharset.charset_utf_8);
+							dos.writeUTF(result);
+							dos.flush();
+							continue;
 						}
+
+						matcher = upload_resource_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							int fileLength = dis.readInt();
+							byte[] bytes;
+							try(ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+								byte[] onceBytes = new byte[1024];
+								int length = 0;
+								while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
+									bos.write(onceBytes, 0, length);
+									bos.flush();
+									if(bos.size() == fileLength){
+										break;
+									}
+								}
+								bytes = bos.toByteArray();
+							}
+							logger.print("receive resource bytes {}", bytes.length);
+							String result = this.uploadResource(commandObject.getParam(), bytes);
+							dos.writeUTF(result);
+							dos.flush();
+							continue;
+						}
+
+						dos.writeUTF("failure:no pattern method!");
+						dos.flush();
+
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				Thread.sleep(2000);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private String uploadResource(Map<String,Object> param, byte[] bytes){
+		String result = "success";
+		if(param == null || param.isEmpty()){
+			result = "failure";
+			return result;
+		}
+		try {
+			String fileName = (String)param.get("fileName");
+			String filePath = (String)param.get("filePath");
+			Boolean flag = (Boolean)param.get("asNew");
+			boolean asNew = flag==null ? false : flag;
+
+			if(StringUtils.isNotEmpty(fileName)){
+				if(fileName.toLowerCase().endsWith(".zip")) {
+					File tempFile = new File(Config.base(), "local/temp/upload");
+					FileTools.forceMkdir(tempFile);
+					FileUtils.cleanDirectory(tempFile);
+
+					File zipFile = new File(tempFile.getAbsolutePath(), fileName);
+					FileUtils.writeByteArrayToFile(zipFile, bytes);
+					File dist = new File(Config.base(), Config.DIR_SERVERS_WEBSERVER);
+					if (StringUtils.isNotEmpty(filePath)) {
+						dist = new File(dist, filePath);
+						FileTools.forceMkdir(dist);
+					}
+					List<String> subs = new ArrayList<>();
+					subs.add("x_");
+					subs.add("o2_");
+					JarTools.unjar(zipFile, subs, dist, asNew);
+
+					FileUtils.cleanDirectory(tempFile);
+					logger.print("upload resource {} success!", fileName);
+				}else if(StringUtils.isNotEmpty(filePath)){
+					File dist = new File(Config.base(), Config.DIR_SERVERS_WEBSERVER);
+					dist = new File(dist, filePath);
+					FileTools.forceMkdir(dist);
+					File file = new File(dist, fileName);
+					if(file.exists()){
+						file.delete();
+					}
+					FileUtils.writeByteArrayToFile(file, bytes);
+					logger.print("upload resource {} success!", fileName);
+				}else{
+					result = "failure";
+				}
+			}else{
+				result = "failure";
+			}
+
+		} catch (Exception e) {
+			logger.print("upload resource {} error={}", XGsonBuilder.toJson(param), e.getMessage());
+			result = "failure";
+		}
+		return result;
 	}
 
 	private String redeploy(String name, byte[] bytes) {
@@ -309,6 +402,8 @@ public class NodeAgent extends Thread {
 
 		private String credential;
 
+		private Map<String, Object> param;
+
 		public String getCommand() {
 			return command;
 		}
@@ -332,6 +427,10 @@ public class NodeAgent extends Thread {
 		public void setCredential(String credential) {
 			this.credential = credential;
 		}
+
+		public Map<String,Object> getParam() { return param; }
+
+		public void setParam(Map<String, Object> param) { this.param = param; }
 
 	}
 

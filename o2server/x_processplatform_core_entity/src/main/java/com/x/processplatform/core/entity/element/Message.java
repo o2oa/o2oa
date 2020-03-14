@@ -347,6 +347,35 @@ public class Message extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String script;
 
+	@IdReference(Script.class)
+	@FieldDescribe("生成displayLog脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScript;
+
+	@FieldDescribe("生成displayLog脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + displayLogScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScriptText;
+
+	public String getDisplayLogScript() {
+		return displayLogScript;
+	}
+
+	public void setDisplayLogScript(String displayLogScript) {
+		this.displayLogScript = displayLogScript;
+	}
+
+	public String getDisplayLogScriptText() {
+		return displayLogScriptText;
+	}
+
+	public void setDisplayLogScriptText(String displayLogScriptText) {
+		this.displayLogScriptText = displayLogScriptText;
+	}
+
 	public String getName() {
 		return name;
 	}

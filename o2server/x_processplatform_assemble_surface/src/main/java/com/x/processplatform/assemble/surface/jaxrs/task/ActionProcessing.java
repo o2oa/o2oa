@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,11 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -23,155 +24,97 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.ProcessingType;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.util.WorkLogTree;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
+import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
+import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
 class ActionProcessing extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
 
-	ActionResult<List<Wo>> result = new ActionResult<>();
-	List<Wo> wos = new ArrayList<>();
+	private ActionResult<Wo> result = new ActionResult<>();
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
-			throws Exception {
-		Audit audit = logger.audit(effectivePerson);
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Task task = null;
-		String taskCompletedId = null;
-		String nextTaskIdentityListText = null;
-		boolean appendTask = false;
+	private Wi wi;
+	private Task task;
+	private WorkLog workLog;
+	private Work work;
+	private String taskCompletedId;
+	private String type;
+	private EffectivePerson effectivePerson;
+	private List<Task> newTasks = new ArrayList<>();
+
+	private Record record;
+	private String series = StringTools.uniqueToken();
+
+	private final String TYPE_APPENDTASK = "appendTask";
+	private final String TYPE_TASK = "task";
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		this.effectivePerson = effectivePerson;
+		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			task = emc.find(id, Task.class);
-			if (null == task) {
+			this.task = emc.find(id, Task.class);
+			if (null == this.task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			if (!StringUtils.equalsIgnoreCase(task.getPerson(), effectivePerson.getDistinguishedName())) {
-				throw new ExceptionAccessDenied(effectivePerson, task);
+			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
+					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(WorkLog.class);
+			}
+			this.work = emc.find(this.task.getWork(), Work.class);
+			if (null == this.work) {
+				throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
+			}
+			if (effectivePerson.isNotPerson(this.task.getPerson())) {
+				throw new ExceptionAccessDenied(effectivePerson, this.task);
 			}
 			if (StringUtils.isNotEmpty(wi.getRouteName()) || StringUtils.isNotEmpty(wi.getOpinion())
-					|| (!StringUtils.equals(task.getMediaOpinion(), wi.getMediaOpinion()))) {
+					|| (!StringUtils.equals(this.task.getMediaOpinion(), wi.getMediaOpinion()))) {
 				emc.beginTransaction(Task.class);
-				/* 如果有输入新的路由决策覆盖原有决策 */
-				if (StringUtils.isNotEmpty(wi.getRouteName())) {
-					task.setRouteName(wi.getRouteName());
-				}
-				/* 如果有新的流程意见那么覆盖原有流程意见 */
-				if (StringUtils.isNotEmpty(wi.getOpinion())) {
-					task.setOpinion(wi.getOpinion());
-				}
-				/* 强制覆盖多媒体意见 */
-				task.setMediaOpinion(wi.getMediaOpinion());
+				this.updateRouteNameOpinionMediaOpinion(task, wi);
 				emc.commit();
 			}
-			appendTask = this.ifAppendTask(business, task, wi);
+			this.type = this.type(business, task, wi);
 		}
-		if (appendTask) {
-			ReqAppendTask req = new ReqAppendTask();
-			req.setIdentityList(wi.getAppendTaskIdentityList());
-			ThisApplication.context().applications()
-					.putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("task", task.getId(), "append"), req, task.getJob())
-					.getData(WrapStringList.class);
-		}
-		ProcessingRequest processingRequest = new ProcessingRequest();
-		if (appendTask) {
-			processingRequest.setProcessingType(ProcessingType.appendTask);
-		} else {
-			processingRequest.setProcessingType(ProcessingType.processing);
-		}
-		processingRequest.setRouteData(wi.getRouteData());
-		WoId taskProcessingResp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", task.getId(), "processing"), processingRequest, task.getJob())
-				.getData(WoId.class);
-		if (StringUtils.isBlank(taskProcessingResp.getId())) {
-			throw new ExceptionTaskProcessing(task.getId());
-		} else {
-			/* 获得已办id */
-			taskCompletedId = taskProcessingResp.getId();
-		}
-
-		WoId workProcessingResp = ThisApplication.context().applications()
-				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", task.getWork(), "processing"), null, task.getJob())
-				.getData(WoId.class);
-
-		if (StringUtils.isBlank(workProcessingResp.getId())) {
-			throw new ExceptionWorkProcessing(task.getId());
-		}
-
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob());
-			WorkLog currentWorkLog = null;
-			for (WorkLog o : workLogs) {
-				if (StringUtils.equals(o.getFromActivityToken(), task.getActivityToken())) {
-					currentWorkLog = o;
-					break;
-				}
-			}
-			if (null != currentWorkLog) {
-				WorkLogTree tree = new WorkLogTree(workLogs);
-				Node node = tree.find(currentWorkLog);
-				if (null != node) {
-					List<WoTask> woTasks = new ArrayList<>();
-					woTasks.addAll(emc.fetchEqualAndEqual(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
-							Task.work_FIELDNAME, node.getWorkLog().getWork()));
-					if (woTasks.isEmpty()) {
-						List<String> activityTokens = new ArrayList<>();
-						for (Node n : node.downNextManual()) {
-							activityTokens.add(n.getWorkLog().getFromActivityToken());
-						}
-						woTasks.addAll(emc.fetchEqualAndIn(Task.class, WoTask.copier, Task.job_FIELDNAME, task.getJob(),
-								Task.activityToken_FIELDNAME, activityTokens));
-					}
-					woTasks = ListTools.trim(woTasks, true, true);
-					List<String> identities = new ArrayList<>();
-					for (Entry<String, List<WoTask>> en : woTasks.stream()
-							.collect(Collectors.groupingBy(WoTask::getActivity)).entrySet()) {
-						Wo wo = new Wo();
-						wo.setActivity(en.getValue().get(0).getActivity());
-						wo.setActivityName(en.getValue().get(0).getActivityName());
-						wo.setTaskList(en.getValue());
-						wos.add(wo);
-						for (WoTask o : en.getValue()) {
-							identities.add(o.getIdentity());
-						}
-					}
-					nextTaskIdentityListText = StringUtils.join(ListTools.trim(identities, true, true), ",");
-				}
-			}
-			result.setData(wos);
-		}
-		/* 记录下一处理人信息 */
-		if (StringUtils.isNotEmpty(taskCompletedId) && StringUtils.isNotEmpty(nextTaskIdentityListText)) {
-			TaskCompleted taskCompletedUdateReq = new TaskCompleted();
-			taskCompletedUdateReq.setNextTaskIdentityListText(nextTaskIdentityListText);
-			ThisApplication.context().applications()
-					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("taskcompleted", taskCompletedId, "nexttaskidentitylisttext"),
-							taskCompletedUdateReq, task.getJob())
-					.getData(WrapBoolean.class);
-		}
-
-		audit.log(null, "审批");
+		this.processing();
+		Wo wo = Wo.copier.copy(record);
+		result.setData(wo);
 		return result;
 	}
 
-	private boolean ifAppendTask(Business business, Task task, Wi wi) throws Exception {
+	private void updateRouteNameOpinionMediaOpinion(Task task, Wi wi) {
+		/* 如果有输入新的路由决策覆盖原有决策 */
+		if (StringUtils.isNotEmpty(wi.getRouteName())) {
+			task.setRouteName(wi.getRouteName());
+		}
+		/* 如果有新的流程意见那么覆盖原有流程意见 */
+		if (StringUtils.isNotEmpty(wi.getOpinion())) {
+			task.setOpinion(wi.getOpinion());
+		}
+		/* 强制覆盖多媒体意见 */
+		task.setMediaOpinion(wi.getMediaOpinion());
+	}
+
+	private String type(Business business, Task task, Wi wi) throws Exception {
 		Manual manual = business.manual().pick(task.getActivity());
 		if (null != manual) {
 			Route route = null;
@@ -183,43 +126,218 @@ class ActionProcessing extends BaseAction {
 			}
 			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK))
 					&& StringUtils.equals(manual.getId(), route.getActivity())) {
-				return true;
+				return TYPE_APPENDTASK;
 			}
 		}
-		return false;
+		return TYPE_TASK;
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	private void processing() throws Exception {
+		switch (type) {
+		case TYPE_APPENDTASK:
+			this.processingAppendTask();
+			break;
+		default:
+			this.processingTask();
+			break;
+		}
+	}
 
-		private String activityName;
-		private String activity;
+	private void processingAppendTask() throws Exception {
+		this.processingAppendTask_append();
+		this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_APPENDTASK);
+		this.processing_processingWork(ProcessingAttributes.TYPE_APPENDTASK);
+		this.processing_record(Record.TYPE_APPENDTASK);
+		this.processing_updateTaskCompleted();
+		this.processing_updateTask();
+	}
 
-		private List<WoTask> taskList;
+	private void processingAppendTask_append() throws Exception {
+		WrapAppend req = new WrapAppend();
+		req.setIdentityList(this.wi.getAppendTaskIdentityList());
+		ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", this.task.getId(), "append"), req, this.task.getJob())
+				.getData(WrapStringList.class);
+	}
 
-		public String getActivityName() {
-			return activityName;
+	private void processingTask() throws Exception {
+		this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_TASK);
+		this.processing_processingWork(ProcessingAttributes.TYPE_TASK);
+		this.processing_record(Record.TYPE_TASK);
+		this.processing_updateTaskCompleted();
+		this.processing_updateTask();
+	}
+
+	private String processing_processingTask(String processType) throws Exception {
+		WrapProcessing req = new WrapProcessing();
+		req.setProcessingType(processType);
+		WoId resp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", task.getId(), "processing"), req, task.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionTaskProcessing(task.getId());
+		} else {
+			/* 获得已办id */
+			return resp.getId();
+		}
+	}
+
+	private void processing_processingWork(String type) throws Exception {
+		ProcessingAttributes req = new ProcessingAttributes();
+		req.setIgnoreEmpowerIdentityList(wi.getIgnoreEmpowerIdentityList());
+		req.setType(ProcessingAttributes.TYPE_TASK);
+		req.setSeries(this.series);
+		WoId resp = ThisApplication.context().applications()
+				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", task.getWork(), "processing"), req, task.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionWorkProcessing(task.getId());
+		}
+	}
+
+	private void processing_record(String type) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			final List<String> nextTaskIdentities = new ArrayList<>();
+			record = new Record(workLog, task);
+			record.getProperties().setElapsed(
+					Config.workTime().betweenMinutes(record.getProperties().getStartTime(), record.getRecordTime()));
+			record.setType(type);
+			List<Task> list = emc.fetchEqualAndEqual(Task.class,
+					ListTools.toList(Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
+							Task.job_FIELDNAME, Task.work_FIELDNAME, Task.activity_FIELDNAME,
+							Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME,
+							Task.activityType_FIELDNAME, Task.empowerFromIdentity_FIELDNAME),
+					Task.job_FIELDNAME, task.getJob(), Task.series_FIELDNAME, this.series);
+			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+					.forEach(o -> {
+						Task task = o.getValue().get(0);
+						NextManual nextManual = new NextManual();
+						nextManual.setActivity(task.getActivity());
+						nextManual.setActivityAlias(task.getActivityAlias());
+						nextManual.setActivityName(task.getActivityName());
+						nextManual.setActivityToken(task.getActivityToken());
+						nextManual.setActivityType(task.getActivityType());
+						for (Task t : o.getValue()) {
+							nextManual.getTaskIdentityList().add(t.getIdentity());
+							this.newTasks.add(t);
+							nextTaskIdentities.add(t.getIdentity());
+						}
+						record.getProperties().getNextManualList().add(nextManual);
+					});
+			/* 去重 */
+			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
+			if (null != taskCompleted) {
+				/* 处理完成后在重新写入待办信息 */
+				record.getProperties().setOpinion(taskCompleted.getOpinion());
+				record.getProperties().setRouteName(taskCompleted.getRouteName());
+				record.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
+			}
+		}
+		WoId resp = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "job", this.work.getJob()), record, this.task.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionWorkProcessing(this.work.getId());
+		}
+	}
+
+	private void processing_updateTaskCompleted() throws Exception {
+		/* 记录下一处理人信息 */
+		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
+		req.getTaskCompletedList().add(taskCompletedId);
+		req.setNextTaskIdentityList(record.getProperties().getNextManualTaskIdentityList());
+		ThisApplication.context().applications()
+				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
+				.getData(WrapBoolean.class);
+	}
+
+	private void processing_updateTask() throws Exception {
+		/* 记录上一处理人信息 */
+		if (ListTools.isNotEmpty(newTasks)) {
+			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
+			req.setTaskList(ListTools.extractProperty(newTasks, Task.id_FIELDNAME, String.class, true, true));
+			req.getPrevTaskIdentityList().add(task.getIdentity());
+			ThisApplication.context().applications()
+					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
+					.getData(WrapBoolean.class);
 		}
 
-		public void setActivityName(String activityName) {
-			this.activityName = activityName;
+		List<Task> empowerTasks = new ArrayList<>();
+		for (Task o : newTasks) {
+			if (StringUtils.isNotEmpty(o.getEmpowerFromIdentity())
+					&& (!StringUtils.equals(o.getEmpowerFromIdentity(), o.getIdentity()))) {
+				empowerTasks.add(o);
+			}
 		}
 
-		public String getActivity() {
-			return activity;
+		if (!empowerTasks.isEmpty()) {
+			List<Record> empowerRecords = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				for (Task o : empowerTasks) {
+					empowerRecords.add(createEmpowerRecord(business, o));
+				}
+			}
+			for (Record r : empowerRecords) {
+				WoId resp = ThisApplication.context().applications()
+						.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+								Applications.joinQueryUri("record", "job", this.work.getJob()), r, this.task.getJob())
+						.getData(WoId.class);
+				if (StringUtils.isBlank(resp.getId())) {
+					throw new ExceptionWorkProcessing(this.work.getId());
+				}
+			}
 		}
+	}
 
-		public void setActivity(String activity) {
-			this.activity = activity;
-		}
+	private Record createEmpowerRecord(Business business, Task task) throws Exception {
+		Record o = new Record();
+		o.setType(Record.TYPE_EMPOWER);
+		o.setApplication(task.getApplication());
+		o.setProcess(task.getProcess());
+		o.setJob(task.getJob());
+		o.setCompleted(false);
+		o.setWork(task.getWork());
+		o.setFromActivity(task.getActivity());
+		o.setFromActivityAlias(task.getActivityAlias());
+		o.setFromActivityName(task.getActivityName());
+		o.setFromActivityToken(task.getActivityToken());
+		o.setFromActivityType(task.getActivityType());
+		o.setArrivedActivity(task.getActivity());
+		o.setArrivedActivityAlias(task.getActivityAlias());
+		o.setArrivedActivityName(task.getActivityName());
+		o.setArrivedActivityToken(task.getActivityToken());
+		o.setArrivedActivityType(task.getActivityType());
+		o.getProperties().setEmpowerToPerson(task.getPerson());
+		o.getProperties().setEmpowerToIdentity(task.getIdentity());
+		o.getProperties().setEmpowerToUnit(task.getUnit());
+		o.setIdentity(task.getEmpowerFromIdentity());
+		o.setPerson(business.organization().person().getWithIdentity(o.getIdentity()));
+		o.setUnit(business.organization().unit().getWithIdentity(o.getIdentity()));
+		o.getProperties().setElapsed(0L);
+		NextManual nextManual = new NextManual();
+		nextManual.setActivity(task.getActivity());
+		nextManual.setActivityAlias(task.getActivityAlias());
+		nextManual.setActivityName(task.getActivityName());
+		nextManual.setActivityToken(task.getActivityToken());
+		nextManual.setActivityType(task.getActivityType());
+		o.getProperties().getNextManualList().add(nextManual);
+		o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
+		return o;
+	}
 
-		public List<WoTask> getTaskList() {
-			return taskList;
-		}
+	public static class Wo extends Record {
 
-		public void setTaskList(List<WoTask> taskList) {
-			this.taskList = taskList;
-		}
-
+		private static final long serialVersionUID = -1771383649634969945L;
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 	}
 
 	public static class WoTask extends Task {
@@ -230,47 +348,6 @@ class ActionProcessing extends BaseAction {
 				ListTools.toList(Task.id_FIELDNAME, Task.activity_FIELDNAME, Task.activityName_FIELDNAME,
 						Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME),
 				null);
-
-	}
-
-	public static class ProcessingRequest extends GsonPropertyObject {
-
-		@FieldDescribe("流转类型.")
-		private ProcessingType processingType;
-
-		@FieldDescribe("路由数据.")
-		private JsonElement routeData;
-
-		public JsonElement getRouteData() {
-			return routeData;
-		}
-
-		public void setRouteData(JsonElement routeData) {
-			this.routeData = routeData;
-		}
-
-		public ProcessingType getProcessingType() {
-			return processingType;
-		}
-
-		public void setProcessingType(ProcessingType processingType) {
-			this.processingType = processingType;
-		}
-
-	}
-
-	public static class ReqAppendTask extends GsonPropertyObject {
-
-		@FieldDescribe("添加的待办身份.")
-		private List<String> identityList;
-
-		public List<String> getIdentityList() {
-			return identityList;
-		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
 
 	}
 
@@ -290,6 +367,9 @@ class ActionProcessing extends BaseAction {
 
 		@FieldDescribe("新添加的待办处理人")
 		private List<String> appendTaskIdentityList;
+
+		@FieldDescribe("忽略授权身份")
+		private List<String> ignoreEmpowerIdentityList;
 
 		public List<String> getAppendTaskIdentityList() {
 			return appendTaskIdentityList;
@@ -329,6 +409,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setRouteData(JsonElement routeData) {
 			this.routeData = routeData;
+		}
+
+		public List<String> getIgnoreEmpowerIdentityList() {
+			return ignoreEmpowerIdentityList;
+		}
+
+		public void setIgnoreEmpowerIdentityList(List<String> ignoreEmpowerIdentityList) {
+			this.ignoreEmpowerIdentityList = ignoreEmpowerIdentityList;
 		}
 	}
 

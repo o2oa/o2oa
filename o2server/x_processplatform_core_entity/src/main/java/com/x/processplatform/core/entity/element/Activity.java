@@ -86,6 +86,14 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract void setReviewScriptText(String reviewScriptText);
 
+	public abstract String getDisplayLogScript();
+
+	public abstract void setDisplayLogScript(String displayLogScript);
+
+	public abstract String getDisplayLogScriptText();
+
+	public abstract void setDisplayLogScriptText(String displayLogScriptText);
+
 	public abstract String getGroup();
 
 	public abstract void setGroup(String group);
@@ -174,5 +182,7 @@ public abstract class Activity extends SliceJpaObject {
 	public static final String afterInquireScriptText_FIELDNAME = "afterInquireScriptText";
 	public static final String allowReroute_FIELDNAME = "allowReroute";
 	public static final String allowRerouteTo_FIELDNAME = "allowRerouteTo";
+	public static final String displayLogScript_FIELDNAME = "displayLogScript";
+	public static final String displayLogScriptText_FIELDNAME = "displayLogScriptText";
 
 }

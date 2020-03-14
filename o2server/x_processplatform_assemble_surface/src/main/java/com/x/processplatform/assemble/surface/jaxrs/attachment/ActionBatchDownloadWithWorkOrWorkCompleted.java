@@ -1,11 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import net.sf.ehcache.Element;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +26,7 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompleted.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -78,9 +76,19 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 					fileName = fileName + ".zip";
 				}
 			}
+
+			Map<String, byte[]> map = new HashMap<>();
+			if(StringUtils.isNotEmpty(flag)) {
+				Element element = cache.get(flag);
+				if ((null != element) && (null != element.getObjectValue())) {
+					CacheResultObject ro = (CacheResultObject) element.getObjectValue();
+					map.put(ro.getName(), ro.getBytes());
+				}
+			}
+
 			logger.info("batchDown to {}，att size {}, from work {}",fileName, attachmentList.size(), workId);
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				business.downToZip(readableAttachmentList, os);
+				business.downToZip(readableAttachmentList, os, map);
 				byte[] bs = os.toByteArray();
 				Wo wo = new Wo(bs, this.contentType(false, fileName),
 						this.contentDisposition(false, fileName));

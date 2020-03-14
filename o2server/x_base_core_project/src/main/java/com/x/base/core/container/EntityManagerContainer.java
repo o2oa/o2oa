@@ -470,6 +470,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	public <T extends JpaObject, W extends Object> List<T> listEqualAndNotIn(Class<T> cls, String attribute,
+			Object value, String otherAttribute, Collection<W> otherValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(attribute), value);
+		p = cb.and(p, cb.isNotMember(root.get(otherAttribute), cb.literal(otherValues)));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndEqualAndIn(Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue, String thirdAttribute,
 			Collection<W> thirdValues) throws Exception {
@@ -480,6 +493,21 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(firstAttribute), firstValue);
 		p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
 		p = cb.and(p, cb.isMember(root.get(thirdAttribute), cb.literal(thirdValues)));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject, W extends Object> List<T> listEqualAndEqualAndNotIn(Class<T> cls,
+			String firstAttribute, Object firstValue, String secondAttribute, Object secondValue, String thirdAttribute,
+			Collection<W> thirdValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(firstAttribute), firstValue);
+		p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
+		p = cb.and(p, cb.isNotMember(root.get(thirdAttribute), cb.literal(thirdValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		List<T> list = new ArrayList<>(os);
 		return list;
@@ -573,6 +601,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root)
 				.where(cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.isEmpty() ? null : os.get(0);
+	}
+
+	public <T extends JpaObject> T firstEqualAndEqualAndEqual(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Object otherValue, String thirdAttribute, Object thirdValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.and(cb.equal(root.get(attribute), value),
+				cb.equal(root.get(otherAttribute), otherValue), cb.equal(root.get(thirdAttribute), thirdValue)));
 		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
 		return os.isEmpty() ? null : os.get(0);
 	}
@@ -1059,8 +1099,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	/* 仅在单一数据库可用 */
-	public <T extends JpaObject> List<T> fetch(Class<T> clz, Predicate predicate)
-			throws Exception {
+	public <T extends JpaObject> List<T> fetch(Class<T> clz, Predicate predicate) throws Exception {
 		List<T> os = fetch(clz, JpaObject.singularAttributeField(clz, true, true), predicate);
 		return os;
 	}
@@ -1783,5 +1822,6 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		}
 		return list;
 	}
+
 
 }

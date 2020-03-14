@@ -4,22 +4,36 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.CompiledScript;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Oauth;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.WrapString;
+import com.x.base.core.project.jaxrs.WoSeeOther;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.organization.assemble.authentication.Business;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.OauthCode;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.Role;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitAttribute;
+import com.x.organization.core.entity.UnitDuty;
+
+import net.sf.ehcache.Ehcache;
 
 class ActionAuth extends StandardJaxrsAction {
 
@@ -35,6 +49,9 @@ class ActionAuth extends StandardJaxrsAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if (effectivePerson.isAnonymous()) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			if (!StringUtils.equalsIgnoreCase(response_type, "code")) {
 				throw new ExceptionResponseTypeNotCode(response_type);
 			}
@@ -60,21 +77,21 @@ class ActionAuth extends StandardJaxrsAction {
 			emc.persist(oauthCode, CheckPersistType.all);
 			emc.commit();
 			if (StringUtils.containsAny(redirect_uri, "?", "&")) {
-				redirect_uri += "&code=" + URLEncoder.encode(oauthCode.getId(), DefaultCharset.name);
+				redirect_uri += "&code=" + URLEncoder.encode(oauthCode.getCode(), DefaultCharset.name);
 			} else {
-				redirect_uri += "?code=" + URLEncoder.encode(oauthCode.getId(), DefaultCharset.name);
+				redirect_uri += "?code=" + URLEncoder.encode(oauthCode.getCode(), DefaultCharset.name);
 			}
 			if (StringUtils.isNotEmpty(state)) {
 				redirect_uri += "&state=" + URLEncoder.encode(state, DefaultCharset.name);
 			}
 			Wo wo = new Wo();
-			wo.setValue(redirect_uri);
+			wo.setUrl(redirect_uri);
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends WrapString {
+	public static class Wo extends WoSeeOther {
 
 	}
 

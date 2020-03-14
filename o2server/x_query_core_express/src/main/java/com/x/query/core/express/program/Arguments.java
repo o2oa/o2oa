@@ -9,6 +9,7 @@ public class Arguments {
 
 	private static final String CRAWLUPDATEWORKCOMPLETED = "crawlUpdateWorkCompleted";
 	private static final String CRAWLUPDATEWORK = "crawlUpdateWork";
+	private static final String CRAWLUPDATECMS = "crawlUpdateCms";
 
 	public static String getCrawlUpdateWorkCompleted() throws Exception {
 		return get(CRAWLUPDATEWORKCOMPLETED, String.class);
@@ -24,6 +25,14 @@ public class Arguments {
 
 	public static void setCrawlUpdateWork(String value) throws Exception {
 		set(CRAWLUPDATEWORK, value, String.class);
+	}
+
+	public static String getCrawlUpdateCms() throws Exception {
+		return get(CRAWLUPDATECMS, String.class);
+	}
+
+	public static void setCrawlUpdateCms(String value) throws Exception {
+		set(CRAWLUPDATECMS, value, String.class);
 	}
 
 	private static <T> T get(String name, Class<T> cls) throws Exception {
@@ -47,6 +56,7 @@ public class Arguments {
 			Argument argument = emc.firstEqual(Argument.class, Argument.name_FIELDNAME, name);
 			if (null == argument) {
 				argument = new Argument();
+				argument.setName(name);
 				setValue(argument, value, cls);
 				emc.persist(argument, CheckPersistType.all);
 			} else {

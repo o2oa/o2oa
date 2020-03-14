@@ -40,7 +40,7 @@ public class ActionList extends BaseAction {
 				try {
 					taskLists = taskListQueryService.listWithProject( effectivePerson.getDistinguishedName(), projectId );
 					if( ListTools.isNotEmpty( taskLists )) {
-						wos = Wo.copier.copy( taskLists );						
+						wos = Wo.copier.copy( taskLists );
 						taskListCache.put(new Element(cacheKey, wos));
 						result.setData(wos);
 					}

@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.AppStyle;
 import com.x.base.core.project.config.CenterServer;
@@ -71,7 +70,7 @@ public class CreateConfigSample {
 		classes.add(Vfs.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
-		classes.add(ExternalDataSource.class);
+		//classes.add(ExternalDataSource.class);
 		classes.add(Exmail.class);
 		classes.add(Communicate.class);
 
@@ -91,20 +90,20 @@ public class CreateConfigSample {
 			logger.print("create file:{}.", file.getAbsoluteFile());
 			FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		}
-		convertExternalDataSource2ExternalDataSources(dir);
+		//convertExternalDataSource2ExternalDataSources(dir);
 		renameNode(dir);
 	}
 
-	private static void convertExternalDataSource2ExternalDataSources(File dir) throws Exception, IOException {
-		File file_externalDataSource = new File(dir, "externalDataSource.json");
-		File file_externalDataSources = new File(dir, "externalDataSources.json");
-		JsonElement jsonElement = XGsonBuilder.instance().fromJson(
-				FileUtils.readFileToString(file_externalDataSource, DefaultCharset.charset), JsonElement.class);
-		List<JsonElement> list = new ArrayList<>();
-		list.add(jsonElement);
-		FileUtils.writeStringToFile(file_externalDataSources, XGsonBuilder.toJson(list), DefaultCharset.charset);
-		file_externalDataSource.delete();
-	}
+//	private static void convertExternalDataSource2ExternalDataSources(File dir) throws Exception, IOException {
+//		File file_externalDataSource = new File(dir, "externalDataSources.json");
+//		File file_externalDataSources = new File(dir, "externalDataSources.json");
+//		JsonElement jsonElement = XGsonBuilder.instance().fromJson(
+//				FileUtils.readFileToString(file_externalDataSource, DefaultCharset.charset), JsonElement.class);
+//		List<JsonElement> list = new ArrayList<>();
+//		list.add(jsonElement);
+//		FileUtils.writeStringToFile(file_externalDataSources, XGsonBuilder.toJson(list), DefaultCharset.charset);
+//		file_externalDataSource.delete();
+//	}
 
 	private static void renameNode(File dir) throws Exception, IOException {
 		File file_node = new File(dir, "node.json");

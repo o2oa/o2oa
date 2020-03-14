@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -109,7 +110,10 @@ class ActionGetLogin extends BaseAction {
 
 		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null, Excludes);
 
+		@FieldDescribe("令牌")
 		private String token;
+
+		@FieldDescribe("角色")
 		private List<String> roleList;
 
 		public String getToken() {

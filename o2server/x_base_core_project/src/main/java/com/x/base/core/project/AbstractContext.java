@@ -10,10 +10,10 @@ public abstract class AbstractContext {
 
 	public abstract Applications applications() throws Exception;
 
-	protected static String getName(Class<?> clz) throws Exception {
-		Module module = clz.getAnnotation(Module.class);
-		return module.name();
-	}
+//	protected static String getName(Class<?> clz) throws Exception {
+//		Module module = clz.getAnnotation(Module.class);
+//		return module.name();
+//	}
 
 	/* 应用类 */
 	protected Class<?> clazz;

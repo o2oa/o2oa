@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor.manual;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -25,8 +27,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.utils.time.WorkTime;
-import com.x.processplatform.core.entity.content.Hint;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -36,6 +36,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -67,7 +68,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 						this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-						this.mergeHint(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
 						this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
 						if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
@@ -90,8 +90,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 		Route passSameTargetRoute = aeiObjects.getRoutes().stream()
 				.filter(o -> BooleanUtils.isTrue(o.getPassSameTarget())).findFirst().orElse(null);
 		/* 如果有passSameTarget,有到达ArriveWorkLog,不是调度到这个节点的 */
+//		if ((null != passSameTargetRoute) && ((null != aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
+//				&& (BooleanUtils.isNotTrue(aeiObjects.getWork().getForceRouteArriveCurrentActivity()))) {
 		if ((null != passSameTargetRoute) && ((null != aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
-				&& (BooleanUtils.isNotTrue(aeiObjects.getWork().getForceRouteArriveCurrentActivity()))) {
+				&& (!aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
 			logger.debug("pass same target work:{}.", aeiObjects.getWork());
 			WorkLog rollbackWorkLog = findPassSameTargetWorkLog(aeiObjects);
 			logger.debug("pass same target workLog:{}.", rollbackWorkLog);
@@ -103,7 +105,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 						.forEach(o -> {
 							TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), passSameTargetRoute, o);
 							try {
-								obj.setProcessingType(ProcessingType.sameTarget);
+								obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
 								obj.setRouteName(passSameTargetRoute.getName());
 								Date now = new Date();
 								obj.setStartTime(now);
@@ -127,55 +129,99 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	/* 计算处理人 */
 	private List<String> calculateTaskIdentities(AeiObjects aeiObjects, Manual manual) throws Exception {
-		TaskIdentities taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
-		this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, taskIdentities);
-		this.writeToEmpowerMap(aeiObjects, taskIdentities);
+		TaskIdentities taskIdentities = new TaskIdentities();
+		/* 先计算强制处理人 */
+		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
+			List<String> identities = new ArrayList<>();
+			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
+			identities = aeiObjects.business().organization().identity().list(identities);
+			if (ListTools.isNotEmpty(identities)) {
+				taskIdentities.addIdentities(identities);
+			}
+		}
+		/* 计算退回的结果 */
+		if (taskIdentities.isEmpty()) {
+			Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
+			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_BACK))) {
+				List<String> identities = new ArrayList<>();
+				List<WorkLog> workLogs = new ArrayList<>();
+				workLogs.addAll(aeiObjects.getUpdateWorkLogs());
+				workLogs.addAll(aeiObjects.getCreateWorkLogs());
+				for (WorkLog o : aeiObjects.getWorkLogs()) {
+					if (!workLogs.contains(o)) {
+						workLogs.add(o);
+					}
+				}
+				WorkLogTree tree = new WorkLogTree(workLogs);
+				Node node = tree.location(aeiObjects.getWork());
+				if (null != node) {
+					for (Node n : tree.up(node)) {
+						if (StringUtils.equals(manual.getId(), n.getWorkLog().getFromActivity())) {
+							for (TaskCompleted t : aeiObjects.getTaskCompleteds()) {
+								if (StringUtils.equals(n.getWorkLog().getFromActivityToken(), t.getActivityToken())
+										&& BooleanUtils.isTrue(t.getJoinInquire())) {
+									identities.add(t.getIdentity());
+								}
+							}
+							break;
+						}
+					}
+					identities = aeiObjects.business().organization().identity().list(identities);
+					if (ListTools.isNotEmpty(identities)) {
+						taskIdentities.addIdentities(identities);
+					}
+				}
+			}
+		}
+		if (taskIdentities.isEmpty()) {
+			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, manual, taskIdentities);
+			this.writeToEmpowerMap(aeiObjects, taskIdentities);
+		}
 		return taskIdentities.identities();
 	}
 
 	/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
-	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, TaskIdentities taskIdentities)
-			throws Exception {
+	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, Manual manual,
+			TaskIdentities taskIdentities) throws Exception {
 		if (taskIdentities.isEmpty()) {
 			String identity = aeiObjects.business().organization().identity()
 					.get(aeiObjects.getWork().getCreatorIdentity());
 			if (StringUtils.isNotEmpty(identity)) {
-				logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 强制指定处理人为活动的创建身份:{}.", aeiObjects.getWork().getTitle(),
-						aeiObjects.getWork().getId(), identity);
+				logger.info("{}[{}]未能找到指定的处理人, 标题:{}, id:{}, 强制指定处理人为活动的创建身份:{}.", aeiObjects.getProcess().getName(),
+						manual.getName(), aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), identity);
 				taskIdentities.addIdentity(identity);
 			} else {
 				identity = aeiObjects.business().organization().identity()
 						.get(Config.processPlatform().getMaintenanceIdentity());
 				if (StringUtils.isNotEmpty(identity)) {
-					logger.info("人工活动到达未能找到指定的处理人, 标题:{}, id:{}, 也没有能找到工作创建人,  强制指定处理人为系统维护身份:{}.",
-							aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), identity);
+					logger.info("{}[{}]未能找到指定的处理人, 也没有能找到工作创建人, 标题:{}, id:{},  强制指定处理人为系统维护身份:{}.",
+							aeiObjects.getProcess().getName(), manual.getName(), aeiObjects.getWork().getTitle(),
+							aeiObjects.getWork().getId(), identity);
 					taskIdentities.addIdentity(identity);
 				} else {
 					throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
 							aeiObjects.getActivity().getName(), aeiObjects.getActivity().getId());
 				}
 			}
-			aeiObjects.createHint(
-					Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), (Manual) aeiObjects.getActivity()));
 		}
 	}
 
-	/*
-	 * 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
-	 */
+	/* 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权. */
+
 	private void writeToEmpowerMap(AeiObjects aeiObjects, TaskIdentities taskIdentities) throws Exception {
-		/*
-		 * 先清空EmpowerMap
-		 */
-		aeiObjects.getWork().getManualEmpowerMap().clear();
+		/* 先清空EmpowerMap */
+		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<String, String>());
 		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
 				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
+			List<String> values = taskIdentities.identities();
+			values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
 			taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
 					aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
-					aeiObjects.getWork().getId(), taskIdentities.identities()));
+					aeiObjects.getWork().getId(), values));
 			for (TaskIdentity taskIdentity : taskIdentities) {
 				if (StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
-					aeiObjects.getWork().getManualEmpowerMap().put(taskIdentity.getIdentity(),
+					aeiObjects.getWork().getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
 							taskIdentity.getFromIdentity());
 				}
 			}
@@ -213,7 +259,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
-
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
 
@@ -245,6 +290,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		default:
 			throw new ExceptionManualModeError(manual.getId());
 		}
+
 		if (passThrough) {
 			results.add(aeiObjects.getWork());
 		}
@@ -277,6 +323,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 				}
 			}
 		}
+		if (!results.isEmpty()) {
+			/* 清理掉强制的指定的处理人 */
+			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(new ArrayList<String>());
+		}
+
 		return results;
 	}
 
@@ -355,7 +406,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		boolean passThrough = false;
 		/* 取得本环节已经处理的已办 */
 		List<TaskCompleted> taskCompleteds = this.listJoinInquireTaskCompleted(aeiObjects, identities);
-		/* 存在优先路由 */
+		/* 存在优先路由,如果有人选择了优先路由那么直接流转. */
 		Route soleRoute = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSole())).findFirst()
 				.orElse(null);
 		if (null != soleRoute) {
@@ -367,7 +418,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 				return true;
 			}
 		}
-		/* 存在优先路由结束 */
 		/* 将已经处理的人从期望值中移除 */
 		aeiObjects.getJoinInquireTaskCompleteds().stream().filter(o -> {
 			return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken());
@@ -454,7 +504,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			throws Exception {
 		return aeiObjects.getJoinInquireTaskCompleteds().stream().filter(o -> {
 			return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken())
-					&& identities.contains(o.getIdentity());
+					&& identities.contains(o.getIdentity()) && BooleanUtils.isTrue(o.getJoinInquire());
 		}).collect(Collectors.toList());
 	}
 
@@ -601,7 +651,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-		String fromIdentity = aeiObjects.getWork().getManualEmpowerMap().get(identity);
+		String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
 		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
 		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
@@ -619,7 +669,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			String fromPerson = aeiObjects.business().organization().person().getWithIdentity(fromIdentity);
 			String fromUnit = aeiObjects.business().organization().unit().getWithIdentity(fromIdentity);
 			TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
-			empowerTaskCompleted.setProcessingType(ProcessingType.empower);
+			empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
 			empowerTaskCompleted.setIdentity(fromIdentity);
 			empowerTaskCompleted.setUnit(fromUnit);
 			empowerTaskCompleted.setPerson(fromPerson);

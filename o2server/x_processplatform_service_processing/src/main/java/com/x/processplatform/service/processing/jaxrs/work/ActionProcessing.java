@@ -11,14 +11,15 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 
 class ActionProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		String job;
+
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -35,7 +35,7 @@ public class WorkLogAction extends StandardJaxrsAction {
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
 		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);

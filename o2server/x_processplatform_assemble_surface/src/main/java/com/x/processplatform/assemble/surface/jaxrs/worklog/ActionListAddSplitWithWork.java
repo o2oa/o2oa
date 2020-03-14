@@ -56,7 +56,7 @@ class ActionListAddSplitWithWork extends BaseAction {
 			Stream<Node> splitNodes = nodes.stream().filter(o -> {
 				return Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.split)
 						&& StringUtils.startsWith(StringUtils.join(work.getSplitTokenList(), ","),
-								StringUtils.join(o.getWorkLog().getSplitTokenList(), ","));
+								StringUtils.join(o.getWorkLog().getProperties().getSplitTokenList(), ","));
 			});
 
 			if (business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
@@ -94,7 +94,7 @@ class ActionListAddSplitWithWork extends BaseAction {
 			wos = Wo.copier.copy(os);
 
 			result.setData(wos);
-			
+
 			return result;
 		}
 

@@ -78,7 +78,7 @@ public class WebServerTools extends JettySeverTools {
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 		if (webServer.getCacheControlMaxAge() > 0) {
 			context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl",
-					"max-age=" + webServer.getCacheControlMaxAge());	
+					"max-age=" + webServer.getCacheControlMaxAge());
 		}
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCacheSize", "256000000");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCachedFileSize", "200000000");
@@ -175,6 +175,7 @@ public class WebServerTools extends JettySeverTools {
 			/* 上面的无效 */
 			map.put("app_protocol", "auto");
 			map.put("loginPage", Config.person().getLoginPage());
+			map.put("indexPage", Config.portal().getIndexPage());
 			map.put("webSocketEnable", Config.communicate().wsEnable());
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}

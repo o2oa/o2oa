@@ -1,12 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -34,23 +31,23 @@ public class TaskAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
 
-//	@JaxrsMethodDescribe(value = "抢办.", action = ActionGrab.class)
-//	@GET
-//	@Path("{id}/grab")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void grab(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-//		ActionResult<ActionGrab.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new ActionGrab().execute(effectivePerson, id);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
+	@JaxrsMethodDescribe(value = "更新待办中的上一处理人记录值.", action = ActionUpdatePrevTaskIdentity.class)
+	@PUT
+	@Path("prev/task/identity")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateNextTaskIdentity(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionUpdatePrevTaskIdentity.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUpdatePrevTaskIdentity().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "保存并继续流转.", action = ActionProcessing.class)
 	@PUT
@@ -189,6 +186,42 @@ public class TaskAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUrge().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "V2_重置处理人.", action = V2Reset.class)
+	@PUT
+	@Path("v2/{id}/reset")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2Reset.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Reset().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "提醒.", action = ActionPress.class)
+	@GET
+	@Path("{id}/press")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void press(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionPress.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPress().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -29,9 +29,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Hint;
+import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.SerialNumber;
 import com.x.processplatform.core.entity.content.Task;
@@ -60,9 +62,11 @@ public class ActionEraseContentProcessPlatform {
 		}
 		this.init("processPlatform", ItemCategory.pp);
 		addClass(Attachment.class);
-		addClass(Hint.class);
+		addClass(DocumentVersion.class);
+		addClass(Draft.class);
 		addClass(Read.class);
 		addClass(ReadCompleted.class);
+		addClass(Record.class);
 		addClass(Review.class);
 		addClass(SerialNumber.class);
 		addClass(Task.class);

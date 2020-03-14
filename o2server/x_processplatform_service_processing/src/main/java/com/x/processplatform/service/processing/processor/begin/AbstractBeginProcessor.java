@@ -10,8 +10,6 @@ import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public abstract class AbstractBeginProcessor extends AbstractProcessor {
 	

@@ -71,6 +71,7 @@ public class Config {
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
+	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -1193,6 +1194,23 @@ public class Config {
 			}
 		}
 		return instance().exmail;
+	}
+
+	public Portal portal;
+
+	public static Portal portal() throws Exception {
+		if (null == instance().portal) {
+			synchronized (Config.class) {
+				if (null == instance().portal) {
+					Portal obj = BaseTools.readConfigObject(PATH_CONFIG_PORTAL, Portal.class);
+					if (null == obj) {
+						obj = Portal.defaultInstance();
+					}
+					instance().portal = obj;
+				}
+			}
+		}
+		return instance().portal;
 	}
 
 	public static Object resource(String name) throws Exception {

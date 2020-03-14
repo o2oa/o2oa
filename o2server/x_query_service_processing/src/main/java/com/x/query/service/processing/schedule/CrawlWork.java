@@ -20,6 +20,7 @@ import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
@@ -29,7 +30,7 @@ import com.x.query.core.express.program.Arguments;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 
-public class CrawlWork extends Crawl {
+public class CrawlWork extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(CrawlWork.class);
 
@@ -40,38 +41,33 @@ public class CrawlWork extends Crawl {
 		List<String> update_works = null;
 		List<String> update_references = null;
 		List<String> updates = null;
-		Long workTotal = null;
-		Long entryTotal = null;
+		Long workCount = null;
+		Long entryCount = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			workTotal = emc.count(Work.class);
-			entryTotal = emc.countEqual(Entry.class, Entry.type_FIELDNAME, Entry.TYPE_WORK);
+			workCount = emc.count(Work.class);
+			entryCount = emc.countEqual(Entry.class, Entry.type_FIELDNAME, Entry.TYPE_WORK);
 			add_works = this.listAddWork(business);
 			update_works = this.listUpdateWork(business);
 			update_references = this.listUpdateEntryReference(business);
-			updates = ListUtils.union(ListUtils.union(add_works, update_works), update_references);
+			updates = ListUtils.sum(ListUtils.sum(add_works, update_works), update_references);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 		this.update(updates);
 		logger.print("工作索引器运行完成, 工作总数:{}, 新索引工作数量:{}, 轮询更新工作数量:{}, 已索引条目总数:{}, 已索引条目更新数量:{}, 合并更新数量:{}, 数量限制:{}, 耗时{}.",
-				workTotal, add_works.size(), update_works.size(), entryTotal, update_references.size(), updates.size(),
+				workCount, add_works.size(), update_works.size(), entryCount, update_references.size(), updates.size(),
 				Config.query().getCrawlWork().getCount(), stamp.consumingMilliseconds());
 	}
 
 	private void update(List<String> references) throws Exception {
 		for (String reference : references) {
 			try {
-				try {
-					ThisApplication.context().applications().getQuery(x_query_service_processing.class,
-							Applications.joinQueryUri("segment", "crawl", "work", reference), reference);
-				} catch (Exception e) {
-					throw new ExceptionCrawlWork(e, reference);
-				}
+				ThisApplication.context().applications().getQuery(x_query_service_processing.class,
+						Applications.joinQueryUri("segment", "crawl", "work", reference), reference);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 	}
@@ -103,7 +99,7 @@ public class CrawlWork extends Crawl {
 			p = cb.and(cb.lessThan(root.get(Work.sequence_FIELDNAME), sequence));
 		}
 		cq.select(root.get(Work_.id)).where(p).orderBy(cb.desc(root.get(Work_.sequence)));
-		Integer count = Config.query().getCrawlWork().getCount() / 7;
+		Integer count = Config.query().getCrawlWork().getCount() / 2;
 		List<String> os = em.createQuery(cq).setMaxResults(count).getResultList();
 		if (os.size() == count) {
 			Arguments.setCrawlUpdateWork(os.get(os.size() - 1));
@@ -121,9 +117,9 @@ public class CrawlWork extends Crawl {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Entry> root = cq.from(Entry.class);
-		Predicate p = cb.equal(root.get(Entry_.type), Entry.TYPE_WORKCOMPLETED);
-		cq.select(root.get(Entry_.reference)).where(p).orderBy(cb.asc(root.get(Work_.sequence)));
-		Integer count = Config.query().getCrawlWorkCompleted().getCount() / 7;
+		Predicate p = cb.equal(root.get(Entry_.type), Entry.TYPE_WORK);
+		cq.select(root.get(Entry_.reference)).where(p).orderBy(cb.asc(root.get(Entry_.sequence)));
+		Integer count = Config.query().getCrawlWork().getCount() / 2;
 		List<String> os = em.createQuery(cq).setMaxResults(count).getResultList();
 		return os;
 	}

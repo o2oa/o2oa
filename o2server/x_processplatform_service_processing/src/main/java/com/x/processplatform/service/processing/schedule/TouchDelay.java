@@ -27,7 +27,7 @@ import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.service.processing.ProcessingAttributes;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
 
 import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;

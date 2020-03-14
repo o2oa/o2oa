@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Token.Oauth;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,7 +21,6 @@ class ActionToken extends StandardJaxrsAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String code, String grant_type) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			OauthCode oauthCode = emc.find(code, OauthCode.class);
 			if (StringUtils.isEmpty(code)) {
 				throw new ExceptionCodeEmpty();
 			}
@@ -30,11 +30,17 @@ class ActionToken extends StandardJaxrsAction {
 			if (!StringUtils.equalsIgnoreCase(grant_type, "authorization_code")) {
 				throw new ExceptionGrantTypeNotAuthorizationCode(grant_type);
 			}
+			OauthCode oauthCode = emc.firstEqualAndEqual(OauthCode.class, OauthCode.code_FIELDNAME, code,
+					OauthCode.codeUsed_FIELDNAME, false);
 			if (null == oauthCode) {
 				throw new ExceptionOauthCodeNotExist(code);
+			} else {
+				emc.beginTransaction(OauthCode.class);
+				oauthCode.setCodeUsed(true);
+				emc.commit();
 			}
 			WoToken woToken = new WoToken();
-			woToken.setAccess_token(code);
+			woToken.setAccess_token(oauthCode.getAccessToken());
 			woToken.setExpires_in(3600);
 			Wo wo = new Wo();
 			wo.setText(gson.toJson(woToken));

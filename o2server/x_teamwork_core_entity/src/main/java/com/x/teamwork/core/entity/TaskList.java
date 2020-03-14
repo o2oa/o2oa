@@ -18,7 +18,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
- * 工作任务列表
+ * 工作任务列表（泳道）
  *
  */
 @ContainerEntity
@@ -76,7 +76,7 @@ public class TaskList extends SliceJpaObject {
 	private String taskGroup;
 	
 	public static final String name_FIELDNAME = "name";
-	@FieldDescribe("工作任务列表名称")
+	@FieldDescribe("工作任务列表（泳道）名称")
 	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false)

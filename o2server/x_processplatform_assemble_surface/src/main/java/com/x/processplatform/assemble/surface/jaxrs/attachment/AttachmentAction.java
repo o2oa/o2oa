@@ -710,11 +710,12 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
-			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site, fileName);
+			result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site, fileName, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -730,11 +731,76 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
-			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
+			@JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id") @QueryParam("flag") String flag) {
 		ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site, fileName);
+			result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site, fileName, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "上传工单的表单、审批记录等html信息到缓存", action = ActionUploadWorkInfo.class)
+	@PUT
+	@Path("upload/work/{workId}/save/as/{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void uploadWorkInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+							  @JaxrsParameterDescribe("另存为格式：(0)表示不转换|pdf表示转为pdf|word表示转为word") @PathParam("flag") String flag,
+							   JsonElement jsonElement) {
+		ActionResult<ActionUploadWorkInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadWorkInfo().execute(effectivePerson, workId, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "下载工单的表单、审批记录等html信息", action = ActionDownloadWorkInfo.class)
+	@GET
+	@Path("download/work/{workId}/att/{flag}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadWorkInfo(@Suspended final AsyncResponse asyncResponse,
+													 @Context HttpServletRequest request,
+													 @JaxrsParameterDescribe("*Work或WorkCompleted的工作标识") @PathParam("workId") String workId,
+													 @JaxrsParameterDescribe("*通过uploadWorkInfo上传返回的附件id") @PathParam("flag") String flag){
+		ActionResult<ActionDownloadWorkInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadWorkInfo().execute(effectivePerson, workId, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员上传附件.", action = ActionManageUpload.class)
+	@POST
+	@Path("upload/work/{workId}U/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public void manageUpload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							 @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+							 @JaxrsParameterDescribe("位置") @FormDataParam("site") String site,
+							 @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+							 @JaxrsParameterDescribe("上传到指定用户") @FormDataParam("person") String person,
+							 @JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
+							 @FormDataParam(FILE_FIELD) final byte[] bytes,
+							 @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionManageUpload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageUpload().execute(effectivePerson, workId, site, fileName, bytes, disposition,
+					extraParam, person);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -39,6 +39,6 @@ class V2ListPaging extends V2Base {
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
 		static WrapCopier<Review, Wo> copier = WrapCopierFactory.wo(Review.class, Wo.class,
-				JpaObject.singularAttributeField(Review.class, true, true), JpaObject.FieldsInvisible);
+				JpaObject.singularAttributeField(Review.class, true, false), JpaObject.FieldsInvisible);
 	}
 }

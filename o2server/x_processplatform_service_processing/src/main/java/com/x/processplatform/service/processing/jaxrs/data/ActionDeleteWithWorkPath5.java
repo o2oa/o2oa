@@ -15,7 +15,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath4.Wo;
 
 class ActionDeleteWithWorkPath5 extends BaseAction {
 

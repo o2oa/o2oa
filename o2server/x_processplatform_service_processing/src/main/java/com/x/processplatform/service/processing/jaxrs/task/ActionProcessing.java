@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
-import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,34 +15,27 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.ActionLogger;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.processplatform.core.entity.content.Data;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.service.processing.ApplicationDictHelper;
+import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.ProcessingAttributes;
-import com.x.processplatform.service.processing.ThisApplication;
-import com.x.processplatform.service.processing.WorkContext;
+import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -57,14 +48,14 @@ class ActionProcessing extends BaseAction {
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		String executorSeed = null;
+		String job;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			executorSeed = task.getJob();
+			job = task.getJob();
 		}
 
 		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
@@ -75,7 +66,7 @@ class ActionProcessing extends BaseAction {
 					Business business = new Business(emc);
 					/** 生成默认的Wi,用于生成默认的processType */
 					if (null == wi.getProcessingType()) {
-						wi.setProcessingType(ProcessingType.processing);
+						wi.setProcessingType(TaskCompleted.PROCESSINGTYPE_TASK);
 					}
 					Task task = emc.find(id, Task.class);
 					if (null == task) {
@@ -90,18 +81,24 @@ class ActionProcessing extends BaseAction {
 									|| StringUtils.isNotEmpty(manual.getManualBeforeTaskScriptText())) {
 								Work work = emc.find(task.getWork(), Work.class);
 
-								AeiObjects aeiObjects = new AeiObjects(business, work, manual,
-										new ProcessingConfigurator(), new ProcessingAttributes());
-
 								if (null != work) {
 
+									AeiObjects aeiObjects = new AeiObjects(business, work, manual,
+											new ProcessingConfigurator(), new ProcessingAttributes());
+
 									ScriptContext scriptContext = aeiObjects.scriptContext();
+
+									WorkDataHelper workDataHelper = new WorkDataHelper(
+											business.entityManagerContainer(), work);
 
 									CompiledScript cs = null;
 									cs = business.element().getCompiledScript(task.getApplication(), manual,
 											Business.EVENT_MANUALBEFORETASK);
+
 									cs.eval(scriptContext);
 
+									workDataHelper.update(aeiObjects.getData());
+									
 									emc.commit();
 								}
 							}
@@ -121,15 +118,20 @@ class ActionProcessing extends BaseAction {
 					if (StringUtils.isEmpty(taskCompleted.getOpinion())) {
 						Process process = business.element().get(task.getProcess(), Process.class);
 						if ((null != process) && process.getRouteNameAsOpinion()) {
+							/* 先写入路由意见 */
 							taskCompleted.setOpinion(StringUtils.trimToEmpty(ListTools.parallel(task.getRouteNameList(),
 									task.getRouteName(), task.getRouteOpinionList())));
+							/* 如果路由的名称依然没有获取，那么强制设置为路由名称。 */
+							if (StringUtils.isEmpty(taskCompleted.getOpinion())) {
+								taskCompleted.setOpinion(task.getRouteName());
+							}
 						}
 					}
 					taskCompleted.onPersist();
 					emc.persist(taskCompleted, CheckPersistType.all);
 					emc.remove(task, CheckRemoveType.all);
 					emc.commit();
-					/* 待办执行后脚本 */
+					/* 待办执行后脚本,不能修改数据. */
 					if (null != manual) {
 						if (StringUtils.isNotEmpty(manual.getManualAfterTaskScript())
 								|| StringUtils.isNotEmpty(manual.getManualAfterTaskScriptText())) {
@@ -147,9 +149,7 @@ class ActionProcessing extends BaseAction {
 										Business.EVENT_MANUALAFTERTASK);
 
 								cs.eval(scriptContext);
-								
-								emc.commit();
-							
+
 							}
 						}
 					}
@@ -161,52 +161,14 @@ class ActionProcessing extends BaseAction {
 			}
 		};
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
-	}
-
-	private ScriptContext scriptContext(Business business, Manual manual, Work work, Data data, Task task)
-			throws Exception {
-		ScriptContext scriptContext = new SimpleScriptContext();
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(business, work, manual, task));
-		bindings.put(ScriptFactory.BINDING_NAME_GSON, XGsonBuilder.instance());
-		bindings.put(ScriptFactory.BINDING_NAME_DATA, data);
-		bindings.put(ScriptFactory.BINDING_NAME_ORGANIZATION, business.organization());
-		bindings.put(ScriptFactory.BINDING_NAME_WEBSERVICESCLIENT, new WebservicesClient());
-		bindings.put(ScriptFactory.BINDING_NAME_DICTIONARY,
-				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
-		bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
-		ScriptFactory.initialScriptText().eval(scriptContext);
-		return scriptContext;
 	}
 
 	public static class Wo extends WoId {
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("流转类型.")
-		private ProcessingType processingType;
-
-		@FieldDescribe("路由数据.")
-		private JsonElement routeData;
-
-		public ProcessingType getProcessingType() {
-			return processingType;
-		}
-
-		public void setProcessingType(ProcessingType processingType) {
-			this.processingType = processingType;
-		}
-
-		public JsonElement getRouteData() {
-			return routeData;
-		}
-
-		public void setRouteData(JsonElement routeData) {
-			this.routeData = routeData;
-		}
+	public static class Wi extends WrapProcessing {
 
 	}
 

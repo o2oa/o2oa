@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.Sso;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -49,6 +50,7 @@ class ActionGetEncrypt extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		@FieldDescribe("令牌")
 		private String token;
 
 		public String getToken() {

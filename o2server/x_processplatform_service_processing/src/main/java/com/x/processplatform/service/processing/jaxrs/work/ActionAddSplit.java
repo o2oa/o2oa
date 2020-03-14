@@ -25,17 +25,15 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 
 class ActionAddSplit extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
 
-		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wos = new ArrayList<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
 
@@ -47,9 +45,14 @@ class ActionAddSplit extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
+		Callable<ActionResult<List<Wo>>> callable = new Callable<ActionResult<List<Wo>>>() {
+
+			public ActionResult<List<Wo>> call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+					ActionResult<List<Wo>> result = new ActionResult<>();
+					List<Wo> wos = new ArrayList<>();
+
 					Business business = new Business(emc);
 
 					/* 校验work是否存在 */
@@ -100,7 +103,7 @@ class ActionAddSplit extends BaseAction {
 						workCopy.setActivityName(activity.getName());
 						workCopy.setActivityToken(StringTools.uniqueToken());
 						workCopy.setActivityType(activity.getActivityType());
-						workCopy.setSplitTokenList(arrived.getSplitTokenList());
+						workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
 						workCopy.setSplitToken(arrived.getSplitToken());
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.getManualTaskIdentityList().clear();
@@ -149,14 +152,14 @@ class ActionAddSplit extends BaseAction {
 						Wo wo = wo(business, workCopy);
 						wos.add(wo);
 					}
+					result.setData(wos);
+					return result;
 				}
-				return "";
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
 
-		return result;
 	}
 
 	private Wo wo(Business business, Work copy) throws Exception {

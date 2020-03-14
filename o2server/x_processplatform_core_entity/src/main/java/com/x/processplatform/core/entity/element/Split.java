@@ -64,11 +64,6 @@ public class Split extends Activity {
 
 	/* 更新运行方法 */
 
-	// public static String[] FLA GS = new String[] { "id", "alias" };
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
-
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + group_FIELDNAME)
@@ -357,6 +352,35 @@ public class Split extends Activity {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + scriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String scriptText;
+
+	@IdReference(Script.class)
+	@FieldDescribe("生成displayLog脚本.")
+	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScript;
+
+	@FieldDescribe("生成displayLog脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + displayLogScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String displayLogScriptText;
+
+	public String getDisplayLogScript() {
+		return displayLogScript;
+	}
+
+	public void setDisplayLogScript(String displayLogScript) {
+		this.displayLogScript = displayLogScript;
+	}
+
+	public String getDisplayLogScriptText() {
+		return displayLogScriptText;
+	}
+
+	public void setDisplayLogScriptText(String displayLogScriptText) {
+		this.displayLogScriptText = displayLogScriptText;
+	}
 
 	public String getName() {
 		return name;

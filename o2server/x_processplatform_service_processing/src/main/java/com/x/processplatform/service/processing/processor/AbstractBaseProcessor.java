@@ -88,16 +88,16 @@ public abstract class AbstractBaseProcessor {
 		aeiObjects.getWork().setActivityDescription(aeiObjects.getActivity().getDescription());
 		aeiObjects.getWork().setActivityType(aeiObjects.getActivity().getActivityType());
 		aeiObjects.getWork().setWorkStatus(WorkStatus.processing);
-		aeiObjects.getWork().setDestinationActivity(null);
-		aeiObjects.getWork().setDestinationActivityType(null);
-		aeiObjects.getWork().setDestinationRoute(null);
-		aeiObjects.getWork().setDestinationRouteName(null);
-		aeiObjects.getWork().setErrorRetry(0);
+//		aeiObjects.getWork().setDestinationActivity(null);
+//		aeiObjects.getWork().setDestinationActivityType(null);
+//		aeiObjects.getWork().setDestinationRoute(null);
+//		aeiObjects.getWork().setDestinationRouteName(null);
+//		aeiObjects.getWork().setErrorRetry(0);
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getForm())) {
 			/** 检查表单存在 */
-			Form _form = this.business().element().get(aeiObjects.getActivity().getForm(), Form.class);
-			if (null != _form) {
-				aeiObjects.getWork().setForm(_form.getId());
+			Form form = this.business().element().get(aeiObjects.getActivity().getForm(), Form.class);
+			if (null != form) {
+				aeiObjects.getWork().setForm(form.getId());
 			}
 		}
 	}

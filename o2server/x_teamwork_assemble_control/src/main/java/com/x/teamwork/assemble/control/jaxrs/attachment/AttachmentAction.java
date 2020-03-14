@@ -155,7 +155,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	public void projectAttachmentUpload(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("项目信息ID") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @PathParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionProjectAttachmentUpload.Wo> result = new ActionResult<>();
@@ -177,7 +177,7 @@ public class AttachmentAction extends StandardJaxrsAction{
 	public void taskAttachmentUpload(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("工作任务ID") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("位置") @FormDataParam("site") String site, 
+			@JaxrsParameterDescribe("位置") @PathParam("site") String site, 
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionTaskAttachmentUpload.Wo> result = new ActionResult<>();

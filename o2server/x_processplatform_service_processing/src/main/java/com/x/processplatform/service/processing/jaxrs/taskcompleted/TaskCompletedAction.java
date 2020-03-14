@@ -68,18 +68,17 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新已办中的下一处理人记录值.", action = ActionUpdateNextTaskIdentityListText.class)
+	@JaxrsMethodDescribe(value = "更新已办中的下一处理人记录值.", action = ActionUpdateNextTaskIdentity.class)
 	@PUT
-	@Path("{id}/nexttaskidentitylisttext")
+	@Path("next/task/identity")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateNextTaskIdentityListText(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			JsonElement jsonElement) {
-		ActionResult<ActionUpdateNextTaskIdentityListText.Wo> result = new ActionResult<>();
+	public void updateNextTaskIdentity(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionUpdateNextTaskIdentity.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateNextTaskIdentityListText().execute(effectivePerson, id, jsonElement);
+			result = new ActionUpdateNextTaskIdentity().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

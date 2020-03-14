@@ -1,5 +1,7 @@
 package com.x.base.core.project.test.gson;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 import com.google.gson.JsonElement;
@@ -13,5 +15,10 @@ public class TestClient {
 		JsonElement a = XGsonBuilder.instance().fromJson(aaa, JsonElement.class);
 		JsonElement b = XGsonBuilder.instance().fromJson(bbb, JsonElement.class);
 		System.out.println(XGsonBuilder.merge(a, b));
+	}
+	@Test
+	public void test1() throws Exception {
+		Date date = new Date();
+		System.out.println(date.getTime());
 	}
 }

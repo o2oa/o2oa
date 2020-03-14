@@ -45,6 +45,16 @@ public class CenterServers extends ConcurrentSkipListMap<String, CenterServer> {
 
 	}
 
+	public Entry<String, CenterServer> findByNode(String node) {
+
+		for(Entry<String, CenterServer> entry : this.entrySet()){
+			if(entry.getKey().equals(node)){
+				return entry;
+			}
+		}
+		return null;
+	}
+
 	public CenterServer pirmary() throws Exception {
 		return this.get(Config.resource_node_centersPirmaryNode());
 	}

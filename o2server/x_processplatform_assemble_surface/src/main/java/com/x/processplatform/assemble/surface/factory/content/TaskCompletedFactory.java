@@ -194,52 +194,52 @@ public class TaskCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	/* 获取可以召回的已办点 */
-	public String getAllowRetract(String person, Work work) throws Exception {
-		if (null != work) {
-			Business business = this.business();
-			List<String> ids = business.workLog().listWithArrivedActivityTokenBackward(work.getActivityToken());
-			List<TaskCompleted> taskCompleteds = new ArrayList<>();
-			for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
-				if (o.getFromActivityType().equals(ActivityType.manual)) {
-					List<String> workCompletedIds = business.taskCompleted().listWithPeresonWithActivityToken(person,
-							o.getFromActivityToken());
-					if (!workCompletedIds.isEmpty()) {
-						taskCompleteds
-								.addAll(business.entityManagerContainer().list(TaskCompleted.class, workCompletedIds));
-					}
-				}
-			}
-			for (TaskCompleted o : taskCompleteds) {
-				if (o.getProcessingType() != ProcessingType.reset) {
-					if (forwardAllowRetract(o)) {
-						return o.getId();
-					}
-				}
-			}
-		}
-		return null;
-	}
+//	/* 获取可以召回的已办点 */
+//	public String getAllowRetract(String person, Work work) throws Exception {
+//		if (null != work) {
+//			Business business = this.business();
+//			List<String> ids = business.workLog().listWithArrivedActivityTokenBackward(work.getActivityToken());
+//			List<TaskCompleted> taskCompleteds = new ArrayList<>();
+//			for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
+//				if (o.getFromActivityType().equals(ActivityType.manual)) {
+//					List<String> workCompletedIds = business.taskCompleted().listWithPeresonWithActivityToken(person,
+//							o.getFromActivityToken());
+//					if (!workCompletedIds.isEmpty()) {
+//						taskCompleteds
+//								.addAll(business.entityManagerContainer().list(TaskCompleted.class, workCompletedIds));
+//					}
+//				}
+//			}
+//			for (TaskCompleted o : taskCompleteds) {
+//				if (o.getProcessingType() != ProcessingType.reset) {
+//					if (forwardAllowRetract(o)) {
+//						return o.getId();
+//					}
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
-	private boolean forwardAllowRetract(TaskCompleted taskCompleted) throws Exception {
-		Business business = this.business();
-		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
-		List<ActivityType> deniedActivityTypes = new ArrayList<>();
-		deniedActivityTypes.add(ActivityType.agent);
-		deniedActivityTypes.add(ActivityType.begin);
-		deniedActivityTypes.add(ActivityType.invoke);
-		deniedActivityTypes.add(ActivityType.service);
-		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
-			if (deniedActivityTypes.contains(o.getFromActivityType())) {
-				return false;
-			} else if ((o.getFromActivityType().equals(ActivityType.manual))
-					&& (!StringUtils.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
-					&& o.getConnected() == true) {
-				return false;
-			}
-		}
-		return true;
-	}
+//	private boolean forwardAllowRetract(TaskCompleted taskCompleted) throws Exception {
+//		Business business = this.business();
+//		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
+//		List<ActivityType> deniedActivityTypes = new ArrayList<>();
+//		deniedActivityTypes.add(ActivityType.agent);
+//		deniedActivityTypes.add(ActivityType.begin);
+//		deniedActivityTypes.add(ActivityType.invoke);
+//		deniedActivityTypes.add(ActivityType.service);
+//		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
+//			if (deniedActivityTypes.contains(o.getFromActivityType())) {
+//				return false;
+//			} else if ((o.getFromActivityType().equals(ActivityType.manual))
+//					&& (!StringUtils.equals(o.getFromActivityToken(), taskCompleted.getActivityToken()))
+//					&& o.getConnected() == true) {
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 
 	/** 原用于前台将taskCompleted 绑定到workLog 现废弃 */
 	// public <W extends WorkLog> List<TaskCompleted> listTaskCompleted(W workLog)

@@ -18,7 +18,6 @@ public class ExternalStorageSource extends ConfigObject {
 		this.weight = default_weight;
 		this.name = default_name;
 		this.deepPath = default_deepPath;
-
 	}
 
 	public static ExternalStorageSource defaultInstance() {

@@ -18,6 +18,14 @@
 		</dependency>
 		<dependency>
 			<groupId>o2oa</groupId>
+			<artifactId>x_query_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_cms_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>o2oa</groupId>
 			<artifactId>x_processplatform_core_entity</artifactId>
 		</dependency>
 	</dependencies>

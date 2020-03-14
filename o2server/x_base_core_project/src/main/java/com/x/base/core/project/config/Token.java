@@ -26,8 +26,8 @@ public class Token extends ConfigObject {
 
 	public static final String initPassword = "o2";
 
-	public static final String defaultSslKeyStorePassword = "12345678";
-	public static final String defaultSslKeyManagerPassword = "12345678";
+	public static final String defaultSslKeyStorePassword = "123456";
+	public static final String defaultSslKeyManagerPassword = "123456";
 
 	public static Token defaultInstance() {
 		Token o = new Token();
@@ -221,6 +221,8 @@ public class Token extends ConfigObject {
 		private String qq;
 		private String weibo;
 		private String mobile;
+		private String pinyin;
+		private String pinyinInitial;
 		// private String icon;
 		private List<String> roleList;
 
@@ -304,13 +306,7 @@ public class Token extends ConfigObject {
 			this.roleList = roleList;
 		}
 
-		// public String getIcon() {
-		// return icon;
-		// }
-		//
-		// public void setIcon(String icon) {
-		// this.icon = icon;
-		// }
+ 
 
 		public String getUnique() {
 			return unique;
@@ -326,6 +322,22 @@ public class Token extends ConfigObject {
 
 		public void setDistinguishedName(String distinguishedName) {
 			this.distinguishedName = distinguishedName;
+		}
+
+		public String getPinyin() {
+			return pinyin;
+		}
+
+		public void setPinyin(String pinyin) {
+			this.pinyin = pinyin;
+		}
+
+		public String getPinyinInitial() {
+			return pinyinInitial;
+		}
+
+		public void setPinyinInitial(String pinyinInitial) {
+			this.pinyinInitial = pinyinInitial;
 		}
 
 	}
@@ -359,6 +371,7 @@ public class Token extends ConfigObject {
 			this.enable = false;
 			this.clientId = "";
 			this.mapping = new LinkedHashMap<String, String>();
+
 		}
 
 		@FieldDescribe("是否启用")
@@ -366,6 +379,12 @@ public class Token extends ConfigObject {
 
 		@FieldDescribe("客户端名称")
 		private String clientId;
+
+		@FieldDescribe("密钥")
+		private String clientSecret;
+
+		@FieldDescribe("登录地址")
+		private String loginUrl;
 
 		@FieldDescribe("返回值")
 		private Map<String, String> mapping;
@@ -396,6 +415,23 @@ public class Token extends ConfigObject {
 		public void setEnable(Boolean enable) {
 			this.enable = enable;
 		}
+
+		public String getClientSecret() {
+			return clientSecret;
+		}
+
+		public void setClientSecret(String clientSecret) {
+			this.clientSecret = clientSecret;
+		}
+
+		public String getLoginUrl() {
+			return loginUrl;
+		}
+
+		public void setLoginUrl(String loginUrl) {
+			this.loginUrl = loginUrl;
+		}
+
 	}
 
 	public static class OauthClient extends ConfigObject {

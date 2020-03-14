@@ -22,9 +22,9 @@ import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.SerialNumber;
 import com.x.processplatform.core.entity.content.Task;
@@ -79,10 +79,10 @@ class ActionDelete extends BaseAction {
 			this.delete_read(business, application);
 			this.delete_readCompleted(business, application, onlyRemoveNotCompleted);
 			this.delete_review(business, application, onlyRemoveNotCompleted);
-			this.delete_hint(business, application);
 			this.delete_attachment(business, application, onlyRemoveNotCompleted);
 			this.delete_dataItem(business, application, onlyRemoveNotCompleted);
 			this.delete_serialNumber(business, application);
+			this.delete_record(business, application);
 			this.delete_documentVersion(business, application);
 			this.delete_work(business, application);
 			if (!onlyRemoveNotCompleted) {
@@ -346,7 +346,6 @@ class ActionDelete extends BaseAction {
 			if ((list.size() == 1000) || (i == (ids.size() - 1))) {
 				EntityManager em = emc.beginTransaction(clz);
 				for (String str : list) {
-
 					em.remove(em.find(clz, str));
 				}
 				em.getTransaction().commit();
@@ -417,6 +416,12 @@ class ActionDelete extends BaseAction {
 		this.delete_batch(business.entityManagerContainer(), Work.class, ids);
 	}
 
+	private void delete_record(Business business, Application application) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.application_FIELDNAME,
+				application.getId());
+		this.delete_batch(business.entityManagerContainer(), Record.class, ids);
+	}
+
 	private void delete_documentVersion(Business business, Application application) throws Exception {
 		List<String> ids = business.entityManagerContainer().idsEqual(DocumentVersion.class,
 				DocumentVersion.application_FIELDNAME, application.getId());
@@ -463,11 +468,6 @@ class ActionDelete extends BaseAction {
 				? business.review().listWithApplicationWithCompleted(application.getId(), false)
 				: business.review().listWithApplication(application.getId());
 		this.delete_batch(business.entityManagerContainer(), Review.class, ids);
-	}
-
-	private void delete_hint(Business business, Application application) throws Exception {
-		List<String> ids = business.hint().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), Hint.class, ids);
 	}
 
 }

@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.http.ActionResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -157,7 +159,7 @@ public class Collect extends ConfigObject {
 	public boolean validate()
 			throws ExceptionCollectConnectError, ExceptionCollectDisable, ExceptionCollectValidateFailure, Exception {
 
-		if (Config.collect().getEnable()) {
+		if (!Config.collect().getEnable()) {
 			throw new ExceptionCollectDisable();
 		}
 
@@ -197,6 +199,20 @@ public class Collect extends ConfigObject {
 			throw new ExceptionCollectConnectError();
 		}
 		return true;
+	}
+
+	public boolean connect() throws Exception{
+		if (!Config.collect().getEnable()) {
+			throw new ExceptionCollectDisable();
+		}
+
+		String url = Config.collect().url("/o2_collect_assemble/jaxrs/echo");
+		ActionResponse actionResponse = ConnectionAction.get(url, null);
+		if (Objects.equals(ActionResult.Type.success, actionResponse.getType())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public String url() {

@@ -1,6 +1,7 @@
 package com.x.base.core.project.connection;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +68,14 @@ public class CipherConnectionAction {
 			throws Exception {
 		String addr = application.getUrlJaxrsRoot() + trim(Applications.joinQueryUri(strs));
 		return put(xdebugger, addr, body);
+	}
+
+	public static ActionResponse multiFormPost(Boolean xdebugger, String address, String fileName, byte[] bytes, Map<String, String> map) throws Exception{
+		List<NameValuePair> headers = cipher();
+		if (BooleanUtils.isTrue(xdebugger)) {
+			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+		}
+		return ConnectionAction.multiFormPost(address, headers, fileName, bytes, map);
 	}
 
 	public static List<NameValuePair> cipher() throws Exception {

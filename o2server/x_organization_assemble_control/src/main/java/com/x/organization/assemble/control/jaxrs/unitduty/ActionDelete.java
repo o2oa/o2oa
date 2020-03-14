@@ -8,6 +8,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 
@@ -34,6 +35,11 @@ class ActionDelete extends BaseAction {
 			emc.remove(o, CheckRemoveType.all);
 			emc.commit();
 			ApplicationCache.notify(UnitDuty.class);
+			
+			/**创建 组织变更org消息通信 */
+			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("add", "duty", o, effectivePerson);
+			
 			Wo wo = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);

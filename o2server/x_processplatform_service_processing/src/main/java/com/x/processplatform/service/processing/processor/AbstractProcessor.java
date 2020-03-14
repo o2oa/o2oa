@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Review;
@@ -23,8 +22,8 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.SerialBuilder;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
@@ -66,12 +65,12 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			this.arrive_cleanManualTaskIdentityList(aeiObjects);
 			/* 清空可能的Manual活动授权信息 */
 			this.arrive_cleanManualEmpowerMap(aeiObjects);
-			/* 将强制路由标记进行修改 */
-			work.setForceRouteArriveCurrentActivity(false);
-			if (BooleanUtils.isTrue(work.getForceRoute())) {
-				work.setForceRoute(false);
-				work.setForceRouteArriveCurrentActivity(true);
-			}
+//			/* 将强制路由标记进行修改 */
+//			work.setForceRouteArriveCurrentActivity(false);
+//			if (BooleanUtils.isTrue(work.getForceRoute())) {
+//				work.setForceRoute(false);
+//				work.setForceRouteArriveCurrentActivity(true);
+//			}
 			/* 计算是否经过人工节点 */
 			this.arrive_updateWorkThroughManual(aeiObjects);
 			/* 清空BeforeExecuted活动执行一次事件 */
@@ -121,7 +120,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	}
 
 	private void arrive_cleanManualEmpowerMap(AeiObjects aeiObjects) throws Exception {
-		aeiObjects.getWork().setManualEmpowerMap(new LinkedHashMap<String, String>());
+		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<String, String>());
 	}
 
 	private void arrive_updateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
@@ -200,11 +199,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(workId);
 			}
-			if (BooleanUtils.isTrue(work.getForceRoute())) {
-				/** 如果是调度那么跳过运行 */
-				results.add(work.getId());
-				return results;
-			}
+//			if (BooleanUtils.isTrue(work.getForceRoute())) {
+//				/** 如果是调度那么跳过运行 */
+//				results.add(work.getId());
+//				return results;
+//			}
 			ActivityType activityType = work.getActivityType();
 			if (null == activityType) {
 				throw new ExceptionEmptyActivityType(work.getTitle(), work.getId(), work.getActivityType());
@@ -304,11 +303,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
-			if (BooleanUtils.isTrue(work.getForceRoute())) {
-				/** 如果是调度那么跳过运行 */
-				results.add(work.getId());
-				return results;
-			}
+//			if (BooleanUtils.isTrue(work.getForceRoute())) {
+//				/** 如果是调度那么跳过运行 */
+//				results.add(work.getId());
+//				return results;
+//			}
 			/* 运行查询路由前脚本 */
 			this.callBeforeInquireScript(aeiObjects);
 			/*

@@ -14,6 +14,7 @@ import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import net.sf.ehcache.Element;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +25,7 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompletedStream.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -74,9 +75,19 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 					fileName = fileName + ".zip";
 				}
 			}
-			logger.info("batchDown to {}，att size {}, from work {}",fileName, attachmentList.size(), workId);
+
+			Map<String, byte[]> map = new HashMap<>();
+			if(StringUtils.isNotEmpty(flag)) {
+				Element element = cache.get(flag);
+				if ((null != element) && (null != element.getObjectValue())) {
+					CacheResultObject ro = (CacheResultObject) element.getObjectValue();
+					map.put(ro.getName(), ro.getBytes());
+				}
+			}
+
+			logger.info("batchDown to {}，att size {}, from work {}, has form {}",fileName, attachmentList.size(), workId, map.size());
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				business.downToZip(readableAttachmentList, os);
+				business.downToZip(readableAttachmentList, os, map);
 				byte[] bs = os.toByteArray();
 				Wo wo = new Wo(bs, this.contentType(true, fileName),
 						this.contentDisposition(true, fileName));

@@ -7,6 +7,6 @@ class ExceptionIdentityEmpty extends PromptException {
 	private static final long serialVersionUID = 1040883405179987063L;
 
 	ExceptionIdentityEmpty() {
-		super("identity can not be empty.");
+		super("身份不能为空.");
 	}
 }

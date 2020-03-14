@@ -75,7 +75,7 @@ public class TaskListRele extends SliceJpaObject {
 	private String taskGroupId;
 	
 	public static final String taskListId_FIELDNAME = "taskListId";
-	@FieldDescribe("工作任务列表ID")
+	@FieldDescribe("工作任务列表（泳道）ID")
 	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + taskListId_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + taskListId_FIELDNAME)
 	@CheckPersist( allowEmpty = false)

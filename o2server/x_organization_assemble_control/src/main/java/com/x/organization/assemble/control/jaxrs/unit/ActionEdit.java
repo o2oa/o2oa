@@ -11,14 +11,18 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -26,8 +30,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.ThisApplication;
+import com.x.organization.assemble.control.message.OrgBodyMessage;
+import com.x.organization.assemble.control.message.OrgMessage;
+import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
 
@@ -55,6 +64,10 @@ class ActionEdit extends BaseAction {
 			/** pick出来的对象需要重新取出 */
 			emc.beginTransaction(Unit.class);
 			unit = emc.find(unit.getId(), Unit.class);
+			
+			Gson gsontool = new Gson();
+			String strOriginalUnit = gsontool.toJson(unit);
+			
 			unit.setControllerList(ListTools.extractProperty(business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
 					JpaObject.id_FIELDNAME, String.class, true, true));
 			Wi.copier.copy(wi, unit);
@@ -70,9 +83,13 @@ class ActionEdit extends BaseAction {
 			emc.check(unit, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Unit.class);
-
+			
 			this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
 
+			/**创建 组织变更org消息通信 */
+			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("modfiy", "unit",strOriginalUnit, unit, effectivePerson);
+			
 			Wo wo = new Wo();
 			wo.setId(unit.getId());
 			result.setData(wo);
@@ -187,5 +204,7 @@ class ActionEdit extends BaseAction {
 
 		}
 	}
+	
+	
 
 }

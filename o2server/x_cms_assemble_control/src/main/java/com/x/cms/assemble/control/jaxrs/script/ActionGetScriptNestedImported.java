@@ -12,8 +12,6 @@ import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Script;
@@ -22,9 +20,9 @@ import net.sf.ehcache.Element;
 
 class ActionGetScriptNestedImported extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ScriptAction.class);
+//	private static Logger logger = LoggerFactory.getLogger(ScriptAction.class);
 
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String uniqueName,
 			String flag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

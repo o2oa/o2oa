@@ -12,9 +12,10 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Hint;
+import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -42,7 +43,8 @@ public class ActionDelete extends BaseAction {
 					emc.beginTransaction(Item.class);
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(WorkCompleted.class);
-					emc.beginTransaction(Hint.class);
+					emc.beginTransaction(DocumentVersion.class);
+					emc.beginTransaction(Record.class);
 					for (Task o : emc.listEqual(Task.class, Task.job_FIELDNAME, job)) {
 						emc.remove(o);
 					}
@@ -56,9 +58,6 @@ public class ActionDelete extends BaseAction {
 						emc.remove(o);
 					}
 					for (Review o : emc.listEqual(Review.class, Review.job_FIELDNAME, job)) {
-						emc.remove(o);
-					}
-					for (Hint o : emc.listEqual(Hint.class, Hint.job_FIELDNAME, job)) {
 						emc.remove(o);
 					}
 					/* 删除所有附件 */
@@ -84,6 +83,18 @@ public class ActionDelete extends BaseAction {
 						wos.add(wo);
 					}
 					for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
+						emc.remove(o);
+						Wo wo = new Wo();
+						wo.setId(o.getId());
+						wos.add(wo);
+					}
+					for (DocumentVersion o : emc.listEqual(DocumentVersion.class, DocumentVersion.job_FIELDNAME, job)) {
+						emc.remove(o);
+						Wo wo = new Wo();
+						wo.setId(o.getId());
+						wos.add(wo);
+					}
+					for (Record o : emc.listEqual(Record.class, Record.job_FIELDNAME, job)) {
 						emc.remove(o);
 						Wo wo = new Wo();
 						wo.setId(o.getId());

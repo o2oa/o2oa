@@ -262,8 +262,8 @@ public class LogLevel extends ConfigObject {
 		@FieldDescribe("审计日志归属系统名称")
 		private String systemName;
 
-		@FieldDescribe("审计日志归属省份")
-		private String companycode;
+		@FieldDescribe("扩展字段1")
+		private String extend1;
 
 		public Boolean enable() {
 			return BooleanUtils.isTrue(this.enable);
@@ -286,8 +286,13 @@ public class LogLevel extends ConfigObject {
 
 		public void setSystemName(String systemName) { this.systemName = systemName; }
 
-		public String getCompanycode() { return companycode; }
 
-		public void setCompanycode(String companycode) { this.companycode = companycode; }
+		public String getExtend1() {
+			return extend1;
+		}
+
+		public void setExtend1(String extend1) {
+			this.extend1 = extend1;
+		}
 	}
 }

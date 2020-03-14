@@ -1,7 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,14 +22,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.PersistentMap;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.KeyColumn;
-import org.apache.openjpa.persistence.jdbc.KeyIndex;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -90,20 +89,29 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	/* 更新运行方法 */
 
 	public Work() {
-
+		this.properties = new WorkProperties();
 	}
 
 	public Work(Work work) throws Exception {
+		this();
 		Work copy = XGsonBuilder.convert(work, Work.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
 		this.copyProjectionFields(work);
 	}
 
 	public Work(WorkCompleted workCompleted) throws Exception {
+		this();
 		Work copy = XGsonBuilder.convert(workCompleted, Work.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
 		this.setId(workCompleted.getWork());
 		this.copyProjectionFields(workCompleted);
+	}
+
+	public WorkProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new WorkProperties();
+		}
+		return this.properties;
 	}
 
 	public void setTitle(String title) {
@@ -125,12 +133,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;
-		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
+		if (ListTools.isEmpty(manualTaskIdentityList)) {
 			this.manualTaskIdentityText = "";
 		} else {
 			String text = StringUtils.join(OrganizationDefinition.name(manualTaskIdentityList), ",");
 			text = StringTools.utf8SubString(text, length_255B);
 			this.setManualTaskIdentityText(text);
+			// this.manualTaskIdentityText = text;
 		}
 	}
 
@@ -329,32 +338,17 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = false)
 	private WorkStatus workStatus;
 
-	public static final String errorRetry_FIELDNAME = "errorRetry";
-	@FieldDescribe("重试次数.")
-	@Column(name = ColumnNamePrefix + errorRetry_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private Integer errorRetry;
+//	public static final String errorRetry_FIELDNAME = "errorRetry";
+//	@FieldDescribe("重试次数.")
+//	@Column(name = ColumnNamePrefix + errorRetry_FIELDNAME)
+//	@CheckPersist(allowEmpty = false)
+//	private Integer errorRetry;
 
 	public static final String beforeExecuted_FIELDNAME = "beforeExecuted";
 	@FieldDescribe("是否已经通过执行前")
 	@Column(name = ColumnNamePrefix + beforeExecuted_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean beforeExecuted;
-
-	/** Manual Attribute */
-
-	public static final String manualEmpowerMap_FIELDNAME = "manualEmpowerMap";
-	@FieldDescribe("人员授权Map类型.")
-	@CheckPersist(allowEmpty = true)
-	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ manualEmpowerMap_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME
-					+ JoinIndexNameSuffix))
-	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualEmpowerMap_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME + ElementIndexNameSuffix)
-	@KeyIndex(name = TABLE + IndexNameMiddle + manualEmpowerMap_FIELDNAME + KeyIndexNameSuffix)
-	private LinkedHashMap<String, String> manualEmpowerMap;
 
 	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
 	@FieldDescribe("预期的处理人")
@@ -367,6 +361,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> manualTaskIdentityList;
+	// private List<String> manualTaskIdentityList = new ArrayList<>();
 
 	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
@@ -445,17 +440,17 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private String destinationActivity;
 
-	public static final String forceRoute_FIELDNAME = "forceRoute";
-	@FieldDescribe("强制路由，用于调度等需要跳过执行环节直接进行的.")
-	@Column(name = ColumnNamePrefix + forceRoute_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean forceRoute;
-
-	public static final String forceRouteArriveCurrentActivity_FIELDNAME = "forceRouteArriveCurrentActivity";
-	@FieldDescribe("是否是强制路由进入当前节点.")
-	@Column(name = ColumnNamePrefix + forceRouteArriveCurrentActivity_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean forceRouteArriveCurrentActivity;
+//	public static final String forceRoute_FIELDNAME = "forceRoute";
+//	@FieldDescribe("强制路由，用于调度等需要跳过执行环节直接进行的.")
+//	@Column(name = ColumnNamePrefix + forceRoute_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private Boolean forceRoute;
+//
+//	public static final String forceRouteArriveCurrentActivity_FIELDNAME = "forceRouteArriveCurrentActivity";
+//	@FieldDescribe("是否是强制路由进入当前节点.")
+//	@Column(name = ColumnNamePrefix + forceRouteArriveCurrentActivity_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private Boolean forceRouteArriveCurrentActivity;
 
 	public static final String expireTime_FIELDNAME = "expireTime";
 	@FieldDescribe("任务截止时间.")
@@ -471,6 +466,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + embedTargetWork_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String embedTargetWork;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private WorkProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -842,13 +845,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.form = form;
 	}
 
-	public Integer getErrorRetry() {
-		return errorRetry;
-	}
-
-	public void setErrorRetry(Integer errorRetry) {
-		this.errorRetry = errorRetry;
-	}
+//	public Integer getErrorRetry() {
+//		return errorRetry;
+//	}
+//
+//	public void setErrorRetry(Integer errorRetry) {
+//		this.errorRetry = errorRetry;
+//	}
 
 	public String getDestinationRoute() {
 		return destinationRoute;
@@ -942,13 +945,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.serviceValue = serviceValue;
 	}
 
-	public Boolean getForceRoute() {
-		return forceRoute;
-	}
-
-	public void setForceRoute(Boolean forceRoute) {
-		this.forceRoute = forceRoute;
-	}
+//	public Boolean getForceRoute() {
+//		return forceRoute;
+//	}
+//
+//	public void setForceRoute(Boolean forceRoute) {
+//		this.forceRoute = forceRoute;
+//	}
 
 	public Date getExpireTime() {
 		return expireTime;
@@ -1002,13 +1005,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.activityDescription = activityDescription;
 	}
 
-	public Boolean getForceRouteArriveCurrentActivity() {
-		return forceRouteArriveCurrentActivity;
-	}
-
-	public void setForceRouteArriveCurrentActivity(Boolean forceRouteArriveCurrentActivity) {
-		this.forceRouteArriveCurrentActivity = forceRouteArriveCurrentActivity;
-	}
+//	public Boolean getForceRouteArriveCurrentActivity() {
+//		return forceRouteArriveCurrentActivity;
+//	}
+//
+//	public void setForceRouteArriveCurrentActivity(Boolean forceRouteArriveCurrentActivity) {
+//		this.forceRouteArriveCurrentActivity = forceRouteArriveCurrentActivity;
+//	}
 
 	public Boolean getDataChanged() {
 		return dataChanged;
@@ -1294,12 +1297,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.workCreateType = workCreateType;
 	}
 
-	public LinkedHashMap<String, String> getManualEmpowerMap() {
-		return manualEmpowerMap;
-	}
-
-	public void setManualEmpowerMap(LinkedHashMap<String, String> manualEmpowerMap) {
-		this.manualEmpowerMap = manualEmpowerMap;
+	public void setProperties(WorkProperties properties) {
+		this.properties = properties;
 	}
 
 }

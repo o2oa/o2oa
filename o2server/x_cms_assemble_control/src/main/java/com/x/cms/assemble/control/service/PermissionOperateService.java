@@ -53,9 +53,11 @@ public class PermissionOperateService {
 		} else {
 			for( PermissionInfo p : readerList ) {
 //				System.out.println(">>>>>readerList:" + p.getPermissionObjectCode());
-				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
+				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectCode(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
-					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
+					if( StringUtils.isEmpty( new_permissionInfo.getPermissionObjectCode() )) {
+						new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
+					}					
 					permissionList.add( new_permissionInfo );
 				}
 			}
@@ -65,15 +67,35 @@ public class PermissionOperateService {
 		if ( authorList != null && !authorList.isEmpty() ) {
 			for( PermissionInfo p : authorList ) {
 //				System.out.println(">>>>>authorList:" + p.getPermissionObjectCode());
-				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
-				if( new_permissionInfo != null ) {
-					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
-					permissionList.add( new_permissionInfo );
-				}				
+				//如果p是所有人，那么需要判断一下，是否存在不是所有人的读者，如果存在就不能添加所有人可见
+				Boolean existsReaderPermission = false;
+				if( StringUtils.equals( p.getPermissionObjectCode(), "所有人")) {
+					//判断是否存在不是所有人可见的权限
+					for(  PermissionInfo p1 : permissionList ) {
+						if( ( StringUtils.equals( p1.getPermission(), "读者") || StringUtils.equals( p1.getPermission(), "阅读"))
+								&& !StringUtils.equals( p1.getPermissionObjectCode(),  "所有人" )) {
+							existsReaderPermission = true;
+						}
+					}
+				}
+				
+				if( !existsReaderPermission ) {
+					new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectCode(), p.getPermissionObjectName() );
+					if( new_permissionInfo != null ) {
+						if( StringUtils.isEmpty( new_permissionInfo.getPermissionObjectCode() )) {
+							new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
+						}
+						permissionList.add( new_permissionInfo );
+					}
+				}
+				
+								
 				//添加作者信息，作者可以对文档进行编辑
-				new_permissionInfo = createPermissionInfo( PermissionName.AUTHOR, p.getPermissionObjectType(), p.getPermissionObjectName(), p.getPermissionObjectName() );
+				new_permissionInfo = createPermissionInfo( PermissionName.AUTHOR, p.getPermissionObjectType(), p.getPermissionObjectCode(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
-					new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
+					if( StringUtils.isEmpty( new_permissionInfo.getPermissionObjectCode() )) {
+						new_permissionInfo.setPermissionObjectCode( new_permissionInfo.getPermissionObjectName() );
+					}
 					permissionList.add( new_permissionInfo );
 				}
 			}

@@ -1,18 +1,8 @@
 package com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.alibaba.druid.util.StringUtils;
 import com.x.attendance.assemble.control.exception.PersonHasNoIdentityException;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionCanNotFindTopUnitNameByPerson;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionCanNotFindUnitNameByPerson;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionCycleMonthEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionCycleYearEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionGetTopUnitNameByPerson;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionGetUnitNameByPerson;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionStatisticCycleProcess;
+import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.*;
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.entity.JpaObject;
@@ -22,6 +12,10 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 public class ActionCycleDetail extends BaseAction {
 
@@ -53,11 +47,11 @@ public class ActionCycleDetail extends BaseAction {
 		}
 		if (check) {
 			try {
+				logger.info("++++++++尝试获取人员的顶级组织：personName:" + effectivePerson.getDistinguishedName() );
 				topUnitName = userManagerService.getTopUnitNameWithPersonName(effectivePerson.getDistinguishedName());
-				if (topUnitName == null || topUnitName.isEmpty()) {
+				if ( StringUtils.isEmpty( topUnitName ) ) {
 					check = false;
-					Exception exception = new ExceptionCanNotFindTopUnitNameByPerson(
-							effectivePerson.getDistinguishedName());
+					Exception exception = new ExceptionCanNotFindTopUnitNameByPerson( effectivePerson.getDistinguishedName());
 					result.error(exception);
 				}
 			} catch (PersonHasNoIdentityException e) {
@@ -74,10 +68,9 @@ public class ActionCycleDetail extends BaseAction {
 		if (check) {
 			try {
 				unitName = userManagerService.getUnitNameWithPersonName(effectivePerson.getDistinguishedName());
-				if (unitName == null || unitName.isEmpty()) {
+				if ( StringUtils.isEmpty( unitName ) ) {
 					check = false;
-					Exception exception = new ExceptionCanNotFindUnitNameByPerson(
-							effectivePerson.getDistinguishedName());
+					Exception exception = new ExceptionCanNotFindUnitNameByPerson( effectivePerson.getDistinguishedName());
 					result.error(exception);
 				}
 			} catch (PersonHasNoIdentityException e) {
@@ -93,8 +86,7 @@ public class ActionCycleDetail extends BaseAction {
 		}
 		if (check) {
 			try {
-				allCycleMap = attendanceStatisticalCycleServiceAdv
-						.getCycleMapFormAllCycles(effectivePerson.getDebugger());
+				allCycleMap = attendanceStatisticalCycleServiceAdv.getCycleMapFormAllCycles(effectivePerson.getDebugger());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionStatisticCycleProcess(e, "系统在查询并且组织所有的统计周期时发生异常.");

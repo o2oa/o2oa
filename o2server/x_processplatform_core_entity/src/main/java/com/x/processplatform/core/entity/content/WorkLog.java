@@ -1,7 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,14 +10,12 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -82,7 +79,7 @@ public class WorkLog extends SliceJpaObject {
 		o.setSplitting(work.getSplitting());
 		o.setSplitToken(work.getSplitToken());
 		o.setSplitValue(work.getSplitValue());
-		o.setSplitTokenList(work.getSplitTokenList());
+		o.getProperties().setSplitTokenList(work.getSplitTokenList());
 		o.setFromTime(date);
 		o.setCompleted(false);
 		o.setConnected(false);
@@ -90,12 +87,20 @@ public class WorkLog extends SliceJpaObject {
 	}
 
 	public WorkLog() {
-
+		this.properties = new WorkLogProperties();
 	}
 
 	public WorkLog(WorkLog workLog) throws Exception {
+		this();
 		WorkLog copy = XGsonBuilder.convert(workLog, WorkLog.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
+	}
+
+	public WorkLogProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new WorkLogProperties();
+		}
+		return this.properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -199,7 +204,7 @@ public class WorkLog extends SliceJpaObject {
 	private ActivityType arrivedActivityType;
 
 	public static final String arrivedActivityName_FIELDNAME = "arrivedActivityName";
-	@FieldDescribe("结束活动名称。")
+	@FieldDescribe("结束活动名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ arrivedActivityName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + arrivedActivityName_FIELDNAME)
@@ -207,14 +212,14 @@ public class WorkLog extends SliceJpaObject {
 	private String arrivedActivityName;
 
 	public static final String arrivedActivityAlias_FIELDNAME = "arrivedActivityAlias";
-	@FieldDescribe("结束活动名称。")
+	@FieldDescribe("结束活动名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + arrivedActivityAlias_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + arrivedActivityAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivityAlias;
 
 	public static final String arrivedActivityToken_FIELDNAME = "arrivedActivityToken";
-	@FieldDescribe("开始节点Token")
+	@FieldDescribe("结束活动Token.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivityToken_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -342,16 +347,24 @@ public class WorkLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String splitWork;
 
-	/** 不需要索引 */
-	public static final String splitTokenList_FIELDNAME = "splitTokenList";
-	@FieldDescribe("拆分工作产生的Token")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)
+//	/** 不需要索引 */
+//	public static final String splitTokenList_FIELDNAME = "splitTokenList";
+//	@FieldDescribe("拆分工作产生的Token")
+//	@PersistentCollection(fetch = FetchType.EAGER)
+//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+//	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
+//			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
+//	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private List<String> splitTokenList;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private List<String> splitTokenList;
+	private WorkLogProperties properties;
 
 	public String getJob() {
 		return job;
@@ -553,13 +566,13 @@ public class WorkLog extends SliceJpaObject {
 		this.splitValue = splitValue;
 	}
 
-	public List<String> getSplitTokenList() {
-		return splitTokenList;
-	}
-
-	public void setSplitTokenList(List<String> splitTokenList) {
-		this.splitTokenList = splitTokenList;
-	}
+//	public List<String> getSplitTokenList() {
+//		return splitTokenList;
+//	}
+//
+//	public void setSplitTokenList(List<String> splitTokenList) {
+//		this.splitTokenList = splitTokenList;
+//	}
 
 	public String getApplicationAlias() {
 		return applicationAlias;
@@ -635,6 +648,10 @@ public class WorkLog extends SliceJpaObject {
 
 	public static String getArrivedopiniongroupFieldname() {
 		return arrivedOpinionGroup_FIELDNAME;
+	}
+
+	public void setProperties(WorkLogProperties properties) {
+		this.properties = properties;
 	}
 
 }

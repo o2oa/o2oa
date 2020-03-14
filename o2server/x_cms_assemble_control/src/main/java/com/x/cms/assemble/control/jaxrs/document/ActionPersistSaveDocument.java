@@ -192,7 +192,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 					document.setCreatorTopUnitName("xadmin");
 				} else {
 					//取第一个身份
-					identity = userManagerService.getIdentityWithPerson(effectivePerson.getDistinguishedName());
+					identity = userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName());
 					if( StringUtils.isNotEmpty(identity) ) {
 						document.setCreatorIdentity( identity );
 						document.setCreatorPerson( effectivePerson.getDistinguishedName() );

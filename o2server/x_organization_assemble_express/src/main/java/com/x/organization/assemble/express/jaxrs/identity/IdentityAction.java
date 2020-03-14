@@ -227,7 +227,7 @@ public class IdentityAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "批量查询群组对应的身份对象,个人如果在组织中没有指定,那么取主身份,组织不递归..", action = ActionListWithGroupObject.class)
+	@JaxrsMethodDescribe(value = "批量查询群组对应的身份对象,个人如果在组织中没有指定,那么取主身份,组织不递归.", action = ActionListWithGroupObject.class)
 	@POST
 	@Path("list/group/object")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -238,6 +238,42 @@ public class IdentityAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithGroupObject().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量查询个人的主身份.", action = ActionListMajorWithPerson.class)
+	@POST
+	@Path("list/major/person")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMajorWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionListMajorWithPerson.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListMajorWithPerson().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量查询个人的主身份对象.", action = ActionListMajorWithPersonObject.class)
+	@POST
+	@Path("list/major/person/object")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMajorWithPersonObject(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<List<ActionListMajorWithPersonObject.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListMajorWithPersonObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

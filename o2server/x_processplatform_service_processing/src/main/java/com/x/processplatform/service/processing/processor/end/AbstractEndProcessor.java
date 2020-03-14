@@ -115,17 +115,6 @@ public abstract class AbstractEndProcessor extends AbstractProcessor {
 		}
 	}
 
-	protected void mergeHint(AeiObjects aeiObjects, Work work, Work target) {
-		try {
-			aeiObjects.getHints().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
-				o.setWork(target.getId());
-				aeiObjects.getUpdateHints().add(o);
-			});
-		} catch (Exception e) {
-			logger.error(e);
-		}
-	}
-
 	protected void mergeAttachment(AeiObjects aeiObjects, Work work, Work target) {
 		try {
 			aeiObjects.getAttachments().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId()))

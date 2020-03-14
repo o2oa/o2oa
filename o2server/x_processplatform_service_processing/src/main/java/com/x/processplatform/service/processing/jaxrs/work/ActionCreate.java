@@ -85,7 +85,7 @@ class ActionCreate extends BaseAction {
 		work.setProcessAlias(process.getAlias());
 		work.setJob(StringTools.uniqueToken());
 		work.setStartTime(now);
-		work.setErrorRetry(0);
+//		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.start);
 		work.setDestinationActivity(begin.getId());
 		work.setDestinationActivityType(ActivityType.begin);

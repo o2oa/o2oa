@@ -12,6 +12,7 @@ import javax.persistence.FlushModeType;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JsonProperties;
 
 public abstract class EntityManagerContainerBasic implements AutoCloseable {
 
@@ -151,6 +152,9 @@ public abstract class EntityManagerContainerBasic implements AutoCloseable {
 		}
 		if (field.getType().isEnum()) {
 			return FieldType.enumValue;
+		}
+		if (JsonProperties.class.isAssignableFrom(field.getType())) {
+			return FieldType.JsonPropertiesValue;
 		}
 		throw new Exception("unknow filed type{name:" + field.getName() + "}.");
 	}

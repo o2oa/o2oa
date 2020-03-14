@@ -18,7 +18,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
- * 工作关联信息
+ * 工作关联信息（关联其他系统的文档或者信息ID）
  * 
  * @author O2LEE
  *

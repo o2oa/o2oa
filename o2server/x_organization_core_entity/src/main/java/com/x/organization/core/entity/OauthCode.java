@@ -1,7 +1,5 @@
 package com.x.organization.core.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,6 +15,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.StringTools;
 
 @Entity
 @ContainerEntity
@@ -47,6 +46,15 @@ public class OauthCode extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+
+	}
+
+	public OauthCode() {
+
+		this.codeUsed = false;
+		this.accessToken = StringTools.uniqueToken();
+		this.code = StringTools.uniqueToken();
+
 	}
 
 	/* 更新运行方法 */
@@ -63,7 +71,7 @@ public class OauthCode extends SliceJpaObject {
 	@FieldDescribe("绑定的用户.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + person_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
+	@CheckPersist(allowEmpty = false)
 	private String person;
 
 	public static final String scope_FIELDNAME = "scope";
@@ -72,6 +80,26 @@ public class OauthCode extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + scope_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String scope;
+
+	public static final String code_FIELDNAME = "code";
+	@FieldDescribe("认证code.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + code_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + code_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String code;
+
+	public static final String accessToken_FIELDNAME = "accessToken";
+	@FieldDescribe("accessToken.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + accessToken_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String accessToken;
+
+	public static final String codeUsed_FIELDNAME = "codeUsed";
+	@FieldDescribe("code是否已经使用过.")
+	@Index(name = TABLE + IndexNameMiddle + codeUsed_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	@Column(name = ColumnNamePrefix + codeUsed_FIELDNAME)
+	private Boolean codeUsed;
 
 	/** flag标志位 */
 
@@ -98,5 +126,31 @@ public class OauthCode extends SliceJpaObject {
 	public void setPerson(String person) {
 		this.person = person;
 	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public Boolean getCodeUsed() {
+		return codeUsed;
+	}
+
+	public void setCodeUsed(Boolean codeUsed) {
+		this.codeUsed = codeUsed;
+	}
+	
+	
 
 }

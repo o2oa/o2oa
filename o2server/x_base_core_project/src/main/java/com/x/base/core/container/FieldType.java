@@ -18,5 +18,7 @@ public enum FieldType {
 	/* byte */
 	byteValueArray,
 	/* enum */
-	enumValue;
+	enumValue,
+	/* JsonProperties */
+	JsonPropertiesValue;
 }

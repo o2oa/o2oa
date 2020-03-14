@@ -13,6 +13,7 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Begin;
@@ -200,106 +201,99 @@ class ActionGetAllowRerouteTo extends BaseAction {
 	public static class WoAgent extends Agent {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Agent, WoAgent> copier = WrapCopierFactory.wo(Agent.class, WoAgent.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Agent, WoAgent> copier = WrapCopierFactory.wo(Agent.class, WoAgent.class,
+				ListTools.toList(Agent.name_FIELDNAME, Agent.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoBegin extends Begin {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Begin, WoBegin> copier = WrapCopierFactory.wo(Begin.class, WoBegin.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Begin, WoBegin> copier = WrapCopierFactory.wo(Begin.class, WoBegin.class,
+				ListTools.toList(Begin.name_FIELDNAME, Begin.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoCancel extends Cancel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Cancel, WoCancel> copier = WrapCopierFactory.wo(Cancel.class, WoCancel.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Cancel, WoCancel> copier = WrapCopierFactory.wo(Cancel.class, WoCancel.class,
+				ListTools.toList(Cancel.name_FIELDNAME, Cancel.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoChoice extends Choice {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Choice, WoChoice> copier = WrapCopierFactory.wo(Choice.class, WoChoice.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Choice, WoChoice> copier = WrapCopierFactory.wo(Choice.class, WoChoice.class,
+				ListTools.toList(Choice.name_FIELDNAME, Choice.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
-
-//	public static class WoCondition extends Condition {
-//
-//		private static final long serialVersionUID = 6466513124630937459L;
-//		static WrapCopier<Condition, WoCondition> copier = WrapCopierFactory.wo(Condition.class, WoCondition.class,
-//				null, JpaObject.FieldsInvisible);
-//	}
 
 	public static class WoDelay extends Delay {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Delay, WoDelay> copier = WrapCopierFactory.wo(Delay.class, WoDelay.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Delay, WoDelay> copier = WrapCopierFactory.wo(Delay.class, WoDelay.class,
+				ListTools.toList(Delay.name_FIELDNAME, Delay.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoEmbed extends Embed {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Embed, WoEmbed> copier = WrapCopierFactory.wo(Embed.class, WoEmbed.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Embed, WoEmbed> copier = WrapCopierFactory.wo(Embed.class, WoEmbed.class,
+				ListTools.toList(Embed.name_FIELDNAME, Embed.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoEnd extends End {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<End, WoEnd> copier = WrapCopierFactory.wo(End.class, WoEnd.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<End, WoEnd> copier = WrapCopierFactory.wo(End.class, WoEnd.class,
+				ListTools.toList(End.name_FIELDNAME, End.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoInvoke extends Invoke {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Invoke, WoInvoke> copier = WrapCopierFactory.wo(Invoke.class, WoInvoke.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Invoke, WoInvoke> copier = WrapCopierFactory.wo(Invoke.class, WoInvoke.class,
+				ListTools.toList(Invoke.name_FIELDNAME, Invoke.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoManual extends Manual {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Manual, WoManual> copier = WrapCopierFactory.wo(Manual.class, WoManual.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Manual, WoManual> copier = WrapCopierFactory.wo(Manual.class, WoManual.class,
+				ListTools.toList(Manual.name_FIELDNAME, Manual.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoMerge extends Merge {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Merge, WoMerge> copier = WrapCopierFactory.wo(Merge.class, WoMerge.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Merge, WoMerge> copier = WrapCopierFactory.wo(Merge.class, WoMerge.class,
+				ListTools.toList(Merge.name_FIELDNAME, Merge.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoMessage extends Message {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Message, WoMessage> copier = WrapCopierFactory.wo(Message.class, WoMessage.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Message, WoMessage> copier = WrapCopierFactory.wo(Message.class, WoMessage.class,
+				ListTools.toList(Message.name_FIELDNAME, Message.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoParallel extends Parallel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Parallel, WoParallel> copier = WrapCopierFactory.wo(Parallel.class, WoParallel.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Parallel, WoParallel> copier = WrapCopierFactory.wo(Parallel.class, WoParallel.class,
+				ListTools.toList(Parallel.name_FIELDNAME, Parallel.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoService extends Service {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Service, WoService> copier = WrapCopierFactory.wo(Service.class, WoService.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Service, WoService> copier = WrapCopierFactory.wo(Service.class, WoService.class,
+				ListTools.toList(Service.name_FIELDNAME, Service.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoSplit extends Split {
 
 		private static final long serialVersionUID = 6466513124630937459L;
-		static WrapCopier<Split, WoSplit> copier = WrapCopierFactory.wo(Split.class, WoSplit.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Split, WoSplit> copier = WrapCopierFactory.wo(Split.class, WoSplit.class,
+				ListTools.toList(Split.name_FIELDNAME, Split.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	private List<WoAgent> filterAgents(Business business, Process process) throws Exception {
@@ -342,17 +336,6 @@ class ActionGetAllowRerouteTo extends BaseAction {
 		}
 		return WoChoice.copier.copy(list);
 	}
-
-//	private List<WoCondition> filterConditions(Business business, Process process) throws Exception {
-//		List<Condition> os = business.condition().listWithProcess(process);
-//		List<Condition> list = new ArrayList<>();
-//		for (Condition o : os) {
-//			if (BooleanUtils.isTrue(o.getAllowRerouteTo())) {
-//				list.add(o);
-//			}
-//		}
-//		return WoCondition.copier.copy(list);
-//	}
 
 	private List<WoDelay> filterDelays(Business business, Process process) throws Exception {
 		List<Delay> os = business.delay().listWithProcess(process);

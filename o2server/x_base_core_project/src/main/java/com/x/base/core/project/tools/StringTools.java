@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.junit.Test;
 import org.slf4j.helpers.MessageFormatter;
 
 public class StringTools {
@@ -44,6 +45,8 @@ public class StringTools {
 
 	public static final Pattern UUID_REGEX = Pattern
 			.compile("^[a-zA-Z_0-9]{8}-[a-zA-Z_0-9]{4}-[a-zA-Z_0-9]{4}-[a-zA-Z_0-9]{4}-[a-zA-Z_0-9]{12}$");
+
+	public static final Pattern PERCENT_REGEX = Pattern.compile("^-?\\d+\\.?\\d*\\%?$");
 
 	public static final String[] SQL_LIKE = new String[] { "_", "%" };
 
@@ -162,6 +165,14 @@ public class StringTools {
 
 	public static boolean isFileName(String str) {
 		Matcher matcher = FILENAME_REGEX.matcher(str);
+		if (matcher.find()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isPercent(String str) {
+		Matcher matcher = PERCENT_REGEX.matcher(str);
 		if (matcher.find()) {
 			return true;
 		}
@@ -439,4 +450,5 @@ public class StringTools {
 		}
 		return false;
 	}
+
 }

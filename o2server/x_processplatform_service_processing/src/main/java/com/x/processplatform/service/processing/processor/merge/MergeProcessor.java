@@ -1,7 +1,6 @@
 package com.x.processplatform.service.processing.processor.merge;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
@@ -47,11 +45,11 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		if (null != other) {
 			aeiObjects.getUpdateWorks().add(other);
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
+			/* 应该废弃改变对work的指向 ? */
 			this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeHint(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
 			aeiObjects.getWorkLogs().stream()
@@ -177,17 +175,6 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			aeiObjects.getReviews().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
 				o.setWork(oldest.getId());
 				aeiObjects.getUpdateReviews().add(o);
-			});
-		} catch (Exception e) {
-			logger.error(e);
-		}
-	}
-
-	private void mergeHint(AeiObjects aeiObjects, Work work, Work oldest) {
-		try {
-			aeiObjects.getHints().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
-				o.setWork(oldest.getId());
-				aeiObjects.getUpdateHints().add(o);
 			});
 		} catch (Exception e) {
 			logger.error(e);

@@ -459,33 +459,38 @@ public class ReviewService {
 		if( permissionObjs == null ) {
 			permissionObjs = new ArrayList<>();
 		}
-		for( String objName : objNames ) {
-			if( objName.endsWith( "@P" ) ) {
-				if( !permissionObjs.contains( objName )) {
-					permissionObjs.add( objName );
+		if( ListTools.isNotEmpty(objNames)){
+			for( String objName : objNames ) {
+				if(StringUtils.isNotEmpty(objName)){
+					if( objName.trim().endsWith( "@P" ) ) {
+						if( !permissionObjs.contains( objName )) {
+							permissionObjs.add( objName );
+						}
+					}else if( objName.trim().endsWith( "@I" ) ) {//将Identity转换为人员
+						result = userManagerService.getPersonNameWithIdentity( objName );
+						permissionObjs = addStringToList( permissionObjs, result );
+					}else if( objName.trim().endsWith( "@U" ) ) {//将组织拆解为人员
+						//判断一下，如果不是顶层组织，就或者顶层组织不唯一，才将组织解析为人员
+						if( !userManagerService.isTopUnit( objName ) || userManagerService.countTopUnit() > 1 ) {
+							persons = userManagerService.listPersonWithUnit( objName );
+							permissionObjs = addListToList( permissionObjs, persons );
+						}else {
+							//如果是顶层组织，并且顶层组织只有一个
+							permissionObjs = addStringToList( permissionObjs, "*" );
+						}
+					}else if( objName.trim().endsWith( "@G" ) ) {//将群组拆解为人员
+						persons = userManagerService.listPersonWithGroup( objName );
+						permissionObjs = addListToList( permissionObjs, persons );
+					}else if( objName.trim().endsWith( "@R" ) ) {
+						persons = userManagerService.listPersonWithRole( objName );
+						permissionObjs = addListToList( permissionObjs, persons );
+					}else if( "*".equals( objName.trim() ) ) {
+						permissionObjs = addStringToList( permissionObjs, objName );
+					}
 				}
-			}else if( objName.endsWith( "@I" ) ) {//将Identity转换为人员
-				result = userManagerService.getPersonNameWithIdentity( objName );
-				permissionObjs = addStringToList( permissionObjs, result );
-			}else if( objName.endsWith( "@U" ) ) {//将组织拆解为人员
-				//判断一下，如果不是顶层组织，就或者顶层组织不唯一，才将组织解析为人员
-				if( !userManagerService.isTopUnit( objName ) || userManagerService.countTopUnit() > 1 ) {
-					persons = userManagerService.listPersonWithUnit( objName );
-					permissionObjs = addListToList( permissionObjs, persons );
-				}else {
-					//如果是顶层组织，并且顶层组织只有一个
-					permissionObjs = addStringToList( permissionObjs, "*" );
-				}
-			}else if( objName.endsWith( "@G" ) ) {//将群组拆解为人员
-				persons = userManagerService.listPersonWithGroup( objName );
-				permissionObjs = addListToList( permissionObjs, persons );
-			}else if( objName.endsWith( "@R" ) ) {
-				persons = userManagerService.listPersonWithRole( objName );
-				permissionObjs = addListToList( permissionObjs, persons );
-			}else if( "*".equals( objName ) ) {
-				permissionObjs = addStringToList( permissionObjs, objName );
 			}
 		}
+
 		return permissionObjs;
 	}
 	

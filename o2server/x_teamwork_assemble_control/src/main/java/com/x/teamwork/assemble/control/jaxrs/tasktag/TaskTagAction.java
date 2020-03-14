@@ -91,7 +91,7 @@ public class TaskTagAction extends StandardJaxrsAction {
 	
 	@JaxrsMethodDescribe(value = "查询用户对工作任务添加的标签信息列表.", action = ActionListWithTask.class)
 	@GET
-	@Path("list/task/{task}")
+	@Path("list/task/{taskId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithTask(@Suspended final AsyncResponse asyncResponse, 

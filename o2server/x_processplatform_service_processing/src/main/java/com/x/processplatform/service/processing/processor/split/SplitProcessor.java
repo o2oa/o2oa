@@ -56,7 +56,7 @@ public class SplitProcessor extends AbstractSplitProcessor {
 				.findFirst().orElse(null);
 		mainWorkLog.setSplitting(true);
 		mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-		mainWorkLog.getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
+		mainWorkLog.getProperties().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
 		mainWorkLog.setSplitValue(splitValues.get(0));
 		aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
 		/* 产生后续的拆分文档并标记拆分值 */
@@ -89,8 +89,10 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
-			Object objectValue = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), split, Business.EVENT_SPLIT).eval(aeiObjects.scriptContext());	
-			List<String> os =ScriptFactory.asDistinguishedNameList(objectValue);
+			Object objectValue = aeiObjects.business().element()
+					.getCompiledScript(aeiObjects.getWork().getApplication(), split, Business.EVENT_SPLIT)
+					.eval(aeiObjects.scriptContext());
+			List<String> os = ScriptFactory.asDistinguishedNameList(objectValue);
 			if (ListTools.isNotEmpty(os)) {
 				list.addAll(os);
 			}

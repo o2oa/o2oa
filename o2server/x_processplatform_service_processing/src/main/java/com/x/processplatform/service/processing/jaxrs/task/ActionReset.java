@@ -27,10 +27,10 @@ import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.Processing;
-import com.x.processplatform.service.processing.ProcessingAttributes;
 
 class ActionReset extends BaseAction {
 
@@ -80,7 +80,8 @@ class ActionReset extends BaseAction {
 					if (BooleanUtils.isNotTrue(wi.getKeep())) {
 						Date now = new Date();
 						Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
-						TaskCompleted taskCompleted = new TaskCompleted(task, ProcessingType.reset, now, duration);
+						TaskCompleted taskCompleted = new TaskCompleted(task, TaskCompleted.PROCESSINGTYPE_RESET, now,
+								duration);
 						emc.beginTransaction(TaskCompleted.class);
 						emc.beginTransaction(Task.class);
 						emc.persist(taskCompleted, CheckPersistType.all);

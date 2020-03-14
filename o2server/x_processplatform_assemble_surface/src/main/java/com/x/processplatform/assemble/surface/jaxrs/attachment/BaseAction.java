@@ -49,6 +49,40 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	public static Ehcache cache = ApplicationCache.instance().getCache(CacheResultObject.class);
+
+	public static class CacheResultObject extends GsonPropertyObject {
+
+		private byte[] bytes;
+		private String name;
+		private String person;
+
+		public byte[] getBytes() {
+			return bytes;
+		}
+
+		public void setBytes(byte[] bytes) {
+			this.bytes = bytes;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getPerson() {
+			return person;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+	}
+
 	public static Ehcache cachePreviewPdf = ApplicationCache.instance().getCache(PreviewPdfResultObject.class);
 
 	public static class PreviewPdfResultObject extends GsonPropertyObject {

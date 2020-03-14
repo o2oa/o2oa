@@ -6,12 +6,12 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	public static class Content {
 
-		public static class TaskCompleted {
-			public static final String table = "PP_C_TASKCOMPLETED";
+		public static class Draft {
+			public static final String table = "PP_C_DRAFT";
 		}
 
-		public static class Hint {
-			public static final String table = "PP_C_HINT";
+		public static class TaskCompleted {
+			public static final String table = "PP_C_TASKCOMPLETED";
 		}
 
 		public static class Task {
@@ -36,6 +36,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		public static class WorkLog {
 			public static final String table = "PP_C_WORKLOG";
+		}
+
+		public static class Record {
+			public static final String table = "PP_C_Record";
 		}
 
 		public static class Work {

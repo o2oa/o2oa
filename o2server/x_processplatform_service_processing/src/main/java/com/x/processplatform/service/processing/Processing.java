@@ -8,15 +8,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
 public class Processing extends BaseProcessing {
 
 	private EntityManagerContainer entityManagerContainer;
-
-	private int loop = 0;
 
 	protected ProcessingAttributes processingAttributes;
 
@@ -30,18 +30,20 @@ public class Processing extends BaseProcessing {
 		} else {
 			this.processingAttributes = processingAttributes;
 		}
+		if (this.processingAttributes.getLoop() > 64) {
+			throw new Exception("processing too many.");
+		}
 		this.entityManagerContainer = EntityManagerContainerFactory.instance().create();
 	}
 
-	public Processing(Integer loop, ProcessingAttributes processingAttributes,
-			EntityManagerContainer entityManagerContainer) throws Exception {
-		this.loop = ++loop;
-		this.processingAttributes = processingAttributes;
-		this.entityManagerContainer = entityManagerContainer;
-		if (this.loop > 32) {
-			throw new Exception("processing too many.");
-		}
-	}
+//	public Processing(ProcessingAttributes processingAttributes, EntityManagerContainer entityManagerContainer)
+//			throws Exception {
+//		this.processingAttributes = processingAttributes;
+//		this.entityManagerContainer = entityManagerContainer;
+//		if (this.processingAttributes.getLoop() > 64) {
+//			throw new Exception("processing too many.");
+//		}
+//	}
 
 	public void processing(String workId) throws Exception {
 		this.processing(workId, new ProcessingConfigurator());
@@ -69,13 +71,23 @@ public class Processing extends BaseProcessing {
 			/* workStatus is processing */
 			List<String> nextLoops = SetUniqueList.setUniqueList(new ArrayList<String>());
 			/* 强制从arrived开始 */
+			if (processingAttributes.ifForceJoinAtArrive()) {
+				workId = this.arrive(workId, processingConfigurator, processingAttributes);
+			}
 			if (!processingConfigurator.getJoinAtExecute()) {
 				workId = this.arrive(workId, processingConfigurator, processingAttributes);
 			}
 			if (StringUtils.isEmpty(workId)) {
 				return;
 			}
-			List<String> executed = this.execute(workId, processingConfigurator, processingAttributes);
+			List<String> executed = null;
+			if (!processingAttributes.ifForceJoinAtInquire()) {
+				executed = this.execute(workId, processingConfigurator, processingAttributes);
+			} else {
+				/* 强制从inquire开始 */
+				executed = new ArrayList<>();
+				executed.add(workId);
+			}
 			for (String str : executed) {
 				if (StringUtils.isNotEmpty(str)) {
 					List<String> inquired = inquire(str, processingConfigurator, processingAttributes);
@@ -84,10 +96,14 @@ public class Processing extends BaseProcessing {
 					}
 				}
 			}
+			processingAttributes.increaseLoop();
 			for (String str : nextLoops) {
 				if (StringUtils.isNotEmpty(str)) {
 					if (processingConfigurator.getContinueLoop()) {
-						new Processing(this.loop, processingAttributes, this.entityManagerContainer()).processing(str);
+//						new Processing(processingAttributes, this.entityManagerContainer()).processing(str);
+						/* clone processingAttributes 对象 */
+						new Processing(XGsonBuilder.convert(processingAttributes, ProcessingAttributes.class))
+								.processing(str);
 					}
 				}
 			}

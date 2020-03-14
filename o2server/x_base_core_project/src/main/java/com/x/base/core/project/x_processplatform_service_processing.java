@@ -6,13 +6,13 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.SERVICE, category = ModuleCategory.OFFICIAL, name = "流程服务", packageName = "com.x.processplatform.service.processing", containerEntities = {
-		"com.x.processplatform.core.entity.content.Attachment",
+		"com.x.processplatform.core.entity.content.Draft", "com.x.processplatform.core.entity.content.Attachment",
 		"com.x.processplatform.core.entity.content.TaskCompleted",
 		"com.x.processplatform.core.entity.content.ReadCompleted", "com.x.processplatform.core.entity.content.Review",
-		"com.x.processplatform.core.entity.content.Hint", "com.x.processplatform.core.entity.content.WorkCompleted",
-		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Task",
-		"com.x.processplatform.core.entity.content.Work", "com.x.processplatform.core.entity.content.Read",
-		"com.x.processplatform.core.entity.content.DocumentVersion",
+		"com.x.processplatform.core.entity.content.Record", "com.x.processplatform.core.entity.content.WorkCompleted",
+		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Record",
+		"com.x.processplatform.core.entity.content.Task", "com.x.processplatform.core.entity.content.Work",
+		"com.x.processplatform.core.entity.content.Read", "com.x.processplatform.core.entity.content.DocumentVersion",
 		"com.x.processplatform.core.entity.content.SerialNumber", "com.x.processplatform.core.entity.element.End",
 		"com.x.processplatform.core.entity.element.Application",
 		"com.x.processplatform.core.entity.element.ApplicationDict",
@@ -30,7 +30,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.log.ProcessingError", "com.x.query.core.entity.Item",
 		"com.x.query.dynamic.entity.*" }, storageTypes = { StorageType.processPlatform }, storeJars = {
 				"x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
-				"x_query_core_entity" }, dynamicJars = { "x_query_dynamic_entity" })
+				"x_processplatform_core_express", "x_query_core_entity" }, dynamicJars = { "x_query_dynamic_entity" })
 public class x_processplatform_service_processing extends Deployable {
 
 }

@@ -14,7 +14,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -74,10 +76,11 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	/* 更新运行方法 */
 
 	public Review() {
-
+		this.properties = new ReviewProperties();
 	}
 
 	public Review(Work work, String person) {
+		this();
 		this.job = work.getJob();
 		this.work = work.getId();
 		this.workCompleted = "";
@@ -102,6 +105,7 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public Review(WorkCompleted workCompleted, String person) {
+		this();
 		this.job = workCompleted.getJob();
 		this.work = workCompleted.getWork();
 		this.workCompleted = workCompleted.getId();
@@ -123,6 +127,13 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 		this.creatorIdentity = workCompleted.getCreatorIdentity();
 		this.creatorUnit = workCompleted.getCreatorUnit();
 		this.copyProjectionFields(workCompleted);
+	}
+
+	public ReviewProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new ReviewProperties();
+		}
+		return this.properties;
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -282,6 +293,14 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + currentActivityName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String currentActivityName;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private ReviewProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -919,6 +938,14 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 
 	public void setCurrentActivityName(String currentActivityName) {
 		this.currentActivityName = currentActivityName;
+	}
+
+	public static String getStringvalue01Fieldname() {
+		return stringValue01_FIELDNAME;
+	}
+
+	public void setProperties(ReviewProperties properties) {
+		this.properties = properties;
 	}
 
 }

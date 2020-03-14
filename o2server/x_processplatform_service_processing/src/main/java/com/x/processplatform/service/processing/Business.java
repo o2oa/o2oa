@@ -5,7 +5,6 @@ import com.x.organization.core.express.Organization;
 import com.x.processplatform.service.processing.factory.AttachmentFactory;
 import com.x.processplatform.service.processing.factory.DocumentVersionFactory;
 import com.x.processplatform.service.processing.factory.ElementFactory;
-import com.x.processplatform.service.processing.factory.HintFactory;
 import com.x.processplatform.service.processing.factory.ItemFactory;
 import com.x.processplatform.service.processing.factory.ReadCompletedFactory;
 import com.x.processplatform.service.processing.factory.ReadFactory;
@@ -161,15 +160,6 @@ public class Business {
 			this.documentVersion = new DocumentVersionFactory(this);
 		}
 		return documentVersion;
-	}
-
-	private HintFactory hint;
-
-	public HintFactory hint() throws Exception {
-		if (null == this.hint) {
-			this.hint = new HintFactory(this);
-		}
-		return hint;
 	}
 
 	private ElementFactory element;

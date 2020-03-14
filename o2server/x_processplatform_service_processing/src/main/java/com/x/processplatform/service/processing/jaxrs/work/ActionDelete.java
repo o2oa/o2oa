@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -14,9 +15,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -36,8 +37,6 @@ class ActionDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -48,91 +47,168 @@ class ActionDelete extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
+		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+			public ActionResult<Wo> call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					Work work = emc.find(id, Work.class);
 					if (null == work) {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
-					emc.beginTransaction(Task.class);
-					emc.beginTransaction(TaskCompleted.class);
-					emc.beginTransaction(Read.class);
-					emc.beginTransaction(ReadCompleted.class);
-					emc.beginTransaction(Review.class);
-					emc.beginTransaction(Attachment.class);
-					emc.beginTransaction(WorkLog.class);
-					emc.beginTransaction(Item.class);
-					emc.beginTransaction(Work.class);
-					emc.beginTransaction(Hint.class);
-					emc.beginTransaction(DocumentVersion.class);
-					List<Task> tasks = emc.list(Task.class, business.task().listWithWork(work.getId()));
-					List<TaskCompleted> taskCompleteds = emc.list(TaskCompleted.class,
-							business.taskCompleted().listWithWork(work.getId()));
-					List<Read> reads = emc.list(Read.class, business.read().listWithWork(work.getId()));
-					List<ReadCompleted> readCompleteds = emc.list(ReadCompleted.class,
-							business.readCompleted().listWithWork(work.getId()));
-					for (Task _o : tasks) {
-						emc.remove(_o);
-					}
-					for (TaskCompleted _o : taskCompleteds) {
-						emc.remove(_o);
-					}
-					for (Read _o : reads) {
-						emc.remove(_o);
-					}
-					for (ReadCompleted _o : readCompleteds) {
-						emc.remove(_o);
-					}
-					emc.delete(TaskCompleted.class, business.taskCompleted().listWithWork(work.getId()));
-					emc.delete(Read.class, business.read().listWithWork(work.getId()));
-					emc.delete(ReadCompleted.class, business.readCompleted().listWithWork(work.getId()));
-					emc.delete(Review.class, business.review().listWithWork(work.getId()));
-					emc.delete(Hint.class, business.hint().listWithWork(work.getId()));
-					emc.delete(DocumentVersion.class, business.hint().listWithWork(work.getId()));
-					// 判断附件是否有其他的Work在引用，如果没有那么删除
-					if (business.work().listWithJob(work.getJob()).size() == 1) {
-						List<Item> os = business.item().listWithJobWithPath(work.getJob());
-						for (Item o : os) {
-							emc.remove(o);
+					if (business.work().listWithJob(work.getJob()).size() > 1) {
+						List<String> taskIds = emc.idsEqual(Task.class, Task.work_FIELDNAME, work.getId());
+						if (ListTools.isNotEmpty(taskIds)) {
+							emc.beginTransaction(Task.class);
+							emc.delete(Task.class, taskIds);
 						}
-						for (Attachment o : business.attachment().listWithJobObject(work.getJob())) {
-							StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-									o.getStorage());
-							/** 如果没有附件存储的对象就算了 */
-							if (null != mapping) {
-								o.deleteContent(mapping);
-							}
-							emc.remove(o);
-						}
-						emc.delete(WorkLog.class, business.workLog().listWithJob(work.getJob()));
-						emc.delete(DocumentVersion.class, business.documentVersion().listWithJob(work.getJob()));
+						emc.beginTransaction(Work.class);
+						emc.remove(work, CheckRemoveType.all);
+						emc.commit();
+					} else {
+						deleteTask(business, work.getJob());
+						deleteTaskCompleted(business, work.getJob());
+						deleteRead(business, work.getJob());
+						deleteReadCompleted(business, work.getJob());
+						deleteReview(business, work.getJob());
+						deleteAttachment(business, work.getJob());
+						deleteWorkLog(business, work.getJob());
+						deleteItem(business, work.getJob());
+						deleteDocumentVersion(business, work.getJob());
+						deleteRecord(business, work.getJob());
+						deleteWork(business, work);
+						emc.commit();
 					}
-					emc.remove(work);
-					emc.commit();
-					for (Task _o : tasks) {
-						MessageFactory.task_delete(_o);
-					}
-					for (TaskCompleted _o : taskCompleteds) {
-						MessageFactory.taskCompleted_delete(_o);
-					}
-					for (Read _o : reads) {
-						MessageFactory.read_delete(_o);
-					}
-					for (ReadCompleted _o : readCompleteds) {
-						MessageFactory.readCompleted_delete(_o);
-					}
+					ActionResult<Wo> result = new ActionResult<>();
+					Wo wo = new Wo();
 					wo.setId(work.getId());
+					result.setData(wo);
+					return result;
 				}
-				return "";
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
 
-		result.setData(wo);
-		return result;
+	}
+
+	private void deleteTask(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Task.class, Task.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Task.class);
+			for (Task o : business.entityManagerContainer().list(Task.class, ids)) {
+				business.entityManagerContainer().remove(o);
+				MessageFactory.task_delete(o);
+			}
+		}
+	}
+
+	private void deleteTaskCompleted(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
+				job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class, ids)) {
+				business.entityManagerContainer().remove(o);
+				MessageFactory.taskCompleted_delete(o);
+			}
+		}
+	}
+
+	private void deleteRead(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Read.class, Read.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Read.class);
+			for (Read o : business.entityManagerContainer().list(Read.class, ids)) {
+				business.entityManagerContainer().remove(o);
+				MessageFactory.read_delete(o);
+			}
+		}
+	}
+
+	private void deleteReadCompleted(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
+				job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class, ids)) {
+				business.entityManagerContainer().remove(o);
+				MessageFactory.readCompleted_delete(o);
+			}
+		}
+	}
+
+	private void deleteReview(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Review.class, Review.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Review.class);
+			business.entityManagerContainer().delete(Review.class, ids);
+		}
+	}
+
+	private void deleteAttachment(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Attachment.class, Attachment.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Attachment.class);
+			Attachment obj;
+			for (String id : ids) {
+				obj = business.entityManagerContainer().find(id, Attachment.class);
+				if (null != obj) {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							obj.getStorage());
+					if (null != mapping) {
+						obj.deleteContent(mapping);
+					}
+					business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			}
+		}
+	}
+
+	private void deleteWorkLog(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(WorkLog.class);
+			business.entityManagerContainer().delete(WorkLog.class, ids);
+		}
+	}
+
+	private void deleteItem(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Item.class, Item.bundle_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Item.class);
+			business.entityManagerContainer().delete(Item.class, ids);
+		}
+	}
+
+	private void deleteWork(Business business, Work work) throws Exception {
+		business.entityManagerContainer().beginTransaction(Work.class);
+		List<String> ids = business.entityManagerContainer().idsEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
+				work.getJob(), Work.id_FIELDNAME, work.getId());
+		if (ListTools.isNotEmpty(ids)) {
+			for (Work o : business.entityManagerContainer().list(Work.class, ids)) {
+				business.entityManagerContainer().remove(o);
+				MessageFactory.work_delete(o);
+			}
+		}
+		business.entityManagerContainer().remove(work);
+		MessageFactory.work_delete(work);
+	}
+
+	private void deleteDocumentVersion(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocumentVersion.class,
+				DocumentVersion.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(DocumentVersion.class);
+			business.entityManagerContainer().delete(DocumentVersion.class, ids);
+		}
+	}
+
+	private void deleteRecord(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.job_FIELDNAME, job);
+		if (ListTools.isNotEmpty(ids)) {
+			business.entityManagerContainer().beginTransaction(Record.class);
+			business.entityManagerContainer().delete(Record.class, ids);
+		}
 	}
 
 	public static class Wo extends WoId {

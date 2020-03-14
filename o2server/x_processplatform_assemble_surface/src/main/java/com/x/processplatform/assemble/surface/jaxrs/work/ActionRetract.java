@@ -73,7 +73,7 @@ class ActionRetract extends BaseAction {
 				}
 			}
 			if (null == workLog) {
-				throw new ExceptionRetractNoneWorkLog(work.getId());
+				throw new ExceptionRetractNoWorkLog(work.getId());
 			}
 
 			workLogId = workLog.getId();
