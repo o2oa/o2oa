@@ -1,6 +1,10 @@
 /.idea/
+/coverage/
 /dest/
 /node_modules/
 npm-debug.log
+/test/
+/bak/
+package-lock.json
 /.svn/
 ftpconfig.js

@@ -4,7 +4,7 @@
   "description": "a javascript library",
   "main": "o2.js",
   "scripts": {
-    "test": "gulp",
+    "build": "gulp",
     "report-coverage": "codecov"
   },
   "repository": {
@@ -28,21 +28,15 @@
   "homepage": "https://github.com/huqi1980/o2oa_client_web#readme",
   "devDependencies": {
     "gulp": "^4.0.0",
-    "gulp-tm-asset-rev": "0.0.16",
     "gulp-changed": "^3.2.0",
-    "gulp-deleted": "0.0.2",
+    "gulp-deleted": "^1.0.0",
     "gulp-ftp": "^1.1.0",
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.4.0",
     "gulp-sftp": "^0.1.5",
+    "gulp-tm-asset-rev": "0.0.16",
     "gulp-tm-uglify": "3.0.1",
-    "karma": "^3.1.4",
-    "karma-jasmine": "^2.0.1",
-    "karma-phantomjs-launcher": "^1.0.4",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0"
-  },
-  "dependencies": {
-    "assert": "^2.0.0"
   }
 }

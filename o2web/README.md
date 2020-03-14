@@ -16,8 +16,9 @@ O2平台Web端应用，它将会随o2server一起编译。您也可以单独编�
 
 先安装npm环境
 
-    $ npm i -g gulp-cli karma-cli codecov
     $ npm install
+    $ npm i -g gulp-cli
+   
 
 使用一下命令编译：
 

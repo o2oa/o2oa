@@ -9,6 +9,8 @@
 /o2web/ftpconfig.js
 **/.DS_Store
 .DS_Store
+**/.idea
+/.idea/
 o2web/source/x_component_Selector/Identity_bak.js
 o2web/source/x_desktop/font/alfont.eot
 o2web/source/x_desktop/font/alfont.otf
