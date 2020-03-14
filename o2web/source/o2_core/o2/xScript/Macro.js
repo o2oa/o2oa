@@ -28,8 +28,21 @@ MWF.xScript.Macro = MWF.Macro = {
                     //throw e;
                 }
             }else{
-                var f = eval("(function(){return function(){\n"+code+"\n}})();");
-                returnValue = f.apply(bind);
+                try {
+                    var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                    returnValue = f.apply(bind);
+                }catch(e){
+                    console.log(o2.LP.script.error);
+                    if (code.length>500){
+                        var t = code.substr(0,500)+"\n...\n";
+                        console.log(t);
+                    }else{
+                        console.log(code);
+                    }
+
+                    console.log(e);
+                    //throw e;
+                }
             }
 
         //}catch(e){}//
@@ -66,6 +79,7 @@ MWF.Macro.FormContext = new Class({
             "task": form.businessData.task,
             "taskCompletedList": form.businessData.taskCompletedList,
             "workLogList": form.businessData.workLogList,
+            "recordList": form.businessData.recordList,
             "attachmentList": form.businessData.attachmentList,
             "inheritedAttachmentList": form.businessData.inheritedAttachmentList,
             "formInfor": form.businessData.formInfor,

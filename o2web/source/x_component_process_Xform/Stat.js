@@ -3,7 +3,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class({
 	Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["loadData"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "loadStat"]
     },
 
     _loadUserInterface: function(){
@@ -15,6 +15,9 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class({
     },
     active: function(){
         if (this.stat) this.stat.loadStatData();
+    },
+    reload: function(){
+	    this.active();
     },
     loadStat: function(){
         var viewJson = {
@@ -29,7 +32,7 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class({
             this.stat = new MWF.xApplication.query.Query.Statistician(this.form.app, this.node, viewJson, {
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
                 "onLoaded": function(){
-                    this.fireEvent("postLoad");
+                    this.fireEvent("loadStat");
                 }.bind(this)
             });
         }.bind(this));

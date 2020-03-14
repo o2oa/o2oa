@@ -16,7 +16,7 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
         "isMax": true,
         "title": MWF.xApplication.portal.PortalExplorer.LP.title,
         "maxWidth": 840,
-        "minWidth": 720
+        "minWidth": 540
     },
 	onQueryLoad: function(){
         this.lp = MWF.xApplication.portal.PortalExplorer.LP;

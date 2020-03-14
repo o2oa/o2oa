@@ -8,7 +8,19 @@
     "select": "no",  //single, multi
     "isOpen": "yes",
 	"events": {
-	  	"loadData" : {
+		"queryLoad": {
+			"code": "",
+			"html": ""
+		},
+		"postLoad": {
+			"code": "",
+			"html": ""
+		},
+		"load" : {
+			"code": "",
+			"html": ""
+		},
+	  	"loadStat" : {
 		  "code": "",
 		  "html": ""
 		},

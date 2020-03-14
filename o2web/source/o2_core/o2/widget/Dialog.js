@@ -163,7 +163,7 @@ o2.widget.Dialog = o2.DL = new Class({
 		if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
 		this.containerDrag = new Drag.Move(this.node, {
 			"handle": this.title,
-			"container": this.markNode || content,
+			"container": this.options.container || this.markNode || content,
 			"snap": 5
 		});
 

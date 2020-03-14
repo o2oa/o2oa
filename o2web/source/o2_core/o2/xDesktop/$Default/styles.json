@@ -1,0 +1,52 @@
+[
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.blue,
+    "style": "blue",
+    "color": "#4A90E2"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.red,
+    "style": "red",
+    "color": "#D94141"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.orange,
+    "style": "orange",
+    "color": "#ED8824"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.green,
+    "style": "green",
+    "color": "#60BF78"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.cyan,
+    "style": "cyan",
+    "color": "#30BFBF"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.purple,
+    "style": "purple",
+    "color": "#BF3995"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.darkgreen,
+    "style": "darkgreen",
+    "color": "#4D6240"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.tan,
+    "style": "tan",
+    "color": "#995E2E"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.navy,
+    "style": "navy",
+    "color": "#323159"
+  },
+  {
+    "title": MWF.LP.desktop.styleFlatMenu.gray,
+    "style": "gray",
+    "color": "#666666"
+  }
+]

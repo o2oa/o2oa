@@ -1,5 +1,5 @@
 MWF.xApplication.File.LP = {
-	"title": "电子档案",
+	"title": "云文件",
 	"dropUpload": "将文件拖至此处上传",
 	
 	"upload": "上传",

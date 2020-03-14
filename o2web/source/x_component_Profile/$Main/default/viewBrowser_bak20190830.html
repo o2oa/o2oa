@@ -1,0 +1,146 @@
+<div class="o2_profile_titleBar">
+    <div class="o2_profile_titleUserNode">
+        <div class="o2_profile_titleUserIconNode"></div>
+        <div class="o2_profile_titleUserTextNode">{{ $.data.name }}</div>
+    </div>
+    <div class="o2_profile_titleTextNode">{{$.lp.title}}</div>
+</div>
+<div class="o2_profile_contentNode">
+    <div class="o2_profile_configNode" title="{{$.lp.inforConfig}}">
+        <div class="o2_profile_inforConfigArea">
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforIconTitle">{{ $.lp.icon }}</div>
+                <div class="o2_profile_inforIconContent">
+                    <img class="o2_profile_inforIconContentImg" src="{{$.data.personIcon}}"/>
+                </div>
+                <div class="o2_profile_inforIconChange">{{ $.lp.changeIcon }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.name }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.name }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.employee }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.employee }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.mail }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.mail}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.mobile }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.mobile}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.officePhone }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.officePhone}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.weixin }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.weixin}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.QQ }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.qq}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.signature }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.signature}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_saveInforAction">{{ $.lp.saveInfor }}</div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="o2_profile_configNode" title="{{$.lp.ideaConfig}}">
+        <textarea class="o2_profile_ideasArea"></textarea>
+        <div class="o2_profile_ideasSave">{{ $.lp.saveIdea }}</div>
+
+        {{if MWF.AC.isAdministrator() }}
+        <div class="o2_profile_ideasSave">{{ $.lp.saveIdeaDefault }}</div>
+        {{ end if }}
+
+    </div>
+
+
+
+    <div class="o2_profile_configNode" title="{{$.lp.passwordConfig}}">
+        <div class="o2_profile_inforConfigArea">
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.oldPassword }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.password }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine o2_profile_passwordStrengthArea">
+                <div class="o2_profile_inforTitle"></div>
+                <div class="o2_profile_inforContent">
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.weak }}</div>
+                    </div>
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.middle }}</div>
+                    </div>
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.high }}</div>
+                    </div>
+                    <div class="o2_profile_passwordRemindNode">{{ $.lp.paswordRule }}</div>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.morePassword }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_savePasswordAction">{{ $.lp.passwordConfig }}</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">
+        <div class="o2_profile_ssoConfigTitle">{{ $.lp.bindOauth }}</div>
+        <div class="o2_profile_ssoConfigArea">
+            <!--<a class="o2_profile_ssoItemLink" target="_blank" href="/x_desktop/oauth.html?oauth=eachText{encodeURIComponent($.name)}&redirect=&method=oauthBind">{{$.displayName}}</a>-->
+        </div>
+    </div>
+</div>

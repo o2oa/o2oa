@@ -89,6 +89,55 @@
     "doc_layout_edition_issuance": {},
     "doc_layout_edition_issuance_table": {},
     "doc_layout_edition_issuance_unit": {},
-    "doc_layout_edition_issuance_date": {}
+    "doc_layout_edition_issuance_date": {},
+
+    "historyAreaNode": {
+        "background-color": "#ffffff",
+        "border-top": "0px solid #cccccc",
+        "border-left": "1px solid #cccccc",
+        "border-right": "0px solid #cccccc",
+        "border-bottom": "0px solid #cccccc",
+        "box-shadow": "3px 0px 10px #999999",
+        "padding": "0 0 20px 20px",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "width": "340px"
+    },
+    "historyAreaActionNode": {
+        "height": "20px"
+    },
+    "historyAreaTitleNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "font-size": "14px",
+        "text-align": "center",
+        "font-weight": "bold"
+    },
+    "historyAreaContentNode": {
+        "overflow": "hidden"
+    },
+    "historyItemNode": {
+        "width": "300px",
+        "padding": "10px 10px",
+        "cursor": "pointer",
+        "margin": "20px 20px 0 0",
+        "overflow": "hidden",
+        "border": "1px solid #cccccc",
+        "border-radius": "6px"
+    },
+    "historyItemTitleNode": {
+        "height": "20px",
+        "color": "#333333",
+        "line-height": "20px",
+        "overflow": "hidden"
+    },
+    "historyItemTimeNode": {
+        "height": "20px",
+        "color": "#999999",
+        "line-height": "20px",
+        "font-size": "12px",
+        "overflow": "hidden"
+    }
     
 }

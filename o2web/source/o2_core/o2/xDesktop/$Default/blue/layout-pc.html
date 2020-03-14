@@ -1,0 +1,57 @@
+<div class="layout_desktop" data-o2-element="desktopNode">
+    <div class="layout_menu" data-o2-element="menuNode">
+        <div style="width: 100%; height:100%">
+            <div class="layout_menu_start mainColor_bg deepColor_border">
+                <div class="layout_menu_start_button logo_o2_40" data-o2-element="startMenuNode" data-o2-events="click:showStartMenu"></div>
+            </div>
+            <div class="layout_menu_lnk deepColor_bg" data-o2-element="lnkContentNode">
+                <div class="layout_menu_lnk_area" data-o2-element="lnkAreaNode"></div>
+            </div>
+            <div class="layout_menu_setting deepColor_bg">
+                <div class="layout_menu_setting_button icon_setting" data-o2-element="settingNode"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layout_content">
+        <div style="display: table; width: 100%; height:100%">
+            <div style="display: table-row"><div class="layout_content_taskbar" data-o2-element="taskbarNode">
+                <div class="layout_content_taskbar_area">
+                    <div class="layout_content_taskbar_area_user" data-o2-element="userInforNode">
+                        <div class="layout_content_taskbar_area_user_icon" style="background-image: url({{$.user.iconUrl}});"></div>
+                        <div class="layout_content_taskbar_area_user_text">{{ $.user.name }}</div>
+                    </div>
+
+                    <div class="layout_content_taskbar_area_action">
+                        <div class="layout_content_taskbar_area_action_item layout_content_taskbar_area_action_msg icon_msg" data-o2-element="msgActionNode" data-o2-events="click:showDesktopMessage"></div>
+                        <div class="layout_content_taskbar_area_action_item layout_content_taskbar_area_action_skin icon_skin" data-o2-element="skinActionNode"></div>
+                    </div>
+
+                    <div class="layout_content_taskbar_area_search">
+                        <div class="layout_content_taskbar_area_search_box" data-o2-element="searchBoxNode">
+                            <div class="layout_content_taskbar_area_search_icon icon_search" data-o2-element="searchIconNode" data-o2-events="click:doSearch"></div>
+                            <div class="layout_content_taskbar_area_search_clear" data-o2-element="searchClearNode" data-o2-events="click:clearSearch"></div>
+                            <div class="layout_content_taskbar_area_search_inputArea">
+                                <input class="layout_content_taskbar_area_search_input" data-o2-element="searchInputNode" data-o2-events="focus:focusSearch;blur:blurSearch;keydown:searchInputKeyDown" type="text" placeholder="{{o2.LP.searchKey}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layout_content_taskbar_area_tabs" data-o2-element="taskAreaNode">
+                        <div class="layout_content_taskbar_area_tabs_action" data-o2-element="taskActionNode">
+                            <div class="layout_content_taskbar_area_tabs_action_up icon_up_gray" data-o2-element="taskActionUp" data-o2-events="click:toolbarUp"></div>
+                            <div class="layout_content_taskbar_area_tabs_action_down icon_down" data-o2-element="taskActionDown" data-o2-events="click:toolbarDown"></div>
+                        </div>
+                        <div class="layout_content_taskbar_area_tabs_contentArea" data-o2-element="taskContentAreaNode">
+                            <div class="layout_content_taskbar_area_tabs_content" data-o2-element="taskContentNode" data-o2-events="mouseover:showRefresh"></div>
+                        </div>
+                    </div>
+                </div>
+            </div></div>
+            <div style="display: table-row"><div class="layout_content_apps logobg" data-o2-element="contentAreaNode">
+                <div class="layout_content_apps_content" data-o2-element="contentNode"></div>
+            </div></div>
+        </div>
+        <div class="layout_content_message" data-o2-element="messageAreaNode"></div>
+    </div>
+</div>
+<div data-o2-element="startMenuArea"></div>

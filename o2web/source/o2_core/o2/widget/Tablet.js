@@ -242,7 +242,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }.bind(this)
     },
     uploadImage: function(  success, failure  ){
-        var image = this.getImage();
+        var image = this.getImage( null, true );
         if( image ){
             if( this.options.action ){
                 this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(action).action : this.options.action;
@@ -283,8 +283,8 @@ o2.widget.Tablet = o2.Tablet = new Class({
         }
         return formData;
     },
-    getImage : function( base64Code ){
-        var src = base64Code || this.getBase64Code();
+    getImage : function( base64Code, ignoreResultSize ){
+        var src = base64Code || this.getBase64Code( ignoreResultSize);
         src=window.atob(src);
 
         var ia = new Uint8Array(src.length);
@@ -294,33 +294,59 @@ o2.widget.Tablet = o2.Tablet = new Class({
 
         return new Blob([ia], {type: this.fileType });
     },
-    getBase64Code : function(){
+    getBase64Code : function( ignoreResultSize ){
         var ctx = this.ctx;
         var canvas = this.canvas;
         //var container = this.contentNode;
         //var size = this.options.size;
-        var width, height;
-        //if( this.options.resultMaxSize ){
-        //    if( this.contentWidth >  )
-        //}else{
-        //    width = this.contentWidth;
-        //    height = this.contentHeight
-        //}
-        width = this.contentWidth;
-        height = this.contentHeight;
+        if( !ignoreResultSize && this.options.resultMaxSize ){
 
-        //ctx.drawImage(this.imageNode,0,0, this.contentWidth,this.contentHeight,0,0,width,height);
-        var src=canvas.toDataURL( this.fileType );
-        src=src.split(',')[1];
+            var width, height;
+            width = Math.min( this.contentWidth , this.options.resultMaxSize);
+            height = ( width / this.contentWidth) * this.contentHeight;
 
-        if(!src){
-            return "";
+            var src=canvas.toDataURL( this.fileType );
+            src=src.split(',')[1];
+            src = 'data:'+ this.fileType +';base64,' + src;
+
+            var tmpImageNode = new Element("img", {
+                width : this.contentWidth,
+                height : this.contentHeight,
+                src : src
+            });
+            var tmpCanvas = new Element("canvas", {
+                width : width,
+                height : height
+            }).inject( this.contentNode );
+            var tmpCtx = tmpCanvas.getContext("2d");
+
+            tmpCtx.drawImage(tmpImageNode,0,0, this.contentWidth,this.contentHeight,0,0,width,height);
+
+            var tmpsrc= tmpCanvas.toDataURL( this.fileType );
+            tmpsrc=tmpsrc.split(',')[1];
+
+            tmpImageNode.destroy();
+            tmpCanvas.destroy();
+            tmpCtx = null;
+
+            if(!tmpsrc){
+                return "";
+            }else{
+                return tmpsrc
+            }
         }else{
-            return src
+            var src=canvas.toDataURL( this.fileType );
+            src=src.split(',')[1];
+
+            if(!src){
+                return "";
+            }else{
+                return src
+            }
         }
     },
-    getBase64Image: function( base64Code ){
-        if( !base64Code )base64Code = this.getBase64Code();
+    getBase64Image: function( base64Code, ignoreResultSize ){
+        if( !base64Code )base64Code = this.getBase64Code( ignoreResultSize );
         if( !base64Code )return null;
         return 'data:'+ this.fileType +';base64,' + base64Code;
     },
@@ -345,7 +371,6 @@ o2.widget.Tablet = o2.Tablet = new Class({
         this.fireEvent("save", [ base64code, base64Image, imageFile]);
     },
     reset : function( itemNode ){
-
         this.fileName = "untitled.png";
         this.fileType = "image/png";
         if( this.ctx ){
@@ -789,7 +814,7 @@ o2.widget.Tablet.SizePicker = new Class({
                 }.bind(this)
             });
 
-            previewContainer = new Element("div").inject(this.node);
+            var previewContainer = new Element("div").inject(this.node);
              new Element("div",{ text : "预览", styles : {
                 "float" : "left",
                  "margin-top" : "5px",

@@ -194,7 +194,7 @@
         }
     };
 
-    String.implement({
+    if (String.implement) String.implement({
         "getAllIndexOf": function(str){
             var idxs= [];
             var idx = this.indexOf(str);
@@ -205,7 +205,7 @@
             return idxs;
         }
     });
-    Array.implement({
+    if (Array.implement) Array.implement({
         "trim": function(){
             var arr = [];
             this.each(function(v){
@@ -217,7 +217,7 @@
             return this.some(function(item){ return (arr.indexOf(item)!==-1); })
         }
     });
-    Element.implement({
+    if (window.Element && Element.implement) Element.implement({
         "isIntoView": function() {
             var pNode = this.getParent();
             while (pNode && ((pNode.getScrollSize().y-(pNode.getComputedSize().height+1)<=0) || pNode.getStyle("overflow")==="visible")) pNode = pNode.getParent();
@@ -481,6 +481,13 @@
                 node = node.getParent();
             }
             return node || null;
+        },
+        "getEdgeHeight": function(notMargin){
+            var h = 0;
+            h += (this.getStyle("border-top-width").toFloat() || 0)+ (this.getStyle("border-bottom-width").toFloat() || 0);
+            h += (this.getStyle("padding-top").toFloat() || 0)+ (this.getStyle("padding-bottom").toFloat() || 0);
+            if (!notMargin) h += (this.getStyle("margin-top").toFloat() || 0)+ (this.getStyle("margin-bottom").toFloat() || 0);
+            return h;
         }
     });
     Object.copy = function(from, to){
@@ -496,56 +503,66 @@
         });
     };
 
-    JSON.format = JSON.encode;
+    if (window.JSON) JSON.format = JSON.encode;
 
-    Slick.definePseudo('src', function(value){
-        return Element.get(this,"src").indexOf(value) !== -1;
-    });
-    Slick.definePseudo('srcarr', function(value){
-        var vList = value.split(",");
-        var src = Element.get(this,"src");
-        var flag = false;
-        for (var i=0; i<vList.length; i++){
-            if (src.indexOf(vList[i])!==-1){
-                flag = true;
-                break;
+    if (window.Slick) {
+        Slick.definePseudo('src', function (value) {
+            return Element.get(this, "src").indexOf(value) !== -1;
+        });
+        Slick.definePseudo('srcarr', function (value) {
+            var vList = value.split(",");
+            var src = Element.get(this, "src");
+            var flag = false;
+            for (var i = 0; i < vList.length; i++) {
+                if (src.indexOf(vList[i]) !== -1) {
+                    flag = true;
+                    break;
+                }
             }
-        }
-        return flag;
-    });
-    Slick.definePseudo('ahref', function(value){
-        var href = Element.get(this,"href");
-        if (!href) href = "";
-        href = href.toString().toLowerCase();
-        return (href.indexOf(value)!==-1);
-    });
+            return flag;
+        });
+        Slick.definePseudo('ahref', function (value) {
+            var href = Element.get(this, "href");
+            if (!href) href = "";
+            href = href.toString().toLowerCase();
+            return (href.indexOf(value) !== -1);
+        });
 
-    Slick.definePseudo('rowspanBefore', function(line){
-        var tr = MWF.getParent(this, "tr");
-        var rowspan = this.get("rowspan").toInt() || 1;
-        var currentRowIndex = tr.rowIndex.toInt();
+        Slick.definePseudo('rowspanBefore', function (line) {
+            var tr = MWF.getParent(this, "tr");
+            var rowspan = this.get("rowspan").toInt() || 1;
+            var currentRowIndex = tr.rowIndex.toInt();
 
-        return rowspan>1 && currentRowIndex<line.toInt() && currentRowIndex+rowspan-1>=line;
-    });
-    Slick.definePseudo('rowspan', function(){
-        var rowspan = this.get("rowspan").toInt() || 1;
-        return rowspan>1;
-    });
+            return rowspan > 1 && currentRowIndex < line.toInt() && currentRowIndex + rowspan - 1 >= line;
+        });
+        Slick.definePseudo('rowspan', function () {
+            var rowspan = this.get("rowspan").toInt() || 1;
+            return rowspan > 1;
+        });
 
-    Slick.definePseudo('colspanBefore', function(col){
-        var tr = MWF.getParent(this, "tr");
-        var colspan = this.get("colspan").toInt() || 1;
-        var currentColIndex = this.cellIndex.toInt();
+        Slick.definePseudo('colspanBefore', function (col) {
+            var tr = MWF.getParent(this, "tr");
+            var colspan = this.get("colspan").toInt() || 1;
+            var currentColIndex = this.cellIndex.toInt();
 
-        return colspan>1 && currentColIndex<col.toInt() && currentColIndex+colspan-1>=col.toInt();
-    });
+            return colspan > 1 && currentColIndex < col.toInt() && currentColIndex + colspan - 1 >= col.toInt();
+        });
 
-    Slick.definePseudo('colspan', function(){
-        var colspan = this.get("colspan").toInt() || 1;
-        return colspan>1;
-    });
+        Slick.definePseudo('colspan', function () {
+            var colspan = this.get("colspan").toInt() || 1;
+            return colspan > 1;
+        });
+    }
 
     o2.common = o2.common || {};
+
+    o2.common.encodeHtml = function(str){
+        str = str.toString();
+        str = str.replace(/\&/g, "&amp;");
+        str = str.replace(/>/g, "&gt;");
+        str = str.replace(/</g, "&lt;");
+        return str.replace(/\"/g, "&quot;");
+    };
 
     o2.common.getResponseTextPost = function(path, body, contentType){
         var returnText = "";
@@ -634,15 +651,18 @@
         return {"x": x, "y": y};
     };
 
-    if (Browser.name==="ie" && Browser.version<9){
-        Browser.ieuns = true;
-    }else if(Browser.name==="ie" && Browser.version<10){
-        Browser.iecomp = true;
+    if (window.Browser){
+        if (Browser.name==="ie" && Browser.version<9){
+            Browser.ieuns = true;
+        }else if(Browser.name==="ie" && Browser.version<10){
+            Browser.iecomp = true;
+        }
+        if (Browser.iecomp){
+            o2.load("ie_adapter", null, false);
+            o2.session.isDebugger = true;
+            //layout["debugger"] = true;
+        }
+        o2.session.isMobile = (["mac", "win", "linux"].indexOf(Browser.Platform.name)===-1);
     }
-    if (Browser.iecomp){
-        o2.load("ie_adapter", null, false);
-        layout["debugger"] = true;
-    }
-
 })();
 o2.more = true;

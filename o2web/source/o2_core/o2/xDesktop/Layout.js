@@ -3,24 +3,24 @@ MWF.xDesktop.requireApp = function(module, clazz, callback, async){
     o2.requireApp(module, clazz, callback, async)
 };
 MWF.xApplication = MWF.xApplication || {};
-MWF.require("MWF.widget.Common", null, false);
-MWF.require("MWF.xDesktop.Common", null, false);
-MWF.require("o2.xDesktop.Dialog", null, false);
-MWF.require("MWF.xAction.RestActions", null, false);
-MWF.require("MWF.xDesktop.Menu", null, false);
-MWF.require("MWF.widget.UUID", null, false);
+// MWF.require("MWF.widget.Common", null, false);
+// MWF.require("MWF.xDesktop.Common", null, false);
+// MWF.require("o2.xDesktop.Dialog", null, false);
+// MWF.require("MWF.xAction.RestActions", null, false);
+// MWF.require("MWF.xDesktop.Menu", null, false);
+// MWF.require("MWF.widget.UUID", null, false);
 MWF.require("MWF.xDesktop.Lnk", null, false);
-MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-MWF.require("MWF.xDesktop.Authentication", null, false);
+// MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+// MWF.require("MWF.xDesktop.Authentication", null, false);
 MWF.require("MWF.xDesktop.Message", null, false);
-MWF.require("MWF.xDesktop.UserData", null, false);
+// MWF.require("MWF.xDesktop.UserData", null, false);
 MWF.require("MWF.xDesktop.shortcut", null, false);
-MWF.require("MWF.widget.PinYin", null, false);
-MWF.xDesktop.requireApp("Common", "", null, false);
+// MWF.require("MWF.widget.PinYin", null, false);
+// MWF.xDesktop.requireApp("Common", "", null, false);
 MWF.xDesktop.requireApp("Common", "Widget", null, false);
 MWF.require("MWF.xDesktop.WebSocket", null, false);
 //MWF.require("MWF.xDesktop.UserPanel", null, false);
-MWF.require("MWF.xDesktop.Access", null, false);
+// MWF.require("MWF.xDesktop.Access", null, false);
  
 MWF.xDesktop.Layout = new Class({
     Extends: MWF.widget.Common,
@@ -42,26 +42,27 @@ MWF.xDesktop.Layout = new Class({
         this.setOptions(options);
         this.type = "layout";
         this.path = MWF.defaultPath+"/xDesktop/$Layout/";
-        this.initData(function(){
-            this.authentication = new MWF.xDesktop.Authentication({
-                "onLogin": this.load.bind(this)
-            });
+        this.initData();
+        this.initNode(node);
+        //this.load();
 
-            this.authentication.isAuthenticated(function(json){
-                this.session.user = json.data;
-                layout.session.user = json.data;
-                this.getStyleLoad(node);
-            }.bind(this), function(){
-                if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal){
-                    MWF.xDesktop.loadPortal(layout.config.loginPage.portal);
-                    //window.location = "portal.html?portal="+layout.config.loginPage.portal;
-                }else{
-                    this.getPublicStyleLoad(node);
-                }
-                // this.initNode(node);
-                // this.load();
-            }.bind(this));
-        }.bind(this));
+        // this.authentication = new MWF.xDesktop.Authentication({
+        //     "onLogin": this.load.bind(this)
+        // });
+        // this.authentication.isAuthenticated(function(json){
+        //     this.session.user = json.data;
+        //     layout.session.user = json.data;
+        //this.getStyleLoad(node);
+        // }.bind(this), function(){
+        //     if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal){
+        //         MWF.xDesktop.loadPortal(layout.config.loginPage.portal);
+        //         //window.location = "portal.html?portal="+layout.config.loginPage.portal;
+        //     }else{
+        //         this.getPublicStyleLoad(node);
+        //     }
+        //     // this.initNode(node);
+        //     // this.load();
+        // }.bind(this));
     },
 
     getPublicStyleLoad: function(node){
@@ -73,41 +74,41 @@ MWF.xDesktop.Layout = new Class({
             this.load();
         }.bind(this));
     },
-    getStyleLoad: function(node){
-
-        MWF.UD.getPublicData("forceLayout", function(json) {
-            var forceStatus = null;
-            if (json){
-                forceStatus = json;
-            }
-
-            MWF.UD.getData("layout", function(json) {
-                if (json.data) {
-                    this.status = JSON.decode(json.data);
-
-                    if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
-
-                    if (this.status.style) this.options.style = this.status.style;
-                    if (this.status.styleType) this.options.styleType = this.status.styleType;
-                    this.initNode(node);
-                    this.load();
-                }else{
-                    MWF.UD.getPublicData("defaultLayout", function(json) {
-                        if (json){
-                            this.status = json;
-
-                            if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
-
-                            if (this.status.style) this.options.style = this.status.style;
-                            if (this.status.styleType) this.options.styleType = this.status.styleType;
-                        }
-                        this.initNode(node);
-                        this.load();
-                    }.bind(this));
-                }
-            }.bind(this));
-        }.bind(this));
-    },
+    // getStyleLoad: function(node){
+    //
+    //     MWF.UD.getPublicData("forceLayout", function(json) {
+    //         var forceStatus = null;
+    //         if (json){
+    //             forceStatus = json;
+    //         }
+    //
+    //         MWF.UD.getData("layout", function(json) {
+    //             if (json.data) {
+    //                 this.status = JSON.decode(json.data);
+    //
+    //                 if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
+    //
+    //                 if (this.status.style) this.options.style = this.status.style;
+    //                 if (this.status.styleType) this.options.styleType = this.status.styleType;
+    //                 this.initNode(node);
+    //                 this.load();
+    //             }else{
+    //                 MWF.UD.getPublicData("defaultLayout", function(json) {
+    //                     if (json){
+    //                         this.status = json;
+    //
+    //                         if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
+    //
+    //                         if (this.status.style) this.options.style = this.status.style;
+    //                         if (this.status.styleType) this.options.styleType = this.status.styleType;
+    //                     }
+    //                     this.initNode(node);
+    //                     this.load();
+    //                 }.bind(this));
+    //             }
+    //         }.bind(this));
+    //     }.bind(this));
+    // },
     loadCss: function(){
         var uri = new URI(window.location.href);
         var style = uri.getData("style");
@@ -157,10 +158,11 @@ MWF.xDesktop.Layout = new Class({
         }
     },
     initNode: function(node){
+        debugger;
 
         this.loadCss();
 
-        $("appContent").destroy();
+        //$("appContent").destroy();
         this.node = $(node);
         this.topShimNode = this.node.getElement("#"+this.options.topShim);
         this.topNode = this.node.getElement("#"+this.options.top);
@@ -180,35 +182,37 @@ MWF.xDesktop.Layout = new Class({
         //MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/desktop.jpg";
         this.node.setStyle("background-image", this.css.desktop.background);
     },
-    initData: function(callback){
+    initData: function(){
         this.apps = {};
         this.widgets = {};
         this.appCurrentList = [];
         this.lnkAreas = [];
         this.lnks = [];
         this.currentApp = null;
-        this.status = null;
         this.session = {};
-        this.serviceAddressList = null;
 
-        MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
-            this.serviceAddressList = service;
-            this.centerServer = center;
-            if (callback) callback();
-        }.bind(this));
+        this.status = layout.userLayout;
+        this.session.user = layout.session.user
+        this.serviceAddressList = layout.serviceAddressList;
+        this.centerServer = layout.centerServer;
+
+        if (this.status && this.status.style) this.options.style = this.status.style;
+        if (this.status && this.status.styleType) this.options.styleType = this.status.styleType;
+
+        layout.openApplication = this.openApplication.bind(this);
     },
 
-    isAuthentication: function(success){
-        var returnValue = true;
-        if (this.session.user){
-            if (success) success();
-        }else{
-            this.authentication.loadLogin(this.node);
-            this.fireEvent("login");
-            returnValue = false;
-        }
-        return returnValue;
-    },
+    // isAuthentication: function(success){
+    //     var returnValue = true;
+    //     if (this.session.user){
+    //         if (success) success();
+    //     }else{
+    //         this.authentication.loadLogin(this.node);
+    //         this.fireEvent("login");
+    //         returnValue = false;
+    //     }
+    //     return returnValue;
+    // },
 
     load : function(){
         if (document.body.addEventListener){
@@ -218,7 +222,7 @@ MWF.xDesktop.Layout = new Class({
             }.bind(this), false);
         }
 
-        this.isAuthentication(function(){
+        //this.isAuthentication(function(){
             if (this.status){
                 if (this.status.style){
                     if (this.options.style !== this.status.style){
@@ -242,7 +246,7 @@ MWF.xDesktop.Layout = new Class({
             }
             this.fireEvent("load");
 
-        }.bind(this));
+        //}.bind(this));
     },
     checkO2Collect: function(){
         var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_program_center");
@@ -476,10 +480,10 @@ MWF.xDesktop.Layout = new Class({
                             "isRefresh": true,
                             "onLoadWindow": function(){
                                 this.window.setOptions({
-                                    "top": appStatus.window.position.y,
-                                    "left": appStatus.window.position.x,
-                                    "width": appStatus.window.size.x,
-                                    "height": appStatus.window.size.y
+                                    "top": (appStatus.window.position) ? appStatus.window.position.y : 10,
+                                    "left": (appStatus.window.position) ? appStatus.window.position.x : 10,
+                                    "width": (appStatus.window.size) ? appStatus.window.size.x : this.options.width,
+                                    "height": (appStatus.window.size) ? appStatus.window.size.y : this.options.height,
                                 });
                                 this.window.reStyle();
                             },
@@ -635,17 +639,23 @@ MWF.xDesktop.Layout = new Class({
     },
     getLayoutStatusData: function(){
         var status = {
+            "viewMode": "Layout",
             "style": this.options.style,
             "styleType": this.options.styleType || "",
-            "currentApp": (this.currentApp) ? this.currentApp.appId : "",
+            "flatStyle": this.status.flatStyle || "blue",
+            "currentApp": (this.currentApp) ? this.currentApp.appId : "Homepage",
             "apps": {},
             "lnks": [],
+            "flatLnks": (this.status.flatLnks && o2.typeOf(this.status.flatLnks)==="array") ? this.status.flatLnks : [],
             "widgets": {}
         };
         Object.each(this.apps, function(app, id){
+            debugger;
             if (app.window){
                 if (app.options.desktopReload){
                     var appStatus ={
+                        "title": app.options.title,
+                        "appId": app.appId,
                         "name": app.options.name,
                         "style": app.options.style,
                         "window": {
@@ -867,8 +877,8 @@ MWF.xDesktop.Layout = new Class({
         }
 
         MWF.require("MWF.widget.Mask", function(){
-            this.mask = new MWF.widget.Mask({"style": "desktop"});
-            this.mask.load();
+            // this.mask = new MWF.widget.Mask({"style": "desktop"});
+            // this.mask.load();
 
             window.setTimeout(function(){
                 if (this.node) this.node.setStyles(this.css.layoutNode);
@@ -897,7 +907,7 @@ MWF.xDesktop.Layout = new Class({
                 });
 
                 this.resizeHeight();
-                this.mask.hide();
+                //this.mask.hide();
             }.bind(this), 0);
 
         }.bind(this));
@@ -2207,12 +2217,13 @@ MWF.xDesktop.Layout.Top = new Class({
 
         if (!this.notRecordStatus){
             this.layout.recordDesktopStatus(function(){
-                this.authentication.logout();
+                (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
             }.bind(this.layout));
         }else{
-            this.authentication.logout();
+            (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
         }
     },
+
     loadStyleAction: function(){
         this.styleActionNode = new Element("div", {
             "styles": this.layout.css.styleActionNode,
@@ -2288,6 +2299,11 @@ MWF.xDesktop.Layout.Top = new Class({
                             //}.bind(this), false);
                         }
                     }.bind(this));
+                    this.styleMenu.addMenuLine();
+                    var memuItem = this.styleMenu.addMenuItem(o2.LP.flat_style, "click", function(e){this.changeToFlatStyle(e);}.bind(this));
+                    var imgDiv = memuItem.item.getFirst();
+                    var imgNode = new Element("div", {"styles": memuItem.menu.css.menuItemImg}).inject(imgDiv);
+                    imgNode.setStyle("background-color", "#4A90E2");
 
                 }.bind(this));
             }.bind(this));
@@ -2314,6 +2330,17 @@ MWF.xDesktop.Layout.Top = new Class({
             //img = MWF.defaultPath+"/xDesktop/$Layout/car/preview.jpg";
             //this.styleMenu.addMenuItem(MWF.LP.desktop.styleMenu.car, "click", function(){this.changeLayoutStyle("car");}.bind(this), img);
         }
+    },
+    changeToFlatStyle: function(e){
+        // MWF.xDesktop.confirm("infor", e, o2.LP.desktop.changeViewTitle, {"html": o2.LP.desktop.changeView}, 500, 100, function(){
+        //         this.close();
+                var uri = new URI(window.location.href);
+                uri.setData("view", "default");
+                uri.go();
+        //     }, function(){
+        //         this.close();
+        //     }, null, null, "o2"
+        // );
     },
     changeLayoutStyle: function(style, isCustom){
         MWF.UD.deleteData("layoutDesktop", function(){

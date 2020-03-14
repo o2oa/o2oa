@@ -890,7 +890,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
 
         MWF.require("MWF.xDesktop.Dialog", function(){
             var width = 480;
-            var height = 160;
+            var height = 260;
             var p = MWF.getCenterPosition(this.explorer.app.content, width, height);
             var _self = this;
 
@@ -1015,9 +1015,36 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
                             }).inject(select);
                         }.bind(_self));
                     }.bind(_self));
+
+                    var selPeopleButton = this.content.getElement(".rerouteWork_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectReroutePeople(this);
+                    }.bind(this));
                 }
             });
             dlg.show();
+        }.bind(this));
+    },
+    selectReroutePeople: function(dlg){
+        var names = dlg.identityList || [];
+        var areaNode = dlg.content.getElement(".rerouteWork_selPeopleArea");
+        var options = {
+            "values": names,
+            "type": "identity",
+            "count": 0,
+            "title": this.explorer.app.lp.reroute,
+            "onComplete": function (items) {
+                areaNode.empty();
+                var identityList = [];
+                items.each(function (item) {
+                    new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
+                    identityList.push(item.data.distinguishedName);
+                }.bind(this));
+                dlg.identityList = identityList;
+            }.bind(this)
+        };
+        MWF.xDesktop.requireApp("Selector", "package", function () {
+            var selector = new MWF.O2Selector(this.explorer.app.content, options);
         }.bind(this));
     },
     doRerouteWork: function(dlg){
@@ -1029,11 +1056,15 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         activity = tmp[0];
         var type = tmp[1];
 
+        var nameArr = [];
+        var names = dlg.identityList || [];
+        names.each(function (n) { nameArr.push(n); });
+
         MWF.require("MWF.widget.Mask", function(){
             this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
             this.mask.loadNode(this.explorer.app.content);
 
-            this.rerouteWorkToActivity(activity, type, opinion, function(){
+            this.rerouteWorkToActivity(activity, type, opinion, nameArr, function(){
                 this.explorer.actions.getWork(this.data.id, function(workJson){
                     this.data = workJson.data;
                     this.workAreaNode.setStyles(this.css.workItemWorkNode);
@@ -1050,12 +1081,18 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
             }.bind(this));
         }.bind(this));
     },
-    rerouteWorkToActivity: function(activity, type, opinion, success, failure){
-        this.explorer.actions.rerouteWork(this.data.id, activity, type, null, function(json){
+    rerouteWorkToActivity: function(activity, type, opinion, nameArr, success, failure){
+        o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Reroute(this.data.id, activity, type, {"manualForceTaskIdentityList": nameArr}, function(){
             if (success) success();
-        }.bind(this), function(xhr, text, error){
+        }.bind(this), function (xhr, text, error) {
             if (failure) failure(xhr, text, error);
         });
+
+        // this.explorer.actions.rerouteWork(this.data.id, activity, type, null, function(json){
+        //     if (success) success();
+        // }.bind(this), function(xhr, text, error){
+        //     if (failure) failure(xhr, text, error);
+        // });
     },
     openWork: function(e){
         var options = {"workId": this.data.id, "isControl": this.explorer.app.options.application.allowControl};
@@ -1459,6 +1496,7 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
                     MWF.xDesktop.requireApp("process.Work", "Processor", function(){
                         new MWF.xApplication.process.Work.Processor(this.processNode, this.data, {
                             "style": "task",
+                            "isManagerProcess" : true,
                             "onCancel": function(){
                                 dlg.close();
                                 _self.node.setStyles(_self.css.taskItemNode);
@@ -1467,6 +1505,25 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
                             "onSubmit": function(routeName, opinion){
                                 _self.submitTask(routeName, opinion, this, dlg);
                                 delete this;
+                            },
+                            "onResize": function () {
+                                var processNodeSize = this.node.getSize();
+
+                                if (!dlg || !dlg.node) return;
+                                dlg.node.setStyle("display", "block");
+                                //var size = dlg.node.getSize();
+                                //dlg.options.contentHeight = processNodeSize.y;
+                                dlg.content.setStyles({
+                                    "height": processNodeSize.y,
+                                    "width": processNodeSize.x
+                                });
+                                var s = dlg.setContentSize("auto",null);
+                                //alert( JSON.stringify(s) )
+                                if (dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto") {
+                                    dlg.node.setStyle("width", dlg.node.getStyle("width").toInt() + 20 + "px");
+                                    dlg.content.setStyle("width", dlg.content.getStyle("width").toInt() + 20 + "px");
+                                }
+                                dlg.reCenter();
                             }
                         })
                     }.bind(this));

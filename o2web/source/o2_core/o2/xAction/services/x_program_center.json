@@ -33,9 +33,11 @@
   "getCollect": {"uri": "/jaxrs/config/collect"},
   "getPerson": {"uri": "/jaxrs/config/person"},
   "getToken": {"uri": "/jaxrs/config/token"},
+  "getPortal": {"uri": "/jaxrs/config/portal"},
   "setCollect": {"uri": "/jaxrs/config/collect", "method": "PUT"},
   "setPerson": {"uri": "/jaxrs/config/person", "method": "PUT"},
   "setToken": {"uri": "/jaxrs/config/token", "method": "PUT"},
+  "setPortal": {"uri": "/jaxrs/config/portal", "method": "PUT"},
 
   "getCenterServer": {"uri": "/jaxrs/config/centerserver"},
   "setCenterServer": {"uri": "/jaxrs/config/centerserver", "method": "PUT"},

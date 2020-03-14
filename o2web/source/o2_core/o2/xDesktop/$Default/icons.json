@@ -1,0 +1,158 @@
+{
+  "Homepage": {
+    "icon": "homepage.png",
+    "color": "#4A90E2"
+  },
+  "process.TaskCenter": {
+    "icon": "taskCenter.png",
+    "color": "#4A90E2"
+  },
+  "cms.Index": {
+    "icon": "cmsIndex.png",
+    "color": "#66CC80"
+  },
+  "File": {
+    "icon": "file.png",
+    "color": "#4A90E2"
+  },
+  "Calendar": {
+    "icon": "calendar.png",
+    "color": "#66CC80"
+  },
+  "ANN": {
+    "icon": "ann.png",
+    "color": "#FF8080"
+  },
+  "Attendance": {
+    "icon": "attendance.png",
+    "color": "#FF8080"
+  },
+  "BAM": {
+    "icon": "bam.png",
+    "color": "#4A90E2"
+  },
+  "cms.Column": {
+    "icon": "cms.png",
+    "color": "#66CC80"
+  },
+  "Empty": {
+    "icon": "empty.png",
+    "color": "#777777"
+  },
+  "Execution": {
+    "icon": "execution.png",
+    "color": "#4A90E2"
+  },
+  "AppCenter": {
+    "icon": "export.png",
+    "color": "#D94141"
+  },
+  "Forum": {
+    "icon": "forum.png",
+    "color": "#4FB2E3"
+  },
+  "HotArticle": {
+    "icon": "hot.png",
+    "color": "#FF8080"
+  },
+  "LogViewer": {
+    "icon": "log.png",
+    "color": "#777777"
+  },
+  "AppMarket": {
+    "icon": "market.png",
+    "color": "#66CC80"
+  },
+  "Meeting": {
+    "icon": "meeting.png",
+    "color": "#F5A623"
+  },
+  "Message": {
+    "icon": "message.png",
+    "color": "#F5A623"
+  },
+  "Minder": {
+    "icon": "mind.png",
+    "color": "#D94141"
+  },
+  "Note": {
+    "icon": "note.png",
+    "color": "#D3A269"
+  },
+  "OnlineMeeting": {
+    "icon": "onlineMeeting.png",
+    "color": "#4FB2E3"
+  },
+  "Org": {
+    "icon": "org.png",
+    "color": "#906EDB"
+  },
+  "portal.PortalExplorer": {
+    "icon": "portal.png",
+    "color": "#D3A269"
+  },
+  "process.ApplicationExplorer": {
+    "icon": "process.png",
+    "color": "#4FB2E3"
+  },
+  "Profile": {
+    "icon": "profile.png",
+    "color": "#758790"
+  },
+  "query.QueryExplorer": {
+    "icon": "query.png",
+    "color": "#906EDB"
+  },
+  "Report": {
+    "icon": "report.png",
+    "color": "#D3A269"
+  },
+  "ScriptEditor": {
+    "icon": "script.png",
+    "color": "#F5A623"
+  },
+  "Search": {
+    "icon": "search.png",
+    "color": "#758790"
+  },
+  "service.ServiceManager": {
+    "icon": "service.png",
+    "color": "#F5A623"
+  },
+  "Setting": {
+    "icon": "setting.png",
+    "color": "#758790"
+  },
+  "Strategy": {
+    "icon": "strategy.png",
+    "color": "#4FB2E3"
+  },
+  "TeamWork": {
+    "icon": "teamwork.png",
+    "color": "#66CC80"
+  },
+  "ExeManager": {
+    "icon": "execution.png",
+    "color": "#4A90E2"
+  },
+  "Url": {
+    "icon": "url.png",
+    "color": "#bbbbbb"
+  },
+  "cmsDefault": {
+    "icon": "cmsDefault.png",
+    "color": "#bbbbbb"
+  },
+  "processDefault": {
+    "icon": "processDefault.png",
+    "color": "#bbbbbb"
+  },
+  "portalDefault": {
+    "icon": "portalDefault.png",
+    "color": "#bbbbbb"
+  },
+  "queryDefault": {
+    "icon": "queryDefault.png",
+    "color": "#bbbbbb"
+  }
+}

@@ -10,7 +10,7 @@
         "position":"absolute",
         "left":"0px",
         "top":"51px",
-        "bottom":"-1px",
+        "bottom":"0px",
         "width":"100%",
         "overflow":"auto",
         "display":"flex"

@@ -1,3 +1,4 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.ProcessDesigner = MWF.xApplication.process.ProcessDesigner || {};
 MWF.xApplication.process.ProcessDesigner.widget = MWF.xApplication.process.ProcessDesigner.widget || {};
 MWF.require("MWF.xAction.org.express.RestActions", null,false);

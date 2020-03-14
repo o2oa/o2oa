@@ -12,9 +12,7 @@
 		"background-color": "#fff",
 		"box-shadow": "0px 0px 20px #999999",
 		"z-index": "1000",
-
 		"padding": "3px" ,
-
 		"opacity": 0
 	},
 	"to": {
@@ -91,6 +89,20 @@
 	    "float": "right",
 	    "cursor": "pointer",
 	    "background": "url("+o2.session.path+"/widget/$Dialog/blue_flat/img/close.png) center center no-repeat"
+	},
+	"maxAction": {
+	  "height": "38px",
+	  "width": "38px",
+	  "float": "right",
+	  "cursor": "pointer",
+	  "background": "url("+o2.session.path+"/widget/$Dialog/blue_flat/img/max.png) center center no-repeat"
+	},
+	"restoreAction": {
+	  "height": "38px",
+	  "width": "38px",
+	  "float": "right",
+	  "cursor": "pointer",
+	  "background": "url("+o2.session.path+"/widget/$Dialog/blue_flat/img/restore.png) center center no-repeat"
 	},
 	"MWF_dialod_bottom_resize": {
 	    "height": "8px",

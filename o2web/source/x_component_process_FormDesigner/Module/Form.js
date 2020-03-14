@@ -110,8 +110,13 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType="blue-simple";
 			if (this.options.mode=="Mobile"){
 				if (this.json.formStyleType != "defaultMobile"){
-					oldStyleValue = this.json.formStyleType;
-					this.json.formStyleType = "defaultMobile";
+					//oldStyleValue = this.json.formStyleType;
+					//this.json.formStyleType = "defaultMobile";
+					var styles = this.stylesList[this.json.formStyleType];
+					if( !styles || typeOf(styles.mode)!=="array" || !styles.mode.contains( "mobile" ) ){
+						oldStyleValue = this.json.formStyleType;
+						this.json.formStyleType = "defaultMobile";
+					}
 				}
 			}
 

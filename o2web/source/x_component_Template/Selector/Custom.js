@@ -76,6 +76,9 @@ MWF.xApplication.Template.Selector.Custom = new Class({
             this.initSearchArea(false);
         }
     },
+    _getItem: function(callback, failure, id, async){
+        if (callback) callback.apply(id, [{"id":id}]);
+    },
     _newItem: function(data, selector, container, level, category){
         return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category);
     },
@@ -112,7 +115,8 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;
@@ -148,7 +152,8 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;
@@ -180,7 +185,8 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         this.loaded = true;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;

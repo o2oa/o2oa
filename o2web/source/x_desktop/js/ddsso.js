@@ -12,6 +12,7 @@ o2.addReady(function () {
         MWF.loadLP("zh-cn");
         MWF.require("MWF.xDesktop.Layout", function () {
             MWF.require("MWF.xDesktop.Authentication", null, false);
+            MWF.require("MWF.xDesktop.Common", null, false);
 
             (function () {
                 layout.load = function () {
@@ -62,15 +63,15 @@ o2.addReady(function () {
                                                 //document.all.testaaa.set("value", "auth");
                                                 // "appMobile.html?app=process.TaskCenter".toURI().go();
 
-                                                if (redirect){
+                                                if (redirect) {
                                                     history.replaceState(null, "page", redirect);
                                                     redirect.toURI().go();
-                                                }else{
+                                                } else {
                                                     history.replaceState(null, "page", "/x_desktop/appMobile.html?app=process.TaskCenter");
                                                     "appMobile.html?app=process.TaskCenter".toURI().go();
                                                 }
 
-                                            }.bind(this), "failure": function(xhr, text, error){
+                                            }.bind(this), "failure": function (xhr, text, error) {
                                                 history.replaceState(null, "page", "/x_desktop/appMobile.html?app=process.TaskCenter");
                                                 "appMobile.html?app=process.TaskCenter".toURI().go();
                                             }.bind(this)

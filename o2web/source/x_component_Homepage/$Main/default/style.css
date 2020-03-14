@@ -1,0 +1,740 @@
+.o2_homepage_content {
+    margin: 15px;
+    min-width: 1000px;
+    min-height: 600px;
+    font-size: 14px;
+}
+.o2_homepage_layout_right {
+    min-width: 360px;
+    max-width: 410px;
+    float: right;
+    height: 100%;
+}
+.o2_homepage_layout_left {
+    overflow: hidden;
+    height: 100%;
+}
+.o2_homepage_layout_leftTop {
+    height: 50%;
+}
+.o2_homepage_layout_leftBottom {
+    height: 50%;
+}
+.o2_homepage_layout_leftTopLeft {
+    float: left;
+    height: 100%;
+    width: 62%;
+}
+.o2_homepage_layout_leftTopRight {
+    float: left;
+    height: 100%;
+    width: 38%;
+}
+.o2_homepage_layout_leftBottomLeft {
+    float: left;
+    height: 100%;
+    width: 62%;
+}
+.o2_homepage_layout_leftBottomRight {
+    float: left;
+    height: 100%;
+    width: 38%;
+}
+
+.o2_homepage_calendar_content {
+    overflow: hidden;
+    margin: 5px;
+    background-color: #ffffff;
+}
+.o2_homepage_task_content {
+    overflow: hidden;
+    margin: 5px;
+    background-color: #ffffff;
+}
+.o2_homepage_meeting_content {
+    overflow: hidden;
+    margin: 5px;
+    background-color: #ffffff;
+}
+.o2_homepage_infor_content {
+    overflow: hidden;
+    margin: 5px;
+    background-color: #ffffff;
+}
+.o2_homepage_file_content {
+    overflow: hidden;
+    margin: 5px;
+    background-color: #ffffff;
+}
+
+.o2_homepage_title {
+    margin: 0 20px;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #E6E6E6;
+    overflow: hidden;
+}
+.o2_homepage_title_action {
+    height: 50px;
+    float: right;
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    padding-left: 20px;
+    color: #4A90E2;
+    cursor: pointer;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
+}
+.o2_homepage_title_tabarea {
+    font-size: 16px;
+    height: 50px;
+    color: #666666;
+}
+.o2_homepage_title_tab {
+    height: 47px;
+    border-bottom: 3px solid #ffffff;
+    float: left;
+    margin-right: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.o2_homepage_title_tab_over {
+    border-bottom: 3px solid #999999;
+}
+.o2_homepage_title_tab_current {
+    color: #4A90E2;
+    border-color: #4A90E2;
+}
+.o2_homepage_task_area {
+    overflow: hidden;
+    margin: 0 20px;
+}
+.o2_homepage_task_area_action {
+    height: 50px;
+}
+
+.o2_homepage_task_area_content {
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.o2_homepage_area_content_loading {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/loading.gif);
+}
+.o2_homepage_task_area_content_empty {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_wugongzuo.png);
+}
+.o2_homepage_task_area_content_empty_node {
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wugongzuo.png);
+    width: 90px;
+    height: 30px;
+    padding-top: 60px;
+    line-height: 30px;
+    margin: 30px auto 0 auto;
+}
+.o2_homepage_task_item_row {
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    color: #333333;
+}
+.o2_homepage_task_item_row_over {
+    color: #4A90E2;
+    background-color: #F7F7F7;
+}
+.o2_homepage_task_item_cell_number {
+    height: 40px;
+    width: 20px;
+    padding: 0 20px;
+}
+.o2_homepage_task_item_number {
+    float: right;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #CCCCCC;
+    text-align: center;
+    font-size: 12px;
+    color: #FFFFFF;
+    line-height: 20px;
+}
+.o2_homepage_task_item_number_over {
+    background: #4A90E2;
+}
+.o2_homepage_task_item_cell_subject {
+    height: 40px;
+}
+.o2_homepage_task_item_subject {
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    word-wrap: normal;
+    margin-right: 10px;
+}
+
+.o2_homepage_task_item_cell_activity {
+    color: #666666;
+    font-size: 12px;
+    width: 140px;
+}
+.o2_homepage_task_item_activity {
+    width: 140px;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    word-wrap: normal;
+    margin-right: 10px;
+}
+
+.o2_homepage_task_item_cell_creator {
+    color: #666666;
+    font-size: 12px;
+    width: 40px;
+}
+.o2_homepage_task_item_creator {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    word-wrap: normal;
+}
+.o2_homepage_task_item_cell_time {
+    text-align: right;
+    color: #999999;
+    font-size: 12px;
+    width: 80px;
+    word-wrap: break-spaces;
+}
+.o2_homepage_task_item_time {
+    width: 80px;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    word-wrap: normal;
+}
+.o2_homepage_task_page_area {
+    overflow: hidden;
+}
+.o2_homepage_task_page_prev {
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    border-radius: 20px;
+    width: 70px;
+    height: 24px;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    line-height: 24px;
+    float: left;
+    margin-left: 20px;
+    cursor: pointer;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.o2_homepage_task_page_prev_over {
+    background: #4A90E2;
+    color: #ffffff;
+}
+.o2_homepage_task_page_next {
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    border-radius: 20px;
+    width: 70px;
+    height: 24px;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    line-height: 24px;
+    float: left;
+    margin-left: 10px;
+    cursor: pointer;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.o2_homepage_task_page_next_over {
+    background: #4A90E2;
+    color: #ffffff;
+}
+.o2_homepage_task_page_items {
+    padding: 2px 0;
+    height: 20px;
+    float: left;
+}
+.o2_homepage_task_page_item {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    line-height: 20px;
+    text-align: center;
+    margin-left: 10px;
+    color: #666666;
+    cursor: pointer;
+    border: 1px solid #E6E6E6;
+    float: left;
+    font-size: 12px;
+}
+.o2_homepage_task_page_reverse {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+    margin-left: 10px;
+    color: #666666;
+    cursor: pointer;
+    float: left;
+    border: 1px solid #E6E6E6;
+    line-height: 11px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei", "SimSun", "黑体", serif;
+}
+.o2_homepage_task_page_forward {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+    margin-left: 10px;
+    color: #666666;
+    cursor: pointer;
+    float: left;
+    border: 1px solid #E6E6E6;
+    line-height: 11px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei", "SimSun", "黑体", serif;
+}
+.o2_homepage_task_page_item_over {
+    background-color: #cccccc;
+    color: #ffffff;
+}
+.o2_homepage_task_page_item_current {
+    background-color: #4A90E2;
+    color: #ffffff;
+}
+
+.o2_homepage_infor_title {
+    margin: 0 20px;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #E6E6E6;
+    overflow: hidden;
+}
+.o2_homepage_infor_title_action {
+    height: 50px;
+    float: right;
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    padding-left: 20px;
+    color: #4A90E2;
+    cursor: pointer;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
+}
+.o2_homepage_task_title_tabarea {
+    font-size: 16px;
+    height: 50px;
+    color: #666666;
+}
+.o2_homepage_task_title_tab {
+    height: 47px;
+    border-bottom: 3px solid #ffffff;
+    float: left;
+    margin-right: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.o2_homepage_task_title_tab_over {
+    border-bottom: 3px solid #999999;
+}
+.o2_homepage_task_title_tab_current {
+    color: #4A90E2;
+    border-color: #4A90E2;
+}
+
+.o2_homepage_infor_area {
+    overflow: hidden;
+    margin: 0 20px 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.o2_homepage_infor_hotpicArea {
+    height: 100%;
+    width: 42%;
+    float: left;
+    background: #F7FBFF;
+    border-radius: 8px;
+}
+.o2_homepage_infor_hotpicArea_doc {
+    position: relative;
+    overflow: hidden;
+    margin: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.o2_homepage_infor_hotpicArea_page {
+    height: 40px;
+    text-align: center;
+}
+
+.o2_homepage_infor_itemsArea {
+    margin-left: 42%;
+    height: 100%;
+}
+.o2_homepage_infor_itemsArea_content {
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.o2_homepage_infor_itemsArea_page {
+    height: 40px;
+}
+
+
+
+.o2_homepage_infor_hotpicNode {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 0;
+    opacity: 0;
+}
+.o2_homepage_infor_hotpicNode_current {
+    z-index: 100;
+}
+.o2_homepage_infor_hotpicImg {
+    margin-bottom: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.o2_homepage_infor_hotpicInfor_title {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    color: #333333;
+    overflow: hidden;
+    cursor: pointer;
+}
+.o2_homepage_infor_hotpicInfor_content {
+    font-size: 12px;
+    color: #666666;
+    letter-spacing: 0;
+    line-height: 18px;
+    height: 36px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+.o2_homepage_infor_hotpicInfor_date{
+    font-size: 12px;
+    color: #999999;
+    text-align: right;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+}
+.o2_homepage_hotpic_area_content_empty_node {
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuxiaoxi.png);
+    width: 120px;
+    height: 30px;
+    padding-top: 60px;
+    line-height: 30px;
+    margin: 30px auto 0 auto;
+}
+
+.o2_homepage_infor_hotpicArea_page_item {
+    width: 18px;
+    height: 6px;
+    border-radius: 6px;
+    background-color: #dddddd;
+    float: left;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.o2_homepage_infor_hotpicArea_page_item_current{
+    background-color: #666666;
+}
+.o2_homepage_infor_hotpicArea_pagecontent {
+    margin: auto;
+    display: inline-block;
+}
+.o2_homepage_infor_area_action {
+    height: 30px;
+}
+.o2_homepage_meeting_area_action {
+    height: 0;
+}
+.o2_homepage_meeting_area_content_empty_node {
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuhuiyi.png);
+    width: 90px;
+    height: 30px;
+    padding-top: 60px;
+    line-height: 30px;
+    margin: 30px auto 0 auto;
+}
+.o2_homepage_meeting_item_node {
+    height: 79px;
+    border-bottom: 1px solid #E6E6E6;
+    color: #333333;
+    cursor: pointer;
+}
+.o2_homepage_meeting_item_action {
+    width: 54px;
+    height: 60px;
+    margin-right: 18px;
+    padding-top: 15px;
+    float: right;
+}
+.o2_homepage_meeting_item_infor {
+    margin-right: 80px;
+    height: 60px;
+    padding-top: 10px;
+    padding-left: 15px;
+}
+.o2_homepage_meeting_item_title {
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    overflow: hidden;
+}
+.o2_homepage_meeting_item_time {
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #666666;
+    overflow: hidden;
+}
+.o2_homepage_meeting_item_location {
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #666666;
+    overflow: hidden;
+}
+.o2_homepage_meeting_title {
+    margin: 0 20px;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #E6E6E6;
+    overflow: hidden;
+}
+.o2_homepage_meeting_item_action_accepted {
+    width: 54px;
+    height: 20px;
+    background: #60BF78;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 20px;
+}
+.o2_homepage_meeting_item_action_rejected {
+    width: 54px;
+    height: 20px;
+    background: #bbbbbb;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 20px;
+}
+.o2_homepage_meeting_item_action_accept {
+    width: 54px;
+    height: 20px;
+    background: #4DA1FF;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 20px;
+}
+.o2_homepage_meeting_item_action_reject{
+    margin-top: 8px;
+    width: 54px;
+    height: 20px;
+    background: #FF8080;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 20px;
+}
+.o2_homepage_file_area_content_empty_node {
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuwenjian.png);
+    cursor: pointer;
+    width: 90px;
+    height: 30px;
+    padding-top: 60px;
+    line-height: 20px;
+    margin: 30px auto 0 auto;
+}
+.o2_homepage_file_item_node {
+    height: 50px;
+    border-bottom: 1px solid #E6E6E6;
+    color: #333333;
+}
+.o2_homepage_file_item_icon {
+    height: 50px;
+    width: 50px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    float: left;
+}
+.o2_homepage_file_item_action {
+    float: right;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 50px;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_down.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.o2_homepage_file_item_title {
+    height: 50px;
+    margin: 0 50px;
+    line-height: 50px;
+    font-size: 14px;
+    cursor: pointer;
+    word-break: break-all;
+    overflow: hidden;
+}
+.o2_homepage_calender {
+    height: 380px;
+    width: 340px;
+    margin: auto;
+}
+.o2_homepage_calender_infor {
+    font-size: 13px;
+    color: #666666;
+    height: 30px;
+    padding: 0 20px;
+    line-height: 30px;
+}
+.o2_homepage_calendar_area_content_empty_node {
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuricheng.png);
+    width: 90px;
+    height: 30px;
+    padding-top: 60px;
+    line-height: 30px;
+    margin: 30px auto 0 auto;
+}
+.o2_homepage_calender_item_node {
+    height: 50px;
+    padding: 10px 5px;
+    border-radius: 8px;
+    color: #333333;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.o2_homepage_calender_item_infor {
+    height: 50px;
+    line-height: 30px;
+    margin-right: 70px;
+}
+.o2_homepage_calender_item_location {
+    float: right;
+    height: 50px;
+    line-height: 25px;
+    font-size: 12px;
+    width: 60px;
+    margin-right: 10px;
+    text-align: right;
+    color: #666666;
+}
+.o2_homepage_calender_item_title {
+    height: 30px;
+}
+.o2_homepage_calender_item_title_icon {
+    height: 6px;
+    width: 6px;
+    background-color: #666666;
+    border-radius: 6px;
+    margin: 12px;
+    float: left;
+}
+.o2_homepage_calender_item_title_text {
+    margin-left: 30px;
+}
+.o2_homepage_calender_item_time {
+    height: 20px;
+    line-height: 20px;
+    color: #666666;
+    font-size: 12px;
+    padding-left: 30px;
+}
+.o2_homepage_calender_item_flag {
+    background-color: #D94141;
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    position: absolute;
+    float: right;
+    top: -18px;
+}
+.o2_homepage_calender_flag {
+    width: 0;
+    height: 0;
+}
+.o2_homepage_calender_area {
+    overflow: hidden;
+    margin: 0;
+}
+.o2_homepage_calender_area_content {
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 0 20px;
+    overflow: auto;
+}
+.o2_homepage_calender_count_flag{
+    width: 10px;
+    height: 10px;
+    border-radius: 12px;
+    background-color: #F23030;
+    color: #ffffff;
+    display: inline;
+    padding: 0 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+}

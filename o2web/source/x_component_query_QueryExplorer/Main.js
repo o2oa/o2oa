@@ -16,7 +16,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
         "isMax": true,
         "title": MWF.xApplication.query.QueryExplorer.LP.title,
         "maxWidth": 840,
-        "minWidth": 720
+        "minWidth": 540
     },
 	onQueryLoad: function(){
 		this.lp = MWF.QueryLP;

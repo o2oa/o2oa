@@ -9,7 +9,8 @@
     "formNode": {
         "min-height": "100%",
         "font-size": "14px",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "background-color": "#FFF"
     },
     "maskNode": {
         "background-color": "#666",
@@ -87,5 +88,61 @@
     },
     "mobileSaveActionNode": {
         "height": "40px"
-    }
+    },
+    "workListArea": {
+        "width": "90%",
+        "min-width": "300px",
+        "max-width": "600px",
+        "margin": "60px auto 0px auto",
+        "overflow": "hidden"
+    },
+    "workListAreaTitle": {
+        "height": "60px",
+        "padding": "0px 10px",
+        "color": "#666666",
+        "font-size": "20px",
+        "overflow": "hidden"
+    },
+    "workListContent": {
+        "margin": "10px auto 0px auto",
+        "overflow": "hidden"
+    },
+    "workItemNode": {
+        "padding": "3px 10px",
+        "height": "60px",
+        "border-radius": "30px",
+        "border": "2px solid #cccccc",
+        "margin-bottom": "20px",
+        "background-color": "#ffffff",
+        "cursor": "pointer",
+    },
+    "workItemNode_over": {
+        "border": "2px solid #4A90E2"
+    },
+    "workItemTitleNode": {
+        "height": "27px",
+        "line-height": "27px",
+        "padding": "0px 10px",
+        "color": "#333333"
+    },
+     "workItemInforNode": {
+         "height": "27px",
+         "line-height": "27px",
+         "padding": "0px 10px",
+         "color": "#999999",
+         "font-size": "12px"
+     },
+     "workItemInforTitleNode": {
+        "color": "#333333",
+        "font-weight": "bold",
+        "float": "left",
+        "margin-right": "5px"
+     },
+     "workItemInforContentNode": {
+         "float": "left",
+         "margin-right": "10px"
+     },
+     "formNode_bg": {
+        "background-color": "#f3f3f3"
+     }
 }

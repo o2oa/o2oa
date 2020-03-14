@@ -205,7 +205,7 @@
     "titleStyles":{
       "background-color": "#F1F4F9",
       "color": "#12171F",
-      "font-weight": "bold",
+      "font-weight": "normal",
       "height": "30px",
       "line-height": "30px",
       "text-align": "center"

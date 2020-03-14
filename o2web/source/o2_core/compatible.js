@@ -22,6 +22,7 @@ o2.addReady(function(){
         "Request": Request,
         "typeOf": o2.typeOf
     };
+    COMMON.Browser.Platform.isMobile = o2.session.isMobile;
     COMMON.DOM.addReady = o2.addReady;
     MWF = o2;
     MWF.getJSON = o2.JSON.get;

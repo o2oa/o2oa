@@ -135,6 +135,7 @@ MWF.xScript.Environment = function(ev){
 
         "getControl": function(){return ev.control;},
         "getWorkLogList": function(){return ev.workLogList;},
+        "getRecordList": function(){return ev.recordList;},
         "getAttachmentList": function(){return ev.attachmentList;},
         "getRouteList": function(){return (ev.task) ? ev.task.routeNameList: null;},
         "getInquiredRouteList": function(){return null;},
@@ -960,14 +961,15 @@ MWF.xScript.Environment = function(ev){
         "close": function(){_form.closeWork();},
 
         "verify": function(){
-            return !(!_form.formCustomValidation("", "") | !_form.formValidation("", ""));
+            return !(!_form.formCustomValidation("", "") || !_form.formValidation("", ""));
         },
 
         "process": function(option){
             var op = _form.getOpinion();
             var mds = op.medias;
             if (option){
-                _form.submitWork(option.routeName, option.opinion, mds, option.callback, option.processor, null, option.appendTaskIdentityList);
+                _form.submitWork(option.routeName, option.opinion, mds, option.callback,
+                    option.processor, null, option.appendTaskIdentityList, option.processorOrgList, option.callbackBeforeSave );
             }else{
                 _form.processWork();
             }
@@ -976,7 +978,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 if (_form.businessData.control["allowReset"]) _form.resetWork();
             }else{
-                _form.resetWorkToPeson(option.names, option.opinion, option.success, option.failure);
+                _form.resetWorkToPeson(option.names, option.opinion, option.keep, option.success, option.failure);
             }
         },
         "retract": function(option){
@@ -997,7 +999,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 if (_form.businessData.control["allowRollback"]) _form.rollback();
             }else{
-                _form.doRollbackActionInvoke(option.log, option.success, option.failure);
+                _form.doRollbackActionInvoke(option.log, option.flow, option.success, option.failure);
             }
         },
 

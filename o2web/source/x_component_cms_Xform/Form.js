@@ -354,7 +354,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         }
         this.documentAction.saveDocument(documentData, function () {
             //this.documentAction.saveData(function(json){
-            this.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
+            this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
             this.businessData.data.isNew = false;
             this.fireEvent("afterSave");
             if (callback) callback();
@@ -366,6 +366,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         if (this.app) {
             this.app.close();
         }
+    },
+    printDocument: function (form) {
+        var form = form;
+        if (!form) {
+            form = this.json.id;
+            if (this.json.printForm && this.json.printForm !== "none") form = this.json.printForm;
+        }
+        window.open("/x_desktop/printcmsdoc.html?documentid=" + this.businessData.document.id + "&form=" + form);
     },
 
     formValidation: function (status) {
@@ -575,6 +583,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             this.app.loadApplication();
         } else {
             var options = { "documentId": this.businessData.document.id, "readonly": false }; //this.explorer.app.options.application.allowControl};
+            if (this.app.options.formEditId) options.formEditId = this.app.options.formEditId;
             this.app.desktop.openApplication(null, "cms.Document", options);
             this.app.close();
         }

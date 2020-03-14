@@ -24,6 +24,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Module.LP;
+
 	},
 	onQueryClose : function(){
 		if (window.clipboardData){
@@ -66,6 +67,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	loadApplicationContent: function(){
 		if( this.options.columnData ){
+			this.setColumnDataConfig();
 			this.setTitle(this.options.columnData.appName);
 			this.loadController(function(){
 				this.loadTitle(function(){
@@ -84,6 +86,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}else if( this.options.columnAlias ){
 			this.restActions.getColumnByAlias( this.options.columnAlias, function( json ){
 				this.options.columnData = json.data;
+				this.setColumnDataConfig();
 				this.setTitle(this.options.columnData.appName);
 				this.loadController(function(){
 					this.loadTitle(function(){
@@ -93,10 +96,31 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}.bind(this))
 		}
 	},
+	setColumnDataConfig : function(){
+		if( !this.options.columnData.config ){
+			this.options.columnData.config = {};
+		}else if( typeOf(this.options.columnData.config) === "string" ){
+			this.options.columnData.config = JSON.parse( this.options.columnData.config || {} );
+		}
+	},
 	loadColumnData : function(columnId, callback){
 		this.restActions.getColumn( columnId, function( json ){
 			this.options.columnData = json.data;
 			this.setTitle(this.options.columnData.appName);
+			this.setColumnDataConfig();
+
+			//MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
+			//MWF.require("o2.xScript.Macro", null, false);
+			//var scriptAction = new MWF.xScript.Actions.CMSScriptActions();
+			//scriptAction.getScriptByName( this.options.columnData.id, "_config", [], function(json){
+			//	if (json.data){
+			//		try{
+			//			this.options.columnData = Object.merge(this.options.columnData,JSON.parse(json.data.text));
+			//		}catch(e){
+			//		}
+			//	}
+			//}.bind(this), null, false);
+
 			if(callback)callback()
 		}.bind(this))
 	},
@@ -116,8 +140,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	loadTitle : function(callback){
 		if( this.isAdmin ){
-			this.loadImportActionNode();
-			this.loadExportActionNode();
+			//this.loadImportActionNode();
+			//this.loadExportActionNode();
 		}
 		this.loadCreateDocumentActionNode(
 			function(){
@@ -197,25 +221,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 				this.createDocumentAction.addEvents({
 					"click": function(e){
 						MWF.xDesktop.requireApp("cms.Index", "Newer", null, false);
-						//add categoryConfig=============begin
-						var ignoreTitle = false;
-						MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
-						MWF.require("o2.xScript.Macro", null, false);
-						var scriptAction = new MWF.xScript.Actions.CMSScriptActions();
-						scriptAction.getScriptByName( this.options.columnData.id, "_config", [], function(json){
-							if (json.data){
-								MWF.Macro.exec(json.data.text, this);
-							}
-						}.bind(this), null, false);
-						if(this.categoryConfig){
-							if(this.categoryConfig.ignoreTitle){
-								ignoreTitle = true;
-							}
-						}
-						//add categoryConfig=============end
+
+						//if(this.options.columnData.latest===undefined) this.options.columnData.latest = true;
+						//if(this.options.columnData.ignoreTitle===undefined) this.options.columnData.ignoreTitle = false;
+
 						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
-							restrictToColumn : true,
-							ignoreTitle : ignoreTitle
+							restrictToColumn : true
+							//ignoreTitle : this.options.columnData.ignoreTitle,
+							//latest : this.options.columnData.latest
 						});
 						this.creater.load();
 					}.bind(this),
@@ -322,7 +335,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	//loadBatchRemoveAction : function(){
 	//	if( !this.isAdmin )return;
-    //
+	//
 	//	this.batchRemoveAction = new Element("div", {
 	//		"styles": this.css.batchRemoveDocumentAction,
 	//		"text" : this.lp.batchRemove
@@ -348,8 +361,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 	//			this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction )
 	//		}.bind(this)
 	//	});
-    //
-    //
+	//
+	//
 	//	this.batchRemoveConfirmAction = new Element("div", {
 	//		"styles": this.css.batchRemoveConfirmDocumentAction,
 	//		"text" : this.lp.batchRemoveConfirm
@@ -362,11 +375,11 @@ MWF.xApplication.cms.Module.Main = new Class({
 	//				_self.readyRemove = true;
 	//				var text = "删除后无法恢复，确定要删除选中的"+itemIds.length+"个文档？";
 	//				this.confirm("warn", e, "清除确认", text, 350, 120, function(){
-    //
+	//
 	//					_self.removeDocumentList(itemIds);
-    //
+	//
 	//					this.close();
-    //
+	//
 	//				}, function(){
 	//					_self.readyRemove = false;
 	//					this.close();
@@ -515,8 +528,28 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}
 			var data = JSON.decode(dataStr);
 
-			this.pasteItem(data, 0);
+			this.listPublishableCategoryInfo(function(){
+				this.pasteItem(data, 0);
+			}.bind(this))
 		}
+	},
+	listPublishableCategoryInfo : function( callback ){
+		this.publishableCategoryInfoObject_id = {};
+		this.publishableCategoryInfoObject_alias = {};
+		this.publishableCategoryInfoObject_name = {};
+		this.categoryTransformMap = {};
+		this.categoryRadioHtml = "";
+		o2.Actions.load("x_cms_assemble_control").CategoryInfoAction.listPublishableCategoryInfo( this.options.columnData.id, function(json){
+			( json.data || [] ).each( function(c){
+				this.publishableCategoryInfoObject_id[c.id] = c;
+				this.publishableCategoryInfoObject_alias[c.categoryAlias] = c;
+				this.publishableCategoryInfoObject_name[c.categoryName] = c;
+				this.categoryRadioHtml += "<div><input type='radio' name='categoryRadio' value='"+ c.id+"'/>" + c.categoryName + "(" + c.categoryAlias +")</div>"
+			}.bind(this));
+			this.categoryRadioHtml = "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'>" +
+				this.categoryRadioHtml + "</div>"
+			if(callback)callback();
+		}.bind(this));
 	},
 	pasteItem: function(data, i){
 		if (i<data.length){
@@ -540,47 +573,133 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	saveItemAs: function(data, success, failure, cancel){
+		var lp = this.lp;
+		var _self = this;
+		if( this.publishableCategoryInfoObject_id[ data.document.categoryId ] ){
+			this._saveItemAs(data, success, failure, cancel );
+		}else if( this.categoryTransformMap[ data.document.categoryId ] ){
+			this._saveItemAs(data, success, failure, cancel, this.categoryTransformMap[ data.document.categoryId ] );
+		}else{
+			var text;
+			if( this.publishableCategoryInfoObject_alias[ data.document.categoryAlias ] ){
+				text = lp.copyConfirmCategoryInfor_hasSameAlias + "。<br/>" + lp.copyConfirmCateogyrInfor_withChoice
+			}else if( this.publishableCategoryInfoObject_name[ data.document.categoryName ] ){
+				text = lp.copyConfirmCategoryInfor_hasSameName + "。<br/>" + lp.copyConfirmCateogyrInfor_withChoice
+			}else{
+				text = lp.copyConfirmCategoryInfor_noCategory + "："
+			}
+			text = text.replace("{alias}", "（<span style='color:red;'>" + data.document.categoryAlias + "</span>）" );
+			text = text.replace("{name}", "（<span style='color:red;'>" + data.document.categoryName + "</span>）" );
+
+			var html = "<div style='overflow-y:auto;height:300px'>";
+			html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'>";
+			html += "	<div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.document.title+"</div>";
+			html += "	<div style='font-size:12px; color: #666666; float: left;'>"+data.document.publishTime+"</div>";
+			html += "	<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.document.creatorPersonShort)+"</div>";
+			html += "</div>";
+
+			html += "<div>" + text + "</div>" + this.categoryRadioHtml;
+			html += "<div><input type='checkbox' value='true' name='useSameChoice'>"+lp.copyConfirm_SameCategory+"</div>";
+			html += "</div>";
+
+//                html += "<>"
+			this.dlg("inofr", null, lp.copyConfirmCategoryTitle, {"html": html}, 500, 360, [
+				{
+					"text": lp.copy,
+					"action": function(){
+						var categoryRadio = this.node.getElements("[name='categoryRadio']");
+						var checkbox = this.node.getElement("[name='useSameChoice']");
+
+						var newCategory;
+						for( var i=0; i<categoryRadio.length; i++ ){
+							if( categoryRadio[i].checked ){
+								newCategory = _self.publishableCategoryInfoObject_id[ categoryRadio[i].get("value") ];
+							}
+						}
+						if( !newCategory ){
+							if( _self.publishableCategoryInfoObject_alias[ data.document.categoryAlias ] ){
+								newCategory = _self.publishableCategoryInfoObject_alias[ data.document.categoryAlias ];
+							}else if( _self.publishableCategoryInfoObject_name[ data.document.categoryName ] ){
+								newCategory = _self.publishableCategoryInfoObject_name[ data.document.categoryName ];
+							}
+						}
+						if( newCategory ){
+							if( checkbox.checked )_self.categoryTransformMap[ data.document.categoryId ] = newCategory;
+							this.close();
+							_self._saveItemAs(data, success, failure, cancel, newCategory );
+						}else{
+							_self.notice( lp.notSelectCategory, "error" )
+						}
+						//_self.saveItemAsUpdate(someItem, data, success, failure);
+					}
+				},
+				{
+					"text": lp.copyConfirm_skip,
+					"action": function(){/*nothing*/ this.close(); if (success) success();}
+				},
+				{
+					"text": lp.copyConfirm_cancel,
+					"action": function(){this.close(); if (cancel) cancel();}
+				}
+			]);
+
+		}
+	},
+	_saveItemAs: function(data, success, failure, cancel, newCategory ){
 		this.restActions.getDocument(data.document.id, function(dJson){
 			var someItem = dJson.data;
-
+			var flag = false;
 			if (someItem){
-				var lp = this.lp;
-				var _self = this;
-
-				var d1 = new Date().parse(data.document.publishTime);
-				var d2 = new Date().parse(someItem.document.publishTime);
-				var html = "<div>"+lp.copyConfirmInfor+"</div>";
-				html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.document.title+"</div>";
-				html += "<div style='font-size:12px; color: #666666; float: left'>"+someItem.document.publishTime+"</div>" +
-					"<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.document.creatorPersonShort)+"</div>" +
-					"<div style='color: red; float: right;'>"+((d1>=d2) ? "": lp.copynew)+"</div></div>";
-				html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.document.title+"</div>";
-				html += "<div style='font-size:12px; color: #666666; float: left;'>"+data.document.publishTime+"</div>" +
-					"<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.document.creatorPersonShort)+"</div>" +
-					"<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
-//                html += "<>"
-				this.dlg("inofr", null, lp.copyConfirmTitle, {"html": html}, 500, 290, [
-					{
-						"text": lp.copyConfirm_overwrite,
-						"action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
-					},
-					{
-						"text": lp.copyConfirm_new,
-						"action": function(){_self.saveItemAsNew( data, success, failure, true );this.close();}
-					},
-					{
-						"text": lp.copyConfirm_skip,
-						"action": function(){/*nothing*/ this.close(); if (success) success();}
-					},
-					{
-						"text": lp.copyConfirm_cancel,
-						"action": function(){this.close(); if (cancel) cancel();}
+				if( newCategory ){
+					if( newCategory.id !== someItem.document.categoryId ){ //如果已有文档的分类和新分类不一样，直接新建
+						this.saveItemAsNew(data, success, failure, true, newCategory)
+					}else{ //如果已有文档的分类和新分类一样，需要询问
+						flag = true;
 					}
-				]);
+				}else{  //如果使用原有分类，需要询问
+					flag = true;
+				}
+
+				if( flag ){
+					var lp = this.lp;
+					var _self = this;
+
+					var d1 = new Date().parse(data.document.publishTime);
+					var d2 = new Date().parse(someItem.document.publishTime);
+					var html = "<div>"+lp.copyConfirmInfor+"</div>";
+					html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.document.title+"</div>";
+					html += "<div style='font-size:12px; color: #666666; float: left'>"+someItem.document.publishTime+"</div>" +
+						"<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.document.creatorPersonShort)+"</div>" +
+						"<div style='color: red; float: right;'>"+((d1>=d2) ? "": lp.copynew)+"</div></div>";
+					html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.document.title+"</div>";
+					html += "<div style='font-size:12px; color: #666666; float: left;'>"+data.document.publishTime+"</div>" +
+						"<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.document.creatorPersonShort)+"</div>" +
+						"<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
+	//                html += "<>"
+					this.dlg("inofr", null, lp.copyConfirmTitle, {"html": html}, 500, 290, [
+						{
+							"text": lp.copyConfirm_overwrite,
+							"action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
+						},
+						{
+							"text": lp.copyConfirm_new,
+							"action": function(){_self.saveItemAsNew( data, success, failure, true, newCategory );this.close();}
+						},
+						{
+							"text": lp.copyConfirm_skip,
+							"action": function(){/*nothing*/ this.close(); if (success) success();}
+						},
+						{
+							"text": lp.copyConfirm_cancel,
+							"action": function(){this.close(); if (cancel) cancel();}
+						}
+					]);
+
+				}
 			}
 		}.bind(this), function(){
 			//if (failure) failure();
-			this.saveItemAsNew(data, success, failure)
+			this.saveItemAsNew(data, success, failure, false, newCategory)
 		}.bind(this));
 	},
 	saveItemAsUpdate: function(someItem, data, success, failure){
@@ -610,14 +729,27 @@ MWF.xApplication.cms.Module.Main = new Class({
 			if (failure) failure();
 		}.bind(this));
 	},
-	saveItemAsNew: function(data, success, failure, clearId){
+	saveItemAsNew: function(data, success, failure, clearId, newCategory){
 
 		var columnData = this.options.columnData;
 
 		var doc = data.document;
 		if( clearId ){
-			delete doc.id
+			delete doc.id;
 		}
+
+		delete doc.documentType;
+		delete doc.appId;
+		delete doc.appName;
+		delete doc.appAlias;
+		delete doc.categoryId;
+		delete doc.categoryName;
+		delete doc.categoryAlias;
+		delete doc.form;
+		delete doc.formName;
+		delete doc.readFormId;
+		delete doc.readFormName;
+
 		doc.appId = columnData.id;
 
 		doc.docData = data.data;
@@ -631,22 +763,27 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}.bind(this));
 		}.bind(this);
 
-		this.restActions.getCategory( data.document.categoryId, function( json ){
-			if( json.data.appId === columnData.id ){
-				doc.categoryId = data.document.categoryId;
-				callback( doc );
-			}else{
+		if( newCategory ){
+			doc.categoryId = newCategory.id;
+			callback( doc );
+		}else{
+			this.restActions.getCategory( data.document.categoryId, function( json ){
+				if( json.data.appId === columnData.id ){
+					doc.categoryId = data.document.categoryId;
+					callback( doc );
+				}else{
+					this.loadSelectCategoryDialog( "选择"+ data.document.title + "的分类",function(id){
+						doc.categoryId = id;
+						callback( doc );
+					}.bind(this))
+				}
+			}.bind(this), function(){
 				this.loadSelectCategoryDialog( "选择"+ data.document.title + "的分类",function(id){
 					doc.categoryId = id;
 					callback( doc );
 				}.bind(this))
-			}
-		}.bind(this), function(){
-			this.loadSelectCategoryDialog( "选择"+ data.document.title + "的分类",function(id){
-				doc.categoryId = id;
-				callback( doc );
 			}.bind(this))
-		}.bind(this))
+		}
 	},
 	loadSelectColumnDialog : function( callback){
 		MWF.xDesktop.requireApp("Selector", "package", null, false);
@@ -666,12 +803,12 @@ MWF.xApplication.cms.Module.Main = new Class({
 		if( !this.categoryList ){
 			this.categoryList = [];
 			this.restActions.listCategory( this.options.columnData.id, function( json ){
-				 json.data.each( function(d){
-					 this.categoryList.push( {
-					 	name : d.categoryName,
+				json.data.each( function(d){
+					this.categoryList.push( {
+						name : d.categoryName,
 						id : d.id
-					 })
-				 }.bind(this))
+					})
+				}.bind(this))
 			}.bind(this), null, false)
 		}
 		MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false);
@@ -819,7 +956,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 				//		this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
 				//	}
 				//}.bind(this))
-				this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
+				this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : true, "naviIndex" : (this.options.naviIndex || 0) } ); //this.options.isCategory
 			}
 		}else if( this.options.categoryAlias && this.options.categoryAlias != "" ){
 			this.restActions.getCategoryByAlias( this.options.categoryAlias, function( json ){
@@ -827,7 +964,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 				if( this.options.viewId && this.options.viewId!="" ){
 					this._loadMenu( { "categoryId" :this.options.categoryId , "viewId" : this.options.viewId } )
 				}else{
-					this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
+					this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : true, "naviIndex" : (this.options.naviIndex || 0) } ); //this.options.isCategory
 				}
 			}.bind(this))
 		}else{
@@ -875,6 +1012,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 
 	},
 	loadList : function(el, categoryData, revealData, searchKey, navi){
+
 		MWF.xDesktop.requireApp("cms.Module", "ListExplorer", function(){
 			this.clearContent();
 			this.moduleContent = new Element("div", {
@@ -937,6 +1075,7 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		this.app = app;
 		this.node = $(node);
 		this.columnData = columnData;
+
 		this.categoryList = [];
 		this.css = this.app.css;
 		this.load();
@@ -947,6 +1086,11 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		if( showAll !== "false" ){
 			this.allView = new MWF.xApplication.cms.Module.NaviAllView( this, this.node, {}  );
 		}
+		if( this.columnData.config.latest === false ){
+			this.draftView = new MWF.xApplication.cms.Module.NaviDraftView( this, this.node, {}  );
+		}
+
+
 		new Element("div",{
 			"styles" : this.css.viewNaviBottom
 		}).inject(this.node);
@@ -1062,10 +1206,10 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 
 		if( !this.extContent || !this.extContent.reveal || this.extContent.reveal.length == 0 ){
 			this.extContent = { reveal : [{
-				id : "defaultList",
-				showName : "系统列表",
-				name : "系统列表"
-			}] };
+					id : "defaultList",
+					showName : "系统列表",
+					name : "系统列表"
+				}] };
 		}
 		this.revealData = this.extContent.reveal;
 
@@ -1341,3 +1485,85 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 	}
 });
 
+MWF.xApplication.cms.Module.NaviDraftView = new Class({
+	Implements: [Options, Events],
+	options: {
+		"style": "default"
+	},
+	initialize: function ( navi, container, options) {
+		this.setOptions(options);
+		this.navi = navi;
+		this.app = navi.app;
+		this.container = $(container);
+		this.css = this.app.css;
+		this.data = {
+			"isDraft" : true,
+			"id" : "defaultList"
+		};
+		this.load();
+	},
+	load: function(){
+		var _self = this;
+		this.isDefault = true;
+		this.isAll = true;
+		this.isCurrent = false;
+		this.isCategory = false;
+
+		this.listNode  = new Element("div.viewNaviListNode_all",{
+			"styles" : this.css.viewNaviListNode_all
+		}).inject(this.container);
+
+		this.node = new Element("div.viewNaviNode_all", {
+			"styles": this.css.viewNaviNode_all,
+			"text" : this.app.lp.draftStatus
+		}).inject(this.listNode);
+
+		this.node.addEvents({
+			"mouseover": function(){ if ( !_self.isCurrent )this.setStyles(_self.css.viewNaviNode_all_over) },
+			"mouseout": function(){ if ( !_self.isCurrent )this.setStyles( _self.css.viewNaviNode_all ) },
+			"click": function (el) {
+				_self.setCurrent();
+			}
+		});
+
+		new Element("div", {
+			"styles": this.css.viewNaviSepartorNode
+		}).inject(this.listNode);
+
+		if( this.isCurrent ){
+			this.setCurrent()
+		}
+	},
+	setCurrent : function(){
+
+		if( this.navi.currentObject ){
+			this.navi.currentObject.cancelCurrent();
+		}
+
+		this.node.setStyles( this.css.viewNaviNode_all_selected );
+
+		this.isCurrent = true;
+		this.navi.currentObject = this;
+
+		var action = this.app.importAction;
+		if( action ){
+			action.setStyle("display","none");
+		}
+		var action = this.app.exportAction;
+		if( action ){
+			action.setStyle("display","none");
+		}
+
+		this.loadView();
+	},
+	cancelCurrent : function(){
+		this.isCurrent = false;
+		this.node.setStyles( this.css.viewNaviNode_all );
+	},
+	getCategoryId : function(){
+		return null;
+	},
+	loadView : function( searchKey ){
+		this.app.openView( this, null, this.data, searchKey || "", this );
+	}
+});

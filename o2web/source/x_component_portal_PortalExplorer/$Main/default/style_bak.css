@@ -1,0 +1,401 @@
+.o2_process_AppExp_content {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+}
+.o2_process_AppExp_top {
+    background: #FAFAFA;
+    height: 50px;
+}
+.o2_process_AppExp_All {
+    float: left;
+    margin-left: 30px;
+    width: 32px;
+    height: 48px;
+    padding-left: 22px;
+    line-height: 48px;
+    border-bottom: 2px solid #FAFAFA;
+    font-size: 16px;
+    color: #333333;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon_quanbu.png") 0 center no-repeat;
+    cursor: pointer;
+}
+.o2_process_AppExp_All_over {
+    border-bottom: 2px solid #999999;
+}
+.o2_process_AppExp_All_current {
+    color: #4A90E2;
+    border-bottom: 2px solid #4A90E2;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon_quanbu_click.png") 0 center no-repeat;
+}
+
+
+.o2_process_AppExp_create {
+    background-color: #4A90E2;
+    border-radius: 100px;
+    font-size: 14px;
+    color: #FFFFFF;
+    background-image: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon_zengjia_click2.png");
+    background-position: 21px center;
+    background-repeat: no-repeat;
+    width: 77px;
+    padding-left: 43px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 10px;
+    float: right;
+    margin-right: 30px;
+    cursor: pointer;
+}
+.o2_process_AppExp_import {
+    float: right;
+    margin-right: 30px;
+    width: 56px;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon__leading_in_grey.png") 0 center no-repeat;
+    padding-left: 22px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
+    color: #333333;
+    cursor: pointer;
+}
+.o2_process_AppExp_category {
+    background: #FAFAFA;
+    height: 50px;
+    line-height: 50px;
+    margin-left: 102px;
+    margin-right: 300px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 ;
+}
+.o2_process_AppExp_category_more{
+    position: absolute;
+    box-shadow: 0 0 10px #999999 ;
+}
+.o2_process_AppExp_bottom {
+    height: 80px;
+    background-image: url("/x_component_portal_PortalExplorer/$Main/default/icon/pic_sy_liucheng.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+}
+.o2_process_AppExp_contentArea {
+    overflow: auto;
+    background: #f0f0f0;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/portal_bg.png") left bottom;
+}
+.o2_process_AppExp_contentNode {
+    margin: 40px 30px 20px 50px;
+    overflow: hidden;
+}
+
+.o2_process_AppExp_categoryItem {
+    float: left;
+    margin-left: 20px;
+    height: 48px;
+    padding-left: 22px;
+    padding-right: 10px;
+    line-height: 48px;
+    border-bottom: 2px solid #FAFAFA;
+    font-size: 14px;
+    color: #333333;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon_files.png") 0 center no-repeat;
+    cursor: pointer;
+}
+.o2_process_AppExp_categoryItem_over {
+    border-bottom: 2px solid #999999;
+}
+.o2_process_AppExp_categoryItem_current {
+    color: #4A90E2;
+    border-bottom: 2px solid #4A90E2;
+    background: url("/x_component_portal_PortalExplorer/$Main/default/icon/icon_files_click.png") 0 center no-repeat;
+}
+
+
+.o2_process_AppExp_categoryExpandButtonArea{
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    margin: auto;
+    bottom: 2px;
+}
+.o2_process_AppExp_categoryExpandButton {
+    width: 20px;
+    height: 50px;
+    line-height: 5px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    /*border: 1px solid #eeeeee;*/
+    border-radius: 5px;
+    background-image: url("/x_component_portal_PortalExplorer/$Main/default/icon/more.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    /*background-color: #dddddd;*/
+    cursor: pointer;
+    margin: auto;
+    margin-right: 20px;
+    float: right;
+}
+
+.o2_process_AppExp_noApplicationNode {
+    background-image: url("/x_component_portal_PortalExplorer/$Main/default/icon/empty.png");
+    background-position: top center;
+    background-repeat: no-repeat;
+    padding-top: 80px;
+    color: #999999;
+    font-size: 22px;
+    text-align: center;
+    margin-top: 10%;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.o2_process_AppExp_item_node {
+    height: 120px;
+    background-color: #FFFFFF;
+    float: left;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 15px #cfcfcf;
+}
+.o2_process_AppExp_item_node_del {
+    background-color: #fae3e3 !important;
+}
+
+.o2_process_AppExp_item_titleArea {
+    width: 270px;
+    float: left;
+    height: 120px;
+
+    cursor: pointer;
+}
+.o2_process_AppExp_item_titleNode {
+    margin: 25px 0px 25px 20px;
+    height: 70px;
+    border-right: 1px solid #E6E6E6;
+}
+.o2_process_AppExp_item_icon {
+    height: 70px;
+    width: 70px;
+    border-radius: 35px;
+    float: left;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.o2_process_AppExp_item_titleContent{
+    margin-left: 90px;
+    height: 70px;
+}
+.o2_process_AppExp_item_titleName {
+    font-size: 18px;
+    height: 48px;
+    line-height: 24px;
+    color: #323C47;
+}
+.o2_process_AppExp_item_titleDescription {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #999999;
+}
+
+.o2_process_AppExp_item_contentArea {
+    margin-left: 270px;
+    height: 120px;
+    overflow: hidden;
+}
+.o2_process_AppExp_item_contentNode {
+    margin: 25px 20px 0 18px;
+    height: 70px;
+}
+.o2_process_AppExp_item_contentForm {
+    height: 35px;
+    line-height: 35px;
+}
+.o2_process_AppExp_item_contentProcess {
+    height: 35px;
+    line-height: 35px;
+}
+.o2_process_AppExp_item_contentPage {
+    height: 35px;
+    line-height: 35px;
+}
+
+.o2_process_AppExp_item_contentTitle {
+    font-size: 16px;
+    color: #333333;
+    text-align: center;
+    float: left;
+    height: 35px;
+}
+.o2_process_AppExp_item_contentList {
+    font-size: 13px;
+    color: #666666;
+    height: 70px;
+    overflow: hidden;
+}
+.o2_process_AppExp_item_content_element {
+    height: 27px;
+    line-height: 27px;
+    float: left;
+    margin-right: 4px;
+    padding: 0 13px;
+    border-radius: 14px;
+    background-color: #ffffff;
+    color: #666666;
+    margin-top: 4px;
+    cursor: pointer;
+}
+.o2_process_AppExp_item_content_element_over {
+    background-color: #f0f0f0;
+    color: #666666;
+}
+.o2_process_AppExp_item_categoryNode {
+    width: 80px;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    float: right;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #F0F0F0;
+    font-size: 11px;
+    color: #666666;
+    text-align: center;
+    position: relative;
+    top: -110px;
+    cursor: default;
+    overflow: hidden;
+}
+.o2_process_AppExp_item_categoryColorNode {
+    background-color: #ecf3fc;
+}
+
+.o2_process_AppExp_applicationCreateMarkNode {
+    opacity: 0.6;
+    position: absolute;
+    background-color: #CCCCCC;
+    top: 0;
+    left: 0;
+}
+.o2_process_AppExp_applicationCreateAreaNode {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+}
+
+.o2_process_AppExp_applicationCreateNode {
+    background-color: #FFF;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 0 20px #999;
+    margin: auto;
+    border-radius: 8px;
+    border: 6px solid #666;
+    overflow: hidden;
+}
+.o2_process_AppExp_applicationCreateNewNode {
+    width: 47px;
+    height: 47px;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/new.png) no-repeat;
+}
+.o2_process_AppExp_applicationCreateFormNode {
+    border-radius: 8px;
+    border: 0px solid #666;
+    width: 70%;
+    margin: auto;
+    font-size: 16px;
+    color: #666;
+}
+.o2_process_AppExp_applicationCreateOkActionNode {
+    height: 30px;
+    width: 85px;
+    cursor: pointer;
+    float: right;
+    line-height: 30px;
+    padding-left: 65px;
+    font-size: 16px;
+    border-radius: 3px;
+    border: 1px solid #354f67;
+    color: #FFF;
+    margin-right: 20px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 0px #666;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/editOk_bg.png) no-repeat;
+}
+
+.o2_process_AppExp_applicationCreateCancelActionNode {
+    height: 30px;
+    width: 60px;
+    cursor: pointer;
+    float: right;
+    line-height: 30px;
+    padding-left: 40px;
+    font-size: 16px;
+    border-radius: 3px;
+    color: #FFF;
+    margin-top: 20px;
+    box-shadow: 0 0 0 #666;
+    border: 1px solid #999;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/editCancel_bg.png) no-repeat;
+}
+.o2_process_AppExp_item_newNode {
+    width: 34px;
+    height: 30px;
+    background: #F23030;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/new.png) no-repeat;
+    font-size: 8px;
+    color: #FFFFFF;
+    text-align: center;
+    position: relative;
+    top: -120px;
+    display: none;
+}
+.o2_process_AppExp_item_newNode_text {
+    width: 28px;
+    height: 28px;
+    transform: rotate(-45deg);
+    line-height: 20px;
+}
+.o2_process_AppExp_item_ActionArea {
+    height: 20px;
+    /*position: relative;*/
+    /*top: -45px;*/
+    width: 50px;
+    float: right;
+    margin-right: 10px;
+    clear: both;
+    opacity: 0;
+}
+.o2_process_AppExp_item_Action_export {
+    width: 20px;
+    height: 20px;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/export.png) center center no-repeat;
+    cursor: pointer;
+    float: right;
+    margin-right: 5px;
+}
+.o2_process_AppExp_item_Action_delete {
+    width: 20px;
+    height: 20px;
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/delete.png) center center no-repeat;
+    cursor: pointer;
+    float: right;
+    margin-right: 5px;
+}
+.o2_process_AppExp_item_Action_delete_select {
+    background: url(/x_component_portal_PortalExplorer/$Main/default/icon/delete_red.png) center center no-repeat !important;
+}
+.o2_process_AppExp_deleteElements {
+    position: absolute;
+    background-color: #c04444;
+    border: 2px solid #FFF;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #999;
+    cursor: pointer;
+    color: #FFF;
+    padding: 5px 10px;
+}

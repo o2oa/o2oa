@@ -81,7 +81,7 @@ MWF.xApplication.DesignCenter.Main = new Class({
 
             this.titleAreaNode = new Element("div", {"styles": this.css.titleAreaNode}).inject(this.node);
             this.closeNode = new Element("div", {"styles": this.css.closeNode}).inject(this.titleAreaNode);
-            this.closeNode.addEvent("click", this.close.bind(this));
+            this.closeNode.addEvent("click", function(){this.close();}.bind(this));
             this.titleNode = new Element("div", {"styles": this.css.titleAreaTextNode, "text": this.lp.titleInfor}).inject(this.titleAreaNode);
 
             this.contentNode = new Element("div", {"styles": this.css.contentAreaNode}).inject(this.node);

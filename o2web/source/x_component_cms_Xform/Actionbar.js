@@ -1,66 +1,66 @@
 MWF.xDesktop.requireApp("process.Xform", "Actionbar", null, false);
 MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
-	Extends: MWF.APPActionbar,
+    Extends: MWF.APPActionbar,
 
-	_loadUserInterface: function(){
+    _loadUserInterface: function(){
         //if (this.form.json.mode == "Mobile"){
         //    this.node.empty();
         //}else if (COMMON.Browser.Platform.isMobile){
         //    this.node.empty();
         //}else{
-            this.toolbarNode = this.node.getFirst("div");
+        this.toolbarNode = this.node.getFirst("div");
         if (!this.toolbarNode)  this.toolbarNode = this.node;
-            if (this.toolbarNode) this.toolbarNode.empty();
+        if (this.toolbarNode) this.toolbarNode.empty();
 
         //this.node.empty();
 
-            MWF.require("MWF.widget.SimpleToolbar", function(){
-                this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {
-                    "style": this.json.style,
-                    "onPostLoad" : function(){
-                        this.fireEvent("afterLoad");
-                    }.bind(this)
-                }, this);
+        MWF.require("MWF.widget.SimpleToolbar", function(){
+            this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {
+                "style": this.json.style,
+                "onPostLoad" : function(){
+                    this.fireEvent("afterLoad");
+                }.bind(this)
+            }, this);
 
-                //var json = this.readonly ? this.json.sysTools.readTools : this.json.sysTools.editTools;
-                //if( this.json.style == "xform_red_simple" ){
-                //    json.each( function( j ){
-                //        var names = j.img.split(".");
-                //        j.img = names[0] + "_red." + names[1];
-                //    });
-                //}
-                //this.setToolbars(json, this.toolbarNode);
-                //this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                //
-                //this.toolbarWidget.load();
-                    if (this.json.hideSystemTools){
+            //var json = this.readonly ? this.json.sysTools.readTools : this.json.sysTools.editTools;
+            //if( this.json.style == "xform_red_simple" ){
+            //    json.each( function( j ){
+            //        var names = j.img.split(".");
+            //        j.img = names[0] + "_red." + names[1];
+            //    });
+            //}
+            //this.setToolbars(json, this.toolbarNode);
+            //this.setCustomToolbars(this.json.tools, this.toolbarNode);
+            //
+            //this.toolbarWidget.load();
+            if (this.json.hideSystemTools){
+                this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                this.toolbarWidget.load();
+            }else{
+                if (this.json.defaultTools){
+                    this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
+                    this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                    this.toolbarWidget.load();
+                }else{
+                    MWF.getJSON("/x_component_cms_Xform/$Form/toolbars.json", function(json){
+                        this.setToolbars(json, this.toolbarNode, this.readonly, true);
                         this.setCustomToolbars(this.json.tools, this.toolbarNode);
+
                         this.toolbarWidget.load();
-                    }else{
-                        if (this.json.defaultTools){
-                            this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
-                            this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                            this.toolbarWidget.load();
-                        }else{
-                            MWF.getJSON("/x_component_cms_Xform/$Form/toolbars.json", function(json){
-                                this.setToolbars(json, this.toolbarNode, this.readonly, true);
-                                this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                    }.bind(this), false);
+                }
 
-                                this.toolbarWidget.load();
-                            }.bind(this), false);
-                        }
+                //MWF.getJSON("/x_component_cms_Xform/$Form/toolbars.json", function(json){
+                //    this.setToolbars(json, this.toolbarNode, this.readonly);
+                //    this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                //
+                //    this.toolbarWidget.load();
+                //}.bind(this), false);
+            }
 
-                        //MWF.getJSON("/x_component_cms_Xform/$Form/toolbars.json", function(json){
-                        //    this.setToolbars(json, this.toolbarNode, this.readonly);
-                        //    this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                        //
-                        //    this.toolbarWidget.load();
-                        //}.bind(this), false);
-                    }
-
-            }.bind(this));
+        }.bind(this));
         //}
-	},
+    },
     setCustomToolbars: function(tools, node){
         var path = "/x_component_cms_FormDesigner/Module/Actionbar/";
         //var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
@@ -161,6 +161,9 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     saveDocument: function(){
         this.form.saveDocument();
     },
+    saveDraftDocument: function(){
+        this.form.saveDocument();
+    },
     closeDocument: function(){
         this.form.closeDocument();
     },
@@ -181,5 +184,8 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     },
     setPopularDocument: function(){
         this.form.setPopularDocument();
+    },
+    printDocument: function(){
+        this.form.printDocument();
     }
 }); 

@@ -151,7 +151,7 @@
 	"width" : "360px",
 	"margin": "20px auto 0px auto",
 	"overflow" : "hidden",
-	"positon" : "static"
+	"position" : "relative"
   },
   "formTableContainer2" : {
 	"width" : "600px",
@@ -720,5 +720,15 @@
 	"width" : "60px",
 	"line-height" : "24px",
 	"height" : "24px"
-  }
+  },
+    "formFooter": {
+      "text-align": "center",
+      "height": "60px",
+      "line-height": "60px",
+      "position": "absolute",
+      "bottom": "0px",
+      "font-size": "16px",
+      "color": "#999999",
+      "width": "100%"
+    }
 }

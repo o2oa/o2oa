@@ -222,17 +222,20 @@ MWF.xApplication.TeamWork.LP = {
 		"searchPlace":"按回车搜索",
 		"ok":"确定"
 	},
-	common:{
-		tooltip:{
-			group:{
-				topText:"新建分组",
-				topTextEdit:"编辑分组",
-				groupText:"分组名称",
-				groupTextTip:"输入分组名称",
-				groupIn:"分组名称",
-				groupAdd:"确定"
+	"stat":{
+
+	},
+	"common":{
+		"tooltip":{
+			"group":{
+				"topText":"新建分组",
+				"topTextEdit":"编辑分组",
+				"groupText":"分组名称",
+				"groupTextTip":"输入分组名称",
+				"groupIn":"分组名称",
+				"groupAdd":"确定"
 			},
-			groupSelect:{
+			"groupSelect":{
 				"name":"项目分组",
 				"groupIn":"搜索分组",
 				"select":"常用分组",
@@ -242,7 +245,7 @@ MWF.xApplication.TeamWork.LP = {
 				"confirm":"确定"
 			}
 		},
-		confirm:{
+		"confirm":{
 			"removeTitle":"删除",
 			"removeContent":"确认删除？",
 			"replaceTitle":"替换",

@@ -18,6 +18,8 @@ var MSelector = new Class({
         "tooltipWhenNoSelectValue" : false,
         "hasScrollBar" : true,
 
+        "hideByClickBody" : false,
+
         "textField" : "",
         "valueField" : "",
 
@@ -240,6 +242,7 @@ var MSelector = new Class({
             this.css.tooltipNode.width = width;
             this.css.tooltipNode["max-width"] = width;
             var options = Object.merge({
+                hideByClickBody : this.options.hideByClickBody,
                 nodeStyles : this.css.tooltipNode,
                 onPostLoad : function(){
                     if( this.selectArrowNode )this.selectArrowNode.setStyles( this.css.selectArrowNode_up );

@@ -69,5 +69,16 @@
     "control": "allowDeleteDocument",
     "read": true,
     "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "print.png",
+    "img_over": "print_over.png",
+    "title": "打印文档",
+    "action": "printDocument",
+    "text": "打印",
+    "id": "action_print",
+    "read": true,
+    "edit" : true
   }
 ]

@@ -8,40 +8,40 @@ MWF.xDesktop.requireApp("cms.Module", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("cms.Module", "package", null, false);
 
 MWF.xApplication.cms.Module.ListExplorer = new Class({
-	Extends: MWF.widget.Common,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
+    Extends: MWF.widget.Common,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
         "status": "published",
         "isAdmin": false,
         "searchKey" : "",
-		"tooltip": {
-		}
-	},
-	
-	initialize: function(node, actions, columnData, categoryData, revealData, options, searchNode){
-		this.setOptions(options);
-		this.setTooltip();
-		this.path = "/x_component_cms_Module/$ListExplorer/";
-		this.cssPath = "/x_component_cms_Module/$ListExplorer/"+this.options.style+"/css.wcss";
-		this._loadCss();
+        "tooltip": {
+        }
+    },
+
+    initialize: function(node, actions, columnData, categoryData, revealData, options, searchNode){
+        this.setOptions(options);
+        this.setTooltip();
+        this.path = "/x_component_cms_Module/$ListExplorer/";
+        this.cssPath = "/x_component_cms_Module/$ListExplorer/"+this.options.style+"/css.wcss";
+        this._loadCss();
 
         this.categoryData = categoryData;
         this.columnData = columnData;
         this.revealData = revealData;
 
-		this.actions = actions;
-		this.node = $(node);
+        this.actions = actions;
+        this.node = $(node);
         this.searchNode = $(searchNode);
-		this.initData();
+        this.initData();
         if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
-	},
-	setTooltip: function(tooltip){
-		if (tooltip) this.options.tooltip = Object.merge(this.options.tooltip, tooltip);
-	},
-	initData: function(){
+    },
+    setTooltip: function(tooltip){
+        if (tooltip) this.options.tooltip = Object.merge(this.options.tooltip, tooltip);
+    },
+    initData: function(){
         this.toolItemNodes = [];
-	},
+    },
     reload: function(){
         this.node.empty();
         this.searchNode.empty();
@@ -137,14 +137,18 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
     loadView : function(){
         if( this.revealData.isAll ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForALL(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
+        }else if( this.revealData.isDraft ){
+            this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForDraft(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
+
         }else if( (this.revealData.id == "defaultList") || (this.options.searchKey && this.options.searchKey!="") ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.DefaultList(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else{
             this.view = new MWF.xApplication.cms.Module.ListExplorer.List(this.elementContentNode, this.app,this, this.viewData );
         }
         if(this.selectEnable)this.view.selectEnable = this.selectEnable;
-        this.view.load();
-        this.setContentSize();
+        this.view.load( function(){
+            this.setContentSize();
+        }.bind(this));
     },
 
     setContentSize: function(){
@@ -161,8 +165,14 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
 
         this.pageCount = (height/40).toInt()+5;
 
-        if (this.view.items.length<this.pageCount){
-            this.view.loadElementList(this.pageCount-this.view.items.length);
+        if (this.view.items.length<this.pageCount ){
+            if( typeOf(this.view.itemDataCount) === "number" ){
+                if( this.view.items.length<this.view.itemDataCount ){
+                    this.view.loadElementList(this.pageCount-this.view.items.length);
+                }
+            }else{
+                this.view.loadElementList(this.pageCount-this.view.items.length);
+            }
         }
     },
     setNodeScroll: function(){
@@ -301,7 +311,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         this.loadItemQueue = 0;
         //this.controllers =[];
     },
-    load : function(){
+    load : function( callback ){
         this.initData();
 
         this.node = new Element("div", {
@@ -311,7 +321,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         this.table = new Element("table",{ "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "editTable"}).inject(this.node);
         this.initSortData();
         this.createListHead();
-        this.loadElementList();
+        this.loadElementList( null,  callback );
     },
     initSortData : function(){
     },
@@ -450,12 +460,17 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         }.bind(this));
         return checkedItems;
     },
-    loadElementList: function(count){
+    loadElementList: function(count, callback){
         if (!this.isItemsLoaded){
             if (!this.isItemLoadding){
                 this.isItemLoadding = true;
+                if( this.itemDataCount && this.itemDataCount <= this.items.length ){
+                    this.isItemsLoaded = true;
+                    return;
+                }
                 this._getCurrentPageData(function(json){
                     this.count = json.count;
+                    this.itemDataCount = json.count;
 
                     //if (!this.isCountShow){
                     //    this.filterAllProcessNode.getFirst("span").set("text", "("+this.count+")");
@@ -478,6 +493,7 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
                         this.loadItemQueue--;
                         this.loadElementList();
                     }
+                    if(callback)callback();
                 }.bind(this), count);
             }else{
                 this.loadItemQueue++;
@@ -490,8 +506,8 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultList = new Class({
         var data = {
             "categoryIdList": [this.explorer.categoryData.id ],
             "statusList": [this.explorer.options.status],
-            "orderField" : this.orderField || null,
-            "orderType" : this.orderType || null
+            "orderField" : this.orderField || "publishTime",
+            "orderType" : this.orderType || "desc"
         };
         if( this.searchKey && this.searchKey!="" ){
             data.title = this.searchKey;
@@ -587,6 +603,86 @@ MWF.xApplication.cms.Module.ListExplorer.ListForALL = new Class({
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ this.explorer.options.status ],
+            "orderField" : this.orderField || "publishTime",
+            "orderType" : this.orderType || "desc"
+        };
+        if( this.searchKey && this.searchKey!="" ){
+            data.title = this.searchKey
+        }
+        if (this.filter && this.filter.filter ){
+            var filterResult = this.filter.getFilterResult();
+            for(var f in filterResult ){
+                data[f] = filterResult[f];
+            }
+            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+        }else{
+            this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+        }
+    }
+
+});
+
+MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
+    Extends: MWF.xApplication.cms.Module.ListExplorer.DefaultList,
+
+    createListHead : function(){
+        var _self = this;
+        var headNode = this.headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
+
+        if( this.selectEnable ){
+            this.createSelectTh();
+        }
+
+        var listItemUrl = this.explorer.path+"listItemForAll.json";
+        MWF.getJSON(listItemUrl, function(json){
+            this.listItemTemplate = json;
+            json.each(function(cell){
+                var isShow = true;
+                if( cell.access ){
+                    if( cell.access == "admin" && !this.explorer.options.isAdmin ){
+                        isShow = false;
+                    }
+                }
+                if(isShow) {
+                    var th = new Element("th", {
+                        "styles": this.css[cell.headStyles],
+                        "width": cell.width,
+                        "text": cell.title
+                    }).inject(headNode)
+                }
+                //var thText = new Element("div",{
+                //    "styles" : this.css.thTextNode,
+                //    "text": cell.title
+                //}).inject(th);
+                if( cell.sortByClickTitle == "yes" ){
+                    th.store("field",cell.item);
+                    if( this.orderField  == cell.item && this.orderType!="" ){
+                        th.store("orderType",this.orderType);
+                        this.sortIconNode = new Element("div",{
+                            "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                        }).inject( th, "bottom" );
+                    }else{
+                        th.store("orderType","");
+                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
+                    }
+                    th.setStyle("cursor","pointer");
+                    th.addEvent("click",function(){
+                        _self.resort( this );
+                    })
+                }
+            }.bind(this));
+        }.bind(this),false);
+    },
+    _getCurrentPageData: function(callback, count){
+        if(!count)count=20;
+        var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var data = {
+            "appIdList": [ this.explorer.columnData.id ],
+            "statusList": [ "draft" ],
             "orderField" : this.orderField || null,
             "orderType" : this.orderType || null
         };
@@ -678,8 +774,8 @@ MWF.xApplication.cms.Module.ListExplorer.List = new Class({
         if(!count)count=20;
         var id = (this.items.length) ? this.items[this.items.length-1].data.document.id : "(0)";
         var data = {
-            "orderField":this.orderField,
-            "orderType":this.orderType,
+            "orderField":this.orderField || "publishTime",
+            "orderType":this.orderType || "desc",
             "categoryId":this.categoryId,
             "viewId":this.viewId,
             "searchDocStatus":this.status
@@ -893,33 +989,33 @@ MWF.xApplication.cms.Module.ListExplorer.Filter = new Class({
 
         this._getFilterCount(function(json){
             Object.each(json, function(v, key){
-                    var categoryNode = new Element("div", {"styles": this.css.applicationFilterCategoryNode}).inject(contentNode);
-                    categoryNode.set("text", v.name );
-                    var itemAreaNode = new Element("div", {"styles": this.css.applicationFilterItemAreaNode}).inject(contentNode);
+                var categoryNode = new Element("div", {"styles": this.css.applicationFilterCategoryNode}).inject(contentNode);
+                categoryNode.set("text", v.name );
+                var itemAreaNode = new Element("div", {"styles": this.css.applicationFilterItemAreaNode}).inject(contentNode);
 
                 v.data.each(function(item){
-                        var itemNode = new Element("div", {"styles": this.css.applicationFilterItemNode}).inject(itemAreaNode);
-                        itemNode.set("text", item.name +"("+item.count+")");
-                        itemNode.store("value", item.value );
-                        itemNode.store("textname", item.name );
-                        itemNode.store("key", key);
-                        itemNode.store("resultItemName", item.resultItemName);
+                    var itemNode = new Element("div", {"styles": this.css.applicationFilterItemNode}).inject(itemAreaNode);
+                    itemNode.set("text", item.name +"("+item.count+")");
+                    itemNode.store("value", item.value );
+                    itemNode.store("textname", item.name );
+                    itemNode.store("key", key);
+                    itemNode.store("resultItemName", item.resultItemName);
 
-                        itemNode.addEvent("click", function(){
-                            if (this.hasClass("applicationFilterItemNode_over")){
-                                _self.unSelectedFilterItem(this);
-                            }else{
-                                _self.selectedFilterItem(this);
-                            }
-                        });
-                        if (this.filter){
-                            if (this.filter[key]){
-                                if (item.value == this.filter[key][0].value){
-                                    this.selectedFilterItem(itemNode);
-                                }
+                    itemNode.addEvent("click", function(){
+                        if (this.hasClass("applicationFilterItemNode_over")){
+                            _self.unSelectedFilterItem(this);
+                        }else{
+                            _self.selectedFilterItem(this);
+                        }
+                    });
+                    if (this.filter){
+                        if (this.filter[key]){
+                            if (item.value == this.filter[key][0].value){
+                                this.selectedFilterItem(itemNode);
                             }
                         }
-                    }.bind(this));
+                    }
+                }.bind(this));
 
             }.bind(this));
         }.bind(this));

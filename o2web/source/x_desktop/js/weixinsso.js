@@ -16,6 +16,7 @@ o2.addReady(function () {
 
         MWF.require("MWF.xDesktop.Layout", function () {
             MWF.require("MWF.xDesktop.Authentication", null, false);
+            MWF.require("MWF.xDesktop.Common", null, false);
 
             (function () {
                 layout.load = function () {

@@ -9,8 +9,9 @@ MWF.xApplication.Selector.FormField = new Class({
         "fieldType": "",
         "values": [],
         "application": "",
-        "include" : [], //增加的可选项
-        "expand": false
+        "include" : [],
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -23,6 +24,7 @@ MWF.xApplication.Selector.FormField = new Class({
                         array.each(function(data){
                             data.id = data.name;
                             var item = this._newItem(data, this, this.itemAreaNode);
+                            this.items.push( item );
                         }.bind(this));
                     }
                 }else{
@@ -164,6 +166,7 @@ MWF.xApplication.Selector.FormField.ItemCategory = new Class({
                     //subData.applicationName = this.data.name;
                     //subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( category );
                 }.bind(this));
 
                 this.loaded = true;

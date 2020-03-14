@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
+<!--    <script src="/o2_lib/htmleditor/ckeditor4/ckeditor.js"></script>-->
+    <script src="../o2_core/o2.js"></script>
+    <script src="../o2_core/compatible.min.js"></script>
+    <script src="js/x.js"></script>
+    <script src="../o2_lib/Decimal.js"></script>
+    <title>O2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <div id="layout" style="overflow: hidden; height: 100%; background-position-x: center; background-size: cover; background-image: url(../o2_core/o2/xDesktop/$Layout/default/desktop.jpg);">
+        <div id="layout_top_shim"></div>
+        <div id="layout_top"></div>
+        <div id="layout_desktop">
+            <div id="desktop_content">
+                <div style="overflow: hidden; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%" id="browser_loadding">
+                    <div style="height:540px; width: 920px; overflow: hidden;  margin: 8% auto;">
+                        <div id="browser_loading_area" style="height:540px; width: 920px;"></div>
+                        <div style="height:540px; width: 920px; position: relative; top: -540px">
+                            <div style="background-image: url(img/loading2.gif); background-size: cover; width: 80px; height: 80px; float:left; margin-left: 170px; margin-top: 94px"></div>
+                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 94px; font-size: 28px; line-height: 80px;" id="browser_loading_area_text">正在为您加载系统资源，请稍候......</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="overflow: hidden; overflow: hidden; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; display: none" id="browser_error">
+                    <div style="height:540px; width: 920px; overflow: hidden;  margin: 8% auto;">
+                        <div id="browser_error_area" style="height:540px; width: 920px;"></div>
+                        <div style="height:540px; width: 920px; position: relative; top: -540px">
+                            <div style="background-image: url(img/warn1.png); background-repeat: no-repeat;background-size:cover; background-position:center center; width: 103px; height: 80px; float:left; margin-left: 144px; margin-top: 74px"></div>
+                            <div style="color: #ffffff; width: 530px; height: 80px; float:left; margin-left: 30px; margin-top: 74px; font-size: 28px; line-height: 40px;" id="browser_error_area_text">
+                                您的浏览器版本过低啦！~系统已经不支持IE8及以下版本了!
+                            </div>
+                            <div style="color: #ffffff; width: 650px; height: 50px; float:left; margin-left: 144px; margin-top: 100px; font-size: 28px; line-height: 40px; border-bottom: 2px solid #ffffff" id="browser_error_area_up_text">
+                                请升级您的浏览器：
+                            </div>
+                            <div style="width: 100px; height: 140px; float:left; margin-left: 144px; margin-top: 30px">
+                                <div style="background-image: url(img/logo_edge.png); width: 100px; height: 100px;"></div>
+                                <div style="width: 100px; height: 40px; font-size: 24px; color: #FFFFFF; line-height: 40px; text-align: center">Edge</div>
+                            </div>
+
+                            <div style="width: 100px; height: 140px; float:left; margin-left: 80px; margin-top: 30px">
+                                <div style="background-image: url(img/logo_chrome.png); width: 100px; height: 100px;"></div>
+                                <div style="width: 100px; height: 40px; font-size: 24px; color: #FFFFFF; line-height: 40px; text-align: center">Chrome</div>
+                            </div>
+
+                            <div style="width: 100px; height: 140px; float:left; margin-left: 80px; margin-top: 30px">
+                                <div style="background-image: url(img/logo_firefox.png); width: 100px; height: 100px;"></div>
+                                <div style="width: 100px; height: 40px; font-size: 24px; color: #FFFFFF; line-height: 40px; text-align: center">Firefox</div>
+                            </div>
+
+                            <div style="width: 100px; height: 140px; float:left; margin-left: 80px; margin-top: 30px">
+                                <div style="background-image: url(img/logo_safari.png); width: 100px; height: 100px;"></div>
+                                <div style="width: 100px; height: 40px; font-size: 24px; color: #FFFFFF; line-height: 40px; text-align: center">Safari</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--<div style="height:20%; width: 100%; position: absolute; bottom: 0px; overflow: hidden; background-color: #3F85C3; opacity: 0.3;"></div>-->
+                </div>
+            </div>
+            <div id="desktop_navi"></div>
+        </div>
+    </div>
+    <div id="appContent" style="overflow: hidden; height: 100%;"></div>
+    <script>
+        if (!window.FormData || !window.WebSocket || !window.JSON){
+            var loadingNode = document.getElementById("browser_loadding");
+            var errorNode = document.getElementById("browser_error");
+            if (loadingNode) loadingNode.style.display = "none";
+            if (errorNode) errorNode.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

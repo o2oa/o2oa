@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xml:lang="zh-CN" style="height: 100%;">
+
 <head lang="en">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
@@ -7,15 +8,15 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
-<!--    <script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
-<!--    <script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <!--    <script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
+    <!--    <script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
 
     <script src="../o2_core/o2.min.js"></script>
     <script src="../o2_core/compatible.min.js"></script>
     <script src="../o2_lib/Decimal.js"></script>
     <script>
 
-        o2.addReady(function(){
+        o2.addReady(function () {
             layout = window.layout || {};
             layout.desktop = layout;
             o2.xDesktop = o2.xDesktop || {};
@@ -31,72 +32,125 @@
             var method = uri.getData("method");
 
             layout.load = function () {
-
-//                    layout.authentication = new MWF.xDesktop.Authentication({
-//                        "onLogin": layout.loadOauth.bind(layout)
-//                    });
-//
-//                    layout.authentication.isAuthenticated(function (json) {
-//                        layout.loadOauth();
-//                        //this.user = json.data;
-//                    }.bind(this), function () {
-//                        layout.loadOauth();
-//                        //layout.authentication.loadLogin($("layout"));
-//                    }.bind(this));
-                if (code){
+                if (code) {
                     layout.loginOauth();
-                }else if(oauth){
+                } else if (oauth) {
                     layout.loadOauth();
                 }
 
             };
             layout.loginOauth = function () {
-                var r = protocol+"//"+location.host+location.pathname;
-                r = r+"?oauth="+oauth;
-                if (redirect) r = r+"&redirect="+redirect;
+                var r = protocol + "//" + location.host + location.pathname;
+                r = r + "?oauth=" + oauth;
+                if (redirect) r = r + "&redirect=" + redirect;
 
                 var action = MWF.Actions.get("x_organization_assemble_authentication");
-                var logMethod = method || "loginOauthServer";
-
-                action[logMethod](oauth, code, encodeURIComponent(r), function(){
-                    if (method==="oauthBind"){
-                        alert("用户绑定已成功！");
-                        window.close();
-                    }else{
-                        if (redirect){
+                //企业微信单点登录
+                if (layout.isQywx()) {
+                    action["loginOauthQywxServer"](code, function () {
+                        if (redirect) {
                             window.location = redirect;
-                        }else{
+                        } else {
                             window.location = "/";
                         }
-                    }
+                    }.bind(this));
+                } else if (layout.isDingding()) {
+                    action["loginOauthDingdingServer"](code, function () {
+                        if (redirect) {
+                            window.location = redirect;
+                        } else {
+                            window.location = "/";
+                        }
+                    }.bind(this));
+                } else {
 
-                }.bind(this));
+                    var logMethod = method || "loginOauthServer";
+                    action[logMethod](oauth, code, encodeURIComponent(r), function () {
+                        if (method === "oauthBind") {
+                            alert("用户绑定已成功！");
+                            window.close();
+                        } else {
+                            if (redirect) {
+                                window.location = redirect;
+                            } else {
+                                window.location = "/";
+                            }
+                        }
+
+                    }.bind(this));
+                }
+
             };
             layout.loadOauth = function () {
-
                 var action = MWF.Actions.get("x_organization_assemble_authentication");
-                action.getOauthServer(oauth, function(json){
-                    var url = json.data.authAddress;
-                    var p = json.data.authParameter;
-                    var r = protocol+"//"+location.host+location.pathname;
-                    r = r+"?oauth="+oauth;
-                    if (method) r = r+"&method="+method;
-                    if (redirect) r = r+"&redirect="+redirect;
-                    p = (p) ? p+"&redirect_uri="+encodeURIComponent(r) : "&redirect_uri="+encodeURIComponent(r);
-                    url = (url.indexOf("?"===-1)) ? url+"?"+p : url+"&"+p;
+                //企业微信单点登录
+                if (layout.isQywx()) {
+                    action.qywxOauthServer(function (json) {
+                        var qywxConfig = json.data || {};
+                        var url = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect?state=STATE";
+                        var corpId = qywxConfig.corpId;
+                        if (corpId) {
+                            url += "&appid=" + corpId;
+                        }
+                        var agentId = qywxConfig.agentId;
+                        if (agentId) {
+                            url += "&agentid=" + agentId;
+                        }
+                        var r = protocol + "//" + location.host + location.pathname;
+                        r = r + "?oauth=" + oauth + "&qywx=true";
+                        url += "&redirect_uri=" + encodeURIComponent(r);
 
-                    window.location = url;
-                }.bind(this));
+                        window.location = url;
+                    }.bind(this));
+                } else if (layout.isDingding()) { //钉钉单点登录
+                    action.dingdingOauthServer(function (json) {
+                        var dingdingConfig = json.data || {};
+                        var url = "https://oapi.dingtalk.com/connect/qrconnect?response_type=code&scope=snsapi_login&state=STATE";
+                        var appId = dingdingConfig.scanLoginAppId;
+                        if (appId) {
+                            url += "&appid=" + appId;
+                        }
+                        var r = protocol + "//" + location.host + location.pathname;
+                        r = r + "?oauth=" + oauth + "&dingding=true";
+                        url += "&redirect_uri=" + encodeURIComponent(r);
+                        window.location = url;
+                    }.bind(this));
+                } else {
+                    action.getOauthServer(oauth, function (json) {
+                        var url = json.data.authAddress;
+                        var p = json.data.authParameter;
+                        var r = protocol + "//" + location.host + location.pathname;
+                        r = r + "?oauth=" + oauth;
+                        if (method) r = r + "&method=" + method;
+                        if (redirect) r = r + "&redirect=" + redirect;
+                        p = (p) ? p + "&redirect_uri=" + encodeURIComponent(r) : "&redirect_uri=" + encodeURIComponent(r);
+                        url = (url.indexOf("?" === -1)) ? url + "?" + p : url + "&" + p;
+                        window.location = url;
+                    }.bind(this));
+                }
             };
-
-            //o2.load("mwf", function(){
-            //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+            layout.isQywx = function () {
+                var qywx = uri.getData("qywx");
+                if (qywx) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+            layout.isDingding = function () {
+                var dingding = uri.getData("dingding");
+                if (dingding) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
 
             MWF.loadLP("zh-cn");
             MWF.require("MWF.xDesktop.Common", null, false);
             MWF.require("MWF.xAction.RestActions", null, false);
 
-            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
+            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
                 o2.JSON.get("res/config/config.json", function (config) {
                     layout.config = config;
                     MWF.xDesktop.getServiceAddress(config, function (service, center) {
@@ -112,8 +166,10 @@
     </script>
     <script src="../o2_lib/mootools/mootools-1.6.0.min.js"></script>
 </head>
+
 <body>
-<!--<body bgcolor="#faebd7" bgcolor="#ffc0cb" style="height: 100%; overflow: auto; margin:0px; background-size: cover; background-image: url(res/mwf4/package/xDesktop/$Layout/default/desktop.jpg);">-->
-<!--<div id="layout" style="overflow: auto; height:100%"></div>-->
+    <!--<body bgcolor="#faebd7" bgcolor="#ffc0cb" style="height: 100%; overflow: auto; margin:0px; background-size: cover; background-image: url(res/mwf4/package/xDesktop/$Layout/default/desktop.jpg);">-->
+    <!--<div id="layout" style="overflow: auto; height:100%"></div>-->
 </body>
+
 </html>

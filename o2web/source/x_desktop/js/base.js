@@ -1,5 +1,6 @@
 layout = window.layout || {};
 layout.desktop = layout;
+layout.desktop.type = "app";
 var locate = window.location;
 layout.protocol = locate.protocol;
 layout.inBrowser = true;
@@ -12,201 +13,6 @@ o2.xDesktop = o2.xDesktop || {};
 o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     o2.requireApp(module, clazz, callback, async);
 };
-o2.addReady(function () {
-    //兼容方法
-    Element.implement({
-        "makeLnk": function (options) { }
-    });
-
-    var loadingNode = $("loaddingArea");
-    var loadeds = 0;
-    var loadCount = 15;
-    var size = document.body.getSize();
-    var _closeLoadingNode = function () {
-        if (loadingNode) {
-            loadingNode.destroy();
-            loadingNode = null;
-        }
-
-    };
-    var _loadProgressBar = function (complete) {
-        if (loadingNode) {
-            if (complete) {
-                loadingNode.setStyles({ "width": "" + size.x + "px" });
-                //loadingNode.set('morph', {duration: 100}).morph({"width": ""+size.x+"px"});
-                window.setTimeout(_closeLoadingNode, 500);
-            } else {
-                loadeds++;
-                var p = (loadeds / loadCount) * size.x;
-                loadingNode.setStyles({ "width": "" + p + "px" });
-                //loadingNode.set('morph', {duration: 100}).morph({"width": ""+p+"px"});
-                if (loadeds >= loadCount) window.setTimeout(_closeLoadingNode, 500);
-            }
-        }
-    };
-
-    //异步载入必要模块
-    layout.config = null;
-    var lp = o2.session.path + "/lp/" + o2.language + ".js";
-    debugger;
-    o2.load(lp, function () {
-        _loadProgressBar();
-        if (layout.config && o2.xDesktop.getServiceAddress) _getDistribute(function () { _load(); });
-    });
-    var modules = ["MWF.xDesktop.Common", "MWF.xAction.RestActions"];
-    MWF.require(modules, {
-        "onSuccess": function () {
-            console.log("MWF.xDesktop.Common  MWF.xAction.RestActions");
-            if (layout.config && o2.LP) _getDistribute(function () { _load(); });
-        },
-        "onEvery": function () {
-            _loadProgressBar();
-        }
-    });
-    o2.getJSON("/x_desktop/res/config/config.json", function (config) {
-        _loadProgressBar();
-        layout.config = config;
-        if (o2.xDesktop.getServiceAddress && o2.LP) _getDistribute(function () { _load(); });
-    });
-
-    var _getDistribute = function (callback) {
-        if (layout.config.app_protocol === "auto") {
-            layout.config.app_protocol = window.location.protocol;
-        }
-        MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
-            layout.serviceAddressList = service;
-            layout.centerServer = center;
-            _loadProgressBar();
-            if (callback) callback();
-        }.bind(this));
-    };
-
-    var _load = function () {
-        var _loadApp = function (json) {
-            //用户已经登录
-            layout.user = json.data;
-            layout.session = {};
-            layout.session.user = json.data;
-            (function (layout) {
-                var _loadResource = function (callback) {
-                    var isLoadedA = false;
-                    var isLoadedB = false;
-                    //var isLoadedC = false;
-
-                    var modules = [
-                        "o2.xDesktop.Dialog",
-                        "MWF.xDesktop.UserData",
-                        "MWF.xDesktop.Access",
-                        "MWF.widget.UUID",
-                        "MWF.xDesktop.Menu",
-                        "MWF.xDesktop.shortcut",
-                        "MWF.widget.PinYin",
-                        "MWF.xDesktop.Access",
-                        // "MWF.xDesktop.MessageMobile"
-                    ];
-                    //MWF.xDesktop.requireApp("Common", "", null, false);
-                    var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
-
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
-                    o2.require("MWF.widget.Common", function () {
-                        _loadProgressBar();
-                        o2.require(modules, {
-                            "onSuccess": function () {
-                                o2.requireApp("Common", "", function () { _loadProgressBar(); isLoadedB = true; _check(); })
-                            },
-                            "onEvery": function () {
-                                _loadProgressBar();
-                            }
-                        });
-                    });
-                };
-
-                var _loadContent = function () {
-                    _loadResource(function () {
-                        _loadProgressBar(true);
-                        while (layout.readys && layout.readys.length) {
-                            layout.readys.shift().apply(window);
-                        }
-
-                    });
-                };
-
-                _loadContent();
-            })(layout);
-        };
-        //先判断用户是否登录
-        MWF.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
-            //已经登录
-            _loadProgressBar();
-            _loadApp(json);
-        }.bind(this), function (json) {
-            _loadProgressBar();
-            //允许匿名访问
-            if (layout.anonymous) {
-                _loadProgressBar(true);
-                _loadApp({
-                    user: "anonymous",
-                    session: {
-                        user: {
-                            name: "anonymous",
-                            roleList: []
-                        }
-                    }
-                });
-            } else {
-                //用户未经登录
-                //打开登录页面
-                var _loadResource = function (callback) {
-                    var isLoadedA = false;
-                    var isLoadedB = false;
-                    //var isLoadedC = false;
-
-                    //var lp = o2.session.path+"/lp/"+o2.language+".js";
-                    var modules = [
-                        "o2.xDesktop.Dialog",
-                        "MWF.xDesktop.UserData",
-                        "MWF.xDesktop.Access",
-                        "MWF.widget.UUID",
-                        "MWF.xDesktop.Menu",
-                        "MWF.xDesktop.shortcut",
-                        "MWF.widget.PinYin",
-                        "MWF.xDesktop.Access",
-                        "MWF.xDesktop.MessageMobile"
-                    ];
-                    //MWF.xDesktop.requireApp("Common", "", null, false);
-                    var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
-
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
-                    o2.require("MWF.widget.Common", function () {
-                        _loadProgressBar();
-                        o2.require(modules, {
-                            "onSuccess": function () {
-                                o2.requireApp("Common", "", function () { isLoadedB = true; _check(); })
-                            },
-                            "onEvery": function () {
-                                _loadProgressBar();
-                            }
-                        });
-                    });
-                };
-                _loadResource(function () {
-                    _loadProgressBar(true);
-                    layout.openLogin();
-                });
-            }
-        });
-
-        layout.openLogin = function () {
-            MWF.require("MWF.widget.Common", null, false);
-            MWF.require("MWF.xDesktop.Authentication", function () {
-                var authentication = new MWF.xDesktop.Authentication({
-                    "onLogin": _load.bind(layout)
-                });
-                authentication.loadLogin(document.body);
-            });
-        };
-    };
-});
 
 (function (layout) {
     layout.readys = [];
@@ -222,40 +28,71 @@ o2.addReady(function () {
             if (i < (appPath.length - 1)) {
                 baseObject[path] = baseObject[path] || {};
             } else {
-                baseObject[path] = baseObject[path] || { "options": Object.clone(MWF.xApplication.Common.options) };
+                baseObject[path] = baseObject[path] || { "options": Object.clone(o2.xApplication.Common.options) };
             }
             baseObject = baseObject[path];
         }.bind(this));
-        if (!baseObject.options) baseObject.options = Object.clone(MWF.xApplication.Common.options);
+        if (!baseObject.options) baseObject.options = Object.clone(o2.xApplication.Common.options);
 
         var _lpLoaded = false;
-        MWF.xDesktop.requireApp(appNames, "lp." + o2.language, {
+        o2.xDesktop.requireApp(appNames, "lp." + o2.language, {
             "failure": function () {
-                MWF.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
+                o2.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
             }.bind(this)
         }, false);
 
-        MWF.xDesktop.requireApp(appNames, clazzName, function () {
+        o2.xDesktop.requireApp(appNames, clazzName, function () {
             if (callback) callback(baseObject);
         });
     };
-    var _createNewApplication = function (e, appNamespace, appName, options, statusObj) {
-        var app = new appNamespace["Main"](this, options);
-        app.desktop = layout;
-        app.inBrowser = true;
+    var _createNewApplication = function (e, appNamespace, appName, options, statusObj, inBrowser, taskitem, notCurrent) {
+        if (options){ options.event = e; }else{ options = {"event": e}; }
+        var app = new appNamespace["Main"](layout.desktop, options);
+        app.desktop = layout.desktop;
         app.status = statusObj;
+        app.inBrowser = !!(inBrowser || layout.inBrowser);
 
-        app.load(true);
+        if (layout.desktop.type === "layout"){
+            app.appId = (options.appId) ? options.appId : ((appNamespace.options.multitask) ? appName + "-" + (new o2.widget.UUID()) : appName);
+            app.options.appId = app.appId;
 
-        var appId = appName;
-        if (options.appId) {
-            appId = options.appId;
-        } else {
-            if (appNamespace.options.multitask) appId = appId + "-" + (new MWF.widget.UUID());
+            if (!taskitem) taskitem = layout.desktop.createTaskItem(app);
+            app.taskitem = taskitem;
+            app.taskitem.app = app;
+
+            // if (layout.viewMode=="Default"){
+            //     if (!notCurrent){
+            //         app.load(!notCurrent);
+            //     }else{
+            //         app.isLoadApplication = false;
+            //     }
+            // }else{
+            //     app.load(!notCurrent);
+            // }
+            app.isLoadApplication = true;
+            app.load(!notCurrent);
+
+            if (!layout.desktop.apps) layout.desktop.apps = {};
+            if (layout.desktop.apps[app.appId]){
+                var tmpApp = layout.desktop.apps[app.appId];
+
+            }else{
+                layout.desktop.apps[app.appId] = app;
+            }
+
+
+
+            layout.desktop.appArr.push(app);
+            layout.desktop.appCurrentList.push(app);
+            if (!notCurrent) layout.desktop.currentApp = app;
+
+            //app.taskitem = new MWF.xDesktop.Layout.Taskitem(app, this);
+        }else{
+            app.load(true);
+            layout.app = app;
         }
-        app.appId = appId;
-        layout.app = app;
-        layout.desktop.currentApp = app;
+
+
 
         var mask = document.getElementById("appContentMask");
         if (mask) mask.destroy();
@@ -394,7 +231,16 @@ o2.addReady(function () {
         }
     };
 
-    layout.openApplication = function (e, appNames, options, statusObj) {
+    layout.openApplication = function (e, appNames, options, statusObj, inBrowser, taskitem, notCurrent) {
+        if (appNames.substring(0, 4)==="@url"){
+            var url = appNames.replace(/\@url\:/i, "");
+            var a = new Element("a", {"href": url, "target": "_blank"});
+            a.click();
+            a.destroy();
+            a = null;
+            return true;
+        }
+
         if (layout.app) {
             if (layout.mobile) {
                 _openApplicationMobile(appNames, options, statusObj);
@@ -410,9 +256,33 @@ o2.addReady(function () {
         } else {
             var appPath = appNames.split(".");
             var appName = appPath[appPath.length - 1];
-
             _requireApp(appNames, function (appNamespace) {
-                _createNewApplication(e, appNamespace, appName, options, statusObj);
+                var appId = (options && options.appId) ? options.appId : ((appNamespace.options.multitask) ? "" : appName);
+
+                if (appId && layout.desktop.apps && layout.desktop.apps[appId] && layout.desktop.apps[appId].window){
+                    layout.desktop.apps[appId].setCurrent();
+                }else{
+                    if (options) options.appId = appId;
+                    _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent);
+                }
+                // if (appNamespace.options.multitask){
+                //     if (options && options.appId){
+                //         if (layout.desktop.apps[options.appId]){
+                //             layout.desktop.apps[options.appId].setCurrent();
+                //         }else {
+                //             _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+                //         }
+                //     }else{
+                //         _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+                //     }
+                // }else{
+                //     if (layout.desktop.apps[appName]){
+                //         layout.desktop.apps[appName].setCurrent();
+                //     }else{
+                //         _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+                //     }
+                // }
+                // _createNewApplication(e, appNamespace, appName, (options || {}), statusObj, inBrowser);
             }.bind(this));
         }
     };
@@ -431,8 +301,8 @@ o2.addReady(function () {
     };
 
     layout.load = function (appNames, options, statusObj) {
-        layout.message = new MWF.xDesktop.MessageMobile();
-        layout.message.load();
+        // layout.message = new o2.xDesktop.MessageMobile();
+        // layout.message.load();
 
         layout.apps = [];
         layout.node = $("layout");
@@ -447,6 +317,225 @@ o2.addReady(function () {
             } catch (e) { }
         }
         layout.openApplication(null, appName, option || {}, m_status);
-    }
+    };
 
 })(layout);
+
+o2.addReady(function () {
+    // layout.desktop = new (new Class({Implements: [Options, Events]}))();
+    // layout.desktop.openApplication = layout.openApplication;
+    // layout.desktop.refreshApp = layout.refreshApp;
+    // layout.desktop.load = layout.load;
+
+    //兼容方法
+    Element.implement({
+        "makeLnk": function (options) { }
+    });
+    layout.desktop.addEvent = function(type, e, d){
+        window.addEvent(type, e, d);
+    };
+    layout.desktop.addEvents = function(e){
+        window.addEvents(e);
+    };
+
+    var loadingNode = $("loaddingArea");
+    var loadeds = 0;
+    var loadCount = 16;
+    var size = document.body.getSize();
+    var _closeLoadingNode = function () {
+        if (loadingNode) {
+            loadingNode.destroy();
+            loadingNode = null;
+        }
+
+    };
+    var _loadProgressBar = function (complete) {
+        if (loadingNode) {
+            if (complete) {
+                loadingNode.setStyles({ "width": "" + size.x + "px" });
+                //loadingNode.set('morph', {duration: 100}).morph({"width": ""+size.x+"px"});
+                window.setTimeout(_closeLoadingNode, 500);
+            } else {
+                loadeds++;
+                var p = (loadeds / loadCount) * size.x;
+                loadingNode.setStyles({ "width": "" + p + "px" });
+                //loadingNode.set('morph', {duration: 100}).morph({"width": ""+p+"px"});
+                if (loadeds >= loadCount) window.setTimeout(_closeLoadingNode, 500);
+            }
+        }
+    };
+
+    //异步载入必要模块
+    layout.config = null;
+    var configLoaded = false;
+    var lpLoaded = false;
+    var commonLoaded = false;
+    var lp = o2.session.path + "/lp/" + o2.language + ".js";
+    o2.load(lp, function () {
+        _loadProgressBar();
+        lpLoaded = true;
+        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+    });
+    var modules = ["o2.xDesktop.Common", "o2.xDesktop.Actions.RestActions", "o2.xAction.RestActions"];
+    o2.require(modules, {
+        "onSuccess": function () {
+            commonLoaded = true;
+            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+        },
+        "onEvery": function () {
+            _loadProgressBar();
+        }
+    });
+    o2.getJSON("/x_desktop/res/config/config.json", function (config) {
+        _loadProgressBar();
+        layout.config = config;
+        configLoaded = true
+        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+    });
+
+    var _getDistribute = function (callback) {
+        if (layout.config.app_protocol === "auto") {
+            layout.config.app_protocol = window.location.protocol;
+        }
+        o2.xDesktop.getServiceAddress(layout.config, function (service, center) {
+            layout.serviceAddressList = service;
+            layout.centerServer = center;
+            layout.desktop.serviceAddressList = service;
+            layout.desktop.centerServer = center;
+            _loadProgressBar();
+            if (callback) callback();
+        }.bind(this));
+    };
+
+    var _load = function () {
+        var _loadApp = function (json) {
+            //用户已经登录
+            layout.user = json.data;
+            //layout.session = {};
+            layout.session.user = json.data;
+            layout.session.token = json.data.token;
+            layout.desktop.session = layout.session;
+            (function (layout) {
+                var _loadResource = function (callback) {
+                    var isLoadedA = false;
+                    var isLoadedB = false;
+                    //var isLoadedC = false;
+
+                    var modules = [
+                        "o2.xDesktop.Dialog",
+                        "o2.xDesktop.UserData",
+                        "o2.xDesktop.Access",
+                        "o2.widget.UUID",
+                        "o2.xDesktop.Menu",
+                        "o2.xDesktop.Authentication",
+                        // "o2.xDesktop.shortcut",
+                        "o2.widget.PinYin",
+                        "o2.xDesktop.Access"
+                        // "o2.xDesktop.MessageMobile"
+                    ];
+                    //o2.xDesktop.requireApp("Common", "", null, false);
+                    var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
+
+                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    o2.require("o2.widget.Common", function () {
+                        _loadProgressBar();
+                        o2.require(modules, {
+                            "onSuccess": function () {
+                                o2.requireApp("Common", "", function () { _loadProgressBar(); isLoadedB = true; _check(); })
+                            },
+                            "onEvery": function () {
+                                _loadProgressBar();
+                            }
+                        });
+                    });
+                };
+
+                var _loadContent = function () {
+                    _loadResource(function () {
+                        _loadProgressBar(true);
+                        while (layout.readys && layout.readys.length) {
+                            layout.readys.shift().apply(window);
+                        }
+
+                    });
+                };
+
+                _loadContent();
+            })(layout);
+        };
+        //先判断用户是否登录
+        o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
+            //已经登录
+            _loadProgressBar();
+            _loadApp(json);
+        }.bind(this), function (json) {
+            _loadProgressBar();
+            //允许匿名访问
+            if (layout.anonymous) {
+                _loadProgressBar(true);
+                _loadApp({
+                    user: "anonymous",
+                    session: {
+                        user: {
+                            name: "anonymous",
+                            roleList: []
+                        }
+                    }
+                });
+            } else {
+                //用户未经登录
+                //打开登录页面
+                var _loadResource = function (callback) {
+                    var isLoadedA = false;
+                    var isLoadedB = false;
+                    //var isLoadedC = false;
+
+                    //var lp = o2.session.path+"/lp/"+o2.language+".js";
+                    var modules = [
+                        "o2.xDesktop.Dialog",
+                        "o2.xDesktop.UserData",
+                        "o2.xDesktop.Access",
+                        "o2.widget.UUID",
+                        "o2.xDesktop.Menu",
+                        //"o2.xDesktop.shortcut",
+                        "o2.widget.PinYin",
+                        "o2.xDesktop.Access",
+                        //"o2.xDesktop.MessageMobile"
+                    ];
+                    //o2.xDesktop.requireApp("Common", "", null, false);
+                    var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
+
+                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    o2.require("o2.widget.Common", function () {
+                        _loadProgressBar();
+                        o2.require(modules, {
+                            "onSuccess": function () {
+                                o2.requireApp("Common", "", function () { isLoadedB = true; _check(); })
+                            },
+                            "onEvery": function () {
+                                _loadProgressBar();
+                            }
+                        });
+                    });
+                };
+                _loadResource(function () {
+                    _loadProgressBar(true);
+                    layout.openLogin();
+                });
+            }
+        });
+
+        layout.openLogin = function () {
+            o2.require("o2.widget.Common", null, false);
+            o2.require("o2.xDesktop.Authentication", function () {
+                layout.authentication = new o2.xDesktop.Authentication({
+                    "style": "flat",
+                    "onLogin": _load.bind(layout)
+                });
+                layout.authentication.loadLogin(document.body);
+                var loadingNode = $("browser_loading");
+                if (loadingNode) loadingNode.fade("out");
+            });
+        };
+    };
+});

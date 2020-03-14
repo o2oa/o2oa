@@ -104,8 +104,8 @@ MWF.xApplication.Selector.Unit = new Class({
     _getChildrenItemIds: function(){
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level, category){
-        return new MWF.xApplication.Selector.Unit[type](data, selector, item, level, category)
+    _newItemCategory: function(type, data, selector, item, level, category, delay){
+        return new MWF.xApplication.Selector.Unit[type](data, selector, item, level, category, delay)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -151,23 +151,82 @@ MWF.xApplication.Selector.Unit = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.Unit.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.Unit.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Unit.SearchItem(data, selector, container, level);
     }
 });
+
 MWF.xApplication.Selector.Unit.Item = new Class({
 	Extends: MWF.xApplication.Selector.Identity.Item,
+    load : function(){
+        if( this.selector.isFlatCategory ){
+            if( !this.justItem && this.selector.options.expandSubEnable && this.data.subDirectUnitCount ){
+                this.loadCategoryForFlatCategory();
+            }else if(!this.ignoreItem){
+                this.loadForNormal(true);
+            }
+        }else{
+            this.loadForNormal();
+        }
+
+    },
+
+    loadForNormal : function( isNotLoadSubItem, container ){
+        this.selector.fireEvent("queryLoadItem",[this]);
+
+        if( !this.node )this.node = new Element("div", {
+            "styles": this.selector.css.selectorItem
+        }).inject(container || this.container);
+
+        this.levelNode = new Element("div", {
+            "styles": this.selector.css.selectorItemLevelNode
+        }).inject(this.node);
+        var indent = this.selector.options.level1Indent + (this.level-1)*this.selector.options.indent;
+        this.levelNode.setStyle("width", ""+indent+"px");
+
+        this.iconNode = new Element("div", {
+            "styles": this.selector.css.selectorItemIconNode
+        }).inject(this.node);
+        this._setIcon();
+
+        this.actionNode = new Element("div", {
+            "styles": this.selector.css.selectorItemActionNode
+        }).inject(this.node);
+        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+            this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
+        }
+
+        this.textNode = new Element("div", {
+            "styles": this.selector.css.selectorItemTextNode,
+            "text": this._getShowName(),
+            "title": this._getTtiteText()
+        }).inject(this.node);
+        this.textNode.store("indent", indent);
+        var m = this.textNode.getStyle("margin-left").toFloat()+indent;
+        this.textNode.setStyle("margin-left", ""+m+"px");
+
+        if(this.postLoad)this.postLoad();
+
+        if(!isNotLoadSubItem)this.loadSubItem();
+
+        this.setEvent();
+
+        this.check();
+
+        this.selector.fireEvent("postLoadItem",[this]);
+    },
     _getShowName: function(){
-        return this.data.name;
+        return (this.isShowLevelName && this.data.levelName) ? this.data.levelName : this.data.name;
     },
     _getTtiteText: function(){
         return this.data.levelName || this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
         if( !this.selector.options.expandSubEnable )return;
@@ -210,7 +269,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 })
             }
 
-            if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 && this.selector.options.style!=="blue_flat" ){
+            if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 &&
+                ( this.selector.options.style!=="blue_flat" && this.selector.options.style!=="blue_flat_mobile")){
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
                     "title" : "全选下级"
@@ -253,8 +313,13 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 item.unSelected();
             }
         }.bind(this));
-        if( this.selectAllNode && this.selector.css.selectorItemCategoryActionNode_selectAll ){
-            this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+
+        if( this.selectAllNode ){
+            if( this.selector.isFlatCategory ){
+                this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll );
+            }else if(this.selector.css.selectorItemCategoryActionNode_selectAll){
+                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            }
         }
         this.isSelectedAll = false;
     },
@@ -285,7 +350,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }
     },
     selectAll: function(ev){
-        if( this.loaded ){
+        if( this.loaded || this.selector.isFlatCategory ){
             this._selectAll( ev )
         }else{
             this.loadSubItems(function(){
@@ -306,10 +371,16 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
             this.subItems.each( function(item){
                 if(!item.isSelected)item.selected();
-            }.bind(this))
-            if( this.selectAllNode && this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
-                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+            }.bind(this));
+
+            if( this.selectAllNode ){
+                if( this.selector.isFlatCategory ){
+                    this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll_selected );
+                }else if(this.selector.css.selectorItemCategoryActionNode_selectAll_selected){
+                    this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+                }
             }
+
             this.isSelectedAll = true;
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
@@ -317,7 +388,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
     },
     checkSelectAll : function(){
         if( !this.isSelectedAll )return;
-        if( !this.selectAllNode || !this.selector.css.selectorItemCategoryActionNode_selectAll)return;
+        if( !this.selectAllNode )return;
         if( ! this.subItems )return;
         var hasSelectedItem = false;
         for( var i=0; i< this.subItems.length; i++ ){
@@ -327,7 +398,11 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             }
         }
         if( !hasSelectedItem ){
-            this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            if( this.selector.isFlatCategory ){
+                this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll );
+            }else if( this.selector.css.selectorItemCategoryActionNode_selectAll ){
+                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll );
+            }
             this.isSelectedAll = false;
         }
     },
@@ -360,21 +435,227 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         if (callback) callback();
     },
     postLoad : function(){
-        if( this.selector.options.style === "blue_flat" ){
-            if( this.level === 1 ){
+        if( this.selector.options.style === "blue_flat" ) {
+            if (this.level === 1) {
                 var indent = 26;
-                this.levelNode.setStyle("width", ""+indent+"px");
-            }else{
-                var indent = 26 + ( this.level -1 ) * this.selector.options.indent ;
-                this.levelNode.setStyle("width", ""+indent+"px");
+                this.levelNode.setStyle("width", "" + indent + "px");
+            } else {
+                var indent = 26 + ( this.level - 1 ) * this.selector.options.indent;
+                this.levelNode.setStyle("width", "" + indent + "px");
             }
+        }
+        //}else if( this.selector.options.style === "blue_flat_mobile" ){
+        //    if( this.level === 1 ){
+        //        var indent = 40;
+        //        this.levelNode.setStyle("width", ""+indent+"px");
+        //    }else{
+        //        var indent = 40 + ( this.level -1 ) * this.selector.options.indent ;
+        //        this.levelNode.setStyle("width", ""+indent+"px");
+        //    }
+        //}
+    },
+
+
+    loadCategoryForFlatCategory : function(){
+        this.selector.fireEvent("queryLoadCategory",[this]);
+
+        if( !this.flatCategoryItemNode ){
+            this.flatCategoryItemNode = new Element("div.flatCategoryItemNode", {
+                "styles": this.selector.css.flatCategoryItemNode,
+                "title" : this._getTtiteText()
+            });
+            this.flatCategoryItemNode.store( "category", this );
+            this.flatCategoryItemNode.store( "dn", this.data.distinguishedName );
+
+            this.flatCategoryItemTextNode = new Element("div", {
+                "styles": this.selector.css.flatCategoryItemTextNode,
+                "text": this._getShowName(),
+                "title": this._getTtiteText()
+            }).inject(this.flatCategoryItemNode);
+
+        }
+
+        this.children = new Element("div", {
+            "styles": this.selector.css.selectorItemCategoryChildrenNode
+        }).inject(this.selector.itemAreaNode);
+        this.children.setStyle("display", "none");
+
+        if( this.level === 1 ){
+            this.loadForNormal(true, this.children);
+        }
+
+        if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 ){
+            var selectAllWrap = new Element("div",{
+                styles : this.selector.css.flatCategory_selectAllWrap
+            }).inject(this.children);
+            this.selectAllNode = new Element("div", {
+                "styles": this.selector.css.flatCategory_selectAll,
+                "text" : "全选"
+            }).inject(selectAllWrap);
+            this.selectAllNode.addEvent( "click", function(ev){
+                if( this.isSelectedAll ){
+                    this.unselectAll(ev);
+                    this.selector.fireEvent("unselectCatgory",[this])
+                }else{
+                    this.selectAll(ev);
+                    this.selector.fireEvent("selectCatgory",[this])
+                }
+                ev.stopPropagation();
+            }.bind(this));
+        }
+
+        //this.loadForNormal(true, this.children);
+
+
+        this.flatCategoryItemNode.addEvents({
+            //"mouseover": function(){
+            //    if (!this.isSelected )this.node.setStyles(this.selector.css.flatCategoryItemNode_over );
+            //}.bind(this),
+            //"mouseout": function(){
+            //    if (!this.isSelected )this.node.setStyles(this.selector.css.flatCategoryItemNode );
+            //}.bind(this),
+            "click": function(){
+                if( this.selector.currentFlatCategory === this )return;
+                if( this.selector.currentFlatCategory ){
+                    this.selector.currentFlatCategory.clickFlatCategoryItem(null, true); //取消原来选择的
+                }
+                this.selector.currentFlatCategory = this;
+                this.clickFlatCategoryItem();
+            }.bind(this)
+        });
+        //this.setEvent();
+
+        var isCreateSubCategoryListNode = this.data.subDirectUnitCount ?  this.data.subDirectUnitCount : true;
+        var nodeContainer;
+        if( this.nodeContainer ){
+            nodeContainer = this.nodeContainer;
+        }else{
+            nodeContainer = (this.category &&  this.category.subCategoryListNode) ? this.category.subCategoryListNode : null;
+        }
+        this.subCategoryListNode = this.selector.addFlatCategoryItem( this.flatCategoryItemNode, this.data.subDirectUnitCount, nodeContainer,  isCreateSubCategoryListNode );
+
+        //this.check();
+
+        if( this.loadCategoryChildren )this.loadCategoryChildren();
+
+        //if(this.postLoad)this.postLoad();
+
+        //this.setEvent();
+
+        //this.check();
+
+        this.selector.fireEvent("postLoadCategory",[this]);
+    },
+    clickFlatCategoryItem : function( callback, hidden ){
+        //if (this._hasChildItem()){
+        var firstLoaded = !this.itemLoaded;
+        this.loadItemChildren(function(){
+            if( hidden ){
+                this.children.setStyles({ "display": "none" });
+                this.flatCategoryItemNode.setStyles(this.selector.css.flatCategoryItemNode);
+                this.isExpand = false;
+            }else if( firstLoaded ){
+                this.children.setStyles({"display": "block"});
+                this.flatCategoryItemNode.setStyles( this.selector.css.flatCategoryItemNode_selected );
+                this.isExpand = true;
+            }else {
+                var display = this.children.getStyle("display");
+                if (display === "none") {
+                    this.children.setStyles({ "display": "block" });
+                    this.flatCategoryItemNode.setStyles(this.selector.css.flatCategoryItemNode_selected);
+                    this.isExpand = true;
+                } else {
+                    this.children.setStyles({ "display": "none" });
+                    this.flatCategoryItemNode.setStyles(this.selector.css.flatCategoryItemNode);
+                    this.isExpand = false;
+                }
+            }
+            if(callback)callback()
+        }.bind(this));
+        //}
+    },
+    loadCategoryChildren : function( callback ){
+        if (!this.categoryLoaded){
+            this.selector.orgAction.listSubUnitDirect(function(subJson){
+                subJson.data.each(function(subData){
+                    if( !this.selector.isExcluded( subData ) ) {
+                        if( subData.subDirectUnitCount ){
+                            var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                            //if( !this.subItems )this.subItems = [];
+                            //this.subItems.push( category );
+                        }
+                    }
+                }.bind(this));
+                this.categoryLoaded = true;
+                if(callback)callback();
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            if(callback)callback();
+        }
+    },
+    loadItemChildren : function( callback ){
+        if (!this.itemLoaded){
+            this.selector.orgAction.listSubUnitDirect(function(subJson){
+                subJson.data.each(function(subData){
+                    if( !this.selector.isExcluded( subData ) ) {
+                        //if( !subData.subDirectUnitCount ){
+                            var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
+                            category.justItem = true;
+                            category.load();
+                            if( !this.subItems )this.subItems = [];
+                            this.subItems.push( category );
+                        //}
+                    }
+                }.bind(this));
+                this.itemLoaded = true;
+                if(callback)callback();
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            if(callback)callback();
         }
     }
 });
+
 MWF.xApplication.Selector.Unit.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.Unit.Item,
+    load : function(){
+        this.loadForNormal();
+    },
     _getShowName: function(){
         return this.data.levelName || this.data.name;
+    },
+    loadSubItems: function( callback ){
+        //只是为了在isFlatCategory模式下，加载全称用的，否则用继承的就可以
+        if (!this.loaded){
+            if (!this.children){
+                this.children = new Element("div", {
+                    "styles": this.selector.css.selectorItemCategoryChildrenNode
+                }).inject(this.node, "after");
+            }
+            this.children.setStyle("display", "block");
+            //    if (!this.selector.options.expand) this.children.setStyle("display", "none");
+
+            this.selector.orgAction.listSubUnitDirect(function(subJson){
+                subJson.data.each(function(subData){
+                    if( !this.selector.isExcluded( subData ) ) {
+                        var category;
+                        if( this.selector.isFlatCategory ){
+                            category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
+                            category.isShowLevelName = true;
+                            category.load();
+                        }else{
+                            category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                        }
+                        if( !this.subItems )this.subItems = [];
+                        this.subItems.push( category );
+                    }
+                }.bind(this));
+                this.loaded = true;
+                if(callback)callback();
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            this.children.setStyle("display", "block");
+        }
     }
 });
 
@@ -390,7 +671,8 @@ MWF.xApplication.Selector.Unit.ItemSelected = new Class({
         return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     }
 });
 
@@ -422,10 +704,62 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
         //var iCount = (this.data.subDirectIdentityCount) ? this.data.subDirectIdentityCount : 0;
         return uCount;
     },
+    _hasChildCategory: function(){
+        var uCount = (this.data.subDirectUnitCount) ? this.data.subDirectUnitCount : 0;
+        return uCount;
+    },
     _hasChildItem: function(){
         var uCount = (this.data.subDirectUnitCount) ? this.data.subDirectUnitCount : 0;
         return uCount;
+    },
+
+
+    //for flat category start
+    loadCategoryChildren: function(callback){
+        if (!this.categoryLoaded){
+            this.selector.orgAction.listSubUnitDirect(function(subJson){
+                subJson.data.each(function(subData){
+                    if( !this.selector.isExcluded( subData ) ) {
+                        var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this, true);
+                        category.ignoreItem = true;
+                        category.load();
+                        //if(this.subItems)this.subItems.push( category );
+                        this.subCategorys.push( category );
+                    }
+                    //var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1);
+                }.bind(this));
+
+                this.categoryLoaded = true;
+                if (callback) callback();
+
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            if (callback) callback( );
+        }
+    },
+    loadItemChildren: function(callback){
+        if (!this.itemLoaded){
+            this.selector.orgAction.listSubUnitDirect(function(subJson){
+                subJson.data.each(function(subData){
+                    if( !this.selector.isExcluded( subData ) ) {
+                        var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this, true);
+                        category.justItem = true;
+                        category.load();
+                        if(this.subItems)this.subItems.push( category );
+                        //this.subCategorys.push( category );
+                    }
+                    //var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1);
+                }.bind(this));
+
+                this.itemLoaded = true;
+                if (callback) callback();
+
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            if (callback) callback( );
+        }
     }
+
 });
 
 MWF.xApplication.Selector.Unit.Filter = new Class({

@@ -64,6 +64,11 @@ MWF.xApplication.Setting.LP = {
     "base_faceLogin": "启用人脸识别登录",
     "base_faceLogin_infor": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征",
 
+    "base_faceApi": "人脸识别服务",
+    "base_faceApi_action": "编辑人脸识别服务",
+    "base_faceApi_delete": "编辑人脸识别服务",
+    "base_faceApi_infor": "使用face++人脸服务，您可以编辑您的API Key和API Secret。否则系统将使用默认账号，QPS会受到限制。",
+
     "base_register": "启用自助注册",
     "base_register_infor": "是否允许自助注册成为系统用户，以及注册方式",
     "register_disable": "不允许自助注册",
@@ -77,6 +82,11 @@ MWF.xApplication.Setting.LP = {
     "base_loginPortalId": "登录门户",
     "base_loginPortalId_infor": "选择登录页面的门户。(重启服务器后生效)",
 
+    "base_portalIndex": "使用门户页面作为系统首页",
+    "base_portalIndex_infor": "可使用定制的门户页面作为系统首页，登录后打开此页面。(重启服务器后生效)",
+    "base_portalIndex_action": "",
+    "base_indexPortalId": "系统首页门户",
+    "base_indexPortalId_infor": "选择系统首页的门户。(重启服务器后生效)",
 
 
     "base_ssoSetting": "配置与其它系统的单点登录设置",

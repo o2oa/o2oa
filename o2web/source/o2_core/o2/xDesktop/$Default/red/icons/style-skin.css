@@ -1,0 +1,94 @@
+.mainColor_bg {
+    background-color: #D94141;
+    color: #ffffff;
+}
+.mainColor_color {
+    color: #D94141;
+}
+.mainColor_border {
+    border-color: #D94141;
+}
+
+.overColor_bg {
+    background-color: #6D1818;
+}
+.overColor_color {
+    color: #6D1818;
+}
+.overColor_border {
+    border-color: #6D1818;
+}
+
+.deepColor_bg {
+    background-color: #400606;
+}
+.deepColor_color {
+    color: #400606;
+}
+.deepColor_border {
+    border-color: #400606;
+}
+
+.badgeColor_bg {
+    background-color: #66CC80;
+}
+.badgeColor_color {
+    color: #66CC80;
+}
+.badgeColor_border {
+    border-color: #66CC80;
+}
+.logo_o2_40 {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/logo_o2_40.png);
+}
+.icon_setting{
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_yyzk.png);
+}
+.icon_msg {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_xiaoxi.png);
+}
+.icon_msg_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_xiaoxi_click.png);
+}
+.icon_skin {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_pifu.png);
+}
+.icon_skin_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_pifu_click.png);
+}
+.icon_search {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_sousuo.png);
+}
+.icon_search_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_sousuo_click.png);
+}
+.icon_clear {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_clear.png);
+}
+.icon_loading {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/loading.gif);
+}
+.logobg {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/pic_logo_sy.png);
+}
+.icon_startMenu_search {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_sousuo_click.png);
+}
+.icon_close {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_off_round_grey.png);
+}
+.icon_close_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_off_round_bai_click.png);
+}
+.icon_refresh {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/refresh.png);
+}
+.icon_remove_badge {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_off_red.png);
+}
+.icon_off_light {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_off_light.png);
+}
+.icon_add_red {
+    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_jia_red.png);
+}

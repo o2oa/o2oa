@@ -11,14 +11,29 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
         if (this.form.businessData.task){
             MWF.require("MWF.widget.Toolbar", function(){
                 var toolbars = [];
-                this.form.businessData.task.routeNameList.each(function(route, i){
+                //this.form.businessData.task.routeNameList.each(function(route, i){
+                //    if (!this.json.defaultTools) this.json.defaultTools = [];
+                //    var o= {
+                //        "type": "MWFToolBarButton",
+                //        "img": "submit.png",
+                //        "title": route,
+                //        "action": "processWork:"+route,
+                //        "text": route,
+                //        "id": "action_processWork",
+                //        "control": "allowProcessing",
+                //        "condition": "",
+                //        "read": false
+                //    };
+                //    toolbars.push(o);
+                //}.bind(this));
+                ( this.getRouteNameList() || [] ).each(function(route, i){
                     if (!this.json.defaultTools) this.json.defaultTools = [];
                     var o= {
                         "type": "MWFToolBarButton",
                         "img": "submit.png",
-                        "title": route,
-                        "action": "processWork:"+route,
-                        "text": route,
+                        "title": route.displayName,
+                        "action": "processWork:"+route.routeName,
+                        "text": route.displayName,
                         "id": "action_processWork",
                         "control": "allowProcessing",
                         "condition": "",
@@ -241,6 +256,47 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
                 }
             }
         }.bind(this));
+    },
+    getRouteNameList: function( routeList ){
+        var _self = this;
+
+        var list = [];
+        if( !routeList )routeList = this.getRouteDataList();
+        routeList.each(function(route, i){
+            if( route.hiddenScriptText && this.form && this.form.Macro ){
+                if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
+            }
+            var routeName = route.name;
+            if( route.displayNameScriptText && this.form && this.form.Macro ){
+                routeName = this.form.Macro.exec(route.displayNameScriptText, this);
+            }
+
+            list.push({
+                "routeId" : route.id,
+                "displayName" : routeName,
+                "routeName" : route.name
+            })
+        }.bind(this));
+        return list;
+    },
+    getRouteDataList : function(){
+        if( !this.routeDataList ){
+            o2.Actions.get("x_processplatform_assemble_surface").listRoute( {"valueList":this.form.businessData.task.routeList} , function( json ){
+                json.data.each( function(d){
+                    d.selectConfigList = JSON.parse( d.selectConfig || "[]" );
+                }.bind(this));
+                this.routeDataList = json.data;
+            }.bind(this), null, false );
+        }
+        return this.routeDataList;
+    },
+    getRouteData : function( routeId ){
+        var routeList = this.getRouteDataList();
+        for( var i=0; i<routeList.length; i++ ){
+            if( routeList[i].id === routeId ){
+                return routeList[i];
+            }
+        }
     },
     runCustomAction: function(bt){
         var script = bt.node.retrieve("script");

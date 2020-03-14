@@ -1,8 +1,8 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Class({
-	Extends: MWF.APP$Module,
+    Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad"],
+        "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
         "pageShow": "single"
@@ -54,7 +54,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     // if (this.options.pageShow!=="double"){
                     //     this._doublePage();
                     // }else{
-                         this._singlePage();
+                    this._singlePage();
                     // }
                     this._checkScale();
                 }.bind(this));
@@ -74,7 +74,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return pageNode;
     },
     _getShow: function(name, typeItem, scriptItem){
-	    switch (this.json[typeItem]) {
+        switch (this.json[typeItem]) {
             case "y":
                 return true;
             case "n":
@@ -89,150 +89,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     return !!this.form.Macro.exec(this.json[scriptItem].code, this);
                 }
                 return true;
+            default:
+                return true;
         }
     },
     _createPage: function(callback){
-	    debugger;
+        debugger;
         var pageContentNode = this._createNewPage().getFirst();
 
-        // var html = '<div class="doc_block doc_layout_copiesSecretPriority">';
-        // if (this._getShow("copies", "copiesShow", "copiesShowScript")) html += '   <div class="doc_layout_copies"></div>';
-        // if (this._getShow("secret", "secretShow", "secretShowScript")) html += '   <div class="doc_layout_secret"></div>';
-        // if (this._getShow("priority", "priorityShow", "priorityShowScript")) html += '   <div class="doc_layout_priority"></div>';
-        // html += '</div>'
-        // if (this._getShow("redHeader", "redHeaderShow", "redHeaderShowScript")) html += '<div class="doc_block doc_layout_redHeader"></div>';
-        //
-        // if (this._getShow("signer", "signerShow", "signerShowScript")){
-        //     this.json.fileup = true;
-        //     html += '<table class="doc_block doc_layout_filenoup" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //         '<tr><td class="doc_layout_filenoup_fileno_td">';
-        //     if (this._getShow("fileno", "filenoShow", "filenoShowScript")) html += '   <span>　</span><span class="doc_layout_filenoup_fileno"></span>';
-        //
-        //     html += '   </td><td class="doc_layout_filenoup_signer_td">' +
-        //         '       <table class="doc_layout_filenoup_signer_table" cellpadding="0" cellspacing="0" border="0">' +
-        //         '           <tr><td class="doc_layout_filenoup_signerTitle_td">'+
-        //         '               <span class="doc_layout_filenoup_signer"></span>' +
-        //         '           </td><td class="doc_layout_filenoup_signerContent_td">' +
-        //         '               <span class="doc_layout_filenoup_signerContent"></span><span>　</span>' +
-        //         '           </td></tr>' +
-        //         '       </table>' +
-        //         '   </td></tr>' +
-        //         '</table>';
-        // }else{
-        //     if (this._getShow("fileno", "filenoShow", "filenoShowScript")) html += '<div class=\"doc_block doc_layout_fileno\"></div>';
-        // }
-        // html += "<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>";
-        // if (this._getShow("subject", "subjectShow", "subjectShowScript")) html += "<div class=\"doc_block doc_layout_subject\"></div>";
-        // if (this._getShow("mainSend", "mainSendShow", "mainSendShowScript")) html += "<div class=\"doc_block doc_layout_mainSend\"></div>";
-        // html += "<div class=\"doc_block doc_layout_filetext\"></div>";
-        //
-        // if (this._getShow("attachment", "attachmentShow", "attachmentShowScript")){
-        //     html += '<table class="doc_block doc_layout_attachment" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //         '   <tr><td class="doc_layout_attachment_title_td">' +
-        //         '       <span>　　</span><span class="doc_layout_attachment_title"></span>' +
-        //         '   </td><td class="doc_layout_attachment_content_td">' +
-        //         '       <span class="doc_layout_attachment_content"></span>' +
-        //         '   </td></tr>' +
-        //         '</table>';
-        // };
-        //
-        // // html += '<table class="doc_block doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">' +
-        // //     '   <tr><td class="doc_layout_issuanceUnit"></td></tr>' +
-        // //     '   <tr><td class="doc_layout_issuanceDate"></td></tr>' +
-        // //     '</table>'doc_layout_edition_read
-        //
-        // var showIssuanceUnit = this._getShow("issuanceUnit", "issuanceUnitShow", "issuanceUnitShowScript");
-        // var showIssuanceDate = this._getShow("issuanceDate", "issuanceDateShow", "issuanceDateShowScript");
-        // if (showIssuanceUnit || showIssuanceDate){
-        //     html += '<div class="doc_block" style="overflow: hidden;"><table class="doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">';
-        //     if (showIssuanceUnit) html += '   <tr><td class="doc_layout_issuanceUnit"></td></tr>';
-        //     if (showIssuanceDate) html += '   <tr><td class="doc_layout_issuanceDate"></td></tr>';
-        //     html += '</table></div>';
-        // }
-        // if (this._getShow("annotation", "annotationShow", "annotationShowScript")) html += '<div class="doc_block doc_layout_annotation"></div>';
-        //
-        // html += '<table class="doc_block doc_layout_edition" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //     '   <tr><td class="doc_layout_edition_copyto">';
-        //
-        // if (this._getShow("copyto", "copytoShow", "copytoShowScript")){
-        //     html +=  '  <table class="doc_layout_edition_copyto_table" align="center" cellpadding="0" cellspacing="0" border="0">' +
-        //         '           <tr>' +
-        //         '               <td class="doc_layout_edition_copyto_title"></td>' +
-        //         '               <td class="doc_layout_edition_copyto_content"></td>' +
-        //         '           </tr>' +
-        //         '       </table>';
-        // }
-        //
-        //
-        // html += '   </td></tr><tr><td class="doc_layout_edition_issuance">'+
-        // '       <table class="doc_layout_edition_issuance_table" align="center" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        // '           <tr>';
-        //
-        // if (this._getShow("editionUnit", "editionUnitShow", "editionUnitShowScript")) html += '<td class="doc_layout_edition_issuance_unit"></td>';
-        // if (this._getShow("editionDate", "editionDateShow", "editionDateShowScript")) html += '<td class="doc_layout_edition_issuance_date"></td>';
-        //
-        // html += '   </tr>' +
-        //     '   </table>' +
-        //     '</td></tr>' +
-        //     '</table>';
-
-        //@todo
-
-        //     '<table class="doc_block doc_layout_filenoup" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //     '   <tr><td class="doc_layout_filenoup_fileno_td">' +
-        //     '       <span>　</span><span class="doc_layout_filenoup_fileno">浙移发〔2019〕20号</span>' +
-        //     '   </td><td class="doc_layout_filenoup_signer_td">' +
-        //     '       <table class="doc_layout_filenoup_signer_table" cellpadding="0" cellspacing="0" border="0">' +
-        //     '           <tr><td class="doc_layout_filenoup_signerTitle_td">' +
-        //     '               <span class="doc_layout_filenoup_signer">签发人：</span>' +
-        //     '           </td><td class="doc_layout_filenoup_signerContent_td">' +
-        //     '               <span class="doc_layout_filenoup_signerContent"></span><span>　</span>' +
-        //     '           </td></tr>' +
-        //     '       </table>' +
-        //     '   </td></tr>' +
-        //     '</table>'+
-        //
-        //
-        //     "<div class=\"doc_block doc_layout_fileno\"></div>" +
-        //     "<div color=\"#ff0000\" class=\"doc_block doc_layout_redline\"></div>" +
-        //     "<div class=\"doc_block doc_layout_subject\"></div>" +
-        //     "<div class=\"doc_block doc_layout_mainSend\">：</div>"+
-        //     "<div class=\"doc_block doc_layout_filetext\"></div>" +
-        //
-        //     '<table class="doc_block doc_layout_attachment" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //     '   <tr><td class="doc_layout_attachment_title_td">' +
-        //     '       <span>　　</span><span class="doc_layout_attachment_title"></span>' +
-        //     '   </td><td class="doc_layout_attachment_content_td">' +
-        //     '       <span class="doc_layout_attachment_content"></span>' +
-        //     '   </td></tr>' +
-        //     '</table>' +
-        //     '<table class="doc_block doc_layout_issuance" cellpadding="0" cellspacing="0" border="0">' +
-        //     '   <tr><td class="doc_layout_issuanceUnit"></td></tr>' +
-        //     '   <tr><td class="doc_layout_issuanceDate"></td></tr>' +
-        //     '</table>' +
-        //     '<div class="doc_block doc_layout_annotation"></div>'+
-        // // pageContentNode.set("html", html);
-        // //
-        // // pageContentNode = this._createNewPage().getFirst();
-        // // html = '' +
-        //     '<table class="doc_block doc_layout_edition" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //     '   <tr><td class="doc_layout_edition_copyto">' +
-        //     '       <table class="doc_layout_edition_copyto_table" align="center" cellpadding="0" cellspacing="0" border="0">' +
-        //     '           <tr>' +
-        //     '               <td class="doc_layout_edition_copyto_title"></td>' +
-        //     '               <td class="doc_layout_edition_copyto_content"></td>' +
-        //     '           </tr>' +
-        //     '       </table>' +
-        //     '   </td></tr>' +
-        //     '   <tr><td class="doc_layout_edition_issuance">' +
-        //     '       <table class="doc_layout_edition_issuance_table" align="center" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-        //     '           <tr>' +
-        //     '               <td class="doc_layout_edition_issuance_unit"></td>' +
-        //     '               <td class="doc_layout_edition_issuance_date"></td>' +
-        //     '           </tr>' +
-        //     '       </table>' +
-        //     '   </td></tr>' +
-        //     '</table>';
         var control = this.getShowControl();
         this.json.fileup =  !!(control.signer);
 
@@ -244,13 +108,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
                 }
+                this.fireEvent("loadPage");
                 if (callback) callback(control);
             }.bind(this));
         }.bind(this));
     },
     getTempleteJson: function(callback){
-	    if (this.templeteJson){
-	        if (callback) callback();
+        if (this.templeteJson){
+            if (callback) callback();
         }else{
             o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
                 this.templeteJson = json;
@@ -260,9 +125,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     getShowControl: function(){
         var control = {};
+        control.copiesSecretPriority = this._getShow("copiesSecretPriority", "copiesSecretPriorityShow", "copiesSecretPriorityShowScript");
+
         control.copies = this._getShow("copies", "copiesShow", "copiesShowScript");
         control.secret = this._getShow("secret", "secretShow", "secretShowScript");
         control.priority = this._getShow("priority", "priorityShow", "priorityShowScript");
+
         control.redHeader = this._getShow("redHeader", "redHeaderShow", "redHeaderShowScript");
         control.redLine = this._getShow("redLine", "redLineShow", "redLineShowScript");
 
@@ -338,6 +206,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_priority = this.contentNode.getElement(".doc_layout_priority");
         if (this.layout_priority) this.layout_priority.setStyles(this.css.doc_layout_priority);
+
+        this.layout_copiesSecretPriority_blank = this.contentNode.getElement(".doc_layout_copiesSecretPriority_blank");
+
     },
 
     //红头
@@ -401,7 +272,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     //正文
     // _createFiletext: function(filetextNode, node, where){
-	//     if (!filetextNode){
+    //     if (!filetextNode){
     //         var filetextNode = new Element("div.doc_layout_filetext").inject(node, where);
     //         filetextNode.addClass("doc_block");
     //         filetextNode.setAttribute('contenteditable', true);
@@ -518,10 +389,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_meetingSitContent = this.contentNode.getElement(".doc_layout_meeting_sit_content");
     },
     _loadPageLayout: function(control){
-	    this._loadCopiesSecretPriority();
-	    this._loadRedHeader();
+        this._loadCopiesSecretPriority();
+        this._loadRedHeader();
 
-	    if (this.json.fileup){
+        if (this.json.fileup){
             this._loadFileNoUp();
         }else{
             this._loadFileNo();
@@ -529,7 +400,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (!this.layout_fileno) this._loadFileNo();
 
         this._loadRedLine();
-	    this._loadSubject();
+        this._loadSubject();
 
         this._loadMainSend();
         this._loadFiletext();
@@ -572,13 +443,30 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     reSetShow: function(control){
-	    debugger;
-	    if (!control) control = this.getShowControl();
-	    var m = function(s){ return (control[s]) ? "show" : "hide"; }
+        debugger;
+        if (!control) control = this.getShowControl();
+        var m = function(s){ return (control[s]) ? "show" : "hide"; }
 
-	    if (this.layout_copies) this.layout_copies[m("copies")]();
+        if (this.layout_copiesSecretPriority) this.layout_copiesSecretPriority[m("copiesSecretPriority")]();
+        // control.copies = this._getShow("copies", "copiesShow", "copiesShowScript");
+        // control.secret = this._getShow("secret", "secretShow", "secretShowScript");
+        // control.priority = this._getShow("priority", "priorityShow", "priorityShowScript");
+        var n = 0;
+        if (!control.copies) n++;
+        if (!control.secret) n++;
+        if (!control.priority) n++;
+        if (this.layout_copiesSecretPriority_blank){
+            while (n>0){
+                this.layout_copiesSecretPriority_blank.empty();
+                this.layout_copiesSecretPriority_blank.appendHTML("<span style='font-size:16.0pt'>&nbsp;</span>");
+                n--;
+            }
+        }
+
+        if (this.layout_copies) this.layout_copies[m("copies")]();
         if (this.layout_secret) this.layout_secret[m("secret")]();
         if (this.layout_priority) this.layout_priority[m("priority")]();
+
         if (this.layout_redHeader) this.layout_redHeader[m("redHeader")]();
         if (this.layout_redLine) this.layout_redLine[m("redLine")]();
 
@@ -601,35 +489,91 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (this.layout_edition){
                     if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
                     if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
-                    if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
-                        "border-top": "solid windowtext 1.5pt"
-                    });
+                    // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td")[0].setStyles({
+                    //     "border-top": "solid windowtext 1.5pt",
+                    //     "mso-border-top-alt": "solid windowtext 1pt"
+                    // });
                 }
             }else if (!control.copyto || !this.layout_copytoContent){
                 if (this.layout_copytoContent) this.layout_copytoContent.getParent("tr").destroy();
                 //if (this.layout_copyto2Content) this.layout_edition.getElement("tr").destroy();
-                if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
-                    "border-top": "solid windowtext 1.5pt"
-                });
+                // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
+                //     "border-top": "solid windowtext 1.5pt",
+                //     "mso-border-top-alt": "solid windowtext 1pt"
+                // });
             }else if (!control.copyto2 || !this.layout_copyto2Content) {
                 if (this.layout_copyto2Content) this.layout_copyto2Content.getParent("tr").destroy();
-                if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
-                    "border-bottom": "solid windowtext 1.0pt"
-                });
+                // if (this.layout_edition) this.layout_edition.getElement("tr").getElements("td").setStyles({
+                //     "border-bottom": "solid windowtext 0.75pt",
+                //     "mso-border-bottom-alt": "solid windowtext 0.75pt"
+                // });
             }
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
+                debugger
                 if (this.layout_editionArea && (this.layout_edition_issuance_date || this.layout_edition_issuance_unit)){
                     var trs = this.layout_editionArea.getElement("table").rows;
                     trs.item(trs.length-1).destroy();
-                    trs = this.layout_editionArea.getElement("table").rows;
-                    var tr = trs.item(trs.length-1);
-                    if (tr){
-                        tr.getElements("td").setStyles({
-                            "border-bottom": "solid windowtext 1.5pt"
-                        });
+                    // trs = this.layout_editionArea.getElement("table").rows;
+                    // var tr = trs.item(trs.length-1);
+                    // if (tr){
+                    //     tr.getElements("td").setStyles({
+                    //         "border-bottom": "solid windowtext 1.5pt",
+                    //         "mso-border-bottom-alt": "solid windowtext 1pt"
+                    //     });
+                    // }
+                }
+            }
+            if (this.layout_editionArea && (this.layout_edition_issuance_date || this.layout_edition_issuance_unit)){
+                trs = this.layout_editionArea.getElement("table").rows;
+                for (var i=0; i<trs.length; i++){
+                    var tds = trs.item(i).cells;
+                    for (var n=0; n<tds.length; n++){
+                        var td = tds.item(n);
+                        var tdClass = td.get("class");
+                        var tdClassList = (tdClass) ? tdClass.split(/\s+/g) : [];
+
+                        if (tdClassList.indexOf("line_top_thin_bottom_thick") != -1) tdClassList = tdClassList.erase("line_top_thin_bottom_thick");
+                        if (tdClassList.indexOf("line_top_thick_bottom_thin") != -1) tdClassList = tdClassList.erase("line_top_thick_bottom_thin");
+                        if (tdClassList.indexOf("line_top_thick_bottom_thick") != -1) tdClassList = tdClassList.erase("line_top_thick_bottom_thick");
+
+                        if (tdClassList.indexOf("line_top_thin_bottom_thin") == -1) tdClassList.unshift("line_top_thin_bottom_thin");
+
+                        // td.setStyles({
+                        //     "border-top": "solid windowtext 0.75pt",
+                        //     "mso-border-top-alt": "solid windowtext 0.75pt",
+                        //     "border-bottom": "solid windowtext 0.75pt",
+                        //     "mso-border-bottom-alt": "solid windowtext 0.75pt",
+                        // });
+                        if (i==0 && i!=(trs.length-1)){
+                            if (tdClassList.indexOf("line_top_thin_bottom_thin") != -1) tdClassList = tdClassList.erase("line_top_thin_bottom_thin");
+                            tdClassList.unshift("line_top_thick_bottom_thin");
+                            // td.setStyles({
+                            //     "border-top": "solid windowtext 1.5pt",
+                            //     "mso-border-top-alt": "solid windowtext 1pt"
+                            // });
+                        }else if (i==0 && i==(trs.length-1)){
+                            if (tdClassList.indexOf("line_top_thin_bottom_thin") != -1) tdClassList = tdClassList.erase("line_top_thin_bottom_thin");
+                            tdClassList.unshift("line_top_thick_bottom_thick");
+                        }else if (i!=0 && i==(trs.length-1)){
+                            if (tdClassList.indexOf("line_top_thin_bottom_thin") != -1) tdClassList = tdClassList.erase("line_top_thin_bottom_thin");
+                            tdClassList.unshift("line_top_thin_bottom_thick");
+                        }
+                        // if (i==(trs.length-1)){
+                        //     if (tdClassList.indexOf("line_bottom_thin") != -1) tdClassList = tdClassList.erase("line_bottom_thin");
+                        //     if (tdClassList.indexOf("line_bottom_thick") == -1) tdClassList.push("line_bottom_thick");
+                        //     // td.setStyles({
+                        //     //     "border-bottom": "solid windowtext 1.5pt",
+                        //     //     "mso-border-bottom-alt": "solid windowtext 1pt"
+                        //     // });
+                        // }
+
+                        tdClass = tdClassList.join(" ");
+                        td.set("class", tdClass);
                     }
                 }
             }
+
+
 
             if (this.layout_editionArea) this.layout_editionArea.show();
             if (this.layout_copytoTitle) this.layout_copytoTitle[m("copyto")]();
@@ -650,7 +594,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // this.layout_annotation[m("annotation")]();
     },
     reSetEdit: function(control){
-	    //未进行数据绑定时，可允许编辑
+        //未进行数据绑定时，可允许编辑
         if (!control) var control = this.getEditControl();
         if (!!this.json.subjectValueData && this.json.subjectValueType=="data") this.layout_subject.set("contenteditable", control.subject);
 
@@ -668,8 +612,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // }.bind(this));
     },
 
-	_loadUserInterface: function(callback){
-		this.node.empty();
+    _loadUserInterface: function(callback){
+        this.node.empty();
         this.node.setStyles(this.form.css.documentEditorNode);
         this.pages = [];
 
@@ -684,10 +628,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.loadDocumentEditor(callback);
         }
 
-	},
+    },
     loadDocumentEditor: function(callback){
-
-        //this.contentNode.addEvent("resize", this._checkScale.bind(this));
         this._loadToolbars();
         this._loadFiletextPage(function(){
             if (this.options.pageShow!=="double"){
@@ -696,8 +638,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._doublePage();
             }
 
-            this.form.addEvent("afterSave", function(){
+            this.form.addEvent("beforeProcess", function(){
                 this.resetData();
+                if (this.checkSaveNewEdition()) this.saveNewDataEdition();
+                this.notSaveResetData = true;
+            }.bind(this));
+            this.form.addEvent("beforeSave", function(){
+                if (!this.notSaveResetData) this.resetData();
             }.bind(this));
 
             if (this.json.toWord=="y"){
@@ -711,8 +658,45 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (callback) callback();
         }.bind(this));
     },
+
+    checkSaveNewEdition: function(){
+        if (!this.allowEdit) return false;
+        var originaData = this.form.businessData.originalData[this.json.id];
+        if (originaData && originaData.filetext != this.data.filetext){
+            return true;
+        }
+        return false;
+    },
+    saveNewDataEdition: function(){
+        debugger;
+        if (this.form.businessData.work){
+            //var data = this.data.filetext;
+
+            var data = "";
+            if (this.editMode && this.filetextEditor){
+                data = this.filetextEditor.container.getText();
+            }else{
+                if (this.layout_filetext) data = this.layout_filetext.get("text");
+            }
+            // var activity = this.form.businessData.activity;
+            // var job = this.form.businessData.work || this.form.businessData.workCompleted;
+            // var taskUser = (this.form.businessData.task) ? this.form.businessData.task.identity : "";
+            // var taskPerson = (this.form.businessData.task) ? this.form.businessData.task.person : layout.session.user.distinguishedName;
+            // var date = new Date();
+            var editionData = { "data": data };
+
+            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.create(this.form.businessData.work.id, { "data": data }, function(json){
+
+            });
+        }
+
+        //
+        // if (!this.data.editions) this.data.editions = [];
+        // this.data.editions.push(editionData);
+    },
+
     resizeSidebar: function(){
-	    if (this.sidebarNode){
+        if (this.sidebarNode){
             var fileTextNode = this.contentNode.getElement("div.doc_layout_filetext");
             if (fileTextNode){
                 this.sidebarNode.position({
@@ -721,6 +705,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     edge: 'topRight',
                     offset: {"x": -20}
                 });
+
+                var p = fileTextNode.getPosition(this.form.app.content);
+                var ptop = fileTextNode.getPosition(this.node);
+                //if ((p.y+s.y)<0) this.sidebarNode.setStyle("top", p.y+s.y);
+
+                if (p.y<0){
+                    var top = ptop.y-p.y+10;
+                    this.sidebarNode.setStyle("top", top);
+                }
+                // var p = fileTextNode.getPosition();
+                // this.sidebarNode.setStyle("top", p.y);
             }
         }
     },
@@ -771,7 +766,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     _checkScale: function(offset){
-	    debugger;
+        debugger;
         offset = 0;
         if (this.pages.length){
             var pageSize = this.pages[0].getSize();
@@ -811,7 +806,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     zoom: function(scale){
-	    if (scale) this.scale = scale;
+        if (scale) this.scale = scale;
 
         var w = this.node.getSize().x;
         w = w/this.scale;
@@ -835,31 +830,31 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _switchReadOrEdit: function(){
-	    if (this.eiitMode){
-	        this._readFiletext();
+        if (this.editMode){
+            this._readFiletext();
             if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-            this.eiitMode = false;
+            this.editMode = false;
         }else{
             this._editFiletext();
             if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted)
-            this.eiitMode = true;
+            this.editMode = true;
         }
     },
     _switchReadOrEditInline: function(){
-        if (this.eiitMode){
+        if (this.editMode){
             this._readFiletext();
             if (this.allowEdit){
                 if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
                 this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
             }
-            this.eiitMode = false;
+            this.editMode = false;
         }else{
             this._editFiletext("inline");
             if (this.allowEdit){
                 if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
                 this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
             }
-            this.eiitMode = true;
+            this.editMode = true;
         }
     },
     _printDoc: function(){
@@ -870,6 +865,61 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
             }
         }.bind(this), "$doc.doc");
+    },
+    _historyDoc: function(){
+        this.historyAreaNode = new Element("div", {"styles": this.css.historyAreaNode}).inject(this.node);
+        // this.historyAreaActionNode = new Element("div", {"styles": this.css.historyAreaActionNode}).inject(this.historyAreaNode);
+        // this.historyAreaTitleNode = new Element("div", {"styles": this.css.historyAreaTitleNode, "text": MWF.xApplication.process.Xform.LP.documentEditor.historyList}).inject(this.historyAreaNode);
+        // this.historyAreaContentNode = new Element("div", {"styles": this.css.historyAreaContentNode}).inject(this.historyAreaNode);
+        //
+        // var id = this.form.businessData.data["$work"].job;
+        // o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJob(id, function(json){
+        //     json.data.each(function(d){
+        //         var title = o2.name.cn(d.person) + "(" + d.activityName + ")";
+        //         var time = d.createTime;
+        //         var node = new Element("div", {"styles": this.css.historyItemNode}).inject(this.historyAreaContentNode);
+        //         var titleNode = new Element("div", {"styles": this.css.historyItemTitleNode, "text": title}).inject(node);
+        //         var timeNode = new Element("div", {"styles": this.css.historyItemTimeNode, "text": time}).inject(node);
+        //     }.bind(this));
+        // }.bind(this));
+        //
+        var size = this.node.getSize();
+        this.historyAreaNode.setStyle("height", ""+size.y+"px");
+
+        if (!this.editMode) this._switchReadOrEditInline();
+        if (this.filetextEditor){
+            debugger;
+            //var currentData = this.filetextEditor.getData();
+            var currentData = this.filetextEditor.container.getText();
+            alert(currentData);
+
+            var id = this.form.businessData.data["$work"].job;
+            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJob(id, function(json){
+                var d = json.data[0];
+                o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(d.id, function(json){
+                    var historyData = json.data.data;
+                    o2.load("/o2_lib/diff-match-patch/diff_match_patch.js", function(){
+                        var dmp = new diff_match_patch();
+                        dmp.Diff_Timeout = parseFloat(10);
+                        dmp.Diff_EditCost = parseFloat(4);
+                        var diff_d = dmp.diff_main(historyData, currentData);
+                        dmp.diff_cleanupSemantic(diff_d);
+                        var diff_ds = dmp.diff_prettyHtml(diff_d);
+
+                        this.historyAreaNode.set("html", diff_ds);
+                    }.bind(this));
+                }.bind(this));
+                //json.data.each(function(d){
+                //     var title = o2.name.cn(d.person) + "(" + d.activityName + ")";
+                //     var time = d.createTime;
+                //     var node = new Element("div", {"styles": this.css.historyItemNode}).inject(this.historyAreaContentNode);
+                //     var titleNode = new Element("div", {"styles": this.css.historyItemTitleNode, "text": title}).inject(node);
+                //     var timeNode = new Element("div", {"styles": this.css.historyItemTimeNode, "text": time}).inject(node);
+                //}.bind(this));
+            }.bind(this));
+
+        }
+
     },
     _readFiletext: function(){
         //this._returnScale();
@@ -887,12 +937,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_filetext.setAttribute('contenteditable', false);
         this.data = this.getData();
+        // debugger;
+        if (!this.data.filetext){
+            //this.data.filetext = this.json.defaultValue.filetext;
+            this.layout_filetext.set("html", this.json.defaultValue.filetext);
+        }
         //this._checkSplitPage(this.pages[0]);
         this._repage();
     },
     _editFiletext: function(inline){
-	    this._returnScale();
-	    this.zoom(1);
+        this._returnScale();
+        this.zoom(1);
         this._singlePage();
         this.pages = [];
         this.contentNode.empty();
@@ -901,7 +956,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             // var docData = this._getBusinessData();
             // if (!docData) docData = this._getDefaultData();
-
+            if (this.data.filetext == this.json.defaultValue.filetext) this.data.filetext = "";
             this.setData(this.data);
 
             this._checkScale();
@@ -927,7 +982,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     getFiletextToolber: function(){
-	    if (this.filetextEditor) {
+        if (this.filetextEditor) {
             if (!this.filetextToolbarNode) {
                 var className = "cke_editor_" + this.filetextEditor.name;
                 var filetextToolbarNode = $$("." + className)[0];
@@ -967,7 +1022,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.filetextScrollNode = scrollNode;
             }
             var h = this.filetextToolbarNode.getSize().y;
-            var position = this.layout_filetext.getPosition(this.form.app.content);
+            var position = this.layout_filetext.getPosition();
             var size = this.layout_filetext.getSize();
             var contentSize = this.filetextScrollNode.getSize();
 
@@ -984,11 +1039,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         }
 
-            //
-            // this.filetextToolbarNode.inject(offsetNode);
-            //
-            //
-            // this.filetextToolbarNode.setStyle("top", ""+p+"px");
+        //
+        // this.filetextToolbarNode.inject(offsetNode);
+        //
+        //
+        // this.filetextToolbarNode.setStyle("top", ""+p+"px");
 
     },
     locationFiletextToolbar: function(){
@@ -1007,8 +1062,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _isAllowEdit:function(){
-	    if (this.readonly) return false;
-	    if (this.json.allowEdit=="n") return false;
+        if (this.readonly) return false;
+        if (this.json.allowEdit=="n") return false;
         if (this.json.allowEdit=="s"){
             if (this.json.allowEditScript && this.json.allowEditScript.code){
                 return !!this.form.Macro.exec(this.json.allowEditScript.code, this);
@@ -1054,14 +1109,17 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
 
     _loadToolbars: function(){
-	    var html ="";
+        var html ="";
         if (this.allowEdit){
             //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
-           //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
+            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
         }
         if (this.allowPrint){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
+        }
+        if (this.allowPrint){
+           html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
         }
         this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
         this.toolbarNode.set("html", html);
@@ -1114,8 +1172,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     _singlePage: function(){
-        //if (this.eiitMode) this._readFiletext();
-	    this.zoom(1);
+        //if (this.editMode) this._readFiletext();
+        this.zoom(1);
         this._checkScale();
 
         var w = this.contentNode.getSize().x;
@@ -1157,7 +1215,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     createWaitSplitPage: function(){
-	    debugger;
+        debugger;
         this.node.mask({
             "style": {
                 "background-color": "#cccccc",
@@ -1165,7 +1223,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         });
 
-	    this.waitSplitPageNode = new Element("div", {"styles": this.form.css.waitSplitPageNode, "text": MWF.xApplication.process.Xform.LP.computePage}).inject(this.node);
+        this.waitSplitPageNode = new Element("div", {"styles": this.form.css.waitSplitPageNode, "text": MWF.xApplication.process.Xform.LP.computePage}).inject(this.node);
         this.waitSplitPageNode.position({
             "relativeTo": this.node,
             "position": "topRight",
@@ -1185,10 +1243,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     _doublePage: function(){
-        if (this.eiitMode) this._switchReadOrEditInline();
+        if (this.editMode) this._switchReadOrEditInline();
         this.zoom(1);
         this.createWaitSplitPage();
-	    window.setTimeout(function(){
+        window.setTimeout(function(){
             this._checkSplitPage(this.pages[0]);
 
             this.zoom(1);
@@ -1231,7 +1289,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), 1000);
     },
     _getDefaultData: function(){
-	    return this.json.defaultValue;
+        return Object.clone(this.json.defaultValue);
         //return Object.clone(MWF.xApplication.process.Xform.LP.documentEditor);
     },
 
@@ -1247,7 +1305,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             // if (!this.data) this.data = this._getDefaultData();
 
             this.setData(this.data);
-           // this._checkSplitPage(this.pages[0]);
+            // this._checkSplitPage(this.pages[0]);
             //this._repage(true);
             //this.loadCkeditorFiletext();
 
@@ -1330,13 +1388,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             // format_tags: '标题一;标题二;标题三;标题四;正文', // entries is displayed in "Paragraph format"
             format_tags: '标题一;标题二;正文(标题三,四)', // entries is displayed in "Paragraph format"
             'format_标题一': {
-                    name: '标题一',
-                    element: 'div',
-                    styles: {
-                        'font-family': '黑体',
-                        'font-size': '16pt'
-                    }
-                },
+                name: '标题一',
+                element: 'div',
+                styles: {
+                    'font-family': '黑体',
+                    'font-size': '16pt'
+                }
+            },
             'format_标题二': {
                 name: '标题二',
                 element: 'div',
@@ -1524,13 +1582,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (inline){
                     this.filetextEditor = CKEDITOR.inline(this.layout_filetext, this._getEditorConfig());
                 }else{
-                     this.filetextEditor = CKEDITOR.replace(this.layout_filetext, this._getEditorConfig());
+                    this.filetextEditor = CKEDITOR.replace(this.layout_filetext, this._getEditorConfig());
                 }
                 this.filetextEditor.on("instanceReady", function(e){
                     if (callback) callback(e);
                 }.bind(this));
                 this.filetextEditor.on( 'focus', function( e ) {
-                   window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
+                    window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
                 }.bind(this) );
 
                 // this.filetextEditor.on("key", function(e){
@@ -1617,29 +1675,29 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         }
                     });
                     //if (strs.length){
-                        switch (name) {
-                            case "attachment":
-                                // this.data[name] = strs.map(function(n, i){ var j = i+1; return j+"、"+n}).join("<br>");
-                                var atts = strs.map(function(a){
-                                    return (a.indexOf(".")!=-1) ? a.substring(0, a.lastIndexOf(".")) : a;
-                                });
-                                this.data[name] = atts;
-                                break;
-                            case "issuanceDate":
-                            case "editionDate":
-                                var tmpStrs = strs.map(function(n, i){
-                                    var d = Date.parse(n);
-                                    return (d.isValid()) ? d.format("“％Y年％m月％d％日") : n;
-                                });
-                                this.data[name] = tmpStrs.join("，")
-                                break;
-                            case "mainSend":
-                                debugger;
-                                this.data[name] = strs.join("，") + "：";
-                                break;
-                            default:
-                                this.data[name] = strs.join("，");
-                        }
+                    switch (name) {
+                        case "attachment":
+                            // this.data[name] = strs.map(function(n, i){ var j = i+1; return j+"、"+n}).join("<br>");
+                            var atts = strs.map(function(a){
+                                return (a.indexOf(".")!=-1) ? a.substring(0, a.lastIndexOf(".")) : a;
+                            });
+                            this.data[name] = atts;
+                            break;
+                        case "issuanceDate":
+                        case "editionDate":
+                            var tmpStrs = strs.map(function(n, i){
+                                var d = Date.parse(n);
+                                return (d.isValid()) ? d.format("%Y年%m月%d日") : n;
+                            });
+                            this.data[name] = tmpStrs.join("，")
+                            break;
+                        case "mainSend":
+                            debugger;
+                            this.data[name] = strs.join("，") + "：";
+                            break;
+                        default:
+                            this.data[name] = strs.join("，");
+                    }
                     //}
                     break;
                 default:
@@ -1673,7 +1731,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     }
                     if (name=="issuanceDate" || name=="editionDate"){
                         var d = Date.parse(v);
-                        this.data[name] = (d.isValid()) ? d.format("“％Y年％m月％d％日") : v;
+                        this.data[name] = (d.isValid()) ? d.format("%Y年%m月%d日") : v;
                     }
                 }
                 break;
@@ -1707,59 +1765,61 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var data = this._getBusinessData();
     },
     reload: function(){
-	    this.resetData();
+        this.resetData();
     },
     resetData: function(){
+        if (this.editMode){ this._switchReadOrEditInline(); }
+
         this._computeData(false);
 
         this.pages = [];
         this.contentNode.empty();
         if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
-        this.eiitMode = false;
+        this.editMode = false;
 
         this._createPage(function(control){
             this._loadPageLayout(control);
 
             this.setData(this.data);
-            this._checkSplitPage(this.pages[0]);
+            //this._checkSplitPage(this.pages[0]);
 
             this._repage();
         }.bind(this));
     },
     getData: function(){
-        //if (this.eiitMode){
-            if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
-            if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
-            if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
-            if (this.layout_redHeader) this.data.redHeader = this.layout_redHeader.get("html");
-            if (this.layout_fileno) this.data.fileno = this.layout_fileno.get("text");
-            if (this.layout_signerTitle) this.data.signerTitle = this.layout_signerTitle.get("text");
-            if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
-            if (this.layout_subject) this.data.subject = this.layout_subject.get("html");
-            if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
-            if (this.eiitMode) if (this.layout_filetext) this.data.filetext = this.layout_filetext.get("html");
-            if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
-            if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
-            if (this.layout_attachment){
-                this._computeItemData("attachment", "attachmentValueType", "attachmentValueData", "attachmentValueScript", false, "layout_attachment");
-                // var atts = [];
-                // var nodes = this.layout_attachment.getElements(".doc_layout_attachment_content_name");
-                // if (nodes.length){
-                //     nodes.each(function(node){
-                //         atts.push(node.get("text"));
-                //     });
-                // }
-                // this.data.attachment = atts;
-            }
-            if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("text");
-            if (this.layout_issuanceDate) this.data.issuanceDate = this.layout_issuanceDate.get("text");
-            if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
-            if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
-            if (this.layout_copytoContent) this.data.copyto = this.layout_copytoContent.get("text");
-            if (this.layout_copyto2Title) this.data.copyto2Title = this.layout_copyto2Title.get("text");
-            if (this.layout_copyto2Content) this.data.copyto2 = this.layout_copyto2Content.get("text");
-            if (this.layout_edition_issuance_unit) this.data.editionUnit = this.layout_edition_issuance_unit.get("text");
-            if (this.layout_edition_issuance_date) this.data.editionDate = this.layout_edition_issuance_date.get("text");
+        //if (this.editMode){
+        if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
+        if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
+        if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
+        if (this.layout_redHeader) this.data.redHeader = this.layout_redHeader.get("html");
+        if (this.layout_fileno) this.data.fileno = this.layout_fileno.get("text");
+        if (this.layout_signerTitle) this.data.signerTitle = this.layout_signerTitle.get("text");
+        if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+        if (this.layout_subject) this.data.subject = this.layout_subject.get("html");
+        if (this.layout_mainSend) this.data.mainSend = this.layout_mainSend.get("text");
+        if (this.editMode) if (this.layout_filetext) this.data.filetext = this.layout_filetext.get("html");
+        if (this.layout_signer) this.data.signer = this.layout_signer.get("text");
+        if (this.layout_attachmentTitle) this.data.attachmentTitle = this.layout_attachmentTitle.get("text");
+        if (this.layout_attachment){
+            this._computeItemData("attachment", "attachmentValueType", "attachmentValueData", "attachmentValueScript", false, "layout_attachment");
+            // var atts = [];
+            // var nodes = this.layout_attachment.getElements(".doc_layout_attachment_content_name");
+            // if (nodes.length){
+            //     nodes.each(function(node){
+            //         atts.push(node.get("text"));
+            //     });
+            // }
+            // this.data.attachment = atts;
+        }
+        if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("text");
+        if (this.layout_issuanceDate) this.data.issuanceDate = this.layout_issuanceDate.get("text");
+        if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
+        if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
+        if (this.layout_copytoContent) this.data.copyto = this.layout_copytoContent.get("text");
+        if (this.layout_copyto2Title) this.data.copyto2Title = this.layout_copyto2Title.get("text");
+        if (this.layout_copyto2Content) this.data.copyto2 = this.layout_copyto2Content.get("text");
+        if (this.layout_edition_issuance_unit) this.data.editionUnit = this.layout_edition_issuance_unit.get("text");
+        if (this.layout_edition_issuance_date) this.data.editionDate = this.layout_edition_issuance_date.get("text");
 
         if (this.layout_meetingAttendTitle) this.data.meetingAttendTitle = this.layout_meetingAttendTitle.get("text");
         if (this.layout_meetingLeaveTitle) this.data.meetingLeaveTitle = this.layout_meetingLeaveTitle.get("text");
@@ -1799,16 +1859,39 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.data = data;
             // this.data["$json"] = this.json;
             this._setBusinessData(data);
-            if (this.layout_copies) this.layout_copies.set("text", data.copies || " ");
-            if (this.layout_secret) this.layout_secret.set("text", data.secret || " ");
-            if (this.layout_priority) this.layout_priority.set("text", data.priority || " ");
+            if (this.layout_copies){
+                if (data.copies){
+                    this.layout_copies.set("text", data.copies || " ");
+                }else{
+                    this.layout_copies.set("html", "<span>&nbsp</span>");
+                }
+            }
+            if (this.layout_secret){
+                if (data.secret){
+                    this.layout_secret.set("text", data.secret || " ");
+                }else{
+                    this.layout_secret.set("html", "<span>&nbsp</span>");
+                }
+            }
+            if (this.layout_priority){
+                if (data.priority){
+                    this.layout_priority.set("text", data.priority || " ");
+                }else{
+                    this.layout_priority.set("html", "<span>&nbsp</span>");
+                }
+            }
+
+
             if (this.layout_redHeader) this.layout_redHeader.set("html", data.redHeader || "");
             if (this.layout_fileno) this.layout_fileno.set("text", data.fileno || " ");
             if (this.layout_signerTitle) this.layout_signerTitle.set("text", data.signerTitle || " ");
             if (this.layout_signer) this.layout_signer.set("text", data.signer || " ");
             if (this.layout_subject) this.layout_subject.set("html", data.subject || " ");
             if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
-            if (this.layout_filetext) this.layout_filetext.set("html", data.filetext || "");
+            if (this.layout_filetext){
+                //this.layout_filetext.set("placeholder", this.json.defaultValue.filetext);
+                this.layout_filetext.set("html", data.filetext || "");
+            }
             if (this.layout_signer) this.layout_signer.set("text", data.signer || "");
             if (this.layout_attachmentTitle) this.layout_attachmentTitle.set("text", data.attachmentTitle || " ");
 
@@ -1979,9 +2062,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return true;
     },
     removeDisplayNone: function(node){
-	    var n = node.getFirst();
-	    while (n){
-	        if (n.getStyle("display")=="none"){
+        var n = node.getFirst();
+        while (n){
+            if (n.getStyle("display")=="none"){
                 var tmp = n.getNext();
                 n.destroy();
                 n = tmp;
@@ -1995,7 +2078,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     toWord: function(callback, name){
         var toEdit = false;
-        if (this.eiitMode){
+        if (this.editMode){
             toEdit = true;
             this._readFiletext();
         }
@@ -2014,9 +2097,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             //var content = this.contentNode.getFirst().getFirst().get("html");
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
-
-            tmpNode = this.removeDisplayNone(tmpNode);
-            var content = tmpNode.get("html");
+            var htmlNode = tmpNode.getLast();
+            htmlNode = this.removeDisplayNone(htmlNode);
+            var content = "<html><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var body = {
                 "fileName": name || this.json.toWordFilename || "$doc.doc",
@@ -2046,7 +2129,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this));
     },
     docToWord: function(){
-	    var flag = true;
+        var flag = true;
         if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
             flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
         }
@@ -2055,12 +2138,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     showToWord: function(att){
-	    var site = this.json.toWordSite || "$doc";
-	    var attModule = this.form.all[site];
-	    if (attModule){
+        var site = this.json.toWordSite || "$doc";
+        var attModule = this.form.all[site];
+        if (attModule){
             attModule.attachmentController.clear();
             attModule.attachmentController.addAttachment(att);
         }
     }
-
-}); 
+});

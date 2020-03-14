@@ -88,7 +88,7 @@ MWF.xApplication.cms.Column.Main = new Class({
             this.createColumnNode = new Element("div.createColumnNode", {
                 "styles": this.css.createColumnNode,
                 "text": this.lp.column.create
-            }).inject(this.columnToolbarAreaNode);
+            }).addClass("o2_cms_column_createColumnNode").inject(this.columnToolbarAreaNode);
             this.createColumnNode.addEvents({
                 "mouseover" : function(){
                     this.createColumnNode.setStyles( this.css.createColumnNode_over );
@@ -163,15 +163,19 @@ MWF.xApplication.cms.Column.Main = new Class({
     setCurrentAppType : function( appType, target ){
         if( this.currentAppType ){
             if( this.currentAppType === "all" ){
-                this.currentAppTypeNode.setStyles( this.css.columnTop_All )
+                this.currentAppTypeNode.setStyles( this.css.columnTop_All );
+                this.currentAppTypeNode.removeClass("o2_cms_column_all_current");
             }else{
-                this.currentAppTypeNode.setStyles( this.css.columnTop_categoryItem )
+                this.currentAppTypeNode.setStyles( this.css.columnTop_categoryItem );
+                this.currentAppTypeNode.removeClass("o2_cms_column_categoryItem_current");
             }
         }
         if( appType === "all" ){
-            target.setStyles( this.css.columnTop_All_current )
+            target.setStyles( this.css.columnTop_All_current );
+            target.addClass("o2_cms_column_all_current");
         }else{
-            target.setStyles( this.css.columnTop_categoryItem_current )
+            target.setStyles( this.css.columnTop_categoryItem_current );
+            target.addClass("o2_cms_column_categoryItem_current");
         }
         this.currentAppType = appType;
         this.currentAppTypeNode = target;
@@ -437,10 +441,16 @@ MWF.xApplication.cms.Column.Column = new Class({
         var _self = this;
         itemNode.addEvents({
             "mouseover": function () {
-                if (!_self.selected) this.setStyles(_self.app.css.columnItemNode_over);
+                if (!_self.selected){
+                    this.setStyles(_self.app.css.columnItemNode_over);
+                    this.addClass("o2_cms_column_columnNode_over");
+                }
             },
             "mouseout": function () {
-                if (!_self.selected) this.setStyles(_self.app.css.columnItemNode);
+                if (!_self.selected){
+                    this.setStyles(_self.app.css.columnItemNode);
+                    this.removeClass("o2_cms_column_columnNode_over");
+                }
             },
             "click": function (e) {
                 _self.clickColumnNode(_self, this, e)

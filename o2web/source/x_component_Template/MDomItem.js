@@ -585,7 +585,7 @@ var MDomItem = new Class({
         }
     },
     destroy: function(){
-        if( this.dom.OrgWidgetList ){
+        if( this.dom && this.dom.OrgWidgetList ){
             this.dom.OrgWidgetList.each( function( widget ){
                 widget.destroy();
             })
@@ -2737,6 +2737,8 @@ MDomItem.Org = new Class({
             this.orgData = value;
         }else if( typeOf( value ) == "string" ){
             this.orgData = value.split( this.valSeparator )
+        }else if( typeOf( value ) == "object" ){
+            this.orgData = [value]
         }else{
             this.orgData = [];
         }
@@ -2882,7 +2884,13 @@ MDomItem.Org = new Class({
         if( this.options.orgWidgetOptions ){
             options = Object.merge( options, this.options.orgWidgetOptions );
         }
-        value.each(function( distinguishedName ){
+        value.each(function( v ){
+            var distinguishedName;
+            if( typeOf(v) === "string" ){
+                distinguishedName = v;
+            }else{
+                distinguishedName = v.distinguishedName || v.name || ""
+            }
             var flag = distinguishedName.substr(distinguishedName.length-1, 1);
             var data = { "name" : distinguishedName };
             switch (flag.toLowerCase()){

@@ -18,7 +18,8 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
         "draggable": true,
         "closeAction": true,
         "toMain" : true,
-        "documentId" : ""
+        "documentId" : "",
+        "summary" : ""
     },
     _createTableContent: function () {
         this.actions = MWF.Actions.get("x_hotpic_assemble_control");
@@ -212,6 +213,7 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
             this.hotPicData.title = this.data.title;
             this.hotPicData.application = "CMS";
             this.hotPicData.creator = layout.desktop.session.user.distinguishedName;
+            this.hotPicData.summary = this.options.summary;
 
             this._ok(this.hotPicData, function (json) {
                 if (json.type == "error") {

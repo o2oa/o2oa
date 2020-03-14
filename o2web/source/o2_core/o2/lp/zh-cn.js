@@ -1,6 +1,9 @@
 o2.LP = window.LP || {
     "name": "名称",
-    "description": "描述"
+    "description": "描述",
+    "searchKey": "请输入搜索关键字",
+    "desktop_style": "桌面风格",
+    "flat_style": "扁平风格"
 };
 
 o2.LP.process = {
@@ -141,9 +144,19 @@ o2.LP.desktop = {
     "say": "说",
     "clearMessage": "清除消息",
 
+    "lnkAppTitle": "常用应用",
+    "deleteLnk": "删除常用应用快捷方式",
+    "addLnk": "添加常用应用快捷方式",
+
+    "changeViewTitle": "切换视图样式确认",
+    "changeView": "您确定要切换视图样式吗？<br><br>如果您选择“确定”，页面将直接刷新，未保存的数据可能丢失。",
+
     "messsage": {
         "appliction": "应用",
+        "application": "应用",
         "process": "流程",
+        "infor": "信息",
+        "query": "数据",
         "taskMessage": "待办提醒",
         "receiveTask": "您收到一条待办，标题为：",
         "activity": "活动",
@@ -190,6 +203,18 @@ o2.LP.desktop = {
         "dock": "码头",
         "panda": "熊猫",
         "star": "星空"
+    },
+    "styleFlatMenu": {
+        "blue": "蓝色",
+        "red": "红色",
+        "orange": "水果橙",
+        "green": "青草绿",
+        "cyan": "碧水青",
+        "purple": "魅力紫",
+        "gray": "沉稳灰",
+        "darkgreen": "墨绿",
+        "tan": "棕色",
+        "navy": "藏青"
     },
     "notice": {
         "unload": "如果关闭或刷新当前页面，未保存的内容会丢失，请确定您的操作",
@@ -249,6 +274,7 @@ o2.LP.desktop = {
         "collectNotConnectedText": "无法连接到O2云，请检查服务器网络！"
     }
 };
+o2.LP.desktop.message = o2.LP.desktop.messsage;
 o2.LP.widget = {
     "upload": "上传",
     "uploadTitle": "上传文件",

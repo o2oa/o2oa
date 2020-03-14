@@ -1,0 +1,606 @@
+.o2_profile_titleBar {
+    overflow: hidden;
+    height: 50px;
+    background-color: #4c6b87;
+}
+.o2_profile_titleUserNode {
+    width: 80px;
+    float: right;
+}
+.o2_profile_titleUserIconNode {
+    background: url(/x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
+    width: 24px;
+    height: 24px;
+    margin-top: 13px;
+    float: left;
+}
+.o2_profile_titleUserTextNode {
+    margin-left: 24px;
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 50px;
+}
+.o2_profile_titleTextNode {
+    padding-left: 20px;
+    color: #FFFFFF;
+    font-size: 18px;
+    line-height: 50px;
+    font-weight: bold;
+    width: 160px;
+    float: left;
+}
+.o2_profile_contentNode {
+    overflow: hidden;
+    background-color: #ffffff;
+    height: 100%;
+}
+.o2_profile_configNode {
+    min-height: 640px;
+    position: relative;
+}
+.o2_profile_inforConfigArea {
+    height: 360px;
+    min-width: 400px;
+    width: 50%;
+    margin: 40px auto;
+    color: #666;
+    border: 0 solid red;
+}
+.o2_profile_inforLine {
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.o2_profile_inforIconTitle {
+    width: 20%;
+    min-width: 80px;
+    height: 72px;
+    font-size: 14px;
+    line-height: 72px;
+    color: #da7429;
+    float: left;
+}
+.o2_profile_inforIconContent {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
+
+.o2_profile_inforIconContentImg {
+    border: 0px;
+    width: 100px;
+    height: 100px;
+    border-radius: 166.67px;
+}
+
+.o2_profile_inforIconChange {
+    cursor: pointer;
+    margin: 22px auto;
+    width: 90px;
+    height: 36px;
+    border: 1px solid #4A90E2;
+    border-radius: 100px;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #4A90E2;
+    line-height: 36px;
+    text-align: center;
+}
+.o2_profile_inforContent {
+    margin-left: 80px;
+    height: 36px;
+    line-height: 36px;
+    overflow: hidden;
+}
+.o2_profile_inforContent_signature {
+    height: 100px;
+}
+.o2_profile_inforTitle {
+    width: 20%;
+    min-width: 80px;
+    height: 36px;
+    line-height: 36px;
+    float: left;
+    font-family: STHeitiSC-Medium;
+    font-size: 16px;
+    color: #999999;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.o2_profile_inforContentInput {
+    background-color: #FFF;
+    background: #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 100px;
+    width:77%;
+    min-width: 300px;
+    height: 32px;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #666666;
+    padding: 0 0 0 8px;
+    outline:none;
+}
+
+
+.o2_profile_signature{
+    width: 77%;
+    min-width: 296px;
+    height: 92px;
+    background: #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 10px;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #666666;
+    overflow-y: hidden;
+    outline:none;
+    padding-left: 8px;
+}
+.o2_profile_signature:focus {
+    border: 1px solid #4A90E2;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #4A90E2;
+}
+.o2_profile_inforContentInput:focus {
+    border: 1px solid #4A90E2;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #4A90E2;
+}
+.o2_profile_inforContentInput_focus {
+    border: 1px solid #da7429;
+    /*box-shadow: 0 0 8px #fab37e;*/
+    border-radius: 100px;
+}
+.o2_profile_inforContentInput_error {
+    border: 1px solid #F00;
+    box-shadow: 0 0 8px #F00;
+    border-radius: 100px;
+}
+.o2_profile_saveInforAction {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    width: 300px;
+    cursor: pointer;
+    margin: 10px auto;
+    background: #F0F0F0;
+    border-radius: 100px;
+    font-family: STHeitiSC-Medium;
+    font-size: 18px;
+    color: #666666;
+    text-align: center;
+}
+.o2_profile_savePasswordAction {
+    height: 40px;
+    line-height: 40px;
+    width: 200px;
+    cursor: pointer;
+    /* margin: 10px 0 0 110px; */
+    background: #4A90E2;
+    border-radius: 100px;
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    color: #FFFFFF;
+    text-align: center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+.o2_profile_layoutTitle {
+    height: 40px;
+    line-height: 40px;
+    margin: 20px 30px 20px 30px;
+    font-family: MicrosoftYaHei;
+    font-size: 20px;
+    color: #333333;
+}
+
+.o2_profile_layoutButtonArea {
+    margin: 20px 30px 20px 30px;
+    overflow: hidden;
+}
+.o2_profile_layoutClearDataAction {
+    height: 50px;
+    width: 180px;
+    line-height: 50px;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px auto;
+    margin-right: 20px;
+    float: left;
+    background: #F5F5F5;
+    border-radius: 100px;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #666666;
+}
+.o2_profile_layoutClearDataAction:hover {
+    opacity: 0.1;
+    background: #4A90E2;
+    color: #4A90E2;
+}
+.o2_profile_ideasArea {
+    width: 97%;
+    height: 350px;
+    margin: 30px 20px;
+    overflow: auto;
+    border-radius: 10px;
+    border: 1px solid #DEDEDE;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #999999;
+    outline:none;
+    padding: 8px;
+}
+
+.o2_profile_ideasSave {
+    height: 40px;
+    width: 220px;
+    background-color: #FFF;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    float: left;
+    margin: 0 0 0 20px;
+    border-radius: 100px;
+    background: #F0F0F0;
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    color: #666666;
+}
+.o2_profile_ideasSave:hover{
+    background: #4A90E2;
+    color: #FFFFFF;
+}
+.o2_profile_passwordConfigArea_view{
+    height: 550px;
+    width: 550px;
+    margin: auto;
+    color: #666;
+    border: 0 solid red;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+}
+.o2_profile_passwordConfigArea{
+    height: 250px;
+    min-width: 550px;
+    width: 50%;
+    margin: 40px auto;
+    color: #666;
+    border: 0 solid red;
+}
+.o2_profile_passwordStrength {
+    margin-top: 6px;
+    float: left;
+    padding-left: 2px;
+    width: 35px;
+    overflow: hidden;
+}
+
+.o2_profile_passwordStrengthColor {
+    background-color: #b3b3b3;
+    height: 5px;
+}
+.o2_profile_passwordStrengthColor_low {
+    opacity: 0.5;
+    background-color: #33C025;
+}
+.o2_profile_passwordStrengthColor_middle {
+    opacity: 0.7;
+    background-color: #33C025;
+}
+.o2_profile_passwordStrengthColor_high {
+    background-color: #33C025;
+}
+
+.o2_profile_passwordStrengthText {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    line-height: 16px;
+    margin-top: 5px;
+}
+
+.o2_profile_passwordStrengthText_current {
+    color: #666;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.o2_profile_passwordRemindNode {
+    float: left;
+    padding-left: 10px;
+    padding-top: 10px;
+    line-height: 27px;
+    width: 200px;
+    font-size: 12px;
+    color: #999999;
+}
+.o2_profile_passwordWarmming{
+    color: red;
+}
+.o2_profile_ssoConfigTitle {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #666666;
+}
+.o2_profile_ssoConfigArea{
+    padding: 10px 40px;
+}
+
+.o2_profile_ssoItemLink{
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+}
+.o2_profile_previewBackground{
+    width: 220px;
+    height: 120px;
+    float: left;
+    margin: 10px 15px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+}
+.o2_profile_previewBackground img{
+    width: 220px;
+    height: 120px;
+    border-radius: 16px;
+}
+.o2_profile_previewBackground_current{
+    background-color: rgba(74,144,226,0.40);
+    box-shadow: 0 0 8px #fab37e;
+}
+.profile_previewBackground_current .icon{
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    right: 0;
+}
+.o2_profile_emPower_tab {
+    padding: 0 20px;
+}
+.emPowerTable th {
+    background: #F0F0F0;
+    border: 0;
+    font-family: MicrosoftYaHei;
+    font-size: 15px;
+    color: #333333;
+    line-height: 20px;
+    height: 40px;
+    font-weight: normal;
+    text-align: left;
+}
+
+.o2_profile_emPower_Btnimg{
+    width: 16px;
+    height: 16px;
+    float: left;
+    cursor: pointer;
+    margin: 7px 5px;
+}
+.o2_profile_emPower_Btntext{
+    line-height: 30px;
+    float: left;
+    cursor: pointer;
+    margin: 0 15px 0 0;
+    text-align: center;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #666666;
+}
+
+div:hover>.o2_profile_emPower_Btntext{
+    color: #4A90E2;
+}
+div>.o2_profile_emPower_Add{
+    float: right;
+}
+.o2_profile_emPower_Add .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) no-repeat;
+}
+.o2_profile_emPower_Add:hover .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) no-repeat;
+}
+
+div>.o2_profile_emPower_WithDraw{
+    float: right;
+}
+.o2_profile_emPower_WithDraw .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_chehui.png) no-repeat;
+}
+.o2_profile_emPower_WithDraw:hover .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_chehui_click.png) no-repeat;
+}
+
+.o2_profile_emPower_Edit .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_bianji2.png) no-repeat;
+}
+.o2_profile_emPower_Edit:hover .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_bianji2_click.png) no-repeat;
+}
+
+.o2_profile_emPower_Enable .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_qiyong.png) no-repeat;
+}
+.o2_profile_emPower_Enable:hover .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_qiyong_click.png) no-repeat;
+}
+
+.o2_profile_emPower_Disable .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_jinyong.png) no-repeat;
+}
+.o2_profile_emPower_Disable:hover .o2_profile_emPower_Btnimg {
+    background: url(/x_component_Profile/$Main/newVersion/icon_jinyong_click.png) no-repeat;
+}
+
+
+.o2_profile_empower_checkbox{
+    float: left;
+    width: 16px;
+    height: 16px;
+    background: url(/x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
+    border-radius: 8px;
+    margin: 2px 10px;
+}
+label.o2_profile_empower_radio{
+    float: left;
+    width: 16px;
+    height: 16px;
+    background: url(/x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
+    border-radius: 8px;
+    margin: 2px 10px;
+}
+label.o2_profile_empower_checkbox__checked{
+    background: url(/x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png) no-repeat;
+}
+
+label.o2_profile_empower_radio__checked{
+    background: url(/x_component_Profile/$Main/newVersion/icon_circle_blue_click.png) no-repeat;
+}
+
+.o2_profile_empower_checkbox input[type=checkbox]{
+    opacity: 0;
+}
+label.o2_profile_empower_radio input[type=radio]{
+    opacity: 0;
+}
+.emPowerTable .disabled *{
+    opacity: 0.6;
+}
+.emPowerTable tr{
+    background: #FFFFFF;
+    box-shadow: inset 0 -1px 0 0 #E6E6E6;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #666666;
+    height: 50px;
+    text-align: left;
+}
+.emPowerTable tr:hover{
+    background: #F7F7F7;
+}
+.emPowerTable tr.first{
+    height: 40px;
+}
+.emPowerTable .selected{
+    background: #F7F7F7;
+}
+.emPowerTable td{
+    padding-left: 10px;
+}
+.emPowerTable th{
+    padding-left: 10px;
+
+}
+.emPowerTable tr>:first-child {
+    color:#333333;;
+}
+
+
+.o2_profile_emPower_noData {
+    margin: 200px auto;
+    width: 100px;
+
+    line-height: 30px;
+    text-align: center;
+}
+
+.o2_profile_emPower_noData div{
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #CCCCCC;
+    text-align: center;
+}
+.o2_profile_emPower_noData .o2_profile_emPower_Add{
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #4A90E2;
+    cursor: pointer;
+    float: none;
+}
+.formTableArea table *{
+    border-spacing: 0px;
+}
+
+#empowerEditTable *{
+    box-sizing: border-box !important;
+}
+
+/*.formTableArea table .selectNode:hover {
+    background:url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat !important
+}*/
+
+.showNode div{
+    float: left !important;
+    margin: 5px !important;
+    line-height: 26px !important;
+    cursor: pointer !important;
+    border: 0px !important;
+    height: 26px !important;
+    background: #F0F0F0 !important;
+    border-radius: 100px !important;
+    padding: 0 10px !important;
+    font-family: MicrosoftYaHei !important;
+    font-size: 14px !important;
+    color: #666666 !important;
+    text-align: center !important;
+}
+.showNode div:hover{
+    background: #4A90E2 !important;
+    color: #FFFFFF !important;
+}
+
+.profile_common_tableDiv{
+    height:90%;
+    min-height: 550px;
+}
+
+.pagination .page{
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    border-radius: 100px;
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    margin: 5px;
+    float: left;
+}
+.pagination-previous{
+    background:url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
+    -moz-transform:rotate(90deg);
+    -webkit-transform:rotate(90deg);
+    -o-transform:rotate(90deg);
+    transform:rotate(90deg);
+}
+.pagination-next{
+    background:url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
+    -moz-transform:rotate(-90deg);
+    -webkit-transform:rotate(-90deg);
+    -o-transform:rotate(-90deg);
+    transform:rotate(-90deg);
+}
+.pagination .is-current{
+    background: #4A90E2;
+    color: #FFFFFF;
+}
+.pagination{
+    text-align: center;
+}
+.pagination>div{
+    display: inline-block;
+}

@@ -90,10 +90,12 @@ MWF.xApplication.cms.Index.Main = new Class({
 				}.bind(this));
 			}.bind(this),
 			"mouseover" : function(e){
-				this.createDocumentAction.setStyles( this.css.createDocumentAction_over )
+				this.createDocumentAction.setStyles( this.css.createDocumentAction_over );
+				this.createDocumentAction.addClass( "o2_cms_index_createDocument_over" );
 			}.bind(this),
 			"mouseout" : function(e){
-				this.createDocumentAction.setStyles( this.css.createDocumentAction )
+				this.createDocumentAction.setStyles( this.css.createDocumentAction );
+				this.createDocumentAction.removeClass( "o2_cms_index_createDocument_over" );
 			}.bind(this)
 		});
 	},
@@ -210,15 +212,19 @@ MWF.xApplication.cms.Index.Main = new Class({
 	setCurrentAppType : function( appType, target ){
 		if( this.currentAppType ){
 			if( this.currentAppType === "all" ){
-				this.currentAppTypeNode.setStyles( this.css.columnTop_All )
+				this.currentAppTypeNode.setStyles( this.css.columnTop_All );
+				this.currentAppTypeNode.removeClass("o2_cms_index_all_current");
 			}else{
-				this.currentAppTypeNode.setStyles( this.css.columnTop_categoryItem )
+				this.currentAppTypeNode.setStyles( this.css.columnTop_categoryItem );
+				this.currentAppTypeNode.removeClass("o2_cms_index_categoryItem_current");
 			}
 		}
 		if( appType === "all" ){
-			target.setStyles( this.css.columnTop_All_current )
+			target.setStyles( this.css.columnTop_All_current );
+			target.addClass("o2_cms_index_all_current");
 		}else{
-			target.setStyles( this.css.columnTop_categoryItem_current )
+			target.setStyles( this.css.columnTop_categoryItem_current );
+			target.addClass("o2_cms_index_categoryItem_current");
 		}
 		this.currentAppType = appType;
 		this.currentAppTypeNode = target;
@@ -570,12 +576,18 @@ MWF.xApplication.cms.Index.Column = new Class({
 			var categoryNode = new Element("div.categoryItem",{
 				"text" : category.categoryName,
 				"styles" : this.app.css.categoryItem
-			}).inject( this.categoryList, "top" );
+			}).addClass("o2_cms_index_categoryItem_text").inject( this.categoryList, "top" );
 
 			categoryNode.store("category",category);
 			categoryNode.addEvents({
-				"mouseover" : function(){this.setStyles(_self.app.css.categoryItem_over)},
-				"mouseout" : function(){this.setStyles(_self.app.css.categoryItem)},
+				"mouseover" : function(){
+					this.setStyles(_self.app.css.categoryItem_over);
+					this.addClass("o2_cms_index_categoryItem_text_over");
+				},
+				"mouseout" : function(){
+					this.setStyles(_self.app.css.categoryItem);
+					this.removeClass("o2_cms_index_categoryItem_text_over");
+				},
 				"click" : function(e){
 					_self.openModule( this.retrieve("category").id , e , "", true)
 				}
@@ -669,8 +681,14 @@ MWF.xApplication.cms.Index.Column = new Class({
 		}).inject(this.documentList);
 		documentItem.store("documentId",data.id);
 		documentItem.addEvents({
-			"mouseover" : function(){this.setStyles(_self.app.css.documentItem_over)},
-			"mouseout" : function(){this.setStyles(_self.app.css.documentItem)},
+			"mouseover" : function(){
+				this.setStyles(_self.app.css.documentItem_over);
+				this.addClass("mainColor_color");
+			},
+			"mouseout" : function(){
+				this.setStyles(_self.app.css.documentItem);
+				this.removeClass("mainColor_color");
+			},
 			"click" : function(){
 				var documentId = this.retrieve("documentId");
 				var appId = "cms.Document"+documentId;

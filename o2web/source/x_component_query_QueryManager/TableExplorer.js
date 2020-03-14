@@ -24,6 +24,112 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
         this.node = $(node);
         this.initData();
     },
+    keyCopy: function(e){
+        if (this.selectMarkItems.length){
+            var items = [];
+            var i = 0;
+
+            var checkItems = function(e){
+                if (i>=this.selectMarkItems.length){
+                    if (items.length){
+                        var str = JSON.encode(items);
+                        if (e){
+                            e.clipboardData.setData('text/plain', str);
+                        }else {
+                            window.clipboardData.setData("Text", str);
+                        }
+                        this.app.notice(this.app.lp.copyed, "success");
+                    }
+                }
+            }.bind(this);
+
+            this.selectMarkItems.each(function(item){
+                this.app.restActions.getTable(item.data.id, function(json){
+                    json.data.elementType = "table";
+                    items.push(json.data);
+                    i++;
+                    checkItems(e);
+                }.bind(this), null, false)
+            }.bind(this));
+
+            if (e) e.preventDefault();
+        }
+    },
+    keyPaste: function(e){
+        var dataStr = "";
+        if (e){
+            dataStr = e.clipboardData.getData('text/plain');
+        }else{
+            dataStr = window.clipboardData.getData("Text");
+        }
+        var data = JSON.decode(dataStr);
+        this.pasteItem(data, 0);
+    },
+    pasteItem: function(data, i){
+        if (i<data.length){
+            var item = data[i];
+            if (item.elementType==="table"){
+                this.saveItemAs(item, function(){
+                    i++;
+                    this.pasteItem(data, i);
+                }.bind(this), function(){
+                    i++;
+                    this.pasteItem(data, i);
+                }.bind(this), function(){
+                    this.reload();
+                }.bind(this));
+            }else{
+                i++;
+                this.pasteItem(data, i);
+            }
+        }else{
+            this.reload();
+        }
+    },
+    saveItemAs: function(data, success, failure, cancel){
+        this.app.restActions.listTable(this.app.options.application.id, function(dJson){
+            var i=1;
+            var someItems = dJson.data.filter(function(d){ return (d.name && d.name===data.name) || (d.alias && d.alias===data.alias) });
+            if (someItems.length){
+                var someItem = someItems[0];
+                var lp = this.app.lp;
+                var _self = this;
+
+                var d1 = new Date().parse(data.lastUpdateTime || data.updateTime);
+                var d2 = new Date().parse(someItem.lastUpdateTime || someItem.updateTime);
+                var html = "<div>"+lp.copyConfirmInfor+"</div>";
+                html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.name+"</div>";
+                html += "<div style='font-size:12px; color: #666666; float: left'>"+(someItem.lastUpdateTime || someItem.updateTime)+"</div>" +
+                    "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.lastUpdatePerson || "")+"</div>" +
+                    "<div style='color: red; float: right;'>"+((d1>=d2) ? "": lp.copynew)+"</div></div>";
+                html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.name+"</div>";
+                html += "<div style='font-size:12px; color: #666666; float: left;'>"+(data.lastUpdateTime || data.updateTime)+"</div>" +
+                    "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.lastUpdatePerson || "")+"</div>" +
+                    "<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
+//                html += "<>"
+                this.app.dlg("inofr", null, this.app.lp.copyConfirmTitle, {"html": html}, 500, 290, [
+                    {
+                        "text": lp.copyConfirm_overwrite,
+                        "action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
+                    },
+                    {
+                        "text": lp.copyConfirm_new,
+                        "action": function(){_self.saveItemAsNew(dJson, data, success, failure);this.close();}
+                    },
+                    {
+                        "text": lp.copyConfirm_skip,
+                        "action": function(){/*nothing*/ this.close(); if (success) success();}
+                    },
+                    {
+                        "text": lp.copyConfirm_cancel,
+                        "action": function(){this.close(); if (cancel) cancel();}
+                    }
+                ]);
+            }else{
+                this.saveItemAsNew(dJson, data, success, failure)
+            }
+        }.bind(this), function(){if (failure) failure();}.bind(this));
+    },
     saveItemAsUpdate: function(someItem, data, success, failure){
         var item = this.app.options.application;
         var id = item.id;
@@ -31,9 +137,15 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
 
         //var dataJson = (data.data) ? JSON.decode(data.data): "";
         var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
-        data.status = "draft";
         data.draftData = draftDataJson;
+
+        data.statu = "draft";
+
+        var dataJson = (data.data) ? JSON.decode(data.data): "";
+        data.data = dataJson;
         data.data.id = someItem.id;
+        data.data = JSON.encode(data.data);
+
         data.id = someItem.id;
         data.isNewTable = false;
         data.application = id;
@@ -57,9 +169,14 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
             data.alias = oldName+"_copy"+i;
             i++;
         }
+        var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
+        data.draftData = draftDataJson;
+
         var dataJson = (data.data) ? JSON.decode(data.data): "";
         data.data = dataJson;
         data.data.id = "";
+        data.data = JSON.encode(data.data);
+
         data.id = "";
         data.isNewTable = true;
         data.application = id;
@@ -157,10 +274,19 @@ MWF.xApplication.query.QueryManager.TableExplorer.Table= new Class({
         var id = item.id;
         var name = item.name;
         this.explorer.app.restActions.getTable(this.data.id, function(json){
+
+            var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
+            data.draftData = draftDataJson;
+
             var data = json.data;
             var dataJson = (data.data) ? JSON.decode(data.data): "";
             data.data = dataJson;
+            data.status = "draft";
+
             data.data.id = "";
+
+            data.data = JSON.encode(data.data);
+
             var oldName = data.name;
             this.explorer.app.restActions.listTable(id, function(dJson){
                 var i=1;

@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
         value.each(function(v){
-            if( typeOf(v) === "string" ){ //������������
+            if( typeOf(v) === "string" ){
                 text.push(v);
             }else{
                 text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
@@ -302,9 +302,19 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
 
     clickSelect: function(){
-        var options = this.getOptions();
-        if(options){
-            var selector = new MWF.O2Selector(this.form.app.content, options);
+        if (this.readonly)return;
+        if( layout.mobile ){
+            setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
+                var options = this.getOptions();
+                if(options){
+                    var selector = new MWF.O2Selector(this.form.app.content, options);
+                }
+            }.bind(this), 100 )
+        }else{
+            var options = this.getOptions();
+            if(options){
+                var selector = new MWF.O2Selector(this.form.app.content, options);
+            }
         }
     },
     resetData: function(){
@@ -350,18 +360,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }
 
             var text = "";
-            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-1, 1);
+            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = item.data.name+"("+item.data.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = item.data.name+(item.data.employee ? "("+item.data.employee+")" : "");
                     break;
-                case "u":
+                case "@u":
                     text = item.data.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = item.data.name;
                     break;
                 default:
@@ -471,18 +481,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             data.map(function(d){
                 var value = Object.clone(d);
                 d.value = value;
-                var flag = d.distinguishedName.substr(d.distinguishedName.length-1, 1);
+                var flag = d.distinguishedName.substr(d.distinguishedName.length-2, 2);
                 switch (flag.toLowerCase()){
-                    case "i":
+                    case "@i":
                         d.text = d.name+"("+d.unitName+")";
                         break;
-                    case "p":
+                    case "@p":
                         d.text = d.name+(d.employee ? "("+d.employee+")" : "");
                         break;
-                    case "u":
+                    case "@u":
                         d.text = d.name;
                         break;
-                    case "g":
+                    case "@g":
                         d.text = d.name;
                         break;
                     default:
@@ -594,18 +604,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     getDataText: function(data){
         if (typeOf(data)=="string") return data;
         var text = "";
-        var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+        var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
         switch (flag.toLowerCase()){
-            case "i":
+            case "@i":
                 text = data.name+"("+data.unitName+")";
                 break;
-            case "p":
+            case "@p":
                 text = data.name+ (data.employee ? ("("+data.employee+")") : "");
                 break;
-            case "u":
+            case "@u":
                 text = data.name;
                 break;
-            case "g":
+            case "@g":
                 text = data.name;
                 break;
             default:
@@ -642,7 +652,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
                     this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
                 }
-                if (vtype==="object") data = v;
+                if (vtype==="object") {
+                    data = MWF.org.parseOrgData(v, true);
+                    if(data.woPerson)delete data.woPerson;
+                }
                 if (data){
                     values.push(data);
                     comboxValues.push({"text": this.getDataText(data),"value": data});
@@ -659,8 +672,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }
         }
         if (type==="object"){
-            values.push(value);
-            comboxValues.push({"text": this.getDataText(value),"value": value});
+            var vData = MWF.org.parseOrgData(value, true);
+            if(vData.woPerson)delete vData.woPerson;
+            values.push( vData );
+            comboxValues.push({"text": this.getDataText(value),"value": vData});
         }
 
         var change = false;
@@ -730,18 +745,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         });
         var text = "";
         if (data.value){
-            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-1, 1);
+            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = data.value.name+"("+data.value.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = data.value.name+ (data.value.employee ? "("+data.value.employee+")" : "");
                     break;
-                case "u":
+                case "@u":
                     text = data.value.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = data.value.name;
                     break;
                 default:
@@ -833,15 +848,15 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     },
     getValueMethod: function(value){
         if (value){
-            var flag = value.substr(value.length-1, 1);
+            var flag = value.substr(value.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     return "getIdentity";
-                case "p":
+                case "@p":
                     return "getPerson";
-                case "u":
+                case "@u":
                     return "getUnit";
-                case "g":
+                case "@g":
                     return "getGroup";
                 default:
                     return (this.json.selectType==="unit") ? "getUnit" : "getIdentity";
@@ -850,11 +865,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         return (this.json.selectType==="unit") ? "getUnit" : "getIdentity";
     },
     loadOrgWidget: function(value, node){
+        var disableInfor = layout.mobile ? true : false;
         var height = node.getStyle("height").toInt();
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
             value.each(function(data){
-                var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+                var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
                 var copyData = Object.clone(data);
                 if( this.json.displayTextScript && this.json.displayTextScript.code ){
                     this.currentData = copyData;
@@ -867,20 +883,20 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
 
                 var widget;
                 switch (flag.toLowerCase()){
-                    case "i":
-                        widget = new MWF.widget.O2Identity(copyData, node, {"style": "xform","lazy":true});
+                    case "@i":
+                        widget = new MWF.widget.O2Identity(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
-                    case "p":
-                        widget = new MWF.widget.O2Person(copyData, node, {"style": "xform","lazy":true});
+                    case "@p":
+                        widget = new MWF.widget.O2Person(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
-                    case "u":
-                        widget = new MWF.widget.O2Unit(copyData, node, {"style": "xform","lazy":true});
+                    case "@u":
+                        widget = new MWF.widget.O2Unit(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
-                    case "g":
-                        widget = new MWF.widget.O2Group(copyData, node, {"style": "xform","lazy":true});
+                    case "@g":
+                        widget = new MWF.widget.O2Group(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(copyData, node, {"style": "xform","lazy":true});
+                        widget = new MWF.widget.O2Other(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                 }
                 widget.field = this;
                 if( layout.mobile ){
@@ -962,16 +978,19 @@ MWF.APPOrg.EmpowerChecker = new Class({
     },
     getIgnoreEmpowerArray : function( callback ){
         var array = [];
-        this.empowerSelectNodes.each(function(node){
-            if( !node.retrieve("isSelected") ){
-                var d = node.retrieve("data");
-                array.push( d.fromIdentity );
-            }
-        }.bind(this));
+        if( this.empowerSelectNodes && this.empowerSelectNodes.length ){
+            this.empowerSelectNodes.each(function(node){
+                if( !node.retrieve("isSelected") ){
+                    var d = node.retrieve("data");
+                    array.push( d.fromIdentity );
+                }
+            }.bind(this));
+        }
         if( callback )callback( array );
         return array;
     },
     setIgnoreEmpowerFlag : function(data, callback){
+        debugger;
         var ignoreList = this.getIgnoreEmpowerArray();
         for( var i=0; i<data.length; i++ ){
             var d = data[i];
@@ -1022,7 +1041,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
     },
     openSelectEmpowerDlg : function( data, orginData, callback, container ){
         var node = new Element("div", {"styles": this.css.empowerAreaNode});
-        var html = "<div style=\"line-height: 30px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
+        var html = "<div style=\"line-height: 20px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
         html += "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
         var itemNode = node.getLast();
@@ -1041,8 +1060,8 @@ MWF.APPOrg.EmpowerChecker = new Class({
                     "type" : "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": function(d, e){
-                        //this.replaceEmpowerIdentity( orginData, callback );
-                        this.setIgnoreEmpowerFlag( orginData, callback );
+                        //this.replaceEmpowerIdentity( orginData, callback ); //直接替换已授权的人，已废弃
+                        this.setIgnoreEmpowerFlag( orginData, callback ); //然后设置忽略的人的标志
                         dlg.close();
                     }.bind(this)
                 },

@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.TaskCenter = MWF.xApplication.process.TaskCenter || {};
 MWF.xApplication.process.TaskCenter.LP = {
 	"title": "办公中心",
     "searchKey": "请输入关键字",

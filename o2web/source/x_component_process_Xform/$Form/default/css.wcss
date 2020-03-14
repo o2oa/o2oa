@@ -135,6 +135,13 @@
 	    "border": "1px solid #CCC",
 	    "background-color": "#FFF"
 	},
+	"logActivityNode_record": {
+	    "overflow": "hidden",
+	    "margin": "0px",
+	    "padding": "10px 0",
+	    "border": "1px solid #CCC",
+	    "background-color": "#FFF"
+	},
 	"logActivityNode_even": {
 	    "overflow": "hidden",
         //"margin": "10px",
@@ -163,6 +170,20 @@
 	    "clear": "both",
 	    "overflow": "hidden"
 	},
+	"logActivityChildRecordNode": {
+	    "clear": "both",
+    	"overflow": "hidden",
+    	"background-color": "#ffffff",
+    	"height": "30px",
+    	"line-height": "30px"
+	},
+	"logActivityChildRecordNode_even": {
+        "clear": "both",
+        "overflow": "hidden",
+        "background-color": "#f6f6f6",
+    	"height": "30px",
+    	"line-height": "40px"
+    },
 	"logActivityIconNode": {
 	    "height": "40px",
 	    "width": "30px",
@@ -224,6 +245,13 @@
         "height": "28px",
         "width": "28px",
         "margin-left": "20px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "float": "left"
+    },
+    "logTaskIconNode_record": {
+        "height": "28px",
+        "width": "28px",
         "background-position": "center center",
         "background-repeat": "no-repeat",
         "float": "left"
@@ -318,17 +346,27 @@
         "background-color": "#edf3f9"
     },
     "logTableTaskTitle": {
+        "line-height": "28px",
         "border-right": "1px solid #CCC",
         "border-bottom": "1px solid #CCC"
     },
     "logTableTaskLine": {
+        "line-height": "28px",
         "border-right": "1px solid #CCC",
-        "border-bottom": "1px solid #CCC"
+        "border-bottom": "1px solid #CCC",
+        "background": "#ffffff"
+    },
+    "logTableTaskLine_even": {
+        "line-height": "28px",
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+        "background": "#f6f6f6"
     },
     "logTableTaskLine_task": {
-     "border-right": "1px solid #CCC",
-     "border-bottom": "1px solid #CCC",
-     "color": "red"
+        "line-height": "28px",
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+        "color": "red"
     },
     "datagridTotalTr": {
         "height": "20px",
@@ -358,6 +396,9 @@
         "border-top": "1px solid #999",
         "border-left": "1px solid #999",
         "border-right": "1px solid #999"
+    },
+    "gridMobileTableNode" : {
+        "overflow": "hidden"
     },
     "gridTotalTableNode": {
         "overflow": "hidden"
@@ -784,7 +825,7 @@
         "overflow": "hidden"
     },
     "rollbackItemNode": {
-        "height": "46px",
+        "min-height": "46px",
         "margin-bottom": "10px",
         "padding": "10px",
         "cursor": "pointer",
@@ -848,7 +889,11 @@
         "height": "20px",
         "line-height": "20px",
         "font-size": "12px",
-        "color": "#666666"
+        "color": "#666666",
+        "float": "left"
+    },
+    "rollbackItemTaskCheckNode": {
+        "float": "left"
     },
     "rollbackItemTaskNode_current": {
         "color": "#eeeeee"
@@ -888,7 +933,8 @@
     "documentEditorNode": {
         "background": "#f1f1f1",
         "border": "1px solid #cccccc",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "position": "relative"
     },
     "documentEditorNode_page": {
         "width": "15.6cm",
@@ -961,7 +1007,7 @@
         "height": "100%",
         "float": "left",
         "font-size": "16px",
-        "color": "#068de7",
+        "color": "#fb4747",
         "text-align": "center",
         "background": "#ffffff",
         "line-height": "50px"

@@ -1,5 +1,5 @@
 MWF.xApplication.portal.PageDesigner.Module.Stat = MWF.PCStat = new Class({
-	Extends: MWF.FCView,
+	Extends: MWF.FCStat,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",

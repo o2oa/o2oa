@@ -817,6 +817,12 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.node = $(node);
         this.data = this.app.options.application;
 
+        if( typeOf(this.data.config) === "string" ){
+            this.config = JSON.parse( this.data.config || {} );
+        }else{
+            this.config = Object.clone(this.data.config || {});
+        }
+
         this.controllerData = [];
         this.controllerList = [];
     },
@@ -981,6 +987,10 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.documentType+"</td><td id='formApplicationType' class='formValue'>"+(this.data.documentType || "信息" )+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
+        var flag = typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.ignoreTitle+"</td><td id='formApplicationIgnoreTitle' class='formValue'>"+(flag ? "新建界面不填写标题" : "新建界面需要填写标题" )+"</td></tr>";
+        var flag = typeOf(this.config.latest) === "boolean" ? this.config.latest : true;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.latest+"</td><td id='formApplicationLatest' class='formValue'>"+(flag ? "新建界面检查草稿" : "新建界面不检查草稿" )+"</td></tr>";
         var flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? "显示所有文档视图" : "隐藏所有文档视图" )+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
@@ -1006,6 +1016,23 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.sortInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationSort"), this.data.appInfoSeq, this.app.css.formInput);
 
         debugger;
+        this.ignoreTitleSelect = new MDomItem( this.propertyContentNode.getElement("#formApplicationIgnoreTitle"), {
+            type : "select",
+            defaultValue : "false",
+            value : ( typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : [ "新建界面不填写标题", "新建界面需要填写标题" ]
+        });
+
+
+        this.latestSelect = new MDomItem( this.propertyContentNode.getElement("#formApplicationLatest"), {
+            type : "select",
+            defaultValue : "true",
+            value : ( typeOf(this.config.latest) === "boolean" ? this.config.latest : true ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : [ "新建界面检查草稿", "新建界面不检查草稿" ]
+        });
+
         this.allDocumentViewSelect = new MDomItem( this.propertyContentNode.getElement("#showAllDocumentViews"), {
             type : "select",
             defaultValue : "true",
@@ -1054,6 +1081,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.sortInput.editMode();
 
         this.typeSelect.editMode();
+        this.latestSelect.editMode();
+        this.ignoreTitleSelect.editMode();
         this.allDocumentViewSelect.editMode();
         //this.typeInput.editMode();
         this.isEdit = true;
@@ -1065,6 +1094,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.descriptionInput.readMode();
         this.sortInput.readMode();
         this.typeSelect.readMode();
+        this.latestSelect.readMode();
+        this.ignoreTitleSelect.readMode();
         this.allDocumentViewSelect.readMode();
         //this.typeInput.readMode();
         this.isEdit = false;
@@ -1119,6 +1150,12 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.data.appInfoSeq = this.sortInput.input.get("value");
         this.data.documentType = this.typeSelect.getValue();
         this.data.showAllDocuments = this.allDocumentViewSelect.getValue() !== "false";
+
+        this.config.ignoreTitle = this.ignoreTitleSelect.getValue() !== "false";
+        this.config.latest = this.latestSelect.getValue() !== "false";
+
+        this.data.config = JSON.stringify( this.config );
+
         //this.data.applicationCategory = this.appTypeInput.input.get("value");
 
         this.app.restActions.saveColumn(this.data, function(json){
@@ -1130,6 +1167,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.descriptionInput.save();
             this.sortInput.save();
             this.typeSelect.save();
+            this.latestSelect.save();
+            this.ignoreTitleSelect.save();
             this.allDocumentViewSelect.save();
             //this.typeInput.save();
             this.app.notice( this.app.lp.application.saveSuccess, "success");

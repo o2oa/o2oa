@@ -7,7 +7,8 @@ o2.widget.O2Identity = new Class({
 	options: {
 		"style": "default",
         "canRemove": false,
-        "lazy": false
+        "lazy": false,
+        "disableInfor" : false
 	},
 	initialize: function(data, container, options){
 		this.setOptions(options);
@@ -32,8 +33,11 @@ o2.widget.O2Identity = new Class({
         this.node.set("text", this.data.displayName || (this.data.name+"("+this.data.unitName+")"));
     },
     load: function(){
-        if (!this.options.lazy) this.getPersonData();
-        this.node = new Element("div", {"styles": this.style.identityNode}).inject(this.container);
+        var style = ( layout.mobile && this.style.identityNode_mobile ) ?
+            this.style.identityNode_mobile : this.style.identityNode;
+
+        if (!this.options.lazy && !this.options.disableInfor) this.getPersonData();
+        this.node = new Element("div", {"styles": style }).inject(this.container);
         this.setText();
 
         if (this.options.canRemove){
@@ -44,29 +48,39 @@ o2.widget.O2Identity = new Class({
             }.bind(this));
         }
 
-        if (!this.options.lazy){
-            this.createInforNode(function(){
-                this.fireEvent("loadedInfor", [this]);
-            }.bind(this));
-        }else{
-            this.node.addEvents({
-                "mouseover": function(){
-                    if (!this.loadedInfor){
-                        this.getPersonData();
-                        this.createInforNode(function(){
-                            this.fireEvent("loadedInfor", [this]);
-                        }.bind(this));
-                    }
-                }.bind(this)
-            });
+        if( !this.options.disableInfor ){
+            if (!this.options.lazy ){
+                this.createInforNode(function(){
+                    this.fireEvent("loadedInfor", [this]);
+                }.bind(this));
+            }else{
+                this.node.addEvents({
+                    "mouseover": function(){
+                        if (!this.loadedInfor){
+                            this.getPersonData();
+                            this.createInforNode(function(){
+                                this.fireEvent("loadedInfor", [this]);
+                            }.bind(this));
+                        }
+                    }.bind(this)
+                });
+            }
         }
         this.setEvent();
         this.node.addEvents({
             "mouseover": function(){
-                this.node.setStyles(this.style.identityNode_over);
+
+                var style_over = ( layout.mobile && this.style.identityNode_over_mobile ) ?
+                    this.style.identityNode_over_mobile : this.style.identityNode_over;
+
+                this.node.setStyles( style_over );
             }.bind(this),
             "mouseout": function(){
-                this.node.setStyles(this.style.identityNode);
+
+                var style = ( layout.mobile && this.style.identityNode_mobile ) ?
+                    this.style.identityNode_mobile : this.style.identityNode;
+
+                this.node.setStyles(style);
             }.bind(this)
         });
     },

@@ -176,10 +176,10 @@ MWF.xApplication.FaceSet.Main = new Class({
             var faceset = window.location.host;
             faceset = faceset.replace(/\./g, "_");
 
-            this.action.getFaceSet(faceset, function(){
+            this.action.getFaceSet(faceset, null, function(){
                 this.completedToken(json);
             }.bind(this), function(){
-                this.action.createFaceSet(faceset, function(){
+                this.action.createFaceSet(faceset, null, function(){
                     this.completedToken(json);
                 }.bind(this));
             }.bind(this));

@@ -33,7 +33,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             "afterDelete",
             "beforeModulesLoad",
             "resize",
-            "afterModulesLoad"]
+            "afterModulesLoad",
+            "beforeReaded",
+            "afterReaded"]
     },
     initialize: function (node, data, options) {
         this.setOptions(options);
@@ -147,13 +149,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var key = this.businessData.work.id + "-" + this.businessData.work.activityToken;
         o2.Actions.load("x_processplatform_assemble_surface").KeyLockAction.lock({ "key": key }, function (json) {
             flagData = json.data;
-            if (async && flagData.success) window.setTimeout(function () { this.keyLock(true) }.bind(this), 90000);
+            if (async && flagData.success) this.keyLockTimeoutId = window.setTimeout(function () { this.keyLock(true) }.bind(this), 90000);
             if (async && !flagData.success) this.app.reload();
         }.bind(this), null, !!async);
         return flagData;
     },
     checkLock: function () {
         if (this.businessData.control.allowProcessing && this.businessData.activity.manualMode == "grab") {
+            this.app.addEvent("queryClose", function () {
+                if (this.keyLockTimeoutId) window.clearTimeout(this.keyLockTimeoutId);
+            }.bind(this));
             var lockData = this.keyLock();
             if (lockData.success) {
                 this.keyLock(true);
@@ -329,7 +334,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 }.bind(this));
             }
             this.mobileTools = tools;
-            if (tools.length) if (node) this._createMobileActionsDingdingStyle(node, tools);
+            //app上用原来的按钮样式
+            if (window.o2android) {
+                if (tools.length) if (node) this._createMobileActions(node, tools);
+            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog) {
+                if (tools.length) if (node) this._createMobileActions(node, tools);
+            } else {
+                //钉钉 企业微信用新的样式
+                if (tools.length) if (node) this._createMobileActionsDingdingStyle(node, tools);
+            }
             if (callback) callback();
         }.bind(this));
     },
@@ -345,21 +358,29 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             var buttonWidth = (size.x - splitSize.x * (count + 1) - (count * 2)) / count;
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.text === "继续流转" || tool.text === "撤回") {
+                if (tool.text === "继续流转" || tool.text === "撤回" || tool.id === "action_processWork" || tool.id === "action_retract") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                } else if (tool.text === "删除文件") {
+                } else if (tool.text === "删除文件" || tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 actionStyle.width = buttonWidth + "px";
                 var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
-                    var t = e.target.retrieve("tool");
-                    e.setDisable = function () { }
-                    if (t.actionScript) {
-                        this._runCustomAction(t.actionScript);
+                    var clickFun = function () {
+                        var t = e.target.retrieve("tool");
+                        e.setDisable = function () { };
+                        if (t.actionScript) {
+                            this._runCustomAction(t.actionScript);
+                        } else {
+                            if (this[t.action]) this[t.action](e);
+                        }
+                    }.bind(this);
+                    if (tool.text === "继续流转" || tool.id === "action_processWork") {
+                        //输入法激活的时候，需要一段时间等待输入法关闭
+                        window.setTimeout(clickFun, 100)
                     } else {
-                        if (this[t.action]) this[t.action](e);
+                        clickFun();
                     }
                 }.bind(this));
                 new Element("div", { "styles": this.css.html5ActionButtonDingdingSplit, "text": " " }).inject(node);
@@ -975,7 +996,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 if (this.app) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
-                if (callback) callback();
+                if (callback && typeOf(callback) === "function") callback();
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
             }.bind(this));
@@ -993,28 +1014,28 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
 
-    setModifedDataByPathList : function( data, pathList ){
+    setModifedDataByPathList: function (data, pathList) {
         var d = this.modifedData;
-        for( var i=0; i<pathList.length; i++ ){
-            if( i === pathList.length - 1 ){
-                d[ pathList[i] ] = data;
-            }else{
-                if( typeOf( d[ pathList[i] ] ) === "object" || typeOf( d[ pathList[i] ] ) === "array" ) {
+        for (var i = 0; i < pathList.length; i++) {
+            if (i === pathList.length - 1) {
+                d[pathList[i]] = data;
+            } else {
+                if (typeOf(d[pathList[i]]) === "object" || typeOf(d[pathList[i]]) === "array") {
                     d = d[pathList[i]]
-                }else if( typeOf( pathList[i] ) === "number" ){
-                    d = d[ pathList[i] ] = [];
-                }else{
-                    d = d[ pathList[i] ] = {};
+                } else if (typeOf(pathList[i]) === "number") {
+                    d = d[pathList[i]] = [];
+                } else {
+                    d = d[pathList[i]] = {};
                 }
             }
         }
     },
-    getOrigianlPathData : function( pathList ){
+    getOrigianlPathData: function (pathList) {
         var d = this.businessData.originalData;
-        for( var i=0; i<pathList.length; i++ ){
-            if( i === pathList.length - 1 ) {
+        for (var i = 0; i < pathList.length; i++) {
+            if (i === pathList.length - 1) {
                 d = d[pathList[i]];
-            }else{
+            } else {
                 if (typeOf(d[pathList[i]]) === "object" || typeOf(d[pathList[i]]) === "array") {
                     d = d[pathList[i]];
                 } else {
@@ -1024,17 +1045,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         return d;
     },
-    setModifedData : function( data, pathList ){
+    setModifedData: function (data, pathList) {
         pathList = pathList || [];
-        if( typeOf( data ) === "object" ) {
+        if (typeOf(data) === "object") {
             for (var key in data) {
-                var pList = Array.clone( pathList);
-                pList.push( key );
-                this.setModifedData(data[key], pList );
+                var pList = Array.clone(pathList);
+                pList.push(key);
+                this.setModifedData(data[key], pList);
             }
-        }else if( typeOf( data ) === "array" ){
-            var od = this.getOrigianlPathData( pathList );
-            if( typeOf( od ) !== "array" || od.length !== data.length || JSON.stringify(od) !== JSON.stringify(data) ) {
+        } else if (typeOf(data) === "array") {
+            var od = this.getOrigianlPathData(pathList);
+            if (typeOf(od) !== "array" || od.length !== data.length || JSON.stringify(od) !== JSON.stringify(data)) {
                 this.setModifedDataByPathList(data, pathList);
             }
             //}else{
@@ -1042,10 +1063,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //        this.setModifedData(data[i], pathList.push(i));
             //    }
             //}
-        }else if( typeOf( data ) !== "null" ){
-            var od = this.getOrigianlPathData( pathList );
-            if( typeOf( data ) !== typeOf( od ) || data !== od ){
-                this.setModifedDataByPathList( data, pathList );
+        } else if (typeOf(data) !== "null") {
+            var od = this.getOrigianlPathData(pathList);
+            if (typeOf(data) !== typeOf(od) || data !== od) {
+                this.setModifedDataByPathList(data, pathList);
             }
         }
     },
@@ -1069,9 +1090,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         debugger;
 
         this.modifedData = {};
-        this.setModifedData( data );
+        this.setModifedData(data);
 
-        this.workAction.saveData( callback || function(){}, failure, this.businessData.work.id, this.modifedData );
+        this.workAction.saveData(callback || function () { }, failure, this.businessData.work.id, this.modifedData);
 
         this.businessData.originalData = null;
         this.businessData.originalData = Object.clone(data);
@@ -1112,7 +1133,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         if (!this.options.readonly) {
             if (this.businessData.work) this.workAction.checkDraft(this.businessData.work.id, function () {
                 if (layout.desktop.apps) {
-                    if (layout.desktop.apps["TaskCenter"]) {
+                    if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
                         layout.desktop.apps["TaskCenter"].content.unmask();
                         layout.desktop.apps["TaskCenter"].refreshAll();
                     }
@@ -1134,51 +1155,49 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         this.app.close();
     },
-    getMessageContent: function (data, maxLength) {
+    getMessageContent: function (data, maxLength, titlelp) {
         var content = "";
-        if (data.length) {
-            data.each(function (work) {
-                var users = [];
-                work.taskList.each(function (task) {
-                    users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
-                }.bind(this));
-
-                content += "<div style='margin-top:5px;'><b>" + MWF.xApplication.process.Xform.LP.nextActivity + "<font style=\"color: #ea621f\">" + work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
-            }.bind(this));
-        } else {
+        if (data.completed) {
             content += MWF.xApplication.process.Xform.LP.workCompleted;
+        } else {
+            if (data.properties.nextManualList && data.properties.nextManualList.length) {
+                var activityUsers = [];
+                data.properties.nextManualList.each(function (a) {
+                    var ids = [];
+                    a.taskIdentityList.each(function (i) {
+                        ids.push(o2.name.cn(i))
+                    });
+                    var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
+                    activityUsers.push(t);
+                });
+                content += activityUsers.join("<br>");
+            } else {
+                if (data.arrivedActivityName) {
+                    content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
+                } else {
+                    content += MWF.xApplication.process.Xform.LP.taskCompleted;
+                }
+
+            }
         }
         var title = this.businessData.data.title || this.businessData.data.subject || this.businessData.work.title
         if (maxLength && title.length > maxLength) {
             title = title.substr(0, maxLength) + "..."
         }
-        return "<div>" + MWF.xApplication.process.Xform.LP.taskProcessedMessage + "“" + title + "”</div>" + content;
+        return "<div>" + (titlelp || MWF.xApplication.process.Xform.LP.taskProcessedMessage) + "“" + title + "”</div>" + content;
     },
-    addMessage: function (data) {
-        // var content = "";
-        // if (data.length){
-        //     data.each(function(work){
-        //         var users = [];
-        //         work.taskList.each(function(task){
-        //             users.push(MWF.name.cn(task.person)+"("+MWF.name.cn(task.unit)+")");
-        //         }.bind(this));
-        //
-        //         content += "<div><b>"+MWF.xApplication.process.Xform.LP.nextActivity+"<font style=\"color: #ea621f\">"+work.fromActivityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>";
-        //     }.bind(this));
-        // }else{
-        //     content += MWF.xApplication.process.Xform.LP.workCompleted;
-        // }
-
-        //data.workList.each(function(list){
-        //    content += "<div><b>"+MWF.xApplication.process.Xform.LP.nextActivity+"<font style=\"color: #ea621f\">"+list.activityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+list.personList.join(", ")+"</font></b></div>"
-        //}.bind(this));
+    addMessage: function (data, notShowBrowserDkg) {
         if (layout.desktop.message) {
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.taskProcessed,
-                "content": this.getMessageContent(data)
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.taskProcessedMessage)
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
+        } else {
+            if (this.app.inBrowser && !notShowBrowserDkg) {
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.taskProcessedMessage));
+            }
         }
     },
     formValidation: function (routeName, opinion, medias) {
@@ -1287,7 +1306,43 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     //    else return fn.apply(this, args);
     //    return this;
     //},
-    submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList) {
+    getIgnoreImpowerIdentity: function (processorOrgList) {
+        debugger;
+        var list = [];
+        var check = function (org, isProcessOrg) {
+            var moduleData = isProcessOrg ? org.getValue() : org.getData();
+            var flag = false;
+            if (typeOf(moduleData) === "array" && moduleData.length) {
+                moduleData.each(function (d) {
+                    if (d.ignoreEmpower) {
+                        list.push(d.distinguishedName || d.unique || d.id);
+                        d.ignoredEmpower = true;
+                        delete d.ignoreEmpower;
+                        flag = true;
+                    }
+                })
+            }
+            if (flag) org.setData(moduleData);
+        }
+
+        var modules = this.modules;
+        for (var i = 0; i < modules.length; i++) {
+            var module = modules[i];
+            var moduleName = module.json.moduleName;
+            if (!moduleName) moduleName = typeOf(module.json.type) === "string" ? module.json.type.toLowerCase() : "";
+            if (moduleName === "org") {
+                check(module)
+            }
+        }
+        if (processorOrgList && processorOrgList.length > 0) {
+            for (var i = 0; i < processorOrgList.length; i++) {
+                check(processorOrgList[i], true)
+            }
+        }
+
+        return list;
+    },
+    submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
         if (!this.businessData.control["allowProcessing"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             this.app.content.unmask();
@@ -1319,10 +1374,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
 
+        //处理忽略授权
+        var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
+
+        var _self = this;
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
+            if (callbackBeforeSave) callbackBeforeSave();
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
@@ -1354,6 +1414,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     this.businessData.task.appendTaskIdentityList = list;
                 }
 
+                this.businessData.task.ignoreEmpowerIdentityList = ignoreEmpowerIdentityList;
+
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
 
@@ -1366,26 +1428,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     this.fireEvent("afterProcess");
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
                     //    this.notice(MWF.xApplication.process.Xform.LP.taskProcessed, "success");
-                    this.addMessage(json.data);
+                    this.addMessage(json.data, true);
 
                     if (this.app.taskObject) this.app.taskObject.destroy();
 
-                    if (layout.mobile) {
+                    if (this.closeImmediatelyOnProcess) {
+                        this.app.close();
+                    } else if (layout.mobile) {
                         //移动端页面关闭
-                        if (window.o2android && window.o2android.closeWork) {
-                            window.o2android.closeWork("");
-                        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
-                            window.webkit.messageHandlers.closeWork.postMessage("");
-                        } else {
-                            history.back();
-                            // var uri = new URI(window.location.href);
-                            // var redirectlink = uri.getData("redirectlink");
-                            // if (redirectlink) {
-                            //     window.location = decodeURIComponent(redirectlink);
-                            // } else {
-                            //     window.location = "appMobile.html?app=process.TaskCenter";
-                            // }
-                        }
+                        _self.finishOnMobile()
                     } else {
                         if (this.app.inBrowser) {
                             if (this.mask) this.mask.hide();
@@ -1648,11 +1699,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             fromCss = this.app.css.processNodeMobile_from;
             css = this.app.css.processNodeMobile;
 
-            var contentSize = this.app.content.getSize();
+            // var contentSize = this.app.content.getSize();
             fromCss.width = "100%";
             css.width = "100%";
-            fromCss.height = contentSize.y + "px";
-            css.height = contentSize.y + "px";
+            fromCss.height = "100%";
+            css.height = "100%";
         }
 
         if (this.json.mode == "Mobile") {
@@ -1706,7 +1757,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     _self.app.content.unmask();
                     delete this;
                 },
-                "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList) {
+                "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
                     if (!medias || !medias.length) {
                         medias = mds;
                     } else {
@@ -1718,7 +1769,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         processNode.destroy();
                         if (_self.processDlg) _self.processDlg.close();
                         delete this;
-                    }.bind(this), this, null, appendTaskIdentityList);
+                    }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
                 }
             }, this);
         }.bind(this));
@@ -1859,7 +1910,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             dlg.show();
         }.bind(this));
     },
-    alert: function(type, title, text, width, height){
+    alert: function (type, title, text, width, height) {
         this.app.alert(type, "center", title, text, width, height);
     },
     notice: function (content, type, target, where, offset, option) {
@@ -2056,6 +2107,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         node = item.getLast().getLast();
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode_current);
         node.getLast().setStyles(this.css.rollbackItemTaskNode_current);
+
+        var checkeds = item.getElements("input");
+        if (checkeds) checkeds.set("checked", true);
     },
     setRollBackUnchecked: function (item) {
         item.store("isSelected", false);
@@ -2070,52 +2124,75 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         node = item.getLast().getLast();
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode);
         node.getLast().setStyles(this.css.rollbackItemTaskNode);
+
+        var checkeds = item.getElements("input");
+        if (checkeds) checkeds.set("checked", false);
     },
     getRollbackLogs: function (rollbackItemNode) {
         var _self = this;
-        this.businessData.workLogList.each(function (log) {
-            if (!log.splitting && log.connected && (log.taskCompletedList.length || log.readList.length || log.readCompletedList.length)) {
-                var node = new Element("div", { "styles": this.css.rollbackItemNode }).inject(rollbackItemNode);
-                node.store("log", log);
-                var iconNode = new Element("div", { "styles": this.css.rollbackItemIconNode }).inject(node);
-                var contentNode = new Element("div", { "styles": this.css.rollbackItemContentNode }).inject(node);
+        o2.Actions.load("x_processplatform_assemble_surface").WorkLogAction.listRollbackWithWorkOrWorkCompleted(this.businessData.work.id, function (json) {
 
-                var div = new Element("div", { "styles": { "overflow": "hidden" } }).inject(contentNode);
-                var activityNode = new Element("div", { "styles": this.css.rollbackItemActivityNode, "text": log.fromActivityName }).inject(div);
-                var timeNode = new Element("div", { "styles": this.css.rollbackItemTimeNode, "text": log.arrivedTime }).inject(div);
-                div = new Element("div", { "styles": { "overflow": "hidden" } }).inject(contentNode);
-                var taskTitleNode = new Element("div", { "styles": this.css.rollbackItemTaskTitleNode, "text": this.app.lp.taskCompletedPerson + ": " }).inject(div);
+            json.data.each(function (log) {
+                //if (!log.splitting && log.connected && (log.taskCompletedList.length || log.readList.length || log.readCompletedList.length)) {
+                if (!log.splitting && log.connected) {
+                    var node = new Element("div", { "styles": this.css.rollbackItemNode }).inject(rollbackItemNode);
+                    node.store("log", log);
+                    var iconNode = new Element("div", { "styles": this.css.rollbackItemIconNode }).inject(node);
+                    var contentNode = new Element("div", { "styles": this.css.rollbackItemContentNode }).inject(node);
 
-                log.taskCompletedList.each(function (o) {
-                    var text = o2.name.cn(o.person) + "(" + o.completedTime + ")";
-                    var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(div);
-                }.bind(this));
+                    var div = new Element("div", { "styles": { "overflow": "hidden" } }).inject(contentNode);
+                    var activityNode = new Element("div", { "styles": this.css.rollbackItemActivityNode, "text": log.fromActivityName }).inject(div);
+                    var timeNode = new Element("div", { "styles": this.css.rollbackItemTimeNode, "text": log.arrivedTime }).inject(div);
+                    div = new Element("div", { "styles": { "overflow": "hidden" } }).inject(contentNode);
+                    var taskTitleNode = new Element("div", { "styles": this.css.rollbackItemTaskTitleNode, "text": this.app.lp.taskCompletedPerson + ": " }).inject(div);
 
-
-                node.addEvents({
-                    "mouseover": function () {
-                        var isSelected = this.retrieve("isSelected");
-                        if (!isSelected) this.setStyles(_self.css.rollbackItemNode_over);
-                    },
-                    "mouseout": function () {
-                        var isSelected = this.retrieve("isSelected");
-                        if (!isSelected) this.setStyles(_self.css.rollbackItemNode)
-                    },
-                    "click": function () {
-                        var isSelected = this.retrieve("isSelected");
-                        if (isSelected) {
-                            _self.setRollBackUnchecked(this);
-                        } else {
-                            var items = rollbackItemNode.getChildren();
-                            items.each(function (item) {
-                                _self.setRollBackUnchecked(item);
+                    if (log.taskCompletedList.length) {
+                        log.taskCompletedList.each(function (o) {
+                            var text = o2.name.cn(o.person) + "(" + o.completedTime + ")";
+                            var check = new Element("input", {
+                                "value": o.identity,
+                                "type": "checkbox",
+                                "styles": this.css.rollbackItemTaskCheckNode
+                            }).inject(div);
+                            check.addEvent("click", function (e) {
+                                e.stopPropagation();
                             });
-                            _self.setRollBackChecked(this);
-                        }
+                            var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(div);
+                        }.bind(this));
+                    } else {
+                        var text = this.app.lp.systemFlow;
+                        var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(div);
                     }
-                });
-            }
-        }.bind(this));
+
+
+
+                    node.addEvents({
+                        "mouseover": function () {
+                            var isSelected = this.retrieve("isSelected");
+                            if (!isSelected) this.setStyles(_self.css.rollbackItemNode_over);
+                        },
+                        "mouseout": function () {
+                            var isSelected = this.retrieve("isSelected");
+                            if (!isSelected) this.setStyles(_self.css.rollbackItemNode)
+                        },
+                        "click": function () {
+                            var isSelected = this.retrieve("isSelected");
+                            if (isSelected) {
+                                _self.setRollBackUnchecked(this);
+                            } else {
+                                var items = rollbackItemNode.getChildren();
+                                items.each(function (item) {
+                                    _self.setRollBackUnchecked(item);
+                                });
+                                _self.setRollBackChecked(this);
+                            }
+                        }
+                    });
+                }
+            }.bind(this));
+
+        }.bind(this), null, false);
+
     },
     rollback: function () {
         if (!this.businessData.control["allowRollback"]) {
@@ -2123,8 +2200,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
         var node = new Element("div", { "styles": this.css.rollbackAreaNode });
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden\">请选择文件要回溯到的位置：</div>";
-        html += "<div style=\"max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:left;\">请选择文件要回溯到的位置：</div>";
+        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:right;\"><input class='rollback_flowOption' checked type='checkbox' />并尝试继续流转</div>";
+        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
         var rollbackItemNode = node.getLast();
         this.getRollbackLogs(rollbackItemNode);
@@ -2155,14 +2233,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     doRollback: function (node, e, dlg) {
         var rollbackItemNode = node.getLast();
         var items = rollbackItemNode.getChildren();
+        var flowOption = (node.getElement(".rollback_flowOption").checked);
         var _self = this;
         for (var i = 0; i < items.length; i++) {
             if (items[i].retrieve("isSelected")) {
                 var text = this.app.lp.rollbackConfirmContent;
                 var log = items[i].retrieve("log");
+                var checks = items[i].getElements("input:checked");
+                var idList = [];
+                checks.each(function (check) {
+                    var id = check.get("value");
+                    if (idList.indexOf(id) == -1) idList.push(id);
+                });
+
                 text = text.replace("{log}", log.fromActivityName + "(" + log.arrivedTime + ")");
                 this.app.confirm("infor", e, this.app.lp.rollbackConfirmTitle, text, 450, 120, function () {
-                    _self.doRollbackAction(log.id, dlg);
+                    _self.doRollbackAction(log.id, flowOption, dlg, idList);
 
                     dlg.close();
 
@@ -2175,7 +2261,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
 
-    doRollbackAction: function (log) {
+    doRollbackAction: function (log, flowOption, dlg, idList) {
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
@@ -2183,15 +2269,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.fireEvent("beforeRollback");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeRollback");
 
-            this.doRollbackActionInvoke(log, function (json) {
-                var id = json.data.id;
-                this.workAction.listTaskByWork(function (workJson) {
-                    this.fireEvent("afterRollback");
+            this.doRollbackActionInvoke(log, flowOption, idList, function (json) {
+                if (json.data.properties) {
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
-                    this.addRollbackMessage(workJson.data);
-                    //this.app.notice(MWF.xApplication.process.Xform.LP.rollbackOk+": "+MWF.name.cns(names).join(", "), "success");
-                    if (!this.app.inBrowser) this.app.close();
-                }.bind(this), null, id);
+                    this.addRollbackMessage(json.data);
+
+                } else {
+                    var id = json.data.id;
+                    this.workAction.listTaskByWork(function (workJson) {
+                        this.fireEvent("afterRollback");
+                        if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
+                        this.addRollbackMessage_old(workJson.data);
+                        //this.app.notice(MWF.xApplication.process.Xform.LP.rollbackOk+": "+MWF.name.cns(names).join(", "), "success");
+                        //if (!this.app.inBrowser) this.app.close();
+                    }.bind(this), null, id);
+                }
+                if (!this.app.inBrowser) this.app.close();
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
                 var errorText = error + ":" + text;
@@ -2201,13 +2294,28 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }.bind(this));
         }.bind(this));
     },
-    doRollbackActionInvoke: function (id, success, failure) {
-        var method = (this.businessData.work.completedTime) ? "rollbackWorkcompleted" : "rollback";
-        o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
-            if (success) success(json);
-        }.bind(this), function (xhr, text, error) {
-            if (failure) failure(xhr, text, error)
-        }.bind(this));
+    doRollbackActionInvoke: function (id, flowOption, idList, success, failure) {
+        if (this.businessData.work.completedTime) {
+            var method = "rollbackWorkcompleted";
+            o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
+                if (success) success(json);
+            }.bind(this), function (xhr, text, error) {
+                if (failure) failure(xhr, text, error)
+            }.bind(this));
+        } else {
+            var body = {
+                "workLog": id,
+                "taskCompletedIdentityList": idList,
+                "processing": !!flowOption
+            }
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Rollback(this.businessData.work.id, body, function (json) {
+                //o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
+                if (success) success(json);
+            }.bind(this), function (xhr, text, error) {
+                if (failure) failure(xhr, text, error)
+            }.bind(this));
+        }
+
     },
 
     inBrowserDkg: function (content) {
@@ -2286,7 +2394,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         }
     },
-    addRollbackMessage: function (data) {
+    addRollbackMessage_old: function (data) {
         var users = [];
         data.each(function (task) {
             users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
@@ -2304,6 +2412,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         } else {
             if (this.app.inBrowser) {
                 this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.rollbackWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+            }
+        }
+    },
+
+    addRollbackMessage: function (data) {
+
+
+        if (layout.desktop.message) {
+            var msg = {
+                "subject": MWF.xApplication.process.Xform.LP.workRollback,
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.rollbackWorkInfor)
+            };
+            layout.desktop.message.addTooltip(msg);
+            return layout.desktop.message.addMessage(msg);
+        } else {
+            if (this.app.inBrowser) {
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.rollbackWorkInfor));
             }
         }
     },
@@ -2330,7 +2455,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         });
     },
-
+    downloadAll:function(){
+        var htmlFormId = "";
+        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id,"pdf",{
+            "workHtml":this.app.content.get("html")
+        },function( json ){
+            htmlFormId = json.data.id;
+        }.bind(this),null,false);
+        htmlFormId = htmlFormId.replace("#","%23");
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/"+this.businessData.work.id+"/site/(0)/stream";
+        window.open( o2.Actions.getHost( "x_processplatform_assemble_surface" )+url + "?fileName=&flag=" + htmlFormId);
+    },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -2435,59 +2570,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }.bind(this));
 
     },
-
-    // selectPeopleDepartment: function(dlg, department, count){
-    //     var names = dlg.identityList || [];
-    //     var areaNode = $("resetWork_selPeopleArea");
-    //     var options = {
-    //         "names": names,
-    //         "type": "identity",
-    //         "count": count,
-    //         "departments": (department) ? [department.name]: [],
-    //         "title": this.app.lp.reset,
-    //         "onComplete": function (items) {
-    //             areaNode.empty();
-    //             var identityList = [];
-    //             items.each(function(item){
-    //                 var explorer = {
-    //                     "actions": this.personActions,
-    //                     "app": {"lp": this.app.lp}
-    //                 };
-    //                 new MWF.widget.Identity(item.data, areaNode, explorer, false, null, {"style": "reset"});
-    //                 identityList.push(item.data.name);
-    //             }.bind(this));
-    //             dlg.identityList = identityList;
-    //         }.bind(this)
-    //     };
-    //
-    //     var selector = new MWF.OrgSelector(this.app.content, options);
-    // },
-    // selectPeopleCompany: function(dlg, company, count){
-    //     var names = dlg.identityList || [];
-    //     var areaNode = $("resetWork_selPeopleArea");
-    //     var options = {
-    //         "names": names,
-    //         "type": "identity",
-    //         "count": count,
-    //         "companys": [company.name],
-    //         "title": this.app.lp.reset,
-    //         "onComplete": function (items) {
-    //             areaNode.empty();
-    //             var identityList = [];
-    //             items.each(function(item){
-    //                 var explorer = {
-    //                     "actions": this.personActions,
-    //                     "app": {"lp": this.app.lp}
-    //                 };
-    //                 new MWF.widget.Identity(item.data, areaNode, explorer, false, null, {"style": "reset"});
-    //                 identityList.push(item.data.name);
-    //             }.bind(this));
-    //             dlg.identityList = identityList;
-    //         }.bind(this)
-    //     };
-    //
-    //     var selector = new MWF.Selector(this.app.content, options);
-    // },
     selectPeopleAll: function (dlg, count) {
         var names = dlg.identityList || [];
         var areaNode = $("resetWork_selPeopleArea");
@@ -2520,6 +2602,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
         var opinion = $("resetWork_opinion").get("value");
+        var checkbox = dlg.content.getElement(".resetWork_keepOption");
+        var keep = (checkbox.checked);
+
         var nameText = [];
         names.each(function (n) { nameText.push(MWF.name.cn(n)); });
         if (!opinion) {
@@ -2533,14 +2618,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.fireEvent("beforeReset");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
 
-            this.resetWorkToPeson(names, opinion, function () {
-                this.workAction.loadWork(function (workJson) {
-                    this.fireEvent("afterReset");
-                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
-                    this.addResetMessage(workJson.data);
-                    this.app.notice(MWF.xApplication.process.Xform.LP.resetOk + ": " + MWF.name.cns(names).join(", "), "success");
-                    if (!this.app.inBrowser) this.app.close();
-                }.bind(this), null, this.businessData.work.id);
+            this.resetWorkToPeson(names, opinion, keep, function (workJson) {
+                //this.workAction.loadWork(function (workJson) {
+                this.fireEvent("afterReset");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
+                this.addResetMessage(workJson.data);
+                //this.app.notice(MWF.xApplication.process.Xform.LP.resetOk + ": " + MWF.name.cns(names).join(", "), "success");
+                if (!this.app.inBrowser) this.app.close();
+                //}.bind(this), null, this.businessData.work.id);
                 dlg.close();
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
@@ -2561,15 +2646,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         //
         //}.bind(this), null, this.businessData.task.id, data);
     },
-    resetWorkToPeson: function (identityList, opinion, success, failure) {
+    resetWorkToPeson: function (identityList, opinion, keep, success, failure) {
         var data = {
             "opinion": opinion,
             "routeName": MWF.xApplication.process.Xform.LP.reset,
-            "identityList": identityList
+            "identityList": identityList,
+            "keep": !!keep
         };
         this.saveFormData(
             function (json) {
-                this.workAction.resetWork(
+                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Reset(
+                    //this.workAction.resetWork(
                     function (json) {
                         if (success) success(json);
                     }.bind(this),
@@ -2587,54 +2674,64 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
     },
     addAddSplitMessage: function (data) {
-        var content = "";
-        if (data && data.length) {
-            data.each(function (work) {
-                var users = [];
-                work.taskList.each(function (task) {
-                    users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
-                }.bind(this));
-                content += "<div><b>" + MWF.xApplication.process.Xform.LP.nextActivity + "<font style=\"color: #ea621f\">" + work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
-            }.bind(this));
-        } else {
-            content += MWF.xApplication.process.Xform.LP.workCompleted;
-        }
+        // var content = "";
+        // if (data && data.length) {
+        //     data.each(function (work) {
+        //         var users = [];
+        //         work.taskList.each(function (task) {
+        //             users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
+        //         }.bind(this));
+        //         content += "<div><b>" + MWF.xApplication.process.Xform.LP.nextActivity + "<font style=\"color: #ea621f\">" + work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
+        //     }.bind(this));
+        // } else {
+        //     content += MWF.xApplication.process.Xform.LP.workCompleted;
+        // }
 
         if (layout.desktop.message) {
             //var content = "<div><b>"+MWF.xApplication.process.Xform.LP.currentActivity+"<font style=\"color: #ea621f\">"+data.work.activityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>";
-
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.addSplitWork,
-                "content": "<div>" + MWF.xApplication.process.Xform.LP.addSplitWorkInfor + "“" + this.businessData.work.title + "”</div>" + content
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.addSplitWorkInfor)
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.addSplitWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.addSplitWorkInfor));
             }
         }
     },
     addResetMessage: function (data) {
-        debugger;
-        var users = [];
-        data.taskList.each(function (task) {
-            users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
-        }.bind(this));
-        var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + data.work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
-
+        // var content = "";
+        // if (data.completed){
+        //     content += MWF.xApplication.process.Xform.LP.workCompleted;
+        // }else{
+        //     if (data.properties.nextManualList && data.properties.nextManualList.length){
+        //         var activityUsers = [];
+        //         data.properties.nextManualList.each(function(a){
+        //             var ids = [];
+        //             a.taskIdentityList.each(function(i){
+        //                 ids.push(o2.name.cn(i))
+        //             });
+        //             var t = "<b>"+MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>"+a.activityName+"</span>；<b>"+ MWF.xApplication.process.Xform.LP.nextUser+ "</b><span style='color: #ea621f'>"+ids.join(",")+"</span>";
+        //             activityUsers.push(t);
+        //         });
+        //         content += activityUsers.join("<br>");
+        //     }else{
+        //         content += MWF.xApplication.process.Xform.LP.taskCompleted;
+        //     }
+        // }
 
         if (layout.desktop.message) {
-
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workReset,
-                "content": "<div>" + MWF.xApplication.process.Xform.LP.resetWorkInfor + "“" + this.businessData.work.title + "”</div>" + content
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.resetWorkInfor)
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.resetWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.resetWorkInfor));
             }
         }
     },
@@ -2664,22 +2761,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterRetract");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
-                        //2019-12-09 移动端页面关闭
-                        if (window.o2android && window.o2android.closeWork) {
-                            window.o2android.closeWork("");
-                        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
-                            window.webkit.messageHandlers.closeWork.postMessage("");
-                        } else {
-                            _self.app.reload();
-                            // var uri = new URI(window.location.href);
-                            // var redirectlink = uri.getData("redirectlink");
-                            // if (redirectlink) {
-                            //     window.location = decodeURIComponent(redirectlink);
-                            // } else {
-                            //     window.location = "appMobile.html?app=process.TaskCenter";
-                            // }
-                        }
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+
+                        _self.finishOnMobile()
                     }.bind(this), function (xhr, text, error) {
                         _self.app.content.unmask();
                         var errorText = error + ":" + text;
@@ -2714,10 +2798,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     _self.fireEvent("beforeRetract");
                     if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeRetract");
 
-                    _self.doRetractWork(function () {
+                    _self.doRetractWork(function (json) {
                         //_self.workAction.getJobByWork(function(workJson){
                         _self.fireEvent("afterRetract");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterRetract");
+                        //_self.addRetractMessage(json.data);
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
                         _self.app.reload();
@@ -2741,33 +2826,37 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
     doRetractWork: function (success, failure) {
         if (this.businessData.control["allowRetract"]) {
-            this.workAction.retractWork(function (json) {
-                if (success) success();
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Retract(this.businessData.work.id, null, function (json) {
+                if (success) success(json);
             }.bind(this), function (xhr, text, error) {
                 if (failure) failure(xhr, text, error);
-            }, this.businessData.work.id);
+            });
+            // this.workAction.retractWork(function (json) {
+            //     if (success) success();
+            // }.bind(this), function (xhr, text, error) {
+            //     if (failure) failure(xhr, text, error);
+            // }, this.businessData.work.id);
         } else {
             if (failure) failure(null, "Permission Denied", "");
         }
     },
     addRetractMessage: function (data) {
-        var users = [];
-        data.taskList.each(function (task) {
-            users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
-        }.bind(this));
-        var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + data.work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
+        // var users = [];
+        // data.taskList.each(function (task) {
+        //     users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
+        // }.bind(this));
+        // var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + data.work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
 
         if (layout.desktop.message) {
-
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workRetract,
-                "content": "<div>" + MWF.xApplication.process.Xform.LP.retractWorkInfor + "“" + this.businessData.work.title + "”</div>" + content
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.retractWorkInfor)
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.retractWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.retractWorkInfor));
             }
         }
     },
@@ -2778,8 +2867,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
         MWF.require("MWF.xDesktop.Dialog", function () {
-            var width = 480;
-            var height = 200;
+            var width = 560;
+            var height = 260;
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
@@ -2917,9 +3006,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                             }).inject(select);
                         }.bind(_self));
                     }.bind(_self));
+
+                    var selPeopleButton = this.content.getElement(".rerouteWork_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectReroutePeople(this);
+                    }.bind(this));
                 }
             });
             dlg.show();
+        }.bind(this));
+    },
+    selectReroutePeople: function (dlg) {
+        var names = dlg.identityList || [];
+        var areaNode = dlg.content.getElement(".rerouteWork_selPeopleArea");
+        var options = {
+            "values": names,
+            "type": "identity",
+            "count": 0,
+            "title": this.app.lp.reroute,
+            "onComplete": function (items) {
+                areaNode.empty();
+                var identityList = [];
+                items.each(function (item) {
+                    new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
+                    identityList.push(item.data.distinguishedName);
+                }.bind(this));
+                dlg.identityList = identityList;
+            }.bind(this)
+        };
+        MWF.xDesktop.requireApp("Selector", "package", function () {
+            var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
     },
     doRerouteWork: function (dlg) {
@@ -2931,6 +3047,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         activity = tmp[0];
         var type = tmp[1];
 
+        var nameArr = [];
+        var names = dlg.identityList || [];
+        names.each(function (n) { nameArr.push(n); });
+        //var nameText = nameArr.join(", ");
+        // if (!opinion) {
+        //     opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
+        // }
+
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
@@ -2938,14 +3062,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.fireEvent("beforeReroute");
             if (this.app && this.app.fireEvent) this.app.fireEvent("afterRetract");
 
-            this.rerouteWorkToActivity(activity, type, opinion, function () {
-                this.workAction.loadWork(function (workJson) {
-                    this.fireEvent("afterReroute");
-                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterReroute");
-                    this.addRerouteMessage(workJson.data);
-                    this.app.notice(MWF.xApplication.process.Xform.LP.rerouteOk + ": " + activityName, "success");
-                    if (!this.app.inBrowser) this.app.close();
-                }.bind(this), null, this.businessData.work.id);
+            this.rerouteWorkToActivity(activity, type, opinion, nameArr, function (workJson) {
+                //this.workAction.loadWork(function (workJson) {
+                this.fireEvent("afterReroute");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterReroute");
+                this.addRerouteMessage(workJson.data);
+                this.app.notice(MWF.xApplication.process.Xform.LP.rerouteOk + ": " + activityName, "success");
+                if (!this.app.inBrowser) this.app.close();
+                //}.bind(this), null, this.businessData.work.id);
                 dlg.close();
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
@@ -2956,43 +3080,55 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }.bind(this));
         }.bind(this));
     },
-    rerouteWorkToActivity: function (activity, type, opinion, success, failure) {
+    rerouteWorkToActivity: function (activity, type, opinion, nameArr, success, failure) {
+        debugger;
+        var body = {
+            "activity": activity,
+            "activityType": type,
+            "mergeWork": false,
+            "manualForceTaskIdentityList": nameArr
+        };
         if (this.businessData.task) {
             this.saveFormData(function (json) {
-                this.workAction.rerouteWork(function (json) {
-                    if (success) success();
+                o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Reroute(this.businessData.work.id, body, function (json) {
+                    if (success) success(json);
                 }.bind(this), function (xhr, text, error) {
                     if (failure) failure(xhr, text, error);
-                }, this.businessData.work.id, activity, type);
+                });
+                // this.workAction.rerouteWork(function (json) {
+                //     if (success) success();
+                // }.bind(this), function (xhr, text, error) {
+                //     if (failure) failure(xhr, text, error);
+                // }, this.businessData.work.id, activity, type);
             }.bind(this), function (xhr, text, error) {
                 if (failure) failure(xhr, text, error);
             }, true, null, true);
         } else {
-            this.workAction.rerouteWork(function (json) {
-                if (success) success();
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Reroute(this.businessData.work.id, body, function (json) {
+                if (success) success(json);
             }.bind(this), function (xhr, text, error) {
                 if (failure) failure(xhr, text, error);
-            }, this.businessData.work.id, activity, type);
+            });
+
+            // this.workAction.rerouteWork(function (json) {
+            //     if (success) success();
+            // }.bind(this), function (xhr, text, error) {
+            //     if (failure) failure(xhr, text, error);
+            // }, this.businessData.work.id, activity, type);
         }
     },
     addRerouteMessage: function (data) {
-        var users = [];
-        data.taskList.each(function (task) {
-            users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
-        }.bind(this));
-        var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + data.work.activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
 
         if (layout.desktop.message) {
-
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workReroute,
-                "content": "<div>" + MWF.xApplication.process.Xform.LP.rerouteWorkInfor + "“" + this.businessData.work.title + "”</div>" + content
+                "content": this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.rerouteWorkInfor)
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.rerouteWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+                this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.rerouteWorkInfor));
             }
         }
     },
@@ -3012,22 +3148,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         _self.fireEvent("afterDelete");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
-
-                        //2019-12-09 移动端页面关闭
-                        if (window.o2android && window.o2android.closeWork) {
-                            window.o2android.closeWork("");
-                        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
-                            window.webkit.messageHandlers.closeWork.postMessage("");
-                        } else {
-                            var uri = new URI(window.location.href);
-                            var redirectlink = uri.getData("redirectlink");
-                            if (redirectlink) {
-                                window.location = decodeURIComponent(redirectlink);
-                            } else {
-                                window.location = "appMobile.html?app=process.TaskCenter";
-                            }
-                        }
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        _self.finishOnMobile()
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
@@ -3125,13 +3247,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
     readedWork: function (e) {
+        this.fireEvent("beforeReaded");
         var _self = this;
         var title = this.businessData.work.title;
         if (title.length > 75) {
             title = title.substr(0, 74) + "..."
         }
         var text = "您确定要将“" + title + "”标记为已阅吗？";
-        this.app.confirm("infor", e, "标记已阅确认", text, 400, 200, function () {
+
+        this.app.confirm("infor", e, "标记已阅确认", text, 300, 120, function () {
             var read = null;
             for (var i = 0; i < _self.businessData.readList.length; i++) {
                 if (_self.businessData.readList[i].person === layout.session.user.distinguishedName) {
@@ -3142,13 +3266,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
             if (read) {
                 _self.app.action.setReaded(function () {
+                    this.fireEvent("afterReaded");
                     _self.app.reload();
                 }.bind(_self), null, read.id, read);
             } else {
                 _self.app.reload();
             }
-
-            this.close();
+            if (layout.mobile) {
+                //移动端页面关闭
+                _self.finishOnMobile()
+            } else {
+                this.close();
+            }
         }, function () {
             this.close();
         }, null, this.app.content, this.json.confirmStyle);
@@ -3198,6 +3327,30 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 attachmentController.checkActions();
             }
         }.bind(this))
+    },
+    //移动端页面 工作处理完成后 
+    finishOnMobile: function () {
+        if (window.o2android && window.o2android.closeWork) {
+            window.o2android.closeWork("");
+        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
+            window.webkit.messageHandlers.closeWork.postMessage("");
+        } else {
+            var len = window.history.length;
+            if (len > 1) {
+                history.back();
+            } else {
+                var uri = new URI(window.location.href);
+                var redirectlink = uri.getData("redirectlink");
+                if (redirectlink) {
+                    history.replaceState(null, "work", redirectlink);
+                    redirectlink.toURI().go();
+                } else {
+                    window.location = "appMobile.html?app=process.TaskCenter";
+                    history.replaceState(null, "work", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                    "appMobile.html?app=process.TaskCenter".toURI().go();
+                }
+            }
+        }
     }
 
 });

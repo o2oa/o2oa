@@ -194,9 +194,11 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     rollback: function(e){
         this.form.rollback(e);
     },
+    downloadAll: function(e){
+        this.form.downloadAll(e);
+    },
     pressWork: function(e){
         this.form.pressWork(e);
     }
-
 
 }); 

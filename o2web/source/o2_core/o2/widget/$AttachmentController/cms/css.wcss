@@ -25,6 +25,10 @@
     "margin-right":"108px",
     "min-height": "30px"
   },
+  "minContentNode_mobile": {
+    "clear":"both",
+    "min-height": "30px"
+  },
   "titleNode": {
     "color" : "#3587d7",
     "height": "30px",
@@ -332,6 +336,18 @@
     "-webkit-user-select": "text",
     "-moz-user-select": "text"
   },
+  "minAttachmentNode_sequence_mobile": {
+    "width": "auto",
+    "height": "30px",
+    "padding": "0px",
+    "float": "none",
+    "border-radius": "0px",
+    "border": "0px solid #FFF",
+    "background": "transparent",
+    "margin": "0px 5px",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
   "minAttachmentNode_sequence_over": {
     "border": "0px solid #cdcfd1",
     "background-color": "#eaf0f5"
@@ -351,6 +367,17 @@
     "-webkit-user-select": "text",
     "-moz-user-select": "text",
     "width" : "46%",
+    "border-right" : "1px dashed #dcdcdc"
+  },
+  "minAttachmentNode_list_mobile": {
+    "height": "30px",
+    "padding": "0px 10px",
+    "border-radius": "0px",
+    "border": "0px solid #FFF",
+    "background": "transparent",
+    "margin": "5px 5px",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
     "border-right" : "1px dashed #dcdcdc"
   },
   "minAttachmentSepNode_list" : {

@@ -9,9 +9,27 @@
         "color": "",
         "cursor": "pointer"
     },
+    "identityNode_mobile" : {
+        "padding": "0px 5px",
+        "margin-right": "10px",
+        "margin-bottom": "0px",
+        "background": "transparent",
+        "border-radius":"5px",
+        "color": "",
+        "cursor": "pointer"
+    },
     "identityNode_over": {
         "padding": "0px 5px",
         "float": "left",
+        "margin-right": "10px",
+        "margin-bottom": "0px",
+        "background-color": "#da7429",
+        "border-radius":"5px",
+        "color": "#FFF",
+        "cursor": "pointer"
+    },
+    "identityNode_over_mobile": {
+        "padding": "0px 5px",
         "margin-right": "10px",
         "margin-bottom": "0px",
         "background-color": "#da7429",

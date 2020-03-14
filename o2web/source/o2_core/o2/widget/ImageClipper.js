@@ -248,7 +248,7 @@ o2.widget.FlashImageClipper = new Class({
 			}.bind(this));
 		}else{
 			//公共图片服务
-			var addressObj = layout.desktop.serviceAddressList["x_file_assemble_control"];
+			var addressObj = layout.serviceAddressList["x_file_assemble_control"];
 			if (addressObj){
 				var address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
 			}else{

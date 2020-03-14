@@ -81,18 +81,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         var inforNode = item.inforNode || new Element("div");
         if (item.data){
             var text = "";
-            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-1, 1);
+            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = item.data.name+"("+item.data.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = item.data.name+ (item.data.employee ? "("+item.data.employee+")" : "");
                     break;
-                case "u":
+                case "@u":
                     text = item.data.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = item.data.name;
                     break;
                 default:
@@ -132,18 +132,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             data.map(function(d){
                 var value = Object.clone(d);
                 d.value = value;
-                var flag = d.distinguishedName.substr(d.distinguishedName.length-1, 1);
+                var flag = d.distinguishedName.substr(d.distinguishedName.length-2, 2);
                 switch (flag.toLowerCase()){
-                    case "i":
+                    case "@i":
                         d.text = d.name+"("+d.unitName+")";
                         break;
-                    case "p":
+                    case "@p":
                         d.text = d.name+(d.employee ? "("+d.employee+")" : "");
                         break;
-                    case "u":
+                    case "@u":
                         d.text = d.name;
                         break;
-                    case "g":
+                    case "@g":
                         d.text = d.name;
                         break;
                     default:
@@ -351,18 +351,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         });
         var text = "";
         if (data.value){
-            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-1, 1);
+            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = data.value.name+"("+data.value.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = data.value.name+ (data.value.employee ? "("+data.value.employee+")" : "");
                     break;
-                case "u":
+                case "@u":
                     text = data.value.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = data.value.name;
                     break;
                 default:
@@ -446,18 +446,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 		var options = {"style": "xform", "canRemove":false , "onRemove" : this.removeItem};
 		value.each(function(data){
 			if( data.distinguishedName ){
-				var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+				var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
 				switch (flag.toLowerCase()){
-					case "i":
+					case "@i":
 						var widget = new MWF.widget.O2Identity(data, node, options );
 						break;
-					case "p":
+					case "@p":
 						var widget = new MWF.widget.O2Person(data, node, options);
 						break;
-					case "u":
+					case "@u":
 						var widget = new MWF.widget.O2Unit(data, node, options);
 						break;
-					case "g":
+					case "@g":
 						var widget = new MWF.widget.O2Group(data, node, options);
 						break;
 					default:

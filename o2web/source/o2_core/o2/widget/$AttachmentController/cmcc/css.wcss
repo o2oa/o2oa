@@ -27,6 +27,11 @@
         "min-height": "30px",
         "overflow": "hidden"
     },
+    "minContentNode_mobile": {
+        "clear":"both",
+        "min-height": "30px",
+        "overflow": "hidden"
+    },
     "titleNode": {
         "height": "30px",
         "background-color": "#DDD",
@@ -331,6 +336,18 @@
         "-webkit-user-select": "text",
         "-moz-user-select": "text"
     },
+    "minAttachmentNode_sequence_mobile": {
+        "width": "auto",
+        "height": "30px",
+        "padding": "0px",
+        "float": "none",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "margin": "0px 5px",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
     "minAttachmentNode_sequence_over": {
         "border": "0px solid #cdcfd1",
         "background-color": "#eaf0f5"
@@ -350,6 +367,17 @@
         "-webkit-user-select": "text",
         "-moz-user-select": "text",
         "width" : "48%",
+        "border-bottom" : "1px dashed #dcdcdc"
+    },
+    "minAttachmentNode_list_mobile": {
+        "width": "auto",
+        "height": "30px",
+        "padding": "13px 0px 13px 10px",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
         "border-bottom" : "1px dashed #dcdcdc"
     },
     "minAttachmentSepNode_list" : {

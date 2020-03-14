@@ -121,27 +121,28 @@ var library = {
 })();
 
 var wrapWorkContext = {
-    "getTask": function(){return library.JSONDecode(workContext.getTaskOrTaskCompleted());},
-    "getWork": function(){return library.JSONDecode(workContext.getWork());},
-    "getActivity": function(){return library.JSONDecode(workContext.getActivity());},
-    "getTaskList": function(){return library.JSONDecode(workContext.getTaskList());},
-    "getTaskCompletedList": function(){return library.JSONDecode(workContext.getTaskCompletedList());},
-    "getReadList": function(){return library.JSONDecode(workContext.getReadList());},
-    "getReadCompletedList": function(){return library.JSONDecode(workContext.getReadCompletedList());},
 
-    "getJobTaskList": function(){return library.JSONDecode(workContext.getJobTaskList());},
-    "getJobTaskCompletedList": function(){return library.JSONDecode(workContext.getJobTaskCompletedList());},
-    "getJobReadList": function(){return library.JSONDecode(workContext.getJobReadList());},
-    "getJobReadCompletedList": function(){return library.JSONDecode(workContext.getJobReadCompletedList());},
-    "getTaskListByJob": function(){return library.JSONDecode(workContext.getJobTaskList());},
-    "getTaskCompletedListByJob": function(){return library.JSONDecode(workContext.getJobTaskCompletedList());},
-    "getReadListByJob": function(){return library.JSONDecode(workContext.getJobReadList());},
-    "getReadCompletedListByJob": function(){return library.JSONDecode(workContext.getJobReadCompletedList());},
+    "getTask": function(){return JSON.parse(workContext.getTaskOrTaskCompleted());},
+    "getWork": function(){return JSON.parse(workContext.getWork());},
+    "getActivity": function(){return JSON.parse(workContext.getActivity());},
+    "getTaskList": function(){return JSON.parse(workContext.getTaskList());},
+    "getTaskCompletedList": function(){return JSON.parse(workContext.getTaskCompletedList());},
+    "getReadList": function(){return JSON.parse(workContext.getReadList());},
+    "getReadCompletedList": function(){return JSON.parse(workContext.getReadCompletedList());},
 
-    "getReviewList": function(){return library.JSONDecode(workContext.getReviewList());},
-    "getWorkLogList": function(){return library.JSONDecode(workContext.getWorkLogList());},
-    "getAttachmentList": function(){return library.JSONDecode(workContext.getAttachmentList());},
-    "getRouteList": function(){return library.JSONDecode(workContext.getRouteList());},
+    "getJobTaskList": function(){return JSON.parse(workContext.getJobTaskList());},
+    "getJobTaskCompletedList": function(){return JSON.parse(workContext.getJobTaskCompletedList());},
+    "getJobReadList": function(){return JSON.parse(workContext.getJobReadList());},
+    "getJobReadCompletedList": function(){return JSON.parse(workContext.getJobReadCompletedList());},
+    "getTaskListByJob": function(){return JSON.parse(workContext.getJobTaskList());},
+    "getTaskCompletedListByJob": function(){return JSON.parse(workContext.getJobTaskCompletedList());},
+    "getReadListByJob": function(){return JSON.parse(workContext.getJobReadList());},
+    "getReadCompletedListByJob": function(){return JSON.parse(workContext.getJobReadCompletedList());},
+
+    "getReviewList": function(){return JSON.parse(workContext.getReviewList());},
+    "getWorkLogList": function(){return JSON.parse(workContext.getWorkLogList());},
+    "getAttachmentList": function(){return JSON.parse(workContext.getAttachmentList());},
+    "getRouteList": function(){return JSON.parse(workContext.getRouteList());},
     "setTitle": function(title){workContext.setTitle(title);},
 
     "getControl": function(){return null;},
@@ -154,7 +155,7 @@ var includedScripts = [];
 var _self = this;
 var include = function(name, callback){
     if (includedScripts.indexOf(name)==-1){
-        var json = library.JSONDecode(_self.workContext.getScript(name, includedScripts));
+        var json = JSON.parse(_self.workContext.getScript(name, includedScripts));
         includedScripts = includedScripts.concat(json.importedList);
         if (json.text){
             //MWF.Macro.exec(json.data.text, bind);
@@ -178,7 +179,7 @@ var Dict =  function(name){
     var dictionary = _self.dictionary;
     this.name = name;
     this.get = function(path){
-        return library.JSONDecode(dictionary.select(this.name, path));
+        return JSON.parse(dictionary.select(this.name, path));
     };
     this.set = function(path, value){
         try {
@@ -883,13 +884,14 @@ bind.response = (function(){
 bind.assginData = {
     "data": null,
     "get": function(){
-        this.data = JSON.decode(assginData.get());
+        this.data = JSON.decode(assignData.get());
         return this.data;
     },
     "set": function(data){
-        assginData.set(JSON.encode(data || this.data));
+        assignData.set(JSON.encode(data || this.data));
     }
 };
+bind.assignData = bind.assginData;
 bind.expire = {
     "setHour": function(hour){
         try{expire.setHour(hour);}catch(e){}

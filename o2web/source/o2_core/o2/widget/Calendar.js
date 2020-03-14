@@ -25,8 +25,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	initialize: function(node, options){
 		Locale.use("zh-CHS");
-		this.options.defaultTime = ""+this.options.baseDate.getHours()+":"+this.options.baseDate.getMinutes()+":"+this.options.baseDate.getSeconds();
 		this.setOptions(options);
+		this.options.defaultTime = ""+this.options.baseDate.getHours()+":"+this.options.baseDate.getMinutes()+":"+this.options.baseDate.getSeconds();
 
 		this.path = o2.session.path+"/widget/$Calendar/";
 		this.cssPath = o2.session.path+"/widget/$Calendar/"+this.options.style+"/css.wcss";
@@ -87,6 +87,41 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		//this.move = true;
 		//this.containerDrag = new Drag.Move(this.container);
+
+		if( layout.mobile ){
+			this.maskNode = new Element("div.maskNode",{
+				styles : {
+					"width": "100%",
+					"height": "100%",
+					"opacity": 0.6,
+					"position": "absolute",
+					"background-color": "#CCC",
+					"top": "0px",
+					"left": "0px",
+					"z-index" : 150,
+					"-webkit-user-select": "none",
+					"-moz-user-select": "none",
+					"user-select" : "none"
+				},
+				events : {
+					"touchmove" : function(ev){
+						ev.stopPropagation();
+						ev.preventDefault();
+					}
+				}
+			}).inject((this.options.target) || $(document.body));
+			this.container.addEvents({
+				"touchmove" : function(ev){
+					ev.stopPropagation();
+					ev.preventDefault();
+				},
+				"touchend" : function(ev){
+					ev.stopPropagation();
+					//ev.preventDefault();
+				}
+			})
+		}
+
 	},
 	addEvents: function(){
 		this.node.addEvent("focus", function(){
@@ -108,12 +143,14 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.changeView();
 		}.bind(this));
 
-		this.titleNode.addEvent("mousedown", function(){
-			this.move();
-		}.bind(this));
-		this.titleNode.addEvent("mouseup", function(){
-			this.unmove();
-		}.bind(this));
+		if( !layout.mobile ){
+			this.titleNode.addEvent("mousedown", function(){
+				this.move();
+			}.bind(this));
+			this.titleNode.addEvent("mouseup", function(){
+				this.unmove();
+			}.bind(this));
+		}
 
 		document.addEvent('mousedown', this.outsideClick.bind(this));
 	},
@@ -175,6 +212,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var month = this.currentTextNode.retrieve("month");
 
 		this.showMonth(year, month);
+		this.fireEvent("changeViewToMonth");
 	},
 	changeViewToYear: function(year){
 		this.currentView = "year";
@@ -190,6 +228,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if (this.contentYearTable) this.contentYearTable.setStyle("display", "table");
 
 		this.showYear(year);
+		this.fireEvent("changeViewToYear");
 	},
 	changeViewToDay: function(year, month){
 		this.currentView = "day";
@@ -206,6 +245,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if (this.contentTable) this.contentTable.setStyle("display", "table");
 
 		this.showDay(year, month);
+
+		this.fireEvent("changeViewToDay");
 	},
 	getNext: function(){
 		switch (this.currentView) {
@@ -271,6 +312,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this._setDayTitle(null, thisYear, thisMonth);
 		this._setDayDate(null,thisYear, thisMonth);
+
+		this.fireEvent("changeViewToDay");
 	},
 
 	getPrevDay: function(){
@@ -285,6 +328,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this._setDayTitle(null, thisYear, thisMonth);
 		this._setDayDate(null,thisYear, thisMonth);
+		this.fireEvent("changeViewToDay");
 	},
 
 	getNextMonth: function(){
@@ -295,6 +339,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisYear = date.getFullYear();
 
 		this.showMonth(thisYear);
+		this.fireEvent("changeViewToMonth");
 	},
 	getPrevMonth: function(){
 		var year = this.currentTextNode.retrieve("year");
@@ -304,6 +349,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisYear = date.getFullYear();
 
 		this.showMonth(thisYear);
+		this.fireEvent("changeViewToMonth");
 	},
 	getNextYear: function(){
 		var year = this.currentTextNode.retrieve("year");
@@ -313,15 +359,18 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisYear = date.getFullYear();
 
 		this.showYear(thisYear);
+		this.fireEvent("changeViewToYear");
 	},
 	getPrevYear: function(){
 		var year = this.currentTextNode.retrieve("year");
 		var date = new Date(year, 1, 1);
+
 		date.increment("year", 0-this.yearLength)
 
 		var thisYear = date.getFullYear();
 
 		this.showYear(thisYear);
+		this.fireEvent("changeViewToYear");
 	},
 
 	outsideClick: function(e) {
@@ -349,6 +398,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				Object.each(layout.desktop.offices, function(office){
 					office.show();
 				});
+			}
+			if( this.maskNode ){
+				this.maskNode.hide();
 			}
 //			}.bind(this));
 			this.fireEvent("hide");
@@ -392,7 +444,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 //			}
 			this.container.setStyle("display", "block");
 
-			if (this.container.position){
+			if (this.container.position ){
 				this.container.position({
 					relativeTo: this.node,
 					position: 'bottomLeft',
@@ -449,6 +501,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						office.hide();
 					}
 				}.bind(this));
+			}
+			if( this.maskNode ){
+				this.maskNode.show();
 			}
 
 //			this.morph.start({"opacity": 1}).chain(function(){
@@ -592,26 +647,35 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			if (firstDate.toString() == this.options.baseDate.toString()){
 				tds[i].addClass("current_"+this.options.style);
 				tds[i].setStyles(this.css["current_"+this.options.style]);
-
+				tds[i].removeClass("past_"+this.options.style);
 				tds[i].removeClass("gray_"+this.options.style);
 				tds[i].setStyle("border", "1px solid #FFF");
 			}else if (firstDate.getMonth()!=baseDate.getMonth()){
 				tds[i].addClass("gray_"+this.options.style);
 				tds[i].setStyles(this.css["gray_"+this.options.style]);
 				tds[i].removeClass("current_"+this.options.style);
+				tds[i].removeClass("past_"+this.options.style);
 				tds[i].setStyle("border", "1px solid #FFF");
 			}else{
 				tds[i].setStyles(this.css["normal_"+this.options.style]);
 				tds[i].removeClass("current_"+this.options.style);
 				tds[i].removeClass("gray_"+this.options.style);
+				tds[i].removeClass("past_"+this.options.style);
 				tds[i].setStyle("border", "1px solid #FFF");
 			}
 			var tmp = firstDate.clone();
 			if (tmp.clearTime().toString() == this.today.clearTime().toString()){
-				//tds[i].addClass("today_"+this.options.style);
+				tds[i].addClass("today_"+this.options.style);
+				tds[i].removeClass("past_"+this.options.style);
 				tds[i].setStyles(this.css["today_"+this.options.style]);
 				tds[i].setStyle("border", "0px solid #AAA");
 			}
+			if (tmp.diff(this.today)>0){
+				if (this.css["past_"+this.options.style]) tds[i].setStyles(this.css["past_"+this.options.style]);
+				tds[i].addClass("past_"+this.options.style);
+			}
+
+
 			tds[i].store("dateValue", firstDate.toString())
 			firstDate.increment("day", 1);
 		}
@@ -646,7 +710,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisSeconds = (times[2]) ? times[2] : "0";
 
 		this._setTimeTitle(null, date);
-		this._setTimeDate(null, thisHour, thisMinutes, thisSeconds);
+
+		if( this.options.style.indexOf("mobile") > -1 ){
+			this._setTimeDate_mobile(null, thisHour, thisMinutes, thisSeconds);
+		}else{
+			this._setTimeDate(null, thisHour, thisMinutes, thisSeconds);
+		}
+
 
 		//	if (this.move){
 		//		this.move = false;
@@ -670,6 +740,116 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		thisNode.set("text", text);
 		thisNode.store("date", date);
+	},
+	_setTimeDate_mobile: function(node, h, m, s){
+		var _self = this;
+
+		this.itmeHNode = this.contentTimeTable.getElement(".MWF_calendar_time_h");
+		this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m");
+		this.itmeSNode = this.contentTimeTable.getElement(".MWF_calendar_time_s");
+
+
+		this.showActionNode = this.contentTimeTable.getElement(".MWF_calendar_action_show");
+
+		var calendar = this;
+
+		if( !this.hMobileSelect ){
+			for( var i=0; i<24; i++ ){
+				new Element("div",{
+					"text" : this.addZero(i, 2 ),
+					"styles" : this.css.calendarTimeSelectItem_mobile
+				}).inject( this.itmeHNode );
+			}
+			this.selectedsHour = this.addZero(h, 2 );
+			this.hMobileSelect = new o2.Calendar.MobileSelect( this.itmeHNode.getParent(), {
+				"lineHeight" : 40,
+				"itemSize" : 24,
+				"itemIndex" : parseInt(h),
+				"onChange": function(value){
+					this.selectedHour = this.addZero(value, 2 );
+					//this.showHNode.set("text", this.addZero(i, 2 ));
+					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+				}.bind(this)
+			});
+			this.hMobileSelect.load();
+		}
+
+		if( !this.mMobileSelect ) {
+			for (var i = 0; i < 60; i++) {
+				new Element("div", {
+					"text": this.addZero(i, 2),
+					"styles": this.css.calendarTimeSelectItem_mobile
+				}).inject(this.itmeMNode);
+			}
+			this.selectedMinute = this.addZero(m, 2);
+			this.mMobileSelect = new o2.Calendar.MobileSelect(this.itmeMNode.getParent(), {
+				"lineHeight": 40,
+				"itemSize": 60,
+				"itemIndex": parseInt(m),
+				"onChange": function (value) {
+					this.selectedMinute = this.addZero(value, 2);
+					//this.showHNode.set("text", this.addZero(i, 2 ));
+					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+				}.bind(this)
+			});
+			this.mMobileSelect.load();
+		}
+
+		if(this.options.secondEnable ){
+			if(!this.sMobileSelect){
+				for( var i=0; i<60; i++ ){
+					new Element("div",{
+						"text" : this.addZero(i, 2 ),
+						"styles" : this.css.calendarTimeSelectItem_mobile
+					}).inject( this.itmeSNode );
+				}
+				this.selectedSecond = this.addZero(s, 2 );
+				this.sMobileSelect = new o2.Calendar.MobileSelect( this.itmeSNode.getParent(), {
+					"lineHeight" : 40,
+					"itemSize" : 60,
+					"itemIndex" : parseInt(s),
+					"onChange": function(value){
+						this.selectedSecond = this.addZero(value, 2 );
+						//this.showHNode.set("text", this.addZero(i, 2 ));
+						//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+					}.bind(this)
+				});
+				this.sMobileSelect.load();
+			}
+		}else{
+			this.itmeSNode.hide();
+
+		}
+
+
+		if( this.options.secondEnable ){
+			this.contentTimeTable.getElements(".calendarTimeWheel_mobile").setStyle("width","33.3%");
+		}else{
+			this.contentTimeTable.getElements(".calendarTimeWheel_mobile").setStyle("width","50%");
+		}
+
+		if( this.options.secondEnable && this.showSNode ){
+			this.showSNode.set("text", this.addZero( s.toInt(), 2) );
+		}
+
+		if (!this.okButton){
+			this.okButton = new Element("button", {"text": "确定"}).inject(this.showActionNode);
+			this.okButton.addEvent("click", function(){
+				this._selectTime();
+				this.hide();
+			}.bind(this));
+			this.okButton.setStyles(this.css.calendarActionShowButton_mobile_ok);
+		}
+
+		if (!this.clearButton){
+			this.clearButton = new Element("button", {"text": "清除"}).inject(this.showActionNode);
+			this.clearButton.addEvent("click", function(){
+				this.node.set("value", "");
+				this.fireEvent("clear");
+				this.hide();
+			}.bind(this));
+			this.clearButton.setStyles(this.css.calendarActionShowButton_mobile_cancel);
+		}
 	},
 	_setTimeDate: function(node, h, m, s){
 		if( !this.options.secondEnable ){
@@ -697,40 +877,40 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		var calendar = this;
 
-		if (COMMON.Browser.Platform.isMobile){
-			this.itmeHNode.empty();
-			this.itmeHNode.removeClass("calendarTimeSlider");
-			this.itmeHNode.setStyles(this.css.calendarTimeSliderNoStyle);
-			var sel = new Element("select").inject(this.itmeHNode);
-			for (i=0; i<=23; i++){
-				var v = (i<10) ? "0"+i: i;
-				var o = new Element("option", {
-					"value": v,
-					"text": v
-				}).inject(sel);
-				if (h==i) o.set("selected", true);
-			}
-			sel.addEvent("change", function(){
-				calendar.showHNode.set("text", this.options[this.selectedIndex].get("value"));
-			});
-			this.showHNode.set("text", sel.options[sel.selectedIndex].get("value"));
-
-			this.itmeMNode.empty();
-			this.itmeMNode.removeClass("calendarTimeSlider");
-			this.itmeMNode.setStyles(this.css.calendarTimeSliderNoStyle);
-			sel = new Element("select").inject(this.itmeMNode);
-			for (i=0; i<=59; i++){
-				var v = (i<10) ? "0"+i: i;
-				var o = new Element("option", {
-					"value": v,
-					"text": v
-				}).inject(sel);
-				if (m==i) o.set("selected", true);
-			}
-			sel.addEvent("change", function(){
-				calendar.showMNode.set("text", this.options[this.selectedIndex].get("value"));
-			});
-			this.showMNode.set("text", sel.options[sel.selectedIndex].get("value"));
+		if ( COMMON.Browser.Platform.isMobile ){
+			//this.itmeHNode.empty();
+			//this.itmeHNode.removeClass("calendarTimeSlider");
+			//this.itmeHNode.setStyles(this.css.calendarTimeSliderNoStyle);
+			//var sel = new Element("select").inject(this.itmeHNode);
+			//for (i=0; i<=23; i++){
+			//	var v = (i<10) ? "0"+i: i;
+			//	var o = new Element("option", {
+			//		"value": v,
+			//		"text": v
+			//	}).inject(sel);
+			//	if (h==i) o.set("selected", true);
+			//}
+			//sel.addEvent("change", function(){
+			//	calendar.showHNode.set("text", this.options[this.selectedIndex].get("value"));
+			//});
+			//this.showHNode.set("text", sel.options[sel.selectedIndex].get("value"));
+            //
+			//this.itmeMNode.empty();
+			//this.itmeMNode.removeClass("calendarTimeSlider");
+			//this.itmeMNode.setStyles(this.css.calendarTimeSliderNoStyle);
+			//sel = new Element("select").inject(this.itmeMNode);
+			//for (i=0; i<=59; i++){
+			//	var v = (i<10) ? "0"+i: i;
+			//	var o = new Element("option", {
+			//		"value": v,
+			//		"text": v
+			//	}).inject(sel);
+			//	if (m==i) o.set("selected", true);
+			//}
+			//sel.addEvent("change", function(){
+			//	calendar.showMNode.set("text", this.options[this.selectedIndex].get("value"));
+			//});
+			//this.showMNode.set("text", sel.options[sel.selectedIndex].get("value"));
 		}else{
 			var hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
 				range: [0, 23],
@@ -810,13 +990,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	_selectTime: function(){
 		var date = this.currentTextNode.retrieve("date");
 
-		var h = this.showHNode.get("text");
-		var m = this.showMNode.get("text");
+		var h = this.selectedHour || this.showHNode.get("text");
+		var m = this.selectedMinute || this.showMNode.get("text");
 		date.setHours(h);
 		date.setMinutes(m);
 
-		if( this.options.secondEnable && this.showSNode ){
-			var s = this.showSNode.get("text");
+		if( this.options.secondEnable && ( this.selectedSecond || this.showSNode) ){
+			var s = this.selectedSecond || this.showSNode.get("text");
 			date.setSeconds(s);
 		}
 
@@ -845,6 +1025,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	_selectDate: function(dateStr){
 		var date = new Date(dateStr);
+		this.options.baseDate = date;
 		var dv = date.format(this.options.format);
 		if (this.options.isTime){
 			this.changeViewToTime(date);
@@ -945,7 +1126,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
 						break;
 					case "year" :
-						calendar.changeViewToMonth(this.retrieve("year"))
+						calendar.changeViewToMonth(this.retrieve("year"));
 						break;
 					case "time" :
 						//nothing
@@ -976,27 +1157,59 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					tds.setStyles(this.css.calendarYearsContentTd);
 					break;
 				case "time" :
+					if( this.options.style.indexOf("mobile") > -1 ){
 
-					var nodes = table.getElements(".calendarTimeArea");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeArea);
+						var nodes = table.getElements(".calendarTimeContent_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeContent_mobile);
 
-					nodes = table.getElements(".calendarTimeSlider");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeSlider);
+						nodes = table.getElements(".calendarTimeFixWidthNode_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeFixWidthNode_mobile);
 
-					nodes = table.getElements(".calendarTimeSliderKnob");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeSliderKnob);
+						nodes = table.getElements(".calendarTimeWheels_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeWheels_mobile);
 
-					nodes = table.getElements(".calendarTimeShow");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeShow);
+						nodes = table.getElements(".calendarTimeWheel_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeWheel_mobile);
 
-					nodes = table.getElements(".calendarTimeShowItem");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeShowItem);
+						nodes = table.getElements(".calendarTimeSelectContainer_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSelectContainer_mobile);
 
-					var node = table.getElement(".MWF_calendar_action_show");
-					if (node){
-						node.setStyles(this.css.calendarActionShow);
-						var buttons = node.getElements("button");
-						buttons.setStyles(this.css.calendarActionShowButton);
+						nodes = table.getElements(".calendarTimeSelectLine_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSelectLine_mobile);
+
+						nodes = table.getElements(".calendarTimeShadowMask_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShadowMask_mobile);
+
+						var node = table.getElement(".MWF_calendar_action_show");
+						if (node){
+							node.setStyles(this.css.calendarActionShow);
+							//var buttons = node.getElements("button");
+							//buttons.setStyles(this.css.calendarActionShowButton);
+						}
+
+					}else{
+						var nodes = table.getElements(".calendarTimeArea");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeArea);
+
+						nodes = table.getElements(".calendarTimeSlider");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSlider);
+
+						nodes = table.getElements(".calendarTimeSliderKnob");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSliderKnob);
+
+						nodes = table.getElements(".calendarTimeShow");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShow);
+
+						nodes = table.getElements(".calendarTimeShowItem");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShowItem);
+
+						var node = table.getElement(".MWF_calendar_action_show");
+						if (node){
+							node.setStyles(this.css.calendarActionShow);
+							var buttons = node.getElements("button");
+							buttons.setStyles(this.css.calendarActionShowButton);
+						}
+
 					}
 
 					break;
@@ -1027,27 +1240,56 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					tds.setStyles(this.css.calendarYearsContentTd);
 					break;
 				case "time" :
+					if( this.options.style.indexOf("mobile") > -1 ){
+						var nodes = table.getElements(".calendarTimeContent_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeContent_mobile);
 
-					var nodes = table.getElements(".calendarTimeArea");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeArea);
+						nodes = table.getElements(".calendarTimeFixWidthNode_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeFixWidthNode_mobile);
 
-					nodes = table.getElements(".calendarTimeSlider");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeSlider);
+						nodes = table.getElements(".calendarTimeWheels_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeWheels_mobile);
 
-					nodes = table.getElements(".calendarTimeSliderKnob");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeSliderKnob);
+						nodes = table.getElements(".calendarTimeWheel_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeWheel_mobile);
 
-					nodes = table.getElements(".calendarTimeShow");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeShow);
+						nodes = table.getElements(".calendarTimeSelectContainer_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSelectContainer_mobile);
 
-					nodes = table.getElements(".calendarTimeShowItem");
-					if (nodes.length) nodes.setStyles(this.css.calendarTimeShowItem);
+						nodes = table.getElements(".calendarTimeSelectLine_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSelectLine_mobile);
 
-					var node = table.getElement(".MWF_calendar_action_show");
-					if (node){
-						node.setStyles(this.css.calendarActionShow);
-						var buttons = node.getElements("button");
-						buttons.setStyles(this.css.calendarActionShowButton);
+						nodes = table.getElements(".calendarTimeShadowMask_mobile");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShadowMask_mobile);
+
+						var node = table.getElement(".MWF_calendar_action_show");
+						if (node){
+							node.setStyles(this.css.calendarActionShow);
+							//var buttons = node.getElements("button");
+							//buttons.setStyles(this.css.calendarActionShowButton);
+						}
+					}else{
+						var nodes = table.getElements(".calendarTimeArea");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeArea);
+
+						nodes = table.getElements(".calendarTimeSlider");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSlider);
+
+						nodes = table.getElements(".calendarTimeSliderKnob");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeSliderKnob);
+
+						nodes = table.getElements(".calendarTimeShow");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShow);
+
+						nodes = table.getElements(".calendarTimeShowItem");
+						if (nodes.length) nodes.setStyles(this.css.calendarTimeShowItem);
+
+						var node = table.getElement(".MWF_calendar_action_show");
+						if (node){
+							node.setStyles(this.css.calendarActionShow);
+							var buttons = node.getElements("button");
+							buttons.setStyles(this.css.calendarActionShowButton);
+						}
 					}
 
 					break;
@@ -1060,4 +1302,125 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		return table;
 	}
 
+});
+
+
+o2.Calendar.MobileSelect = new Class({
+	Implements: [Options, Events],
+	options: {
+		"lineHeight" : 40, //每个item的高度
+		"itemSize" : 0, //item数量
+		"ratio" : 1, //滑动距离倍率
+		"itemIndex" : 0
+	},
+	initialize: function (wheelNode, options) {
+		this.setOptions( options );
+		this.wheelNode = wheelNode;
+		this.sliderNode = wheelNode.getFirst();
+	},
+	load : function(){
+		var _this = this;
+		this.curDistance = 0;
+		this.sliderNode.style.transform = "translate3d(0px, 80px, 0px)";
+		this.wheelNode.addEventListener('touchstart', function () {
+			_this.touch(event);
+		}, false);
+		this.wheelNode.addEventListener('touchend', function () {
+			_this.touch(event);
+		}, false);
+		this.wheelNode.addEventListener('touchmove', function () {
+			_this.touch(event);
+		}, false);
+		this.locatePostion( this.options.itemIndex );
+	},
+	touch: function (ev) {
+		var sliderNode = this.sliderNode;
+		ev = ev || window.event;
+		switch (ev.type) {
+			case "touchstart":
+				this.startTime = new Date();
+				this.startY = event.touches[0].clientY;
+				this.oldMoveY = this.startY;
+				break;
+			case "touchend":
+				this.moveEndY = event.changedTouches[0].clientY;
+
+				this.overTime = new Date();
+				var speed = (this.moveEndY - this.startY) / ( this.overTime - this.startTime );
+				var ratio = 1;
+				if( Math.abs(speed) > 0.7 ){
+					ratio = 5;
+				}else if( Math.abs(speed) < 0.2 ){
+					ratio = 0.7
+				}
+
+				this.offsetSum = ( this.moveEndY - this.startY ) * this.options.ratio * ratio;
+				this.updateCurDistance();
+				this.curDistance = this.fixPosition(this.curDistance);
+				this.movePosition( this.curDistance );
+				this.oversizeBorder = - ( this.options.itemSize - 3) * this.options.lineHeight;
+				if (this.curDistance + this.offsetSum > 2 * this.options.lineHeight) {
+					this.curDistance = 2 * this.options.lineHeight;
+					setTimeout(function () {
+						this.movePosition( this.curDistance );
+					}.bind(this), 100);
+				} else if (this.curDistance + this.offsetSum < this.oversizeBorder) {
+					this.curDistance = this.oversizeBorder;
+					setTimeout(function () {
+						this.movePosition( this.curDistance );
+					}.bind(this), 100);
+				}
+				this.fireEvent( "change", [this.getCurIndex()] );
+				break;
+			case "touchmove":
+				ev.preventDefault();
+				this.moveY = event.touches[0].clientY;
+				this.overTime = new Date();
+				var speed = (this.moveY - this.oldMoveY) / ( this.overTime - this.oldOverTime );
+				var ratio = 1;
+				if( Math.abs(speed) > 0.7 ){
+					ratio = 5;
+				}else if( Math.abs(speed) < 0.2 ){
+					ratio = 0.7
+				}
+
+				this.offset = ( this.moveY - this.oldMoveY ) * this.options.ratio * ratio;
+				this.updateCurDistance();
+				this.curDistance = this.curDistance + this.offset;
+				this.movePosition( this.curDistance );
+				this.oldMoveY = this.moveY;
+				this.oldOverTime = this.overTime;
+				break;
+		}
+	},
+	calcDistance: function (index) {
+		return 2 * this.options.lineHeight - index * this.options.lineHeight;
+	},
+	setCurDistance: function ( index ) {
+		this.curDistance = this.calcDistance( index );
+		this.movePosition( this.curDistance );
+	},
+	fixPosition: function (distance) {
+		return -(this.getIndex(distance) - 2) * this.options.lineHeight;
+	},
+	getCurIndex : function(){
+		return this.getIndex( this.curDistance );
+	},
+	getIndex: function (distance) {
+		return Math.round((2 * this.options.lineHeight - distance) / this.options.lineHeight);
+	},
+	movePosition: function ( distance) {
+		this.sliderNode.style.webkitTransform = 'translate3d(0,' + distance + 'px, 0)';
+		this.sliderNode.style.transform = 'translate3d(0,' + distance + 'px, 0)';
+	},
+	locatePostion: function ( index ) {
+		this.curDistance = this.calcDistance(index);
+		this.movePosition( this.curDistance );
+	},
+	updateCurDistance: function () {
+		this.curDistance = parseInt(this.sliderNode.style.transform.split(',')[1]);
+	},
+	getDistance: function () {
+		return parseInt(this.sliderNode.style.transform.split(',')[1]);
+	}
 });

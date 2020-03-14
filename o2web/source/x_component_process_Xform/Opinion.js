@@ -114,14 +114,14 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             }.bind(this));
         }
 
-        // if (this.json.isAudio!=="no"){
-        //     if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
-        //         this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
-        //         this.audioRecordAction.addEvent("click", function(){
-        //             this.audioRecord();
-        //         }.bind(this));
-        //     }
-        // }
+        if (this.json.isAudio!=="no"){
+            if (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia){
+                this.audioRecordAction = new Element("div", {"styles": this.form.css.inputOpinionAudioRecordAction, "text": MWF.xApplication.process.Work.LP.audioRecord}).inject(this.mediaActionArea);
+                this.audioRecordAction.addEvent("click", function(){
+                    this.audioRecord();
+                }.bind(this));
+            }
+        }
 
         this.node.addEvent("change", function(){
             this._setBusinessData(this.getInputData());

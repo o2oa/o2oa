@@ -1,0 +1,75 @@
+{
+	"tabNodeContainer": {
+	  "height": "100px",
+	  "background": "#E8ECEE",
+	  "border-top": "0px solid #CCC",
+	  "border-bottom": "0px solid #CCC",
+	  "margin-right" : "-2px"
+	},
+	"contentNodeContainer": {
+	  "line-height": "normal",
+	  "clear": "both",
+	  "overflow": "hidden"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+	  "position": "relative",
+	  "margin-right": "0px",
+	  "float": "left",
+	  "height": "96px",
+	  "cursor": "pointer",
+	  "min-width": "70px",
+	  "background": "#E8ECEE",
+	  "border-bottom": "4px solid #E8ECEE",
+	  "border-right": "2px solid #CFD9DF",
+	  "border-radius" : "0px"
+//	  "width" : "calc(33.3% - 2px)"
+	},
+	"tabTextNode": {
+	  "color": "#000000",
+	  "line-height": "100px",
+	  "font-weight" : "normal",
+	  "text-align": "center",
+	  "margin-right": "4px",
+	  "margin-top": "0px",
+	  "margin-left": "4px",
+	  "font-size": "36px"
+	},
+	"tabCloseNode": {
+		"height": "24px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	},
+	"tabNodeCurrent": {
+	  "position": "relative",
+	  "margin-top": "0px",
+	  "margin-right": "0px",
+	  "float": "left",
+	  "height": "96px",
+	  "min-width": "70px",
+	  "background": "#ffffff",
+	  "border-bottom": "4px solid #1D1E1F",
+	  "border-right": "2px solid #CFD9DF",
+	  "border-radius" : "0px"
+//	  "width" : "calc(33.3% - 2px)"
+	},
+	"tabTextNodeCurrent": {
+	  "color": "#000000",
+	  "line-height": "100px",
+	  "font-weight" : "normal",
+	  "text-align": "center",
+	  "margin-right": "4px",
+	  "margin-left": "4px",
+	  "font-size": "36px"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "24px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	}
+}

@@ -8,7 +8,8 @@ MWF.xApplication.Selector.QueryTable = new Class({
         "title": MWF.xApplication.Selector.LP.selectTable,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
@@ -118,7 +119,12 @@ MWF.xApplication.Selector.QueryTable.ItemSelected = new Class({
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
-                return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+                //return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+                if( item.data.id && this.data.id){
+                    return item.data.id === this.data.id;
+                }else{
+                    return item.data.name === this.data.name;
+                }
             }.bind(this));
             this.items = items;
             if (items.length){

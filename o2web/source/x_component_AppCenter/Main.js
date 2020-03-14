@@ -163,7 +163,6 @@ MWF.xApplication.AppCenter.Main = new Class({
     },
 
     createApplication: function(target,id){
-
         if(id) this.curAppId = id;
         if(target) this.content = target;
         new MWF.xApplication.AppCenter.Exporter(this);
@@ -375,13 +374,16 @@ MWF.xApplication.AppCenter.Exporter = new Class({
                                 if (_self.structureRes.isRunning()){_self.structureRes.cancel();}
                                 _self.structureRes = null;
                             }
-                            MWF.release(_self);
                         }
                     }
                 ],
                 "onPostShow": function(){
                     if (callback) callback();
-                }.bind(this)
+                }.bind(this),
+                "onPostClose": function() {
+                    _self.app.fireEvent("exporterClose");
+                    MWF.release(_self);
+                }
             });
             this.dlg.show();
         }.bind(this));

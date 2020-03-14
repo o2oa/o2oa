@@ -317,15 +317,15 @@
     "columnItemCategoryContentNode" : {
         "overflow" : "hidden",
         "width" : "220px",
-        "height" : "19px",
-        "padding" : "3px 10px 5px 10px",
+        "height" : "22px",
+        "margin" : "3px 10px 5px 10px",
         "font-size" : "13px"
     },
     "columnItemFormContentNode" : {
         "overflow" : "hidden",
         "width" : "220px",
-        "height" : "19px",
-        "padding" : "3px 10px 5px 10px",
+        "height" : "22px",
+        "margin" : "3px 10px 5px 10px",
         "font-size" : "13px"
     },
     "columnItemBottomItemNode" : {

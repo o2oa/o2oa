@@ -1,5 +1,5 @@
 <div style="background-color: #FFF; overflow: hidden">
-	<div title="基本" class="MWFTab">
+    <div title="基本" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">标识:</td>
@@ -47,8 +47,8 @@
                 <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
-                <!--<td class="editTableTitle">最大行数:</td>-->
-                <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
+            <!--<td class="editTableTitle">最大行数:</td>-->
+            <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
             <!--</tr>-->
         </table>
 
@@ -67,28 +67,28 @@
                 </td>
             </tr>
             <!--<tr>-->
-                <!--<td class="editTableTitle">执行部门:</td>-->
-                <!--<td class="editTableValue">-->
-                    <!--<div class="MWFSelectDepartment" name="availableDepartmentList"></div>-->
-                <!--</td>-->
+            <!--<td class="editTableTitle">执行部门:</td>-->
+            <!--<td class="editTableValue">-->
+            <!--<div class="MWFSelectDepartment" name="availableDepartmentList"></div>-->
+            <!--</td>-->
             <!--</tr>-->
             <!--<tr>-->
-                <!--<td class="editTableTitle">执行公司:</td>-->
-                <!--<td class="editTableValue">-->
-                    <!--<div class="MWFSelectCompany" name="availableCompanyList"></div>-->
-                <!--</td>-->
+            <!--<td class="editTableTitle">执行公司:</td>-->
+            <!--<td class="editTableValue">-->
+            <!--<div class="MWFSelectCompany" name="availableCompanyList"></div>-->
+            <!--</td>-->
             <!--</tr>-->
         </table>
 
 
 
-		<!--<div class="MWFApplicationSelect" title="选择应用"></div>-->
-		<!--<div class="MWFProcessSelect" title="选择流程"></div>-->
+        <!--<div class="MWFApplicationSelect" title="选择应用"></div>-->
+        <!--<div class="MWFProcessSelect" title="选择流程"></div>-->
         <!--<div class="MWFCompanySelect" title="选择公司"></div>-->
         <!--<div class="MWFDepartmentSelect" title="选择部门"></div>-->
         <!--<div class="MWFPersonSelect" title="选择人员"></div>-->
         <!--<div class="MWFIdentitySelect" title="选择身份"></div>-->
-	</div>
+    </div>
 
 
     <div title="范围"  class="MWFTab">
@@ -153,7 +153,14 @@
                     <td class="editTableValue">
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>信息类
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>数据类
-<!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
+                        <!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">返回草稿:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{($.data.where.draft)?'checked':''} type="radio" value="true"/>是
+                        <input class="editTableRadio" name="text{$.id}*data.where.draft" text{(!$.data.where.draft)?'checked':''} type="radio" value="false"/>否
                     </td>
                 </tr>
                 <tr>
@@ -555,7 +562,7 @@
     </div>
 
 
-	<div title="JSON"  class="MWFTab">
-		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
-	</div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
 </div>

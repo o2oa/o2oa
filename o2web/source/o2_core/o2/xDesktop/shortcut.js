@@ -34,17 +34,18 @@ MWF.shortcut = {
     minDesktop: function(){
         var keys = Object.keys(layout.desktop.apps);
         keys.each(function(key){
-            layout.desktop.apps[key].minSize();
+            if (layout.desktop.apps[key].minSize) layout.desktop.apps[key].minSize();
         });
     },
     maxDesktop: function(){
         var keys = Object.keys(layout.desktop.apps);
         keys.each(function(key){
-            layout.desktop.apps[key].maxSize();
+            if (layout.desktop.apps[key].maxSize) layout.desktop.apps[key].maxSize();
         });
     }
 };
 
+debugger;
 MWF.shortcut.keyboard = new Keyboard({
     defaultEventType: 'keydown',
     events: {

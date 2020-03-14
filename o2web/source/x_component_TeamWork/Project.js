@@ -33,7 +33,6 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.createContentLayout();
 
         this.topBarTabItemTask.click();
-
     },
     createTopBarLayout:function(){
         var _self = this;
@@ -88,12 +87,15 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.topBarTabItemTask.addEvents({
             click:function(){
                 this.topBarTabItemTask.setStyles({"color":"#4A90E2","border-bottom":"2px solid #4A90E2"});
+                this.topBarTabItemStat.setStyles({"color":"","border-bottom":"0px"});
                 this.createTaskLayout();
             }.bind(this)
         });
         this.topBarTabItemStat = new Element("div.topBarTabItemStat",{styles:this.css.topBarTabItemStat,text:this.lp.stat}).inject(this.topBarTabsContainer);
         this.topBarTabItemStat.addEvents({
             click:function(){
+                this.topBarTabItemTask.setStyles({"color":"","border-bottom":"0px"});
+                this.topBarTabItemStat.setStyles({"color":"#4A90E2","border-bottom":"2px solid #4A90E2"});
                 this.createStatLayout();
             }.bind(this)
         });
@@ -259,11 +261,11 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this)
         });
 
-
         if(this.currentProjectGroupData){
             var taskTotal = this.currentProjectGroupData.taskTotal;
             var completedTotal = this.currentProjectGroupData.completedTotal;
             var overtimeTotal = this.currentProjectGroupData.overtimeTotal;
+
             if(taskTotal){
                 var _width = this.naviTopTaskLine.getWidth();
                 var completePixel =_width * (completedTotal / taskTotal);
@@ -272,7 +274,6 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.overLine.setStyles({"width":overPixel+"px"});
             }
         }
-
     },
     createNaviView:function(){
         if(this.naviView) this.naviView.destroy();
@@ -905,6 +906,13 @@ MWF.xApplication.TeamWork.Project = new Class({
     },
     createStatLayout:function(){
 
+        MWF.xDesktop.requireApp("TeamWork", "Stat", function(){
+            var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{
+
+                }
+            );
+            stat.load();
+        }.bind(this));
     },
     test:function(){
 

@@ -121,12 +121,14 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
         this.collectData = null;
         this.personData = null;
         this.tokenData = null;
+        this.portalData = null;
         this.loadDataBack = null;
+        this.publicData = null;
         this.load();
     },
     getData: function(){
         var checkData = function(){
-            if (this.collectData && this.personData &&  this.tokenData){
+            if (this.collectData && this.personData &&  this.tokenData && this.portalData && this.publicData){
                 if (this.loadDataBack){
                     var fun = this.loadDataBack;
                     this.loadDataBack = null;
@@ -144,6 +146,25 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
         }.bind(this));
         this.actions.getToken(function(json){
             this.tokenData = json.data;
+            checkData();
+        }.bind(this));
+        this.actions.getPortal(function(json){
+            this.portalData = json.data;
+            checkData();
+        }.bind(this));
+        //o2.UD.deletePublicData("faceKeys");
+        o2.UD.getPublicData("faceKeys", function(json){
+            if (json){
+                if (json["api-key"]){
+                    json.api_key = json["api-key"];
+                    delete json["api-key"]
+                }
+                if (json["api_secret"]){
+                    json.api_secret = json["api_secret"];
+                    delete json["api_secret"]
+                }
+            }
+            this.publicData = json || {"api": {"api_key":"", "api_secret":""}};
             checkData();
         }.bind(this));
     },

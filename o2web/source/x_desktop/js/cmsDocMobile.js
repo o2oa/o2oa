@@ -10,14 +10,15 @@ o2.addReady(function () {
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
         //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
-
+        MWF.require("MWF.xDesktop.Common", null, false);
         MWF.require("MWF.widget.Mask", null, false);
+
         layout.mask = new MWF.widget.Mask({ "style": "desktop" });
         layout.mask.load();
 
         MWF.require("MWF.xDesktop.Layout", function () {
             MWF.require("MWF.xDesktop.Authentication", null, false);
-
+            MWF.require("MWF.xAction.RestActions", null, false);
             (function () {
                 layout.load = function () {
                     if (this.isAuthentication()) {
@@ -236,9 +237,9 @@ o2.addReady(function () {
                     if (data.isEditor) { //编辑权限
                         isControl = true;
                     }
-                    if (this.options.readonly) { //有值 赋值
-                        this.readonly = this.options.readonly
-                    } else {//没有值 是否新发布
+                    if (this.options.readonly === false) {
+                        this.readonly = false;
+                    } else {
                         this.readonly = true;
                         if (this.document.docStatus === "draft") {
                             this.readonly = false

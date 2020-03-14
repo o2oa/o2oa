@@ -571,7 +571,13 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
     openCMSDocument : function( isEdited ){
         var appId = "cms.Document"+this.data.bundle;
         if (layout.desktop.apps[appId]){
-            layout.desktop.apps[appId].setCurrent();
+            if (!layout.desktop.apps[appId].window){
+                layout.desktop.apps[appId] = null;
+                layout.openApplication(null, layout.desktop.apps[appId].options.name, layout.desktop.apps[appId].options, layout.desktop.apps[appId].options.app, false, this, false);
+            }else{
+                layout.desktop.apps[appId].setCurrent();
+            }
+                //layout.desktop.apps[appId].setCurrent();
         }else {
             var options = {
                 "documentId": this.data.bundle,

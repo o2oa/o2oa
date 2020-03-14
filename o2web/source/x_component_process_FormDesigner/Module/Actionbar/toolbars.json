@@ -118,6 +118,17 @@
     "control": "allowPress",
     "condition": "",
     "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "downloadAll.png",
+    "title": "一键下载",
+    "action": "downloadAll",
+    "text": "一键下载",
+    "id": "action_downloadAll",
+    "control": "",
+    "condition": "",
+    "read": true
   }
 //  {
 //    "type": "MWFToolBarMenu",

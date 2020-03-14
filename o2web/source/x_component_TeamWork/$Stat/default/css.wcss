@@ -1,0 +1,236 @@
+{
+    "formTopNode": {
+        "aaa":"aaa",
+        "color" : "#3587d7",
+        "height": "40px",
+        "background-color": "#eee",
+        "border-top": "1px solid #ddd",
+        "border-bottom": "1px solid #b6b6b6",
+        "border-top-left-radius": "10px",
+        "border-top-right-radius": "10px",
+        "line-height": "40px",
+        "font-size": "14px",
+        "font-weight" : "bold",
+        "padding-left" : "25px",
+        "text-align": "left"
+    },
+    "content":{
+        "width": "100%",
+        "height": "100%",
+        "overflow": "auto",
+        "position" : "relative"
+    },
+    "maskNode": {
+        "background-color": "#666",
+        "opacity": 0.4,
+        "z-index":100
+    },
+    "processNode_from": {
+        "width": "480px",
+        "min-height": "280px",
+        "height": "auto",
+        "z-index":300,
+        "background-color": "#FFF",
+        "overflow": "hidden",
+        "border": "3px solid #666",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 15px #666",
+        "opacity": 0.2,
+        "position": "absolute"
+    },
+    "processNode": {
+        "width": "480px",
+        "min-height": "280px",
+        "height": "auto",
+        "opacity": 1,
+        "overflow": "hidden"
+    },
+    "routeSelectorTile": {
+        "overflow": "hidden",
+        "height": "24px",
+        "line-height": "24px"
+    },
+    "routeSelectorArea": {
+        "overflow": "hidden"
+    },
+
+    "formMaskNode": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0.6,
+        "position": "absolute",
+        "background-color": "#CCC",
+        "top": "0px",
+        "left": "0px"
+    },
+    "formAreaNode": {
+        "position": "absolute",
+        "opacity": 0,
+        "top": "0px"
+    },
+    "formNode": {
+        "background-color": "#FFF",
+        "box-shadow": "0px 0px 10px #999",
+        "border-radius": "10px",
+        "margin": "auto",
+        "border": "1px solid #fff",
+        "overflow": "hidden"
+    },
+
+    "formTopTextNode" : {
+        "font-size": "16px",
+        "float": "left",
+        "width" : "480px",
+        "overflow" : "hidden",
+        "text-overflow" : "ellipsis",
+        "white-space":"nowrap"
+    },
+    "formTopTextNodeTopSetting" : {
+        "font-size": "16px",
+        "float": "left",
+        "width" : "80px",
+        "overflow" : "hidden",
+        "text-overflow" : "ellipsis",
+        "white-space":"nowrap"
+    },
+    "formTopTextNodeImageLink" : {
+        "font-size": "16px",
+        "float": "left",
+        "width" : "280px",
+        "overflow" : "hidden",
+        "text-overflow" : "ellipsis",
+        "white-space":"nowrap"
+    },
+    "formTopCloseActionNode": {
+        "width": "32px",
+        "height": "32px",
+        "float": "right",
+        "padding-left" : "30px",
+        "padding-right" : "10px",
+        "background": "url(/x_component_cms_Document/$Main/default/close.png) no-repeat center 10px",
+        "cursor": "pointer"
+    },
+    "formTopContentNode" : {
+        "float" : "right",
+        "padding-right" : "10px",
+        "text-align" : "right"
+    },
+    "formTopContentTitle" : {
+    },
+    "formTopContentValue" : {
+        "padding-right" : "20px",
+        "font-size": "12px"
+    },
+    "formNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    },
+    "formIconNode": {
+        "width": "47px",
+        "height": "47px"
+    },
+    "formEditNode": {
+        "width": "47px",
+        "height": "47px"
+    },
+    "formContentNode": {
+        "border": "0px solid #666",
+        "width": "100%",
+        "margin": "auto",
+        "font-size": "12px",
+        "color": "#666",
+        "font-family": "Microsoft YaHei",
+        "overflow" : "hidden"
+    },
+    "formTableContainer" : {
+        "margin": "0px 10px",
+        "overflow" : "hidden",
+        "positon" : "static"
+    },
+    "formTableValue14" : {
+        "text-align": "left",
+        "font-size" : "14px"
+    },
+    "formBottomNode" : {
+        "height" : "50px",
+        "line-height" : "50px",
+        "background-color" : "#eee",
+        "overflow" : "hidden",
+        "padding-left" : "20px",
+        "border-bottom-left-radius": "10px",
+        "border-bottom-right-radius": "10px"
+    },
+    "formOkActionNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align" : "center",
+        "width": "90px",
+        "margin-top" : "10px",
+        "margin-right" : "10px",
+        "cursor": "pointer",
+        "float": "right",
+        "font-size": "14px",
+        "font-family": "Microsoft YaHei",
+        "background-color":"#5c97e1",
+        "color": "#FFF",
+        "border-radius" : "3px"
+    },
+    "formCancelActionNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align" : "center",
+        "width": "50px",
+        "margin-top" : "10px",
+        "margin-right" : "10px",
+        "cursor": "pointer",
+        "float": "right",
+        "font-size": "14px",
+        "font-family": "Microsoft YaHei",
+        "background-color":"#fff",
+        "color": "#333",
+        "border-radius" : "3px"
+    },
+    "cancelHotPicture" : {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align" : "center",
+        "width": "70px",
+        "margin-top" : "10px",
+        "margin-right" : "10px",
+        "cursor": "pointer",
+        "float": "right",
+        "font-size": "14px",
+        "font-family": "Microsoft YaHei",
+        "background-color":"#fff",
+        "color": "#333",
+        "border-radius" : "3px"
+    },
+    "iconNode": {
+        "width": "400px",
+        "height": "200px",
+        "float" : "left"
+    },
+    "selectActionNode" : {
+        "float": "left",
+        "background-color": "#FFF",
+        "padding": "4px 14px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer",
+        "margin-right" : "10px"
+    },
+    "changeIconActionNode":{
+        "margin-right": "20px",
+        "float": "left",
+        "background-color": "#FFF",
+        "padding": "4px 14px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+    }
+}

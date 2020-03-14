@@ -38,6 +38,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             "border": "0px"
         }});
 		input.set(this.json.properties);
+        if( this.form.json.textareaDisableResize )input.setStyle("resize","none");
 
         var node = new Element("div", {"styles": {
             "ovwrflow": "hidden",

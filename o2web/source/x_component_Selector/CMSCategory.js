@@ -8,7 +8,8 @@ MWF.xApplication.Selector.CMSCategory = new Class({
         "title": MWF.xApplication.Selector.LP.selectCMSCategory,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -56,7 +57,8 @@ MWF.xApplication.Selector.CMSCategory.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -119,7 +121,26 @@ MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+    },
+    check: function(){
+        if (this.selector.items.length){
+            var items = this.selector.items.filter(function(item, index){
+                if( item.data.id && this.data.id){
+                    return item.data.id === this.data.id;
+                }else{
+                    return item.data.name === this.data.name;
+                }
+            }.bind(this));
+            this.items = items;
+            if (items.length){
+                items.each(function(item){
+                    item.selectedItem = this;
+                    item.setSelected();
+                }.bind(this));
+            }
+        }
     }
 });
 
@@ -127,7 +148,8 @@ MWF.xApplication.Selector.CMSCategory.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemCategory,
 
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded){
@@ -138,6 +160,7 @@ MWF.xApplication.Selector.CMSCategory.ItemCategory = new Class({
                     subData.applicationName = this.data.name;
                     subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( category );
                 }.bind(this));
 
                 this.loaded = true;

@@ -383,7 +383,16 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
 
                 var attcs = this.json.attachmentIds.split(/,\s*|;\s*|，\s*|；\s*/g);
                 attcs.each(function(att){
-                    var attc = this.form.all[att];
+                    this.form.businessData.attachmentList.each(function (attachement) {
+                        if(attachement.site===att){
+                            if (attachement.control.allowEdit){
+                                if (this.options.files.indexOf(attachement.extension.toLowerCase())!==-1){
+                                    button._loadMenuItem(this.createMenuActionMenuItem(attachement.id, attachement.name, "14.png", "openAttachment:"+attachement.id+":"+att+":"+attachement.name));
+                                }
+                            }
+                        }
+                    }.bind(this));
+                    /*var attc = this.form.all[att];
                     if (attc){
                         attc.attachmentController.attachments.each(function(a){
                             if (a.data.control.allowEdit){
@@ -392,7 +401,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                                 }
                             }
                         }.bind(this));
-                    }
+                    }*/
                 }.bind(this));
         }
     },

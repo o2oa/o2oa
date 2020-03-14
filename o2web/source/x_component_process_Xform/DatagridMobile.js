@@ -179,7 +179,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         if (this.gridData.data){
             this.gridData.data.each(function(data, idx){
                 var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
-                var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataDiv);
+                var tableDiv = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(dataDiv);
                 var table = new Element("table").inject(tableDiv);
                 table.set(this.json.properties);
                 table.store("data", data);
@@ -253,7 +253,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
                 this._createItemTitleNode(dataDiv, idx);
 
-                var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataDiv);
+                var tableDiv = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(dataDiv);
                 var table = new Element("table").inject(tableDiv);
                 table.set(this.json.properties);
                 table.store("data", data);
@@ -472,7 +472,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
         this._createItemTitleNode(dataDiv, idx);
 
-        var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataDiv);
+        var tableDiv = new Element("div", {"styles":  this.form.css.gridMobileTableNode }).inject(dataDiv);
 
         this.table.setStyles({
             "background-color": "#fffeb5",
@@ -531,7 +531,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             if (actions[2]) actions[2].setStyle("display", "block");
             if (actions[3]) actions[3].setStyle("display", "none");
 
-            table = new Element("table").inject(this.table, "before");
+            table = new Element("table", {
+                styles : this.json.tableStyles
+            }).inject(this.table, "before");
             table.set(this.json.properties);
             griddata = {};
 
@@ -877,8 +879,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.totalDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
         var titleNode = new Element("div", {"styles": this.json.itemTitleStyles}).inject(this.totalDiv);
         titleNode.set("text", MWF.xApplication.process.Xform.LP.amount);
-        var tableNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.totalDiv);
-        this.totalTable = new Element("table").inject(tableNode);
+        var tableNode = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(this.totalDiv);
+        this.totalTable = new Element("table", {
+            styles : this.json.tableStyles
+        }).inject(tableNode);
         this.totalTable.set(this.json.properties);
     },
 

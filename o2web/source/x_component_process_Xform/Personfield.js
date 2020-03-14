@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         //var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
         var text = [];
         value.each(function(v){
-            if( typeOf(v) === "string" ){ //������������
+            if( typeOf(v) === "string" ){
                 text.push(v);
             }else{
                 text.push(v.name+((v.unitName) ? "("+v.unitName+")" : ""));
@@ -405,18 +405,18 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var inforNode = item.inforNode || new Element("div");
         if (item.data){
             var text = "";
-            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-1, 1);
+            var flag = item.data.distinguishedName.substr(item.data.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = item.data.name+"("+item.data.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = item.data.name+"("+item.data.employee+")";
                     break;
-                case "u":
+                case "@u":
                     text = item.data.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = item.data.name;
                     break;
                 default:
@@ -455,18 +455,18 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             data.map(function(d){
                 var value = Object.clone(d);
                 d.value = value;
-                var flag = d.distinguishedName.substr(d.distinguishedName.length-1, 1);
+                var flag = d.distinguishedName.substr(d.distinguishedName.length-2, 2);
                 switch (flag.toLowerCase()){
-                    case "i":
+                    case "@i":
                         d.text = d.name+"("+d.unitName+")";
                         break;
-                    case "p":
+                    case "@p":
                         d.text = d.name+"("+d.employee+")";
                         break;
-                    case "u":
+                    case "@u":
                         d.text = d.name;
                         break;
-                    case "g":
+                    case "@g":
                         d.text = d.name;
                         break;
                     default:
@@ -576,18 +576,18 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     getDataText: function(data){
         if (typeOf(data)=="string") return data;
         var text = "";
-        var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+        var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
         switch (flag.toLowerCase()){
-            case "i":
+            case "@i":
                 text = data.name+"("+data.unitName+")";
                 break;
-            case "p":
+            case "@p":
                 text = data.name+"("+data.employee+")";
                 break;
-            case "u":
+            case "@u":
                 text = data.name;
                 break;
-            case "g":
+            case "@g":
                 text = data.name;
                 break;
             default:
@@ -615,6 +615,8 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var values = [];
         var comboxValues = [];
 
+        debugger;
+
         var type = typeOf(value);
         if (type==="array"){
             value.each(function(v){
@@ -622,9 +624,12 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 var data = null;
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, false); }.bind(this), error, v, false);
                 }
-                if (vtype==="object") data = v;
+                if (vtype==="object") {
+                    data = MWF.org.parseOrgData(v, false);
+                    if(data.woPerson)delete data.woPerson;
+                }
                 if (data){
                     values.push(data);
                     comboxValues.push({"text": this.getDataText(data),"value": data});
@@ -634,15 +639,17 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, false); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
             }
         }
         if (type==="object"){
-            values.push(value);
-            comboxValues.push({"text": this.getDataText(value),"value": value});
+            var vData = MWF.org.parseOrgData(value, false);
+            if(vData.woPerson)delete vData.woPerson;
+            values.push( vData );
+            comboxValues.push({"text": this.getDataText(value),"value": vData});
         }
 
         var change = false;
@@ -712,18 +719,18 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         });
         var text = "";
         if (data.value){
-            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-1, 1);
+            var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     text = data.value.name+"("+data.value.unitName+")";
                     break;
-                case "p":
+                case "@p":
                     text = data.value.name+"("+data.value.employee+")";
                     break;
-                case "u":
+                case "@u":
                     text = data.value.levelName;
                     break;
-                case "g":
+                case "@g":
                     text = data.value.name;
                     break;
                 default:
@@ -839,19 +846,19 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
             value.each(function(data){
-                var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+                var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
                 var copyData = Object.clone(data);
                 switch (flag.toLowerCase()){
-                    case "i":
+                    case "@i":
                         new MWF.widget.O2Identity(copyData, node, {"style": "xform"});
                         break;
-                    case "p":
+                    case "@p":
                         new MWF.widget.O2Person(copyData, node, {"style": "xform"});
                         break;
-                    case "u":
+                    case "@u":
                         new MWF.widget.O2Unit(copyData, node, {"style": "xform"});
                         break;
-                    case "g":
+                    case "@g":
                         new MWF.widget.O2Group(copyData, node, {"style": "xform"});
                         break;
                     default:

@@ -70,50 +70,6 @@
             }.bind(this));
         }
         
-        function sso(){
-            o2.JSON.get("res/config/config.json", function(config){
-                getServiceAddress(config, function(address){
-                    var uri = new URI(window.location.toString());
-                    var xtoken = uri.getData("SMAP_SESSION_DATA");
-                    var appID = uri.getData("appID");
-                    var redirect = uri.getData("redirect");
-                    if (xtoken){
-                        var res = new Request.JSON({
-                            url: address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime(),
-                            secure: false,
-                            method: "GET",
-                            noCache: true,
-                            withCredentials: true,
-                            onSuccess: function(responseJSON, responseText){
-                                var result = responseJSON.data.value
-								if(result){
-									if (redirect){
-										window.location = redirect;
-									}else{
-										window.location = "/";
-									}
-								}else{
-									$("ssoerror").set("html","单点失败！"+responseJSON.message);
-									$("ssoerror").show();
-								}
-                            }.bind(this),
-                            onFailure: function(xhr){
-                                $("ssoerror").show();
-                            }.bind(this),
-                            onError: function(text, error){
-                                $("ssoerror").show();
-                            }.bind(this)
-                        });
-
-                        res.send();
-                    }else{
-						$("ssoerror").set("html","单点失败，认证token为空！");
-                        $("ssoerror").show();
-                    }
-                });
-            });
-        }
-        
         o2.addReady(function(){
             o2.JSON.get("res/config/config.json", function(config){
                 getServiceAddress(config, function(address){

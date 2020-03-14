@@ -20,7 +20,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         "saveOnClose" : true,
         "postPublish" : null,
         "postDelete" : null,
-        "formId" : null
+        "formId" : null,
+        "formEditId" : null
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Document.LP;
@@ -30,6 +31,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.autoSave = (this.status.autoSave=="true" || this.status.autoSave==true) ? true : false;
             this.options.saveOnClose = (this.status.saveOnClose=="true" || this.status.saveOnClose==true) ? true : false;
             this.options.formId = this.status.formId;
+            this.options.printFormId = this.status.printFormId;
         }
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
@@ -122,7 +124,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         var documentMethod = "getDocument";
         if( this.options.anonymousAccess ){
             documentMethod = "getDocumentByAnonymous"
-        }else if( this.options.readonly ){
+        }else if( this.options.readonly && !this.options.printFormId){
             documentMethod = "viewDocument";
         }
 
@@ -192,8 +194,8 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.close();
             }
         }.bind(this);
-        if( this.options.formId ){
-            this.action.getForm(this.options.formId, function( json ){
+        if( this.options.printFormId){
+            this.action.getForm(this.options.printFormId, function( json ){
                 success(json);
             }.bind(this), function(error){
                 failure(error)
@@ -317,6 +319,13 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.formId = this.document.form || this.document.readFormId;
         if( this.readonly == true && this.document.readFormId && this.document.readFormId != "" ){
             this.formId  = this.document.readFormId;
+            if(this.options.formId){
+                this.formId = this.options.formId
+            }
+        }else {
+            if(this.options.formEditId){
+                this.formId = this.options.formEditId
+            }
         }
 
         if(this.readonly || this.document.docStatus == "published"){
@@ -340,6 +349,7 @@ MWF.xApplication.cms.Document.Main = new Class({
     setPopularDocument: function(){
         var form = new MWF.xApplication.cms.Document.HotLinkForm(this, this.document, {
             documentId : this.options.documentId,
+            summary :  this.data.explain || "",
             onPostOk : function( id ){
 
             }.bind(this)
@@ -387,6 +397,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             "saveOnClose" : this.options.saveOnClose
         };
         if( this.options.formId )status.formId = this.options.formId;
+        if( this.options.printFormId )status.printFormId = this.options.printFormId;
         if(this.options.appId && this.options.appId!="")status.appId = this.options.appId;
         return status;
     },

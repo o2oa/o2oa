@@ -16,5 +16,11 @@
     "file": "letter.html",
     "layouts": {
     }
+  },
+  "empty": {
+    "name": "空模板（仅正文）",
+    "file": "empty.html",
+    "layouts": {
+    }
   }
 }

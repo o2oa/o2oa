@@ -15,8 +15,10 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		"isResize": true,
 		"isMax": true,
 		"title": MWF.xApplication.process.ApplicationExplorer.LP.title,
+		// "maxWidth": 840,
+		// "minWidth": 720
 		"maxWidth": 840,
-		"minWidth": 720
+		"minWidth": 540
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.ApplicationExplorer.LP;
@@ -317,7 +319,11 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		var size = this.content.getSize();
 		var topSize = this.topNode.getComputedSize();
 		var bottomSize = this.bottomNode.getComputedSize();
-		var h = size.y-topSize.totalHeight-bottomSize.totalHeight;
+		var pt = this.contentArea.getStyle("padding-top").toInt() || 0;;
+		var pb = this.contentArea.getStyle("padding-bottom").toInt() || 0;
+
+		var h = size.y-topSize.totalHeight-bottomSize.totalHeight-pt-pb;
+
 		this.contentArea.setStyle("height", ""+h+"px");
 		this.getApplicationDimension();
 
@@ -406,7 +412,6 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	},
 
 	getApplicationDimension: function(){
-
 		if (!this.dimension) this.dimension = {};
 		this.dimension.count = 2;
 		this.dimension.width = this.options.maxWidth;
@@ -414,14 +419,16 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.dimension.marginRight = 20;
 
 		//var size = this.contentNode.getSize();
-		var areaSize = this.contentArea.getSize();
+		var areaSize = this.content.getSize();
+		//var areaSize = this.contentArea.getSize();
 		var x = areaSize.x-60;
+
 		if (areaSize.y>=this.contentArea.getScrollSize().y) x = x-18;
 
 		var n = (x/this.dimension.count).toInt();
 		if (n<this.options.minWidth){
 			this.dimension.count = 1;
-			this.dimension.width = Math.min(x, this.options.maxWidth);
+			this.dimension.width = Math.min(x, this.options.maxWidth)-2;
 		}else{
 			while(n>this.options.maxWidth){
 				this.dimension.count++;
@@ -435,6 +442,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 			this.dimension.width = n;
 		}
 		var margin = areaSize.x-(this.dimension.width*this.dimension.count);
+		this.dimension.width = this.dimension.width-(this.dimension.count*2);
 
 		this.dimension.marginLeft = margin/2;
 		this.dimension.marginRight = margin/2-20;
@@ -563,7 +571,41 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		}, function(){
 			this.close();
 		});
-	}
+	},
+	createAppCenterApp:  function(id){
+		var size = this.content.getSize();
+		var content = new Element("div", {
+			"styles": {
+				"width": size.x+"px",
+				"height": size.y+"px",
+				"position": "absolute",
+				"top": "0px"
+			}
+		}).inject(this.content, "after");
+
+		var app = new new Class({Implements: [Events]})();
+		app.lp = MWF.xApplication.AppCenter.LP;
+
+		app.css = MWF.xApplication.AppCenter.LP;
+
+		app.actions = MWF.Actions.get("x_program_center");
+		app.curAppId = id;
+		app.createApplicationNode = content;
+		app.content = content;
+		app.notice = this.notice;
+		app.path = "/x_component_AppCenter/$Main/";
+		app.options = {"style": "default"};
+		app.cssPath = app.path + app.options.style + "/css.wcss";
+		o2.JSON.get(app.cssPath, function(json){
+			app.css = json;
+		}, false);
+
+		app.addEvent("exporterClose", function(){
+			this.content.hide();
+		});
+
+		this.appCenterApp = app;
+	},
 });
 
 MWF.xApplication.process.ApplicationExplorer.Application = new Class({
@@ -587,6 +629,11 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 
 	load: function(){
 		this.node = new Element("div.o2_process_AppExp_item_node").inject(this.container, this.where);
+		// this.node.addEvents({
+		// 	"mouseover": function(){this.node.addClass("o2_process_AppExp_item_node_over");}.bind(this),
+		// 	"mouseout": function(){this.node.removeClass("o2_process_AppExp_item_node_over");}.bind(this)
+		// });
+
 		var w = this.dimension.width-20;
 		this.node.setStyle("width", ""+w+"px");
 		this.node.loadHtml(this.app.path+this.app.options.style+"/application.html", {"bind": {"lp": this.lp, "data": this.data, "canManage": this.canManage}}, function(){
@@ -737,13 +784,16 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 
 		if (this.actionArea) this.setActionEvent();
 	},
+
 	setActionEvent: function(){
 		this.node.addEvents({
 			"mouseover": function(){
 				if (!this.readyDelete) this.actionArea.fade("in");
+				this.node.addClass("o2_process_AppExp_item_node_over");
 			}.bind(this),
 			"mouseout": function(){
 				if (!this.readyDelete) this.actionArea.fade("out");
+				this.node.removeClass("o2_process_AppExp_item_node_over");
 			}.bind(this)
 		});
 		this.actionDelete.addEvent("click", function(e){
@@ -753,15 +803,22 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 
 		this.actionExport.addEvent("click", function(e){
 			MWF.xDesktop.requireApp("AppCenter", "", function(){
-				var appCenter = new MWF.xApplication.AppCenter.Main();
-				appCenter.inBrowser = true;
-				appCenter.load(true);
-				appCenter.createApplication(this.app.content,this.data.id);
+				// var appCenter = new MWF.xApplication.AppCenter.Main();
+				// appCenter.inBrowser = true;
+				// appCenter.load(true, content);
+
+				if (!this.app.appCenterApp) this.app.createAppCenterApp(this.data.id);
+				this.app.appCenterApp.curAppId = this.data.id;
+				this.app.appCenterApp.content.show();
+				new MWF.xApplication.AppCenter.Exporter(this.app.appCenterApp);
+
+				//appCenter.createApplication(this.app.content,this.data.id);
+				//appCenter.createApplication(null,this.data.id);
 			}.bind(this));
-			return;
-			//老版本导出
-			this.exportApplication(e);
 			e.stopPropagation();
+			//老版本导出
+			// this.exportApplication(e);
+			// e.stopPropagation();
 		}.bind(this));
 	},
 	checkDeleteApplication: function(e){

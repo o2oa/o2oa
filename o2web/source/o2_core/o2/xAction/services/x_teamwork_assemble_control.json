@@ -1,0 +1,92 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  // ****************group*********************
+  "groupGet":{"uri":"/jaxrs/project_group/{id}","method": "GET"},
+  "groupWithIds": {"uri":"/jaxrs/project_group","method": "PUT"},
+  "groupSave":{"uri":"/jaxrs/project_group","method": "POST"},
+  "groupRemove":{"uri":"/jaxrs/project_group/{id}","method": "DELETE"},
+  "groupList":{"uri":"/jaxrs/project_group/list/my"},
+  // ****************group*********************
+
+  // ****************project list*********************
+  "projectGroupGet":{"uri":"/jaxrs/project/statitic/my","method": "GET"},
+  "projectSave":{"uri":"/jaxrs/project","method": "POST"},
+  "projectGet":{"uri":"/jaxrs/project/{id}"},
+  "projectRemove":{"uri":"/jaxrs/project/{id}","method": "DELETE"},
+  "projectListNext":{"uri":"/jaxrs/project/list/{id}/next/{count}","method": "PUT"},
+  "projectCompleteListNext":{"uri":"/jaxrs/project/list/completed/{id}/next/{count}","method": "PUT"},
+  "projectMyListNext":{"uri":"/jaxrs/project/list/my/{id}/next/{count}","method": "PUT"},
+  "projectArchiveListNext":{"uri":"/jaxrs/project/list/archive/{id}/next/{count}","method": "PUT"},
+  "projectUnGroupListNext":{"uri":"/jaxrs/project/list/groupness/{id}/next/{count}","method": "PUT"},
+  "projectRemoveListNext":{"uri":"/jaxrs/project/list/recycle/{id}/next/{count}","method": "PUT"},
+  "projectStarListNext":{"uri":"/jaxrs/project/list/star/{id}/next/{count}","method": "PUT"},
+  "projectListPrev":{"uri":"/jaxrs/project/list/{id}/prev/{count}","method": "PUT"},
+  "projectListPage":{"uri":"/jaxrs/project/list/{page}/size/{size}","method": "PUT"},
+  "projectStar":{"uri":"/jaxrs/project/star/{id}","method": "GET"},
+  "projectUnStar":{"uri":"/jaxrs/project/unstar/{id}","method": "GET"},
+  "projectIcon":{"uri":"/jaxrs/project/{id}/icon","method": "PUT"},
+  // ****************project list*********************
+
+  // ****************project*********************
+  "projectNaviGet":{"uri":"/jaxrs/task/statitic/{projectId}","method": "GET"},
+  "projectViewGet":{"uri":"/jaxrs/task/statitic/group/{projectId}","method": "GET"},
+  "projectExtFieldSave":{"uri":"/jaxrs/extfield/relevance","method": "POST"},
+  "projectExtFieldRemove":{"uri":"/jaxrs/extfield/relevance/{id}","method": "DELETE"},
+  "projectExtFieldGet":{"uri":"/jaxrs/extfield/rele/{id}","method": "GET"},
+  "projectExtFieldList":{"uri":"/jaxrs/extfield/list/fields/all","method": "GET"},
+  "projectExtFieldByProject":{"uri":"/jaxrs/extfield/list/{projectId}","method": "GET"},
+  // ****************project*********************
+
+  // ****************TaskGroup*********************
+  "taskGroupSave":{"uri":"/jaxrs/task_list","method": "POST"},
+  "taskGroupGet":{"uri":"/jaxrs/task_list/taskgroup/{taskGroupId}/tasklist/{taskListId}","method": "GET"},
+  "taskGroupRemove":{"uri":"/jaxrs/task_list/remove/{id}","method": "DELETE"},  //物理删除
+  "taskGroupDelete":{"uri":"/jaxrs/task_list/delete/{id}","method": "DELETE"},  //软删除
+
+  // ****************TaskGroup*********************
+
+  // ****************task*********************
+  "taskSave":{"uri":"/jaxrs/task","method": "POST"},
+  "taskGet":{"uri":"/jaxrs/task/{id}","method": "GET"},
+  "taskRemove":{"uri":"/jaxrs/task/{id}","method": "DELETE"},
+  "taskGroupList":{"uri":"/jaxrs/task_list/list/taskgroup/{taskgroup}","method": "GET"},
+  "taskListByListId":{"uri":"/jaxrs/task/list/project/{projectId}/tasklist/{taskListId}","method": "GET"},
+  "taskChangeGroup":{"uri":"/jaxrs/task_list/add2list/{listId}/behindTask","method": "PUT"},
+  "taskSubList":{"uri":"/jaxrs/task/list/sub/{taskId}","method": "GET"},
+  "taskDynamicListNext": {"uri":"/jaxrs/dynamic/list/{id}/next/{count}/task/{taskId}","method": "PUT"},
+  "taskTagAdd":{"uri":"/jaxrs/task_tag/rele/{taskId}/{tagId}/add","method": "GET"},
+  "taskTagRemove":{"uri":"/jaxrs/task_tag/rele/{taskId}/{tagId}/remove","method": "GET"},
+  "updateSingleProperty": {"uri":"/jaxrs/task/{id}/property","method": "PUT"},
+  "updateParticipantList": {"uri":"/jaxrs/task/participant/{id}/update","method": "PUT"},
+  "taskListNext": {"uri":"/jaxrs/task/list/{id}/next/{count}","method": "PUT"},
+  // ****************task*********************
+
+  // ****************task tag*********************
+  "taskTagSave":{"uri":"/jaxrs/task_tag","method": "POST"},
+  "taskTagGet":{"uri":"/jaxrs/task_tag/{id}","method": "GET"},
+  "taskTagRemove":{"uri":"/jaxrs/task_tag/{id}","method": "DELETE"},
+  "taskTagListByProjectId":{"uri":"/jaxrs/task_tag/list/project/{projectId}","method": "GET"},
+  "addTagToTask":{"uri":"/jaxrs/task_tag/rele/{taskId}/{tagId}/add","method": "GET"},
+  "removeTagToTask":{"uri":"/jaxrs/task_tag/rele/{taskId}/{tagId}/remove","method": "GET"},
+  // ****************task tag*********************
+
+  // ****************attachment*********************
+  "attachmentListByProjectId": {"uri":"/jaxrs/attachment/list/project/{id}"},
+  "attachmentListByTaskId": {"uri":"/jaxrs/attachment/list/task/{id}"},
+  "attachmentGet": {"uri":"/jaxrs/attachment/{id}"},
+  "attachmentRemove": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+  "attachmentDownload": {"uri": "/jaxrs/attachment/download/{id}", "method": "GET"},
+  "attachmentDownloadStream": {"uri": "/jaxrs/attachment/download/{id}/stream/{stream}", "method": "GET"},
+  "attachmentTaskUpload": {"uri": "/jaxrs/attachment/upload/task/{id}/site/{site}", "method": "POST", "enctype": "formData"},
+  "attachmentProjectUpload": {"uri": "/jaxrs/attachment/upload/project/{id}/site/{site}", "method": "POST", "enctype": "formData"},
+  // ****************attachment*********************
+
+  //*******************chat*************************
+  "chatCreate":{"uri":"/jaxrs/chat","method": "POST"},
+  "chatGet": {"uri": "/jaxrs/chat/{id}", "method": "GET"},
+  //*******************chat*************************
+
+
+  "clazz": "x_teamwork_assemble_control"
+}

@@ -14,6 +14,7 @@ MWF.xApplication.Selector.Duty = new Class({
         this.orgAction.listUnitdutyName(function(json){
            json.data.nameList.each(function(data){
                var category = this._newItem(data, this, this.itemAreaNode);
+               this.items.push( category );
            }.bind(this));
         }.bind(this));
     },
@@ -57,7 +58,8 @@ MWF.xApplication.Selector.Duty.Item = new Class({
         return this.data.name;
     },
     _setIcon: function() {
-        this.iconNode.setStyle("background-image", "url(" + "/x_component_Selector/$Selector/default/icon/duty.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url(" + "/x_component_Selector/$Selector/"+style+"/icon/duty.png)");
     },
     checkSelectedSingle: function(){
         var selectedItem = this.selector.options.values.filter(function(item, index){
@@ -88,6 +90,21 @@ MWF.xApplication.Selector.Duty.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/duty.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/duty.png)");
+    },
+    check: function(){
+        if (this.selector.items.length){
+            var items = this.selector.items.filter(function(item, index){
+                return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+            }.bind(this));
+            this.items = items;
+            if (items.length){
+                items.each(function(item){
+                    item.selectedItem = this;
+                    item.setSelected();
+                }.bind(this));
+            }
+        }
     }
 });

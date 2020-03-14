@@ -173,18 +173,22 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 		return {"value": [value] || "", "text": [text || value || ""]};
 	},
     getInputData: function(){
-		var inputs = this.node.getElements("input");
-		var value = "";
-		if (inputs.length){
-			for (var i=0; i<inputs.length; i++){
-				var input = inputs[i];
-				if (input.checked){
-					value = input.get("value");
-					break;
-				}
-			}
-		}
-		return value;
+        if (this.readonly || this.json.isReadonly ){
+            return this._getBusinessData();
+        }else{
+            var inputs = this.node.getElements("input");
+            var value = "";
+            if (inputs.length){
+                for (var i=0; i<inputs.length; i++){
+                    var input = inputs[i];
+                    if (input.checked){
+                        value = input.get("value");
+                        break;
+                    }
+                }
+            }
+            return value;
+        }
 	},
     resetData: function(){
         this.setData(this.getValue());

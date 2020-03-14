@@ -2652,13 +2652,19 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         });
         this.typeSelect.load();
 
+        var value = this.category.data.importViewId ? [{
+            distinguishedName : this.category.data.importViewName,
+            id : this.category.data.importViewId,
+            name : this.category.data.importViewName
+        }] : "不使用";
         this.importViewIdSelect = new MDomItem( this.propertyContentNode.getElement("#formImportViewId"), {
             type : "org",
             orgType : "QueryView",
             orgWidgetOptions : {
                 canRemove : false
             },
-            value : this.category.data.importViewName || this.category.data.importViewId || "不使用",//this.category.data.documentType || "信息",
+            //value : this.category.data.importViewName || this.category.data.importViewId || "不使用",//this.category.data.documentType || "信息",
+            value : value,
             event : {
                 change : function( item ){
                     if( item.orgObject && item.orgObject.length > 0  ){

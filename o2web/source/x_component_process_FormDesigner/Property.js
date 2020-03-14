@@ -838,16 +838,87 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if (nodes){
             nodes.each(function(node){
                 var name = node.get("name");
-                var value = this.data[name];
-                var select = new Element("select").inject(node);
-                Object.each(layout.desktop.serviceAddressList, function(v, key){
-                    var option = new Element("option", {"value": key, "text": v.name, "selected": (value==key)}).inject(select);
+                var selects = node.getElements("select");
+                var rootSelect = selects[0];
+                var actionSelect = selects[1];
+                var methodSelect = selects[2];
+                var pathInput = node.getElement("input");
+                //var select = new Element("select").inject(node);
+                //var methodSelect = new Element("select").inject(node);
+debugger;
+                var getValue = function(){
+                    var v;
+                    try {
+                        v = JSON.parse(this.data[name]);
+                    }catch(e){
+                        v = {"root": this.data[name], "action":"", "method": "", "uri": ""};
+                    }
+                    return v
+                }.bind(this);
+                var value = getValue();
+
+                var resetRootSelects = function(){
+                    var root = rootSelect.options[rootSelect.selectedIndex].value;
+                    var action = o2.Actions.load(root);
+                    actionSelect.empty();
+                    methodSelect.empty();
+                    pathInput.set("value", "");
+                    var value = getValue();
+                    Object.each(action, function(o, key){
+                        var option = new Element("option", {"value": key, "text": key, "selected": (value.action==key)}).inject(actionSelect);
+                    });
+                    return JSON.stringify({"root": root, "action":"", "method": "", "uri": ""});
+                };
+                var resetActionSelects = function(){
+                    var root = rootSelect.options[rootSelect.selectedIndex].value;
+                    var actionName = actionSelect.options[actionSelect.selectedIndex].value;
+                    var action = o2.Actions.load(root);
+                    methodSelect.empty();
+                    pathInput.set("value", "");
+                    var value = getValue();
+                    Object.each(action[actionName].action.actions, function(o, key){
+                        var option = new Element("option", {"value": key, "text": key, "selected": (value.method==key)}).inject(methodSelect);
+                    });
+                    return JSON.stringify({"root": root, "action":actionName, "method": "", "uri": ""});
+                };
+                var resetMethodSelects = function(){
+                    var root = rootSelect.options[rootSelect.selectedIndex].value;
+                    var actionName = actionSelect.options[actionSelect.selectedIndex].value;
+                    var methodName = methodSelect.options[methodSelect.selectedIndex].value;
+                    var action = o2.Actions.load(root);
+                    var uri = action[actionName].action.actions[methodName].uri;
+                    pathInput.set("value", uri);
+                    return JSON.stringify({"root": root, "action":actionName, "method": methodName, "uri": uri});
+                };
+
+                Object.each(layout.serviceAddressList, function(v, key){
+                    var option = new Element("option", {"value": key, "text": v.name, "selected": (value.root==key)}).inject(rootSelect);
                 }.bind(this));
-                select.addEvent("change", function(){
-                    var data = select.options[select.selectedIndex].value;
+                resetRootSelects()
+                resetActionSelects();
+                resetMethodSelects();
+
+                rootSelect.addEvent("change", function(){
+                    resetRootSelects();
+                    resetActionSelects();
+                    var data = resetMethodSelects();
                     this.changeJsonDate(name, data);
                     this.changeData(name, node, value);
                 }.bind(this));
+
+                actionSelect.addEvent("change", function(){
+                    resetActionSelects();
+                    var data = resetMethodSelects();
+                    this.changeJsonDate(name, data);
+                    this.changeData(name, node, value);
+                }.bind(this));
+
+                methodSelect.addEvent("change", function(){
+                    var data = resetMethodSelects();
+                    this.changeJsonDate(name, data);
+                    this.changeData(name, node, value);
+                }.bind(this));
+
             }.bind(this));
         }
     },
@@ -865,7 +936,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
     testSourceRestful: function(content){
-        var address = this._getO2Address(this.module.json.contextRoot);
+	    var service;
+        try {
+            service = JSON.parse(this.module.json.contextRoot);
+        }catch(e){
+            service = {"root": this.module.json.contextRoot, "action":"", "method": "", "url": ""};
+        }
+
+        var address = this._getO2Address(service.root);
         var uri = this._getO2Uri(this.module, address);
         this._invoke(this.module, uri, function(json){
             content.empty();
@@ -876,7 +954,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this));
     },
     _getO2Address: function(contextRoot){
-        var addressObj = layout.desktop.serviceAddressList[contextRoot];
+        var addressObj = layout.serviceAddressList[contextRoot];
         var address = "";
         if (addressObj){
             address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
@@ -888,6 +966,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         return address;
     },
     _getO2Uri: function(module, address){
+        //var uri = module.json.path || module.json.selectPath;
         var uri = module.json.path;
         var pars = {};
 
@@ -1061,7 +1140,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         styleSelNodes.each(function(node){
             if (this.module.form.stylesList){
                 if (!this.data.formStyleType) this.data.formStyleType = "default";
-                var mode = this.form.options.mode === "mobile" ? "mobile" : "pc";
+                var mode = ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc";
                 Object.each(this.module.form.stylesList, function(s, key){
                     if( s.mode.contains( mode ) ){
                         new Element("option", {
