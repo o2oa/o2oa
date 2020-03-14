@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.TaskCenter = MWF.xApplication.process.TaskCenter || {};
 MWF.require("MWF.widget.Mask", null, false);
 MWF.require("MWF.xDesktop.UserData", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "TaskList", null, false);
@@ -5,7 +7,7 @@ MWF.xDesktop.requireApp("process.TaskCenter", "TaskCompletedList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReadList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReadCompletedList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReviewList", null, false);
-MWF.xApplication.process.TaskCenter.options.multitask = false;
+if (MWF.xApplication.process.TaskCenter.options) MWF.xApplication.process.TaskCenter.options.multitask = false;
 MWF.xApplication.process.TaskCenter.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
@@ -35,7 +37,6 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.appIcons = {};
         this.tabs = [];
         this.tabShadows = [];
-        this.startApplications = [];
         this.appStartableData = null;
 
         this.loadTitle();
@@ -341,253 +342,257 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
 
     //@todo 起草 搜索 筛选 。。。
     showStartProcessArea: function(){
-        if (layout.mobile){
-            this.showStartProcessArea_mobile();
-        }else{
-            this.showStartProcessArea_pc();
-        }
+        if (!this.processStarter) this.processStarter = new MWF.xApplication.process.TaskCenter.Starter(this);
+        this.processStarter.load();
+
+        // if (layout.mobile){
+        //     this.showStartProcessArea_mobile();
+        // }else{
+        //     this.showStartProcessArea_pc();
+        // }
     },
-    showStartProcessArea_mobile: function(){
-        if (!this.startProcessAreaNode) {
-            this.createStartProcessArea_mobile();
-        }
-        this.startProcessAreaNode.setStyle("display", "block");
-        //document.body.setStyle("-webkit-overflow-scrolling", "auto");
-        var morph = new Fx.Morph(this.startProcessAreaNode, {
-            "duration": 200,
-            "transition": Fx.Transitions.Expo.easeOut
-        });
-        morph.start({"left": "0px"});
-    },
-    showStartProcessArea_pc: function () {
-        if (!this.startProcessAreaNode) {
-            this.createStartProcessArea();
-        }
-        this.content.mask({
-            "destroyOnHide": true,
-            "id": "process_taskcenter_startProcessMask",
-            "style": this.css.maskNode
-        });
-
-        //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
-        var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
-        if (maskNode){
-            if( this.inBrowser ){
-                maskNode.setStyles({"width":"100%","height":"100%"});
-            }
-            maskNode.addEvent("click", function (e) {
-                this.closeStartProcessArea(e);
-            }.bind(this));
-        }
-        //if (this.allApplicationStarter) this.allApplicationStarter.loadChild();
-        this.startProcessAreaNode.fade("in");
-        //this.startProcessTween.start("left", "-400px", "0px");
-    },
-    createStartProcessArea_mobile: function(){
-        this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode_mobile}).inject(this.content);
-        var size = this.content.getSize();
-        this.startProcessAreaNode.setStyles({
-            "width": ""+size.x+"px",
-            "height": ""+size.y+"px",
-            "top": "0px",
-            "left": ""+size.x+"px"
-        });
-
-        this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode_mobile}).inject(this.startProcessAreaNode);
-        this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode_mobile, "text": this.lp.back}).inject(this.startProcessTopNode);
-        this.startProcessCloseNode.addEvent("click", function (e) {
-            this.closeStartProcessArea(e);
-        }.bind(this));
-
-        this.startProcessListNode = new Element("div", {"styles": this.css.startProcessListNode_mobile}).inject(this.startProcessAreaNode);
-        var h = size.y-this.startProcessTopNode.getSize().y;
-        this.startProcessListNode.setStyle("height", ""+h+"px");
-
-        //this.createStartProcessScrollNode();
-        this.getAction(function () {
-            this.action.listApplicationStartable(function (appjson) {
-                this.app = this;
-                MWF.UD.getDataJson("taskCenter_startTop", function(json){
-                    this.top5Data = json;
-                    if (this.top5Data && this.top5Data.length){
-                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(this.startProcessListNode);
-                        var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
-
-                        this.top5Data.sort(function(p1, p2){
-                            return 0-(p1.count-p2.count);
-                        });
-                        this.top5Data.each(function(process, i){
-                            if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
-                        }.bind(this));
-                    }
-                    appjson.data.each(function (app) {
-                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
-                        var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
-                        app.processList.each(function(process){
-                            new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
-
-
-                // this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
-                // this.allApplicationStarter.selected();
-                // json.data.each(function (app) {
-                //     new MWF.xApplication.process.TaskCenter.Application(app, this);
-                // }.bind(this));
-            }.bind(this));
-        }.bind(this));
-    },
-    createStartProcessArea: function () {
-        this.createStartProcessAreaNode();
-        this.createStartProcessScrollNode();
-
-        this.listApplications();
-
-        this.setResizeStartProcessAreaHeight();
-        this.addEvent("resize", this.setResizeStartProcessAreaHeight.bind(this));
-
-        //this.startProcessTween = new Fx.Tween(this.startProcessAreaNode, {
-        //    "duration": "200",
-        //    "transition": Fx.Transitions.Quad.easeOut
-        //});
-    },
-    createStartProcessAreaNode: function () {
-        this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode}).inject(this.content);
-    },
-    createStartProcessCloseNode: function () {
-        this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode}).inject(this.startProcessRightListNode);
-        this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode}).inject(this.startProcessTopNode);
-        this.startProcessCloseNode.addEvent("click", function (e) {
-            this.closeStartProcessArea(e);
-        }.bind(this));
-    },
-    createStartProcessSearchNode: function(){
-        this.startProcessSearchNode = new Element("div", {"styles": this.css.startProcessSearchNode}).inject(this.startProcessRightListNode);
-        this.startProcessSearchIconNode = new Element("div", {"styles": this.css.startProcessSearchIconNode}).inject(this.startProcessSearchNode);
-        this.startProcessSearchAreaNode = new Element("div", {"styles": this.css.startProcessSearchAreaNode}).inject(this.startProcessSearchNode);
-        this.startProcessSearchInputNode = new Element("input", {"styles": this.css.startProcessSearchInputNode}).inject(this.startProcessSearchAreaNode);
-        this.startProcessSearchInputNode.set("value", this.lp.searchProcess);
-        this.startProcessSearchInputNode.addEvents({
-            "focus": function(){ if (this.startProcessSearchInputNode.get("value")===this.lp.searchProcess) this.startProcessSearchInputNode.set("value", ""); }.bind(this),
-            "blur": function(){if (!this.startProcessSearchInputNode.get("value")) this.startProcessSearchInputNode.set("value", this.lp.searchProcess);}.bind(this),
-            "keydown": function(e){ if (e.code===13) this.searchStartProcess(); }.bind(this)
-        });
-        this.startProcessSearchIconNode.addEvent("click", function(){ this.searchStartProcess(); }.bind(this));
-    },
-    searchStartProcess: function(){
-        var key = this.startProcessSearchInputNode.get("value");
-        if (key && key!==this.lp.searchProcess){
-            if (this.appStartableData){
-                this.startApplications.each(function(app){ app.unselected(); });
-                if (this.searchProcessSearchchildNode) this.searchProcessSearchchildNode.destroy();
-                var text = this.lp.searchProcessResault.replace("{key}", key);
-
-                this.searchProcessSearchchildNode = new Element("div", {"styles": this.css.applicationChildNode}).inject(this.startProcessProcessAreaNode);
-                this.searchProcessSearchchildNode.setStyle("display", "block");
-                new Element("div", {"styles": this.css.applicationChildTitleNode, "text": text}).inject(this.searchProcessSearchchildNode);
-                var proListNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.searchProcessSearchchildNode);
-
-                this.appStartableData.each(function (app) {
-                    app.processList.each(function(pro){
-                        if (pro.name.indexOf(key)!==-1){
-                            var data = Object.clone(pro);
-                            data.applicationName = app.name;
-                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this}, {"name": app}, proListNode);
-                        }
-                    }.bind(this));
-                }.bind(this));
-            }
-        }
-    },
-    createStartProcessScrollNode: function () {
-        this.startProcessApplicationListNode = new Element("div", {"styles": this.css.startProcessApplicationListNode}).inject(this.startProcessAreaNode);
-        this.startProcessRightListNode = new Element("div", {"styles": this.css.startProcessRightListNode}).inject(this.startProcessAreaNode);
-
-        this.createStartProcessCloseNode();
-        this.createStartProcessSearchNode();
-
-        this.startProcessApplicationScrollNode = new Element("div", {"styles": this.css.startProcessApplicationScrollNode}).inject(this.startProcessApplicationListNode);
-        this.startProcessApplicationAreaNode = new Element("div", {"styles": this.css.startProcessApplicationAreaNode}).inject(this.startProcessApplicationScrollNode);
-
-        this.startProcessProcessListNode = new Element("div", {"styles": this.css.startProcessProcessListNode}).inject(this.startProcessRightListNode);
-        this.startProcessProcessScrollNode = new Element("div", {"styles": this.css.startProcessProcessScrollNode}).inject(this.startProcessProcessListNode);
-        this.startProcessProcessAreaNode = new Element("div", {"styles": this.css.startProcessProcessAreaNode}).inject(this.startProcessProcessScrollNode);
-
-        MWF.require("MWF.widget.ScrollBar", function () {
-            new MWF.widget.ScrollBar(this.startProcessApplicationScrollNode, {
-                "distance": 100,
-                "friction": 4
-            });
-            new MWF.widget.ScrollBar(this.startProcessProcessScrollNode, {
-                "distance": 100,
-                "friction": 4
-            });
-        }.bind(this));
-
-        //this.startProcessContentNode = new Element("div", {"styles": this.css.startProcessContentNode}).inject(this.startProcessScrollNode);
-    },
-    closeStartProcessArea: function () {
-        //if (this.startProcessAreaNode) this.startProcessTween.start("left", "0px", "-400px");
-        if (layout.mobile){
-            var size = this.startProcessAreaNode.getSize();
-            var morph = new Fx.Morph(this.startProcessAreaNode, {
-                "duration": 200,
-                "transition": Fx.Transitions.Expo.easeOut,
-                "onComplete": function(){
-                    this.startProcessAreaNode.setStyle("display", "none");
-                }.bind(this)
-            });
-            morph.start({"left": ""+size.x+"px"});
-        }else{
-            this.content.unmask();
-            if (this.startProcessAreaNode) this.startProcessAreaNode.fade("out");
-        }
-
-    },
-    setResizeStartProcessAreaHeight: function () {
-        if (this.startProcessAreaNode) {
-            var size = this.content.getSize();
-            var nodeSize = this.startProcessAreaNode.getSize();
-            var x = (size.x-nodeSize.x)/2;
-            var y = (size.y-nodeSize.y)/2;
-            this.startProcessAreaNode.setStyle("top", "" + y + "px");
-            this.startProcessAreaNode.setStyle("left", "" + x + "px");
-
-            var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
-            //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
-            if (maskNode){
-                maskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px"});
-                maskNode.position({
-                    "relativeTo": this.content,
-                    "position": "topLeft",
-                    "edge": "topLeft"
-                });
-            }
-
-            if (this.startProcessProcessListNode){
-                var topSize = this.startProcessTopNode.getSize();
-                var searchSize = this.startProcessSearchNode.getSize();
-                var h = nodeSize.y-topSize.y-searchSize.y;
-                this.startProcessProcessListNode.setStyle("height", ""+h+"px");
-            }
-
-        }
-    },
-    listApplications: function () {
-        this.getAction(function () {
-            this.action.listApplicationStartable(function (json) {
-                this.appStartableData = json.data;
-                this.startProcessSearchNode.setStyle("display", "block");
-                this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
-                this.allApplicationStarter.selected();
-                json.data.each(function (app) {
-                    new MWF.xApplication.process.TaskCenter.Application(app, this);
-                }.bind(this));
-            }.bind(this));
-        }.bind(this));
-    },
-
+    // showStartProcessArea_mobile: function(){
+    //     if (!this.startProcessAreaNode) {
+    //         this.createStartProcessArea_mobile();
+    //     }
+    //     this.startProcessAreaNode.setStyle("display", "block");
+    //     //document.body.setStyle("-webkit-overflow-scrolling", "auto");
+    //     var morph = new Fx.Morph(this.startProcessAreaNode, {
+    //         "duration": 200,
+    //         "transition": Fx.Transitions.Expo.easeOut
+    //     });
+    //     morph.start({"left": "0px"});
+    // },
+    // showStartProcessArea_pc: function () {
+    //     if (!this.startProcessAreaNode) {
+    //         this.createStartProcessArea();
+    //     }
+    //     this.content.mask({
+    //         "inject": this.content,
+    //         "destroyOnHide": true,
+    //         "id": "process_taskcenter_startProcessMask",
+    //         "style": this.css.maskNode
+    //     });
+    //
+    //     //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+    //     var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
+    //     if (maskNode){
+    //         if( this.inBrowser ){
+    //             maskNode.setStyles({"width":"100%","height":"100%"});
+    //         }
+    //         maskNode.addEvent("click", function (e) {
+    //             this.closeStartProcessArea(e);
+    //         }.bind(this));
+    //     }
+    //     //if (this.allApplicationStarter) this.allApplicationStarter.loadChild();
+    //     this.startProcessAreaNode.fade("in");
+    //     //this.startProcessTween.start("left", "-400px", "0px");
+    // },
+    // createStartProcessArea_mobile: function(){
+    //     this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode_mobile}).inject(this.content);
+    //     var size = this.content.getSize();
+    //     this.startProcessAreaNode.setStyles({
+    //         "width": ""+size.x+"px",
+    //         "height": ""+size.y+"px",
+    //         "top": "0px",
+    //         "left": ""+size.x+"px"
+    //     });
+    //
+    //     this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode_mobile}).inject(this.startProcessAreaNode);
+    //     this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode_mobile, "text": this.lp.back}).inject(this.startProcessTopNode);
+    //     this.startProcessCloseNode.addEvent("click", function (e) {
+    //         this.closeStartProcessArea(e);
+    //     }.bind(this));
+    //
+    //     this.startProcessListNode = new Element("div", {"styles": this.css.startProcessListNode_mobile}).inject(this.startProcessAreaNode);
+    //     var h = size.y-this.startProcessTopNode.getSize().y;
+    //     this.startProcessListNode.setStyle("height", ""+h+"px");
+    //
+    //     //this.createStartProcessScrollNode();
+    //     this.getAction(function () {
+    //         this.action.listApplicationStartable(function (appjson) {
+    //             this.app = this;
+    //             MWF.UD.getDataJson("taskCenter_startTop", function(json){
+    //                 this.top5Data = json;
+    //                 if (this.top5Data && this.top5Data.length){
+    //                     new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(this.startProcessListNode);
+    //                     var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+    //
+    //                     this.top5Data.sort(function(p1, p2){
+    //                         return 0-(p1.count-p2.count);
+    //                     });
+    //                     this.top5Data.each(function(process, i){
+    //                         if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
+    //                     }.bind(this));
+    //                 }
+    //                 appjson.data.each(function (app) {
+    //                     new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
+    //                     var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+    //                     app.processList.each(function(process){
+    //                         new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+    //                     }.bind(this));
+    //                 }.bind(this));
+    //             }.bind(this));
+    //
+    //
+    //             // this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
+    //             // this.allApplicationStarter.selected();
+    //             // json.data.each(function (app) {
+    //             //     new MWF.xApplication.process.TaskCenter.Application(app, this);
+    //             // }.bind(this));
+    //         }.bind(this));
+    //     }.bind(this));
+    // },
+    // createStartProcessArea: function () {
+    //     this.createStartProcessAreaNode();
+    //     this.createStartProcessScrollNode();
+    //
+    //     this.listApplications();
+    //
+    //     this.setResizeStartProcessAreaHeight();
+    //     this.addEvent("resize", this.setResizeStartProcessAreaHeight.bind(this));
+    //
+    //     //this.startProcessTween = new Fx.Tween(this.startProcessAreaNode, {
+    //     //    "duration": "200",
+    //     //    "transition": Fx.Transitions.Quad.easeOut
+    //     //});
+    // },
+    // createStartProcessAreaNode: function () {
+    //     this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode}).inject(this.content);
+    // },
+    // createStartProcessCloseNode: function () {
+    //     this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode}).inject(this.startProcessRightListNode);
+    //     this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode}).inject(this.startProcessTopNode);
+    //     this.startProcessCloseNode.addEvent("click", function (e) {
+    //         this.closeStartProcessArea(e);
+    //     }.bind(this));
+    // },
+    // createStartProcessSearchNode: function(){
+    //     this.startProcessSearchNode = new Element("div", {"styles": this.css.startProcessSearchNode}).inject(this.startProcessRightListNode);
+    //     this.startProcessSearchIconNode = new Element("div", {"styles": this.css.startProcessSearchIconNode}).inject(this.startProcessSearchNode);
+    //     this.startProcessSearchAreaNode = new Element("div", {"styles": this.css.startProcessSearchAreaNode}).inject(this.startProcessSearchNode);
+    //     this.startProcessSearchInputNode = new Element("input", {"styles": this.css.startProcessSearchInputNode}).inject(this.startProcessSearchAreaNode);
+    //     this.startProcessSearchInputNode.set("value", this.lp.searchProcess);
+    //     this.startProcessSearchInputNode.addEvents({
+    //         "focus": function(){ if (this.startProcessSearchInputNode.get("value")===this.lp.searchProcess) this.startProcessSearchInputNode.set("value", ""); }.bind(this),
+    //         "blur": function(){if (!this.startProcessSearchInputNode.get("value")) this.startProcessSearchInputNode.set("value", this.lp.searchProcess);}.bind(this),
+    //         "keydown": function(e){ if (e.code===13) this.searchStartProcess(); }.bind(this)
+    //     });
+    //     this.startProcessSearchIconNode.addEvent("click", function(){ this.searchStartProcess(); }.bind(this));
+    // },
+    // searchStartProcess: function(){
+    //     var key = this.startProcessSearchInputNode.get("value");
+    //     if (key && key!==this.lp.searchProcess){
+    //         if (this.appStartableData){
+    //             this.startApplications.each(function(app){ app.unselected(); });
+    //             if (this.searchProcessSearchchildNode) this.searchProcessSearchchildNode.destroy();
+    //             var text = this.lp.searchProcessResault.replace("{key}", key);
+    //
+    //             this.searchProcessSearchchildNode = new Element("div", {"styles": this.css.applicationChildNode}).inject(this.startProcessProcessAreaNode);
+    //             this.searchProcessSearchchildNode.setStyle("display", "block");
+    //             new Element("div", {"styles": this.css.applicationChildTitleNode, "text": text}).inject(this.searchProcessSearchchildNode);
+    //             var proListNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.searchProcessSearchchildNode);
+    //
+    //             this.appStartableData.each(function (app) {
+    //                 app.processList.each(function(pro){
+    //                     if (pro.name.indexOf(key)!==-1){
+    //                         var data = Object.clone(pro);
+    //                         data.applicationName = app.name;
+    //                         new MWF.xApplication.process.TaskCenter.Process(data, {"app": this}, {"name": app}, proListNode);
+    //                     }
+    //                 }.bind(this));
+    //             }.bind(this));
+    //         }
+    //     }
+    // },
+    // createStartProcessScrollNode: function () {
+    //     this.startProcessApplicationListNode = new Element("div", {"styles": this.css.startProcessApplicationListNode}).inject(this.startProcessAreaNode);
+    //     this.startProcessRightListNode = new Element("div", {"styles": this.css.startProcessRightListNode}).inject(this.startProcessAreaNode);
+    //
+    //     this.createStartProcessCloseNode();
+    //     this.createStartProcessSearchNode();
+    //
+    //     this.startProcessApplicationScrollNode = new Element("div", {"styles": this.css.startProcessApplicationScrollNode}).inject(this.startProcessApplicationListNode);
+    //     this.startProcessApplicationAreaNode = new Element("div", {"styles": this.css.startProcessApplicationAreaNode}).inject(this.startProcessApplicationScrollNode);
+    //
+    //     this.startProcessProcessListNode = new Element("div", {"styles": this.css.startProcessProcessListNode}).inject(this.startProcessRightListNode);
+    //     this.startProcessProcessScrollNode = new Element("div", {"styles": this.css.startProcessProcessScrollNode}).inject(this.startProcessProcessListNode);
+    //     this.startProcessProcessAreaNode = new Element("div", {"styles": this.css.startProcessProcessAreaNode}).inject(this.startProcessProcessScrollNode);
+    //
+    //     MWF.require("MWF.widget.ScrollBar", function () {
+    //         new MWF.widget.ScrollBar(this.startProcessApplicationScrollNode, {
+    //             "distance": 100,
+    //             "friction": 4
+    //         });
+    //         new MWF.widget.ScrollBar(this.startProcessProcessScrollNode, {
+    //             "distance": 100,
+    //             "friction": 4
+    //         });
+    //     }.bind(this));
+    //
+    //     //this.startProcessContentNode = new Element("div", {"styles": this.css.startProcessContentNode}).inject(this.startProcessScrollNode);
+    // },
+    // closeStartProcessArea: function () {
+    //     //if (this.startProcessAreaNode) this.startProcessTween.start("left", "0px", "-400px");
+    //     if (layout.mobile){
+    //         var size = this.startProcessAreaNode.getSize();
+    //         var morph = new Fx.Morph(this.startProcessAreaNode, {
+    //             "duration": 200,
+    //             "transition": Fx.Transitions.Expo.easeOut,
+    //             "onComplete": function(){
+    //                 this.startProcessAreaNode.setStyle("display", "none");
+    //             }.bind(this)
+    //         });
+    //         morph.start({"left": ""+size.x+"px"});
+    //     }else{
+    //         this.content.unmask();
+    //         if (this.startProcessAreaNode) this.startProcessAreaNode.fade("out");
+    //     }
+    //
+    // },
+    // setResizeStartProcessAreaHeight: function () {
+    //     if (this.startProcessAreaNode) {
+    //         var size = this.content.getSize();
+    //         var nodeSize = this.startProcessAreaNode.getSize();
+    //         var x = (size.x-nodeSize.x)/2;
+    //         var y = (size.y-nodeSize.y)/2;
+    //         this.startProcessAreaNode.setStyle("top", "" + y + "px");
+    //         this.startProcessAreaNode.setStyle("left", "" + x + "px");
+    //
+    //         var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
+    //         //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+    //         if (maskNode){
+    //             maskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px"});
+    //             maskNode.position({
+    //                 "relativeTo": this.content,
+    //                 "position": "topLeft",
+    //                 "edge": "topLeft"
+    //             });
+    //         }
+    //
+    //         if (this.startProcessProcessListNode){
+    //             var topSize = this.startProcessTopNode.getSize();
+    //             var searchSize = this.startProcessSearchNode.getSize();
+    //             var h = nodeSize.y-topSize.y-searchSize.y;
+    //             this.startProcessProcessListNode.setStyle("height", ""+h+"px");
+    //         }
+    //
+    //     }
+    // },
+    // listApplications: function () {
+    //     this.getAction(function () {
+    //         this.action.listApplicationStartable(function (json) {
+    //             this.appStartableData = json.data;
+    //             this.startProcessSearchNode.setStyle("display", "block");
+    //             this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
+    //             this.allApplicationStarter.selected();
+    //             json.data.each(function (app) {
+    //                 new MWF.xApplication.process.TaskCenter.Application(app, this);
+    //             }.bind(this));
+    //         }.bind(this));
+    //     }.bind(this));
+    // },
+    //
     getAction: function (callback) {
         if (!this.action) {
             this.action = MWF.Actions.get("x_processplatform_assemble_surface");
@@ -756,12 +761,13 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
     }
 });
 MWF.xApplication.process.TaskCenter.Application = new Class({
-    initialize: function(data, app){
+    initialize: function(data, starter){
         this.bgColors = ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"];
         this.data = data;
-        this.app = app;
-        this.container = this.app.startProcessApplicationAreaNode;
-        this.processContainer = this.app.startProcessProcessAreaNode;
+        this.starter = starter
+        this.app = this.starter.app;
+        this.container = this.starter.startProcessApplicationAreaNode;
+        this.processContainer = this.starter.startProcessProcessAreaNode;
         this.css = this.app.css;
         this.isLoaded = false;
 
@@ -786,18 +792,18 @@ MWF.xApplication.process.TaskCenter.Application = new Class({
         this.node.addEvent("click", function(){
             this.selected();
         }.bind(this));
-        this.app.startApplications.push(this);
+        this.starter.startApplications.push(this);
     },
     unselected: function(){
         this.childNode.setStyle("display", "none");
         this.node.setStyles(this.css.applicationNode);
     },
     selected: function(){
-        this.app.startApplications.each(function(app){
+        this.starter.startApplications.each(function(app){
             app.unselected();
         });
-        if (this.app.searchProcessSearchchildNode) this.app.searchProcessSearchchildNode.destroy();
-        if (this.app.startProcessSearchInputNode) this.app.startProcessSearchInputNode.set("value", this.app.lp.searchProcess);
+        if (this.starter.searchProcessSearchchildNode) this.starter.searchProcessSearchchildNode.destroy();
+        if (this.starter.startProcessSearchInputNode) this.starter.startProcessSearchInputNode.set("value", this.app.lp.searchProcess);
         this.childNode.setStyle("display", "block");
         this.node.setStyles(this.css.applicationNode_selected);
         if (!this.isLoaded){
@@ -816,13 +822,14 @@ MWF.xApplication.process.TaskCenter.Application = new Class({
 
 MWF.xApplication.process.TaskCenter.AllApplication = new Class({
     Extends: MWF.xApplication.process.TaskCenter.Application,
-    initialize: function(data, app){
+    initialize: function(data, starter){
         this.bgColors = ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"];
         this.data = data;
-        this.app = app;
-        this.container = this.app.startProcessApplicationAreaNode;
-        this.processContainer = this.app.startProcessProcessAreaNode;
-        this.css = this.app.css;
+        this.starter = starter;
+        this.app = this.starter.app;
+        this.container = this.starter.startProcessApplicationAreaNode;
+        this.processContainer = this.starter.startProcessProcessAreaNode;
+        this.css = this.starter.css;
         this.isLoaded = false;
 
         this.load();
@@ -842,7 +849,7 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
         this.node.addEvent("click", function(){
             this.selected();
         }.bind(this));
-        this.app.startApplications.push(this);
+        this.starter.startApplications.push(this);
     },
     unselected: function(){
         this.childNode.empty();
@@ -899,6 +906,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         this.application = application;
         this.applicationData = applicationData;
         this.app = this.application.app;
+        this.starter = this.application.starter
         this.container = container;
         this.css = this.app.css;
 
@@ -940,7 +948,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         });
     },
     startProcess: function(){
-        this.app.closeStartProcessArea();
+        this.starter.closeStartProcessArea();
         MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
             var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(this.data, this.app, {
                 "onStarted": function(data, title, processName){
@@ -1008,6 +1016,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         }else{
             if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, true);
         }
+        this.starter.fireEvent("startProcess");
     },
     getStartWorkInforObj: function(work){
         var users = [];
@@ -1055,3 +1064,328 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
     }
 
 });
+MWF.xApplication.process.TaskCenter.Starter = new Class({
+    Implements: [Options, Events],
+    initialize: function(app, options){
+        this.setOptions(options);
+        this.app = app;
+        this.css = app.css;
+        this.lp = app.lp;
+        this.content = this.app.content;
+        this.startApplications = [];
+    },
+    load: function(){
+        if (layout.mobile){
+            this.showStartProcessArea_mobile();
+        }else{
+            this.showStartProcessArea_pc();
+        }
+    },
+    showStartProcessArea_pc: function () {
+        if (!this.startProcessAreaNode) {
+            this.createStartProcessArea();
+        }
+        this.content.mask({
+            "destroyOnHide": true,
+            "id": "process_taskcenter_startProcessMask",
+            "style": this.css.maskNode
+        });
+
+        var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
+        if (maskNode){
+            if( this.inBrowser ){
+                maskNode.setStyles({"width":"100%","height":"100%"});
+            }
+            maskNode.addEvent("click", function (e) {
+                this.closeStartProcessArea(e);
+            }.bind(this));
+        }
+        this.startProcessAreaNode.fade("in");
+    },
+    createStartProcessArea: function () {
+        this.createStartProcessAreaNode();
+        this.createStartProcessScrollNode();
+
+        this.listApplications();
+
+        this.setResizeStartProcessAreaHeight();
+        this.app.addEvent("resize", this.setResizeStartProcessAreaHeight.bind(this));
+    },
+    createStartProcessAreaNode: function () {
+        this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode}).inject(this.content);
+    },
+    createStartProcessScrollNode: function () {
+        this.startProcessApplicationListNode = new Element("div", {"styles": this.css.startProcessApplicationListNode}).inject(this.startProcessAreaNode);
+        this.startProcessRightListNode = new Element("div", {"styles": this.css.startProcessRightListNode}).inject(this.startProcessAreaNode);
+
+        this.createStartProcessCloseNode();
+        this.createStartProcessSearchNode();
+
+        this.startProcessApplicationScrollNode = new Element("div", {"styles": this.css.startProcessApplicationScrollNode}).inject(this.startProcessApplicationListNode);
+        this.startProcessApplicationAreaNode = new Element("div", {"styles": this.css.startProcessApplicationAreaNode}).inject(this.startProcessApplicationScrollNode);
+
+        this.startProcessProcessListNode = new Element("div", {"styles": this.css.startProcessProcessListNode}).inject(this.startProcessRightListNode);
+        this.startProcessProcessScrollNode = new Element("div", {"styles": this.css.startProcessProcessScrollNode}).inject(this.startProcessProcessListNode);
+        this.startProcessProcessAreaNode = new Element("div", {"styles": this.css.startProcessProcessAreaNode}).inject(this.startProcessProcessScrollNode);
+
+        MWF.require("MWF.widget.ScrollBar", function () {
+            new MWF.widget.ScrollBar(this.startProcessApplicationScrollNode, {
+                "distance": 100,
+                "friction": 4
+            });
+            new MWF.widget.ScrollBar(this.startProcessProcessScrollNode, {
+                "distance": 100,
+                "friction": 4
+            });
+        }.bind(this));
+    },
+    createStartProcessCloseNode: function () {
+        this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode}).inject(this.startProcessRightListNode);
+        this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode}).inject(this.startProcessTopNode);
+        this.startProcessCloseNode.addEvent("click", function (e) {
+            this.closeStartProcessArea(e);
+        }.bind(this));
+    },
+    createStartProcessSearchNode: function(){
+        this.startProcessSearchNode = new Element("div", {"styles": this.css.startProcessSearchNode}).inject(this.startProcessRightListNode);
+        this.startProcessSearchIconNode = new Element("div", {"styles": this.css.startProcessSearchIconNode}).inject(this.startProcessSearchNode);
+        this.startProcessSearchAreaNode = new Element("div", {"styles": this.css.startProcessSearchAreaNode}).inject(this.startProcessSearchNode);
+        this.startProcessSearchInputNode = new Element("input", {"styles": this.css.startProcessSearchInputNode}).inject(this.startProcessSearchAreaNode);
+        this.startProcessSearchInputNode.set("value", this.lp.searchProcess);
+        this.startProcessSearchInputNode.addEvents({
+            "focus": function(){ if (this.startProcessSearchInputNode.get("value")===this.lp.searchProcess) this.startProcessSearchInputNode.set("value", ""); }.bind(this),
+            "blur": function(){if (!this.startProcessSearchInputNode.get("value")) this.startProcessSearchInputNode.set("value", this.lp.searchProcess);}.bind(this),
+            "keydown": function(e){ if (e.code===13) this.searchStartProcess(); }.bind(this)
+        });
+        this.startProcessSearchIconNode.addEvent("click", function(){ this.searchStartProcess(); }.bind(this));
+    },
+    searchStartProcess: function(){
+        var key = this.startProcessSearchInputNode.get("value");
+        if (key && key!==this.lp.searchProcess){
+            if (this.appStartableData){
+                this.startApplications.each(function(app){ app.unselected(); });
+                if (this.searchProcessSearchchildNode) this.searchProcessSearchchildNode.destroy();
+                var text = this.lp.searchProcessResault.replace("{key}", key);
+
+                this.searchProcessSearchchildNode = new Element("div", {"styles": this.css.applicationChildNode}).inject(this.startProcessProcessAreaNode);
+                this.searchProcessSearchchildNode.setStyle("display", "block");
+                new Element("div", {"styles": this.css.applicationChildTitleNode, "text": text}).inject(this.searchProcessSearchchildNode);
+                var proListNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.searchProcessSearchchildNode);
+
+                this.appStartableData.each(function (app) {
+                    app.processList.each(function(pro){
+                        if (pro.name.indexOf(key)!==-1){
+                            var data = Object.clone(pro);
+                            data.applicationName = app.name;
+                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this}, {"name": app}, proListNode);
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }
+        }
+    },
+    listApplications: function () {
+        this.app.getAction(function () {
+            this.app.action.listApplicationStartable(function (json) {
+                this.appStartableData = json.data;
+                this.startProcessSearchNode.setStyle("display", "block");
+                this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
+                this.allApplicationStarter.selected();
+                json.data.each(function (app) {
+                    new MWF.xApplication.process.TaskCenter.Application(app, this);
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+    },
+    setResizeStartProcessAreaHeight: function () {
+        if (this.startProcessAreaNode) {
+            var size = this.content.getSize();
+            var nodeSize = this.startProcessAreaNode.getSize();
+            var x = (size.x-nodeSize.x)/2;
+            var y = (size.y-nodeSize.y)/2;
+            this.startProcessAreaNode.setStyle("top", "" + y + "px");
+            this.startProcessAreaNode.setStyle("left", "" + x + "px");
+
+            var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
+            //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+            if (maskNode){
+                maskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px"});
+                maskNode.position({
+                    "relativeTo": this.content,
+                    "position": "topLeft",
+                    "edge": "topLeft"
+                });
+            }
+
+            if (this.startProcessProcessListNode){
+                var topSize = this.startProcessTopNode.getSize();
+                var searchSize = this.startProcessSearchNode.getSize();
+                var h = nodeSize.y-topSize.y-searchSize.y;
+                this.startProcessProcessListNode.setStyle("height", ""+h+"px");
+            }
+
+        }
+    },
+    showStartProcessArea_mobile: function(){
+        if (!this.startProcessAreaNode) {
+            this.createStartProcessArea_mobile();
+        }
+        this.startProcessAreaNode.setStyle("display", "block");
+        //document.body.setStyle("-webkit-overflow-scrolling", "auto");
+        var morph = new Fx.Morph(this.startProcessAreaNode, {
+            "duration": 200,
+            "transition": Fx.Transitions.Expo.easeOut
+        });
+        morph.start({"left": "0px"});
+    },
+
+    createStartProcessArea_mobile: function(){
+        this.startProcessAreaNode = new Element("div", {"styles": this.css.startProcessAreaNode_mobile}).inject(this.content);
+        var size = this.content.getSize();
+        this.startProcessAreaNode.setStyles({
+            "width": ""+size.x+"px",
+            "height": ""+size.y+"px",
+            "top": "0px",
+            "left": ""+size.x+"px"
+        });
+
+        this.startProcessTopNode = new Element("div", {"styles": this.css.startProcessTopNode_mobile}).inject(this.startProcessAreaNode);
+        this.startProcessCloseNode = new Element("div", {"styles": this.css.startProcessCloseNode_mobile, "text": this.lp.back}).inject(this.startProcessTopNode);
+        this.startProcessCloseNode.addEvent("click", function (e) {
+            this.closeStartProcessArea(e);
+        }.bind(this));
+
+        this.startProcessListNode = new Element("div", {"styles": this.css.startProcessListNode_mobile}).inject(this.startProcessAreaNode);
+        var h = size.y-this.startProcessTopNode.getSize().y;
+        this.startProcessListNode.setStyle("height", ""+h+"px");
+
+        this.app.getAction(function () {
+            this.app.action.listApplicationStartable(function (appjson) {
+                //this.app = this;
+                MWF.UD.getDataJson("taskCenter_startTop", function(json){
+                    this.top5Data = json;
+                    if (this.top5Data && this.top5Data.length){
+                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.lp.startTop5}).inject(this.startProcessListNode);
+                        var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+
+                        this.top5Data.sort(function(p1, p2){
+                            return 0-(p1.count-p2.count);
+                        });
+                        this.top5Data.each(function(process, i){
+                            if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
+                        }.bind(this));
+                    }
+                    appjson.data.each(function (app) {
+                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
+                        var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+                        app.processList.each(function(process){
+                            new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
+
+            }.bind(this));
+        }.bind(this));
+    },
+    // getAction: function (callback) {
+    //     if (!this.action) {
+    //         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
+    //         if (callback) callback();
+    //     } else {
+    //         if (callback) callback();
+    //     }
+    // },
+    closeStartProcessArea: function () {
+        if (layout.mobile){
+            var size = this.startProcessAreaNode.getSize();
+            var morph = new Fx.Morph(this.startProcessAreaNode, {
+                "duration": 200,
+                "transition": Fx.Transitions.Expo.easeOut,
+                "onComplete": function(){
+                    this.startProcessAreaNode.setStyle("display", "none");
+                }.bind(this)
+            });
+            morph.start({"left": ""+size.x+"px"});
+        }else{
+            this.content.unmask();
+            if (this.startProcessAreaNode) this.startProcessAreaNode.fade("out");
+        }
+    }
+
+});
+
+// MWF.xApplication.process.TaskCenter.AllApplication = new Class({
+//     Extends: MWF.xApplication.process.TaskCenter.Application,
+//     initialize: function(data, app){
+//         this.bgColors = ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"];
+//         this.data = data;
+//         this.app = app;
+//         this.container = this.app.startProcessApplicationAreaNode;
+//         this.processContainer = this.app.startProcessProcessAreaNode;
+//         this.css = this.app.css;
+//         this.isLoaded = false;
+//
+//         this.load();
+//     },
+//     load: function(){
+//         this.node = new Element("div", {"styles": this.css.applicationNode}).inject(this.container);
+//         this.iconAreaNode = new Element("div", {"styles": this.css.applicationIconAreaNode}).inject(this.node);
+//         this.iconNode = new Element("img", {"styles": this.css.applicationIconNode}).inject(this.iconAreaNode);
+//         this.iconNode.set("src", "/x_component_process_TaskCenter/$Main/default/icon/appAppliction.png");
+//
+//         this.textNode = new Element("div", {"styles": this.css.applicationTextNode}).inject(this.node);
+//         this.textNode.set("text", this.app.lp.all);
+//         this.textNode.set("title", this.app.lp.all);
+//
+//         this.childNode = new Element("div", {"styles": this.css.applicationChildNode}).inject(this.processContainer);
+//         //this.loadChild();
+//         this.node.addEvent("click", function(){
+//             this.selected();
+//         }.bind(this));
+//         this.app.startApplications.push(this);
+//     },
+//     unselected: function(){
+//         this.childNode.empty();
+//         this.isLoaded = false;
+//         this.childNode.setStyle("display", "none");
+//         this.node.setStyles(this.css.applicationNode);
+//     },
+//     loadChild: function(){
+//         //this.loadSearch();
+//         MWF.UD.getDataJson("taskCenter_startTop", function(json){
+//             this.top5Data = json;
+//             if (this.top5Data && this.top5Data.length){
+//                 new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.app.lp.startTop5}).inject(this.childNode);
+//                 var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
+//
+//                 this.top5Data.sort(function(p1, p2){
+//                     return 0-(p1.count-p2.count);
+//                 });
+//             }
+//
+//             var allowProcessIds = [];
+//             this.data.each(function (app) {
+//                 new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.childNode);
+//                 var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
+//                 app.processList.each(function(process){
+//                     allowProcessIds.push(process.id);
+//                     new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+//                 }.bind(this));
+//             }.bind(this));
+//
+//             if (top5ChildNode){
+//                 saveflag = false;
+//                 this.top5Data.each(function(process, i){
+//                     if (allowProcessIds.indexOf(process.id)!==-1){
+//                         if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
+//                     }else{
+//                         saveflag = true;
+//                         process.count=0;
+//                     }
+//                 }.bind(this));
+//                 if (saveflag) MWF.UD.putData("taskCenter_startTop", this.top5Data);
+//             }
+//
+//         }.bind(this));
+//     }
+// });

@@ -26,6 +26,18 @@
         "-webkit-user-select": "none",
         "-moz-user-select": "none"
     },
+    "contentNodeFlat": {
+        "overflow": "hidden",
+        "background-color": "#f0f0f0",
+        "position": "absolute",
+        "border-radius": "10px",
+        "box-shadow": "0px",
+        "border": "0px solid #666666",
+        "width": "1px",
+        "height": "1px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none"
+    },
     "contentNodeTo": {
         "width": "680px",
         "height": "350px"

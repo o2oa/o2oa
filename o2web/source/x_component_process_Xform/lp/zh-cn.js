@@ -4,14 +4,27 @@ MWF.xApplication.process.Xform.LP = {
     "deleteDatagridLine": "是否确定要删除当前条目？",
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
+    "activity": "活动",
     "dataSaved": "数据保存成功",
     "taskProcessed": "文件已提交",
     "taskProcessedMessage": "您处理了一个待办任务：",
     "nextActivity": "下一个活动：",
     "nextUser": "处理人：",
-    "workCompleted": "待办已处理",
+    "arrivedActivitys": "到达活动",
+    "arrivedUsers": "到达处理人",
+    "replace": "代",
+
+    "taskCompleted": "待办已处理",
+    "workCompleted": "工作流转已完成",
+    "arrivedActivity": "工作已到达活动：",
     "workProcess": "继续流转",
     "close": "关闭",
+    "retract": "撤回",
+    "reroute": "调度",
+    "rerouteTo": "调度到",
+    "rollback": "流程回溯",
+    "rollbackTo": "流程回溯到",
+    "in": "在",
 
     "noIdentitySelectRange" : "无法确定身份的选择范围",
     "noIdentityDutySelectRange" : "无法确定职务的选择范围",
@@ -26,6 +39,7 @@ MWF.xApplication.process.Xform.LP = {
     "begin": "起",
     "end": "止",
     "none": "无",
+    "empower": "授权",
 
     "person": "处理人",
     "department": "部门",
@@ -142,6 +156,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdoc": "编辑正文",
     "editdocCompleted": "编辑完成",
     "printdoc": "打印正文",
+    "history": "正文痕迹",
 
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
     "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
@@ -156,6 +171,10 @@ MWF.xApplication.process.Xform.LP = {
     "computePage": "正在计算分页，请稍候……",
     "keyLockTitle": "文件编辑已锁定",
     "keyLockInfor": "文件正由 {name} 编辑处理，您可以查看文件内容，稍后可刷新页面重试。",
+
+    "year" : "年",
+    "month" : "月",
+    "date" : "日",
 
     "documentEditor": {
         "copies": "",
@@ -176,7 +195,8 @@ MWF.xApplication.process.Xform.LP = {
         "copytoTitle":"抄送：",
         "copyto":"[抄送]",
         "editionUnit":"[印发机关]",
-        "editionDate":"[印发日期]"
+        "editionDate":"[印发日期]",
+        "historyList": "历史版本文档"
     }
 
 };

@@ -57,5 +57,13 @@
     "mode": [
       "pc"
     ]
+  },
+  "blue-flat-mobile": {
+    "name": "手机蓝白",
+    "file": "styles_mobile-blue-flat.json",
+    "extendFile": "styles_mobile-blue-flat_extend.json",
+    "mode": [
+      "mobile"
+    ]
   }
 }

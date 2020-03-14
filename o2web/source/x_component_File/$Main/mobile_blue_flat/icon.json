@@ -1,0 +1,61 @@
+{
+	"html": "OTHER@2x.png",
+	"htm": "OTHER@2x.png",
+	"jsp": "OTHER@2x.png",
+	"asp": "OTHER@2x.png",
+	"js": "OTHER@2x.png",
+	
+	"avi": "OTHER@2x.png",
+	"mkv": "OTHER@2x.png",
+    "mov": "OTHER@2x.png",
+    "ogg": "OTHER@2x.png",
+    "mp4": "OTHER@2x.png",
+    "mpa": "OTHER@2x.png",
+    "mpe": "OTHER@2x.png",
+    "mpeg": "OTHER@2x.png",
+    "mpg": "OTHER@2x.png",
+    "rmvb": "OTHER@2x.png",
+
+    "doc": "WORD@2x.png",
+	"docx": "WORD@2x.png",
+	"dotx": "WORD@2x.png",
+	"dot": "WORD@2x.png",
+	
+	"vsd": "OTHER@2x.png",
+	
+	"xls": "EXCEL@2x.png",
+	"xlsx": "EXCEL@2x.png",
+	"xlsm": "EXCEL@2x.png",
+	"xlt": "EXCEL@2x.png",
+	"xltx": "EXCEL@2x.png",
+	
+	"pptx": "PPT@2x.png",
+	"ppt": "PPT@2x.png",
+	"pot": "PPT@2x.png",
+	"potx": "PPT@2x.png",
+	"potm": "PPT@2x.png",
+	
+	"css": "OTHER@2x.png",
+	"mp3": "OTHER@2x.png",
+	"wav": "OTHER@2x.png",
+	"wma": "OTHER@2x.png",
+	"wmv": "OTHER@2x.png",
+
+    "bmp": "IMG@2x.png",
+	"gif": "IMG@2x.png",
+	"png": "IMG@2x.png",
+	"psd": "IMG@2x.png",
+	"jpeg": "IMG@2x.png",
+	"jpg": "IMG@2x.png",
+    "jpe": "IMG@2x.png",
+    "ico": "IMG@2x.png",
+	
+	"pdf": "icon_pdf@2x.png",
+	"rar": "RAR@2x.png",
+	"txt": "TEXT@2x.png",
+	"zip": "ZIP@2x.png",
+	
+	"exe": "OTHER@2x.png",
+	
+	"unknow": "OTHER@2x.png"
+}

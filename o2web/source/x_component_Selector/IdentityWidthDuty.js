@@ -83,8 +83,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
     _getChildrenItemIds: function(){
         return null;
     },
-    _newItemCategory: function(type, data, selector, item, level, category){
-        return new MWF.xApplication.Selector.IdentityWidthDuty[type](data, selector, item, level, category)
+    _newItemCategory: function(type, data, selector, item, level, category, delay){
+        return new MWF.xApplication.Selector.IdentityWidthDuty[type](data, selector, item, level, category, delay)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -128,7 +128,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.Item = new Class({
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/personicon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     }
 });
 MWF.xApplication.Selector.IdentityWidthDuty.SearchItem = new Class({
@@ -147,7 +148,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected = new Class({
         return this.data.name+((this.data.unitLevelName) ? "("+this.data.unitLevelName+")" : "");
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/personicon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     }
 });
 
@@ -163,31 +165,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/companyicon.png)");
-    },
-    clickItem: function( callback ){
-        if (this._hasChild()){
-            var firstLoaded = !this.loaded;
-            this.loadSub(function(){
-                if( firstLoaded ){
-                    this.children.setStyles({"display": "block", "height": "auto"});
-                    this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                    this.isExpand = true;
-                }else{
-                    var display = this.children.getStyle("display");
-                    if (display === "none"){
-                        this.children.setStyles({"display": "block", "height": "auto"});
-                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                        this.isExpand = true;
-                    }else{
-                        this.children.setStyles({"display": "none", "height": "0px"});
-                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
-                        this.isExpand = false;
-                    }
-                }
-                if(callback)callback();
-            }.bind(this));
-        }
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded){
@@ -230,6 +209,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                         if (i>=count){
                             if (!this.loaded) {
                                 this.loaded = true;
+                                this.itemLoaded = true;
                                 if (callback) callback();
                             }
                         }
@@ -253,13 +233,14 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                             if (i>=count){
                                 if (!this.loaded) {
                                     this.loaded = true;
+                                    this.itemLoaded = true;
                                     if (callback) callback();
                                 }
                             }
                         }.bind(this));
                     }.bind(this));
                 }
-                //if (callback) callback();
+                if (callback) callback();
 
             }else{
                 this.selector.orgAction.listIdentityWithDuty(function(json){
@@ -278,7 +259,18 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
             if (callback) callback( );
         }
     },
+    loadCategoryChildren: function(callback){
+        this.loadSub(callback);
+        this.categoryLoaded = true;
+        //if (callback) callback();
+    },
+    loadItemChildren: function(callback){
+        this.loadSub(callback);
+    },
     _hasChild: function(){
+        return true;
+    },
+    _hasChildCategory: function(){
         return true;
     },
     _hasChildItem: function(){
@@ -298,11 +290,11 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                         this.selector.items.push(item);
                         if(this.subItems)this.subItems.push( item );
                     }
-                    if( !this.selector.options.expandSubEnable ){
-                        this.loaded = true;
-                        if (callback) callback();
-                    }
                 }.bind(this));
+                if( !this.selector.options.expandSubEnable ){
+                    this.loaded = true;
+                    if (callback) callback();
+                }
 
                 if( this.selector.options.expandSubEnable ){
                     this.selector.orgAction.listSubUnitDirect(function(json){
@@ -316,6 +308,46 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemUnitCategory = new Class({
                         if (callback) callback();
                     }.bind(this), null, this.data.distinguishedName);
                 }
+            }.bind(this), null, this.data.distinguishedName);
+        }else{
+            if (callback) callback( );
+        }
+    },
+    loadCategoryChildren: function(callback){
+        if (!this.categoryLoaded){
+            this.loadSub(callback);
+            this.categoryLoaded = true;
+            this.itemLoaded = true;
+            //if( this.selector.options.expandSubEnable ){
+            //    this.selector.orgAction.listSubUnitDirect(function(json){
+            //        json.data.each(function(subData){
+            //            if( !this.selector.isExcluded( subData ) ) {
+            //                var category = this.selector._newItemCategory("ItemUnitCategory", subData, this.selector, this.children, this.level + 1, this);
+            //                this.subCategorys.push( category );
+            //            }
+            //        }.bind(this));
+            //        this.categoryLoaded = true;
+            //        if (callback) callback();
+            //    }.bind(this), null, this.data.distinguishedName);
+            //}else{
+            //    if (callback) callback();
+            //}
+        }else{
+            if (callback) callback( );
+        }
+    },
+    loadItemChildren: function(callback){
+        if (!this.itemLoaded){
+            this.selector.orgAction.listIdentityWithUnit(function(idJson){
+                idJson.data.each(function(idSubData){
+                    if( !this.selector.isExcluded( idSubData ) ) {
+                        var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
+                        this.selector.items.push(item);
+                        if(this.subItems)this.subItems.push( item );
+                    }
+                    this.itemLoaded = true;
+                }.bind(this));
+                if (callback) callback();
             }.bind(this), null, this.data.distinguishedName);
         }else{
             if (callback) callback( );

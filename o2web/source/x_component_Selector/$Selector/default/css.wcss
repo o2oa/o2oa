@@ -92,7 +92,7 @@
 		"border-bottom": "1px solid #CCC"
 	},
 	"titleNodeMobile": {
-        "height": "40px",
+        "height": "50px",
         "text-align": "center",
         "background-color": "#4c6b87",
         "border-bottom": "1px solid #CCC"
@@ -116,31 +116,31 @@
 	},
 	"titleTextNodeMobile": {
         "margin": "0px 50px",
-        "height": "40px",
+        "height": "50px",
         "padding": "0px 10px",
         "color": "#FFF",
         "font-weight": "bold",
         "font-size": "14px",
-        "line-height": "40px"
+        "line-height": "50px"
     },
 
 	"titleCancelActionNodeMobile": {
-        "height": "26px",
+        "height": "50px",
         "width": "50px",
         "text-align": "center",
         "color": "#FFF",
-        "margin": "7px 15px",
-        "line-height": "26px",
+        "margin": "0px 15px",
+        "line-height": "50px",
         "float": "left",
         "font-size": "14px"
 	},
 	"titleOkActionNodeMobile": {
-        "height": "26px",
+        "height": "50px",
         "width": "50px",
         "text-align": "center",
         "color": "#FFF",
-        "margin": "7px 15px",
-        "line-height": "26px",
+        "margin": "0px 15px",
+        "line-height": "50px",
         "float": "right",
         "font-size": "14px"
 	},
@@ -267,7 +267,7 @@
 	},
 	"letterAreaMobileNode": {
         "padding": "0px 9px",
-        "height": "40px",
+        "height": "50px",
         "border-bottom": "1px solid #999",
         "background-color": "#EEE"
     },
@@ -287,6 +287,18 @@
 		"cursor": "pointer",
 		"font-size": "12px",
 		"background": "transparent"
+	},
+	"letterNode_mobile": {
+	  "height": "22px",
+	  "line-height": "22px",
+	  "width": "15px",
+	  "text-align": "center",
+	  "font-weight": "bold",
+	  "float": "left",
+	  "cursor": "pointer",
+	  "font-size": "11px",
+	  "color": "#666666",
+	  "background": "transparent"
 	},
 	"letterNode_over": {
 		"height": "20px",

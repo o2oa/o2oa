@@ -1,0 +1,262 @@
+{
+	"container": {
+		"border": "1px solid #888888",
+		"margin": "5px",
+		"background-color": "#FFF",
+		"z-index": "300",
+		"font-size": "12px",
+		"position": "absolute",
+		"height": "223px",
+		"overflow": "hidden"
+	},
+
+	"dateTitle": {
+		"background-color": "#576e86",
+		"width": "200px",
+		"height": "26px",
+		"line-height": "26px",
+		"text-align": "center",
+		"font-weight": "bold" 
+	},
+
+	"datePrev": {
+		"width": "22px",
+		"height": "22px",
+		"float": "left",
+		"background": "url("+o2.session.path+"/widget/$Calendar/xform/prev.gif) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"dateNext": {
+		"width": "22px",
+		"height": "22px",
+		"float": "right",
+		"background": "url("+o2.session.path+"/widget/$Calendar/xform/next.gif) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"dateCurrent": {
+		"margin-left": "22px",
+		"margin-right": "22px",
+		"color": "#FFF",
+		"font-family": "Microsoft YaHei",
+		"background-position": "center center",
+		"cursor": "move",
+		"font-size": "12px"
+	},
+	"dateCurrentText": {
+		"cursor": "pointer"
+	},
+	"calendarContent": {
+		"width": "200px",
+		"overflow": "hidden"
+	},
+
+	"calendarDaysContent": {
+	//	"display": "table",
+		"width": "100%",
+		"padding": "2px",
+		"float": "left",
+		"height": "195px",
+		"font-size": "12px",
+		"background-color:": "#ccc"
+	},
+	"calendarDaysContentTh": {
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		//"border-bottom": "1px solid #e7e7e7",
+		"font-size": "12px",
+		"height": "18px",
+		"line-height": "18px",
+		"background-color": "#FFF"
+	},
+
+	"calendarDaysContentTd": {
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "0px solid #FFF",
+		"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom",
+		//"background": "#FFF",
+		"font-size": "12px"
+	},
+
+	"calendarMonthsContent": {
+		"width": "100%",
+	//	"display": "table",
+		"height": "195px",
+		"padding": "2px",
+		"float": "left"
+	},
+	"calendarMonthsContentTd": {
+		"background-color": "#FFFFFF",
+		"background-image": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif)",
+		"background-repeat": "repeat-x",
+		"background-position": "bottom",
+		"text-align": "center",
+		"cursor": "pointer", 
+		"border": "1px solid #FFF", 
+		"width": "37px",
+		"font-size": "12px"
+	},
+	"calendarYearsContent": {
+	//	"display": "table",
+		"width": "100%",
+		"height": "195px",
+		"padding": "2px",
+		"float": "left"
+	},
+	"calendarYearsContentTd": {
+		"background-color": "#FFFFFF",
+		"background-image": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif)",
+		"background-repeat": "repeat-x",
+		"background-position": "bottom",
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		"width": "37px",
+		"font-size": "12px"
+	},
+	"calendarTimeContent": {
+		"width": "100%",
+		"height": "144px",
+		"padding": "2px",
+		"float": "left"
+	},
+	"calendarTimeContentTd": {
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		"width": "37px",
+		"font-size": "12px"
+	},
+	"gray_xform": {
+	//	"background": "url("+o2.session.path+"/widget/$Calendar/portlet/tdbg.gif)",
+		"background": "#FFF",
+		"border": "0px solid #FFF",
+		"color": "#999"
+	},
+	"today_xform": {
+		"border": "0px solid #FFF",
+		"color": "#FF0000",
+		"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom"
+	},
+	"current_xform": {
+		"background": "#8E8E8E",
+		"border": "1px solid #FFF",
+		"color": "#FFF"
+	},
+	"normal_xform": {
+		"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom",
+	//	"background": "#FFF",
+		"border": "0px solid #FFF",
+		"color": "#000"
+	},
+	"dateBottom": {
+		"display": "none"
+	},
+	"calendarTimeSlider": {
+		"margin-top": "5px",
+		"height": "16px",
+		"overflow": "hidden",
+		"margin-left": "5px",
+		"margin-right": "5px",
+		"border": "1px solid #999",
+		"float": "left",
+		"width": "140px",
+		"background-color": "#FFF"
+	},
+	"calendarTimeSliderNoStyle": {
+		"margin-top": "0px",
+		"width": "auto",
+		"height": "auto",
+		"overflow": "visible",
+		"margin-left": "50px",
+		"margin-right": "50px",
+		"border-top": "0px solid #999",
+		"border-left": "0px solid #999",
+		"border-bottom": "0px solid #E1E1E1",
+		"border-right": "0px solid #E1E1E1",
+		"background-color": "transparent"
+	},
+	"calendarTimeArea": {
+		"height": "25px",
+		"line-height": "25px",
+		"margin-top": "4px",
+		"border": "1px solid #FFF"
+	},
+	"calendarTimeSliderKnob": {
+		"height": "16px",
+		"width": "20px",
+		"background-color": "#666",
+        "color": "#FFF",
+        "text-align": "center",
+        "font-size": "12px",
+        "line-height": "16px",
+		"z-index": "99",
+		"cursor": "pointer"
+	},
+	"calendarTimeShow": {
+		"overflow": "hidden",
+		"text-align": "center",
+		"margin-top": "12px",
+		"padding-left": "28px",
+		"cursor": "pointer"
+	},
+	"calendarTimeShowItem": {
+		"border": "3px solid #CCC",
+		"background": "#666",
+		"color": "#FFF",
+		"font-size": "24px",
+		"font-weight": "bolder",
+		"float": "left",
+		"width": "40px",
+		"height": "30px",
+		"line-height": "30px",
+		"margin-left": "3px"
+	},
+	"calendarActionShow": {
+	    "overflow": "hidden",
+		"margin-top": "12px",
+		"text-align": "center",
+		"overflow": "hidden"
+	},
+	"calendarActionShowButton": {
+		"margin-left": "5px",
+		"margin-right": "5px",
+		"width": "50px",
+		"padding": "5px",
+		"border": "1px solid #999"
+	},
+
+	"calendarTimeWraper" : {
+	  	"float" : "left",
+	  	"overflow" : "hidden",
+	  	"border": "1px solid #e2e3e7"
+	},
+	"calendarTimeScrollArea": {
+	  "width" : "55px",
+	  "height": "150px",
+	  "overflow-y": "scroll",
+	  "overflow-x": "hidden"
+	},
+	"calendarTimeContainer" : {
+
+	},
+	"calendarTimeItem" : {
+	  "cursor" : "pointer",
+	  "height" : "24px",
+	  "line-height" : "24px",
+	  "border" : "1px solid #fff",
+	  "background-color" : "transparent",
+	  "color" : "#333"
+	},
+	"calendarTimeItem_over" : {
+	  "border" : "1px solid #999",
+	  "background-color" : "transparent",
+	  "color" : "#333"
+	},
+  "calendarTimeItem_selected" : {
+	"border" : "1px solid #576e86",
+	"background-color" : "#576e86",
+	"color" : "#fff"
+  }
+}

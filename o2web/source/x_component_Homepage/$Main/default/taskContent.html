@@ -1,0 +1,18 @@
+<div class="o2_homepage_title" data-o2-element="taskTitleNode">
+<!--    <div class="o2_homepage_task_title_action">-->
+    <div class="o2_homepage_title_action mainColor_color icon_add" data-o2-element="startProcessAction" data-o2-events="click:startProcess">{{$.lp.startProcess}}</div>
+<!--    </div>-->
+
+    <div class="o2_homepage_title_tabarea">
+        <div class="o2_homepage_title_tab" data-o2-element="taskTab" data-o2-events="click:loadTask;mouseover:tabover;mouseout:tabout">{{$.lp.myTask}}</div>
+        <div class="o2_homepage_title_tab" data-o2-element="readTab" data-o2-events="click:loadRead;mouseover:tabover;mouseout:tabout">{{$.lp.myRead}}</div>
+        <div class="o2_homepage_title_tab" data-o2-element="taskCompletedTab" data-o2-events="click:loadTaskCompleted;mouseover:tabover;mouseout:tabout">{{$.lp.myTaskCompleted}}</div>
+        <div class="o2_homepage_title_tab" data-o2-element="readCompletedTab" data-o2-events="click:loadReadCompleted;mouseover:tabover;mouseout:tabout">{{$.lp.myReadCompleted}}</div>
+        <div class="o2_homepage_title_tab" data-o2-element="draftTab" data-o2-events="click:loadDraft;mouseover:tabover;mouseout:tabout">{{$.lp.myDraft}}</div>
+    </div>
+
+</div>
+<div class="o2_homepage_task_area">
+    <div class="o2_homepage_task_area_content" data-o2-element="itemContentNode"></div>
+    <div class="o2_homepage_task_area_action" data-o2-element="pageAreaNode"></div>
+</div>

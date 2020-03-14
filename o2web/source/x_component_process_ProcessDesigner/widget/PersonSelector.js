@@ -1,3 +1,4 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.ProcessDesigner = MWF.xApplication.process.ProcessDesigner || {};
 MWF.xApplication.process.ProcessDesigner.widget = MWF.xApplication.process.ProcessDesigner.widget || {};
 MWF.xDesktop.requireApp("Selector", "package", null, false);
@@ -300,9 +301,17 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
         this.createReference(this.app.lp.selectUnit, "", function(){
             var options = {
                 "type": "unit",
-                "count": 1,
+                "count": 0,
                 "onComplete": function(items){
-                    this.scriptEditor.editor.editor.setValue("return \""+items[0].data.distinguishedName+"\";");
+                    var arr = [];
+                    items.each(function (item) {
+                        arr.push("\"" + item.data.distinguishedName + "\"");
+                    })
+                    if(arr.length>1){
+                        this.scriptEditor.editor.editor.setValue("return ["+arr.join(",")+"];");
+                    }else{
+                        this.scriptEditor.editor.editor.setValue("return "+arr.join()+";");
+                    }
                 }.bind(this)
             };
             new MWF.O2Selector(this.node, options);

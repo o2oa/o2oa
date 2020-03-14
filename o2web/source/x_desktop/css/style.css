@@ -31,7 +31,7 @@ body {
 #appContent *{
 	box-sizing: content-box!important;
 }
-#layout *{
+#layout_main *{
 	box-sizing: content-box!important;
 }
 /*
@@ -65,5 +65,26 @@ select.script::-ms-expand { display: none; }
 			color: #333;
 		}
 	}
+	html{
+		overflow: visible;
+		height: auto;
+		margin:0;
+		padding:0;
+	}
+	div {
+		page-break-after:auto;
+		page-break-inside:auto;
+		page-break-before:auto;
+	}
+	table {
+		page-break-after:auto;
+		page-break-inside:auto;
+		page-break-before:auto;
+	}
+	/*tr {*/
+	/*	page-break-after:auto;*/
+	/*	page-break-inside:auto;*/
+	/*	page-break-before:auto;*/
+	/*}*/
 
 }

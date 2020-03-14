@@ -14,33 +14,33 @@
     "top": "0px"
   },
   "formNode": {
-    "background-color": "#EEE",
-    "box-shadow": "0px 0px 10px #999",
     "margin": "auto",
-    //"border-radius" : "8px",
     "overflow": "hidden",
     "-webkit-user-select": "text",
-    "-moz-user-select": "text"
+    "-moz-user-select": "text",
+    "background": "#FFFFFF",
+    "box-shadow": "0 0 18px 0 #999999",
+    "border-radius": "8px"
   },
   "formTopNode": {
     "color" : "#fff",
     "height" : "50px",
-    "background-color": "#4c6b87",
     "line-height": "40px",
     "font-size": "14px",
     "padding-left" : "5px",
     "text-align": "left"
   },
   "formTopTextNode" : {
-    //"font-family" : "PingFang-SC-Medium",
     "height" : "50px",
     "line-height" : "50px",
     "padding-left" : "18px",
-    "font-size": "18px",
     "float": "left",
     "overflow" : "hidden",
     "text-overflow" : "ellipsis",
-    "white-space":"nowrap"
+    "white-space":"nowrap",
+    "font-family": "MicrosoftYaHei",
+    "font-size": "16px",
+    "color": "#333333"
   },
   "formTopCloseActionNode": {
     "width": "24px",
@@ -48,7 +48,7 @@
     "line-height" : "50px",
     "float": "right",
     "margin-right" : "20px",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_off_2.png) no-repeat center center",
+    "background": "url(/x_component_Profile/$Main/newVersion/icon_off.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopMaxActionNode": {
@@ -122,7 +122,7 @@
     "position" : "relative"
   },
   "formTableContainer" : {
-    "width" : "700px",
+    "width" : "85%",
     "margin": "0px auto 20px auto",
     "padding-top" : "40px",
     "overflow" : "hidden",
@@ -170,31 +170,35 @@
     "text-align": "center"
   },
   "formOkActionNode" : {
-    "height": "30px",
-    "width": "140px",
-    "border-radius": "3px",
-    "background-color": "#5f6b80",
-    "border": "1px solid #fff",
-    "color":"#FFF",
-    "line-height": "30px",
+    "height": "40px",
+    "width": "180px",
+    "border-radius": "100px",
+    "background": "#4A90E2",
+    "line-height": "40px",
     "text-align": "center",
     "cursor": "pointer",
     "float": "left",
-    "margin": "10px 60px 10px 10px",
-    "float" : "right"
+    "margin": "0 0 10px 10px",
+    "float" : "right",
+    "color" : "#FFFFFF",
+    "font-size" : "16px",
+    "font-family": "MicrosoftYaHei"
+
   },
   "formCancelActionNode" : {
-    "height": "30px",
-    "width": "140px",
-    "border-radius": "3px",
-    "background-color": "#FFF",
-    "border": "1px solid #666",
-    "line-height": "30px",
+    "height": "40px",
+    "width": "120px",
+    "border-radius": "100px",
+    "background": "#F0F0F0",
+    "line-height": "40px",
     "text-align": "center",
     "cursor": "pointer",
     "float": "left",
-    "margin": "10px 200px 10px 10px",
-    "float" : "right"
+    "margin": "0 60px 10px 10px",
+    "float" : "right",
+    "color" : "#666666",
+    "font-size" : "16px",
+    "font-family": "MicrosoftYaHei"
   },
   "colorNode" : {
     "float" : "left",
@@ -232,64 +236,55 @@
     "background-color": "white"
     },
     "inputTime" : {
-      //"width": "99%",
-      //"border-radius" : "4px",
-      //"border":"1px solid #ccc",
-      //"background-color":"#FFF",
-      //"height": "30px",
-      //"font-size": "16px",
-      //"background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
-    "border": "1px solid #999",
-    "box-shadow": "0 0 0 #999",
-    "width": "99%",
-    "height": "20px",
-    "line-height": "20px",
-    "background-color": "#FFF",
-    "margin-top": "4px",
-    "color": "#666",
-    "overflow": "hidden",
-    "font-size": "16px",
-    "background-color": "white"
+     "border-radius" : "100px",
+     "overflow" : "hidden",
+    "background" : "url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
+    "border": "1px solid #DEDEDE",
+    "width": "200px",
+    "height": "36px",
+    "line-height": "36px",
+    "background-color": "#FFFFFF",
+    "color": "#666666",
+    "font-size": "14px",
+    "margin": "0 5px 10px 0",
+    "padding": "0 5px",
+    "background-color": "white",
+    "font-family": "MicrosoftYaHei",
+    "cursor": "pointer"
     },
     "inputTimeUnformatWidth" : {
-      //"border-radius" : "4px",
-      //"border":"1px solid #ccc",
-      //"background-color":"#FFF",
-      //"height": "30px",
-      //"font-size": "16px",
-      //"background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
-    "border": "1px solid #999",
-    "box-shadow": "0 0 0 #999",
-    "width": "99%",
-    "height": "20px",
-    "line-height": "20px",
-    "background-color": "#FFF",
-    "margin-top": "4px",
-    "color": "#666",
-    "overflow": "hidden",
-    "font-size": "16px",
-    "background-color": "white"
+      "border-radius" : "100px",
+      "overflow" : "hidden",
+     "background" : "url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
+    "border": "1px solid #DEDEDE",
+    "width": "100px",
+    "height": "36px",
+    "line-height": "36px",
+    "background-color": "#FFFFFF",
+    "color": "#666666",
+    "font-size": "14px",
+    "margin": "0 0 10px 5px",
+    "padding": "0 5px",
+    "background-color": "white",
+    "font-family": "MicrosoftYaHei",
+    "cursor": "pointer"
     },
     "inputPerson" : {
-      //"width": "99%",
-      //"border-radius" : "4px",
-      //"border":"1px solid #ccc",
-      //"background-color":"#FFF",
-      //"min-height": "30px",
-      //"overflow" : "hidden",
-      //"font-size": "16px",
-      //"background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
-    "border": "1px solid #999",
-    "box-shadow": "0 0 0 #999",
-    "width": "99%",
-    "height": "20px",
-    "line-height": "20px",
-    "background-color": "#FFF",
-    "margin-top": "4px",
-    "color": "#666",
-    "overflow": "hidden",
-    "font-size": "16px",
-    "background-color": "white"
+     "border-radius" : "100px",
+     "overflow" : "hidden",
+     "background" : "url(/x_component_Profile/$Main/newVersion/icon_choose_people.png) 98% center no-repeat",
+    "border": "1px solid #DEDEDE",
+    "width": "310px",
+    "height": "36px",
+    "line-height": "36px",
+    "background-color": "#FFFFFF",
+    "color": "#666666",
+    "font-family": "MicrosoftYaHei",
+    "font-size": "14px",
+    "margin": "0 0 10px 0",
+    "padding": "0 5px",
+    "background-color": "white",
+    "cursor": "pointer"
     },
     "inputTextarea" : {
       "width": "99%",
@@ -409,12 +404,14 @@
       //"height" : "35px",
       //"line-height" : "35px",
       //"text-align": "right"
-      "width": "100px",
-      "height": "30px",
+      "width": "118px",
+      "height": "36px",
       "font-size": "14px",
-      "line-height": "30px",
-      "color": "#da7429",
-      "float": "left"
+      "line-height": "36px",
+      "margin-bottom": "10px",
+      "color": "#333333",
+      "float": "left",
+      "font-family": "MicrosoftYaHei"
     },
     "formTableTitle2" : {
     "color" : "#333",
@@ -461,17 +458,17 @@
       "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
     },
     "showNode": {
-        "width":"90%",
-        "min-height": "24px",
+        "width":"274px",
+        "min-height": "36px",
         "overflow": "hidden",
-        "margin-right": "24px",
         "float":"right"
     },
     "selectNode":{
       "float":"right",
-      "height":"24px",
-      "width":"24px",
+      "height":"16px",
+      "width":"16px",
       "cursor":"pointer",
-      "background":"url(/x_component_process_ProcessDesigner/widget/$PersonSelector/default/icon/addPerson.png) center center no-repeat"
+      "margin":"10px 20px 10px 10px",
+      "background":"url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat"
     }
 }

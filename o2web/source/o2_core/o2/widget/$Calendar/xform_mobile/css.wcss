@@ -1,0 +1,355 @@
+{
+	"container": {
+		"border": "2px solid #999",
+		"margin": "5px 5px 5px 10px",
+		"background-color": "#FFF",
+		"z-index": "300",
+		"font-size": "12px",
+		"position": "absolute",
+		"height": "330px",
+		"padding": "10px",
+		"font-family": "Microsoft YaHei",
+		"overflow": "hidden",
+	  	"width" : "90%"
+	},
+
+	"dateTitle": {
+		"background-color": "#FFF",
+	  	"margin" : "0px auto",
+		"width": "100%",
+		"height": "40px",
+		"font-size": "16px",
+		"line-height": "40px",
+		"text-align": "center"
+	},
+
+	"datePrev": {
+		"width": "22px",
+		"height": "22px",
+		"float": "left",
+		"background": "url("+o2.session.path+"/widget/$Calendar/meeting/left.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"dateNext": {
+		"width": "22px",
+		"height": "22px",
+		"float": "right",
+		"background": "url("+o2.session.path+"/widget/$Calendar/meeting/right.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"dateCurrent": {
+		"margin-left": "22px",
+		"margin-right": "22px",
+		"color": "#333",
+		"font-size": "24px",
+		"font-family": "Microsoft YaHei",
+		"background-position": "center center",
+		"cursor": "move"
+	},
+	"dateCurrentText": {
+		"cursor": "pointer"
+	},
+	"calendarContent": {
+	  "margin" : "0px auto",
+	  "width": "100%",
+		"overflow": "hidden"
+	},
+
+	"calendarDaysContent": {
+	//	"display": "table",
+		"margin" : "0px auto",
+		"width": "98%",
+		"padding": "0px",
+		"float": "left",
+		"height": "195px",
+		"font-size": "14px",
+		"background-color:": "#FFF"
+	},
+	"calendarDaysContentTh": {
+		"text-align": "center",
+		"cursor": "pointer",
+		//"border": "1px solid #FFF",
+		//"border-bottom": "1px solid #e7e7e7",
+		"font-size": "14px",
+		"height": "36px",
+		"line-height": "36px",
+		"background-color": "#FFF"
+	},
+
+	"calendarDaysContentTd": {
+		"text-align": "center",
+		"cursor": "pointer",
+		"background-color": "#FFF",
+		//"border": "0px solid #FFF",
+		"height": "36px",
+		//"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom",
+		//"background": "#FFF",
+		"font-size": "14px"
+	},
+
+	"calendarMonthsContent": {
+		"width": "100%",
+	//	"display": "table",
+		"height": "294px",
+		"padding": "0px",
+		"float": "left"
+	},
+	"calendarMonthsContentTd": {
+		"background-color": "#FFFFFF",
+		//"background-image": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif)",
+		"background-repeat": "repeat-x",
+		"background-position": "bottom",
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		"font-size": "14px"
+	},
+	"calendarYearsContent": {
+	//	"display": "table",
+		"width": "100%",
+		"height": "294px",
+		"padding": "0px",
+		"float": "left"
+	},
+	"calendarYearsContentTd": {
+		"background-color": "#FFFFFF",
+		//"background-image": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif)",
+		"background-repeat": "repeat-x",
+		"background-position": "bottom",
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		"font-size": "14px"
+	},
+	"calendarTimeContent": {
+		"width": "100%",
+		"height": "244px",
+		"padding": "5px",
+		"float": "left"
+	},
+	"calendarTimeContentTd": {
+		"text-align": "center",
+		"cursor": "pointer",
+		"border": "1px solid #FFF",
+		"width": "37px",
+		"font-size": "12px"
+	},
+	"gray_xform_mobile": {
+	//	"background": "url("+o2.session.path+"/widget/$Calendar/portlet/tdbg.gif)",
+		"background": "#FFF",
+		"border": "0px solid #FFF",
+		"color": "#999"
+	},
+	"today_xform_mobile": {
+		"border": "0px solid #FFF",
+		"color": "#FF0000",
+	//	"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom"
+	},
+	"current_xform_mobile": {
+		"background": "#CCC",
+	//	"border": "1px solid #FFF",
+		"color": "#333"
+	},
+	"normal_xform_mobile": {
+	//	"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom",
+	//	"background": "#FFF",
+		"border": "0px solid #FFF",
+		"color": "#333"
+	},
+	"dateBottom": {
+		"display": "none"
+	},
+	"calendarTimeSlider": {
+		"margin-top": "5px",
+		"height": "16px",
+		"overflow": "hidden",
+		"margin-left": "5px",
+		"margin-right": "5px",
+		"border": "1px solid #999",
+		"float": "left",
+		"width": "240px",
+		"background-color": "#FFF"
+	},
+	"calendarTimeSliderNoStyle": {
+		"margin-top": "0px",
+		"width": "auto",
+		"height": "auto",
+		"overflow": "visible",
+		"margin-left": "50px",
+		"margin-right": "50px",
+		"border-top": "0px solid #999",
+		"border-left": "0px solid #999",
+		"border-bottom": "0px solid #E1E1E1",
+		"border-right": "0px solid #E1E1E1",
+		"background-color": "transparent"
+	},
+	"calendarTimeArea": {
+		"height": "25px",
+		"line-height": "25px",
+		"margin-top": "4px",
+		"border": "1px solid #FFF"
+	},
+	"calendarTimeSliderKnob": {
+		"height": "16px",
+		"width": "20px",
+		"background-color": "#666",
+        "color": "#FFF",
+        "text-align": "center",
+        "font-size": "12px",
+        "line-height": "16px",
+		"z-index": "99",
+		"cursor": "pointer"
+	},
+	"calendarTimeShow": {
+		"overflow": "hidden",
+		"text-align": "center",
+		"margin-top": "20px",
+		"padding-left": "90px",
+		"cursor": "pointer"
+	},
+	"calendarTimeShowItem": {
+		"border": "3px solid #CCC",
+		"background": "#666",
+		"color": "#FFF",
+		"font-size": "28px",
+		"font-weight": "bolder",
+		"float": "left",
+		"width": "46px",
+		"height": "46px",
+		"line-height": "46px",
+		"margin-left": "3px"
+	},
+	"calendarActionShow": {
+	    "overflow": "hidden",
+		"margin-top": "20px",
+		"text-align": "center",
+		"overflow": "hidden"
+	},
+	"calendarActionShowButton": {
+		"margin-left": "5px",
+		"margin-right": "5px",
+		"width": "50px",
+		"padding": "5px",
+		"border": "1px solid #999"
+	},
+
+
+  	"calendarTimeContent_mobile" : {
+	  "padding-top":"10px 5px",
+	  "text-align":"center",
+	  "margin":"0px",
+	  "-webkit-transition": "all .4s",
+	  "transition": "all .4s"
+	},
+  	"calendarTimeFixWidthNode_mobile" : {
+	  "width" : "90%",
+	  "margin" : "0px auto",
+	  "position" : "relative"
+	},
+  	"calendarTimeWheels_mobile" : {
+		"width" : "100%",
+	  	"height" : "200px",
+	  	"overflow" : "hidden"
+	},
+  	"calendarTimeWheel_mobile" : {
+		"width" : "50%",
+	  	"position" : "relative",
+	  	"float" : "left",
+	  	"height" : "200px",
+	  	"overflow" : "hidden",
+	  	"-webkit-transition": "width .3s ease",
+	  	"transition": "width .3s ease"
+	},
+  	"calendarTimeSelectContainer_mobile" : {
+	  	"display": "block",
+	  	"text-align": "center",
+	  	"-webkit-transition": "-webkit-transform .18s ease-out",
+		"transition": "-webkit-transform .18s ease-out",
+		"transition": "transform .18s ease-out",
+		"transition": "transform .18s ease-out, -webkit-transform .18s ease-out"
+	},
+	"calendarTimeSelectItem_mobile" : {
+	  "font-size": "20px",
+	  "display": "block",
+	  "height": "40px",
+	  "line-height": "40px",
+	  "cursor": "pointer",
+	  "overflow": "hidden",
+	  "white-space": "nowrap",
+	  "text-overflow": "ellipsis"
+	},
+  	"calendarTimeSelectLine_mobile" : {
+	  "height": "40px",
+	  "width": "100%",
+	  "position": "absolute",
+	  "top": "80px",
+	  "pointer-events": "none",
+	  "-webkit-box-sizing": "border-box",
+	  "box-sizing": "border-box",
+	  "border-top": "1px solid #dcdcdc",
+	  "border-bottom": "1px solid #dcdcdc"
+	},
+  	"calendarTimeShadowMask_mobile" : {
+	  "position": "absolute",
+	  "top": "0px",
+	  "left" : "0px",
+	  "width": "100%",
+	  "height": "200px",
+	  "background": "-webkit-gradient(linear, left top, left bottom, from(#ffffff), color-stop(rgba(255, 255, 255, 0)), to(#ffffff))",
+	  "background": "-webkit-linear-gradient(top, #ffffff, rgba(255, 255, 255, 0), #ffffff)",
+	  "background": "linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0), #ffffff)",
+	  "opacity": ".9",
+	  "pointer-events": "none"
+	},
+  "calendarActionShowButton_mobile_ok": {
+	"margin-left": "5px",
+	"margin-right": "5px",
+	"width": "60px",
+	"padding": "7px",
+	"border": "1px solid #3296fa",
+	"border-raidus" : "2px",
+	"color" : "#fff",
+	"background-color" : "rgb(50, 150, 250)"
+  },
+  "calendarActionShowButton_mobile_cancel": {
+	"margin-left": "5px",
+	"margin-right": "5px",
+	"width": "60px",
+	"padding": "7px",
+	"border": "1px solid #dfdfdf",
+	"border-raidus" : "2px",
+	"background-color" : "#fff"
+  }
+//  "calendarTimeWraper" : {
+//	"float" : "left",
+//	"overflow" : "hidden",
+//	"border": "1px solid #e2e3e7"
+//  },
+//  "calendarTimeScrollArea": {
+//	"width" : "55px",
+//	"height": "150px",
+//	"overflow-y": "scroll",
+//	"overflow-x": "hidden"
+//  },
+//  "calendarTimeContainer" : {
+//
+//  },
+//  "calendarTimeItem" : {
+//	"cursor" : "pointer",
+//	"height" : "24px",
+//	"line-height" : "24px",
+//	"border" : "1px solid #fff",
+//	"background-color" : "transparent",
+//	"color" : "#333"
+//  },
+//  "calendarTimeItem_over" : {
+//	"border" : "1px solid #999",
+//	"background-color" : "transparent",
+//	"color" : "#333"
+//  },
+//  "calendarTimeItem_selected" : {
+//	"border" : "1px solid #576e86",
+//	"background-color" : "#576e86",
+//	"color" : "#fff"
+//  }
+}

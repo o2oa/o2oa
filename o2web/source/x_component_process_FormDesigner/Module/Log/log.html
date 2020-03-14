@@ -17,6 +17,13 @@
 				<td class="editTableTitle">Class:</td>
 				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">记录:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="logType" text{($.logType=='record')?'checked':''} type="radio" value="record"/>record
+					<input class="editTableRadio" name="logType" text{($.logType!=='record')?'checked':''} type="radio" value="worklog"/>worklog
+				</td>
+			</tr>
 		</table>
 
 		<div class="MWFMaplist" name="styles" title="样式"></div>

@@ -1,0 +1,741 @@
+{
+  "formMaskNode": {
+	"width": "100%",
+	"height": "100%",
+	"opacity": 0.6,
+	"position": "absolute",
+	"background-color": "#ffffff",
+	"top": "0px",
+	"left": "0px"
+  },
+  "formAreaNode": {
+	"position": "absolute",
+	"opacity": 0,
+	"top": "0px"
+  },
+  "formNode": {
+	"background-color": "#ffffff",
+	"box-shadow": "5px 5px 30px #999",
+	"margin": "auto",
+	"border-radius" : "8px",
+	"overflow": "hidden",
+	"border": "1px solid #eeeeee"
+  },
+  "formTopNode": {
+	"color" : "#fff",
+	"height" : "110px",
+	"background-color": "#3c75b7",
+	"line-height": "30px",
+	"font-size": "14px",
+	"padding-top" : "35px",
+	"padding-bottom" : "15px",
+	"text-align": "left"
+  },
+  "formTopIconNode" : {
+	"width" : "36px",
+	"height" : "80px",
+	"margin" : "0px 18px 0px 30px",
+	"float": "left",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/o2_logo.png) no-repeat center top"
+  },
+  "formTopTextNode" : {
+	//"font-family" : "PingFang-SC-Medium",
+	"border-left" : "1px solid #fff",
+	"padding-left" : "18px",
+	"font-size": "28px",
+	"overflow" : "hidden",
+	"min-height": "36px",
+	"margin-right": "20px"
+  },
+  "formTopCloseActionNode": {
+	"width": "32px",
+	"height": "32px",
+	"float": "right",
+	"margin-top" : "24px",
+	"margin-right" : "20px",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_close_square_pre.png) no-repeat center center",
+	"cursor": "pointer"
+  },
+  "formTopContentNode" : {
+	"overflow" : "hidden",
+	"padding" : "0px",
+	"line-height": "30px",
+	"height": "30px",
+	"clear": "both",
+	"color": "#cccccc",
+	"font-size": "16px"
+  },
+  "formTopContentCustomNode" : {
+	"float" : "right",
+	"margin-top" : "0px",
+	"margin-right" : "10px",
+	"font-size" : "16px",
+	"cursor" : "pointer"
+  },
+  "formTopContentSepNode" : {
+	"float" : "right",
+	"width" : "1px",
+	"margin-top" : "8px",
+	"margin-right" : "10px",
+	"height" : "16px",
+	"border-left" : "1px solid #fff"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+	"padding-right" : "20px",
+	"font-size": "12px"
+  },
+  "formNewNode": {
+	"width": "47px",
+	"height": "47px",
+	"background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+	"width": "47px",
+	"height": "47px"
+  },
+  "formEditNode": {
+	"width": "47px",
+	"height": "47px"
+  },
+  "formToolbar" : {
+	"padding-top" : "20px",
+	"height" : "35px",
+	"border-bottom" : "2px solid #999",
+	"padding-left" : "15px"
+  },
+  "formCategoryNode":{
+	"list-style" : "none",
+	"padding": "0px 10px 7px 10px",
+	"margin-left" : "10px",
+	"height": "20px",
+	"line-height": "20px",
+	"overflow": "hidden",
+	"font-family": "Microsoft YaHei",
+	"font-size": "18px",
+	"font-weight" : "normal",
+	"float": "left",
+	"cursor": "pointer",
+	"color":"#3c76c1",
+	"border-bottom" : "2px solid #fff"
+	//border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; border-bottom-style: solid;
+	//"display":"inline-block","width":"80px","height":"30px","text-align":"center","line-height":"30px","cursor":"pointer","color":"#3c76c1","font-size":"14px","margin-right" : "10px"
+  },
+  "formCategoryNode_over" : {
+	"font-size": "18px",
+	"font-weight": "normal",
+	"border-bottom" : "2px solid #5c97e1"
+  },
+  "formCategoryNode_current" : {
+	"font-size": "18px",
+	"font-weight": "bold",
+	"border-bottom" : "2px solid #124c93"
+  },
+  "formContentNode": {
+	"border": "0px solid #666",
+	"width": "100%",
+	"margin": "auto",
+	"font-size": "14px",
+	"color": "#666",
+	"font-family": "Microsoft YaHei",
+	"overflow" : "hidden",
+	"position" : "relative"
+  },
+  "formTableContainer" : {
+	"width" : "360px",
+	"margin": "30px auto 0px auto",
+	"overflow" : "hidden",
+	"position" : "relative"
+  },
+  "formTableContainer2" : {
+	"width" : "360px",
+	"margin": "30px auto 0px auto",
+	"overflow" : "hidden",
+	"positon" : "static"
+  },
+  "formTableArea": {
+  },
+  "formBottomNode" : {
+	"height" : "50px",
+	"line-height" : "50px",
+	"border-top" : "1px solid #3d77c1",
+	"background-color" : "#fff",
+	"overflow" : "hidden"
+  },
+  "inputUser": {
+	"input::-ms-clear" : "display:none",
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_username.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputMail" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_e_mail.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputMobile" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_phone.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputGenderType" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"border":"1px solid #d9d9d9",
+	"width" : "100px",
+	"padding-left" : "18px",
+	"height": "40px",
+	"line-height": "40px",
+	"background-color":"#FFF",
+	"border-radius" : "4px"
+  },
+  "inputPassword": {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password_or.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputComfirmPassword": {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "292px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputVerificationCode" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "108px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputVerificationCode2" : {
+	"color" : "#666",
+	"font-size" : "16px",
+	"width": "172px",
+	"border":"1px solid #d9d9d9",
+	"height": "40px",
+	"line-height": "40px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_verify_code.png) no-repeat 18px center",
+	"background-color":"#FFF",
+	"padding-left" : "58px",
+	"border-radius" : "4px"
+  },
+  "inputSendVerification" : {
+	"margin-left" : "20px",
+	"color" : "#fff",
+	"font-size" : "14px",
+	"width": "80px",
+	"height": "42px",
+	"line-height": "42px",
+	"background-color":"#3c75b7",
+	"border-radius" : "4px",
+	"border" : "0px"
+  },
+  "inputResendVerification" : {
+	"margin-left" : "10px",
+	"color" : "#666",
+	"font-size" : "14px",
+	"width": "90px",
+	"height": "42px",
+	"line-height": "42px",
+	"background-color":"#fff",
+	"border-radius" : "4px",
+	"border" : "1px solid #d9d9d9"
+  },
+  "inputSignUp" : {
+	"cursor" : "pointer",
+	"color" : "#fff",
+	"font-size" : "16px",
+	"width": "352px",
+	"height": "42px",
+	"line-height": "42px",
+	"background-color":"#3c75b7",
+	"border-radius" : "4px",
+	"border" : "0px"
+  },
+  "inputEmpty" : {
+	"border" : "1px solid #ff5c42"
+  },
+  "inputLogin" : {
+	"cursor" : "pointer",
+	"color" : "#fff",
+	"font-size" : "16px",
+	"width": "352px",
+	"height": "42px",
+	"line-height": "42px",
+	"background-color":"#3c75b7",
+	"border-radius" : "4px",
+	"border" : "0px"
+  },
+  "inputAutoLogin" : {
+	"color" : "#666",
+	"font-size" : "14px",
+	"font-weight" : "normal",
+	"cursor" : "pointer",
+	"float" : "left"
+  },
+  "warningMessageNode" : {
+	"float" : "left",
+	"margin-top" : "10px",
+	"font-size": "16px",
+	"color":"#ff5c42",
+	"padding-left": "20px",
+	"background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  },
+  "noticeMessageNode" : {
+	"float" : "left",
+	"margin-top" : "10px",
+	"font-size": "16px",
+	"color":"#ff5c42",
+	"padding-left": "20px",
+	"background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_right.png) left center no-repeat"
+  },
+  "title" : {
+	"height" : "30px",
+	"ling-height" : "30px"
+  },
+  "titleSep" : {
+	"border-left" : "2px solid #333",
+	"height" : "18px",
+	"ling-height" : "18px",
+	"float" : "left",
+	"margin-top" : "10px",
+	"margin-right" : "10px",
+	"margin-left" : "10px"
+  },
+  "titleNode_active" : {
+	"color" : "#333",
+	"height" : "24px",
+	"ling-height" : "24px",
+	"font-size" : "18px",
+	"margin-top" : "6px",
+	"font-weight" : "normal",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "titleNode_normal" : {
+	"color" : "#999",
+	"height" : "24px",
+	"margin-top" : "6px",
+	"ling-height" : "24px",
+	"font-size" : "18px",
+	"font-weight" : "normal",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "inputActive" : {
+	"border" : "1px solid #3c75b7"
+  },
+  "bindLoginTipPic" : {
+	"position" : "absolute",
+	"top" : "10px",
+	"right" : "75px",
+	"width": "149px",
+	"height": "28px",
+	"display": "none",
+	"opacity": 0,
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/img_marked_words.png) no-repeat"
+  },
+  "bindLoginAction" : {
+	"cursor" : "pointer",
+	"position" : "absolute",
+	"top" : "10px",
+	"right" : "5px",
+	"width": "60px",
+	"height": "60px",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_scan_code_login.png) no-repeat"
+  },
+  "backtoPasswordLoginTipPic" : {
+	"display" : "none",
+	"position" : "absolute",
+	"top" : "10px",
+	"right" : "75px",
+	"width": "149px",
+	"height": "28px",
+	"display": "none",
+    "opacity": 0,
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/img_marked_words_2.png) no-repeat"
+  },
+  "backtoPasswordLoginAction" : {
+	"display" : "none",
+	"cursor" : "pointer",
+	"position" : "absolute",
+	"top" : "10px",
+	"right" : "5px",
+	"width": "60px",
+	"height": "60px",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_password_login.png) no-repeat"
+  },
+  "signUpAction" : {
+	"margin-top" : "15px",
+	"color" : "#3c75b7",
+	"font-size" : "14px",
+	"font-weight" : "normal",
+	"float" : "right",
+	"margin-right" : "7px",
+	"cursor" : "pointer"
+  },
+  "gotoLoginAction" : {
+	"color" : "#3c75b7",
+	"font-size" : "14px",
+	"font-weight" : "normal",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "hasCountArea" : {
+	"color" : "#666",
+	"font-size" : "14px",
+	"font-weight" : "normal",
+	"float" : "left"
+  },
+  "forgetPassword" : {
+	"margin-top" : "15px",
+	"color" : "#666",
+	"font-size" : "14px",
+	"font-weight" : "normal",
+	"float" : "left",
+	"cursor" : "pointer"
+	//"margin-left" : "16px"
+  },
+  "passwordStrengthNode" : {
+	"margin-top" : "6px",
+	"float" : "left",
+	"padding-left" : "2px",
+	"width" : "35px",
+	"overflow" : "hidden"
+  },
+  "passwordStrengthColor" : {
+	"background-color" : "#b3b3b3",
+	"height" : "5px"
+  },
+  "passwordStrengthColor_low" : {
+	"background-color" : "#e6772e"
+  },
+  "passwordStrengthColor_middle" : {
+	"background-color" : "#3c75b7"
+  },
+  "passwordStrengthColor_high" : {
+	"background-color" : "#33c025"
+  },
+  "passwordStrengthText" : {
+	"font-size" : "14px",
+	"color" : "#999",
+	"text-align" : "center",
+	"margin-top" : "5px"
+  },
+  "passwordStrengthText_current" : {
+	"color" : "#666",
+	"text-align" : "center",
+	"margin-top" : "5px"
+  },
+  "verificationImage" : {
+	"height" : "40px"
+  },
+  "verificationChange" : {
+	"color" : "#3c75b7",
+	"cursor" : "pointer",
+	"line-height" : "40px",
+	"font-size" : "14px",
+	"margin-left" : "18px"
+  },
+  "bindLoginContainer" : {
+	"display" : "none",
+	"width" : "100%",
+	"overflow" : "hidden",
+	"positon" : "static"
+  },
+  "bindTitleNode" : {
+	"width" : "360px",
+	"color" : "#333",
+	"height" : "24px",
+	"ling-height" : "24px",
+	"font-size" : "18px",
+	"margin": "20px auto 20px auto",
+	"font-weight" : "normal",
+	"cursor" : "pointer"
+  },
+  "bindBodyArea" : {
+	"width" : "204px",
+	"height" : "204px",
+	"margin": "35px auto 0px auto",
+	"overflow" : "hidden"
+  },
+  "bindPicArea" : {
+	"float" : "left",
+	"width" : "200px"
+  },
+  "bindSepArea" : {
+	"display" : "none",
+	"float" : "left",
+	"margin-left" : "-1px",
+	"margin-right" : "-1px",
+	"width": "50px",
+	"height": "200px"
+  },
+  "bindExampleArea":{
+	"float" : "left",
+	"display" : "none",
+	"width": "144px",
+	"height": "200px",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_phone200px.png) no-repeat"
+  },
+  "bindTipArea" : {
+	"width" : "184px",
+	"margin": "25px auto 0px auto"
+  },
+  "bindTipIconArea" : {
+	"float" : "left",
+	"margin" : "5px",
+	"width": "28px",
+	"height": "28px",
+	"background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_scan.png) no-repeat"
+  },
+  "bindTipTextArea" : {
+	"margin-left" : "10px",
+	"float" : "left",
+	"font-size" : "14px",
+	"color" : "#666"
+  },
+  "bindTipLinkArea" : {
+	"cursor" : "pointer",
+	"display" : "inline",
+	"color" : "#3c75b7"
+  },
+  "stepsContainer" : {
+	"margin": "10px 0px 10px 30px",
+	"overflow" : "hidden"
+  },
+  "stepLink_1" : {
+	"position" : "absolute",
+	"top" : "11px",
+	"left" : "42px",
+	"border-top" : "2px solid #b3b3b3",
+	"height" : "2px",
+	"width" : "110px"
+  },
+  "stepLink_1_active" : {
+	"position" : "absolute",
+	"top" : "11px",
+	"left" : "42px",
+	"border-top" : "2px solid #3c75b7",
+	"height" : "2px",
+	"width" : "110px"
+  },
+  "stepLink_2" : {
+	"position" : "absolute",
+	"top" : "11px",
+	"left" : "47px",
+	"border-top" : "2px solid #b3b3b3",
+	"height" : "2px",
+	"width" : "120px"
+  },
+  "stepLink_2_active" : {
+	"position" : "absolute",
+	"top" : "11px",
+	"left" : "47px",
+	"border-top" : "2px solid #3c75b7",
+	"height" : "2px",
+	"width" : "120px"
+  },
+  "step_1" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#b3b3b3",
+	"font-size" : "15px",
+	"width" : "120px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_1_pre.png) 20px 1px no-repeat"
+  },
+  "step_1_active" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#3c75b7",
+	"font-size" : "15px",
+	"width" : "120px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_1_nor.png ) 20px 1px no-repeat"
+  },
+  "step_2" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#b3b3b3",
+	"font-size" : "15px",
+	"width" : "140px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_2_pre.png) 25px 1px no-repeat"
+  },
+  "step_2_active" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#3c75b7",
+	"font-size" : "15px",
+	"width" : "140px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_2_nor.png ) 25px 1px no-repeat"
+  },
+  "step_3" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#b3b3b3",
+	"font-size" : "15px",
+	"width" : "50px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_3_pre.png) 5px 1px no-repeat"
+  },
+  "step_3_active" : {
+	"float" : "left",
+	"position" : "relative",
+	"color" : "#3c75b7",
+	"font-size" : "15px",
+	"width" : "50px",
+	"height" : "25px",
+	"padding-top" : "30px",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/pic_3_nor.png ) 5px 1px no-repeat"
+  },
+  "stepFormResult" : {
+	"display" : "none",
+	"width" : "230px",
+	"text-align" : "center",
+	"margin" : "52px auto 0px auto"
+  },
+  "stepFormResult_fail" : {
+	"width" : "320px"
+  },
+  "resetPasswordSuccess" : {
+	"color" : "#333",
+	"font-size" : "18px",
+	"width" : "100%",
+	"padding-top" : "80px",
+	"text-align" : "center",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_right_70px.png ) center 0px no-repeat"
+  },
+  "resetPasswordFail" : {
+	"color" : "#333",
+	"font-size" : "18px",
+	"width" : "100%",
+	"padding-top" : "80px",
+	"text-align" : "center",
+	"background" : "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/icon_wrong_70px.png ) center 0px no-repeat"
+  },
+  "resetPasswordResultArea" : {
+	"margin-top" : "20px",
+	"font-size" : "16px",
+	"width" : "100%",
+	"text-align" : "center",
+	"overflow" : "hidden"
+  },
+  "resetPasswordResultWord" : {
+	"color" : "#333",
+	"float" : "left"
+  },
+  "resetPasswordResultAction" : {
+	"color" : "#3c75b7",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "cameraLoginIcon": {
+    "width": "60px",
+    "height": "80px",
+    "cursor": "pointer",
+    "border": "1px solid #red",
+    "background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/camera.png) no-repeat center center",
+    "position": "relative",
+    "top": "-24px",
+    "float": "right"
+  },
+  "closeCameraLoginIcon": {
+      "background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/closeCamera.png) no-repeat center center"
+  },
+  "cameraLoginVideoNode": {
+    "overflow": "hidden",
+    "background-color": "#eeeeee",
+    "position": "absolute",
+    "border-bottom-right-radius": "8px",
+    "border-bottom-left-radius": "8px",
+    "z-index": 100
+  },
+  "cameraLoginVideoInfoNode": {
+    "height": "60px",
+    "line-height": "60px",
+    "font-size": "16px",
+    "color": "#666666",
+    "text-align": "center"
+  },
+  "oauthListNode" : {
+	"overflow" : "hidden",
+	"padding-top" : "15px"
+  },
+  "oauthItemNode" : {
+	"float" : "left",
+	"width" : "60px",
+	"overflow" : "hidden",
+	"cursor" : "pointer",
+	"text-align" : "center",
+	"margin" : "5px 10px 5px 0px"
+  },
+  "oauthItemIconNode" : {
+//	"background-position" : "center center",
+//	"background-repeat" : "no-repeat",
+	"width" : "32px",
+	"height" : "32px"
+  },
+  "oauthItemTextNode" : {
+	"width" : "60px",
+	"line-height" : "24px",
+	"height" : "24px"
+  },
+  "formFooter": {
+    "text-align": "center",
+    "height": "60px",
+    "line-height": "60px",
+    "position": "absolute",
+    "bottom": "0px",
+    "font-size": "16px",
+    "color": "#999999",
+    "width": "100%"
+  }
+}

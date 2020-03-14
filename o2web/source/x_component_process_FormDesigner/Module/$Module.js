@@ -1012,7 +1012,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			}else{
 				text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
 			}
-			this.treeNode.setText("<"+text+"> "+title);
+			if (this.treeNode.setText) this.treeNode.setText("<"+text+"> "+title);
 		}
 		if (name==="id"){
 			title = this.json.name || this.json.id;
@@ -1022,9 +1022,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				}else{
 					text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
 				}
-				this.treeNode.setText("<"+text+"> "+this.json.id);
+				if (this.treeNode.setText) this.treeNode.setText("<"+text+"> "+this.json.id);
 			}
-			this.treeNode.setTitle(this.json.id);
+			if (this.treeNode.setTitle) this.treeNode.setTitle(this.json.id);
 			this.node.set("id", this.json.id);
 		}
 

@@ -8,7 +8,8 @@ MWF.xApplication.Selector.Process = new Class({
         "title": MWF.xApplication.Selector.LP.selectProcess,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -73,7 +74,14 @@ MWF.xApplication.Selector.Process.Item = new Class({
     },
     checkSelectedSingle: function(){
         var selectedItem = this.selector.options.values.filter(function(item, index){
-            if (typeOf(item)==="object") return (this.data.id === item.id) || (this.data.name === item.name) ;
+            if (typeOf(item)==="object"){
+                // return (this.data.id === item.id);
+                if( this.data.id && item.id ){
+                    return this.data.id === item.id;
+                }else{
+                    return this.data.name === item.name;
+                }
+            }
             if (typeOf(item)==="string") return (this.data.id === item) || (this.data.name === item);
             return false;
         }.bind(this));
@@ -84,7 +92,13 @@ MWF.xApplication.Selector.Process.Item = new Class({
     checkSelected: function(){
 
         var selectedItem = this.selector.selectedItems.filter(function(item, index){
-            return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+            //return (item.data.id === this.data.id);
+            debugger;
+            if( item.data.id && this.data.id){
+                return item.data.id === this.data.id;
+            }else{
+                return item.data.name === this.data.name;
+            }
         }.bind(this));
         if (selectedItem.length){
             //selectedItem[0].item = this;
@@ -106,7 +120,12 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
-                return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+                debugger;
+                if( item.data.id && this.data.id){
+                    return item.data.id === this.data.id;
+                }else{
+                    return item.data.name === this.data.name;
+                }
             }.bind(this));
             this.items = items;
             if (items.length){
@@ -139,6 +158,7 @@ MWF.xApplication.Selector.Process.ItemCategory = new Class({
                     subData.applicationName = this.data.name;
                     subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( category );
                 }.bind(this));
 
                 this.loaded = true;

@@ -26,7 +26,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
 //		MWF.getJSON(url, callback);
 		
 		//this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
-        var addressObj = layout.desktop.serviceAddressList[this.serviceName];
+        var addressObj = layout.serviceAddressList[this.serviceName];
 
         if (addressObj){
             this.address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
@@ -111,8 +111,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
         var currentDate = new Date();
 
         xhr.upload.addEventListener("progress", function(e){this.updateProgress(e, xhr, messageItem, currentDate);}.bind(this), false);
-        xhr.upload.addEventListener("load", function(e){this.transferComplete(e, xhr, messageItem, currentDate, file);}.bind(this), false);
-        xhr.upload.addEventListener("loadstart", function(e){this.transferStart(e, xhr, messageItem);}.bind(this), false);
+        xhr.upload.addEventListener("load", function(e){
+            if(file){
+                this.transferComplete(e, xhr, messageItem, currentDate, file);
+            }
+        }.bind(this), false);        xhr.upload.addEventListener("loadstart", function(e){this.transferStart(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("error", function(e){this.transferFailed(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("abort", function(e){this.transferCanceled(e, xhr, messageItem);}.bind(this), false);
         xhr.upload.addEventListener("timeout", function(e){this.transferCanceled(e, xhr, messageItem);}.bind(this), false);
@@ -122,7 +125,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         xhr.open(method, uri, async!==false);
         xhr.withCredentials = true;
 
-        if (file.name) messageItem = this.addFormDataMessage(file, false, xhr, progress);
+        if (file) messageItem = this.addFormDataMessage(file, false, xhr, progress);
         xhr.send(data);
     },
     setMessageText: function(messageItem, text){
@@ -306,7 +309,9 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
         xhr.addEventListener("readystatechange", function(e){
             if (xhr.readyState == 4){
-                this.transferComplete(e, xhr, messageItem, currentDate, file);
+                if(file){
+                    this.transferComplete(e, xhr, messageItem, currentDate, file);
+                }
                 this.xhrStateChange(e, xhr, messageItem, callback);
             }
         }.bind(this), false);
@@ -363,7 +368,10 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
 	invokeFormData: function(method, uri, data, file, callback, async, progress){
 		var xhr = new COMMON.Browser.Request();
-        data.append('fileName', file.name);
+		if(file){
+            data.append('fileName', file.name);
+        }
+
         if (data.type==="o2_formdata"){
             this.invokeFormDataWithForm(xhr, method, uri, data, file, callback, async);
         }else{
@@ -376,6 +384,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         return xhr;
 	},
 	addFormDataMessage: function(file, noProgress, xhr, showMsg){
+        debugger;
         var contentHTML = "";
         if (noProgress){
             contentHTML = "<div style=\"height: 20px; line-height: 20px\">"+MWF.LP.desktop.action.sendReady+"</div></div>" ;

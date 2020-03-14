@@ -83,7 +83,7 @@ MWF.xApplication.Setting.Document.Input = new Class({
         this.input.set({"disabled": true, "styles": this.css.explorerContentInputNode, "value": this.data.value});
         this.inputValueArea.empty();
         this.input = null;
-        this.inputValueArea.set("text", this.data.value);
+        this.inputValueArea.set("text", this.data.show || this.data.value);
         this.okButton.setStyle("display", "none");
         this.cancelButton.setStyle("display", "none");
         this.button.setStyle("display", "block");
@@ -102,6 +102,7 @@ MWF.xApplication.Setting.Document.Input = new Class({
         var method = "";
         if (this.data.data.key=="collectData") method = "setCollect";
         if (this.data.data.key=="personData") method = "setPerson";
+        if (this.data.data.key=="portalData") method = "setPortal";
         if (this.data.data.key=="tokenData") method = "setToken";
         if (this.data.data.key=="proxyData") method = "setProxy";
         if (this.data.data.key=="nativeData"){
@@ -138,7 +139,7 @@ MWF.xApplication.Setting.Document.Input = new Class({
         var titleInforArea = new Element("div", {"styles": this.css.explorerContentInputInforNode, "text": infor}).inject(this.contentAreaNode);
         var inputArea = new Element("div", {"styles": this.css.explorerContentInputAreaNode}).inject(this.contentAreaNode);
         this.inputValueArea = new Element("div", {"styles": this.css.explorerContentInputValueAreaNode}).inject(inputArea);
-        this.inputValueArea.set("text", value);
+        this.inputValueArea.set("text", this.data.show || value);
 
         // this.input = new Element("input", {"disabled": true, "styles": this.css.explorerContentInputNode}).inject(inputValueArea);
         // this.input.set("value", value);
@@ -216,6 +217,7 @@ MWF.xApplication.Setting.Document.Check = new Class({
                 var method = "";
                 if (this.data.data.key=="collectData") method = "setCollect";
                 if (this.data.data.key=="personData") method = "setPerson";
+                if (this.data.data.key=="portalData") method = "setPortal";
                 if (this.data.data.key=="tokenData") method = "setToken";
                 if (this.data.data.key=="proxyData") method = "setProxy";
                 if (this.data.data.key=="mobileStyleData") method = "setProxy";
@@ -283,6 +285,7 @@ MWF.xApplication.Setting.Document.Select = new Class({
                 var method = "";
                 if (this.data.data.key=="collectData") method = "setCollect";
                 if (this.data.data.key=="personData") method = "setPerson";
+                if (this.data.data.key=="portalData") method = "setPortal";
                 if (this.data.data.key=="tokenData") method = "setToken";
                 if (this.data.data.key=="proxyData") method = "setProxy";
                 if (this.data.data.key=="nativeData"){
@@ -551,24 +554,32 @@ MWF.xApplication.Setting.Document.List = new Class({
         }.bind(this));
     },
     save: function(data){
-        var method = "";
-        if (this.data.data.key=="collectData") method = "setCollect";
-        if (this.data.data.key=="personData") method = "setPerson";
-        if (this.data.data.key=="tokenData") method = "setToken";
-        if (this.data.data.key=="proxyData") method = "setProxy";
-        if (this.data.data.key=="nativeData"){
-            method = "setAppStyle";
-            if (!this.explorer.nativeData.indexPortal){
-                this.explorer.nativeData.indexType = "default";
-            }else{
-                this.explorer.nativeData.indexType = "portal";
+        if (this.data.data.key=="publicData"){
+            o2.UD.putPublicData("faceKeys", this.explorer[this.data.data.key], function(){
+                this.fireEvent("editSuccess");
+                this.reloadItems();
+            }.bind(this));
+        }else{
+            var method = "";
+            if (this.data.data.key=="collectData") method = "setCollect";
+            if (this.data.data.key=="personData") method = "setPerson";
+            if (this.data.data.key=="portalData") method = "setPortal";
+            if (this.data.data.key=="tokenData") method = "setToken";
+            if (this.data.data.key=="proxyData") method = "setProxy";
+            if (this.data.data.key=="nativeData"){
+                method = "setAppStyle";
+                if (!this.explorer.nativeData.indexPortal){
+                    this.explorer.nativeData.indexType = "default";
+                }else{
+                    this.explorer.nativeData.indexType = "portal";
+                }
             }
-        }
 
-        this.actions[method](this.explorer[this.data.data.key], function(){
-            this.fireEvent("editSuccess");
-            this.reloadItems();
-        }.bind(this));
+            this.actions[method](this.explorer[this.data.data.key], function(){
+                this.fireEvent("editSuccess");
+                this.reloadItems();
+            }.bind(this));
+        }
     },
     reloadItems: function(){
         this.itemArea.empty();
@@ -705,7 +716,7 @@ MWF.xApplication.Setting.Document.List.ItemEditor = new Class({
         Object.each(this.inputs, function(input, k){
             if ((this.list.data.readonly && this.list.data.readonly.indexOf(k)==-1) || !this.list.data.readonly){
                 var value = (typeOf(input)=="element" && input.tagName.toString().toLowerCase()!="select") ? input.get("value") : input.getValue();
-                if (!value && value!==false){
+                if (this.list.data.data.notEmpty && !value && value!==false){
                     flag = false;
                     this.app.notice(this.lp.pleaseInput+(this.lp.list[k] || k), "error");
                     return false;
@@ -722,7 +733,11 @@ MWF.xApplication.Setting.Document.List.ItemEditor = new Class({
                 }if (typeOf(this.data[k])=="boolean"){
                     this.data[k] = (values[k]==="true");
                 }else{
-                    this.data[k] = values[k] || v;
+                    if (this.list.data.data.notEmpty){
+                        this.data[k] = values[k] || v;
+                    }else{
+                        this.data[k] = values[k] || "";
+                    }
                 }
             }.bind(this));
             if (this.saveAction) this.saveAction(this.data);

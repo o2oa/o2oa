@@ -45,8 +45,9 @@
             <tr>
                 <td class="editTableTitle">路由类型:</td>
                 <td class="editTableValue" id="text{$.id}opinionRequired" >
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'none');}" name="type" text{($.type!='appendTask')?'checked':''} type="radio" value="normal"/>默认路由
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'block');}" name="type" text{($.type=='appendTask')?'checked':''} type="radio" value="appendTask"/>转交（仅指向同活动时生效）
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'none');}" name="type" text{($.type!='appendTask' && $.type!='back')?'checked':''} type="radio" value="normal"/>默认路由
+                    <br><input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'none');}" name="type" text{($.type=='back')?'checked':''} type="radio" value="back"/>回退路由
+                    <br><input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}appendTaskArea').setStyle('display', 'block');}" name="type" text{($.type=='appendTask')?'checked':''} type="radio" value="appendTask"/>转交（仅指向同活动时生效）
                     <div style="color:#999999">转交活动不触发活动事件</div>
                 </td>
             </tr>

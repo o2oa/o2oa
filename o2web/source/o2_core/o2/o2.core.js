@@ -63,7 +63,7 @@
         jsPath = (jsPath.indexOf("?")!==-1) ? jsPath+"&v="+this.o2.version.v : jsPath+"?v="+this.o2.version.v;
 
         var xhr = new Request({
-            url: jsPath, async: async, method: "get",
+            url: o2.filterUrl(jsPath), async: async, method: "get",
             onSuccess: function(){
                 //try{
                 _loaded[key] = true;
@@ -79,17 +79,21 @@
         xhr.send();
     };
     var _requireSingle = function(module, callback, async, compression){
-        module = module.replace("MWF", "o2");
-        var levels = module.split(".");
-        if (levels[levels.length-1]==="*") levels[levels.length-1] = "package";
-        levels.shift();
+        if (o2.typeOf(module)==="array"){
+            _requireAppSingle(module, callback, async, compression);
+        }else{
+            module = module.replace("MWF.", "o2.");
+            var levels = module.split(".");
+            if (levels[levels.length-1]==="*") levels[levels.length-1] = "package";
+            levels.shift();
 
-        var jsPath = this.o2.session.path;
-        jsPath +="/"+levels.join("/")+".js";
+            var jsPath = this.o2.session.path;
+            jsPath +="/"+levels.join("/")+".js";
 
-        var loadAsync = (async!==false);
+            var loadAsync = (async!==false);
 
-        _requireJs(jsPath, callback, loadAsync, compression, module);
+            _requireJs(jsPath, callback, loadAsync, compression, module);
+        }
     };
     var _requireSequence = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
         var m = module.shift();
@@ -182,6 +186,7 @@
         }
     };
 
+    JSON = window.JSON || {};
     var _json = JSON;
     _json.get = function(url, callback, async, nocache){
         var loadAsync = (async !== false);
@@ -191,7 +196,7 @@
 
         var json = null;
         var res = new Request.JSON({
-            url: url,
+            url: o2.filterUrl(url),
             secure: false,
             method: "get",
             noCache: noJsonCache,
@@ -222,7 +227,7 @@
 
         url = (url.indexOf("?")!==-1) ? url+"&v="+o2.version.v : url+"?v="+o2.version.v;
         var res = new Request.JSONP({
-            url: url,
+            url: o2.filterUrl(url),
             secure: false,
             method: "get",
             noCache: true,
@@ -246,7 +251,7 @@
         var jsPath = o2.session.path;
         jsPath = jsPath+"/lp/"+name+".js";
         var r = new Request({
-            url: jsPath,
+            url: o2.filterUrl(jsPath),
             async: false,
             method: "get",
             onSuccess: function(responseText){
@@ -290,7 +295,7 @@
         }
         //var noCache = false;
         var res = new Request.JSON({
-            url: address,
+            url: o2.filterUrl(address),
             secure: false,
             method: method,
             emulation: false,

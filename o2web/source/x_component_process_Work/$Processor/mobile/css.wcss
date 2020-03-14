@@ -1,4 +1,9 @@
 {
+    "routeContainer" : {
+        "overflow" : "hidden"
+    },
+
+
     "routeSelectorTile": {
         "overflow": "hidden",
         "height": "30px",
@@ -15,39 +20,36 @@
         "background-color": "#ffffff",
         "padding": "0xp 20px"
     },
-//    "routeNode": {
-//        "float": "left",
-//        "margin-left": "20px",
-//        "border-radius": "5px",
-//        "background-color": "#ffffff",
-//        "height": "24px",
-//        "line-height": "24px",
-//        "margin-top": "8px",
-//        "padding-right": "8px",
-//        "cursor": "pointer"
-//    },
-//    "routeIconNode": {
-//        "width": "24px",
-//        "height": "24px",
-//        "float": "left",
-//        "background": "url("+"/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
-//    },
-//    "routeTextNode": {
-//        "margin-left": "24px",
-//        "line-height": "24px",
-//        "color": "#000"
-//    },
+    "routeGroupNode" : {
+        "float" : "left",
+        "margin-left": "20px",
+        "padding-left" : "28px",
+        "color" : "#000",
+        "background-color": "#E3E3E3",
+        "min-height": "24px",
+        "line-height": "24px",
+        "margin-top": "8px",
+        "cursor": "pointer",
+        "background": "url(/x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
+    },
+    "routeGroupNode_over" : {
+        "background-color": "#E3E3E3",
+        "background": "url(/x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
+    },
+    "routeGroupNode_selected" : {
+        "background-color": "#E3E3E3",
+        "background": "url(/x_component_process_Work/$Processor/process/routegroup_selected.png) no-repeat 5px center"
+    },
 
     "routeNode": {
         "float": "left",
         "margin-left": "20px",
-        "padding-left" : "26px",
         "border-radius": "5px",
-        "min-height": "24px",
+        "height": "24px",
         "line-height": "24px",
         "margin-top": "8px",
+        "padding-left": "26px",
         "padding-right": "8px",
-        "cursor": "pointer",
         "color" : "#000",
         "background": "url(/x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
         "background-color": "#f0f0f0"
@@ -60,7 +62,7 @@
     "routeNode_selected" : {
         "color" : "#fff",
         "background": "url(/x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
-        "background-color": "#4a90e2"
+        "background-color": "#3296FA"
     },
 
     "routeOpinionTile": {
@@ -114,51 +116,50 @@
     },
 
     "okButton": {
-        "height": "40px",
-        "width": "50%",
-        "border-radius": "5px",
-        "background-color": "#6681a5",
-        "color": "#FFF",
+        "width": "45%",
+        "height": "3em",
         "float": "left",
-        "margin-left": "10px",
-        "cursor": "pointer"
+        "margin-left": "0.5em",
+        "color": "#ffffff",
+        "background": "#3296FA",
+        "border-radius": "5px",
+        "border": "1px solid #3296FA"
     },
     "okIconNode": {
-        "height": "40px",
-        "width": "40px",
+        "height": "3em",
+        "width": "3em",
         "float": "left",
         "background": "url("+"/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
-        "font-size": "16px",
-        "margin-left": "40px",
-        "margin-right": "40px",
-        "line-height": "40px",
+        "font-size": "1em",
+        "margin-left": "3em",
+        "margin-right": "3em",
+        "line-height": "3em",
         "text-align": "center"
     },
 
     "cancelButton": {
-        "height": "40px",
-        "width": "40%",
-        "border": "1px solid #999",
-        "border-radius": "5px",
-        "background-color": "#fff",
-        "color": "#999",
+        "width": "45%",
+        "height": "3em",
         "float": "right",
-        "margin-right": "10px",
-        "cursor": "pointer"
+        "margin-right": "0.5em",
+        "background": "#ffffff",
+        "border-radius": "5px",
+        "border": "1px solid #dfdfdf"
     },
     "cancelIconNode": {
-        "height": "40px",
-        "width": "33px",
+        "height": "3em",
+        "width": "3em",
         "float": "left",
         "background": "url("+"/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
-        "font-size": "16px",
-        "margin-left": "33px",
-        "margin-right": "33px",
-        "line-height": "40px",
+        "font-size": "1em",
+        "color": "#191F25",
+        "margin-left": "3em",
+        "margin-right": "3em",
+        "line-height": "3em",
         "text-align": "center"
     },
     "inputTextarea": {
@@ -195,17 +196,17 @@
         "background": "#ffffff"
     },
     "handwritingActionNode": {
-        "height": "30px",
-        "line-height": "30px",
-        "margin": "5px auto",
         "width": "70%",
         "min-width": "100px",
+        "height": "3em",
+        "line-height": "3em",
+        "margin": "5px auto",
         "border-radius": "5px",
+        "border": "1px solid #3296FA",
+        "background-color": "#3296FA",
         "text-align": "center",
-        "background-color": "#6681a5",
         "color": "#ffffff",
-        "font-size": "16px",
-        "cursor": "pointer"
+        "font-size": "16px"
     },
 
     "inputOpinionAudioRecordAction": {

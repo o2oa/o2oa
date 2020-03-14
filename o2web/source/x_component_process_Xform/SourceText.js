@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
                     if (this.json.jsonText){
                         if (this.json.jsonText.code){
                             this.text = this.form.Macro.exec(this.json.jsonText.code, this);
-                            this.node.set("text", this.text);
+                            if( typeOf(this.text) === "string" )this.node.set("text", this.text);
                         }else{
                             this.node.set("text", this.text);
                         }

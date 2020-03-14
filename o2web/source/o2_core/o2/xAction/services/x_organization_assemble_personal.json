@@ -16,7 +16,7 @@
   "checkRegisterPassword" : {"uri":"/jaxrs/regist/check/password/{password}"},
   "checkRegisterMobile" : {"uri":"/jaxrs/regist/check/mobile/{mobile}"},
   "register" : {"uri":"/jaxrs/regist", "method": "POST"},
- 
+
   "resetPassword" : {"uri":"/jaxrs/reset", "method": "PUT"},
   "checkCredentialOnResetPassword" : {"uri":"/jaxrs/reset/check/credential/{credential}"},
   "checkPasswordOnResetPassword" : {"uri":"/jaxrs/reset/check/password/{password}"},
@@ -37,9 +37,11 @@
   "editEmPower": {"uri": "/jaxrs/empower/{id}", "method": "PUT"},
   "deleteEmPower": {"uri": "/jaxrs/empower/{id}", "method": "DELETE"},
 
-
+  //2020年1月8日新版无这2个方法
   "getMyEmPowerLog": {"uri": "/jaxrs/empowerlog/list/currentperson", "method": "GET"},
   "getReceiveEmPowerLog": {"uri": "/jaxrs/empowerlog/list/to", "method": "GET"},
+  "listToCurrentPersonPaging": {"uri": "/jaxrs/empowerlog/list/to/currentperson/paging/{page}/size/{size}", "method": "POST"},
+  "listWithCurrentPersonPaging": {"uri": "/jaxrs/empowerlog/list/currentperson/paging/{page}/size/{size}", "method": "POST"},
 
   "clazz": "x_organization_assemble_personal"
 }

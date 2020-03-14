@@ -1,6 +1,8 @@
 {
   "addAttachment": {"uri": "/jaxrs/attachment/upload/folder/{folder}", "method": "POST", "enctype": "formData", "progress": true},
   "addAttachment2": {"uri": "/jaxrs/attachment2/upload/folder/{folder}", "method": "POST", "enctype": "formData", "progress": true},
+  "addAttachmentMd5": {"uri": "/jaxrs/attachment2/upload/folder/{folder}", "method": "POST", "enctype": "formData", "progress": true},
+  "checkFileExist": {"uri": "/jaxrs/attachment2/exist/file/{fileMd5}"},
   "addAttachment_jaxrs": {"uri": "/jaxrs/attachment", "method": "POST", "enctype": "formData", "progress": true},
   "listAttachment": {"uri": "/jaxrs/attachment/list/folder/{id}"},
   "listAttachmentTop": {"uri": "/jaxrs/attachment/list/top"},

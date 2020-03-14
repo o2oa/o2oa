@@ -22,7 +22,8 @@ MWF.xApplication.Setting.BasePersonDocument = new Class({
         this.baseAdminPasswordInput = new MWF.xApplication.Setting.Document.Input(this.explorer, this.node, {
             "lp": {"title": this.lp.base_adminPassword, "infor": this.lp.base_adminPassword_infor, "action": this.lp.base_adminPassword_action, "confirm": this.lp.base_adminPassword_confirm},
             "data": {"key": "tokenData", "valueKey": "password", "notEmpty": false},
-            "value": this.explorer.tokenData.password
+            "value": this.explorer.tokenData.password,
+            "show": "********"
         });
     }
 });
@@ -55,6 +56,33 @@ MWF.xApplication.Setting.BaseLoginDocument = new Class({
             "data": {"key": "personData", "valueKey": "faceLogin", "notEmpty": false },
             "value": this.explorer.personData.faceLogin
         });
+
+        var apiKey = {
+            "api_key": "",
+            "api_secret": ""
+        };
+        this.baseFaceLoginApiInput = new MWF.xApplication.Setting.Document.List(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_faceApi, "infor": this.lp.base_faceApi_infor, "action": this.lp.base_faceApi_action},
+            "data": {"key": "publicData", "valueKey": "api", "notEmpty": false},
+            "value": this.explorer.publicData.api,
+            "itemTitle": "API Key: {api_key}",
+            "addItem": {"api_key": "", "api_secret": ""},
+            "icon": "sso.png"
+        });
+
+        // this.baseFaceLoginApikeyInput = new MWF.xApplication.Setting.Document.Input(this.explorer, this.node, {
+        //     "lp": {"title": this.lp.base_adminPassword, "infor": this.lp.base_adminPassword_infor, "action": this.lp.base_adminPassword_action, "confirm": this.lp.base_adminPassword_confirm},
+        //     "data": {"key": "tokenData", "valueKey": "password", "notEmpty": false},
+        //     "value": this.explorer.tokenData.password,
+        //     "show": "********"
+        // });
+        // this.baseFaceLogiApiSecretInput = new MWF.xApplication.Setting.Document.Input(this.explorer, this.node, {
+        //     "lp": {"title": this.lp.base_adminPassword, "infor": this.lp.base_adminPassword_infor, "action": this.lp.base_adminPassword_action, "confirm": this.lp.base_adminPassword_confirm},
+        //     "data": {"key": "tokenData", "valueKey": "password", "notEmpty": false},
+        //     "value": this.explorer.tokenData.password,
+        //     "show": "********"
+        // });
+
         this.baseRegisterInput = new MWF.xApplication.Setting.Document.Select(this.explorer, this.node, {
             "lp": {"title": this.lp.base_register, "infor": this.lp.base_register_infor, "action": this.lp.base_register_action},
             "data": {"key": "personData", "valueKey": "register", "notEmpty": false },
@@ -86,6 +114,18 @@ MWF.xApplication.Setting.BaseLoginDocument = new Class({
             "options": getOptions
         });
 
+        this.baseIndexPortalTypeInput = new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_portalIndex, "infor": this.lp.base_portalIndex_infor, "action": this.lp.base_portalIndex_action},
+            "data": {"key": "portalData", "valueKey": "indexPage.enable", "notEmpty": false },
+            "value": this.explorer.portalData.indexPage.enable
+        });
+        debugger;
+        this.baseIndexPortalInput = new MWF.xApplication.Setting.Document.Select(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_indexPortalId, "infor": this.lp.base_indexPortalId_infor},
+            "data": {"key": "portalData", "valueKey": "indexPage.portal"},
+            "value": this.explorer.portalData.indexPage.portal,
+            "options": getOptions
+        });
     }
 });
 
@@ -109,7 +149,7 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
             "data": {"key": "tokenData", "valueKey": "oauths", "notEmpty": false },
             "value": this.explorer.tokenData.oauths,
             "itemTitle": "{clientId}",
-            "addItem": {"enable": true, "clientId": "", "mapping": {}},
+            "addItem": {"enable": true, "clientId": "","clientSecret": "", "mapping": {}},
             "icon": "sso.png"
         });
 

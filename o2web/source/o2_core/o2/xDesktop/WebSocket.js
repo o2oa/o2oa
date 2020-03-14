@@ -6,8 +6,7 @@ MWF.xDesktop.WebSocket = new Class({
     Implements: [Options, Events],
     options: {},
     initialize: function(options){
-        debugger;
-        var addressObj = layout.desktop.serviceAddressList["x_message_assemble_communicate"];
+        var addressObj = layout.serviceAddressList["x_message_assemble_communicate"];
         var uri = new URI(window.location.href);
         var scheme = uri.get("scheme");
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
@@ -41,31 +40,32 @@ MWF.xDesktop.WebSocket = new Class({
 
             try{
                 this.webSocket = new WebSocket(this.ws);
+
+                //this.webSocket = new WebSocket(this.ws);
+                this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
+                this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
+                this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
+                this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
+                //---------------------------------*/\
             }catch(e){
                 //WebSocket.close();
                 //this.webSocket = new WebSocket(this.ws);
+                console.log("Unable to connect to the websocket server, will retry in "+(this.heartTimeout/1000)+" seconds");
                 if (this.webSocket){
                     this.close();
                     //this.webSocket = new WebSocket(this.ws);
                 }
             }
-            //this.webSocket = new WebSocket(this.ws);
-            this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
-            this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
-            this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
-            this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
-            //---------------------------------*/\
             this.heartbeat();
         }
 
     },
     onOpen: function(e){
-        console.log("websocket is open ...");
+        console.log("websocket is open, You can receive system messages");
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
     },
     onClose: function(e){
-        debugger;
-        console.log("websocket is closed ...");
+        console.log("websocket is closed. ");
         if (this.reConnect) this.initialize();
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
@@ -158,11 +158,11 @@ MWF.xDesktop.WebSocket = new Class({
     retry: function(){
         if (this.webSocket){
             this.close();
-        }else{
-            this.initialize();
         }
+        this.initialize();
     },
     close: function(){
+        this.reConnect = false;
         if (this.webSocket) this.webSocket.close();
         //WebSocket.close();
     },
@@ -217,6 +217,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveTaskMessage: function(data){
+        debugger;
         var task = data.body;
         //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
         var content = data.title;

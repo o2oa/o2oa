@@ -1,0 +1,516 @@
+{
+    "container": {
+        "border": "1px solid #b6b6b6",
+        //	"height": "180px",
+        "min-height": "180px",
+        "background": "#FFF",
+        "margin-top": "10px",
+        "overflow": "hidden"
+    },
+    "container_min": {
+        "border": "0px solid #b6b6b6",
+        "min-height": "30px",
+        "overflow": "hidden",
+        "background": "transparent",
+        "height": "auto"
+    },
+    "minActionAreaNode": {
+        "margin-top" : "10px"
+//        "float": "right"
+//        "height": "80px",
+//        "margin": "2px",
+//        "border": "1px solid #979797",
+//        "border-radius": "8px",
+//        "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/buttonbg.png)"
+    },
+    "minContentNode": {
+        "margin-right":"150px",
+        "min-height": "30px",
+        "overflow": "hidden"
+    },
+    "minContentNode_mobile": {
+        "clear":"both",
+        "min-height": "30px",
+        "margin" : "0px 10px",
+        "overflow": "hidden"
+    },
+    "titleNode": {
+        "height": "30px",
+        "background-color": "#DDD",
+        "border-top": "1px solid #FFF",
+        "border-bottom": "1px solid #b6b6b6",
+        "line-height": "30px",
+        "font-weight": "bold",
+        "padding-left": "10px",
+        "text-align": "left"
+    },
+    "topNode": {
+//        "height": "56px"
+//        "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/bg.png)",
+//        "border-top": "1px solid #FFF",
+//        "border-bottom": "1px solid #b6b6b6"
+    },
+    "actionsBoxNode": {
+//        "overflow": "hidden",
+//        "border-bottom": "1px solid #eaebea",
+        "float": "left"
+//        "margin-left": "10px",
+//        "margin-top": "5px",
+//        "border-radius": "3px",
+//        "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/buttonbg.png)"
+    },
+    "actionsGroupNode": {
+        "margin-top" : "10px"
+//        "height": "26px",
+//        "border": "1px solid #979797",
+//        "border-radius": "3px",
+//        "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/buttonbg.png)"
+    },
+    "actionNode": {
+        "float": "left",
+        "width": "252px",
+        "height": "56px",
+        "line-height": "56px",
+        "font-size" : "32px",
+        "margin-left" : "20px",
+        "border-radius" : "4px",
+        "border" : "2px solid #32AAFF",
+        "color" : "#32AAFF",
+        "cursor": "default",
+        "text-align" : "center"
+    },
+    "actionIconNode": {
+        "width": "48px",
+        "height": "48px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-size": "48px 48px"
+    },
+    "separateNode": {
+//        "width":"0px",
+//        "height": "70px",
+//        "margin-top": "5px",
+//        "margin-left": "5px",
+//        "margin-right": "5px",
+//        "border-left": "1px solid #bcbcbc",
+//        "background-color": "#f1f1f1",
+//        "float": "left"
+    },
+    "contentScrollNode": {
+        "background-color": "#FFF",
+        "overflow": "hidden",
+        "min-height": "130px"
+    },
+    "contentNode": {
+        "background-color": "#FFF",
+        "overflow": "hidden",
+        "margin-right": "6px"
+    },
+    "bottomNode": {
+        "height": "7px",
+        "border-top": "1px solid #b6b6b6",
+        "background-color": "#e8e8e8"
+    },
+    "resizeNode": {
+        "height": "7px",
+        "cursor": "row-resize"
+    },
+    "attachmentNode_icon": {
+        "width": "90px",
+        "height": "100px",
+        "padding": "5px",
+        "float": "left",
+        "margin": "10px 0px 10px 10px",
+        "border-radius": "3px",
+        //"border": "2px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "attachmentNode_icon_over": {
+        //"border": "2px solid #cdcfd1",
+        "background": "#eaf0f5"
+    },
+    "attachmentNode_icon_selected": {
+        //"border": "2px solid #d7e1e8",
+        "background": "#d7e1e8"
+    },
+    "attachmentIconNode": {
+        "width": "90px",
+        "height": "66px",
+        "text-align": "center"
+    },
+    "attachmentIconImgAreaNode": {
+        "width": "64px",
+        "height": "64px",
+        "margin": "auto"
+    },
+    "attachmentIconImgNode": {
+        "width": "64px",
+        "height": "64px"
+    },
+    "attachmentTextNode": {
+        "height": "34px",
+        "line-height": "17px",
+        "overflow": "hidden",
+        "word-break": "break-all",
+        "text-overflow": "ellipsis",
+        "text-align": "center"
+    },
+    "attachmentNode_sequence": {
+        "width": "auto",
+        "height": "30px",
+        "padding": "0px",
+        "float": "none",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "margin": "0px 10px",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "attachmentNode_sequence_over": {
+        "border": "0px solid #cdcfd1",
+        "background": "#eaf0f5"
+    },
+    "attachmentNode_sequence_selected": {
+        "border": "0px solid #d7e1e8",
+        "background": "#d7e1e8"
+    },
+    "attachmentSeqNode_sequence": {
+        "width": "40px",
+        "height": "115px",
+        "line-height": "115px",
+        "color": "#666666",
+        "float": "left",
+        "text-align": "center"
+    },
+    "attachmentTextNode_sequence": {
+        "height": "30px",
+        "line-height": "30px",
+        "margin-left": "70px",
+        "overflow": "hidden",
+        "word-break": "break-all",
+        "text-overflow": "ellipsis",
+        "text-align": "left"
+    },
+
+    "attachmentNode_list": {
+        "width": "auto",
+        "height": "30px",
+        "padding": "0px",
+        "float": "none",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "margin": "0px 10px",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "attachmentNode_list_over": {
+        "border": "0px solid #cdcfd1",
+        "background": "#eaf0f5"
+    },
+    "attachmentNode_list_selected": {
+        "border": "0px solid #d7e1e8",
+        "background": "#d7e1e8"
+    },
+
+
+
+    "attachmentIconNode_list": {
+        "width": "40px",
+        "height": "30px",
+        "float": "left"
+    },
+    "attachmentIconImgAreaNode_list": {
+        "width": "24px",
+        "height": "24px",
+        "margin": "3px 8px"
+    },
+    "attachmentIconImgNode_list": {
+        "width": "24px",
+        "height": "24px"
+    },
+    "attachmentTextNode_list": {
+        "height": "30px",
+        "line-height": "30px",
+        "margin-left": "40px",
+        "overflow": "hidden",
+        "word-break": "break-all",
+        "text-overflow": "ellipsis",
+        "text-align": "left"
+    },
+    "attachmentTextTitleNode_list": {
+        "height": "30px",
+        "float": "left",
+        "width": "30%"
+    },
+    "attachmentTextSizeNode_list": {
+        "height": "30px",
+        "float": "left",
+        "width": "15%"
+    },
+    "attachmentTextUploaderNode_list": {
+        "height": "30px",
+        "float": "left",
+        "width": "15%"
+    },
+    "attachmentTextTimeNode_list": {
+        "height": "30px",
+        "float": "left",
+        "width": "20%"
+    },
+    "attachmentTextActivityNode_list": {
+        "height": "30px",
+        "float": "left",
+        "width": "20%"
+    },
+
+    "attachmentNode_preview": {
+        "width": "180px",
+        "height": "160px",
+        "padding": "5px",
+        "float": "left",
+        "margin": "10px 5px 10px 5px",
+        "border-radius": "3px",
+        //"border": "2px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "attachmentNode_preview_over": {
+        //"border": "2px solid #cdcfd1",
+        "background": "#eaf0f5"
+    },
+    "attachmentNode_preview_selected": {
+        //"border": "2px solid #d7e1e8",
+        "background": "#d7e1e8"
+    },
+    "attachmentPreviewIconNode": {
+        "width": "180px",
+        "height": "126px",
+        "text-align": "center"
+    },
+    "attachmentPreviewIconImgAreaNode": {
+        "width": "72px",
+        "height": "72px",
+        "margin": "auto"
+    },
+    "attachmentPreviewIconImgNode": {
+        "width": "72px",
+        "height": "72px",
+        "margin-top": "22px"
+    },
+    "attachmentPreviewAudioNode": {
+        "width": "180px",
+        "height": "30px",
+        "position": "relative",
+        "top": "-64px",
+        "opacity": "0.7"
+    },
+    "attachmentPreviewVideoNode": {
+        "width": "180px",
+        "height": "126px"
+    },
+    "attachmentPreviewTextNode": {
+        "height": "34px",
+        "line-height": "17px",
+        "overflow": "hidden",
+        "word-break": "break-all",
+        "text-overflow": "ellipsis",
+        "text-align": "center"
+    },
+
+    "minActionNode": {
+        "float": "left",
+        "width": "74px",
+        "font-size" : "32px",
+        "height": "115px",
+        "line-height": "115px",
+        "color" : "#32AAFF",
+        "margin" : "0px 5px",
+        "cursor": "pointer"
+    },
+    "minActionIconNode": {
+        "width": "26px",
+        "height": "26px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "minAttachmentNode_sequence": {
+        "width": "auto",
+        "font-size" : "32px",
+        "color" : "#333",
+        "height": "115px",
+        "padding": "0px 0px 0px 20px",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "box-shadow" : "inset 0 -1px 0 0 #DAE1EC"
+    },
+    "minAttachmentNode_sequence_mobile": {
+        "width": "auto",
+        "font-size" : "32px",
+        "color" : "#333",
+        "height": "115px",
+        "padding": "0px 0px 0px 20px",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "box-shadow" : "inset 0 -1px 0 0 #DAE1EC"
+    },
+    "minAttachmentNode_sequence_over": {
+        "border": "0px solid #cdcfd1",
+        "background-color": "#eaf0f5"
+    },
+    "minAttachmentNode_sequence_selected": {
+        "border": "0px solid #d7e1e8",
+        "background-color": "#d7e1e8"
+    },
+    "minAttachmentNode_list": {
+        "width": "auto",
+        "height": "115px",
+        "padding": "13px 0px 13px 10px",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "width" : "100%"
+        //"border-bottom" : "1px dashed #dcdcdc"
+    },
+    "minAttachmentNode_list_mobile": {
+        "width": "auto",
+        "font-size" : "32px",
+        "color" : "#333",
+        "height": "115px",
+        "padding": "0px 0px 0px 20px",
+        "border-radius": "0px",
+        "border": "0px solid #FFF",
+        "background": "transparent",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "box-shadow" : "inset 0 -1px 0 0 #DAE1EC"
+    },
+    "minAttachmentSepNode_list" : {
+        "width" : "1px",
+        "height" : "30px",
+        "float" : "right",
+        "overflow" : "hidden",
+        "border-right" : "1px dashed #dcdcdc"
+    },
+    "minAttachmentNode_list_over": {
+        //"border": "0px solid #cdcfd1",
+        //"background-color": "#eaf0f5"
+    },
+    "minAttachmentNode_list_selected": {
+        //"border": "0px solid #d7e1e8",
+        "background-color": "#e6f2ff"
+    },
+    "minAttachmentIconNode_list": {
+        "float": "left"
+    },
+    "minAttachmentIconImgAreaNode_list": {
+        "width": "46px",
+        "height": "58px",
+        "margin": "27px 3px"
+    },
+    "minAttachmentIconImgNode_list": {
+        "width": "46px",
+        "height": "58px"
+    },
+    "minAttachmentTextNode_list": {
+        "height": "115px",
+        "cursor": "default",
+        "line-height": "115px",
+        "padding-left": "20px",
+        "margin-right": "0px",
+        "overflow": "hidden",
+        "word-break": "break-all",
+        "text-overflow": "ellipsis",
+        "text-align": "left",
+        "white-space" : "nowrap",
+        "color" : "#333"
+    },
+    "minAttachmentSizeNode_list": {
+        "height": "0px",
+        "line-height": "0px",
+        "margin-left" : "0px",
+        "margin-right": "0px",
+        "display" : "none",
+        "color" : "#c2c6ce"
+    },
+    "minAttachmentActionAreaNode" : {
+        "float" : "right",
+        "overflow" : "hidden"
+    },
+    "inputUploadAreaNode": {
+        "width": "450px",
+        "height": "160px",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 10px #FFF",
+        "position": "absolute",
+        "border": "2px solid #999",
+        "border-top": "4px solid #5290e5",
+        "background-color": "#FFF",
+        "z-index": 100
+    },
+    "inputUploadAreaTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "font-family": "Microsoft YaHei",
+        "font-size": "14px"
+    },
+    "inputUploadAreaInforNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "text-align": "center",
+        "color": "#666",
+        "font-family": "Microsoft YaHei",
+        "font-size": "12px",
+        "text-align": "left",
+        "margin": "10px 20px 0px 20px"
+    },
+    "inputUploadAreaInputAreaNode": {
+        "margin": "0px 20px 20px 20px",
+        "height": "24px"
+    },
+    "inputUploadAreaInputNode": {
+        "width": "407px",
+        "height": "23px",
+        "border": "1px solid #666",
+    },
+    "inputUploadActionNode": {
+        "margin": "0px 20px",
+        "border-top": "1px solid #999",
+    },
+    "inputUploadOkButton": {
+        "height": "24px",
+        "width": "80px",
+        "color": "#FFF",
+        "background-color": "#42699e",
+        "border": "1px solid #1e3d67",
+        "border-radius": "3px",
+        "float": "right",
+        "margin-top": "10px",
+        "margin-left": "10px"
+    },
+    "inputUploadCancelButton": {
+        "height": "24px",
+        "width": "80px",
+        "color": "#666",
+        "background-color": "#DFDFDF",
+        "border": "1px solid #666",
+        "border-radius": "3px",
+        "float": "right",
+        "margin-top": "10px",
+        "margin-left": "10px"
+    }
+}

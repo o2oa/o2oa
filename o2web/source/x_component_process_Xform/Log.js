@@ -1,17 +1,598 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 	Extends: MWF.APP$Module,
+    options: {
+        "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData"]
+    },
 
 	_loadUserInterface: function(){
 		this.node.empty();
         this.node.setStyle("-webkit-user-select", "text");
         if (this.form.businessData){
-            if (this.form.businessData.workLogList){
-                this.workLog = Array.clone(this.form.businessData.workLogList);
-                this.loadWorkLog();
+            if (this.json.logType!=="record"){
+                if (this.form.businessData.workLogList){
+                    this.workLog = Array.clone(this.form.businessData.workLogList);
+                    this.fireEvent("postLoadData");
+                    this.loadWorkLog();
+                }
+            }else{
+                if (this.form.businessData.recordList){
+                    this.workLog = Array.clone(this.form.businessData.recordList);
+                    this.fireEvent("postLoadData");
+                    this.loadRecordLog();
+                }
             }
+
         }
 	},
+    loadRecordLog: function(){
+        if( !this.json.category || this.json.category === "none" ){
+            if (this.json.mode==="table"){
+                this.loadRecordLogTable();
+            }else if (this.json.mode==="text"){
+                this.loadRecordLogText();
+            }else if (this.json.mode==="media"){
+                this.loadRecordLogMedia();
+            }else{
+                this.loadRecordLogDefault();
+            }
+        }else{
+            this.loadCategoryList("_loadRecordCategoryList", "_loadRecordCategoryList");
+            if( !this.categoryList.length )return;
+            this.expandCount = 0;
+            if( this.json.expand && this.json.expand === "enable" ){
+                this.expandCount = parseInt( this.json.expandCount );
+            }
+            this.table = new Element("table", this.json.tableProperties).inject( this.node );
+            this.categoryList.each( function( key, idx ){
+                var list = this.categoryJson[key];
+                if( list && list.length ){
+
+                    var tr = new Element("tr").inject( this.table );
+                    if( this.expandCount && (idx + 1) > this.expandCount ){
+                        tr.setStyle("display","none");
+                    }
+                    var text = key;
+                    if( this.json.category === "unit" ){
+                        text = key.split("@")[0];
+                    }
+                    new Element("td", {
+                        styles : this.json.titleTdStyles,
+                        text : text
+                    }).inject( tr );
+
+                    var td = new Element("td", {
+                        styles : this.json.contentTdStyles
+                    }).inject( tr );
+
+                    var div = new Element("div",{
+                        styles : this.json.contentDivStyles || {}
+                    }).inject( td );
+
+
+                    if( this.json.sortTypeInCategory === "completedTimeAsc" || this.json.sortTypeInCategory === "completedTimeDesc" ){
+                        list.sort(function(a, b){
+                            if( this.json.sortTypeInCategory === "completedTimeAsc" ) {
+                                return Date.parse(a.recordTime) - Date.parse(b.recordTime);
+                            }else if( this.json.sortTypeInCategory === "completedTimeDesc" ) {
+                                return Date.parse(b.recordTime) - Date.parse(a.recordTime);
+                            }
+                        }.bind(this));
+
+
+                        // sortedList = [];
+                        // list.each( function( log ){
+                        //     if (log.taskCompletedList.length) {
+                        //         log.taskCompletedList.each(function (t) {
+                        //             var copyLog = Object.clone( log );
+                        //             copyLog.readList = [];
+                        //             copyLog.readCompletedList = [];
+                        //             copyLog.taskList = [];
+                        //             copyLog.taskCompletedList = [t];
+                        //             sortedList.push( copyLog );
+                        //         }.bind(this));
+                        //     }
+                        // }.bind(this));
+                        // sortedList.sort(function(a, b){
+                        //     if( this.json.sortTypeInCategory === "completedTimeAsc" ) {
+                        //         return Date.parse(a.taskCompletedList[0].completedTime) - Date.parse(b.taskCompletedList[0].completedTime);
+                        //     }else if( this.json.sortTypeInCategory === "completedTimeDesc" ) {
+                        //         return Date.parse(b.taskCompletedList[0].completedTime) - Date.parse(a.taskCompletedList[0].completedTime);
+                        //     }
+                        // }.bind(this));
+                        // list.each( function( log ) {
+                        //     if (log.taskList.length) {
+                        //         log.taskList.each(function (t) {
+                        //             var copyLog = Object.clone(log);
+                        //             copyLog.readList = [];
+                        //             copyLog.readCompletedList = [];
+                        //             copyLog.taskCompletedList = [];
+                        //             copyLog.taskList = [t];
+                        //             sortedList.push(copyLog);
+                        //         }.bind(this));
+                        //     }
+                        // })
+                    }
+
+                    if (this.json.mode==="table"){
+                        this.loadRecordLogTable( list, div );
+                    }else if (this.json.mode==="text"){
+                        this.loadRecordLogText( list, div );
+                    }else if (this.json.mode==="media"){
+                        this.loadRecordLogMedia( list, div );
+                    }else{
+                        this.loadRecordLogDefault( list, div );
+                    }
+
+                    this._loadTableStyles();
+                }
+            }.bind(this));
+            if( this.categoryList.length > this.expandCount ){
+                this.loadExpandCollapseNode();
+            }
+        }
+    },
+
+    _loadRecordCategoryList : function( category ){
+        this.categoryList = [];
+        this.categoryJson = {};
+        if( category === "fromOpinionGroup" ){
+            this.workLog.sort( function( a, b ){
+                if( a.properties.fromOpinionGroup && b.properties.fromOpinionGroup ) {
+                    var array1 = a.properties.fromOpinionGroup.split("#");
+                    var array2 = b.properties.fromOpinionGroup.split("#");
+                    for (var i = 0; i < array1.length; i++) {
+                        var value1 = array1[i];
+                        var value2 = array2[i];
+                        if (this.isNumber(value1) && this.isNumber(value2)) {
+                            if (parseFloat(value1) !== parseFloat(value2)) {
+                                return parseFloat(value1) - parseFloat(value2);
+                            }
+                        } else if (!this.isNumber(value1) && !this.isNumber(value2)) {
+                            return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                        } else {
+                            return this.isNumber(value1) ? -1 : 1;
+                        }
+                    }
+                    return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                }else if( a.properties.fromOpinionGroup || b.properties.fromOpinionGroup ){
+                    return a.properties.fromOpinionGroup ? -1 : 1;
+                }else{
+                    return Date.parse(a.fromTime) - Date.parse(b.fromTime);
+                }
+            }.bind(this))
+        }
+        this.workLog.each( function(log, idx){
+            var key;
+            if( this.json.category === "activityGroup" ){
+                if( log.properties.fromOpinionGroup ){
+                    var arr = log.properties.fromOpinionGroup.split("#");
+                    key = arr[arr.length-1]
+                }else{
+                    key = log.fromActivityName;
+                }
+            }else{
+                key = log[category];
+            }
+
+            if( key && this.checkRecordShow(log)){
+                if( this.categoryList.indexOf( key ) === -1 ){
+                    this.categoryList.push( key );
+                }
+                if( !this.categoryJson[key] )this.categoryJson[key] = [];
+                this.categoryJson[key].push( log );
+            }
+        }.bind(this))
+    },
+
+    loadRecordLogTable: function( list, container ){
+        var taskTable = new Element("table", {
+            "styles": this.form.css.logTableTask,
+            "border": "0",
+            "cellSpacing": "0",
+            "cellpadding": "3px",
+            "width": "100%"
+        }).inject(container || this.node);
+        var tr = taskTable.insertRow(0).setStyles(this.form.css.logTableTaskTitleLine);
+
+        var td = tr.insertCell(0).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.person);
+        td = tr.insertCell(1).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.activity);
+        td = tr.insertCell(2).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.department);
+        td = tr.insertCell(3).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.startTime);
+        td = tr.insertCell(4).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.completedTime);
+        td = tr.insertCell(5).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.route);
+        td = tr.insertCell(6).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.opinion);
+
+        td = tr.insertCell(7).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.arrivedActivitys);
+        td = tr.insertCell(8).setStyles(this.form.css.logTableTaskTitle);
+        td.set("text", MWF.xApplication.process.Xform.LP.arrivedUsers);
+
+        if( list ){
+            list.each(function(log, idx){
+                this.loadRecordLogLine_table(log, idx, taskTable );
+            }.bind(this));
+        }else{
+            this.workLog.each(function(log, idx){
+                if (this.checkRecordShow(log)) this.loadRecordLogLine_table(log, idx, taskTable );
+            }.bind(this));
+        }
+    },
+    checkRecordShow: function(log){
+        var flag = true;
+        if (this.json.filterScript && this.json.filterScript.code){
+            this.form.Macro.environment.log = log;
+            this.form.Macro.environment.list = null;
+            flag = this.form.Macro.exec(this.json.filterScript.code, this);
+        }else{
+            if (this.json.filterActivity.length){
+                filterActivitys = this.json.filterActivity;
+                flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
+            }
+            if (this.json.filterActivityAlias){
+                if (this.json.filterActivityAlias.length){
+                    filterActivityAlias = this.json.filterActivityAlias;
+                    flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                }
+            }
+            if (this.json.filterPerson && this.json.filterPerson.length){
+                flag = (this.json.filterPerson.indexOf(log.person)!==-1);
+                if (!flag) flag = (this.json.filterPerson.indexOf(o2.name.cn(log.person))!==-1);
+            }
+            if (this.json.filterRoute.length){
+                filterRoutes = this.json.filterRoute;
+                flag = (filterRoutes.indexOf(log.properties.routeName)!==-1);
+            }
+        }
+        return flag;
+    },
+
+    loadRecordLogLine_table: function(log, idx, taskTable){
+        var style = ((idx % 2)===0) ? "logTableTaskLine" : "logTableTaskLine_even";
+        if (log.type==="currentTask"){
+            if (this.json.isTask) this.loadRecordTaskLine_table(log, taskTable, true, style);
+        }else{
+            this.loadRecordTaskLine_table(log, taskTable, false, style);
+        }
+    },
+    loadRecordTaskLine_table: function(task, table, isTask, style){
+        // var style = "logTableTaskLine";
+        // "logTableTaskLine_even"
+
+        css = (isTask) ? Object.merge(this.form.css["logTableTaskLine_task"], this.form.css[style] ): this.form.css[style];
+
+
+        if (isTask) style = "logTableTaskLine_task";
+        var tr = table.insertRow(table.rows.length);
+        var td = tr.insertCell(0).setStyles(css);
+
+        var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+        if (task.properties.empowerFromIdentity){
+            var ep = o2.name.cn(task.properties.empowerFromIdentity);
+            person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
+        }
+        if (task.type === "empower") task.properties.startTime = task.recordTime;
+        td.set("text", person);
+        td = tr.insertCell(1).setStyles(css);
+        td.set("text", task.fromActivityName || "");
+        td = tr.insertCell(2).setStyles(css);
+        td.set("text", (task.unit) ? task.unit.substring(0, task.unit.indexOf("@")) : "");
+        td = tr.insertCell(3).setStyles(css);
+        td.set("text", task.properties.startTime || "");
+        td = tr.insertCell(4).setStyles(css);
+        td.set("text", task.recordTime || "");
+
+        var router, opinion, arrivedActivitys, arrivedUsers;
+        arrivedActivitys = task.properties.nextManualList.map(function(o){
+            return o.activityName;
+        }).join(",");
+        arrivedUsers = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
+
+        switch (task.type) {
+            case "empower":
+                router = MWF.xApplication.process.Xform.LP.empower;
+                var empowerTo = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
+                opinion = MWF.xApplication.process.Xform.LP.empowerTo + empowerTo;
+                task.properties.startTime = task.recordTime;
+                break;
+            case "retract":
+                router = MWF.xApplication.process.Xform.LP.retract;
+                opinion = MWF.xApplication.process.Xform.LP.retract;
+                break;
+            case "reroute":
+                router = task.properties.routeName || MWF.xApplication.process.Xform.LP.reroute;
+                opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rerouteTo+": "+arrivedActivitys;
+                break;
+            case "rollback":
+                router = task.properties.routeName || MWF.xApplication.process.Xform.LP.rollback;
+                opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+task.arrivedActivityName;
+                break;
+            case "reset":
+                var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
+                resetUserText = o2.name.cns(resetUser).join(",");
+                router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                opinion = task.properties.opinion || ""
+                break;
+            case "appendTask":
+            case "back":
+            case "addSplit":
+            case "urge":
+            case "expire":
+            case "read":
+            default:
+                router = task.properties.routeName || "";
+                opinion = task.properties.opinion || "";
+        }
+
+
+        td = tr.insertCell(5).setStyles(css);
+        td.set("text",router);
+        var opinionTd = tr.insertCell(6).setStyles(css);
+        opinionTd.set("html", "<div style='display: inline-block; float: left'>"+opinion+"</div>");
+        td = tr.insertCell(7).setStyles(css);
+        td.set("text",arrivedActivitys);
+        td = tr.insertCell(8).setStyles(css);
+        td.set("html", arrivedUsers);
+
+        if (task.properties.mediaOpinion){
+            var mediaIds = task.properties.mediaOpinion.split(",");
+            var atts = [];
+            if (this.form.businessData.attachmentList){
+                this.form.businessData.attachmentList.each(function(att){
+                    if (att.site==="$mediaOpinion"){
+                        if (mediaIds.indexOf(att.id)!==-1) atts.push(att);
+                    }
+                }.bind(this));
+            }
+            if (atts.length) this.loadMediaOpinion(atts, opinionTd.getFirst(), "table");
+        }
+    },
+    loadRecordLogDefault: function(list, container){
+        var logActivityNode = new Element("div", {"styles": this.form.css.logActivityNode_record}).inject(container || this.node);
+        if( list ){
+            list.each(function(log, idx){
+                this.loadRecordLogLine_default(log, idx, logActivityNode);
+            }.bind(this));
+        }else{
+            this.workLog.each(function(log, idx){
+                if (this.checkRecordShow(log)) this.loadRecordLogLine_default(log, idx, logActivityNode);
+            }.bind(this));
+        }
+    },
+    loadRecordLogLine_default: function(log, idx, container){
+        //var style = ((idx % 2)===0) ? "logTableTaskLine_even" : "logTableTaskLine";
+        var style = ((idx % 2)===0) ? "logActivityChildRecordNode" : "logActivityChildRecordNode_even";
+
+        var childNode = new Element("div", {"styles": this.form.css[style]}).inject((container || this.node));
+        if (log.type==="currentTask"){
+            if (this.json.isTask) this.loadRecordTaskLine_default(log, childNode, true);
+        }else{
+            this.loadRecordTaskLine_default(log, childNode, false);
+        }
+    },
+    loadRecordTaskLine_default: function(task, node, isTask, margin, isZebra, nodeStyle, noIconNode){
+        debugger;
+        var style = "logTaskNode";
+        var textStyle = "logTaskFloatTextNode";
+        if (nodeStyle){
+            style = "logTaskTextNode";
+            textStyle = "logTaskTextNode";
+        }
+        var logTaskNode = new Element("div", {"styles": this.form.css[style]}).inject(node);
+        var iconNode;
+        if( !noIconNode ){
+            iconNode = new Element("div", {"styles": this.form.css.logTaskIconNode_record}).inject(logTaskNode);
+        }
+        var textNode = new Element("div", {"styles": this.form.css[textStyle]}).inject(logTaskNode);
+
+        if (isZebra){
+            logTaskNode.setStyles(this.form.css[this.lineClass]);
+            if (this.lineClass === "logTaskNode"){
+                this.lineClass = "logTaskNode_even";
+            }else{
+                this.lineClass = "logTaskNode";
+            }
+        }
+
+        var left = 0;
+        if( iconNode ){
+            if (margin) iconNode.setStyle("margin-left", margin);
+            left = iconNode.getStyle("margin-left").toInt();
+            left = left + 28;
+        }
+        var html;
+        var company = "";
+        if (!isTask){
+            company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
+            html = this.json.textStyle;
+
+            var lp = MWF.xApplication.process.Xform.LP;
+            if (task.type=="empower") html = "<font style='color:#ff5400;'>{person}</font>（{department}）"+lp.in+"【{activity}】"+lp.activity+"，"+lp.empowerTo +"<font style='color:#ff5400;'>{empowerTo}</font>。（{time}）</font>";
+
+            var nextTaskText = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
+
+            if (this.json.textStyleScript && this.json.textStyleScript.code){
+                this.form.Macro.environment.log = task;
+                this.form.Macro.environment.list = null;
+                html = this.form.Macro.exec(this.json.textStyleScript.code, this);
+            }
+
+            // var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+            // if( task.type !== "empowerTask" && task.empowerFromIdentity){
+            //     person = person+" "+lp.replace+" "+o2.name.cn(task.empowerFromIdentity||"");
+            // }
+
+            var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+            if (task.properties.empowerFromIdentity){
+                var ep = o2.name.cn(task.properties.empowerFromIdentity);
+                person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
+            }
+
+            var router, opinion, arrivedActivitys, arrivedUsers;
+            arrivedActivitys = task.properties.nextManualList.map(function(o){
+                return o.activityName;
+            }).join(",");
+            arrivedUsers = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
+
+            switch (task.type) {
+                case "empower":
+                    debugger;
+                    router = MWF.xApplication.process.Xform.LP.empower;
+                    var empowerTo = (task.properties.nextManualTaskIdentityList && task.properties.nextManualTaskIdentityList.length) ? o2.name.cns(task.properties.nextManualTaskIdentityList).join(",") : "";
+                    opinion = MWF.xApplication.process.Xform.LP.empowerTo + empowerTo;
+                    task.properties.startTime = task.recordTime;
+                    break;
+                case "retract":
+                    router = MWF.xApplication.process.Xform.LP.retract;
+                    opinion = MWF.xApplication.process.Xform.LP.retract;
+                    break;
+                case "reroute":
+                    router = task.properties.routeName || MWF.xApplication.process.Xform.LP.reroute;
+                    opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rerouteTo+": "+arrivedActivitys;
+                    break;
+                case "rollback":
+                    router = task.properties.routeName || MWF.xApplication.process.Xform.LP.rollback;
+                    opinion = task.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+task.arrivedActivityName;
+                    break;
+                case "reset":
+                    var resetUser = task.properties.nextManualTaskIdentityList.erase(task.identity);
+                    resetUserText = o2.name.cns(resetUser).join(",");
+                    router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                    opinion = task.properties.opinion || ""
+                    break;
+                case "appendTask":
+                case "back":
+                case "addSplit":
+                case "urge":
+                case "expire":
+                case "read":
+                case "task":
+                case "empowerTask":
+                default:
+                    router = task.properties.routeName || "";
+                    opinion = task.properties.opinion || "";
+            }
+
+            html = html.replace(/\{person\}/g, person );
+            html = html.replace(/\{department\}/g, (task.unit) ? task.unit.substring(0, task.unit.indexOf("@")) : "");
+            html = html.replace(/\{route\}/g, router);
+            html = html.replace(/\{time\}/g, task.recordTime);
+            html = html.replace(/\{date\}/g, new Date().parse(task.recordTime).format("%Y-%m-%d"));
+            html = html.replace(/\{opinion\}/g, opinion);
+            html = html.replace(/\{company\}/g, company.substring(0, company.indexOf("@")));
+            html = html.replace(/\{startTime\}/g, task.properties.startTime);
+            html = html.replace(/\{startDate\}/g, new Date().parse(task.properties.startTime).format("%Y-%m-%d"));
+            html = html.replace(/\{activity\}/g, task.fromActivityName);
+            html = html.replace(/\{arrivedActivity\}/g, arrivedActivitys);
+            html = html.replace(/\{img\}/g, "<span class='mwf_log_img'></span>");
+            html = html.replace(/\{empowerTo\}/g, arrivedUsers);
+            html = html.replace(/\{next\}/g, nextTaskText);
+
+            //var html = MWF.xApplication.process.Xform.LP.nextUser + task.person+"("+task.department+")" +", "+
+            //    MWF.xApplication.process.Xform.LP.selectRoute + ": [" + task.routeName + "], " +
+            //    MWF.xApplication.process.Xform.LP.submitAt + ": " + task.completedTime+ ", " +
+            //    MWF.xApplication.process.Xform.LP.idea + ": <font style=\"color: #00F\">" + (task.opinion || "")+"</font>";
+
+            textNode.set("html", html);
+            var imgNode = textNode.getElement(".mwf_log_img");
+            if (task.properties.mediaOpinion){
+                var mediaIds = task.properties.mediaOpinion.split(",");
+                var atts = [];
+                if (this.form.businessData.attachmentList){
+                    this.form.businessData.attachmentList.each(function(att){
+                        if (att.site==="$mediaOpinion"){
+                            if (mediaIds.indexOf(att.id)!==-1) atts.push(att);
+                        }
+                    }.bind(this));
+                }
+                if (atts.length){
+                    if (imgNode){
+                        this.loadMediaOpinion_show(atts, task, imgNode, true);
+                        // atts.each(function(att){
+                        //     this.loadMediaOpinion_image_show(att, task, imgNode);
+                        // }.bind(this));
+
+                    }else{
+                        this.loadMediaOpinion(atts, textNode, "default");
+                    }
+                }
+            }
+        }else{
+            var person = (task.person) ? task.person.substring(0, task.person.indexOf("@")) : "";
+            if (task.properties.empowerFromIdentity){
+                var ep = o2.name.cn(task.properties.empowerFromIdentity);
+                person = person + " "+MWF.xApplication.process.Xform.LP.replace+" " + ep;
+            }
+            html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
+                MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
+            textNode.set("html", html);
+            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+        }
+    },
+
+
+    loadRecordLogText: function(list, container){
+        this.lineClass = "logTaskNode";
+        if( list ){
+            list.each(function(log, idx){
+                this.loadRecordLogLine_text(log, idx, container);
+            }.bind(this));
+        }else{
+            this.workLog.each(function(log, idx){
+                if (this.checkRecordShow(log)) this.loadRecordLogLine_text(log, idx, container);
+            }.bind(this));
+        }
+    },
+    loadRecordLogLine_text: function(log, idx, container){
+        if (log.type==="currentTask"){
+            if (this.json.isTask) this.loadRecordTaskLine_text(log, container || this.node, true);
+        }else{
+            this.loadRecordTaskLine_text(log, container || this.node, false);
+        }
+    },
+    loadRecordTaskLine_text: function(task, node, log, isTask){
+        this.loadRecordTaskLine_default(task, node, isTask, "0px", false, true, true);
+    },
+
+    loadRecordLogMedia: function(list, container){
+        if( list ){
+            list.each(function(log, idx){
+                this.loadRecordLogLine_media(log, idx, container);
+            }.bind(this));
+        }else{
+            this.workLog.each(function(log, idx){
+                if (this.checkRecordShow(log)) this.loadRecordLogLine_media(log, idx, container);
+            }.bind(this));
+        }
+
+    },
+    loadRecordLogLine_media: function(log, idx, container){
+        this.loadRecordTaskLine_media(log, container);
+    },
+    loadRecordTaskLine_media: function(task, container){
+        if (task.properties.mediaOpinion){
+            var mediaIds = task.properties.mediaOpinion.split(",");
+            var atts = [];
+            if (this.form.businessData.attachmentList){
+                this.form.businessData.attachmentList.each(function(att){
+                    if (att.site==="$mediaOpinion"){
+                        if (mediaIds.indexOf(att.id)!==-1) atts.push(att);
+                    }
+                }.bind(this));
+            }
+            task.completedTime = task.recordTime;
+            if (atts.length) this.loadMediaOpinion_show(atts, task, container);
+        }
+    },
+
+    //worklog -----------------------------------------------------------------------------
 
     loadWorkLog: function(){
         if( !this.json.category || this.json.category === "none" ){
@@ -111,26 +692,25 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
         }
     },
-    loadCategoryList : function(){
+    loadCategoryList : function(m1, m2){
         var category;
         if( this.json.category === "activity" ){
             category = "fromActivityName";
-            this._loadCategoryList( category );
+            this[m1 || "_loadCategoryList"]( category );
         }else if( this.json.category === "unit" ){
             category = "unit";
-            this._loadCategoryLitBySubData( category );
+            this[m2 || "_loadCategoryLitBySubData"]( category );
         }else if( this.json.category === "activityGroup" ){
             category = "fromOpinionGroup";
-            this._loadCategoryList( category );
+            this[m1 || "_loadCategoryList"]( category );
         }else{
             category = this.json.category;
-            this._loadCategoryList( category );
+            this[m1 || "_loadCategoryList"]( category );
         }
-
     },
-    isNumber : function( d ){
-        return parseFloat(d).toString() !== "NaN"
-    },
+    // isNumber : function( d ){
+    //     return parseFloat(d).toString() !== "NaN"
+    // },
     _loadCategoryList : function( category ){
         this.categoryList = [];
         this.categoryJson = {};
@@ -646,7 +1226,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         td = tr.insertCell(4).setStyles(this.form.css[style]);
         td.set("text", (task.processingType=="empower") ? "授权" : task.routeName || "");
         td = tr.insertCell(5).setStyles(this.form.css[style]);
-        opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + task.opinion || ""+"</div>";
+        opinion = (task.processingType=="empower") ? "授权给"+ o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
         td.set("html", opinion);
 
         if (task.mediaOpinion){
@@ -689,7 +1269,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
     },
     loadTaskLine_text: function(task, node, log, isTask){
-        this.loadTaskLine_default(task, node, log, isTask, "0px", false, true);
+        this.loadTaskLine_default(task, node, log, isTask, "0px", false, true, true);
     },
 
     checkShow: function(log){
@@ -843,7 +1423,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
         if (html) logReadNode.set("html", html);
     },
-    loadTaskLine_default: function(task, node, log, isTask, margin, isZebra, nodeStyle){
+    loadTaskLine_default: function(task, node, log, isTask, margin, isZebra, nodeStyle, noIconNode){
         var style = "logTaskNode";
         var textStyle = "logTaskFloatTextNode";
         if (nodeStyle){
@@ -851,7 +1431,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             textStyle = "logTaskTextNode";
         }
         var logTaskNode = new Element("div", {"styles": this.form.css[style]}).inject(node);
-        var iconNode = new Element("div", {"styles": this.form.css.logTaskIconNode}).inject(logTaskNode);
+        var iconNode;
+        if( !noIconNode ){
+            iconNode = new Element("div", {"styles": this.form.css.logTaskIconNode}).inject(logTaskNode);
+        }
         var textNode = new Element("div", {"styles": this.form.css[textStyle]}).inject(logTaskNode);
 
         if (isZebra){
@@ -863,24 +1446,40 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
         }
 
-        if (margin) iconNode.setStyle("margin-left", margin);
-        var left = iconNode.getStyle("margin-left").toInt();
-        left = left + 28;
+        var left = 28;
+        if( iconNode ){
+            if (margin) iconNode.setStyle("margin-left", margin);
+            left = iconNode.getStyle("margin-left").toInt();
+            left = left + 28;
+        }
         var html;
         var company = "";
         if (!isTask){
             company = (task.unitList) ? task.unitList[task.unitList.length-1] : "";
             var html = this.json.textStyle;
             if (task.processingType=="empower") html = "<font style='color:#ff5400;'>{person}</font>（{department}）授权给<font style='color:#ff5400;'>{empowerTo}</font>处理。（{time}）</font>";
-            var nextTasks = o2.name.cns(log.nextManualTaskIdentityList).join(", ");
-            var nextTaskCompleteds = o2.name.cns(log.nextManualTaskCompletedIdentityList).join(", ");
-            var nextTaskParts = [];
-            //if (nextTasks) nextTaskParts.push(nextTasks+" 正在处理");
-            //if (nextTaskCompleteds) nextTaskParts.push(nextTaskCompleteds+" 处理完成");
-            if (nextTasks) nextTaskParts.push(nextTasks);
-            if (nextTaskCompleteds) nextTaskParts.push(nextTaskCompleteds);
 
-            var nextTaskText = nextTaskParts.join(", ");
+            var nextTaskText = "";
+            if (task.processingType=="empower"){
+                var nextTaskParts = [];
+                if (task.nextTaskIdentityListText){
+                    var nestIds = task.nextTaskIdentityListText.split(",");
+                    nextTaskParts = o2.name.cns(nestIds);
+                }else{
+                    // var nextTasks = o2.name.cns(log.nextTaskIdentityList).join(", ");
+                    // var nextTaskCompleteds = o2.name.cns(log.nextTaskCompletedIdentityList).join(", ");
+                    var nextTasks = (log.nextTaskIdentityList && log.nextTaskIdentityList.length) ? o2.name.cns(log.nextTaskIdentityList).join(", ") : "";
+                    var nextTaskCompleteds = (log.nextTaskCompletedIdentityList && log.nextTaskCompletedIdentityList.length) ? o2.name.cns(log.nextTaskCompletedIdentityList).join(", ") : "";
+
+                    if (nextTasks) nextTaskParts.push(nextTasks);
+                    if (nextTaskCompleteds) nextTaskParts.push(nextTaskCompleteds);
+                }
+                nextTaskText = nextTaskParts.join(", ");
+            }else{
+                nextTaskText = (task.empowerToIdentity) ? o2.name.cn(task.empowerToIdentity) : "";
+            }
+
+
 
             if (this.json.textStyleScript && this.json.textStyleScript.code){
                 this.form.Macro.environment.log = log;
@@ -889,7 +1488,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             }
 
             var person = task.person.substring(0, task.person.indexOf("@"));
-            if( task.processingType === "processing" && task.empowerFromIdentity){
+            if( task.processingType !== "empower" && task.empowerFromIdentity){
                 person = person+" 代 "+o2.name.cn(task.empowerFromIdentity||"");
             }
             html = html.replace(/\{person\}/g, person );
@@ -897,7 +1496,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = html.replace(/\{route\}/g, task.routeName);
             html = html.replace(/\{time\}/g, task.completedTime);
             html = html.replace(/\{date\}/g, new Date().parse(task.completedTime).format("%Y-%m-%d"));
-            html = html.replace(/\{opinion\}/g, task.opinion);
+            html = html.replace(/\{opinion\}/g, task.opinion || "");
             html = html.replace(/\{company\}/g, company.substring(0, company.indexOf("@")));
             html = html.replace(/\{startTime\}/g, task.startTime);
             html = html.replace(/\{startDate\}/g, new Date().parse(task.startTime).format("%Y-%m-%d"));
@@ -944,7 +1543,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = task.person.substring(0, task.person.indexOf("@"))+"("+task.unit.substring(0, task.unit.indexOf("@"))+")" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.startTime;
             textNode.set("html", html);
-            iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
     },
     loadMediaOpinion: function(atts, node, type){

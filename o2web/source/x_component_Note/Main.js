@@ -16,6 +16,9 @@ MWF.xApplication.Note.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Note.LP;
 	},
+    loadWindowFlat: function(isCurrent){
+        this.loadWindow(false);
+    },
     loadWindow: function(isCurrent){
         this.fireAppEvent("queryLoadWindow");
         this.window = new MWF.xDesktop.WindowTransparent(this);
@@ -29,6 +32,32 @@ MWF.xApplication.Note.Main = new Class({
         this.loadApplication(function(){
             this.fireAppEvent("postLoadApplication");
         }.bind(this));
+    },
+    setCurrent: function () {
+        if (this.desktop.currentApp == this) return true;
+        if (this.desktop.currentApp) {
+            this.desktop.currentApp.taskitem.unSelected();
+            this.desktop.currentApp.desktop.currentApp = null;
+            //this.desktop.currentApp.setUncurrent();
+        }
+
+        this.window.setCurrent();
+
+        if (this.window.isHide) {
+            if (this.window.isMax) {
+                this.window.maxSize(function () { this.fireAppEvent("current"); }.bind(this));
+            } else {
+                this.window.restore(function () { this.fireAppEvent("current"); }.bind(this));
+            }
+        } else {
+            this.fireAppEvent("current");
+        }
+
+        if (this.taskitem) this.taskitem.selected();
+        this.desktop.currentApp = this;
+
+        this.desktop.appCurrentList.erase(this);
+        this.desktop.appCurrentList.push(this);
     },
 
 	loadApplication: function(callback){

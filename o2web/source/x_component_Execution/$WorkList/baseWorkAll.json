@@ -26,7 +26,7 @@
         "</td>",
         "items": {
           "title": {},
-          "workDetail":{"value" : "function(d){ return d.workDetail.length > 50 ? d.workDetail.substr(0,50)+'...' : d.workDetail }"},
+          "workDetail":{"value" : "function(d){ return (d.workDetail && d.workDetail.length > 50) ? d.workDetail.substr(0,50)+'...' : d.workDetail||'' }"},
           "centerTitle":{"value":"function(d){ return '中心工作：'+d.centerTitle}"},
           "workType": {},
           "workLevel": {}
@@ -46,7 +46,7 @@
         "</td>",
         "items": {
           "title": {},
-          "progressAction":{"value" : "function(d){ return d.progressAction.length > 50 ? d.progressAction.substr(0,50)+'...' : d.progressAction }"},
+          "progressAction":{"value" : "function(d){ return (d.progressAction && d.progressAction.length > 50) ? d.progressAction.substr(0,50)+'...' : d.progressAction || ''}"},
           "shortWorkDetail":{},
           "workType": {},
           "workLevel": {}

@@ -131,6 +131,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadSimpleSearch: function(){
+        return false;
         this.searchSimpleNode = new Element("div", {"styles": this.css.searchSimpleNode}).inject(this.searchAreaNode);
         this.searchSimpleButtonNode = new Element("div", {"styles": this.css.searchSimpleButtonNode}).inject(this.searchSimpleNode);
         this.searchSimpleInputNode = new Element("input", {"type":"text", "styles": this.css.searchSimpleInputNode, "value": this.lp.searchKeywork}).inject(this.searchSimpleNode);
@@ -164,6 +165,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     }
                 }
             }
+            //if (this.viewPageAreaNode) this.viewPageAreaNode.hide();
         }
     },
     loadFilterSearch: function(){
@@ -195,6 +197,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var key = this.viewSearchInputNode.get("value");
             if (key && key !== this.lp.searchKeywork) {
                 var filterData = this.json.filter ? this.json.filter : [];
+                this.filterItems = [];
                 this.viewJson.customFilterList.each(function (entry) {
                     if (entry.formatType === "textValue") {
                         var d = {
@@ -205,6 +208,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                             "comparison": "like"
                         };
                         filterData.push(d);
+                        this.filterItems.push({"data":d});
                     }
                     if (entry.formatType === "numberValue") {
                         var v = key.toFloat();
@@ -217,6 +221,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                                 "comparison": "like"
                             };
                             filterData.push(d);
+                            this.filterItems.push({"data":d});
                         }
                     }
                 }.bind(this));
@@ -672,6 +677,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         this.loadCurrentPageData();
                     }else{
                         //this._loadPageNode();
+                        this.viewPageAreaNode.empty();
                         if (this.loadingAreaNode){
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
@@ -1076,8 +1082,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         actionNode.store("workId", work.id);
         actionNode.addEvent("click", function(e){
             this.mask.hide();
+            var id = e.target.retrieve("workId");
             worksAreaNode.destroy();
-            this.openWorkCompleted(e.target.retrieve("workId"), e)
+            this.openWorkCompleted(id, e);
         }.bind(this));
 
         var areaNode = new Element("div", {"styles": this.css.workAreaLeftNode}).inject(node);

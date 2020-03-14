@@ -74,7 +74,7 @@
 		"display":"block",
 		"height": "1px",
 		"overflow": "hidden",
-		"margin-left": "28px",
+		"margin-left": "0px",
 		"margin-top": "3px",
 		"margin-bottom": "3px",
 		"background-color": "#CCCCCC",

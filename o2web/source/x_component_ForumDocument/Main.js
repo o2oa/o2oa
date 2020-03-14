@@ -1042,6 +1042,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 
 		var form = new MWF.xApplication.ForumDocument.HotLinkForm(this, this.data, {
 			documentId : this.data.id,
+			summary : this.data.summary,
 			onPostOk : function( id ){
 
 			}.bind(this)

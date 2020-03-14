@@ -186,6 +186,7 @@
 
   "manageDeleteReview": {"uri": "/jaxrs/review/{id}/application/{applicationFlag}/manage", "method": "DELETE"},
   "addWorkCompletedReview": {"uri": "/jaxrs/review/create/workcompleted", "method": "POST"},
+  "addWorkReview": {"uri": "/jaxrs/review/create/work", "method": "POST"},
 
   "getJobByTask": {"uri": "/jaxrs/work/task/{id}/complex"},
   "getJobByWork": {"uri": "/jaxrs/work/{id}/complex"},
@@ -265,6 +266,7 @@
 
   "loadWork": {"uri": "/jaxrs/work/workorworkcompleted/{workOrWorkCompleted}"},
   "getWorkLog": {"uri": "/jaxrs/worklog/list/workorworkcompleted/{workOrWorkCompleted}"},
+  "getRecordLog": {"uri": "/jaxrs/record/list/workorworkcompleted/{workOrWorkCompleted}"},
   "listAttachments": {"uri": "/jaxrs/attachment/list/workorworkcompleted/{workOrWorkCompleted}"},
   "listTaskcompleted": {"uri": "/jaxrs/taskcompleted/list/workorworkcompleted/{workOrWorkCompleted}"},
   "listReadcompleted": {"uri": "/jaxrs/readcompleted/list/workorworkcompleted/{workOrWorkCompleted}"},

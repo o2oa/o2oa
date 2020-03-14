@@ -37,7 +37,7 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
 		this.lp = MWF.xApplication.cms.ScriptDesigner.LP;
 
         this.addEvent("queryClose", function(e){
-            if (this.explorer){
+            if (this.explorer && this.explorer.app && this.explorer.app.window){
                 this.explorer.reload();
             }
         }.bind(this));

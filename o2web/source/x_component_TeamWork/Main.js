@@ -19,7 +19,6 @@ MWF.xApplication.TeamWork.Main = new Class({
 		// "isMax": true,
 		"title": MWF.xApplication.TeamWork.LP.title
 	},
-
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.TeamWork.LP;
 	},
@@ -33,13 +32,19 @@ MWF.xApplication.TeamWork.Main = new Class({
 
 		this.restActions = MWF.Actions.get("x_teamwork_assemble_control");
 		this.orgActions = MWF.Actions.get("x_organization_assemble_express");
+		this.path = "/x_component_TeamWork/$Main/";
+		if(!this.css){
+			this.cssPath = this.path+this.options.style+"/css.wcss";
+			this._loadCss();
+		}
+
 
 		MWF.xDesktop.requireApp("TeamWork", "ProjectList", function(){
 			this.pl = new MWF.xApplication.TeamWork.ProjectList(this.content,this,this.restActions,{
 
 			});
 			this.pl.load();
-		}.bind(this))
+		}.bind(this));
 
 		this.addEvent("resize", function(){
 			this.resize();
@@ -130,6 +135,7 @@ MWF.xApplication.TeamWork.Main = new Class({
 		var _height = container.getHeight();
 		var _width = container.getWidth();
 		var loading = new Element("img",{styles:this.css.loading,"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
+		//var loading = new Element("img",{"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
 
 		loading.setStyles({
 			"margin-left":(_width-loading.getWidth())/2+"px"

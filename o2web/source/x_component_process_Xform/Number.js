@@ -21,6 +21,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     // },
     validationFormat: function(){
         debugger;
+        if( !this.node.getElement("input") )return true;
         var n = this.node.getElement("input").get("value");
         if (isNaN(n)) {
             this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);

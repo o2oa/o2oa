@@ -1,6 +1,7 @@
 {
   "name": "蓝白扁平",
   "form": {
+    "textareaDisableResize" : true,
     "confirmStyle" : "blue_flat_confirm",
     "dialogStyle" : "blue_flat",
     "attachmentStyle" : {
@@ -48,7 +49,8 @@
       "tabStyle" : "blue_flat",
       "hasShuttle" : true, //穿梭按钮
       "searchbarInTopNode" : false,
-      "hasSelectedSearchbar" : true
+      "hasSelectedSearchbar" : true,
+      "itemHeight" : 27
     },
     "errorStyle" : {
       "node" : {

@@ -108,7 +108,10 @@ MWF.xApplication.query.Query.Main = new Class({
             if (json.data){
                 json.data.each(function(view){
                     if(view.display) {
-                        this.createViewNaviItem(view);
+                        var item = this.createViewNaviItem(view);
+                        if( view.id === this.options.viewId ){
+                            item.selected()
+                        }
                     }
                 }.bind(this));
             }
@@ -117,16 +120,21 @@ MWF.xApplication.query.Query.Main = new Class({
         //this.action.listStat(this.options.id, function(json){
             if (json.data){
                 json.data.each(function(stat){
-                    this.createStatNaviItem(stat);
+                    var item = this.createStatNaviItem(stat);
+                    if( stat.id === this.options.statId ){
+                        item.selected()
+                    }
                 }.bind(this));
             }
         }.bind(this));
     },
     createViewNaviItem: function(view){
         var item = new MWF.xApplication.query.Query.ViewItem(view, this);
+        return item;
     },
     createStatNaviItem: function(stat){
         var item = new MWF.xApplication.query.Query.StatItem(stat, this);
+        return item;
     },
 
 

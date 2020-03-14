@@ -20,6 +20,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
         "draggable": true,
         "closeAction": true,
 
+        "latest" : true,
+
         "ignoreTitle" : false,
         "ignoreDrafted" : false,
         "selectColumnEnable" : true,
@@ -53,6 +55,26 @@ MWF.xApplication.cms.Index.Newer = new Class({
         this.app = app;
         this.view = view;
         this.container = this.app.content;
+
+        if( !this.columnData ){
+            this.initData();
+        }
+
+        if( this.columnData ) {
+            this.columnData.config = this.columnData.config || {};
+            if (typeOf(this.columnData.config) === "string") {
+                this.columnData.config = JSON.parse(this.columnData.config || {});
+            } else {
+                this.columnData.config = Object.clone(this.columnData.config || {});
+            }
+
+            if (typeOf(options.ignoreTitle) !== "boolean" && typeOf(this.columnData.config.ignoreTitle) === "boolean") {
+                this.options.ignoreTitle = this.columnData.config.ignoreTitle;
+            }
+            if (typeOf(options.latest) !== "boolean" && typeOf(this.columnData.config.latest) === "boolean") {
+                this.options.latest = this.columnData.config.latest;
+            }
+        }
 
         this.documentAction = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Index.Actions.RestActions();
         //this.orgAction = new MWF.xAction.org.express.RestActions();
@@ -94,6 +116,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "categoryIdList": [this.categoryData.id ],
                 "creatorList": [layout.desktop.session.user.distinguishedName]
             };
+
+            debugger
             this.documentAction.listDraftNext("(0)", 1, fielter, function(json){
                 if( json.data.length > 0 ){
                     this._openDocument(json.data[0].id);
@@ -231,9 +255,9 @@ MWF.xApplication.cms.Index.Newer = new Class({
         this.columnContainer = this.selectContainer.getElementById("form_startColumn");
         this.columnContainer.setStyles( this.css.columnContainer );
         this.selectContainer.addEvents({
-           mouseover : function(){
-               this.columnSelectNode.setStyles( this.css.columnSelectNode_over );
-           }.bind(this),
+            mouseover : function(){
+                this.columnSelectNode.setStyles( this.css.columnSelectNode_over );
+            }.bind(this),
             mouseout : function(){
                 this.columnSelectNode.setStyles( this.css.columnSelectNode );
             }.bind(this),
@@ -286,8 +310,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "categoryIdList": [ category.data.id ],
             "creatorList": [layout.desktop.session.user.distinguishedName]
         };
+
         this.documentAction.listDraftNext("(0)", 1, fielter, function(j){
-            if( j.data && j.data.length > 0 ){
+
+            if( j.data && j.data.length > 0 && this.options.latest){
                 this._openDocument(j.data[0].id);
                 this.close();
             }else{
@@ -785,7 +811,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Column = new Class({
         }
 
         if( this.options.isAll ){
-           //new Element("div", {"styles": this.css.columnSelectNode}).inject(this.node);
+            //new Element("div", {"styles": this.css.columnSelectNode}).inject(this.node);
         }
 
         this.node.addEvents({

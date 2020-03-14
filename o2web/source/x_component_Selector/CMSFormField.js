@@ -11,7 +11,8 @@ MWF.xApplication.Selector.CMSFormField = new Class({
         "names": [],
         "application": "",
         "form" : "",
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
     getFields : function(){
         var dataTypes = {
@@ -47,6 +48,7 @@ MWF.xApplication.Selector.CMSFormField = new Class({
                     if( !this.options.fieldType || this.options.fieldType === f.dataType ){
                         f.id = f.name;
                         var item = this._newItem(f, this, this.itemAreaNode);
+                        this.items.push( item );
                     }
                 }.bind(this));
             }.bind(this))
@@ -58,6 +60,7 @@ MWF.xApplication.Selector.CMSFormField = new Class({
                         json.data[this.options.fieldType].each(function(data){
                             data.id = data.name;
                             var item = this._newItem(data, this, this.itemAreaNode);
+                            this.items.push( item );
                         }.bind(this));
                     }else{
                         Object.each(json.data, function(v, k){
@@ -115,7 +118,8 @@ MWF.xApplication.Selector.CMSFormField.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -163,7 +167,8 @@ MWF.xApplication.Selector.CMSFormField.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     }
 });
 
@@ -171,7 +176,8 @@ MWF.xApplication.Selector.CMSFormField.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Identity.ItemCategory,
 
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded){
@@ -182,6 +188,7 @@ MWF.xApplication.Selector.CMSFormField.ItemCategory = new Class({
                     //subData.applicationName = this.data.name;
                     //subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( item );
                 }.bind(this));
 
                 this.loaded = true;

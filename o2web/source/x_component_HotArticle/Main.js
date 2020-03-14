@@ -283,7 +283,7 @@ MWF.xApplication.HotArticle.Main.View = new Class({
 
     },
     getPictureUrlHost: function() {
-        var addressObj = layout.desktop.serviceAddressList["x_hotpic_assemble_control"];
+        var addressObj = layout.serviceAddressList["x_hotpic_assemble_control"];
         this.pictureUrlHost = "http://"+addressObj.host +  ( addressObj.port != 80 ? (":"+ addressObj.port +"/") : "/" );
     }
 

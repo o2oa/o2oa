@@ -21,7 +21,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 		    	"title": MWF.LP.process.formAction.deleteCol
 		    }
 		],
-		"allowModules": ["textfield", "number", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "html", "image", "label", "htmleditor", "button","imageclipper", "address"]
+		"allowModules": ["textfield", "number", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "html", "combox", "image", "label", "htmleditor", "button","imageclipper", "address"]
 	},
 	
 	initialize: function(form, options){

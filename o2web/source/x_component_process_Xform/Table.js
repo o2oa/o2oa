@@ -49,6 +49,9 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
     _loadBorderStyle: function(){
         if (this.json.styles.border){
             if (!this.table) this.table = this.node.getElement("table");
+            if( this.json.styles["table-layout"] ){
+                this.table.setStyle("table-layout",this.json.styles["table-layout"]);
+            }
             this.table.set("cellspacing", "0");
             this.table.setStyles({
                 "border-top": this.json.styles.border,

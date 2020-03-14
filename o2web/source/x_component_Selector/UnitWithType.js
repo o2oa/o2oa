@@ -105,8 +105,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, key);
     },
-    _newItem: function(data, selector, container, level, category){
-        return new MWF.xApplication.Selector.UnitWithType.Item(data, selector, container, level, category);
+    _newItem: function(data, selector, container, level, category, delay){
+        return new MWF.xApplication.Selector.UnitWithType.Item(data, selector, container, level, category, delay);
     },
     _newItemSearch: function(data, selector, container, level){
         return new MWF.xApplication.Selector.UnitWithType.SearchItem(data, selector, container, level);
@@ -115,13 +115,14 @@ MWF.xApplication.Selector.UnitWithType = new Class({
 MWF.xApplication.Selector.UnitWithType.Item = new Class({
 	Extends: MWF.xApplication.Selector.Unit.Item,
     _getShowName: function(){
-        return this.data.name;
+        return (this.isShowLevelName && this.data.levelName) ? this.data.levelName : this.data.name;
     },
     _getTtiteText: function(){
         return this.data.levelName || this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
         if( !this.selector.options.expandSubEnable )return;
@@ -151,7 +152,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 e.stopPropagation();
             }.bind(this));
 
-            if( !this.selectAllNode ){
+            if( !this.selectAllNode && !this.selector.isFlatCategory ){
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
                     "title" : "全选下级"
@@ -160,14 +161,16 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 //    this.selectAll(ev);
                 //    ev.stopPropagation();
                 //}.bind(this))
-                if( this.isSelectedAll ){
-                    this.unselectAll(ev);
-                    this.selector.fireEvent("unselectCatgory",[this])
-                }else{
-                    this.selectAll(ev);
-                    this.selector.fireEvent("selectCatgory",[this])
-                }
-                ev.stopPropagation();
+                this.selectAllNode.addEvent( "click", function(ev) {
+                    if (this.isSelectedAll) {
+                        this.unselectAll(ev);
+                        this.selector.fireEvent("unselectCatgory", [this])
+                    } else {
+                        this.selectAll(ev);
+                        this.selector.fireEvent("selectCatgory", [this])
+                    }
+                    ev.stopPropagation();
+                });
             }
         }
     },
@@ -179,14 +182,14 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 }).inject(this.node, "after");
             }
             this.children.setStyle("display", "block");
-            this.data.woSubDirectUnitList.each(function(subData){
+            ( this.data.woSubDirectUnitList || [] ).each(function(subData){
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
                         if( !this.subItems )this.subItems = [];
                         this.subItems.push( unit );
                     } else {
-                        if (data.woSubDirectUnitList.length){
+                        if (subData.woSubDirectUnitList.length){ // ? 原来是data.woSubDirectUnitList.length 2020-3-1
                             var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
                             this.subCategorys.push( category );
                         }
@@ -200,13 +203,67 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
         }
     },
     postLoad : function(){
+    },
+
+    //for flat category start
+    loadCategoryChildren : function( callback ){
+        if (!this.categoryLoaded){
+            this.data.woSubDirectUnitList.each(function(subData){
+                if( !this.selector.isExcluded( subData ) ) {
+                    if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
+                    } else {
+                        if (subData.woSubDirectUnitList.length){
+                            var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
+                            this.subCategorys.push( category );
+                        }
+                    }
+                }
+                if(callback)callback()
+            }.bind(this));
+            this.categoryLoaded = true;
+        }else{
+            //if(callback)callback();
+        }
+    },
+    loadItemChildren : function( callback ){
+        if (!this.itemLoaded){
+            if (!this.children){
+                this.children = new Element("div", {
+                    "styles": this.selector.css.selectorItemCategoryChildrenNode
+                }).inject(this.selector.itemAreaNode);
+            }
+            this.children.setStyle("display", "block");
+            this.data.woSubDirectUnitList.each(function(subData){
+                if( !this.selector.isExcluded( subData ) ) {
+                    if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
+                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
+                        category.justItem = true;
+                        category.load();
+                        if( !this.subItems )this.subItems = [];
+                        this.subItems.push( unit );
+                    }
+                }
+                if(callback)callback()
+            }.bind(this));
+            this.itemLoaded = true;
+        }else{
+            this.children.setStyle("display", "block");
+            //if(callback)callback();
+        }
     }
+    //for flat category end
 });
 
 MWF.xApplication.Selector.UnitWithType.SearchItem = new Class({
-    Extends: MWF.xApplication.Selector.Unit.Item,
+    //Extends: MWF.xApplication.Selector.Unit.Item,
+    Extends: MWF.xApplication.Selector.UnitWithType.Item,
+    load : function(){
+        this.loadForNormal();
+    },
     _getShowName: function(){
         return this.data.levelName || this.data.name;
+    },
+    loadSubItems: function( callback ){
     }
 });
 
@@ -222,7 +279,8 @@ MWF.xApplication.Selector.UnitWithType.ItemSelected = new Class({
         return this.data.name+((this.data.levelName) ? "("+this.data.levelName+")" : "");
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/departmenticon.png)");
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     }
 });
 
@@ -270,8 +328,62 @@ MWF.xApplication.Selector.UnitWithType.ItemCategory = new Class({
     _hasChild: function(){
         return this.data.woSubDirectUnitList.length;
     },
-    _hasChildItem: function(){
+    _hasChildCategory: function(){
         return this.data.woSubDirectUnitList.length;
+    },
+    _hasChildItem: function(){
+        if( typeOf(this.isHasChildItem) === "boolean" )return this.isHasChildItem;
+        this.isHasChildItem = false;
+        var unitList = this.data.woSubDirectUnitList || [];
+        for( var i=0; i<unitList.length; i++){
+            if ((!this.selector.options.unitType) || unitList[i].typeList.indexOf(this.selector.options.unitType) !== -1) {
+                this.isHasChildItem = true;
+                break;
+            }
+        }
+        return this.isHasChildItem;
+    },
+
+    //for flat category start
+    loadCategoryChildren: function(callback){
+        if (!this.categoryLoaded){
+            this.data.woSubDirectUnitList.each(function(subData){
+                if( !this.selector.isExcluded( subData ) ) {
+                    if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
+                    }else{
+                        if (subData.woSubDirectUnitList.length){
+                            var category = this.selector._newItemCategory("ItemCategory", subData, this.selector, this.children, this.level+1, this);
+                            this.subCategorys.push(category);
+                        }
+                    }
+                }
+            }.bind(this));
+            this.categoryLoaded = true;
+            if (callback) callback();
+        }else{
+            if (callback) callback( );
+        }
+    },
+    loadItemChildren: function(callback){
+        if (!this.itemLoaded){
+            this.data.woSubDirectUnitList.each(function(subData){
+                if( !this.selector.isExcluded( subData ) ) {
+                    if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType)!==-1){
+                        var unit = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        if(this.subItems)this.subItems.push( unit );
+                    }
+                }
+                if( !this.subItems || !this.subItems.length ){
+                    if( this.selectAllNode ){
+                        this.selectAllNode.destroy();
+                    }
+                }
+            }.bind(this));
+            this.itemLoaded = true;
+            if (callback) callback();
+        }else{
+            if (callback) callback( );
+        }
     }
 });
 

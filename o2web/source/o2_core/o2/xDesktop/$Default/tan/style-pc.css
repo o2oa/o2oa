@@ -1,0 +1,704 @@
+.layout_desktop {
+    height: 100%;
+    overflow: hidden;
+}
+.layout_menu {
+    height: 100%;
+    width: 80px;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    float: left;
+    position: absolute;
+    background-color: #EEEEEE;
+}
+.layout_content {
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0 0 0 80px;
+    background-color: #f0f0f0;
+}
+
+/*left start menu button*/
+.layout_menu_start {
+    height: 70px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+.layout_menu_start_button {
+    height: 70px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+/*left lnks*/
+.layout_menu_lnk {
+    overflow: hidden;
+}
+.layout_menu_lnk_area {
+    overflow: hidden;
+}
+.layout_menu_lnk_item {
+    height: 60px;
+    cursor: pointer;
+    padding: 5px 0;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    overflow: hidden;
+}
+.opacity50 {
+    opacity: 0.5;
+}
+.layout_menu_lnk_item_icon {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: auto;
+    margin-top: 10px;
+    height: 30px;
+    width: 30px;
+}
+.layout_menu_lnk_item_drag {
+    height: 40px;
+    width: 40px;
+}
+.layout_menu_lnk_item_icon_drag {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    border-radius: 20px;
+    margin: auto;
+    margin-top: 10px;
+    height: 40px;
+    width: 40px;
+}
+.layout_menu_lnk_item_icon_drag_del {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    float: right;
+    top: -44px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.layout_menu_lnk_item_text {
+    height: 20px;
+    line-height: 20px;
+    padding: 0 5px;
+    color: #ffffff;
+    font-size: 12px;
+    opacity: 0;
+}
+.layout_menu_lnk_item_action {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    position: relative;
+    float: right;
+    margin-right: 3px;
+    top: -62px;
+    border-radius: 8px;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+}
+.layout_menu_lnk_item_action_shadow {
+    background-color: #000000;
+}
+.layout_menu_lnk_item_position {
+    height: 2px;
+    background-color: #f0f0f0;
+    width: 70px;
+    position: absolute;
+}
+
+/*left setting button*/
+.layout_menu_setting {
+    height: 70px;
+}
+.layout_menu_setting_button{
+    height: 70px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+/*taskbar*/
+.layout_content_taskbar {
+    height: 74px;
+    display: table-cell;
+}
+.layout_content_taskbar_area {
+    height: 70px;
+    line-height: 70px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.25);
+    color: #333333;
+    overflow: hidden;
+}
+.layout_content_taskbar_area_user {
+    height: 70px;
+    margin-right: 20px;
+    float: right;
+    cursor: pointer;
+}
+.layout_content_taskbar_area_user_icon {
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin-top: 20px;
+    margin-right: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 20px;
+}
+.layout_content_taskbar_area_user_text {}
+
+.layout_content_taskbar_area_action {
+    height: 70px;
+    width: 80px;
+    margin-right: 15px;
+    float: right;
+}
+.layout_content_taskbar_area_action_item{
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin: 20px 5px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.layout_content_taskbar_area_action_msg {
+ }
+.layout_content_taskbar_area_action_skin {
+}
+.layout_content_taskbar_area_action_skin_focus {
+}
+
+.layout_content_taskbar_area_search {
+    height: 70px;
+    width: 270px;
+    margin-right: 15px;
+    margin-left: 15px;
+    float: right;
+}
+.layout_content_taskbar_area_search_box {
+    height: 28px;
+    width: 268px;
+    margin-top: 20px;
+    border-radius: 20px;
+    border: 1px solid #DDDDDD;
+}
+.layout_content_taskbar_area_search_box_focus {
+    border-width: 1px;
+    border-style: solid;
+}
+.layout_content_taskbar_area_search_icon {
+    float: right;
+    height: 28px;
+    width: 36px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.layout_content_taskbar_area_search_icon_focus {
+}
+
+.layout_content_taskbar_area_search_clear {
+    float: right;
+    height: 28px;
+    width: 16px;
+    background-image: none;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.layout_content_taskbar_area_search_clear_show {
+    cursor: pointer;
+}
+.layout_content_taskbar_area_search_inputArea {
+    height: 28px;
+    border-radius: 20px;
+    padding: 0 10px;
+    margin-right: 52px;
+}
+.layout_content_taskbar_area_search_input {
+    height: 26px;
+    width: 99%;
+    line-height: 26px;
+    border: 0;
+    border-radius: 20px;
+    float: left;
+}
+
+.layout_content_taskbar_area_tabs {
+    height: 70px;
+    overflow: hidden;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.layout_content_taskbar_area_tabs_action {
+    height: 30px;
+    padding: 20px 0;
+    width: 20px;
+    float: right;
+}
+.layout_content_taskbar_area_tabs_contentArea {
+    height: 28px;
+    margin: 21px 20px;
+    overflow: hidden;
+}
+.layout_content_taskbar_area_tabs_content {
+    overflow: hidden;
+}
+.layout_content_taskbar_area_tabs_action_up {
+    height: 15px;
+    width: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    cursor: pointer;
+    display: none;
+}
+.layout_content_taskbar_area_tabs_action_down {
+    height: 15px;
+    width: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    cursor: pointer;
+    display: none;
+}
+
+
+/*task item*/
+.layout_content_taskbar_item {
+    height: 28px;
+    line-height: 28px;
+    background: #F7F7F7;
+    border-radius: 14px;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+    float: left;
+    padding: 0 10px;
+    margin-left: 10px;
+}
+.layout_content_taskbar_item_icon {
+    width: 16px;
+    height: 28px;
+    margin-left: 5px;
+    float: right;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.layout_content_taskbar_item_refresh {
+    width: 16px;
+    height: 28px;
+    margin-right: 5px;
+    float: left;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+}
+.layout_content_taskbar_item_text {
+    height: 28px;
+    float: left;
+    overflow: hidden;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    word-wrap: normal;
+    line-height: 27px;
+    min-width: 10px;
+}
+
+/*app content*/
+.layout_content_apps {
+    display: table-cell;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.layout_content_apps_content {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.layout_component_node {
+    height: 100%;
+    width: 100%;
+    background-color: #f0f0f0;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.layout_component_content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.layout_component_node_show {
+    opacity: 1;
+    z-index: 100;
+}
+.layout_component_node_hide {
+    opacity: 0;
+    z-index: 1;
+}
+
+/*layout start content*/
+.layout_start_content_mask {
+    width: 390px;
+    background-color: #FFF;
+    position: absolute;
+    top: 0;
+    left: -390px;
+    opacity: 1;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: none;
+}
+.layout_start_content {
+    background: #ffffff;
+    box-shadow: 4px 0 6px 0 rgba(0,0,0,0.25);
+    width: 390px;
+    position: absolute;
+    top: 0;
+    left: -390px;
+    opacity: 1;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.layout_start_content_lnkArea {
+    overflow: hidden;
+}
+
+.layout_start_content_lnkTitle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    text-align: left;
+    padding: 20px;
+    height: 30px;
+}
+.layout_start_content_lnkScrollContent {
+    padding-right: 20px;
+    overflow: auto;
+}
+.layout_start_content_lnkContent {
+    overflow: hidden;
+}
+
+.layout_start_content_appArea {
+    overflow: hidden;
+}
+.layout_start_content_appTitle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    text-align: left;
+    padding: 20px;
+    height: 30px;
+    line-height: 30px;
+}
+.layout_start_content_appScrollContent {
+    padding-right: 20px;
+    overflow: hidden;
+}
+.layout_start_content_appContent {
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 300px;
+}
+
+.layout_menu_start_triangle {
+    z-index: 20000;
+    transform: rotate(45deg);
+    background: #FFFFFF;
+    top: 30px;
+    left: 75px;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    display: none;
+}
+
+.layout_start_item{
+    width: 67px;
+    height: 90px;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    float: left;
+    text-align: center;
+    cursor: pointer;
+}
+.layout_start_item_iconArea {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    margin: auto;
+}
+.layout_start_item_icon {
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.layout_start_item_icon_flat {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-size: 22px 22px;
+}
+
+.layout_start_item_badge {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: -83px;
+    margin-right: 5px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    float: right;
+    opacity: 0;
+}
+.layout_start_item_text {
+    padding: 5px 0;
+    height: 32px;
+    font-size: 12px;
+    color: #333333;
+}
+.layout_start_tab {
+    width: 60px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 14px;
+    text-align: center;
+    float: left;
+    margin-right: 6px;
+    margin-left: 6px;
+    cursor: pointer;
+}
+.layout_tab_current {
+    color: #ffffff;
+}
+.layout_start_search {
+    height: 28px;
+    width: 28px;
+    margin-right: 20px;
+    float: right;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ffffff;
+    border-radius: 14px;
+}
+.layout_start_search_load {
+    width: 320px;
+}
+
+.layout_start_search_icon {
+    height: 28px;
+    width: 28px;
+    float: right;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.layout_start_search_clear {
+    float: right;
+    height: 28px;
+    width: 16px;
+    background-image: none;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.layout_start_search_area {
+    height: 28px;
+    padding: 0 10px;
+    margin-right: 46px;
+}
+.layout_start_search_input {
+    height: 26px;
+    width: 99%;
+    line-height: 26px;
+    border: 0;
+    border-radius: 20px;
+    float: left;
+}
+
+/*layout message*/
+.layout_content_message {}
+.layout_message_mask {
+    width: 360px;
+    background-color: #FFF;
+    position: absolute;
+    z-index: 20000;
+    opacity: 1;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+.layout_message {
+    width: 360px;
+    position: absolute;
+    overflow: hidden;
+    display: none;
+    /*border-left: 1px solid #999;*/
+    box-shadow: -2px 0 4px 0 rgba(0,0,0,0.25);
+    z-index: 20000;
+    background-color: #ffffff;
+}
+.layout_message_scroll {
+    overflow: hidden;
+    margin-right: 12px;
+}
+.layout_message_content {
+    padding: 5px;
+    overflow: hidden;
+}
+.layout_message_operation {
+    height: 40px;
+    overflow: hidden;
+}
+.layout_message_operation_clear {
+    height: 28px;
+    line-height: 28px;
+    width: 120px;
+    margin: 4px auto 12px auto;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.layout_message_operation_clear .over {
+    border: 1px solid #333;
+    background-color: #666;
+    box-shadow: 1px 1px 3px #666;
+    color: #FFF;
+}
+.layout_message_operation_clear .down {
+    border: 1px solid #333;
+    background-color: #666;
+    box-shadow: 0 0 0 #333;
+    color: #FFF;
+}
+.layout_message_item {
+    padding: 5px;
+    overflow: hidden;
+    border-bottom: 1px solid #CCCCCC;
+    background: transparent;
+    cursor: default;
+}
+.layout_message_item_top {
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    color: #4387cd;
+}
+.layout_message_item_top_close {
+    height: 30px;
+    width: 16px;
+    float: right;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.layout_message_item_top_subject {
+    height: 30px;
+    margin-right: 18px;
+}
+.layout_message_item_content {
+    overflow: hidden;
+    color: #333333;
+    font-size: 12px;
+    line-height: 20px;
+    word-break: break-all;
+}
+.layout_message_item_bottom {
+    height: 24px;
+    font-size: 12px;
+    line-height: 24px;
+}
+.layout_message_item_bottom_date {
+    width: 120px;
+    color: #666666;
+    float: left;
+}
+.layout_message_item_bottom_action {
+    margin-left: 130px;
+}
+.layout_message_tooltipArea {
+    position: absolute;
+    width: 340px;
+    z-index: 500000
+}
+.layout_message_tooltip_item {
+    margin: 10px 10px 0 0;
+    box-shadow: 3px 3px 15px #bbbbbb;
+    width: 300px;
+    padding: 5px 10px;
+    overflow: hidden;
+    border: 1px solid #CCCCCC;
+    background: #ffffff;
+    cursor: default;
+    border-radius: 8px;
+}
+.layout_message_unread_node {
+    width: 18px;
+    height: 18px;
+    background: #F23030;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 10px;
+    line-height: 18px;
+    border-radius: 10px;
+    position: relative;
+    top: -5px;
+    left: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+.layout_refresh_node {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #666666;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    z-index: 300000;
+    top: -40px;
+    opacity: 0;
+    box-shadow: 3PX 3PX 10px #999999;
+}

@@ -29,6 +29,12 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         if (this.statConfigurator){
             this.statConfigurator.keyCopy(e);
         }
+        if (this.tableConfigurator){
+            this.tableConfigurator.keyCopy(e);
+        }
+        if (this.statementConfigurator){
+            this.statementConfigurator.keyCopy(e);
+        }
     },
     keyPasteItems: function(e){
         if (this.viewConfigurator){
@@ -36,6 +42,12 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         }
         if (this.statConfigurator) {
             this.statConfigurator.keyPaste(e);
+        }
+        if (this.tableConfigurator) {
+            this.tableConfigurator.keyPaste(e);
+        }
+        if (this.statementConfigurator) {
+            this.statementConfigurator.keyPaste(e);
         }
     },
     loadStartMenu: function(callback){

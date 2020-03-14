@@ -76,6 +76,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.lp = this.app.lp.task;
     },
     close: function (data) {
+        //愤愤愤愤
         this.fireEvent("queryClose");
         this._close();
         //if( this.form ){
@@ -92,7 +93,29 @@ MWF.xApplication.TeamWork.Task = new Class({
     openTask:function(data){
         //this.data.taskId = data.id;
         //alert("id="+this.data.taskId)
-        this._createTableContent();
+
+
+        // this.formAreaNode.setStyles({"opacity":"1"});
+        // var fx = new Fx.Tween(this.formAreaNode,{duration:400});
+        // fx.start(["opacity"] ,"1", "0");
+
+        var ef = new Fx.Morph(this.formAreaNode, {
+            duration: 200,
+            transition: Fx.Transitions.Sine.easeOut,
+            onStart:function(){},
+            onComplete:function(){
+                this._createTableContent();
+            }.bind(this)
+        });
+
+        ef.start({
+            'opacity': [1, 0]
+        });
+
+
+
+        //this.formAreaNode.setStyles({"opacity":0});
+        //this._createTableContent();
     },
     _createTableContent: function () {
         var _self = this;
@@ -166,6 +189,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.createContentLayout();
             this.createDetailLayout();
 
+            this.formAreaNode.setStyles({"opacity":1})
         }.bind(this));
 
     },

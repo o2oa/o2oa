@@ -110,7 +110,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 		return false;
 	},
 	_setEditStyle_custom: function(name){
-		
+
 	},
 	_dragInLikeElement: function(module){
 		return false;

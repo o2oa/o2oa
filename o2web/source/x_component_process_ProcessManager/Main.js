@@ -41,7 +41,7 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         //    }
         //}
         this.getApplication(function(){
-            this.setTitle(this.options.title + "-"+this.options.application.name);
+            this.setTitle(this.lp.title + "-"+this.options.application.name);
             this.createNode();
             this.loadApplicationContent();
             if (callback) callback();

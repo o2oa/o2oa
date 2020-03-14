@@ -35,14 +35,14 @@ o2.widget.Menu = new Class({
 		if (this.fireEvent("queryLoad")){
 			this.node = new Element("div.MWFMenu");
 			this.node.set("styles", this.css.container);
-			
+
 			if (this.options.event){
 				if (this.target) this.target.addEvent(this.options.event, this.showIm.bind(this));
 			}
 			//this.node.inject(this.options.container || $(document.body));
-            this.node.inject(this.options.container || this.target);
+			this.node.inject(this.options.container || this.target);
 
-            this.hide = this.hideMenu.bind(this);
+			this.hide = this.hideMenu.bind(this);
 			this.fireEvent("postLoad");
 		}
 	},

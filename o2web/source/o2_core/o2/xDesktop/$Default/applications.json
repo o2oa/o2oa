@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Setting",
+    "path": "Setting",
+    "title": "系统设置",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "AppMarket",
+    "path": "AppMarket",
+    "title": "应用市场",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "ANN",
+    "path": "ANN",
+    "title": "神经网络模型",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "Org",
+    "path": "Org",
+    "title": "组织管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Profile",
+    "path": "Profile",
+    "title": "个人设置",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "BAM",
+    "path": "BAM",
+    "title": "流程监控",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "LogViewer",
+    "title": "错误日志",
+    "path": "LogViewer",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "ApplicationExplorer",
+    "path": "process.ApplicationExplorer",
+    "title": "流程管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "PortalExplorer",
+    "path": "portal.PortalExplorer",
+    "title": "门户管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "cmsManager",
+    "path": "cms.Column",
+    "title": "内容管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DataExplorer",
+    "path": "query.QueryExplorer",
+    "title": "数据中心平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "service.ServiceManager",
+    "path": "service.ServiceManager",
+    "title": "服务管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "AppCenter",
+    "path": "AppCenter",
+    "title": "应用管理",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "flatIconPath": "flatlnk.png",
+    "widgetName": "TaskWidget",
+    "widgetTitle": "待办列表",
+    "widgetIconPath": "widgeticon.png"
+  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "iconPath": "appicon.png"
+  }
+]

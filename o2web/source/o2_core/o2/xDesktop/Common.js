@@ -1,3 +1,171 @@
+o2.xDesktop = o2.xDesktop || {};
+o2.xd = o2.xDesktop;
+o2.xDesktop.requireApp = function(module, clazz, callback, async){
+    o2.requireApp(module, clazz, callback, async)
+};
+o2.xApplication = o2.xApplication || {};
+
+MWF.xDesktop.loadConfig = function(callback){
+    o2.JSON.get("res/config/config.json", function(config) {
+        layout.config = config;
+        if (layout.config.app_protocol === "auto") {
+            layout.config.app_protocol = window.location.protocol;
+        }
+        layout.config.systemName = layout.config.systemName || layout.config.footer;
+        layout.config.systemTitle = layout.config.systemTitle || layout.config.title;
+        if (callback) callback();
+    });
+};
+MWF.xDesktop.getService = function(callback) {
+    MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+        layout.serviceAddressList = service;
+        layout.centerServer = center;
+        if (callback) callback();
+    });
+};
+MWF.xDesktop.loadService = function(callback){
+    MWF.xDesktop.loadConfig(function(){
+        MWF.xDesktop.getService(callback);
+    });
+};
+
+MWF.xDesktop.checkLogin = function(loginFun){
+    layout.authentication = new MWF.xDesktop.Authentication({
+        "onLogin": loginFun
+    });
+    layout.authentication.isAuthenticated(function(json){
+        layout.session.user = json.data;
+        if (loginFun) loginFun();
+    }.bind(this), function(){
+        layout.authentication.loadLogin(this.node);
+    });
+};
+
+// MWF.xDesktop.openApplication = function(e, appNames, options, obj, inBrowser){
+//     if (appNames.substring(0, 4)==="@url"){
+//         var url = appNames.replace(/\@url\:/i, "");
+//         var a = new Element("a", {"href": url, "target": "_blank"});
+//         a.click();
+//         a.destroy();
+//         a = null;
+//         return true;
+//     }
+//     var appPath = appNames.split(".");
+//     var appName = appPath[appPath.length-1];
+//
+//     MWF.xDesktop.requireApp(appNames, function(appNamespace){
+//         if (appNamespace.options.multitask){
+//             if (options && options.appId){
+//                 if (this.apps[options.appId]){
+//                     this.apps[options.appId].setCurrent();
+//                 }else {
+//                     this.createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+//                 }
+//             }else{
+//                 this.createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+//             }
+//         }else{
+//             if (this.apps[appName]){
+//                 this.apps[appName].setCurrent();
+//             }else{
+//                 this.createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
+//             }
+//         }
+//     }.bind(this));
+// },
+// requireApp: function(appNames, callback, clazzName){
+//     var appPath = appNames.split(".");
+//     var appName = appPath[appPath.length-1];
+//     var appObject = "o2.xApplication."+appNames;
+//     var className = clazzName || "Main";
+//     var appClass = appObject+"."+className;
+//     var appLp = appObject+".lp."+o2.language;
+//     var baseObject = o2.xApplication;
+//
+//     appPath.each(function(path, i){
+//         if (i<(appPath.length-1)){
+//             baseObject[path] = baseObject[path] || {};
+//         }else {
+//             baseObject[path] = baseObject[path] || {"options": Object.clone(o2.xApplication.Common.options)};
+//         }
+//         baseObject = baseObject[path];
+//     }.bind(this));
+//     if (!baseObject.options) baseObject.options = Object.clone(o2.xApplication.Common.options);
+//
+//     o2.requireApp(appNames, "lp."+o2.language, {
+//         "onRequestFailure": function(){
+//             o2.requireApp(appNames, "lp.zh-cn", null, false);
+//         }.bind(this),
+//         "onSuccess": function(){}.bind(this)
+//     }, false);
+//
+//     o2.requireApp(appNames, clazzName, function(){
+//         if (callback) callback(baseObject);
+//     });
+// },
+// createNewApplication: function(e, appNamespace, appName, options, obj, inBrowser){
+//     if (options){
+//         options.event = e;
+//     }else{
+//         options = {"event": e};
+//     }
+//
+//     var app = new appNamespace["Main"](this, options);
+//     app.desktop = this;
+//     if (obj){
+//         Object.each(obj, function(value, key){
+//             app[key] = value;
+//         });
+//     }
+//     if (!inBrowser){
+//         app.taskitem = new o2.xDesktop.Layout.Taskitem(app, this);
+//     }else{
+//         app.inBrowser = true;
+//     }
+//
+//     app.load(true);
+//
+//     var appId = appName;
+//     if (options.appId){
+//         appId = options.appId;
+//     }else{
+//         if (appNamespace.options.multitask) appId = appId+"-"+(new o2.widget.UUID());
+//     }
+//     app.appId = appId;
+//
+//     this.apps[appId] = app;
+//     return app;
+// },
+
+
+MWF.xDesktop.getDefaultLayout = function(callback){
+    MWF.UD.getPublicData("defaultLayout", function(json) {
+        if (json) layout.defaultLayout = json;
+        if (callback) callback();
+    }.bind(this));
+},
+MWF.xDesktop.getUserLayout = function(callback){
+    MWF.UD.getPublicData("forceLayout", function(json) {
+        var forceStatus = null;
+        if (json) forceStatus = json;
+        MWF.UD.getDataJson("layout", function(json) {
+            if (json) {
+                layout.userLayout = json;
+                if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
+                if (callback) callback();
+            }else{
+                MWF.UD.getPublicData("defaultLayout", function(json) {
+                    if (json){
+                        layout.userLayout = json;
+                        if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
+                    }
+                    if (callback) callback();
+                }.bind(this));
+            }
+        }.bind(this));
+    }.bind(this));
+},
+
 MWF.xDesktop.notice = function(type, where, content, target, offset, option){
     var noticeTarget = target || layout.desktop.desktopNode;
 
@@ -23,7 +191,7 @@ MWF.xDesktop.notice = function(type, where, content, target, offset, option){
     new mBox.Notice(options);
 };
 MWF.xDesktop.loadPortal =  function(portalId){
-    layout.desktop.openApplication(null, "portal.Portal", {
+    layout.openApplication(null, "portal.Portal", {
         "portalId": portalId,
         "onAfterModulesLoad": function(){
             var layoutNode = $("layout");
@@ -39,14 +207,15 @@ MWF.xDesktop.loadPortal =  function(portalId){
                 "position": "absolute",
                 "width": "100%",
                 "top": "0px",
-                //"opacity": 0,
+                "opacity": 0,
                 "left": "0px"
-            });
+            }).fade("in");
         }
     }, null, true);
 };
 MWF.name = {
     "cns": function(names){
+        if( typeOf(names) !== "array" )return [];
         var n = [];
         names.each(function(v){
             n.push(this.cn(v));
@@ -180,7 +349,7 @@ MWF.xDesktop.getImageSrc = function( id ){
         layout.config.app_protocol = window.location.protocol;
     }
 
-    var addressObj = layout.desktop.serviceAddressList["x_file_assemble_control"];
+    var addressObj = layout.serviceAddressList["x_file_assemble_control"];
     if (addressObj){
         var address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
     }else{
@@ -283,7 +452,6 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
             contentNode.setStyle("background-color", "#666666");
         }
     };
-    debugger;
     if (typeOf(config.center)==="object"){
         MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
     }else if (typeOf(config.center)==="array"){
@@ -397,24 +565,24 @@ MWF.xDesktop.removeEvents = function(name, type){
 MWF.org = {
     parseOrgData: function(data, flat){
         if (data.distinguishedName){
-            var flag = data.distinguishedName.substr(data.distinguishedName.length-1, 1);
+            var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
-                case "i":
+                case "@i":
                     return this.parseIdentityData(data, flat);
                     break;
-                case "p":
+                case "@p":
                     return this.parsePersonData(data, flat);
                     break;
-                case "u":
+                case "@u":
                     return this.parseUnitData(data, flat);
                     break;
-                case "g":
+                case "@g":
                     return this.parseGroupData(data, flat);
                     break;
-                case "r":
+                case "@r":
                     return this.parseRoleData(data, flat);
                     break;
-                case "a":
+                case "@a":
                     return this.parseAttributeData(data, flat);
                     break;
                 default:
@@ -437,10 +605,10 @@ MWF.org = {
             // "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
-        if( data.ignoreEmpower ){
-            rData.ignoreEmpower = true;
-        }
-        if (!flat){
+        if( data.ignoreEmpower )rData.ignoreEmpower = true;
+        if( data.ignoredEmpower )rData.ignoredEmpower = true;
+
+        if( !flat || !data.personDn || !data.personEmployee || !data.personUnique ){
             var woPerson = data.woPerson;
             if (!data.woPerson){
                 //MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
@@ -460,20 +628,22 @@ MWF.org = {
             rData.personUnique = woPerson.unique;
             rData.personDn = woPerson.distinguishedName;
 
-            rData.woPerson = {
-                "id": woPerson.id,
-                "genderType": woPerson.genderType,
-                "name": woPerson.name,
-                "employee": woPerson.employee,
-                "unique": woPerson.unique,
-                "distinguishedName": woPerson.distinguishedName,
-                "dn": woPerson.distinguishedName,
-                "mail": woPerson.mail,
-                "weixin": woPerson.weixin,
-                "qq": woPerson.qq,
-                "mobile": woPerson.mobile,
-                "officePhone": woPerson.officePhone
-            };
+            if (!flat){
+                rData.woPerson = {
+                    "id": woPerson.id,
+                    "genderType": woPerson.genderType,
+                    "name": woPerson.name,
+                    "employee": woPerson.employee,
+                    "unique": woPerson.unique,
+                    "distinguishedName": woPerson.distinguishedName,
+                    "dn": woPerson.distinguishedName,
+                    "mail": woPerson.mail,
+                    "weixin": woPerson.weixin,
+                    "qq": woPerson.qq,
+                    "mobile": woPerson.mobile,
+                    "officePhone": woPerson.officePhone
+                };
+            }
         }
         return rData;
     },

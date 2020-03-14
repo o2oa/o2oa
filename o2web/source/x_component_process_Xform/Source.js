@@ -13,7 +13,12 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
         }
 	},
     _getO2Address: function(){
-        var addressObj = layout.desktop.serviceAddressList[this.json.contextRoot];
+        try {
+            this.json.service = JSON.parse(this.json.contextRoot);
+        }catch(e){
+            this.json.service = {"root": this.json.contextRoot, "action":"", "method": "", "url": ""};
+        }
+        var addressObj = layout.serviceAddressList[this.json.service.root];
 
         if (addressObj){
             this.address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
@@ -28,6 +33,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
     //    return pars;
     //},
     _getO2Uri: function(){
+        //var uri = this.json.path || this.json.selectPath;
         var uri = this.json.path;
         var pars = {};
         if (this.json.parameters){

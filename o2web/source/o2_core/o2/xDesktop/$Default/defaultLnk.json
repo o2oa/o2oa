@@ -1,0 +1,7 @@
+[
+  { "name": "Homepage", "title": "首页" },
+  { "name": "process.TaskCenter", "title": "办公中心" },
+  { "name": "cms.Index", "title": "信息平台" },
+  { "name": "Calendar", "title": "日程安排" },
+  { "name": "File", "title": "云文件" }
+]

@@ -48,6 +48,18 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "save.png",
+    "img_over": "save_over.png",
+    "title": "保存草稿",
+    "action": "saveDraftDocument",
+    "text": "保存草稿",
+    "id": "action_saveDraftDocument",
+    "control": "allowPublishDocument",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "popular.png",
     "img_over": "popular_over.png",
     "title": "设置热点",
@@ -67,6 +79,17 @@
     "text": "删除",
     "id": "action_delete",
     "control": "allowDeleteDocument",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "print.png",
+    "img_over": "print_over.png",
+    "title": "打印文档",
+    "action": "printDocument",
+    "text": "打印",
+    "id": "action_print",
     "read": true,
     "edit" : true
   }

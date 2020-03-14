@@ -75,18 +75,19 @@
 }
 .o2_process_AppExp_bottom {
     height: 80px;
-    background-image: url("/x_component_query_QueryExplorer/$Main/default/icon/pic_sy_shuju.png");
+    background-image: url("/x_component_query_QueryExplorer/$Main/default/icon/pic_sy_liucheng.png");
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: 0 center;
+    background-position: top center;
 }
 .o2_process_AppExp_contentArea {
     overflow: auto;
     background: #f0f0f0;
+    padding-top: 30px;
     background: url("/x_component_query_QueryExplorer/$Main/default/icon/query_bg.png") left bottom;
 }
 .o2_process_AppExp_contentNode {
-    margin: 40px 30px 20px 50px;
+    margin: 0 30px 20px 50px;
     overflow: hidden;
 }
 
@@ -153,47 +154,60 @@
 }
 
 .o2_process_AppExp_item_node {
-    height: 120px;
+    height: 180px;
     background-color: #FFFFFF;
     float: left;
     margin-bottom: 20px;
     margin-right: 20px;
     border-radius: 6px;
-    box-shadow: 0 0 15px #cfcfcf;
+    border: 1px solid #ffffff;
+}
+.o2_process_AppExp_item_node_over {
+    box-shadow: 2px 2px 16px #999999;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-color: #0f81cc;
 }
 .o2_process_AppExp_item_node_del {
     background-color: #fae3e3 !important;
 }
 
 .o2_process_AppExp_item_titleArea {
-    width: 270px;
+    width: 180px;
     float: left;
-    height: 120px;
-
+    height: 180px;
     cursor: pointer;
 }
 .o2_process_AppExp_item_titleNode {
-    margin: 25px 0px 25px 20px;
-    height: 70px;
+    padding: 0px 10px;
+    margin: 30px 0px 20px 0px;
+    height: 130px;
     border-right: 1px solid #E6E6E6;
 }
 .o2_process_AppExp_item_icon {
-    height: 70px;
-    width: 70px;
-    border-radius: 35px;
-    float: left;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    margin: auto;
     background-repeat: no-repeat;
     background-position: center;
+    background-size: 50px;
 }
 .o2_process_AppExp_item_titleContent{
-    margin-left: 90px;
+    text-align: center;
     height: 70px;
 }
 .o2_process_AppExp_item_titleName {
-    font-size: 18px;
-    height: 48px;
-    line-height: 24px;
+    font-size: 16px;
+    height: 44px;
+    line-height: 22px;
+    margin-top: 8px;
     color: #323C47;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 .o2_process_AppExp_item_titleDescription {
     height: 22px;
@@ -203,54 +217,53 @@
 }
 
 .o2_process_AppExp_item_contentArea {
-    margin-left: 270px;
-    height: 120px;
+    margin-left: 180px;
+    height: 180px;
     overflow: hidden;
 }
 .o2_process_AppExp_item_contentNode {
-    margin: 25px 20px 0 18px;
-    height: 70px;
+    margin: 34px 20px 0 20px;
+    height: 120px;
 }
 .o2_process_AppExp_item_contentForm {
-    height: 35px;
-    line-height: 35px;
+    height: 56px;
+    line-height: 30px;
 }
 .o2_process_AppExp_item_contentProcess {
-    height: 35px;
-    line-height: 35px;
+    height: 56px;
+    line-height: 30px;
+    margin-top: 10px;
 }
-.o2_process_AppExp_item_contentPage {
-    height: 35px;
-    line-height: 35px;
+.o2_process_AppExp_item_contentView {
+    height: 56px;
+    line-height: 30px;
 }
-.o2_process_AppExp_item_contentView, .o2_process_AppExp_item_contentStat {
-    height: 35px;
-    line-height: 35px;
+.o2_process_AppExp_item_contentStat {
+    height: 56px;
+    line-height: 30px;
+    margin-top: 10px;
 }
-
 .o2_process_AppExp_item_contentTitle {
     font-size: 16px;
     color: #333333;
     text-align: center;
     float: left;
-    height: 35px;
+    height: 30px;
 }
 .o2_process_AppExp_item_contentList {
     font-size: 13px;
     color: #666666;
-    height: 35px;
+    height: 56px;
     overflow: hidden;
 }
 .o2_process_AppExp_item_content_element {
-    height: 27px;
-    line-height: 27px;
+    height: 28px;
+    line-height: 28px;
     float: left;
     margin-right: 4px;
     padding: 0 13px;
     border-radius: 14px;
-    background-color: #ffffff;
     color: #666666;
-    margin-top: 4px;
     cursor: pointer;
 }
 .o2_process_AppExp_item_content_element_over {
@@ -270,7 +283,7 @@
     color: #666666;
     text-align: center;
     position: relative;
-    top: -110px;
+    top: -175px;
     cursor: default;
     overflow: hidden;
 }
@@ -355,7 +368,7 @@
     color: #FFFFFF;
     text-align: center;
     position: relative;
-    top: -120px;
+    top: -180px;
     display: none;
 }
 .o2_process_AppExp_item_newNode_text {

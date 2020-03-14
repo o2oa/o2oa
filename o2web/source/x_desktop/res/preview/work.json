@@ -142,6 +142,145 @@
       "splitTokenList": []
     }
   ],
+  "recordList":[
+    {
+      "id": "b912bdf8-c6fa-4de6-9a48-83add2bf1117",
+      "application": "7f7cad04-ab7d-4e1e-aed4-f72021493966",
+      "process": "02b3d8d4-87fe-4a41-a9a7-244f06dd95fc",
+      "job": "cbf324c8-d022-45fc-bf22-3ab7e1eeb8e0",
+      "work": "b595d1ae-78c4-4510-b51b-f29bedc09d87",
+      "completed": false,
+      "display": true,
+      "order": 1583554938010,
+      "properties": {
+        "nextManualList": [
+          {
+            "activity": "dc01a5d7-2f55-4ab0-b0ef-345cb5e7e54f",
+            "activityType": "manual",
+            "activityName": "核稿",
+            "activityAlias": "",
+            "activityToken": "840d9e72-218f-438a-b5d3-5b5dec73a823",
+            "taskIdentityList": [
+              "cxy111@4bb4f802-3191-4d8c-a226-d1f9ad0f5183@I"
+            ]
+          }
+        ],
+        "nextManualTaskIdentityList": [
+          "cxy111@4bb4f802-3191-4d8c-a226-d1f9ad0f5183@I"
+        ],
+        "routeName": "送核稿",
+        "opinion": "送核稿",
+        "startTime": (new Date()).format("db"),
+        "elapsed": 0,
+        "fromGroup": "拟稿部门",
+        "fromOpinionGroup": "拟稿部门"
+      },
+      "fromActivity": "ef6a1b1e-7bdd-43e4-b153-4fe4846f8fab",
+      "fromActivityType": "manual",
+      "fromActivityName": "拟稿",
+      "fromActivityAlias": "",
+      "fromActivityToken": "11511e41-ca4b-448c-9189-87f38b600f63",
+      "recordTime": (new Date()).format("db"),
+      "person": "胡起@huqi@P",
+      "identity": "胡起@9a98905a-03a3-4d0e-8e22-653d805eae89@I",
+      "unit": "研发部@21@U",
+      "type": "task",
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db")
+    },
+    {
+      "id": "65b77097-b83c-4b04-beff-d312e5beb0cb",
+      "application": "7f7cad04-ab7d-4e1e-aed4-f72021493966",
+      "process": "02b3d8d4-87fe-4a41-a9a7-244f06dd95fc",
+      "job": "cbf324c8-d022-45fc-bf22-3ab7e1eeb8e0",
+      "work": "b595d1ae-78c4-4510-b51b-f29bedc09d87",
+      "completed": false,
+      "display": true,
+      "order": 1583554995702,
+      "properties": {
+        "nextManualList": [
+          {
+            "activity": "6ea8601a-7f89-44f7-8430-c95b8800b76a",
+            "activityType": "manual",
+            "activityName": "办理",
+            "activityAlias": "",
+            "activityToken": "64442655-4c60-402e-9d31-8f28695d3a56",
+            "taskIdentityList": [
+              "胡起@a3d0fa89-af79-4565-a55e-d908200d7a2a@I"
+            ]
+          }
+        ],
+        "nextManualTaskIdentityList": [
+          "胡起@a3d0fa89-af79-4565-a55e-d908200d7a2a@I"
+        ],
+        "startTime": (new Date()).format("db"),
+        "elapsed": 0,
+        "fromGroup": "拟稿部门",
+        "fromOpinionGroup": "拟稿部门"
+      },
+      "fromActivity": "dc01a5d7-2f55-4ab0-b0ef-345cb5e7e54f",
+      "fromActivityType": "manual",
+      "fromActivityName": "核稿",
+      "fromActivityAlias": "",
+      "fromActivityToken": "840d9e72-218f-438a-b5d3-5b5dec73a823",
+      "arrivedActivity": "6ea8601a-7f89-44f7-8430-c95b8800b76a",
+      "arrivedActivityType": "manual",
+      "arrivedActivityName": "办理",
+      "arrivedActivityAlias": "",
+      "recordTime": (new Date()).format("db"),
+      "person": "胡起@huqi@P",
+      "identity": "胡起@9a98905a-03a3-4d0e-8e22-653d805eae89@I",
+      "unit": "研发部@21@U",
+      "type": "reroute",
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db")
+    },
+    {
+      "id": "f61f4ee0-b77b-4dd8-b29c-a49b9b32c4f5",
+      "application": "7f7cad04-ab7d-4e1e-aed4-f72021493966",
+      "process": "02b3d8d4-87fe-4a41-a9a7-244f06dd95fc",
+      "job": "cbf324c8-d022-45fc-bf22-3ab7e1eeb8e0",
+      "work": "b595d1ae-78c4-4510-b51b-f29bedc09d87",
+      "completed": false,
+      "display": true,
+      "order": 1583555015617,
+      "properties": {
+        "nextManualList": [
+          {
+            "activity": "a39b64ec-258f-4a35-937b-58cdcff5c7d6",
+            "activityType": "manual",
+            "activityName": "确认",
+            "activityAlias": "",
+            "activityToken": "1683c040-e0a8-49b2-b3b5-8ae8715e571f",
+            "taskIdentityList": [
+              "cxy111@4bb4f802-3191-4d8c-a226-d1f9ad0f5183@I"
+            ]
+          }
+        ],
+        "nextManualTaskIdentityList": [
+          "cxy111@4bb4f802-3191-4d8c-a226-d1f9ad0f5183@I"
+        ],
+        "routeName": "办理完成",
+        "opinion": "办理完成",
+        "startTime": (new Date()).format("db"),
+        "elapsed": 0,
+        "fromGroup": "办理部门",
+        "fromOpinionGroup": "办理部门"
+      },
+      "fromActivity": "6ea8601a-7f89-44f7-8430-c95b8800b76a",
+      "fromActivityType": "manual",
+      "fromActivityName": "办理",
+      "fromActivityAlias": "",
+      "fromActivityToken": "64442655-4c60-402e-9d31-8f28695d3a56",
+      "recordTime": (new Date()).format("db"),
+      "person": "胡起@huqi@P",
+      "identity": "胡起@a3d0fa89-af79-4565-a55e-d908200d7a2a@I",
+      "unit": "开发部@22@U",
+      "type": "task",
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db")
+    }
+  ],
   "data": {
     "cmsDocument" : {
 

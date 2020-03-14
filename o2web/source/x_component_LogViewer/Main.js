@@ -264,32 +264,33 @@ MWF.xApplication.LogViewer.Log = new Class({
     load: function(){
         this.node = new Element("div", {"styles": this.css.logItemNode}).inject(this.app.screenInforAreaNode);
 
-        var message = this.log.message + ((this.log.person) ? "&nbsp;("+this.log.person+")": "");
+        var m = this.log.message.substr(0, this.log.message.indexOf("\n"));
+        var message = m + ((this.log.person) ? "&nbsp;("+this.log.person+")": "");
         var html = "<pre><span  class='MWFLogCheckbox' style='cursor: pointer;float: left; height: 20px; width: 30px; background: url(/x_component_LogViewer/$Main/default/check.png) no-repeat center center'></span>" +
             "<span style='float: left;font-size: 14px; font-weight: bold; width: 160px; text-align: right'>"+this.log.occurTime+"</span>" +
             "<span style='float:left'>\t</span>" +
-            "<span style='font-size: 14px; font-weight: bold;'>"+message+"</span><br/>";
+            "<span style='font-size: 14px; font-weight: bold;'>"+o2.common.encodeHtml(message)+"</span><br/>";
 
 
         if (this.log.exceptionClass){
             html += "<span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>ExceptionClass: </span>" +
                 "<span style='float:left'>\t</span>" +
-                "<span>"+this.log.exceptionClass+"</span><br/>";
+                "<span>"+o2.common.encodeHtml(this.log.exceptionClass)+"</span><br/>";
         }
         if (this.log.loggerName){
             html += "<span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>LoggerName: </span>" +
                 "<span style='float:left'>\t</span>" +
-                "<span>"+this.log.loggerName+"</span><br/>";
+                "<span>"+o2.common.encodeHtml(this.log.loggerName)+"</span><br/>";
         }
 
         if (this.log.stackTrace){
-            var traces = this.log.stackTrace.split(/\r\n\t/g);
+            var traces = this.log.stackTrace.split(/[\r\n\t]/g);
             html += "<span class='MWFLogStackTrace'><span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>StackTrace: </span>" +
                 "<span style='float:left'>\t</span>";
             if (traces.length>1) {
                 html += "<span  class='MWFLogStackTraceAction' style='float: left; cursor: pointer; height: 20px; width: 16px; background: url(/x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
             }
-            html += "<span>"+traces[0]+"</span></span><br/>";
+            html += "<span>"+o2.common.encodeHtml(traces[0])+"</span></span><br/>";
 
             // traces.each(function(trace, i){
             //     if (i!==0){
@@ -307,7 +308,7 @@ MWF.xApplication.LogViewer.Log = new Class({
             html += "<span  class='MWFLogRequest'><span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>RequestInfor: </span>" +
                 "<span style='float:left'>\t</span>";
             html += "<span  class='MWFLogRequestAction' style='float: left;cursor: pointer; height: 20px; width: 16px; background: url(/x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
-            html += "<span>"+request+"</span></span><br/>";
+            html += "<span>"+o2.common.encodeHtml(request)+"</span></span><br/>";
         }
 
         html += "</pre>";
@@ -381,7 +382,7 @@ MWF.xApplication.LogViewer.Log = new Class({
     createTraceAllNode: function(){
         var brNode = this.traceNode.getNext();
         this.traceAllNode = new Element("span").inject(brNode, "after");
-        var traces = this.log.stackTrace.split(/\r\n\t/g);
+        var traces = this.log.stackTrace.split(/[\r\n\t]/g);
         var html = "";
         traces.each(function(t, i){
             if (i!==0){

@@ -154,6 +154,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "sign" : "栏目别名",
         "controllerList": "管理者",
         "appType" : "栏目类型",
+        "ignoreTitle" : "忽略标题",
+        "latest" : "检查草稿",
         viewerSetting : {
             title : "可见范围",
             set: "设置可见范围",

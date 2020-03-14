@@ -114,7 +114,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if (!this.node) this.node = new Element("div", {"styles": this.css.container_min});
 
         if (!this.minActionAreaNode){
-            this.minActionAreaNode = new Element("div", {"styles": this.css.minActionAreaNode}).inject(this.node);
+            this.minActionAreaNode = new Element("div", {"styles": this.css.minActionAreaNode }).inject(this.node);
             //this.minContent = new Element("div", {"styles": this.css.minContentNode}).inject(this.node);
 
             this.loadMinActions();
@@ -143,7 +143,13 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if( flag )this.minActionAreaNode.setStyle("display","none");
 
         if( !this.minContent ){
-            this.minContent = new Element("div", {"styles": this.css.minContentNode}).inject(this.node);
+
+            this.minContent = new Element("div", {"styles":
+                layout.mobile ? this.css.minContentNode_mobile : this.css.minContentNode
+            }).inject(this.node);
+            if( layout.mobile ){
+                this.minContent.setStyle("clear","both");
+            }
         }else{
             this.minContent.setStyle("display", "block");
             this.minContent.empty();
@@ -906,7 +912,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                     var isContinue = true;
                     if (beforeUpload) isContinue = beforeUpload(files);
-debugger;
+                    debugger;
                     if (isContinue){
                         var accepts = (accept) ? accept.split(o2.splitStr) : null;
 
@@ -934,18 +940,91 @@ debugger;
                                     formData.append(k, v)
                                 });
                                 formData.append('file', file);
-                                restActions.invoke({
-                                    "name": invokeUrl,
-                                    "async": true,
-                                    "data": formData,
-                                    "file": file,
-                                    "parameter": parameter,
-                                    "success": function(json){
-                                        current++;
-                                        if (every) every(json, current, count);
-                                        callback();
-                                    }
-                                });
+                                if(parameter.fileMd5){
+                                    o2.load("/o2_lib/CryptoJS/components/spark-md5-min.js", function(){
+
+                                        var fileReader = new FileReader(), box = document.getElementById('box');
+                                        var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
+                                        var chunkSize = 20971520;
+                                        // read in chunks of 20MB
+                                        var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
+
+                                        fileReader.onload = function(e) {
+                                            console.log("read chunk nr", currentChunk + 1, "of", chunks);
+                                            spark.appendBinary(e.target.result);
+                                            currentChunk++;
+
+                                            if (currentChunk < chunks) {
+                                                loadNext();
+                                            } else {
+                                                console.log("finished loading");
+                                                var fileMd5 = spark.end();
+
+                                                restActions.invoke({
+                                                    "name": "checkFileExist",
+                                                    "async": true,
+                                                    "parameter": {"fileMd5":fileMd5},
+                                                    "success": function(json){
+                                                        if(json.data.value){
+                                                            var formData2 = new FormData();
+                                                            formData2.append("fileMd5",fileMd5);
+                                                            formData2.append("fileName",file.name);
+                                                            restActions.invoke({
+                                                                "name": "addAttachmentMd5",
+                                                                "async": true,
+                                                                "data": formData2,
+                                                                "parameter": parameter,
+                                                                "success": function(json){
+                                                                    current++;
+                                                                    if (every) every(json, current, count);
+                                                                    callback();
+                                                                }
+                                                            });
+                                                        }else{
+                                                            restActions.invoke({
+                                                                "name": invokeUrl,
+                                                                "async": true,
+                                                                "data": formData,
+                                                                "file": file,
+                                                                "parameter": parameter,
+                                                                "success": function(json){
+                                                                    current++;
+                                                                    if (every) every(json, current, count);
+                                                                    callback();
+                                                                }
+                                                            });
+                                                        }
+
+                                                    }
+                                                });
+                                                // compute hash
+                                            }
+                                        };
+
+                                        function loadNext() {
+                                            var start = currentChunk * chunkSize, end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+
+                                            fileReader.readAsBinaryString(blobSlice.call(file, start, end));
+                                        }
+
+                                        loadNext();
+                                    }.bind(this),null,false);
+
+                                }else{
+                                    restActions.invoke({
+                                        "name": invokeUrl,
+                                        "async": true,
+                                        "data": formData,
+                                        "file": file,
+                                        "parameter": parameter,
+                                        "success": function(json){
+                                            current++;
+                                            if (every) every(json, current, count);
+                                            callback();
+                                        }
+                                    });
+                                }
+
                             }
                         }
                     }
@@ -1077,7 +1156,8 @@ debugger;
             o2.release(att);
         });
         this.attachments = [];
-        this.content.empty();
+        var content = (this.minContent || this.content);
+        if (content) content.empty();
     }
 
 });
@@ -1570,7 +1650,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         }
 
         this.createInforNode();
-        if (!Browser.Platform.ios){
+        if (!Browser.Platform.ios && !layout.mobile){
             this.tooltip = new mBox.Tooltip({
                 content: this.inforNode,
                 setStyles: {content: {padding: 15, lineHeight: 20}},
@@ -1581,9 +1661,12 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.setEvent();
     },
     loadList: function() {
-        this.node.setStyles(this.css.minAttachmentNode_list);
+        debugger;
+        this.node.setStyles( layout.mobile ? this.css.minAttachmentNode_list_mobile : this.css.minAttachmentNode_list);
 
-        this.sepNode = new Element("div", {"styles": this.css.minAttachmentSepNode_list}).inject(this.node);
+        if( !layout.mobile ){
+            this.sepNode = new Element("div", {"styles": this.css.minAttachmentSepNode_list}).inject(this.node);
+        }
 
         this.actionAreaNode = new Element("div", {"styles": this.css.minAttachmentActionAreaNode}).inject(this.node);
 
@@ -1702,7 +1785,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             "mouseout": function(){
                 if (!this.isSelected){
                     if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
-                        this.node.setStyles(this.css["minAttachmentNode_"+this.controller.options.listStyle]);
+                        var cssKey = "minAttachmentNode_"+this.controller.options.listStyle + ( layout.mobile ? "_mobile" : "" );
+                        this.node.setStyles(this.css[cssKey]);
                     }else{
                         this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
                     }
@@ -1760,7 +1844,8 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.isSelected = false;
         //this.node.setStyles(this.css["minAttachmentNode_list"]);
         if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
-            this.node.setStyles(this.css["minAttachmentNode_"+this.controller.options.listStyle]);
+            var cssKey = "minAttachmentNode_"+this.controller.options.listStyle + ( layout.mobile ? "_mobile" : "" );
+            this.node.setStyles(this.css[cssKey]);
         }else{
             this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
         }

@@ -176,6 +176,9 @@
 		"background-color": "#FFF",
 		"cursor": "default"
 	},
+    "itemNode_selected": {
+        "background-color": "#b7d0e6"
+    },
 	"itemIconNode": {
 		"padding": "0px",
 		"float": "left",

@@ -8,7 +8,8 @@ MWF.xApplication.Selector.ProcessFile = new Class({
         "title": MWF.xApplication.Selector.LP.selectFile,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){

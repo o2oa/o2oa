@@ -112,17 +112,14 @@ o2.widget.CalendarPage = o2.CalendarPage = new Class({
 				baseDate.setMonth(thisMonth-1);
 				
 				var selectDate =new Date(dateStr);
-				
-				//var baseDate = this.options.baseDate;
-//				var firstDate = baseDate.clone();
-//				firstDate.setDate(1);
-//				var day = firstDate.getDay();
-//
-//				firstDate.getMonth();
-//				var tmpDate = firstDate.clone();
 
+				var tbody;
+				if (el){
+					tbody = el.getParent("tbody");
+				}else{
+					tbody = this.contentTable.getElement("tbody");
+				}
 
-				var tbody = el.getParent("tbody");
 				var tds = tbody.getElements("td");
 
 				for (var i=0; i<tds.length; i++){
@@ -131,55 +128,34 @@ o2.widget.CalendarPage = o2.CalendarPage = new Class({
 					if (thisDate.clearTime().toString() == this.today.clearTime().toString()){
 						tds[i].setStyles(this.css["today_"+this.options.style]);
 						tds[i].setStyle("border", "0px solid #AAA");
-					}else if (thisDate.toString() == selectDate.toString()){
+					}else if (thisDate.clearTime().toString() == selectDate.clearTime().toString()){
 						tds[i].addClass("current_"+this.options.style);
 						tds[i].setStyles(this.css["current_"+this.options.style]);
 						tds[i].removeClass("gray_"+this.options.style);
+						tds[i].removeClass("past_"+this.options.style);
 						tds[i].setStyle("border", "1px solid #FFF");
 					}else if(baseDate.getMonth()!=thisDate.getMonth()){
 						tds[i].addClass("gray_"+this.options.style);
 						tds[i].setStyles(this.css["gray_"+this.options.style]);
 						tds[i].removeClass("current_"+this.options.style);
+						tds[i].removeClass("past_"+this.options.style);
 						tds[i].setStyle("border", "1px solid #FFF");
-					}else{
-						tds[i].setStyles(this.css["normal_"+this.options.style]);
+					}else if (thisDate.diff(this.today)>0){
+						if (this.css["past_"+this.options.style]) tds[i].setStyles(this.css["past_"+this.options.style]);
+						tds[i].addClass("past_"+this.options.style);
 						tds[i].removeClass("current_"+this.options.style);
 						tds[i].removeClass("gray_"+this.options.style);
+					}else{
+						tds[i].setStyles(this.css["normal_"+this.options.style]);
+						tds[i].addClass("normal_"+this.options.style);
+						tds[i].removeClass("current_"+this.options.style);
+						tds[i].removeClass("gray_"+this.options.style);
+						tds[i].removeClass("past_"+this.options.style);
 						tds[i].setStyle("border", "1px solid #FFF");
 					}
-					
-					
 
-				//	tds[i].set("text", firstDate.getDate());
-//					if (firstDate.toString() == this.options.baseDate.toString()){
-//						tds[i].addClass("current_"+this.options.style);
-//						tds[i].setStyles(this.css["current_"+this.options.style]);
-//						tds[i].removeClass("gray_"+this.options.style);
-//						tds[i].setStyle("border", "1px solid #FFF");
-//					}else if (firstDate.getMonth()!=baseDate.getMonth()){
-//						tds[i].addClass("gray_"+this.options.style);
-//						tds[i].setStyles(this.css["gray_"+this.options.style]);
-//						tds[i].removeClass("current_"+this.options.style);
-//						tds[i].setStyle("border", "1px solid #FFF");
-//					}else{
-//						tds[i].setStyles(this.css["normal_"+this.options.style]);
-//						tds[i].removeClass("current_"+this.options.style);
-//						tds[i].removeClass("gray_"+this.options.style);
-//						tds[i].setStyle("border", "1px solid #FFF");
-//					}
-//					var tmp = firstDate.clone();
-//					if (tmp.clearTime().toString() == this.today.clearTime().toString()){
-//						//tds[i].addClass("today_"+this.options.style);
-//						tds[i].setStyles(this.css["today_"+this.options.style]);
-//						tds[i].setStyle("border", "0px solid #AAA");
-//					}
-//					//tds[i].retrieve("dateValue")
-//					tds[i].store("dateValue", firstDate.toString());
-//					firstDate.increment("day", 1);
 				}
-
-
-				el.setStyles(this.css["current_"+this.options.style]);
+				//el.setStyles(this.css["current_"+this.options.style]);
 			//	this.node.set("value", dv);
 			//	this.hide();
 				this.fireEvent("complate");

@@ -10,7 +10,8 @@ MWF.xApplication.Selector.PortalFile = new Class({
         "names": [],
         "isImage": false,
         "accept": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -42,28 +43,28 @@ MWF.xApplication.Selector.PortalFile = new Class({
         }.bind(this));
     },
 
-    loadSelectNode: function(){
-        this.selectNode = new Element("div", {
-            "styles": this.css.selectNode, //(this.options.count.toInt()===1) ? this.css.selectNodeSingle : this.css.selectNode
-        }).inject(this.contentNode);
-
-        this.itemAreaScrollNode = new Element("div", {
-            "styles": this.css.itemAreaScrollNode
-        }).inject(this.selectNode);
-        this.itemAreaScrollNode.setStyle("height", "408px");
-
-        this.itemAreaNode = new Element("div", {
-            "styles": this.css.itemAreaNode
-        }).inject(this.itemAreaScrollNode);
-        this.itemSearchAreaNode = new Element("div", {
-            "styles": this.css.itemAreaNode
-        }).inject(this.itemAreaScrollNode);
-        this.itemSearchAreaNode.setStyle("display", "none");
-
-        this.loadSelectNodeScroll();
-        this.initLoadSelectItems();
-        this.checkLoadSelectItems();
-    },
+    //loadSelectNode: function(){
+    //    this.selectNode = new Element("div", {
+    //        "styles": this.css.selectNode //(this.options.count.toInt()===1) ? this.css.selectNodeSingle : this.css.selectNode
+    //    }).inject(this.contentNode);
+    //
+    //    this.itemAreaScrollNode = new Element("div", {
+    //        "styles": this.css.itemAreaScrollNode
+    //    }).inject(this.selectNode);
+    //    this.itemAreaScrollNode.setStyle("height", "408px");
+    //
+    //    this.itemAreaNode = new Element("div", {
+    //        "styles": this.css.itemAreaNode
+    //    }).inject(this.itemAreaScrollNode);
+    //    this.itemSearchAreaNode = new Element("div", {
+    //        "styles": this.css.itemAreaNode
+    //    }).inject(this.itemAreaScrollNode);
+    //    this.itemSearchAreaNode.setStyle("display", "none");
+    //
+    //    this.loadSelectNodeScroll();
+    //    this.initLoadSelectItems();
+    //    this.checkLoadSelectItems();
+    //},
 
     close: function(){
         this.fireEvent("close");
@@ -255,6 +256,7 @@ MWF.xApplication.Selector.PortalFile.ItemCategory = new Class({
                     subData.applicationName = this.data.name;
                     subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
+                    this.selector.items.push( category );
                 }.bind(this));
 
                 this.loaded = true;

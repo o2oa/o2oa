@@ -5,27 +5,17 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
     <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
-    <script src="../o2_lib/mootools/mootools-1.6.0.min.js"></script>
     <script src="../o2_core/o2.min.js"></script>
     <script src="../o2_core/compatible.min.js"></script>
     <script src="../o2_lib/Decimal.js"></script>
+    <script src="js/base.js"></script>
 
     <title>FORM PREVIEW</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <script>
-        layout = window.layout || {};
-        var href = window.location.href;
-        if (href.indexOf("debugger")!=-1) layout["debugger"] = true;
-        var mode = (new URI(href)).get("data").mode;
-        if (mode){
-            if (mode=="mobile") layout.mobile = true;
-        }
-        layout.session = window.frameElement.ownerDocument.window.layout.session || {};
-        //layout.desktop = layout;
-
-        o2.addReady(function(){
-            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
+        layout.addReady(function(){
+            (function(layout){
                 MWF.getJSON("res/config/config.json", function(config){
                     layout.config = config;
                     if (layout.config.app_protocol=="auto"){
@@ -54,6 +44,7 @@
                                             "activity": data.activity,
                                             "task": data.taskList[0],
                                             "workLogList": data.workLogList,
+                                            "recordList": data.recordList,
                                             "attachmentList": data.attachmentList,
                                             "status": {
                                                 //"readonly": (this.options.readonly) ? true : false
@@ -66,43 +57,12 @@
                                 //        }
                             };
 
-//                        layout.authentication = new MWF.xDesktop.Authentication({
-//                            "onLogin": layout.load.bind(layout)
-//                        });
-
-//                        layout.isAuthentication = function(){
-//                            var returnValue = true;
-//                            this.authentication.isAuthenticated(function(json){
-//                                this.user = json.data;
-//                            }.bind(this), function(){
-//                                this.authentication.loadLogin(this.node);
-//                                returnValue = false;
-//                            }.bind(this));
-//                            return returnValue;
-//                        };
-
-//                        layout.getServiceAddress = function(callback){
-//                            var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-//                            MWF.restful("get", uri, null, function(json){
-//                                this.serviceAddressList = json.data;
-//                                if (callback) callback();
-//                            }.bind(this));
-//                        };
-//
-//                        MWF.getJSON("res/config/config.json", function(config){
-//                            layout.config = config;
-//
-//                            layout.getServiceAddress(function(){
-//                                layout.load();
-//                            });
-//                        });
-
                             layout.load();
                         })();
 
                     });
                 }.bind(this));
-            });
+            })(layout);
         });
     </script>
 </head>

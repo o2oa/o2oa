@@ -1,0 +1,74 @@
+{
+  "name": "手机蓝白",
+  "form": {
+    "textareaDisableResize": true,
+    "confirmStyle": "blue_flat_confirm",
+    "dialogStyle": "mobile_blue_flat",
+    "dialogOptions" : {
+      "top" : 0,
+      "left" : 0,
+      "fromTop" : 0,
+      "fromLeft" : 0,
+      "width": "100%",
+      "height" : "100%",
+      "maxHeightPercent" : "100%",
+      "isMove" : false,
+      "container": $(document.body), //this.form.node(),
+      "positionNode": $(document.body), //this.form.getApp().content,
+      "mask": true,
+      "isResize" : false,
+      "duration" : 0
+    },
+    "attachmentStyle": {
+      "style": "mobile_blue_flat",
+      "actionShowText": true,
+      "isReplaceHidden": true,
+      "iconConfigUrl": "/x_component_File/$Main/mobile_blue_flat/icon.json",
+      "iconFolderUrl": "/x_component_File/$Main/mobile_blue_flat/file/"
+    },
+    "hideModuleIcon": true,
+    "nodeStyleWithhideModuleIcon": {
+      "margin-right": "0px"
+    },
+    "confirmIcon": {
+      "success": "/x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+      "error": "/x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+      "info": "/x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+      "warn": "/x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+    },
+    "submitedDlgUseNotice": true,
+    "submitedDlgStyle": {
+      "style": "blue_flat_notice",
+      "promptPosition": "center",
+      "isTitle": true,
+      "title": "提交成功",
+      "width": 440,
+      "height": "auto",
+      "promptCloseTime": 5,
+      "maxTitleLength": 30,
+      "isCountDown": true,
+      "contentStyle": {
+        "width": "340px",
+        "margin-top": "0px",
+        "margin-left": "0px"
+      }
+    },
+    "selectorStyle" : {
+      "style" : "blue_flat_mobile",
+      "width" : "700",
+      "height" : "510",
+      "hasLetter" : false, //字母
+      "hasTop" : true, //可选、已选的标题
+      "level1Indent" : 0,
+      "indent" : 0, //46
+      "tabStyle" : "blue_flat_mobile",
+      "hasShuttle" : false, //穿梭按钮
+      "searchbarInTopNode" : false,
+      "hasSelectedSearchbar" : true,
+      "contentUrl" : "/x_component_Selector/$Selector/blue_flat_mobile/selector.html",
+      "injectToBody" : true,
+      "itemHeight" : 88,
+      "flatCategory" : true
+    }
+  }
+}

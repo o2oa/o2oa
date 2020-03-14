@@ -1,5 +1,5 @@
 MWF.xAction = MWF.xAction || {};
-MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+//MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 
 MWF.xAction.RestActions = MWF.Actions = {
     "actions": {},
@@ -144,7 +144,7 @@ MWF.xAction.RestActions = MWF.Actions = {
     },
 
     "getHost": function(root){
-        var addressObj = layout.desktop.serviceAddressList[root];
+        var addressObj = layout.serviceAddressList[root];
         var address = "";
         if (addressObj){
             address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port);
@@ -286,10 +286,13 @@ MWF.xAction.RestActions.Action = new Class({
                 urlEncode = (n>++i) ? functionArguments[i] : true;
                 cache = (n>++i) ? functionArguments[i] : (Browser.name != "ie");
             }
-
+            return this.invoke(service,{"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
             //if (!cache) debugger;
-            return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
+            //return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode, "cache": cache});
         }.bind(this);
+    },
+    invoke: function(service, options){
+        return this.action.invoke(options);
     }
 });
 
@@ -302,3 +305,4 @@ Date.implement({
         return d;
     }
 });
+

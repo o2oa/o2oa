@@ -483,7 +483,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 	_addLine: function(node){
 		if (this.isEdit){
             if (!this._completeLineEdit()) return false;
-		};
+		}
 		this.editorTr.setStyles({
 			//"background-color": "#fffeb5",
 			"display": "table-row"
@@ -492,7 +492,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var currentTr = node.getParent("tr");
 		if (currentTr){
 			this.editorTr.inject(currentTr, "after");
-		};
+		}
 		this.isEdit =true;
         this.validationMode();
         this.fireEvent("addLine");
@@ -906,6 +906,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             var trs = this.table.getElements("tr");
             for (var i=1; i<trs.length-1; i++){
                 var tr = trs[i];
+				if( tr.hasClass("datagridEditorTr") )continue;
                 var tds = tr.getElements("td");
                 for (var j=0; j<tds.length; j++){
                     var td = tds[j];
@@ -916,9 +917,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                     }
                 }
             }
-            while (this.table.rows.length>2){
-                this.table.rows[1].destroy();
-            }
+			for (var i=1; i<trs.length-1; i++){
+				if( trs[i].hasClass("datagridTotalTr") )continue;
+				if( trs[i].hasClass("datagridEditorTr") )continue;
+				trs[i].destroy();
+			}
+            //while (this.table.rows.length>2){
+				//this.table.rows[1].destroy();
+            //}
             if (this.editable!=false){
                 this._loadEditDatagrid();
                 //this._loadReadDatagrid();

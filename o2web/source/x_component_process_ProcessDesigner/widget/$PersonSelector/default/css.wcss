@@ -65,7 +65,7 @@
         "margin": "auto"
     },
     "dutyOkActionNode": {
-        "width": "150px",
+        "width": "100px",
         "height": "30px",
         "background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
         "border": "0px",

@@ -39,6 +39,7 @@ MWF.xApplication.process.Work.LP = {
 
     "taskCompletedPerson": "办理人",
     "readPerson": "阅读人",
+    "systemFlow": "系统自动处理",
 
     "rollbackConfirmTitle": "流程回溯确认",
     "rollbackConfirmContent": "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）",
@@ -54,5 +55,16 @@ MWF.xApplication.process.Work.LP = {
 
     "selectRouteGroup" : "选择决策组",
     "defaultDecisionOpinionName" : "其它",
-    "routeGroupOrderList" : ["同意","不同意","其它","其他"]
+    "routeGroupOrderList" : ["同意","不同意","其它","其他"],
+
+    "selectWork": "您要打开的文件已形成多个分支，请选择其中一个查看：",
+    "currentActivity": "当前活动: ",
+    "currentUsers": "当前处理人: ",
+    "completedWork": "文件已流转完成",
+
+    "managerProcessNotice" : "注：快速处理功能适用于以下情况，否则可能出错：<br\>1、表单中已填好必填项。<br\>2、不需要在提交时选择人员。<br\>3、没有基于用户身份计算的内容。<br\>您是管理员，可以模拟待办人登录后在表单上提交，点击下面的链接执行。",
+    "managerLogin" : "模拟登录并打开文件",
+    "managerLoginConfirmTitle" : "模拟登陆",
+    "managerLoginConfirmContent" : "确定要以{user}身份登录并打开文件？点击确定后，需注销重新登录才能回到当前用户。",
+    "managerLoginSuccess" : "已成功切换为{user}"
 };

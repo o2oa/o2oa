@@ -29,4 +29,11 @@ MWF.xAction.RestActions.Action["x_organization_assemble_personal"] = new Class({
     deleteEmPower: function(id, success, failure, async){
         this.action.invoke({"name": "deleteEmPower","parameter":{"id":id}, "async": async, "success": success, "failure": failure});
     },
+
+    listToCurrentPersonPaging: function( page, size, key,success, failure, async){
+        this.action.invoke({"name": "listToCurrentPersonPaging", "parameter":{ "page":page, "size":size }, "data": { "key": key}, "async": async, "success": success, "failure": failure});
+    },
+    listWithCurrentPersonPaging: function( page, size, key,success, failure, async){
+        this.action.invoke({"name": "listWithCurrentPersonPaging", "parameter":{ "page":page, "size":size }, "data": { "key": key}, "async": async, "success": success, "failure": failure});
+    }
 });

@@ -1,6 +1,6 @@
 {
 	"tabNodeContainer": {
-        "height": "40px",
+        "height": "50px",
         "background": "#4c6b87",
         "border-bottom": "0px solid #CCC"
     },
@@ -21,7 +21,7 @@
         "margin-left": "2px",
         "margin-right": "0px",
         "float": "left",
-        "height": "40px",
+        "height": "50px",
         "cursor": "pointer",
         //"min-width": "60px",
         "background": "#ffffff",
@@ -29,7 +29,7 @@
     },
 	"tabTextNode": {
         "color": "#666666",
-        "line-height": "40px",
+        "line-height": "50px",
         "text-align": "center",
         "margin-right": "4px",
         "margin-top": "0px",
@@ -47,14 +47,14 @@
         "margin-left": "2px",
         "margin-right": "0px",
         "float": "left",
-        "height": "40px",
+        "height": "50px",
         //"min-width": "60px",
         "background": "#ffffff",
         "border-bottom": "2px solid #bf6364"
     },
 	"tabTextNodeCurrent": {
         "color": "#fb4747",
-        "line-height": "40px",
+        "line-height": "50px",
         "text-align": "center",
         "margin-right": "4px",
         "margin-left": "4px",

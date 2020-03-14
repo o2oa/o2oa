@@ -1,7 +1,18 @@
 (function(){
+    debugger;
     if (Browser.iecomp){
-        if (!document.body.addEvent){
-            document.body.addEvent = function(type, fn){
+        // if (!document.body.addEvent){
+        //     document.body.addEvent = function(type, fn){
+        //         if (window.attachEvent && !window.addEventListener){
+        //             collected[Slick.uidOf(this)] = this;
+        //         }
+        //         if (this.addEventListener) this.addEventListener(type, fn, !!arguments[2]);
+        //         else this.attachEvent('on' + type, fn);
+        //         return this;
+        //     };
+        // }
+        if (!Element.prototype.addEvent){
+            Element.prototype.addEvent = function(type, fn){
                 if (window.attachEvent && !window.addEventListener){
                     collected[Slick.uidOf(this)] = this;
                 }
@@ -87,28 +98,28 @@
         if (!Object.defineProperty || (Browser.name=="ie" && Browser.version==8)){
             Object.defineProperty = MWF.defineProperty;
         }
-        MWF.defineProperties(HTMLInputElement.prototype, {"files": {
-            "get": function(){
-                MWF.require("MWF.widget.contentType", null, false);
-                var v = this.value;
-                var tmpv = v.replace(/\\/g, "/");
-                var i = tmpv.lastIndexOf("/");
-                var name = (i===-1) ? v : v.substr(i+1, tmpv.length-i);
-                var el = this;
-                var data = {
-                    "path": v,
-                    "name": name,
-                    "size": 0,
-                    "type": MWFContentType.get(v),
-                    "el": el
-                };
-                return {
-                    "length": (v) ? 1 : 0,
-                    "data": data,
-                    "item": function(){ return this.data; }
-                };
-            }
-        }});
+        o2.defineProperties(HTMLInputElement.prototype, {"files": {
+                "get": function(){
+                    o2.require("o2.widget.contentType", null, false);
+                    var v = this.value;
+                    var tmpv = v.replace(/\\/g, "/");
+                    var i = tmpv.lastIndexOf("/");
+                    var name = (i===-1) ? v : v.substr(i+1, tmpv.length-i);
+                    var el = this;
+                    var data = {
+                        "path": v,
+                        "name": name,
+                        "size": 0,
+                        "type": MWFContentType.get(v),
+                        "el": el
+                    };
+                    return {
+                        "length": (v) ? 1 : 0,
+                        "data": data,
+                        "item": function(){ return this.data; }
+                    };
+                }
+            }});
 
         WebSocket = window.WebSocket || function(){};
         WebSocket.prototype = {

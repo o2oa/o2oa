@@ -25,6 +25,7 @@ var MTooltips = new Class({
         isAutoHide : true,
         hasMask : true,
         hasCloseAction : false,
+        hideByClickBody : false,
         overflow : "hidden" //弹出框高宽超过container的时候怎么处理，hidden 表示超过的隐藏，scroll 表示超过的时候显示滚动条
     },
     initialize : function( container, target, app, data, options, targetCoordinates ){
@@ -52,7 +53,11 @@ var MTooltips = new Class({
         if( this.options.event == "click" ){
             if( this.options.isAutoShow ){
                 this.targetClickFun = function( ev ){
-                    this.load();
+                    if( this.status === "display" ){
+                        this.hide();
+                    }else{
+                        this.load();
+                    }
                     ev.stopPropagation();
                 }.bind(this);
                 this.target.addEvents({
@@ -126,6 +131,15 @@ var MTooltips = new Class({
                         }.bind(this);
                         this.container.addEvent("mousedown", this.containerMousedownFun )
                     }
+                }
+                if( this.options.hideByClickBody ){
+                    this.bodyMousedownFun = function(e){
+                        if( this.status === "display" ){
+                            this.hide();
+                        }
+                        e.stopPropagation();
+                    }.bind(this);
+                    $(document.body).addEvent("mousedown", this.bodyMousedownFun )
                 }
             }
         }
@@ -546,6 +560,7 @@ var MTooltips = new Class({
             "left" : left,
             "top" : t || top
         });
+        this.fireEvent( "postSetCoondinates", [arrowX, arrowY] );
     },
     setCoondinates_y : function(){
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
@@ -763,6 +778,7 @@ var MTooltips = new Class({
             "left" : l || left,
             "top" : top
         });
+        this.fireEvent( "postSetCoondinates", [arrowX, arrowY] );
     },
     setPosition : function(){
         if( this.options.axis == "x" ){

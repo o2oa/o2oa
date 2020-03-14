@@ -56,6 +56,13 @@ MWF.xApplication.cms.Module.LP = {
 	"copyConfirm_skip": "跳过",
 	"copyConfirm_cancel": "取消",
 	"copynew": "新",
+	"copyConfirmCategoryTitle": "复制文档分类确认",
+	"copyConfirmCategoryInfor_noCategory": "不能根据文档的原分类{name}在新栏目找到分类，请选择需要拷贝到哪个分类",
+	"copyConfirmCategoryInfor_hasSameAlias": "不能根据文档的原分类ID在新栏目找到分类，但有相同别名（alias）的分类{alias}",
+	"copyConfirmCategoryInfor_hasSameName": "不能根据文档的原分类ID在新栏目找到分类，但有相同名称（name）的分类{name}",
+	"copyConfirmCateogyrInfor_withChoice" : "或者选择分类进行复制（如果选择表示根据选择的分类复制）：",
+	"copyConfirm_SameCategory" : "后续相同分类的文档都根据该操作进行复制",
+	"notSelectCategory" : "请先选择分类",
 
 	"open" : "打开",
 	"delete" : "删除",

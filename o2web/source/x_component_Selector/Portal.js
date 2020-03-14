@@ -7,13 +7,15 @@ MWF.xApplication.Selector.Portal = new Class({
         "count": 0,
         "title": MWF.xApplication.Selector.LP.selectApplication,
         "values": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
         this.portalDesignerAction.listApplication(function(json){
             json.data.each(function(data){
                 var category = this._newItem(data, this, this.itemAreaNode);
+                this.items.push( category );
             }.bind(this));
         }.bind(this));
     },

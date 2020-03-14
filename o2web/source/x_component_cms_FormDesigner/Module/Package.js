@@ -1,6 +1,6 @@
 MWF.xApplication.cms.FormDesigner.ResetTemplateModules = ["actionbar","readerfield","authorfield","reader","author","log","attachment","comment"];
 //MWF.xApplication.cms.FormDesigner.ResetPropertyModules = ["actionbar","readerfield","calendar","checkbox","datagrid","number","personfield","radio","select","textarea","textfield"];
-MWF.require("MWF.widget.Macro", null, false);
+//MWF.require("MWF.widget.Macro", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "ModuleImplements", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Form", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Label", null, false);

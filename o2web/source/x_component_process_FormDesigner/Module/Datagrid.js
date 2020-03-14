@@ -102,7 +102,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 				}
 				this.containers.push(tdContainer);
 			}.bind(this));
-		}.bind(this));
+		}.bind(this), false);
 	},
 	_getElements: function(){
 		//this.elements.push(this);
@@ -122,7 +122,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 				}
 				this.elements.push(thElement);
 			}.bind(this));
-		}.bind(this));
+		}.bind(this), false);
 	},
 	
 	_createNode: function(callback){
@@ -239,22 +239,29 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 	},
 	
 	_initModule: function(){
-        this.setStyleTemplate();
+        if (!this.initialized){
+			if (this.json.initialized!=="yes")this.setStyleTemplate();
 
-        this.table = this.node.getElement("table");
-		this._getElements();
-		this._getContainers();
+			this.table = this.node.getElement("table");
+			this._getElements();
+			this._getContainers();
 
-        this.setPropertiesOrStyles("styles");
-        this.setPropertiesOrStyles("tableStyles");
-        this.setPropertiesOrStyles("properties");
-		
-		this._setNodeProperty();
-        if (!this.form.isSubform) this._createIconAction();
+			this.setPropertiesOrStyles("styles");
+			this.setPropertiesOrStyles("tableStyles");
+			this.setPropertiesOrStyles("properties");
 
-   //     this.checkSequenceShow();
+			this._setNodeProperty();
+			if (!this.form.isSubform) this._createIconAction();
 
-		this._setNodeEvent();
+	   //     this.checkSequenceShow();
+
+			this._setNodeEvent();
+
+			this.setDatagridStyles();
+
+			this.initialized = true;
+			this.json.initialized = "yes";
+		}
 	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
@@ -266,7 +273,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 				var reg = /^border\w*/ig;
 				if (!key.test(reg)){
 					this.node.setStyle(key, value);
-				};
+				}
 			}.bind(this));
 		}
         if (name=="tableStyles"){
@@ -275,7 +282,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
                 var reg = /^border\w*/ig;
                 if (!key.test(reg)){
                     this.table.setStyle(key, value);
-                };
+                }
             }.bind(this));
         }
 
@@ -296,8 +303,8 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
 				}.bind(this));
-			};
-		};
+			}
+		}
 
         if (name=="titleStyles"){
             var ths = this.table.getElements("th");

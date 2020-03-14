@@ -8,7 +8,8 @@ MWF.xApplication.Selector.CMSApplication = new Class({
         "title": MWF.xApplication.Selector.LP.selectCMSApplication,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -16,6 +17,7 @@ MWF.xApplication.Selector.CMSApplication = new Class({
             json.data.each(function(data){
                 data.name = data.appName;
                 var category = this._newItem(data, this, this.itemAreaNode);
+                this.items.push(category)
             }.bind(this));
         }.bind(this));
     },
@@ -51,7 +53,8 @@ MWF.xApplication.Selector.CMSApplication.Item = new Class({
         return this.data.appName;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -103,6 +106,21 @@ MWF.xApplication.Selector.CMSApplication.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+    },
+    check: function(){
+        if (this.selector.items.length){
+            var items = this.selector.items.filter(function(item, index){
+                return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+            }.bind(this));
+            this.items = items;
+            if (items.length){
+                items.each(function(item){
+                    item.selectedItem = this;
+                    item.setSelected();
+                }.bind(this));
+            }
+        }
     }
 });

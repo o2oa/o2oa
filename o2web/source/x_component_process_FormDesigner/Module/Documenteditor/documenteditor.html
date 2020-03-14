@@ -126,6 +126,23 @@
 	<div title="配置" class="MWFTab">
 <!--		<div class="MWFRedDocumentEditor" name="config"></div>-->
 
+<!-----------------------------------------------份数密级紧急度------------------------------------------------------------------->
+		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">份数密级紧急度</div>
+		<div style="display: none">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">是否显示</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesSecretPriorityShowScriptArea').setStyle('display', 'none')}" name="copiesSecretPriorityShow" text{($.copiesSecretPriorityShow!='n' && $.copiesSecretPriorityShow!='s')?'checked':''} type="radio" value="y"/>显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesSecretPriorityShowScriptArea').setStyle('display', 'none')}" name="copiesSecretPriorityShow" text{($.copiesSecretPriorityShow=='n')?'checked':''} type="radio" value="n"/>不显示
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}copiesSecretPriorityShowScriptArea').setStyle('display', 'block')}" name="copiesSecretPriorityShow" text{($.copiesSecretPriorityShow=='s')?'checked':''} type="radio" value="s"/>根据脚本
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}copiesSecretPriorityShowScriptArea" style="display: text{($.redHeaderShow=='s')?'block':'none'}" class="MWFFormulaArea" name="redLineShowScript" title="红线显示脚本 (S)"></div>
+		</div>
+<!-----------------------------------------------份数密级紧急度------------------------------------------------------------------->
+
 <!-----------------------------------------------份数------------------------------------------------------------------->
 		<div onclick="var node = this.getNext(); node.setStyle('display', ((node.getStyle('display')=='none') ? 'block' : 'none'));" style="cursor: pointer; height: 24px; padding-left:5px; text-align: left; line-height: 24px; border-top: 1px solid #cccccc; border-bottom: 1px solid #999999; font-weight: bold; background-color: #eeeeee;">份数（copies）</div>
 		<div style="display: none">

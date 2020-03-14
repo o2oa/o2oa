@@ -215,6 +215,7 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
             this.hotPicData.title = this.data.title;
             this.hotPicData.application = "BBS";
             this.hotPicData.creator = layout.desktop.session.user.distinguishedName;
+            this.hotPicData.summary = this.options.summary;
 
             this._ok(this.hotPicData, function (json) {
                 if (json.type == "error") {

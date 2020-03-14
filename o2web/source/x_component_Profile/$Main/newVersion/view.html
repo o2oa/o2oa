@@ -1,0 +1,165 @@
+<div class="o2_profile_contentNode">
+    <div class="o2_profile_configNode" title="{{$.lp.inforConfig}}">
+        <div class="o2_profile_inforConfigArea">
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforIconContent">
+                    <img class="o2_profile_inforIconContentImg" src="{{$.data.personIcon}}"/>
+                </div>
+                <div class="o2_profile_inforIconChange">{{ $.lp.changeIcon }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.name }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.name }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.employee }}</div>
+                <div class="o2_profile_inforContent">{{ $.data.employee }}</div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.mail }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.mail}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.mobile }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.mobile}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.officePhone }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.officePhone}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.weixin }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.weixin}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.QQ }}</div>
+                <div class="o2_profile_inforContent">
+                    <input class="o2_profile_inforContentInput" value="{{$.data.qq}}"/>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.signature }}</div>
+                <div class="o2_profile_inforContent o2_profile_inforContent_signature">
+                    <!--<input class="o2_profile_inforContentInput o2_profile_signature" value="{{$.data.signature}}"/>-->
+                    <textarea class="o2_profile_signature">{{$.data.signature}}</textarea>
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_saveInforAction">{{ $.lp.saveInfor }}</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="o2_profile_configNode" title="{{$.lp.layoutConfig}}">
+        <div class="o2_profile_layoutTitle">{{ $.lp.layoutAction }}</div>
+        <div class="o2_profile_layoutButtonArea">
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.clear }}</div>
+
+            {{if MWF.AC.isAdministrator() }}
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.setDefault }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.clearDefault }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.setForce }}</div>
+            <div class="o2_profile_layoutClearDataAction">{{ $.lp.clearForce }}</div>
+            {{ end if }}
+
+        </div>
+
+        <div class="o2_profile_layoutTitle">{{ $.lp.desktopBackground }}</div>
+        <div class="o2_profile_layoutButtonArea"></div>
+    </div>
+
+
+    <div class="o2_profile_configNode" title="{{$.lp.ideaConfig}}">
+        <textarea class="o2_profile_ideasArea"></textarea>
+        <div class="o2_profile_ideasSave">{{ $.lp.saveIdea }}</div>
+
+        {{if MWF.AC.isAdministrator() }}
+        <div class="o2_profile_ideasSave">{{ $.lp.saveIdeaDefault }}</div>
+        {{ end if }}
+
+    </div>
+
+
+    <div class="o2_profile_configNode" title="{{$.lp.emPowerConfig}}">
+        <div class="o2_profile_emPower_content">
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPower }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{ $.lp.myEmPowerLog }}"></div>
+            <div class="o2_profile_emPower_tab" title="{{$.lp.receiveEmPowerLog }}"></div>
+        </div>
+    </div>
+
+    <div class="o2_profile_configNode" title="{{$.lp.passwordConfig}}">
+        <div class="o2_profile_passwordConfigArea_view">
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.oldPassword }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.password }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine o2_profile_passwordStrengthArea">
+                <div class="o2_profile_inforTitle"></div>
+                <div class="o2_profile_inforContent">
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.weak }}</div>
+                    </div>
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.middle }}</div>
+                    </div>
+                    <div class="o2_profile_passwordStrength">
+                        <div class="o2_profile_passwordStrengthColor"></div>
+                        <div class="o2_profile_passwordStrengthText">{{ $.lp.high }}</div>
+                    </div>
+                    <div class="o2_profile_passwordRemindNode">{{ $.lp.paswordRule }}</div>
+                </div>
+            </div>
+
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_inforTitle">{{ $.lp.morePassword }}</div>
+                <div class="o2_profile_inforContent">
+                    <input type="password" class="o2_profile_inforContentInput" />
+                </div>
+            </div>
+
+            <div class="o2_profile_inforLine">
+                <div class="o2_profile_savePasswordAction">{{ $.lp.passwordConfig }}</div>
+            </div>
+
+        </div>
+    </div>
+    <div class="o2_profile_configNode" title="{{$.lp.ssoConfig}}">
+        <div class="o2_profile_ssoConfigTitle">{{ $.lp.bindOauth }}</div>
+        <div class="o2_profile_ssoConfigArea">
+            <!--<a class="o2_profile_ssoItemLink" target="_blank" href="/x_desktop/oauth.html?oauth=eachText{encodeURIComponent($.name)}&redirect=&method=oauthBind">{{$.displayName}}</a>-->
+        </div>
+    </div>
+</div>

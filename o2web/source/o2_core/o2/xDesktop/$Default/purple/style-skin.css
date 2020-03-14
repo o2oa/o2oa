@@ -1,0 +1,227 @@
+.mainColor_bg {
+    background-color: #BF3995 !important;
+    color: #ffffff !important;
+}
+.mainColor_color {
+    color: #BF3995 !important;
+}
+.mainColor_border {
+    border-color: #BF3995 !important;
+}
+
+.overColor_bg {
+    background-color: #5C1446 !important;
+}
+.overColor_color {
+    color: #5C1446 !important;
+}
+.overColor_border {
+    border-color: #5C1446 !important;
+}
+
+.deepColor_bg {
+    background-color: #330524 !important;
+}
+.deepColor_color {
+    color: #330524 !important;
+}
+.deepColor_border {
+    border-color: #330524 !important;
+}
+
+.badgeColor_bg {
+    background-color: #66CC80 !important;
+}
+.badgeColor_color {
+    color: #66CC80 !important;
+}
+.badgeColor_border {
+    border-color: #66CC80 !important;
+}
+.logo_o2_40 {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/logo_o2_40.png) !important;
+}
+.icon_setting{
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_yyzk.png) !important;
+}
+.icon_msg {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_xiaoxi.png) !important;
+}
+.icon_msg_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_xiaoxi_click.png) !important;
+}
+.icon_skin {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_pifu.png) !important;
+}
+.icon_skin_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_pifu_click.png) !important;
+}
+.icon_search {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_sousuo.png) !important;
+}
+.icon_search_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_sousuo_click.png) !important;
+}
+.icon_clear {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_clear.png) !important;
+}
+.icon_loading {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/loading.gif) !important;
+}
+.logobg {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/pic_logo_sy.png) !important;
+}
+.icon_startMenu_search {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_sousuo_click.png) !important;
+}
+.icon_close {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_off_round_grey.png) !important;
+}
+.icon_close_focus {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_off_round_bai_click.png) !important;
+}
+.icon_refresh {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/refresh.png) !important;
+}
+.icon_remove_badge {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_off_red.png) !important;
+}
+.icon_off_light {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_off_light.png) !important;
+}
+.icon_add_red {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jia_red.png) !important;
+}
+.icon_add {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jia.png) !important;
+}
+.icon_more {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jia.png) !important;
+}
+.icon_notask {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_wugongzuo.png) !important;
+}
+.icon_taskLoading {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/taskLoading.gif) !important;
+    background-size: 12px !important;
+}
+.icon_msg_close {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_msg_close.png) !important;
+}
+.icon_up {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/taskbar_up.png) !important;
+}
+.icon_up_gray {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/taskbar_up_gray.png) !important;
+}
+.icon_down {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/taskbar_down.png) !important;
+}
+.icon_down_gray {
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/taskbar_down_gray.png) !important;
+}
+.icon_refresh{
+    background-image: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_shuaxin.png) !important;
+}
+.o2_process_AppExp_All_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_quanbu_click.png) 0 center no-repeat !important;
+}
+.o2_process_AppExp_categoryItem_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_files_click.png) 0 center no-repeat !important;
+}
+.o2_process_AppExp_create {
+    background-color: #BF3995 !important;
+}
+.o2_process_AppExp_item_node_over {
+    border-color: #BF3995 !important;
+}
+
+.o2_cms_column_all_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_quanbu_click.png) 0 center no-repeat !important;
+}
+.o2_cms_column_categoryItem_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_files_click.png) 0 center no-repeat !important;
+}
+.o2_cms_column_createColumnNode {
+    background-color: #BF3995 !important;
+}
+.o2_cms_column_columnNode_over {
+    border-color: #BF3995 !important;
+}
+
+.o2_cms_index_all_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_quanbu_click.png) 0 center no-repeat !important;
+}
+.o2_cms_index_categoryItem_current {
+    color: #BF3995 !important;
+    border-bottom: 2px solid #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_files_click.png) 0 center no-repeat !important;
+}
+.o2_cms_index_categoryItem_text {
+    color: #BF3995 !important;
+}
+.o2_cms_index_categoryItem_text_over {
+    border-color: #5C1446 !important;
+    background-color: #5C1446 !important;
+    color: #ffffff !important;
+}
+.o2_cms_index_createDocument_over {
+    color: #BF3995 !important;
+    background: url(/o2_core/o2/xDesktop/$Default/purple/appicons/icon_createdocument_over.png) 5px center no-repeat !important;
+}
+.current_homepage {
+    background-color: #8E8E8E !important;
+    color: #ffffff !important;
+    border-color: #8E8E8E !important;
+}
+.today_homepage {
+    background-color: #BF3995 !important;
+    color: #ffffff !important;
+    border-color: #BF3995 !important;
+}
+.MWF_calendar_current {
+    color: #BF3995 !important;
+}
+
+/*个人设置---begin*/
+.formTableArea table .selectNode:hover {
+    background:url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jia.png) center center no-repeat !important
+}
+.o2_profile_emPower_Add:hover .o2_profile_emPower_Btnimg {
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jia.png) no-repeat !important;
+}
+.o2_profile_emPower_WithDraw:hover .o2_profile_emPower_Btnimg{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_chehui_click.png) no-repeat !important;
+}
+.o2_profile_empower_checkbox_checked{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_ok2_click.png) no-repeat !important;
+}
+.o2_profile_emPower_Edit .o2_profile_emPower_Btnimg{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_bianji2.png) no-repeat !important;
+}
+.o2_profile_emPower_Edit:hover .o2_profile_emPower_Btnimg{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_bianji2_click.png) no-repeat !important;
+}
+.o2_profile_emPower_Enable:hover .o2_profile_emPower_Btnimg{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_qiyong_click.png) no-repeat !important;
+}
+.o2_profile_emPower_Disable:hover .o2_profile_emPower_Btnimg{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_jinyong_click.png) no-repeat !important;
+}
+.o2_profile_empower_radio_checked{
+    background: url(/o2_core/o2/xDesktop/$Default/purple/icons/icon_circle_click.png) no-repeat !important;
+}
+div:hover>.o2_profile_emPower_Btntext{
+    color: #BF3995 !important;
+}
+/*个人设置---end*/

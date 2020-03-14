@@ -1,0 +1,119 @@
+{
+	"borderNode": {
+		"border": "0px solid #333",
+		"background-color": "#ffffff",
+		"padding": "0px",
+		"overflow": "hidden",
+		"display": "none",
+		"z-index": "999",
+		"opacity": 0,
+		"position": "absolute",
+		"float": "left",
+		"min-width": (Browser.iecomp) ? "auto" : "220px",
+		"border-radius": "2px",
+		"box-shadow": "0 0 10px 0 rgba(0,0,0,0.25)",
+		"cursor": "default"
+	},
+	"container": {
+		"border-top": "1px solid #FFF",
+		"border-left": "1px solid #FFF",
+		"border-right": "1px solid #FFF",
+		"border-bottom": "1px solid #FFF",
+		"border-radius": "2px",
+		"background-color": "#FFF",
+		"padding": "0px",
+		"overflow": "hidden",
+		"cursor": "default"
+	},
+	"menuItem": {
+		"border-radius": "0px",
+		"display":"block",
+		"position": "static",
+		"height": "70px",
+		"border": "0px solid #FFF",
+		"background-color": "#FFF",
+		"cursor": "pointer",
+		"color": "#333333",
+		"font-family": "Microsoft YaHei",
+		"font-size": "12px"
+	},
+
+	"menuItemImgDiv": {
+		"display":"block",
+		"float": "left",
+		"width": "130px",
+		"height": "70px"
+	},
+	"menuItemImg": {
+		"height": "50px",
+		"width": "90px",
+		"margin-top": "10px",
+		"margin-left": "20px",
+		"border-radius": "4px"
+	},
+	"menuItemSeparator": {
+		"display":"block",
+		"float": "left",
+		"height": "34px",
+		"width": "0px",
+		"background-color": "#d7d7d7",
+		"border-right": "0px solid #d7d7d7",
+		"overflow": "hidden"
+	},
+	"menuItemText": {
+		"display":"block",
+		"position": "static",
+		"height": "65px",
+		"margin-left": "130px",
+		"margin-right": "10px",
+		"padding-right": "10px",
+		"line-height": "65px"
+	},
+	"menuLine": {
+		"position": "static",
+		"display":"block",
+		"height": "1px",
+		"overflow": "hidden",
+		"margin": "3px 20px",
+		"background-color": "#CCCCCC",
+		"border-bottom": "1px solid #FFFFFF"
+	},
+	"menuItemDisable": {
+		"color": "#333",
+		"background-color": "#f6f6f6",
+	},
+
+	"menuOver": {
+		"border": "0px solid #999",
+		"background-color": "#F0F0F0"
+	},
+	"menuOut": {
+		"border": "0px solid #FFF",
+		"background-color": "#FFF"
+	},
+	"menuDown": {
+		"border": "0px solid #000000",
+		"background-color": "#F0F0F0"
+	},
+	"menuUp": {
+		"border": "0px solid #8d9cc3",
+		"background-color": "#FFF"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "0px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	},
+	"menuItemSubmenuIcon":{
+		"background-image": "url("+o2.session.path+"/widget/$Menu/desktopStyle/submenu.png)",
+		"height": "16px",
+		"width": "16px",
+		"margin-top": "4px",
+		"float": "right"
+	}
+}

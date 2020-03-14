@@ -845,7 +845,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var name = node.get("name");
                 var value = this.data[name];
                 var select = new Element("select").inject(node);
-                Object.each(layout.desktop.serviceAddressList, function(v, key){
+                Object.each(layout.serviceAddressList, function(v, key){
                     var option = new Element("option", {"value": key, "text": v.name, "selected": (value==key)}).inject(select);
                 }.bind(this));
                 select.addEvent("change", function(){

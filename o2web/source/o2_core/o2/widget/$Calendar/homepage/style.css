@@ -1,0 +1,192 @@
+.container {
+	border: 1px solid #888888;
+	padding: 3px;
+	position: absolute;
+	width: 148px;
+	background-color:#FFF;
+	z-index: 99;
+	font-size: 12px;
+}
+
+.dateTitle {
+	background-image: url(titlebg.gif);
+	width: 148px;
+	height: 22px;
+	line-height: 20px;
+	text-align: center;
+}
+
+.datePrev {
+	width: 22px;
+	height: 22px;
+	float: left;
+	background: url(prev.gif) no-repeat center center;
+	cursor:pointer;
+}
+.dateNext {
+	width: 22px;
+	height: 22px;
+	float: right;
+	background: url(next.gif) no-repeat center center;
+	cursor:pointer;
+}
+.dateCurrent {
+	margin-left: 22px;
+	margin-right: 22px;
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	background-position: center center;
+	cursor: move;
+	font-size: 12px;
+}
+.dateCurrentText{
+	cursor: pointer;
+}
+.calendarContent {
+	width: 148px;
+	height: 155px;
+	overflow:hidden;
+}
+
+.calendarDaysContent{
+	width: 100%;
+	padding: 2px;
+	float: left;
+	height: 155px;
+	font-size: 12px;
+}
+
+.calendarDaysContent td{
+	text-align:center;
+	cursor:pointer;
+	border: 1px solid #FFF;
+	font-size: 12px;
+}
+
+.calendarMonthsContent{
+	width: 100%;
+	height: 155px;
+	padding: 2px;
+	float: left;
+}
+.calendarMonthsContent td{
+	text-align:center;
+	cursor:pointer;
+	border: 1px solid #FFF;
+	width: 37px;
+	font-size: 12px;
+	padding: 10px 4px;
+}
+.calendarMonthsContent{
+	width: 100%;
+	height: 155px;
+	padding: 2px;
+	float: left;
+}
+.calendarMonthsContent td{
+	text-align:center;
+	cursor:pointer;
+	border: 1px solid #FFF;
+	width: 37px;
+	font-size: 12px;
+}
+.calendarYearsContent{
+	width: 100%;
+	height: 155px;
+	padding: 2px;
+	float: left;
+}
+.calendarYearsContent td{
+	text-align:center;
+	cursor:pointer;
+	border: 1px solid #FFF;
+	width: 37px;
+	font-size: 12px;
+	padding: 10px 4px;
+}
+.calendarTimeContent{
+	width: 100%;
+	height: 155px;
+	padding: 2px;
+	float: left;
+}
+.calendarTimeContent td{
+	text-align:center;
+	cursor:pointer;
+	border: 1px solid #FFF;
+	width: 37px;
+	font-size: 12px;
+}
+.gray_default {
+	color: #999;
+}
+.today_default {
+	border: 1px solid #999;
+	background-color: #EFEFEF;
+}
+.current_default {
+	background-color: #8E8E8E;
+	color:#FFF;
+}
+.dateBottom {
+	width: 148px;
+	height: 10px;
+	background-image: url(bottombg.gif);
+	overflow: hidden;
+}
+.calendarTimeSlider{
+	margin-top: 14px;
+	height: 10px;
+	overflow: hidden;
+	margin-left: 27px;
+	margin-right: 15px;
+	border-top:1px solid #999;
+	border-left:1px solid #999;
+	border-bottom:1px solid #E1E1E1;
+	border-right:1px solid #E1E1E1;
+	background-color:#EEE;
+}
+.calendarTimeArea{
+	height: 25px;
+	line-height: 25px;
+	margin-top: 4px;
+}
+.calendarTimeSliderKnob{
+	height:8px;
+	width: 8px;
+	background-color:#999;
+	/*position: absolute;*/
+	z-index: 99;
+	
+	border-top:1px solid #DDD;
+	border-left:1px solid #DDD;
+	border-bottom:1px solid #777;
+	border-right:1px solid #777;
+	cursor:pointer;
+}
+.calendarTimeShow{
+	width: 85px;
+	margin: auto;
+	margin-top: 10px;
+	cursor:pointer;
+	overflow: hidden;
+}
+.calendarTimeShowItem{
+	border: 3px solid #CCC;
+	background:#666;
+	color: #FFF;
+	font-size: 24px;
+	font-weight: bolder;
+	float: left;
+	width: 32px;
+	margin-left: 4px;
+}
+.calendarActionShow {
+	margin-top: 16px;
+	text-align: right;
+	overflow: hidden;
+	margin-right: 10px;
+}
+.calendarActionShow button{
+	margin-left: 15px;
+}

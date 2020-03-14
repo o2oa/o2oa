@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.require("MWF.widget.Maplist", null, false);
@@ -11,7 +13,8 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         "noCreate": false,
         "noDelete": false,
         "noCode": false,
-        "noHide": false
+        "noHide": false,
+        "systemToolsAddress" : "/x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
 	},
 	initialize: function(node, designer, module, options){
 		this.setOptions(options);
@@ -95,7 +98,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
     listRemovedSystemTool : function(){
         var list = [];
         if( !this.defaultTools ){
-            MWF.getJSON( "/x_component_process_FormDesigner/Module/Actionbar/toolbars.json", function(tools){
+            MWF.getJSON( this.options.systemToolsAddress, function(tools){
                 this.defaultTools = tools;
             }.bind(this), false);
         }
@@ -179,7 +182,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         this.data = data;
         this.loadNode();
 
-        var form = this.editor.designer.form || this.editor.designer.page;
+        var form = this.editor.designer.form || this.editor.designer.page || this.editor.designer.view;
         if (form.scriptDesigner){
             this.scriptItem = form.scriptDesigner.addScriptItem(this.data, "actionScript", this.editor.module, "action.tools", this.data.text);
         }
@@ -351,11 +354,11 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             var action = actions[index_before];
             this.node.inject(action.node, "before");
 
-            actions[index_before] = actions.splice(index, 1, actions[index_before])[0]; //Êý×é½»»»Î»ÖÃ
+            actions[index_before] = actions.splice(index, 1, actions[index_before])[0]; //ï¿½ï¿½ï¿½é½»ï¿½ï¿½Î»ï¿½ï¿½
             this.editor.actions = actions;
 
             var dataIndex_before = dataIndex - 1;
-            dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0]; //Êý×é½»»»Î»ÖÃ
+            dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0]; //ï¿½ï¿½ï¿½é½»ï¿½ï¿½Î»ï¿½ï¿½
             this.editor.data = dataList;
 
             this.editor.fireEvent("change");

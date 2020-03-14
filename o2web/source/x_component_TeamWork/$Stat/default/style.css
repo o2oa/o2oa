@@ -1,0 +1,11 @@
+.o2_empty_content{
+    height: 800px;
+    width:600px;
+    background-color: #1d5987;
+}
+.o2_empty_div1 {
+    color: #ffffff;
+    width: 300px;
+    height: 500px;
+    border: 1px solid #ffffff;
+}

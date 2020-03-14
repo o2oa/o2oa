@@ -8,7 +8,8 @@ MWF.xApplication.Selector.CMSView = new Class({
         "title": MWF.xApplication.Selector.LP.selectView,
         "values": [],
         "names": [],
-        "expand": false
+        "expand": false,
+        "forceSearchInItem" : true
     },
 
     loadSelectItems: function(addToNext){
@@ -62,7 +63,8 @@ MWF.xApplication.Selector.CMSView.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -108,7 +110,8 @@ MWF.xApplication.Selector.CMSView.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -137,7 +140,8 @@ MWF.xApplication.Selector.CMSView.ItemCategory = new Class({
         }).inject(this.container);
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        var style = "default";
+        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     _hasChild: function(){
         return (this.data.queryViews && this.data.queryViews.length);

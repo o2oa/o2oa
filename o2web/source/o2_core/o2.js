@@ -38,6 +38,25 @@
  * |uuid:         o2.uuid()                                                       |
  * |------------------------------------------------------------------------------|
  */
+//Element.firstElementChild Polyfill
+(function(constructor) {
+    if (constructor &&
+        constructor.prototype &&
+        constructor.prototype.firstElementChild == null) {
+        Object.defineProperty(constructor.prototype, 'firstElementChild', {
+            get: function() {
+                var node, nodes = this.childNodes, i = 0;
+                while (node = nodes[i++]) {
+                    if (node.nodeType === 1) {
+                        return node;
+                    }
+                }
+                return null;
+            }
+        });
+    }
+})(window.Node || window.Element);
+
 (function(){
     var _href = window.location.href;
     var _debug = (_href.indexOf("debugger")!==-1);
@@ -52,19 +71,33 @@
             if (_kv[0].toLowerCase()==="lp") _lp = _kv[1];
         }
     }
-    this.o2 = {
-        "version": {
-            "v": "2.3.1",
-            "build": "2019.07.31",
-            "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
-        },
-        "session": {
-            "isDebugger": _debug,
-            "path": "/o2_core/o2"
-        },
-        "language": _lp,
-        "splitStr": /\s*(?:,|;)\s*/
+    this.o2 = window.o2 || {};
+    this.o2.version = {
+        "v": "2.3.1",
+        "build": "2019.07.31",
+        "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
     };
+    if (!this.o2.session) this.o2.session ={
+        "isDebugger": _debug,
+        "path": "/o2_core/o2"
+    };
+    this.o2.language = _lp;
+    this.o2.splitStr = /\s*(?:,|;)\s*/;
+
+    //     this.o2 = {
+    //     "version": {
+    //         "v": "2.3.1",
+    //         "build": "2019.07.31",
+    //         "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
+    //     },
+    //     "session": {
+    //         "isDebugger": _debug,
+    //         "path": "/o2_core/o2"
+    //     },
+    //     "language": _lp,
+    //     "splitStr": /\s*(?:,|;)\s*/
+    // };
+
     this.wrdp = this.o2;
     
     var _attempt = function(){
@@ -184,6 +217,8 @@
             "sequence": !!(options && options.sequence),
             "doc": doc,
             "dom": (options && options.dom) || document.body,
+            "module": (options && options.module) || null,
+            "noConflict": (options && options.noConflict) || false,
             "bind": (options && options.bind) || null,
             "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'debugger
         }
@@ -218,12 +253,30 @@
             "sequence": !!(options && options.sequence),
             "doc": doc,
             "dom": (options && options.dom) || null,
+            "module": (options && options.module) || null,
+            "noConflict": (options && options.noConflict) || false,
             "bind": (options && options.bind) || null,
             "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
+    _filterUrl = function(url){
+        if (o2.base){
+            if (url.indexOf(":")===-1){
+                var s = url.substring(0, url.indexOf("/")+1);
+                var r = url.substring(url.indexOf("/")+1, url.length);
+                if ("../"===s || "./"===s || "/"===s){
+                    return s+o2.base+r;
+                }else{
+                    return o2.base+url
+                }
+            }
+        }
+        return url;
+    };
+    this.o2.filterUrl = _filterUrl;
     var _xhr_get = function(url, success, failure, completed){
         var xhr = new _request();
+        url = _filterUrl(url);
         xhr.open("GET", url, true);
 
         var _checkCssLoaded= function(_, err){
@@ -285,14 +338,14 @@
     var _frameworks = {
         "o2.core": ["/o2_core/o2/o2.core.js"],
         "o2.more": ["/o2_core/o2/o2.more.js"],
-        "ie_adapter": ["/o2_lib/o2/ie_adapter.js"],
+        "ie_adapter": ["/o2_core/o2/ie_adapter.js"],
         "jquery": ["/o2_lib/jquery/jquery.min.js"],
         "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
         "ckeditor": ["/o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
         "ckeditor5": ["/o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
         "raphael": ["/o2_lib/raphael/raphael.js"],
         "d3": ["/o2_lib/d3/d3.min.js"],
-        "ace": ["/o2_lib/ace/src-noconflict/ace.js","/o2_lib/ace/src-noconflict/ext-language_tools.js"],
+        "ace": ["/o2_lib/ace/src-min-noconflict/ace.js","/o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
         "JSBeautifier": ["/o2_lib/JSBeautifier/beautify.js"],
         "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
         "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
@@ -319,7 +372,7 @@
         var s = op.doc.createElement('script');
         head.appendChild(s);
         s.id = uuid;
-        s.src = url;
+        s.src = this.o2.filterUrl(url);
 
         var _checkScriptLoaded = function(_, isAbort, err){
             if (isAbort || !s.readyState || s.readyState === "loaded" || s.readyState === "complete") {
@@ -410,31 +463,39 @@
             var cssText = xhr.responseText;
             try{
                 if (cssText){
+                    cssText = cssText.replace(/\/\*(\s|\S)*?\*\//g, "");
                     if (op.bind) cssText = cssText.bindJson(op.bind);
                     if (op.dom){
+
                         var rex = new RegExp("(.+)(?=\\{)", "g");
                         var match;
                         var prefix = "." + uuid + " ";
-
                         while ((match = rex.exec(cssText)) !== null) {
                             // var rule = prefix + match[0];
                             // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
                             // rex.lastIndex = rex.lastIndex + prefix.length;
 
                             var rulesStr = match[0];
-                            if (rulesStr.indexOf(",")!=-1){
-                                var rules = rulesStr.split(/\s*,\s*/g);
-                                rules = rules.map(function(r){
-                                    return prefix + r;
-                                });
-                                var rule = rules.join(", ");
-                                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                                rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+                            if (rulesStr.substr(0,1)=="@" || rulesStr.indexOf("%")!=-1){
+                                // var begin = 0;
+                                // var end = 0;
+
 
                             }else{
-                                var rule = prefix + match[0];
-                                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                                rex.lastIndex = rex.lastIndex + prefix.length;
+                                if (rulesStr.indexOf(",")!=-1){
+                                    var rules = rulesStr.split(/\s*,\s*/g);
+                                    rules = rules.map(function(r){
+                                        return prefix + r;
+                                    });
+                                    var rule = rules.join(", ");
+                                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                                    rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+                                }else{
+                                    var rule = prefix + match[0];
+                                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                                    rex.lastIndex = rex.lastIndex + prefix.length;
+                                }
                             }
                         }
                     }
@@ -527,7 +588,7 @@
     };
     this.o2.loadCss = _loadCss;
     this.o2.removeCss = _removeCss;
-    Element.prototype.loadCss = function(modules, options, callback){
+    if (window.Element) Element.prototype.loadCss = function(modules, options, callback){
         var op =  (_typeOf(options)==="object") ? options : {};
         var cb = (_typeOf(options)==="function") ? options : callback;
         op.dom = this;
@@ -556,7 +617,67 @@
 
     var _injectHtml = function(op, data){
         if (op.bind) data = data.bindJson(op.bind);
-        if (op.dom) _parseDom(op.dom, function(node){ node.insertAdjacentHTML(op.position, data) }, op.doc);
+        if (op.dom) _parseDom(op.dom, function(node){
+            if (op.module){
+                _parseModule(node, data, op);
+                //node.insertAdjacentHTML(op.position, data);
+            }else{
+                node.insertAdjacentHTML(op.position, data);
+            }
+        }, op.doc);
+    };
+    var _parseModule = function(node, data, op){
+        var dom = op.noConflict ? document.createElement("div") : node;
+        if (op.noConflict){
+            dom.insertAdjacentHTML("afterbegin", data);
+        }else{
+            dom.insertAdjacentHTML(op.position, data);
+        }
+        var els = dom.querySelectorAll("[data-o2-element]");
+        for (var i=0; i<els.length; i++){
+            var el = els.item(i);
+            var name = el.getAttribute("data-o2-element").toString();
+            if (name) _bindToModule(op.module, el, name);
+            if (el.hasAttribute("data-o2-events")){
+                var events = el.getAttribute("data-o2-events").toString();
+                if (events) _bindToEvents(op.module, el, events);
+            }
+        }
+
+        if (op.noConflict){
+            var n = dom.firstElementChild;
+            var newNode = node.insertAdjacentElement(op.position, n);
+            nextNode = dom.firstElementChild;
+            while (nextNode) {
+                newNode = newNode.insertAdjacentElement("afterend", nextNode);
+                nextNode = dom.firstElementChild;
+            }
+            dom.destroy();
+        }
+    };
+
+    var _bindToEvents = function(m, node, events){
+        var eventList = events.split(/\s*;\s*/);
+        eventList.forEach(function(ev){
+            var evs = ev.split(/\s*:\s*/);
+            if (evs.length>1){
+                node.addEventListener(evs[0], function(e){
+                    if (m[evs[1]]) m[evs[1]].apply(m, [e]);
+                }, false);
+            }
+        });
+    }
+    var _bindToModule = function(m, node, name){
+        // if (m[name]){
+        //     if (o2.typeOf(m[name])!=="array"){
+        //         var tmp = m[name];
+        //         m[name] = [];
+        //         m[name].push(tmp);
+        //     }
+        //     m[name].push(node);
+        // }else{
+             m[name] = node;
+        // }
     };
     var _loadHtml = function(modules, options, callback){
         var ms = (_typeOf(modules)==="array") ? modules : [modules];
@@ -571,11 +692,20 @@
         }
     };
     this.o2.loadHtml = _loadHtml;
-    Element.prototype.loadHtml = function(modules, options, callback){
+    if (window.Element) Element.prototype.loadHtml = function(modules, options, callback){
         var op =  (_typeOf(options)==="object") ? options : {};
         var cb = (_typeOf(options)==="function") ? options : callback;
         op.dom = this;
         _loadHtml(modules, op, cb);
+    };
+    this.o2.injectHtml = function(html, op){
+        _injectHtml(op, html);
+    };
+    if (window.Element) Element.prototype.injectHtml = function(html, options){
+        var op =  (_typeOf(options)==="object") ? options : {};
+        op.dom = this;
+        op.position = (options && options.position) || "beforeend"
+        _injectHtml(op, html);
     };
 
     //load all
@@ -612,7 +742,7 @@
         }
     };
     this.o2.loadAll = _loadAll;
-    Element.prototype.loadAll = function(modules, options, callback){
+    if (window.Element) Element.prototype.loadAll = function(modules, options, callback){
         var op =  (_typeOf(options)==="object") ? options : {};
         var cb = (_typeOf(options)==="function") ? options : callback;
         op.dom = this;
