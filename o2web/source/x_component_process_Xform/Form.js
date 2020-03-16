@@ -1131,14 +1131,24 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    this.fireEvent("afterClose");
         }
         if (!this.options.readonly) {
-            if (this.businessData.work) this.workAction.checkDraft(this.businessData.work.id, function () {
-                if (layout.desktop.apps) {
-                    if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
-                        layout.desktop.apps["TaskCenter"].content.unmask();
-                        layout.desktop.apps["TaskCenter"].refreshAll();
-                    }
+            if (this.businessData.work){
+                if (this.app.inBrowser && navigator.sendBeacon){
+                    debugger;
+                    var obj = this.workAction.action.actions["checkDraft"];
+                    var url = this.workAction.action.address+obj.uri;
+                    url = url.replace("{id}", this.businessData.work.id);
+                    navigator.sendBeacon(url);
+                }else{
+                    this.workAction.checkDraft(this.businessData.work.id, function () {
+                        if (layout.desktop.apps) {
+                            if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
+                                layout.desktop.apps["TaskCenter"].content.unmask();
+                                layout.desktop.apps["TaskCenter"].refreshAll();
+                            }
+                        }
+                    }.bind(this), null, false);
                 }
-            }.bind(this), null, false);
+            }
         } else {
             this.app.refreshTaskCenter();
         }
