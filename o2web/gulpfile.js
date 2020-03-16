@@ -17,41 +17,45 @@ var assetRev = require('gulp-tm-asset-rev');
 var apps = require('./gulpapps.js');
 var ftpconfig = require('./gulpconfig.js');
 
-var options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
+var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src"]
 });
+var options = {};
 
 var uploadOptions = ftpconfig.dev;
-if (options.ev && options.ev=="dev"){
+if (o_options.ev && o_options.ev=="dev"){
+    options.ev = "dev";
     uploadOptions = ftpconfig.dev;
-}else if (options.ev && options.ev=="release"){
+}else if (o_options.ev && o_options.ev=="release"){
+    options.ev = "release";
     uploadOptions = ftpconfig.release;
-}else if (options.ev && options.ev=="wrdp"){
+}else if (o_options.ev && o_options.ev=="wrdp"){
+    options.ev = "wrdp";
     uploadOptions = ftpconfig.wrdp;
 }else{
     options.ev = "dev";
     uploadOptions = ftpconfig.dev;
 }
 
-options.upload = options.upload || "";
-options.location = options.location || uploadOptions.location;
-options.host = options.host || uploadOptions.host;
-options.user = options.user || uploadOptions.user;
-options.pass = options.pass || uploadOptions.pass;
-options.port = options.port || uploadOptions.port;
-options.remotePath = options.remotePath || uploadOptions.remotePath;
-options.dest = options.dest || uploadOptions.dest || "dest";
+options.upload = o_options.upload || "";
+options.location = o_options.location || uploadOptions.location;
+options.host = o_options.host || uploadOptions.host;
+options.user = o_options.user || uploadOptions.user;
+options.pass = o_options.pass || uploadOptions.pass;
+options.port = o_options.port || uploadOptions.port;
+options.remotePath = o_options.remotePath || uploadOptions.remotePath;
+options.dest = o_options.dest || uploadOptions.dest || "dest";
 
 var release_options = {};
 release_options.ev = "release";
-release_options.upload = release_options.upload || "";
-release_options.location = release_options.location || ftpconfig.release.location;
-release_options.host = release_options.host || ftpconfig.release.host;
-release_options.user = release_options.user || ftpconfig.release.user;
-release_options.pass = release_options.pass || ftpconfig.release.pass;
-release_options.port = release_options.port || ftpconfig.release.port;
-release_options.remotePath = release_options.remotePath || ftpconfig.release.remotePath;
-release_options.dest = release_options.dest || ftpconfig.release.dest || "dest";
+release_options.upload = o_options.upload || "";
+release_options.location = o_options.location || ftpconfig.release.location;
+release_options.host = o_options.host || ftpconfig.release.host;
+release_options.user = o_options.user || ftpconfig.release.user;
+release_options.pass = o_options.pass || ftpconfig.release.pass;
+release_options.port = o_options.port || ftpconfig.release.port;
+release_options.remotePath = o_options.remotePath || ftpconfig.release.remotePath;
+release_options.dest = o_options.dest || ftpconfig.release.dest || "dest";
 
 
 var appTasks = [];
@@ -137,6 +141,7 @@ function getAppTask(path, isMin, thisOptions) {
 
 //var taskObj = {};
 apps.map(function (app) {
+    var taskName;
     var isMin = (app.tasks.indexOf("min")!==-1);
     taskName = app.folder;
     appTasks.push(taskName);
