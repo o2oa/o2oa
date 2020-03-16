@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 	o2.widget.SimpleEditor = o2.widget.SimpleEditor || {};
 	o2.widget.SimpleEditor.Actions = o2.widget.SimpleEditor.Actions || {};
 	o2.widget.SimpleEditor.Actions.setting = o2.widget.SimpleEditor.Actions.setting || {};

@@ -200,18 +200,21 @@ MWF.xApplication.Profile.Main = new Class({
         }).addEvent("blur",function(){
             this.removeClass("mainColor_border mainColor_color");
         });
+
         this.ideasSaveAction = this.ideasArea.getNext().addEvent("mouseover",function(){
             this.addClass("mainColor_bg");
         }).addEvent("mouseout",function(){
             this.removeClass("mainColor_bg");
         });
         this.ideasSaveDefaultAction = this.ideasSaveAction.getNext() || null;
-        this.ideasSaveDefaultAction.addEvent("mouseover",function(){
-            this.addClass("mainColor_bg");
-        }).addEvent("mouseout",function(){
-            this.removeClass("mainColor_bg");
-        });
+
+
         if (MWF.AC.isAdministrator()){
+            this.ideasSaveDefaultAction.addEvent("mouseover",function(){
+                this.addClass("mainColor_bg");
+            }).addEvent("mouseout",function(){
+                this.removeClass("mainColor_bg");
+            });
             this.ideasSaveDefaultAction.addEvent("click", function(){
                 MWF.require("MWF.widget.UUID", function(){
                     var data = {};
@@ -401,7 +404,7 @@ MWF.xApplication.Profile.Main = new Class({
             ],
             "columns": [
                 {width:"30%","title": this.lp.empower.title,  "field": "subject","formatter":function(data,target){
-                        new Element("a",{"text":data.title,"style":{"cursor":"pointer"}}).inject(target).addEvent("click",function(e){
+                        new Element("a",{"text":data.title,"style":"cursor:pointer"}).inject(target).addEvent("click",function(e){
                             var options = {"workId": data.work, "appId": "process.Work"+data.work};
                             _this.desktop.openApplication(e, "process.Work", options);
                         });

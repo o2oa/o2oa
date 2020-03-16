@@ -14,7 +14,7 @@ module.exports = {
         'pass': 'o2No.one',
         "port": 21,
         "remotePath": "/",
-        "dest": "D:/O2/github/o2oa/o2oa-release/o2web/source"
+        "dest": "D:/O2/github/o2oa/o2oa/o2web/source"
     },
     "wrdp": {}
 };
