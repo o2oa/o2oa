@@ -3,10 +3,6 @@ package com.x.processplatform.core.express.query;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.x.processplatform.core.entity.query.OrderType;
-import com.x.processplatform.core.entity.query.SelectEntry;
-import com.x.processplatform.core.entity.query.SelectType;
-
 public class SelectEntryTools {
 
 	public static List<SelectEntry> filterOrderSelectEntries(List<SelectEntry> selectEntries) {

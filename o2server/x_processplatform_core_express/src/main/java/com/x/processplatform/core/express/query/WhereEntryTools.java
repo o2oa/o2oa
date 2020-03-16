@@ -13,9 +13,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.Work_;
-import com.x.processplatform.core.entity.query.WhereEntry;
-import com.x.query.core.entity.Item;
-import com.x.query.core.entity.Item_;
 
 public class WhereEntryTools {
 

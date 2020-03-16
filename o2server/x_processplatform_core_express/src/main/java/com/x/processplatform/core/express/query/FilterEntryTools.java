@@ -13,9 +13,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.query.Comparison;
-import com.x.processplatform.core.entity.query.FilterEntry;
-import com.x.processplatform.core.entity.query.FormatType;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 

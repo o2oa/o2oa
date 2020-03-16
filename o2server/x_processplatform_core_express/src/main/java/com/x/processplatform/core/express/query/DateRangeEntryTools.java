@@ -6,8 +6,6 @@ import javax.persistence.criteria.Root;
 
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.query.DateRangeEntry;
-import com.x.query.core.entity.Item;
 
 public class DateRangeEntryTools {
 //	public static Predicate toPredicate11(CriteriaBuilder cb, Root<Item> root, DateRangeEntry dateRangeEntry)

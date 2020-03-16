@@ -316,6 +316,11 @@
 			<groupId>com.itextpdf</groupId>
 			<artifactId>font-asian</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -708,6 +713,11 @@
 						<artifactId>visrec-api</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>

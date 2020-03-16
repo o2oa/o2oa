@@ -10,13 +10,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import com.x.processplatform.core.entity.query.GroupEntry;
-import com.x.processplatform.core.entity.query.OrderEntry;
-import com.x.processplatform.core.entity.query.OrderEntryTools;
-import com.x.processplatform.core.entity.query.OrderType;
-import com.x.processplatform.core.entity.query.Row;
-import com.x.processplatform.core.entity.query.Table;
-
 public class GroupEntryTools {
 	public static List<LinkedHashMap<String, Object>> group(Table table, GroupEntry groupEntry,
 			List<OrderEntry> orderEntries) throws Exception {

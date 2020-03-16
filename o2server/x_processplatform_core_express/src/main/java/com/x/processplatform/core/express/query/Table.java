@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.processplatform.core.entity.query.Row;
-
 public class Table extends ArrayList<Row> {
 
 	private static final long serialVersionUID = 7525624451700204922L;

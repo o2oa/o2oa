@@ -6,7 +6,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.DateTools;
-import com.x.processplatform.core.entity.query.FormatType;
 
 public class FilterEntry extends GsonPropertyObject {
 

@@ -5,9 +5,6 @@ import java.util.List;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.query.CalculateEntry;
-import com.x.processplatform.core.entity.query.OrderEffectType;
-import com.x.processplatform.core.entity.query.OrderType;
 
 public class Calculate extends GsonPropertyObject {
 

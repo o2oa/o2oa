@@ -11,15 +11,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import com.x.processplatform.core.entity.query.Calculate;
-import com.x.processplatform.core.entity.query.CalculateCell;
-import com.x.processplatform.core.entity.query.CalculateEntry;
-import com.x.processplatform.core.entity.query.GroupEntry;
-import com.x.processplatform.core.entity.query.OrderEffectType;
-import com.x.processplatform.core.entity.query.OrderType;
-import com.x.processplatform.core.entity.query.Row;
-import com.x.processplatform.core.entity.query.Table;
-
 public class CalculateEntryTools {
 
 	public static List<CalculateCell> calculateAmount(Table table, List<CalculateEntry> calculateEntries)

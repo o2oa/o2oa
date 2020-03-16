@@ -8,10 +8,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.query.OrderEntry;
-import com.x.processplatform.core.entity.query.OrderType;
-import com.x.processplatform.core.entity.query.Row;
-import com.x.processplatform.core.entity.query.Table;
 
 public class OrderEntryTools {
 

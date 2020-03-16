@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.processplatform.core.entity.query.OrderType;
 
 public class OrderEntry extends GsonPropertyObject {
 

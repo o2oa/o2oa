@@ -1,7 +1,6 @@
 package com.x.processplatform.core.express.query;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.processplatform.core.entity.query.CalculateEntry;
 
 public class CalculateCell extends GsonPropertyObject {
 

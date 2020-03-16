@@ -5,8 +5,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.processplatform.core.entity.query.OrderType;
-import com.x.processplatform.core.entity.query.SelectType;
 
 public class SelectEntry extends GsonPropertyObject {
 
