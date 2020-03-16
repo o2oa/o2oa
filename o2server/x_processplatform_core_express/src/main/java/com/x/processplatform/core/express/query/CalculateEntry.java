@@ -3,9 +3,6 @@ package com.x.processplatform.core.express.query;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.processplatform.core.entity.query.CalculateType;
-import com.x.processplatform.core.entity.query.OrderEffectType;
-import com.x.processplatform.core.entity.query.OrderType;
 
 public class CalculateEntry extends GsonPropertyObject {
 
