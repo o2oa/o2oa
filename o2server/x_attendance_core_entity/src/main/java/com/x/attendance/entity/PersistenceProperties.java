@@ -7,6 +7,15 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class AttendanceDetail {
 		public static final String table = "ATDC_ATTENDANCE_DETAIL";
 	}
+	public static class AttendanceDingtalkDetail {
+		public static final String table = "ATDC_ATTENDANCE_DINGTALK";
+	}
+	public static class AttendanceQywxDetail {
+		public static final String table = "ATDC_ATTENDANCE_QYWX";
+	}
+	public static class DingdingQywxSyncRecord {
+		public static final String table = "ATDC_DD_QYWX_RECORD";
+	}
 	public static class AttendanceDetailMobile {
 		public static final String table = "ATDC_ATTENDANCE_DETAIL_MOBILE";
 	}

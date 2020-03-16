@@ -46,7 +46,6 @@ public class IMMsg extends SliceJpaObject {
     public static final String conversationId_FIELDNAME = "conversationId";
     @FieldDescribe("会话id， 关联的会话.")
     @Column(length = length_64B, name = ColumnNamePrefix + conversationId_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + conversationId_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String conversationId;
 
@@ -61,7 +60,6 @@ public class IMMsg extends SliceJpaObject {
     public static final String createPerson_FIELDNAME = "createPerson";
     @FieldDescribe("创建人，消息发送人")
     @Column(length = length_255B, name = ColumnNamePrefix + createPerson_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + createPerson_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String createPerson;
 

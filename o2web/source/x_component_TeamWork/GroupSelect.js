@@ -135,9 +135,10 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
             this.createFirstPage();
             return;
         }
-        this.actions.groupSave(data,function(json){
+        //this.actions.groupSave(data,function(json){
+        this.rootActions.ProjectGroupAction.save(data,function(json){
             if(json.data && json.data.id){
-                this.actions.groupList(function(resData){ debugger;
+                this.rootActions.ProjectGroupAction.listGroups(function(resData){ debugger;
                     var resD = null;
                     resData.data.each(function(dd){
                         if(dd.id == json.data.id) resD = dd;
@@ -156,7 +157,8 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
     createCommonGroup:function(){
         var _self = this;
         this.app.setLoading(this.commonGroupContainer);
-        this.actions.groupList(function(json){
+        this.rootActions.ProjectGroupAction.listGroups(function(json){
+        //this.actions.groupList(function(json){
             this.commonGroupContainer.empty();
             var data = json.data;
             this.allProjectGroup = json.data;

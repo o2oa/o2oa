@@ -20,7 +20,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 	private SearchServiceAdv searchServiceAdv = new SearchServiceAdv();
 	private UserManagerService userManagerService = new UserManagerService();
 	
-	public ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson currentPerson, String docStatus, String categoryId ) {
+	public ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String docStatus, String categoryId ) {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = new Wo();
 		List<String> app_ids = null;
@@ -30,19 +30,19 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 		List<UnitNameFilter> unitFilterList = null;
 		Boolean isXAdmin = false;
 		Boolean check = true;
-		Boolean isAnonymous = currentPerson.isAnonymous();
-		String personName = currentPerson.getDistinguishedName();
+		Boolean isAnonymous = effectivePerson.isAnonymous();
+		String personName = effectivePerson.getDistinguishedName();
 		// 文档类型：全部|信息|数据
 		String documentType = "信息";
 		if (check) {
 			try {
-				isXAdmin = userManagerService.isManager( currentPerson);
+				isXAdmin = userManagerService.isManager( effectivePerson);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSearchProcess(e, 
 						"系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
 				result.error(exception);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -53,7 +53,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 					check = false;
 					Exception exception = new ExceptionSearchProcess(e, "系统在查询所有栏目信息ID列表时发生异常。");
 					result.error(exception);
-					logger.error(e, currentPerson, request, null);
+					logger.error(e, effectivePerson, request, null);
 				}
 			} else {
 				try {
@@ -66,7 +66,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 					Exception exception = new ExceptionSearchProcess( e, 
 							"系统在根据用户权限查询所有可见的栏目信息时发生异常。Name:" + personName );
 					result.error(exception);
-					logger.error(e, currentPerson, request, null);
+					logger.error(e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -84,7 +84,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 						+ ", CategoryId:" +  categoryId
 						);
 				result.error(exception);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		// 2、获取分类统计列表
@@ -100,7 +100,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 						+ ", CategoryId:" +  categoryId
 						);
 				result.error(exception);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -115,7 +115,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 						+ ", CategoryId:" +  categoryId
 						);
 				result.error(exception);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -130,7 +130,7 @@ class ActionListAppSearchFilterForDocStatus extends BaseAction {
 						+ ", CategoryId:" +  categoryId
 						);
 				result.error(exception);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {

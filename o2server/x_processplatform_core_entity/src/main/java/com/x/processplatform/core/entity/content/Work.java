@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.content;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -85,6 +84,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.title = Objects.toString(this.title, "");
 			this.titleLob = null;
 		}
+		/* 填入处理人文本 */
+		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
+			this.manualTaskIdentityText = "";
+		} else {
+			String text = StringUtils.join(OrganizationDefinition.name(manualTaskIdentityList), ",");
+			text = StringTools.utf8SubString(text, length_255B);
+			this.setManualTaskIdentityText(text);
+		}
 	}
 	/* 更新运行方法 */
 
@@ -131,18 +138,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 				: WORKCREATETYPE_SURFACE;
 	}
 
-	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
-		this.manualTaskIdentityList = manualTaskIdentityList;
-		if (ListTools.isEmpty(manualTaskIdentityList)) {
-			this.manualTaskIdentityText = "";
-		} else {
-			String text = StringUtils.join(OrganizationDefinition.name(manualTaskIdentityList), ",");
-			text = StringTools.utf8SubString(text, length_255B);
-			this.setManualTaskIdentityText(text);
-			// this.manualTaskIdentityText = text;
-		}
-	}
-
+ 
 	/* 修改过的Set Get 方法 */
 
 	public static final String job_FIELDNAME = "job";
@@ -945,14 +941,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.serviceValue = serviceValue;
 	}
 
-//	public Boolean getForceRoute() {
-//		return forceRoute;
-//	}
-//
-//	public void setForceRoute(Boolean forceRoute) {
-//		this.forceRoute = forceRoute;
-//	}
-
 	public Date getExpireTime() {
 		return expireTime;
 	}
@@ -1004,14 +992,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void setActivityDescription(String activityDescription) {
 		this.activityDescription = activityDescription;
 	}
-
-//	public Boolean getForceRouteArriveCurrentActivity() {
-//		return forceRouteArriveCurrentActivity;
-//	}
-//
-//	public void setForceRouteArriveCurrentActivity(Boolean forceRouteArriveCurrentActivity) {
-//		this.forceRouteArriveCurrentActivity = forceRouteArriveCurrentActivity;
-//	}
 
 	public Boolean getDataChanged() {
 		return dataChanged;
@@ -1299,6 +1279,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setProperties(WorkProperties properties) {
 		this.properties = properties;
+	}
+
+	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
+		this.manualTaskIdentityList = manualTaskIdentityList;
 	}
 
 }

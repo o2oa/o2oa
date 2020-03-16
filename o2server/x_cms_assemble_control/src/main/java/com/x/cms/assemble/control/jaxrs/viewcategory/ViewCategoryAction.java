@@ -114,16 +114,16 @@ public class ViewCategoryAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void post( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 
 		if (check) {
 			try {
-				result = new ActionSave().execute(request, currentPerson, jsonElement);
+				result = new ActionSave().execute(request, effectivePerson, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error(e);
-				logger.error(e, currentPerson, request, null);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

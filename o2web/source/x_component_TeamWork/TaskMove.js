@@ -41,7 +41,9 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.app = this.explorer.app;
         this.container = this.app.content;
         this.lp = this.app.lp.taskMove;
-        this.actions = this.explorer.actions || this.app.actions || this.app.rectActions;
+        //this.actions = this.explorer.actions || this.app.actions || this.app.rectActions;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.TaskAction;
 
         this.data = data || {};
         this.cssPath = "/x_component_TeamWork/$TaskMove/"+this.options.style+"/css.wcss";
@@ -149,7 +151,8 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.curCount = this.curCount || 0;
         this.isLoaded = false;
         //alert("curcount="+this.curCount+"total="+this.total);alert(id)
-        this.actions.taskListNext(id,count,filter,function(json){
+        //this.actions.taskListNext(id,count,filter,function(json){
+        this.actions.listNextWithFilter(id,count,filter,function(json){
             this.total = json.count;
             this.taskListData = json.data;
             tmploading.destroy();
@@ -186,7 +189,7 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
                 _self.okAction.setStyles({
                     "cursor":"pointer",
                     "background-color":"#4A90E2"
-                })
+                });
                 _self.selectedItem = this;
             }
         });
@@ -205,8 +208,8 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
                     var data = {
                         parent : this.selectedItem.get("id"),
                         id:this.data.data.id
-                    }
-                    this.actions.taskSave(data,function(json){
+                    };
+                    this.actions.save(data,function(json){
                         this.explorer._createTableContent();
                         this.close();
                     }.bind(this))

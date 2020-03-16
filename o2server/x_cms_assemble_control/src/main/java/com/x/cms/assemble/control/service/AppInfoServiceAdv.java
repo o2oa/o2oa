@@ -9,6 +9,7 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.AppInfoConfig;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,7 +77,7 @@ public class AppInfoServiceAdv {
 		}
 	}
 
-	public void delete( String id, EffectivePerson currentPerson ) throws Exception {
+	public void delete( String id, EffectivePerson effectivePerson ) throws Exception {
 		if ( StringUtils.isEmpty(id )) {
 			throw new Exception("id is null.");
 		}
@@ -97,7 +98,14 @@ public class AppInfoServiceAdv {
 
 	public List<String> listAllIds(String documentType) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return appInfoService.listAllIds(emc, documentType);
+			List<String> list = appInfoService.listAllIds(emc, documentType);
+			List<String> result =  new ArrayList<>();
+			if( ListTools.isNotEmpty( list )) {
+				for( String id : list ) {
+					ListTools.addStringToList(id, result);
+				}
+			}
+			return result;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -119,21 +127,21 @@ public class AppInfoServiceAdv {
 	 * 栏目信息保存服务
 	 * @param appInfo
 	 * @param config
-	 * @param currentPerson
+	 * @param effectivePerson
 	 * @return
 	 * @throws Exception
 	 */
-	public AppInfo save( AppInfo appInfo, String config, EffectivePerson currentPerson) throws Exception {
+	public AppInfo save( AppInfo appInfo, String config, EffectivePerson effectivePerson) throws Exception {
 		if ( appInfo == null) {
 			throw new Exception("appInfo is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			// 检查一下该应用栏目是否存在管理者, 如果不存在，则将当前登录者作为应用栏目的管理者
 			if( ListTools.isEmpty( appInfo.getManageablePersonList())  && ListTools.isEmpty( appInfo.getManageableUnitList())  &&ListTools.isEmpty( appInfo.getManageableGroupList())) {
-				if( "xadmin".equalsIgnoreCase( currentPerson.getName() )) {
+				if( "xadmin".equalsIgnoreCase( effectivePerson.getName() )) {
 					appInfo.addManageablePerson( "xadmin" );
 				}else {
-					appInfo.addManageablePerson( currentPerson.getDistinguishedName() );
+					appInfo.addManageablePerson( effectivePerson.getDistinguishedName() );
 				}
 			}
 			appInfo = appInfoService.save( emc, appInfo, config );
@@ -143,7 +151,7 @@ public class AppInfoServiceAdv {
 		return appInfo;
 	}
 
-	public AppInfoConfig saveConfig( String appId, String config, EffectivePerson currentPerson) throws Exception {
+	public AppInfoConfig saveConfig( String appId, String config, EffectivePerson effectivePerson) throws Exception {
 		if ( StringUtils.isEmpty( appId )) {
 			throw new Exception("appId is null.");
 		}

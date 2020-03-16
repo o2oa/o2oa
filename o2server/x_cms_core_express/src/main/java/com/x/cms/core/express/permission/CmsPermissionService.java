@@ -85,7 +85,7 @@ public class CmsPermissionService {
 		if (!isAnonymous) {
 			// 2、将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			viewableAppInfoIds = addResultToSourceList(this.listManageableAppIdsByPerson(emc, personName, unitNames,
-					groupNames, null, documentType, maxCount), viewableAppInfoIds);
+					groupNames, null, null, null, documentType, maxCount), viewableAppInfoIds);
 
 			// 3、将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
 			addResultToSourceList(
@@ -125,7 +125,7 @@ public class CmsPermissionService {
 		if (!isAnonymous) {
 			// 2、用户可管理的栏目， 将用户自己为管理员的所有栏目ID列表添加到viewAbleAppInfoIds中
 			publishableAppInfoIds = addResultToSourceList(this.listManageableAppIdsByPerson(emc, personName, unitNames,
-					groupNames, null, documentType, maxCount), publishableAppInfoIds);
+					groupNames, null, null, null, documentType, maxCount), publishableAppInfoIds);
 
 			// 3、用户有发布权限设置的栏目， 将用户自己以及用户所在的组织、群组，有权限访问的所有栏目ID列表添加到viewAbleAppInfoIds中
 			addResultToSourceList(this.listPublishableAppIdsInPermission(emc, personName, unitNames, groupNames,
@@ -135,7 +135,11 @@ public class CmsPermissionService {
 		if (ListTools.isNotEmpty(inAppInfoIds)) {
 			publishableAppInfoIds.retainAll(inAppInfoIds);
 		}
-		publishableAppInfoIds = excludListContent(publishableAppInfoIds, excludAppInfoIds);
+		
+		if (ListTools.isNotEmpty(excludAppInfoIds)) {
+			publishableAppInfoIds = excludListContent(publishableAppInfoIds, excludAppInfoIds);
+		}
+		
 		return publishableAppInfoIds;
 	}
 
@@ -175,7 +179,9 @@ public class CmsPermissionService {
 	 * @throws Exception
 	 */
 	public List<String> listManageableAppIdsByPerson(EntityManagerContainer emc, String personName,
-			List<String> unitNames, List<String> groupNames, String appType, String documentType, Integer maxCount)
+			List<String> unitNames, List<String> groupNames, 
+			List<String> inAppInfoIds, List<String> excludAppInfoIds,
+			String appType, String documentType, Integer maxCount)
 			throws Exception {
 		if (StringUtils.isEmpty(personName)) {
 			throw new Exception("personName is empty!");
@@ -223,6 +229,15 @@ public class CmsPermissionService {
 			appInfoIds = new ArrayList<>();
 		}
 		appInfoIds_out.addAll(appInfoIds);
+		
+		if (ListTools.isNotEmpty(inAppInfoIds)) {
+			appInfoIds_out.retainAll(inAppInfoIds);
+		}
+		
+		if (ListTools.isNotEmpty(excludAppInfoIds)) {
+			appInfoIds_out = excludListContent(appInfoIds_out, excludAppInfoIds);
+		}
+		
 		return appInfoIds_out;
 	}
 

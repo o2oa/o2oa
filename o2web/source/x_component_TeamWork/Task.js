@@ -38,34 +38,11 @@ MWF.xApplication.TeamWork.Task = new Class({
     initialize: function (explorer, data, options, para) {
         this.setOptions(options);
         this.explorer = explorer;
-        if( para ){
-            if( this.options.relativeToApp ){
-                this.app = para.app || this.explorer.app;
-                this.container = para.container || this.app.content;
-                this.lp = para.lp || this.explorer.lp || this.app.lp;
-                this.css = para.css || this.explorer.css || this.app.css;
-                this.actions = para.actions || this.explorer.actions || this.app.actions || this.app.restActions;
-            }else{
-                this.container = para.container;
-                this.lp = para.lp || this.explorer.lp;
-                this.css = para.css || this.explorer.css;
-                this.actions = para.actions || this.explorer.actions;
-            }
-        }else{
-            if( this.options.relativeToApp ){
-                this.app = this.explorer.app;
-                this.container = this.app.content;
-                this.lp = this.explorer.lp || this.app.lp;
-                this.css = this.explorer.css || this.app.css;
-                this.actions = this.explorer.actions || this.app.actions || this.app.restActions;
-            }else{
-                this.container = window.document.body;
-                this.lp = this.explorer.lp;
-                this.css = this.explorer.css;
-                this.actions = this.explorer.actions;
-            }
-        }
 
+        this.app = this.explorer.app;
+        this.container = this.app.content;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.TaskAction;
 
         this.data = data || {};
 
@@ -203,7 +180,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.taskActionParentIcon = new Element("div.taskActionParentIcon",{styles:this.css.taskActionParentIcon}).inject(this.taskActionParentContent);
             this.taskActionParentText = new Element("div.taskActionParentText",{styles:this.css.taskActionParentText,text:this.lp.taskBelongText+":"}).inject(this.taskActionParentContent);
             this.taskActionParentValue = new Element("div.taskActionParentValue",{styles:this.css.taskActionParentValue}).inject(this.taskActionParentContent);
-            this.actions.taskGet(this.taskData.parent,function(json){
+            this.actions.get(this.taskData.parent,function(json){
                 this.taskActionParentValue.set("text",json.data.name);
                 this.taskActionParentValue.addEvents({
                     click:function(){
@@ -341,7 +318,8 @@ MWF.xApplication.TeamWork.Task = new Class({
                     function(json){
                         if(json.length>0){
                             this.taskData.participantList = this.taskData.participantList.concat(json);
-                            this.actions.updateParticipantList(this.taskData.id,{participantList:this.taskData.participantList},function(json){
+                            //this.actions.updateParticipantList(this.taskData.id,{participantList:this.taskData.participantList},function(json){
+                            this.actions.updateParticipant(this.taskData.id,{participantList:this.taskData.participantList},function(json){
                                 if(json.data.dynamics){
                                     json.data.dynamics.each(function(dd){
                                         this.loadDynamicItem(dd,"bottom")
@@ -463,7 +441,8 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.dyncurCount = this.dyncurCount || 0;
         this.tmpdynamicLoading = new Element("div").inject(this.dynamicContent,"top");
         this.app.setLoading(this.tmpdynamicLoading);
-        this.actions.taskDynamicListNext(id,count,taskId,data||{},function(json){
+        this.rootActions.DynamicAction.listNextWithTask(id,count,taskId,data||{},function(json){
+        //this.actions.taskDynamicListNext(id,count,taskId,data||{},function(json){
             if(this.tmpdynamicLoading)this.tmpdynamicLoading.destroy();
             //this.getDynamicStatus = false;
             if(json.type == "success"){
@@ -471,7 +450,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                 json.data.each(function(d,i){
                     this.curDynamicId = d.id;
                     this.loadDynamicItem(d);
-                }.bind(this))
+                }.bind(this));
                 if(callback)callback(json)
             }
         }.bind(this))
@@ -539,26 +518,8 @@ MWF.xApplication.TeamWork.Task = new Class({
             dynamicItemText.set("text",data.description);
         }
         var dynamicItemTime = new Element("div.dynamicItemTime",{styles:this.css.dynamicItemTime}).inject(dynamicItem);
-        var ct = Date.parse(data.createTime);
-        var now = new Date();
-        var sep = now.getTime()-ct.getTime();
-        sep = sep/1000; //毫秒
-        //一分钟内，刚刚，一小时内，多少分钟前，2小时内，显示一小时前，2小时到今天00：00：00 显示 今天几点，本周内，显示本周几，几点几分，其他显示几月几日
-        var cttext = "";
-        if(sep<60){
-            cttext = "刚刚"
-        }else if(sep<3600){
-            cttext = Math.floor(sep/60)+"分钟前"
-        }else if(sep<7200){
-            cttext = "1小时前"
-        }else if(sep>7200 && ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()){
-            cttext = "今天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes())
-        }else if(ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()-1){
-            cttext = "昨天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes())
-        }else{
-            cttext = (ct.getMonth()+1) + "月"+ct.getDay()+"日"
-        }
-        dynamicItemTime.set("text",cttext);
+
+        dynamicItemTime.set("text",this.app.compareWithNow(data.createTime).text);
 
         //最后加一层清除浮动
         new Element("div.dynamicItemTime",{styles:{"clear":"both"}}).inject(dynamicItem);
@@ -625,9 +586,10 @@ MWF.xApplication.TeamWork.Task = new Class({
                     content : this.chatTextarea.get("value").trim()
                 };
 
-                this.actions.chatCreate(data,function(json){
+                //this.actions.chatCreate(data,function(json){
+                 this.rootActions.ChatAction.create(data,function(json){
                     if(json.data.id){
-                        this.actions.chatGet(json.data.id,function(json){
+                        this.rootActions.ChatAction.get(json.data.id,function(json){
                             var person = json.data.sender;
                             var content = json.data.content;
 
@@ -662,7 +624,8 @@ MWF.xApplication.TeamWork.Task = new Class({
     },
     getTaskData:function(callback){
         if(this.data.taskId){
-            this.actions.taskGet(this.data.taskId,function(json){
+            //this.actions.taskGet(this.data.taskId,function(json){
+            this.actions.get(this.data.taskId,function(json){
                 if(json.data) {
                     this.taskData = json.data;
                     if(callback)callback()
@@ -710,7 +673,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.taskData.description = encodeURI(this.editor.getData());
         }
 
-        this.actions.taskSave(this.taskData,function(json){
+        this.actions.save(this.taskData,function(json){
             if(this.editor) delete this.editor;
             //alert(JSON.stringify(json));
             this.reload();
@@ -727,16 +690,17 @@ MWF.xApplication.TeamWork.Task = new Class({
             //保存操作，刷新task即可
             var taskNode = this.explorer.container.getElementById(json.taskId);
             if(!taskNode) return;
-            this.actions.taskGet(json.taskId,function(d){
+            this.actions.get(json.taskId,function(d){
                 this.explorer.loadTaskNode(taskNode,d.data)
             }.bind(this));
         }
     },
     updateSingleProperty:function(data,callback){
+        //this.actions.updateSingleProperty(data.taskId,data,function(json){
         this.actions.updateSingleProperty(data.taskId,data,function(json){
             if(json.data.dynamics){
                 json.data.dynamics.each(function(dd){
-                    this.loadDynamicItem(dd,"bottom")
+                    this.loadDynamicItem(dd,"bottom");
                 }.bind(this))
             }
             this.dynamicContent.scrollTo(0,this.dynamicContent.getScrollSize().y);
@@ -953,7 +917,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                             taskId:_self.taskData.id,
                             property:"startTime",
                             secondaryValue:""
-                        }
+                        };
                         if(json.action == "ok"){
                             this.taskStartTime.set("text",json.dateString+":00");
                             sd.mainValue = json.dateString+":00"
@@ -974,9 +938,9 @@ MWF.xApplication.TeamWork.Task = new Class({
                     this.app.selectCalendar(this.taskEndTime,this.container,opt,function(json){
                         var sd = {
                             taskId:_self.taskData.id,
-                            property:"startTime",
+                            property:"endTime",
                             secondaryValue:""
-                        }
+                        };
                         if(json.action == "ok"){
                             this.taskEndTime.set("text",json.dateString+":00");
                             sd.mainValue = json.dateString + ":00"
@@ -1106,7 +1070,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             click:function(){
                 this.loadTaskTag(this.taskTagAdd)
             }.bind(this)
-        })
+        });
 
 
         if(!this.taskData.tags || this.taskData.tags.length==0){
@@ -1130,7 +1094,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                 tagItemText.set("title",data.tag);
                 tagItemClose.addEvents({
                     click:function(){
-                        _self.actions.removeTagToTask(_self.taskData.id,data.id,function(json){
+                        _self.rootActions.TaskTagAction.removeTagRele(_self.taskData.id,data.id,function(json){
                             if(json.data.dynamics){
                                 json.data.dynamics.each(function(dd){ 
                                     _self.loadDynamicItem(dd,"bottom")
@@ -1282,7 +1246,7 @@ MWF.xApplication.TeamWork.Task = new Class({
 
         }.bind(this));
     },
-    loadAttachment: function( area ){
+    loadAttachment: function( area ){ alert("loadtaskatt")
         MWF.xDesktop.requireApp("TeamWork", "TaskAttachment", function(){
             this.attachment = new MWF.xApplication.TeamWork.TaskAttachment( area, this.app, this.actions, this.app.lp, {
                 size:"max",
@@ -1371,10 +1335,12 @@ MWF.xApplication.TeamWork.Task = new Class({
                             parent:this.taskData.id,
                             executor:this.taskSubNewPerson || ""
                         };
-                        this.actions.taskSave(data,function(json){
-                            this.taskSubNewPerson = ""
+
+                        this.actions.save(data,function(json){
+                            this.taskSubNewPerson = "";
                             if(json.data.id){
-                                this.actions.taskGet(json.data.id,function(d){
+                                //this.actions.taskGet(json.data.id,function(d){
+                                this.actions.get(json.data.id,function(d){
                                     this.loadSubTaskItem(this.subTaskListContent,d.data);
                                 }.bind(this))
                             }
@@ -1398,7 +1364,7 @@ MWF.xApplication.TeamWork.Task = new Class({
     loadSubTask:function(){
         var node = this.subTaskListContent;
         node.empty();
-        this.actions.taskSubList(this.taskData.id,function(json){
+        this.actions.listSubTaskWithTaskId(this.taskData.id,function(json){
             json.data.each(function(data){
                 this.loadSubTaskItem(node,data);
             }.bind(this))
@@ -1590,7 +1556,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                                  _self.taskData.participantList.erase(identity)
                              }
 
-                             _self.actions.updateParticipantList(_self.taskData.id,{participantList:_self.taskData.participantList},function(json){
+                             _self.actions.updateParticipant(_self.taskData.id,{participantList:_self.taskData.participantList},function(json){
                                  _self.createParticipateContainer();
                                  if(json.data.dynamics){
                                      json.data.dynamics.each(function(dd){
@@ -1598,7 +1564,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                                      })
                                  }
                                  _self.dynamicContent.scrollTo(0,_self.dynamicContent.getScrollSize().y);
-                             })
+                             });
                             e.stopPropagation();
                         }
                     });
@@ -1667,6 +1633,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         event:"click"
     },
     _loadCustom : function( callback ){
+        this.rootActions = this.app.rootActions;
         var _self = this;
         this.css = this.options.css;
         this.lp = this.options.lp;
@@ -1703,14 +1670,14 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         moveTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskmove.png) no-repeat center"});
         var moveTaskText = new Element("div.moveTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskMove}).inject(moveTask);
 
-        var favTask = new Element("div.favTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
-        favTask.addEvents({
-            mouseenter:function(){this.setStyles({"background-color":"#F7F7F7"})},
-            mouseleave:function(){this.setStyles({"background-color":""})}
-        });
-        var favTaskIcon = new Element("div.favTaskIcon",{styles:this.css.topMoreItemIcon}).inject(favTask);
-        favTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskfav.png) no-repeat center"});
-        var favTaskText = new Element("div.favTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskFav}).inject(favTask);
+        // var favTask = new Element("div.favTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
+        // favTask.addEvents({
+        //     mouseenter:function(){this.setStyles({"background-color":"#F7F7F7"})},
+        //     mouseleave:function(){this.setStyles({"background-color":""})}
+        // });
+        // var favTaskIcon = new Element("div.favTaskIcon",{styles:this.css.topMoreItemIcon}).inject(favTask);
+        // favTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskfav.png) no-repeat center"});
+        // var favTaskText = new Element("div.favTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskFav}).inject(favTask);
 
         var subTask = new Element("div.subTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
         subTask.addEvents({
@@ -1743,7 +1710,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         removeTask.addEvents({
             click:function(e){
                 _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                    _self.actions.taskRemove(_self.data.data.id,function(){
+                    _self.rootActions.TaskAction.delete(_self.data.data.id,function(){
                         var rd = {"act":"remove"};
                         _self.close(rd);
                         this.close()

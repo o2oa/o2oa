@@ -64,17 +64,18 @@ public class ActionSaveImportView extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
+//		
+//		if( StringUtils.isEmpty( wi.getViewAppId() ) ){
+//			check = false;
+//			Exception exception = new ExceptionViewAppIdEmpty();
+//			result.error( exception );
+//		}
+//		if( StringUtils.isEmpty( wi.getViewId() )  ){
+//			check = false;
+//			Exception exception = new ExceptionViewIdEmpty();
+//			result.error( exception );
+//		}
 		
-		if( StringUtils.isEmpty( wi.getViewAppId() ) ){
-			check = false;
-			Exception exception = new ExceptionViewAppIdEmpty();
-			result.error( exception );
-		}
-		if( StringUtils.isEmpty( wi.getViewId() )  ){
-			check = false;
-			Exception exception = new ExceptionViewIdEmpty();
-			result.error( exception );
-		}
 		if( check ){
 			if( StringUtils.isNotEmpty( wi.getViewId() )) {
 				try {

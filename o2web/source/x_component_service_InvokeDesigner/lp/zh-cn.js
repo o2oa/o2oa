@@ -11,7 +11,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
         "description": "描述",
         "validated" : "代码格式是否正确",
         "isEnable" : "是否启用",
-        "remoteAddrRegex" : "访问的地址表达式",
+        "remoteAddrRegex" : "允许访问的地址表达式",
         "lastStartTime" : "最近开始时间",
         "lastEndTime" : "最近结束时间",
         "true" : "是",

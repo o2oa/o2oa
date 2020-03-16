@@ -220,8 +220,8 @@ MWF.xApplication.TeamWork.ExtField = new Class({
                 _self.checkValid()
             },
             keyup:function(){
-                if(this.get("value").trim()=="") optionValid.show()
-                else optionValid.hide()
+                if(this.get("value").trim()=="") optionValid.show();
+                else optionValid.hide();
                 _self.checkValid()
             }
         });
@@ -238,8 +238,8 @@ MWF.xApplication.TeamWork.ExtField = new Class({
     rotateArrow:function(node,callback){
         var status = node.get("rotate") || "down";
         var angle = 0;
-        if(status=="down")angle=0
-        else angle=180
+        if(status=="down")angle=0;
+        else angle=180;
         var int = window.setInterval(function(){
             if(status == "down"){
                 if(angle==180){

@@ -466,16 +466,17 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
     },
 
     destroy: function(){
+
+        var form = this.editor.designer.form || this.editor.designer.page || this.editor.designer.view;
+        if ( form && form.scriptDesigner){
+            form.scriptDesigner.deleteScriptItem(this.editor.module, "action.tools", this.data.text);
+        }
+
         this.editor.data.erase(this.data);
         this.editor.actions.erase(this);
         this.editor.fireEvent("change");
 
         this.node.destroy();
-
-        var form = this.editor.designer.form || this.editor.designer.page;
-        if (form.scriptDesigner){
-            form.scriptDesigner.deleteScriptItem(this.editor.module, "action.tools", this.data.text);
-        }
 
         MWF.release(this.scriptArea);
         MWF.release(this);

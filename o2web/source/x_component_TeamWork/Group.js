@@ -67,7 +67,7 @@ MWF.xApplication.TeamWork.Group = new Class({
                     }
                 }
 
-                this.actions.groupSave(data,function(json){
+                this.rootActions.ProjectGroupAction.save(data,function(json){
                     this.close(json.data);
                 }.bind(this),function(){
                     //alert("err")

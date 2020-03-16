@@ -289,6 +289,10 @@
 			<artifactId>javapoet</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>javax.visrec</groupId>
+			<artifactId>visrec-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.neuroph</groupId>
 			<artifactId>neuroph-core</artifactId>
 		</dependency>
@@ -682,6 +686,11 @@
 				<version>1.11.1</version>
 			</dependency>
 			<dependency>
+				<groupId>javax.visrec</groupId>
+				<artifactId>visrec-api</artifactId>
+				<version>20200316</version>
+			</dependency>
+			<dependency>
 				<groupId>org.neuroph</groupId>
 				<artifactId>neuroph-core</artifactId>
 				<version>2.96</version>
@@ -693,6 +702,10 @@
 					<exclusion>
 						<groupId>ch.qos.logback</groupId>
 						<artifactId>logback-classic</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>javax.visrec</groupId>
+						<artifactId>visrec-api</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -875,20 +888,15 @@
 	</dependencyManagement>
 	<repositories>
 		<repository>
-			<id>nexus-aliyun</id>
-			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>mvnrepository.com</id>
-			<url>https://mvnrepository.com/repos</url>
-		</repository>
-		<repository>
-			<id>enonic.com</id>
-			<url>https://repo.enonic.com/public</url>
-		</repository>
-		<repository>
-			<id>neuroph.sourceforge.net</id>
-			<url>http://neuroph.sourceforge.net/maven2</url>
+			<id>nexus-o2oa</id>
+			<name>nexus-o2oa</name>
+			<url>http://maven.o2oa.net/repository/maven-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 </project>

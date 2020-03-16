@@ -12,7 +12,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.core.entity.element.Script;
 
 class ActionListNext extends BaseAction {
-	ActionResult<List<Wo>> execute(EffectivePerson currentPerson, String id, Integer count) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		try {
 			result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null,

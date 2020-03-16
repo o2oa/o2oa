@@ -2829,13 +2829,14 @@ MDomItem.Org = new Class({
     bindDefaultEvent : function( item ){
         if( this.options.unsetDefaultEvent )return;
         item.addEvent( "click" , function(){
+            debugger;
             this.module.fireEvent("querySelect", this.module );
             var options = this.options;
             var opt = {
                 type : options.orgType,
                 title : options.text,
                 count : options.count,
-                selectedValues : this.orgData,
+                selectedValues : this.orgObjData || this.orgData,
                 units : options.units,
                 unitType : options.unitType,
                 groups : options.groups,
@@ -2846,12 +2847,14 @@ MDomItem.Org = new Class({
             MDomItem.Util.selectPerson( this.app.content, opt, function( array ){
                 item.empty();
                 this.orgData = this.module.orgData = [];
+                this.orgObjData = [];
                 this.orgObject = this.module.orgObject = array;
                 array.each(function( it ){
                     this.orgData.push( it.data.distinguishedName || it.data.name );
+                    this.orgObjData.push( it.data );
                 }.bind(this));
                 this.OrgWidgetList = [];
-                this.loadOrgWidget( this.orgData, item, true );
+                this.loadOrgWidget( this.orgObjData, item, true );
                 this.modified = true;
                 this.items[0].fireEvent("change");
                 if( this.options.validImmediately )this.module.verify( true );

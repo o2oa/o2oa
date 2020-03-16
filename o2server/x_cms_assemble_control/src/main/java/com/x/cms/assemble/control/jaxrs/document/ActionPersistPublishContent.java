@@ -26,7 +26,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.jaxrs.permission.element.PermissionInfo;
-import com.x.cms.assemble.control.jaxrs.permission.element.PermissionName;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;

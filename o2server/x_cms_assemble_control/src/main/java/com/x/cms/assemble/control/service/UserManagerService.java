@@ -345,7 +345,7 @@ public class UserManagerService {
 	 */
 	public Boolean isManager(EffectivePerson effectivePerson) throws Exception {
 		if (effectivePerson == null) {
-			throw new Exception("currentPerson is null!");
+			throw new Exception("effectivePerson is null!");
 		}
 		if (effectivePerson.isManager()) {
 			return true;
