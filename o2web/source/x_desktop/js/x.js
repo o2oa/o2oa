@@ -13,7 +13,7 @@ layout.addReady(function(){
             var viewMode = uri.getData("view");
             var flatStyle = uri.getData("style");
             if (flatStyle) layout.userLayout.flatStyle = flatStyle;
-            if (!viewMode) viewMode = (layout.userLayout && layout.userLayout.viewMode) ? layout.userLayout.viewMode : "Layout";
+            if (!viewMode) viewMode = (layout.userLayout && layout.userLayout.viewMode) ? layout.userLayout.viewMode : "homepage";
             viewMode = viewMode.toLowerCase();
             //viewMode = (["flat", "home", "homepage", "default"].indexOf(viewMode)!==-1) ? "Default" : "Layout";
             viewMode = (["layout", "desktop"].indexOf(viewMode)!==-1) ? "Layout" : "Default";
