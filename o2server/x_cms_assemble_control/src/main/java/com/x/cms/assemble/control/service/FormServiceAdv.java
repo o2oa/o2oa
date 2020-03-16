@@ -54,7 +54,7 @@ public class FormServiceAdv {
 		}
 	}
 
-	public Form save( Form form, EffectivePerson currentPerson ) throws Exception {
+	public Form save( Form form, EffectivePerson effectivePerson ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			form = formService.save( emc, form );
 			return form;
@@ -63,7 +63,7 @@ public class FormServiceAdv {
 		}
 	}
 
-	public void delete( Form form, EffectivePerson currentPerson ) throws Exception {
+	public void delete( Form form, EffectivePerson effectivePerson ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			formService.delete( emc, form.getId() );
 		} catch ( Exception e ) {

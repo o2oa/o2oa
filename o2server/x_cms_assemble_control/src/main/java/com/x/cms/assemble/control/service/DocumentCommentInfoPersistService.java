@@ -15,12 +15,12 @@ public class DocumentCommentInfoPersistService {
 
 	private DocumentCommentInfoService documentCommentInfoService = new DocumentCommentInfoService();
 	
-	public void delete( String flag, EffectivePerson currentPerson ) throws Exception {
+	public void delete( String flag, EffectivePerson effectivePerson ) throws Exception {
 		if ( StringUtils.isEmpty( flag )) {
 			throw new Exception("flag is empty.");
 		}
 		Boolean hasDeletePermission = false;
-		if( currentPerson.isManager() ) {
+		if( effectivePerson.isManager() ) {
 			hasDeletePermission = true;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -28,7 +28,7 @@ public class DocumentCommentInfoPersistService {
 			//管理员可以删除，创建者可以删除
 			if( !hasDeletePermission ) {
 				//看看是不是评论信息创建者
-				if( documentCommentInfo.getCreatorName().equalsIgnoreCase( currentPerson.getDistinguishedName() )) {
+				if( documentCommentInfo.getCreatorName().equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
 					hasDeletePermission = true;
 				}
 			}

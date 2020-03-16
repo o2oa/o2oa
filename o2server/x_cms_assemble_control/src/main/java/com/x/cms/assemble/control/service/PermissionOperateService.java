@@ -51,7 +51,7 @@ public class PermissionOperateService {
 		if ( ListTools.isEmpty( readerList ) ) {
 			permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
 		} else {
-			for( PermissionInfo p : readerList ) {
+			for( PermissionInfo p : readerList ) {				
 //				System.out.println(">>>>>readerList:" + p.getPermissionObjectCode());
 				new_permissionInfo = createPermissionInfo( PermissionName.READER, p.getPermissionObjectType(), p.getPermissionObjectCode(), p.getPermissionObjectName() );
 				if( new_permissionInfo != null ) {
@@ -107,6 +107,9 @@ public class PermissionOperateService {
 	private PermissionInfo createPermissionInfo( String permission, String permissionObjectType, String permissionObjectCode, String permissionObjectName ) throws Exception {
 		//如果存在身份信息，将身份信息替换为个人信息
 		String personFlag = null;
+		if( StringUtils.isEmpty( permissionObjectCode ) ) {
+			permissionObjectCode = permissionObjectName;
+		}
 		if( StringUtil.isNotEmpty( permissionObjectCode ) && permissionObjectCode.endsWith("@I") ) {
 			//将身份转换为个人 @P
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {

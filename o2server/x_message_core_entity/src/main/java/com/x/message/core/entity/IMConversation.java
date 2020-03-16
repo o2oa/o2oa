@@ -57,7 +57,6 @@ public class IMConversation extends SliceJpaObject  {
     public static final String type_FIELDNAME = "type";
     @FieldDescribe("会话类型 单人 、 群.")
     @Column(length = length_255B, name = ColumnNamePrefix + type_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String type; //会话类型 单人 、 群
 
@@ -65,7 +64,6 @@ public class IMConversation extends SliceJpaObject  {
     public static final String title_FIELDNAME = "title";
     @FieldDescribe("会话标题 人名、群名")
     @Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String title; //会话标题 人名、群名
 
@@ -83,14 +81,12 @@ public class IMConversation extends SliceJpaObject  {
     public static final String adminPerson_FIELDNAME = "adminPerson";
     @FieldDescribe("管理员，群会话需要管理员")
     @Column(length = length_255B, name = ColumnNamePrefix + adminPerson_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + adminPerson_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String adminPerson; //管理员
 
     public static final String note_FIELDNAME = "note";
     @FieldDescribe("群公告")
     @Column(length = length_255B, name = ColumnNamePrefix + note_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + adminPerson_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String note;
 
@@ -98,7 +94,6 @@ public class IMConversation extends SliceJpaObject  {
     public static final String lastMessageTime_FIELDNAME = "lastMessageTime";
     @FieldDescribe("会话最后一条消息时间")
     @Column(name = ColumnNamePrefix + lastMessageTime_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + lastMessageTime_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private Date lastMessageTime;
 

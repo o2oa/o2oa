@@ -55,7 +55,7 @@ public class ActionListWhatICanPublish_WithAppType extends BaseAction {
 			}
 			if( ListTools.isNotEmpty( wos_out )){
 				for( Wo wo : wos_out ) {
-					if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
+//					if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
 						try {
 							wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
 						} catch (Exception e) {
@@ -66,7 +66,7 @@ public class ActionListWhatICanPublish_WithAppType extends BaseAction {
 						}
 
 						wos.add( wo );
-					}
+//					}
 				}
 				//按appInfoSeq列的值， 排个序
 				SortTools.asc( wos, "appInfoSeq");

@@ -159,7 +159,8 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                     "groups":groups
                 };
 
-                this.actions.projectSave(data,function(json){
+                //this.actions.projectSave(data,function(json){
+                 this.rootActions.ProjectAction.save(data,function(json){
                     this.close(json);
                 }.bind(this));
 
@@ -176,7 +177,8 @@ MWF.xApplication.TeamWork.NewProject = new Class({
         if(callback)callback(res);
     },
     refreshGroup:function(callback){
-        this.actions.groupList(function(json){
+        //this.actions.groupList(function(json){
+        this.rootActions.ProjectGroupAction.listGroups(function(json){
             this.allGroupList = json.data;
             if(callback)callback();
         }.bind(this))

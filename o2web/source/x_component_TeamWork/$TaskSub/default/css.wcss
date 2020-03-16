@@ -21,7 +21,7 @@
     },
     "searchInput":{
         "outline":"none",
-        "height":"28px",
+        "height":"27px",
         "width":"95%",
         "text-indent":"5px",
         "border":"0px",

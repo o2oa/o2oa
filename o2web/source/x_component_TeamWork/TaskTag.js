@@ -21,7 +21,9 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
         //if(app)this.lp = app.lp;
         this.lp = this.app.lp.taskTag;
         this.data = data;
-        this.actions = this.app.restActions;
+        //this.actions = this.app.restActions;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.TaskTagAction;
 
         this.path = "/x_component_TeamWork/$TaskTag/";
         if(options.path) this.path = options.path;
@@ -81,7 +83,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
                     this.loadTagItem(data)
                 }.bind(this))
             }
-        }.bind(this))
+        }.bind(this));
 
         if(callback)callback();
     },
@@ -143,7 +145,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
                                         if(ddd.id == data.id){
                                             _self.explorer.taskData.tags.erase(ddd)
                                         }
-                                    })
+                                    });
                                     _self.explorer.taskTagLayout.getElementById(tagItem.get("id")).destroy()
                                 }
                             }
@@ -167,7 +169,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
                 this.createTag(data);
                 e.stopPropagation()
             }.bind(this)
-        })
+        });
         tagSelect.hide();
         tagEdit.hide();
 
@@ -224,7 +226,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
             this.tagRemove.addEvents({
                 click:function(e){
                     this.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                        _self.actions.taskTagRemove(data.id,function(){
+                        _self.actions.delete(data.id,function(){
                             _self.curTag = data;
                             _self.status = "edit";
                             _self._loadCustom();
@@ -267,23 +269,24 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
             tagColor:this.curColor
         };
 
-        this.actions.taskTagSave(data,function(json){
+        this.actions.save(data,function(json){
             if(callback)callback(json)
         }.bind(this))
     },
     loadTag:function(callback){
-        this.actions.taskTagListByProjectId(this.data.projectId,function(json){
+        //this.actions.taskTagListByProjectId(this.data.projectId,function(json){
+        this.actions.listWithProject(this.data.projectId,function(json){
             this.tagData = json.data;
             if(callback)callback(json.data)
         }.bind(this))
     },
     loadTaskTag:function(data,callback){
         if(data.action == "add"){
-            this.actions.addTagToTask(data.taskId,data.tagId,function(json){
+            this.actions.addTagRele(data.taskId,data.tagId,function(json){
                 if(callback)callback(json)
             }.bind(this),false)
         }else if(data.action == "remove"){
-            this.actions.removeTagToTask(data.taskId,data.tagId,function(json){
+            this.actions.removeTagRele(data.taskId,data.tagId,function(json){
                 if(callback)callback(json)
             }.bind(this),false)
         }

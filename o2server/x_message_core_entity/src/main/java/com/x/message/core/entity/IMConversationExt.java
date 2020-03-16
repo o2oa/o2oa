@@ -53,14 +53,12 @@ public class IMConversationExt extends SliceJpaObject  {
     public static final String conversationId_FIELDNAME = "conversationId";
     @FieldDescribe("会话id， 关联的会话.")
     @Column(length = length_64B, name = ColumnNamePrefix + conversationId_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + conversationId_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String conversationId;
 
     public static final String person_FIELDNAME = "person";
     @FieldDescribe("所属人员")
     @Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String person;
 
@@ -68,14 +66,12 @@ public class IMConversationExt extends SliceJpaObject  {
     @FieldDescribe("是否置顶.")
     @CheckPersist(allowEmpty = false)
     @Column(name = ColumnNamePrefix + isTop_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + isTop_FIELDNAME)
     private Boolean isTop = false;
 
 
     public static final String lastReadTime_FIELDNAME = "lastReadTime";
     @FieldDescribe("最后阅读时间")
     @Column(name = ColumnNamePrefix + lastReadTime_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + lastReadTime_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private Date lastReadTime;
 

@@ -16,7 +16,7 @@ import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class ViewService {
 
-	public View save( EntityManagerContainer emc, EffectivePerson currentPerson, View wrapIn, List<ViewFieldConfig> fields ) throws Exception {
+	public View save( EntityManagerContainer emc, EffectivePerson effectivePerson, View wrapIn, List<ViewFieldConfig> fields ) throws Exception {
 		View view = null;
 		ViewFieldConfig fieldConfig = null;
 		List<String> ids = null;

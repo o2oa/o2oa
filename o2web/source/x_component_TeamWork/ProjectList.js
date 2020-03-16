@@ -15,7 +15,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
         this.app = app;
         this.lp = this.app.lp.ProjectList;
-        this.actions = this.app.restActions;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.ProjectAction;
 
         this.path = "/x_component_TeamWork/$ProjectList/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
@@ -45,7 +46,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     },
     createNavi:function(){
         this.app.setLoading(this.naviTable);
-        this.actions.projectGroupGet(function(json){
+        //this.actions.projectGroupGet(function(json){
+        this.actions.statiticMyProject(function(json){
             this.naviTable.empty();
             if(json.type == "success") {
                 var resData = json.data;
@@ -58,6 +60,11 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 }).inject(this.naviTable);
 
                 var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
+                naviTitle.addEvents({
+                    click:function(){
+                        alert(1)
+                    }.bind(this)
+                });
 
                 //全部项目
                 if(resData.hasOwnProperty("allCount")){
@@ -384,7 +391,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     onPostClose:function(json){
                         //this.reloadLayoutList();
                         if(json.data && json.data.id){
-                            this.actions.projectGet(json.data.id,function(jsonr){
+                            //this.actions.projectGet(json.data.id,function(jsonr){
+                              this.actions.get(json.data.id,function(jsonr){
                                 if(jsonr.data){
                                     this.openProject(jsonr.data)
                                 }
@@ -392,9 +400,6 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
                         }
                     }.bind(this)
-                },{
-                    container : this.container
-
                 }
             );
             this.np.open();
@@ -438,13 +443,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     click:function(e){
                         customGroupItemContainer.set("atIn","yes");
                         _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                            // var newData1 = [];
-                            // data1.each(function(dd){
-                            //     if(dd.title != d.title) newData1.push(dd)
-                            // });
-                            // data1 = newData1;
-                            // var id ="";
-                            _self.actions.groupRemove(d.id,function(){
+                            _self.rootActions.ProjectGroupAction.delete(d.id,function(){
                                 _self.reloadProjectGroup();
                             }.bind(this));
 
@@ -494,7 +493,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     },
     reloadProjectGroup:function(){
         var _self = this;
-        this.actions.groupList(function(json){
+        //his.actions.groupList(function(json){
+        this.rootActions.ProjectGroupAction.listGroups(function(json){
             var data = json.data;
             if(data.length == 0) return;
             this.customGroup.empty();
@@ -533,7 +533,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                             // });
                             // data1 = newData1;
                             // var id ="";
-                            _self.actions.groupRemove(d.id,function(){
+                            _self.rootActions.ProjectGroupAction.delete(d.id,function(){
                                 _self.reloadProjectGroup();
                             }.bind(this));
 
@@ -681,26 +681,26 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var id = "(0)";
         var count = 100;
         var filter = {};
-        var typeAction = "projectListNext";
+        var typeAction = "listNextWithFilter";
         if(options && options.type && options.type=="all"){
-            typeAction = "projectListNext"
+            typeAction = "listNextWithFilter"
         }else if(options && options.type && options.type=="star"){
-            typeAction = "projectStarListNext"
+            typeAction = "listStarNextWithFilter"
         }else if(options && options.type && options.type=="my"){
-            typeAction = "projectMyListNext"
+            typeAction = "listMyNextWithFilter"
         }else if(options && options.type && options.type=="complete"){
-            typeAction = "projectCompleteListNext"
+            typeAction = "listCompletedNextWithFilter"
         }else if(options && options.type && options.type=="archive"){
-            typeAction = "projectArchiveListNext"
+            typeAction = "listArchiveNextWithFilter"
         }else if(options && options.type && options.type=="remove"){
-            typeAction = "projectRemoveListNext"
+            typeAction = "listRecycleNextWithFilter"
         }else if(options && options.type && options.type=="unGroup"){
-            typeAction = "projectUnGroupListNext"
+            typeAction = "listNoGroupNextWithFilter"
         }
 
         if(options && options.group){
             groupId = options.group;
-            typeAction = "projectListNext";
+            typeAction = "listNextWithFilter";
             filter = {group:groupId};
         }
 
@@ -728,7 +728,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
             if(options && options.group){
                 groupId = options.group;
-                typeAction = "projectListNext";
+                //typeAction = "projectListNext";
                 filter = {group:groupId};
             }
 
@@ -847,13 +847,14 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         if(container) container.empty();
         var projectBlockItemCover = new Element("div.projectBlockItemCover",{styles:this.css.projectBlockItemCover}).inject(container);
         var _self = this;
-        var projectBlockItemIconContainer = new Element("div.projectBlockItemIconContainer",{styles:this.css.projectBlockItemIconContainer}).inject(projectBlockItemCover);
+        var projectBlockItemContainer = new Element("div.projectBlockItemContainer",{styles:this.css.projectBlockItemContainer}).inject(container);
+        var projectBlockItemIconContainer = new Element("div.projectBlockItemIconContainer",{styles:this.css.projectBlockItemIconContainer}).inject(projectBlockItemContainer);
 
         var projectBlockItemIconFav = new Element("div.projectBlockItemIconFav",{styles:this.css.projectBlockItemIconFav}).inject(projectBlockItemIconContainer);
         projectBlockItemIconFav.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
-                    _self.actions.projectGet(data.data.id,function(json){
+                    _self.actions.get(data.data.id,function(json){
                         _self.loadSingleBlockItem(container,json.data)
                     });
                     _self.createNavi();
@@ -901,11 +902,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             }
         });
         var projectBlockItemIconRemove = new Element("div.projectBlockItemIconRemove",{styles:this.css.projectBlockItemIconRemove}).inject(projectBlockItemIconContainer);
+        projectBlockItemIconRemove.set("title","删除");
         projectBlockItemIconRemove.addEvents({
             click:function(e){
                 _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
                     var id = d.id;
-                    _self.actions.projectRemove(id,function(){
+                    _self.actions.delete(id,function(){
                         //刷新代码
                         this.close();
                         _self.reload();
@@ -919,8 +921,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             }.bind(this)
         });
 
-         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemCover);
-         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemCover);
+         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
+         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
     },
     loadSingleListItem:function(container,d){
         if(container) container.empty();
@@ -943,7 +945,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         projectListItemFavIcon.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
-                    _self.actions.projectGet(data.data.id,function(json){
+                    _self.actions.get(data.data.id,function(json){
                         _self.loadSingleListItem(container,json.data)
                     });
                     _self.createNavi();
@@ -980,7 +982,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 fx.start(["top"] ,"10px", "100px");
                             },
                             onPostClose:function(json){
-                                _self.actions.projectGet(d.id,function(json){
+                                _self.actions.get(d.id,function(json){
                                     _self.loadSingleListItem(container,json.data)
                                 });
                             }
@@ -1002,7 +1004,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             click:function(e){
                 _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
                     var id = d.id;
-                    _self.actions.projectRemove(id,function(){
+                    _self.actions.delete(id,function(){
                         //刷新代码
                         this.close();
                         _self.reload();
@@ -1017,11 +1019,13 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     },
     setFav:function(d,callback){
         if(d.star){
-            this.actions.projectUnStar(d.id,function(d){
+            this.actions.unStar(d.id,function(d){
+            //this.actions.projectUnStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }else if(!d.star){
-            this.actions.projectStar(d.id,function(d){
+            this.actions.star(d.id,function(d){
+            //this.actions.projectStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }

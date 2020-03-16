@@ -250,10 +250,19 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
                     //result.push( data );
                 }
                 if (type) {
+                    var name;
+                    if( typeOf(data) === "object" && data.name ){
+                        name = data.name;
+                    }else if( MWF.name && MWF.name.cn ){
+                        name = MWF.name.cn( dn );
+                    }else{
+                        name = dn.split("@")[0];
+                    }
                     result.push({
                         permission: t == "author" ? "作者" : "阅读",
                         permissionObjectType: type,
-                        permissionObjectName: dn
+                        permissionObjectName: name,
+                        permissionObjectCode: dn
                     })
                 }
             }

@@ -1,6 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -47,8 +49,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			document = Wi.copier.copy(wi);
-			document.setId( wi.getId() ); //继承传入的ID
-			
+			document.setId( wi.getId() ); //继承传入的ID			
 			identity = wi.getIdentity();	
 		} catch (Exception e ) {
 			check = false;
@@ -179,32 +180,72 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if ( StringUtils.isNotEmpty(identity)) {
-				document.setCreatorIdentity( identity );
-				document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
-				document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-				document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
-			} else {
-				if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-					document.setCreatorIdentity("xadmin");
-					document.setCreatorPerson("xadmin");
-					document.setCreatorUnitName("xadmin");
-					document.setCreatorTopUnitName("xadmin");
-				} else {
-					//取第一个身份
-					identity = userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName());
-					if( StringUtils.isNotEmpty(identity) ) {
-						document.setCreatorIdentity( identity );
-						document.setCreatorPerson( effectivePerson.getDistinguishedName() );
-						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
-						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				if( StringUtils.isNotEmpty( identity )) {
+					document.setCreatorIdentity( identity );
+				}				
+				
+				if (StringUtils.isEmpty( document.getCreatorIdentity() )) {
+					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
+						document.setCreatorIdentity("cipher");
+						document.setCreatorPerson("cipher");
+						document.setCreatorUnitName("cipher");
+						document.setCreatorTopUnitName("cipher");
+					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
+						document.setCreatorIdentity("xadmin");
+						document.setCreatorPerson("xadmin");
+						document.setCreatorUnitName("xadmin");
+						document.setCreatorTopUnitName("xadmin");
 					}else {
-						Exception exception = new ExceptionPersonHasNoIdentity(effectivePerson.getDistinguishedName());
+						//尝试一下根据当前用户获取用户的第一个身份
+						document.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+					}
+				}
+				
+				if ( !StringUtils.equals(  "cipher", document.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", document.getCreatorIdentity() )) {
+					//说明是指定的发布者，并不使用cipher和xadmin代替
+					if (StringUtils.isNotEmpty( document.getCreatorIdentity() )) {
+						document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( document.getCreatorIdentity() ) );
+						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( document.getCreatorIdentity() ) );
+						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( document.getCreatorIdentity() ) );
+					}else {
+						Exception exception = new ExceptionPersonHasNoIdentity(document.getCreatorIdentity());
 						result.error(exception);
 					}
 				}
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
 			}
 		}
+		
+//		if (check) {
+//			if ( StringUtils.isNotEmpty(identity)) {
+//				document.setCreatorIdentity( identity );
+//				document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( identity ) );
+//				document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
+//				document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+//			} else {
+//				if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
+//					document.setCreatorIdentity("xadmin");
+//					document.setCreatorPerson("xadmin");
+//					document.setCreatorUnitName("xadmin");
+//					document.setCreatorTopUnitName("xadmin");
+//				} else {
+//					//取第一个身份
+//					identity = userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName());
+//					if( StringUtils.isNotEmpty(identity) ) {
+//						document.setCreatorIdentity( identity );
+//						document.setCreatorPerson( effectivePerson.getDistinguishedName() );
+//						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( identity ) );
+//						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( identity ) );
+//					}else {
+//						Exception exception = new ExceptionPersonHasNoIdentity(effectivePerson.getDistinguishedName());
+//						result.error(exception);
+//					}
+//				}
+//			}
+//		}
 
 		if (check) {
 			if( StringUtils.equals( wi.getDocStatus(), "published")) {

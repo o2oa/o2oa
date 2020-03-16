@@ -30,8 +30,13 @@ MWF.xApplication.TeamWork.Main = new Class({
 		this.userGender = layout.desktop.session.user.genderType;
 		this.department="";
 
-		this.restActions = MWF.Actions.get("x_teamwork_assemble_control");
-		this.orgActions = MWF.Actions.get("x_organization_assemble_express");
+		//this.restActions = MWF.Actions.get("x_teamwork_assemble_control");
+		//this.orgActions = MWF.Actions.get("x_organization_assemble_express");
+
+		this.rootActions = MWF.Actions.load("x_teamwork_assemble_control");
+		this.orgActions = MWF.Actions.load("x_organization_assemble_express");
+
+
 		this.path = "/x_component_TeamWork/$Main/";
 		if(!this.css){
 			this.cssPath = this.path+this.options.style+"/css.wcss";
@@ -40,7 +45,7 @@ MWF.xApplication.TeamWork.Main = new Class({
 
 
 		MWF.xDesktop.requireApp("TeamWork", "ProjectList", function(){
-			this.pl = new MWF.xApplication.TeamWork.ProjectList(this.content,this,this.restActions,{
+			this.pl = new MWF.xApplication.TeamWork.ProjectList(this.content,this,this.rootActions,{
 
 			});
 			this.pl.load();
@@ -156,6 +161,62 @@ MWF.xApplication.TeamWork.Main = new Class({
 			this.notice(errorText,"error");
 		}
 
+	},
+	compareWithNow:function(dstr){
+		var result = {};
+
+		try{
+			var ct = Date.parse(dstr);
+			var intervalDay = 0;
+			var now = new Date();
+			var sep = now.getTime()-ct.getTime();
+			sep = sep/1000; //毫秒
+			//一分钟内，刚刚，一小时内，多少分钟前，2小时内，显示一小时前，2小时到今天00：00：00 显示 今天几点，本周内，显示本周几，几点几分，其他显示几月几日
+			var cttext = "";
+			if(sep<60){
+				cttext = "刚刚"
+			}else if(sep<3600){
+				cttext = Math.floor(sep/60)+"分钟前"
+			}else if(sep<7200){
+				cttext = "1小时前"
+			}else if(sep>7200 && ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()){
+				cttext = "今天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes())
+			}else if(ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()-1){
+				cttext = "昨天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes());
+			}else{
+				cttext = (ct.getMonth()+1) + "月"+ct.getDay()+"日"
+			}
+
+			var sepd = ct.getTime() - now.getTime();
+			sepd = sepd/1000;
+
+			if(sepd<0){
+				intervalDay = -1 //超时
+			}else if(sepd /(3600*24)<2){
+				intervalDay = 0 //一两天内
+			}else{
+				intervalDay = 1 //正常
+			}
+
+			result.intervalDay = intervalDay;
+			result.text = cttext;
+		}catch(e){
+			result.text = dstr;
+		}
+		//alert(dstr + "##############" + result.intervalDay)
+		return result;
+
+	},
+	formatDate:function(dstr,format){
+		var result = "";
+		try{
+			if(dstr && dstr!=""){
+				var ct = Date.parse(dstr);
+				result = ct.getFullYear()+"年"+(ct.getMonth()+1)+"月"+ct.getDate()+"日"
+			}
+		}catch(e){}
+
+		return result;
 	},
 	resize:function(){
 		//alert("resize")

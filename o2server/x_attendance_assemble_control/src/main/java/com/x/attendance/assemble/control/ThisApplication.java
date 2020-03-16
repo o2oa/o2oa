@@ -6,6 +6,8 @@ import com.x.attendance.assemble.control.schedule.AttendanceStatisticTask;
 import com.x.attendance.assemble.control.schedule.MobileRecordAnalyseTask;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.base.core.project.Context;
+import com.x.base.core.project.config.Config;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class ThisApplication {
 
@@ -15,12 +17,16 @@ public class ThisApplication {
 		return context;
 	}
 
+	public static DingdingAttendanceQueue dingdingQueue = new DingdingAttendanceQueue();
+
 	public static void init() throws Exception {
 		try {
 			new AttendanceSettingService().initAllSystemConfig();
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
 			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
-
+			if (BooleanUtils.isTrue(Config.dingding().getAttendanceSyncEnable())) {
+				dingdingQueue.start();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -34,6 +40,11 @@ public class ThisApplication {
 		}
 		try {
 			MonitorFileDataOpt.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			dingdingQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -42,13 +42,13 @@ public class UUIDAction extends StandardJaxrsAction {
 		ActionResult<List<String>> result = new ActionResult<>();
 		List<String> data = new ArrayList<String>();
 		String uuid = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			uuid = UUID.randomUUID().toString();
 			data.add(uuid);
 			result.setData(data);
 		} catch (Exception e) {
-			logger.warn("user[" + currentPerson.getDistinguishedName() + "] get a new UUID error！", e);
+			logger.warn("user[" + effectivePerson.getDistinguishedName() + "] get a new UUID error！", e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

@@ -703,7 +703,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     relativeTo: fileTextNode,
                     position: 'topLeft',
                     edge: 'topRight',
-                    offset: {"x": -20}
+                    offset: {"x": -20, "y": 60}
                 });
 
                 var p = fileTextNode.getPosition(this.form.app.content);
@@ -711,7 +711,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 //if ((p.y+s.y)<0) this.sidebarNode.setStyle("top", p.y+s.y);
 
                 if (p.y<0){
-                    var top = ptop.y-p.y+10;
+                    var top = ptop.y-p.y+200;
                     this.sidebarNode.setStyle("top", top);
                 }
                 // var p = fileTextNode.getPosition();

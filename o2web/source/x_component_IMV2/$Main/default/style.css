@@ -1,0 +1,155 @@
+
+.o2_im_out {
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden;
+}
+.o2_im_chat_list {
+    border-top: 1px solid rgb(255, 255, 255); 
+    border-right: 1px solid rgb(221, 221, 221); 
+    float: left; 
+    width: 257px; 
+    height: 100%; 
+}
+.o2_im_chat_list_top {
+    margin-bottom: 20px;
+    height: 40px; 
+    background-color: rgb(248, 248, 248); 
+    border-bottom: 1px solid rgb(204, 204, 204);
+}
+.o2_im_chat_list_top .add {
+    background: url(/x_component_IMV2/$Main/default/icons/add.png) center center no-repeat; 
+    width: 40px; 
+    height: 40px; 
+    cursor: pointer; 
+    float: right;
+}
+.o2_im_chat_list_top .search_out {
+    margin-right: 40px; 
+    height: 40px;
+}
+.o2_im_chat_list_top .search_icon {
+    float: left; 
+    width: 40px; 
+    height: 40px; 
+    background: url(/x_component_IMV2/$Main/default/icons/search.png) center center no-repeat; 
+    cursor: pointer;
+}
+.o2_im_chat_list_top .search_input_out {
+    margin-left: 40px; text-align: left;
+}
+.o2_im_chat_list_top .search_input {
+    margin-top: 7px; 
+    width: 96%; 
+    height: 24px; 
+    line-height: 24px; 
+    border: 0px; 
+    font-family: "Microsoft YaHei"; 
+    font-size: 12px; 
+    color: rgb(153, 153, 153); 
+    background: transparent; 
+    user-select: auto;
+}
+
+
+.o2_im_chat_list_top .add_button {
+    height: 50px;
+    width: 160px; 
+    color: rgb(51, 51, 51); 
+    font-size: 16px; 
+    line-height: 50px; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    cursor: pointer;
+    margin: 0 auto;
+    border:1px solid rgb(204, 204, 204);
+}
+.o2_im_chat_list_top .add_button .icon {
+    height: 50px; 
+    width: 30px; 
+    float: left; 
+    background: url(/x_component_IMV2/$Main/default/icons/icon_newapply.png) center center no-repeat;
+}
+.o2_im_chat_list_top .add_button .text {
+    line-height: 50px; 
+    height: 50px; 
+    float: left;
+}
+
+.o2_im_chat_list .item {
+    overflow: hidden; 
+    height: 60px; 
+    margin: 0px;
+}
+.o2_im_chat_list .item .base {
+    height: 60px; 
+    cursor: pointer; 
+}
+.o2_im_chat_list .item .normal {
+    background-color: rgb(253, 253, 253);
+}
+.o2_im_chat_list .item .check {
+    background-color: rgb(228, 228, 228);
+}
+.o2_im_chat_list .item .avatar {
+    background-position: center center; 
+    background-repeat: no-repeat; 
+    margin-left: 16px; 
+    height: 48px; 
+    width: 48px; 
+    border-radius: 16px; 
+    margin-top: 6px; 
+    background-color: rgb(255, 255, 255); 
+    float: left;
+}
+.o2_im_chat_list .item .avatar .img {
+    width: 48px; 
+    height: 48px; 
+    border: 0px; 
+    border-radius: 24px;
+}
+ 
+.o2_im_chat_list .item .body {
+    height: 59px;
+    margin-left: 16px;
+    border-bottom: 1px solid rgb(221, 221, 221); 
+}
+.o2_im_chat_list .item .body_up {
+    height:30px; 
+    line-height: 30px; 
+    margin-left: 56px;
+    margin-right: 14px;
+}
+.o2_im_chat_list .item .body_up .body_title {
+    float:left; 
+    color: rgb(51, 51, 51); 
+    overflow:hidden;
+}
+.o2_im_chat_list .item .body_up .body_time {
+    float: right; 
+    color: rgb(191, 191, 191); 
+    font-size: 12px; 
+    overflow:hidden;
+}
+.o2_im_chat_list .item .body_down {
+    margin-left: 8px;
+    margin-top: 5px;
+    max-width: 120px;
+    height:20px; 
+    line-height: 20px; 
+    float:left; 
+    overflow:hidden; 
+    font-size: 12px; 
+    color: #aaaaaa;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
+
+.o2_im_chat_content {
+    height: 100%; 
+    margin-left: 259px; 
+    overflow: hidden; 
+    background-color: rgb(255, 255, 255); 
+    opacity: 1;
+}

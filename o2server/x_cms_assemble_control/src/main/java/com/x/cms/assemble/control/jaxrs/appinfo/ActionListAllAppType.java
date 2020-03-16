@@ -25,10 +25,19 @@ public class ActionListAllAppType extends BaseAction {
 		List<Wo> wos = null;
 		List<String> appTypes = null;
 		Boolean check = true;
-		String personName = effectivePerson.getName();
+		String personName = effectivePerson.getDistinguishedName();
 		Boolean isAnonymous = effectivePerson.isAnonymous();
-		Boolean isManager = effectivePerson.isManager() || effectivePerson.isCipher();
+		Boolean isManager = false;
 
+		try {
+			isManager = userManagerService.isManager( effectivePerson );
+		} catch (Exception e) {
+			check = false;
+			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		
 		String cacheKey = ApplicationCache.concreteCacheKey( "allType", personName, isAnonymous, isManager );
 		Element element = cache.get( cacheKey );
 		
@@ -60,7 +69,9 @@ public class ActionListAllAppType extends BaseAction {
 							if( appIdsForType == null ){
 								appIdsForType = new ArrayList<>();
 							}
-							wos.add( new Wo( appType, Long.parseLong( appIdsForType.size() + "") ));
+							if( appIdsForType.size() > 0 ) {
+								wos.add( new Wo( appType, Long.parseLong( appIdsForType.size() + "") ));
+							}
 						}
 					}
 				}
@@ -74,7 +85,10 @@ public class ActionListAllAppType extends BaseAction {
 				if( appIdsForType == null ){
 					appIdsForType = new ArrayList<>();
 				}
-				wos.add( new Wo( "未分类", Long.parseLong( appIdsForType.size() + "") ));
+				
+				if( appIdsForType.size() > 0 ) {
+					wos.add( new Wo( "未分类", Long.parseLong( appIdsForType.size() + "") ));
+				}
 
 				cache.put(new Element( cacheKey, wos ));
 				result.setData( wos );

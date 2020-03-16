@@ -2521,7 +2521,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         }).inject( this.processAppSelect );
         new Element( "option" ,　{
             "value" : "",
-            "text" : this.lp.none
+            "text" : this.lp.noProcess
         }).inject( this.processAppSelect );
         MWF.Actions.get("x_processplatform_assemble_designer").listApplication( null, function( json ){
             json.data.each( function( d ){
@@ -2627,7 +2627,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
        // html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.documentType +"</td><td id='formCategoryType' class='formValue'>"+"</td></tr>"; //(this.category.data.documentType || "" )+
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='float:left;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
+        html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='cursor:pointer;width:90%;min-height:22px;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
@@ -2653,13 +2653,17 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.typeSelect.load();
 
         var value = this.category.data.importViewId ? [{
-            distinguishedName : this.category.data.importViewName,
             id : this.category.data.importViewId,
-            name : this.category.data.importViewName
-        }] : "不使用";
+            name : this.category.data.importViewName,
+            applicationName : this.category.data.importViewAppId
+        }] : [];
         this.importViewIdSelect = new MDomItem( this.propertyContentNode.getElement("#formImportViewId"), {
             type : "org",
             orgType : "QueryView",
+            style : {
+                "width" : "100%",
+                "min-height" : "22px"
+            },
             orgWidgetOptions : {
                 canRemove : false
             },
@@ -2668,8 +2672,14 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             event : {
                 change : function( item ){
                     if( item.orgObject && item.orgObject.length > 0  ){
+                        this.category.data.importViewId = item.orgObject[0].data.id;
+                        this.category.data.importViewName = item.orgObject[0].data.name;
+                        this.category.data.importViewAppId = item.orgObject[0].data.applicationName;
                         this.category.setImportView( item.orgObject[0].data.id, item.orgObject[0].data.applicationName );
                     }else{
+                        this.category.data.importViewId = "";
+                        this.category.data.importViewName = "";
+                        this.category.data.importViewAppId = "";
                         this.category.setImportView( "", "" );
                     }
                 }.bind(this)
