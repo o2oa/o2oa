@@ -300,8 +300,8 @@
         "font-size": "13px"
     },
     "columnItemBottomNode" : {
-        "width": "260px",
-        "height" : "138px",
+//        "width": "260px",
+//        "height" : "142px",
         "background-color" : "#fafafa"
     },
     "columnItemCategoryTitleNode" : {
@@ -316,14 +316,14 @@
     },
     "columnItemCategoryContentNode" : {
         "overflow" : "hidden",
-        "width" : "220px",
+//        "width" : "220px",
         "height" : "22px",
         "margin" : "3px 10px 5px 10px",
         "font-size" : "13px"
     },
     "columnItemFormContentNode" : {
         "overflow" : "hidden",
-        "width" : "220px",
+//        "width" : "220px",
         "height" : "22px",
         "margin" : "3px 10px 5px 10px",
         "font-size" : "13px"
@@ -335,13 +335,11 @@
         "line-height" : "22px",
         "color" : "#666",
         "background-color" : "#fafafa",
-        "border" : "1px solid #fafafa",
         "border-radius" : "5px"
     },
     "columnItemBottomItemNode_over" : {
         "color" : "#fff",
-        "background-color" : "#3c76b7",
-        "border" : "1px solid #3c76b7"
+        "background-color" : "#3c76b7"
     },
     "columnItemDelActionNode": {
         "position" : "absolute",

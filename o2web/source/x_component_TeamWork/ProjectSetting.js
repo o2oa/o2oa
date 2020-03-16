@@ -12,6 +12,9 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this._loadCss();
         if(css) this.css = Object.merge(  css, this.css );
 
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.ProjectAction;
+
         this.lp = this.app.lp.projectSetting;
 
         this.fireEvent("queryOpen");
@@ -52,7 +55,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviGeneralIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
         this.naviGeneralText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.general}).inject(this.naviGeneral);
         this.naviGeneral.addEvents({
-            "mouseover":function(){
+            mouseover:function(){
                 if(_self.curNavi == "general") return;
                 this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general_click.png)"});
                 this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
@@ -67,7 +70,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.changeNavi(this);
                 _self.loadGeneral();
             }
-        })
+        });
 
         //自定义字段
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
@@ -91,7 +94,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.changeNavi(this);
                 _self.loadCustom()
             }
-        })
+        });
 
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
         this.naviCustomHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviCustom);
@@ -114,7 +117,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.changeNavi(this);
                 _self.loadCustom()
             }
-        })
+        });
 
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
         this.naviCustomHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviCustom);
@@ -137,7 +140,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.changeNavi(this);
                 _self.loadCustom()
             }
-        })
+        });
 
         this.naviGeneral.click()
     },
@@ -150,7 +153,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 bgurl = bgurl.replace("_click","");
             }
             dom.setStyles({"background-image":bgurl});
-        }.bind(this))
+        }.bind(this));
 
         obj.getElement(".naviItemHover").setStyles({"background-color":"#4a90e2"});
         obj.getElement(".naviItemIcon").setStyles({"background-image":obj.getElement(".naviItemIcon").getStyle("background-image").replace(".png","_click.png")});
@@ -196,7 +199,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     pc.load();
                 }.bind(this));
             }.bind(this)
-        })
+        });
 
         this.customContent = new Element("div.customContent",{styles:this.css.customContent}).inject(this.projectSettingLayout);
         this.createExtFieldList();
@@ -204,7 +207,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
     createExtFieldList:function(){
         this.customContent.empty();
         this.app.setLoading(this.customContent);
-        this.actions.projectExtFieldByProject(this.data.id,function(json){
+        this.rootActions.ProjectExtFieldReleAction.listFieldsWithProject(this.data.id,function(json){
             this.customContent.empty();
             json.data.each(function(data){
                 this.createExtFieldItem(data);
@@ -225,7 +228,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 customExitItemRemove.hide();
                 customExitItemEdit.hide();
             }
-        })
+        });
         var customExtItemTop = new Element("div.customExtItemTop",{styles:this.css.customExtItemTop}).inject(customExtItem);
 
         var customExtName = new Element("div.customExtName",{styles:this.css.customExtName,text:data.displayName}).inject(customExtItemTop);
@@ -241,7 +244,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     this.close();
                 });
             }
-        })
+        });
         var customExitItemEdit = new Element("div.customExitItemEdit",{styles:this.css.customExitItemAction,text:this.lp.edit}).inject(customExtItemTop);
         customExitItemEdit.addEvents({
             click:function(){
@@ -275,7 +278,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     pc.load();
                 }.bind(this));
             }.bind(this)
-        })
+        });
 
         var customExtValueList = new Element("div.customExtValueList",{styles:this.css.customExtValueList}).inject(customExtItem);
         new Element("span.customExtCreator",{styles:this.customExtText,text:this.lp.description+"："+data.description}).inject(customExtValueList);
@@ -336,7 +339,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                         },
                         onClose:function(d){
                             if(d){
-                                this.actions.groupWithIds({ids:d},function(json){
+                                this.rootActions.ProjectGroupAction.listWithIds({ids:d},function(json){
                                     this.groups = json.data;
                                     var tmp = [];
                                     json.data.each(function(ddd){
@@ -391,7 +394,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     "groups":groups
                 };
 
-                this.actions.projectSave(data,function(json){
+                this.actions.save(data,function(json){
                     this.projectSettingLayout.empty();
                     this.app.setLoading(this.projectSettingLayout);
                     this.projectInfor(function(json){
@@ -416,7 +419,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
     },
     projectInfor:function(callback){
         if(this.data.id){
-            this.actions.projectGet(this.data.id,function(json){
+            this.actions.get(this.data.id,function(json){
                 this.projectData = json.data;
                 if(callback)callback(json.data)
             }.bind(this));
@@ -427,7 +430,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         if(!ids) return;
         var resGroups = [];
         ids.each(function(data){
-            this.actions.groupGet(data,function(json){
+            this.rootActions.ProjectGroupAction.get(data,function(json){
 
             }.bind(this))
         }.bind(this))

@@ -57,10 +57,14 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("钉钉扫码登录的appSecret")
 	private String scanLoginAppSecret;
 
+	@FieldDescribe("是否启用考勤信息")
+	private Boolean attendanceSyncEnable;
+
 	public static Dingding defaultInstance() {
 		return new Dingding();
 	}
 
+	public static final String dingdingLogo = "https://sample.o2oa.net/app/dingding-logo.png";
 	public static final Boolean default_enable = false;
 	public static final String default_appKey = "";
 	public static final String default_corpId = "";
@@ -75,6 +79,7 @@ public class Dingding extends ConfigObject {
 	public static final Boolean default_scanLoginEnable = false;
 	public static final String default_scanLoginAppId = "";
 	public static final String default_scanLoginAppSecret = "";
+	public static final Boolean default_attendanceSyncEnable = false;
 
 	public Dingding() {
 		this.enable = default_enable;
@@ -91,6 +96,7 @@ public class Dingding extends ConfigObject {
 		this.scanLoginEnable = default_scanLoginEnable;
 		this.scanLoginAppId = default_scanLoginAppId;
 		this.scanLoginAppSecret = default_scanLoginAppSecret;
+		this.attendanceSyncEnable = default_attendanceSyncEnable;
 	}
 
 	private static String cachedCorpAccessToken;
@@ -295,6 +301,13 @@ public class Dingding extends ConfigObject {
 		this.scanLoginAppSecret = scanLoginAppSecret;
 	}
 
-	public static final String dingdingLogo = "https://sample.o2oa.net/app/dingding-logo.png";
+	public Boolean getAttendanceSyncEnable() {
+		return attendanceSyncEnable;
+	}
+
+	public void setAttendanceSyncEnable(Boolean attendanceSyncEnable) {
+		this.attendanceSyncEnable = attendanceSyncEnable;
+	}
+
 
 }

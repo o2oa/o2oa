@@ -3,14 +3,12 @@ package com.x.server.console;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -31,9 +29,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.JarTools;
 import com.x.server.console.server.Servers;
 
 import io.github.classgraph.ClassGraph;
@@ -50,6 +45,10 @@ public class NodeAgent extends Thread {
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$", Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern read_log_pattern = Pattern.compile("^readLog:(.+)$", Pattern.CASE_INSENSITIVE);
+
+	public static final int LOG_MAX_READ_SIZE = 10 * 1024;
 
 	@Override
 	public void run() {
@@ -103,6 +102,13 @@ public class NodeAgent extends Thread {
 							continue;
 						}
 
+						matcher = read_log_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							long lastTimeFileSize = dis.readLong();
+							readLog(lastTimeFileSize, dos);
+							continue;
+						}
+
 						dos.writeUTF("failure:no pattern method!");
 						dos.flush();
 
@@ -117,6 +123,64 @@ public class NodeAgent extends Thread {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception{
+		try {
+			File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
+			if(logFile.exists()){
+				Map<String, String> map = new HashMap<>();
+				try(RandomAccessFile randomFile = new RandomAccessFile(logFile,"r")) {
+					long curFileSize = randomFile.length();
+					if (lastTimeFileSize <= 0 || lastTimeFileSize > curFileSize) {
+						lastTimeFileSize = (curFileSize > LOG_MAX_READ_SIZE) ? (curFileSize - LOG_MAX_READ_SIZE) : 0;
+					}
+					randomFile.seek(lastTimeFileSize);
+					int curReadSize = 0;
+					String tmp = "";
+					String curTime = "";
+					while ((tmp = randomFile.readLine()) != null) {
+						byte[] bytes = tmp.getBytes("ISO8859-1");
+						curReadSize = curReadSize + bytes.length + 1;
+						String lineStr = new String(bytes);
+						String time = curTime;
+						if (lineStr.length() > 23) {
+							time = StringUtils.left(lineStr, 19);
+							if (DateTools.isDateTime(time)) {
+								time = StringUtils.left(lineStr, 23);
+								curTime = time;
+							} else {
+								if (StringUtils.isEmpty(curTime)) {
+									time = "2020-01-01 00:00:01.001";
+								} else {
+									time = curTime;
+								}
+							}
+						} else {
+							if (StringUtils.isEmpty(curTime)) {
+								time = "2020-01-01 00:00:01.001";
+							} else {
+								time = curTime;
+							}
+						}
+						map.put(time+"#"+Config.node(), lineStr);
+						if (curReadSize > LOG_MAX_READ_SIZE){
+							break;
+						}
+					}
+					lastTimeFileSize = curReadSize - 1;
+				}
+				dos.writeLong(lastTimeFileSize);
+				dos.flush();
+
+				dos.writeUTF(XGsonBuilder.toJson(map));
+				dos.flush();
+			}
+		} catch (Exception e) {
+			logger.print("readLog error:{}", e.getMessage());
+			dos.writeUTF("failure");
+			dos.flush();
 		}
 	}
 
@@ -448,6 +512,49 @@ public class NodeAgent extends Thread {
 			return "customJar";
 		}
 		return null;
+	}
+
+	public static void main(String[] args) throws  Exception{
+		//File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
+		File logFile = new File("/Users/chengjian/Desktop/temp/temp/2020_03_12.out.log");
+		RandomAccessFile randomFile = new RandomAccessFile(logFile,"r");
+		long lastTimeFileSize = randomFile.length()-10*1024;
+		long tempSize = lastTimeFileSize;
+		randomFile.seek(lastTimeFileSize);
+		String tmp = "";
+		String curTime = "";
+		while( (tmp = randomFile.readLine())!= null) {
+			byte[] bytes = tmp.getBytes("ISO8859-1");
+			String lineStr = new String(bytes);
+			tempSize = tempSize + bytes.length+1;
+			String time = curTime;
+			if(lineStr.length()>23){
+				time = StringUtils.left(lineStr, 19);
+				if(DateTools.isDateTime(time)){
+					time = StringUtils.left(lineStr, 23);
+					curTime = time;
+					//System.out.println(lineStr);
+				}else{
+					if(StringUtils.isEmpty(curTime)){
+						continue;
+					}else {
+						time = curTime;
+						//System.out.println(lineStr);
+					}
+				}
+			}else{
+				if(StringUtils.isEmpty(curTime)){
+					continue;
+				}else{
+					time = curTime;
+					//System.out.println(lineStr);
+				}
+			}
+		}
+		lastTimeFileSize = randomFile.length();
+		tempSize = tempSize - 1;
+		System.out.println(lastTimeFileSize);
+		System.out.println(tempSize);
 	}
 
 }

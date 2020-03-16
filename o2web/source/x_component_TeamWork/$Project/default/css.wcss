@@ -424,6 +424,14 @@
         "margin-left":"5px",
         "color":"#999999"
     },
+    taskGroupItemTitleReload:{
+        "cursor":"pointer",
+        "float":"right",
+        "height":"60px",
+        "width":"24px",
+        "margin-right":"4px",
+        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_reload.png) no-repeat center "
+    },
     taskGroupItemTitleAdd:{
         "cursor":"pointer",
         "float":"right",
@@ -450,7 +458,7 @@
     },
     taskItemContainerDrag:{
         "width":"290px",
-        "min-height":"80px",
+        //"min-height":"80px",
         "margin-bottom":"10px"
     },
     taskItemInsertLine:{
@@ -464,7 +472,6 @@
     taskItemContainer:{
         "width":"260px",
         "overflow":"hidden",
-        "height":"80px",
         //"min-height":"80px",
         "cursor":"pointer",
         "border":"1px solid #E6E6E6",
@@ -487,6 +494,33 @@
     },
     taskItemTitle:{
         "font-size":"14px"
+    },
+    taskItemDetail:{
+        "font-size":"12px",
+        "margin-top":"4px"
+    },
+    taskItemLimit:{
+
+        "display":"inline-block",
+        "border-radius":"2px",
+        "vertical-align":"middle",
+        "color":"#ffffff",
+        "padding":"0 2px",
+        "margin":"2px 6px 0 0 "
+    },
+    taskItemTags:{
+        "margin-top":"8px"
+    },
+    taskTagContent:{
+        "float":"left",
+        "margin":"0px 2px"
+    },
+    taskTagColor:{
+        "display":"inline-block",
+        "margin-right":"2px",
+        "width":"6px",
+        "height":"6px",
+        "border-radius":"6px"
     },
     newTaskGroupContainer:{
         "cursor":"pointer",

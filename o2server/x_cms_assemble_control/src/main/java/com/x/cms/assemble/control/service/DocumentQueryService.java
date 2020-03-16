@@ -65,7 +65,7 @@ public class DocumentQueryService {
 		}
 	}
 	
-	public Document view( String id, EffectivePerson currentPerson ) throws Exception {
+	public Document view( String id, EffectivePerson effectivePerson ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
 		}

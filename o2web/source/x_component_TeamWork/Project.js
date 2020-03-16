@@ -18,7 +18,10 @@ MWF.xApplication.TeamWork.Project = new Class({
 
         this.app = app;
         this.lp = this.app.lp.project;
-        this.actions = this.app.restActions;
+        //this.actions = this.app.restActions;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.ProjectAction;
+        //this.taskActions = this.rootActions.TaskAction;
 
         this.path = "/x_component_TeamWork/$Project/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
@@ -158,7 +161,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         if(this.naviLayout) this.naviLayout.destroy();
         this.naviLayout = new Element("div.naviLayout",{styles:this.css.naviLayout}).inject(this.contentLayout);
         this.app.setLoading(this.naviLayout);
-        this.actions.projectNaviGet(this.data.id,function(json){
+        this.rootActions.TaskAction.statiticMyProject(this.data.id,function(json){
             this.projectGroupData = json.data;
             if(this.projectGroupData.groups && this.projectGroupData.groups.length>0){
                 this.currentProjectGroupData = this.projectGroupData.groups[0]; //默认只有一个分组
@@ -231,7 +234,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviTopMyTaskLayout.setStyles({"background-color":"#F2F5F7"});
                 this.naviViewContainer.getElements(".naviItemContainer").each(function(d){
                     this.naviItemChange(d,"leave")
-                }.bind(this))
+                }.bind(this));
                 this.createTaskGroup();
             }.bind(this),
             mouseover:function(){ if(_self.curNaviItem!="group") this.setStyles({"background-color":"#F2F5F7"}) },
@@ -266,6 +269,7 @@ MWF.xApplication.TeamWork.Project = new Class({
             var completedTotal = this.currentProjectGroupData.completedTotal;
             var overtimeTotal = this.currentProjectGroupData.overtimeTotal;
 
+            //alert(taskTotal);alert(completedTotal);alert(overtimeTotal);
             if(taskTotal){
                 var _width = this.naviTopTaskLine.getWidth();
                 var completePixel =_width * (completedTotal / taskTotal);
@@ -451,7 +455,8 @@ MWF.xApplication.TeamWork.Project = new Class({
     createTaskGroup:function(){  //右侧内容
         if(this.currentProjectGroupData && this.currentProjectGroupData.id){
             this.app.setLoading(this.taskContentLayout);
-            this.actions.taskGroupList(this.currentProjectGroupData.id,function(json){
+            //this.actions.taskGroupList(this.currentProjectGroupData.id,function(json){
+            this.rootActions.TaskListAction.listWithTaskGroup(this.currentProjectGroupData.id,function(json){
                 this.taskContentLayout.empty();
                 json.data.each(function(data,i){
                     //if(i>0) return;
@@ -497,7 +502,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         new Element("div.taskGroupItemTitleText",{styles:this.css.taskGroupItemTitleText,text:data.name}).inject(taskGroupItemTitleContainer);
         new Element("div.taskGroupItemTitleCount",{styles:this.css.taskGroupItemTitleCount,text:"("+data.taskCount+")"}).inject(taskGroupItemTitleContainer);
         if(data.control.sortable){
-        var taskGroupItemTitleMore = new Element("div.taskGroupItemTitleMore",{styles:this.css.taskGroupItemTitleMore}).inject(taskGroupItemTitleContainer);
+            var taskGroupItemTitleMore = new Element("div.taskGroupItemTitleMore",{styles:this.css.taskGroupItemTitleMore}).inject(taskGroupItemTitleContainer);
             taskGroupItemTitleMore.addEvents({
                 click:function(){
                     data.projectObj = this;
@@ -551,6 +556,16 @@ MWF.xApplication.TeamWork.Project = new Class({
             mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"})},
             mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png)"})}
         });
+
+        var taskGroupItemTitleReload = new Element("div.taskGroupItemTitleReload",{styles:this.css.taskGroupItemTitleReload, title:this.lp.reload}).inject(taskGroupItemTitleContainer);
+        //if(!data.control.sortable) taskGroupItemTitleAdd.setStyle("margin-right","20px");
+        taskGroupItemTitleReload.addEvents({
+            click:function(){
+                this.createTaskGroupItemLayout(node,data)
+            }.bind(this)
+        });
+
+
         var taskGroupItemContainer = new Element("div.taskGroupItemContainer",{styles:this.css.taskGroupItemContainer}).inject(node);
         var _h = node.getHeight().toInt()-taskGroupItemTitleContainer.getHeight().toInt() - 10 - 10;
 
@@ -558,7 +573,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.app.setScrollBar(taskGroupItemContainer);
         this.app.setLoading(taskGroupItemContainer);
 
-        this.actions.taskListByListId(this.data.id,data.id,function(json){
+        //this.actions.taskListByListId(this.data.id,data.id,function(json){
+         this.rootActions.TaskAction.listMyTaskWithTaskListId(this.data.id,data.id,function(json){
             taskGroupItemContainer.empty();
             var taskListData = json.data;
             //alert(JSON.stringify(taskListData));
@@ -679,7 +695,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                                                 taskId:taskId,
                                                 behindTaskId:taskInId
                                             };
-                                            _self.actions.taskChangeGroup(taskGroupInId,data,function(json){
+                                            _self.rootActions.TaskListAction.addTask2ListWithBehindTask(taskGroupInId,data,function(json){
                                                 if(json.type == "success"){ //返回成功后再换位置
 
                                                     //fx fx2 动画clone到移入位置
@@ -719,9 +735,10 @@ MWF.xApplication.TeamWork.Project = new Class({
                                                     //刷新其他需要加载的位置，比如数量
                                                     var taskGroupFrom = taskItemContainer.getParent().getParent();
                                                     var taskGroupIn = dr.getParent().getParent();
-                                                    _self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                                    //_self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
                                                         taskGroupFrom.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
-                                                    })
+                                                    });
                                                     _self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupInId,function(json){
                                                         taskGroupIn.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
                                                     })
@@ -769,6 +786,32 @@ MWF.xApplication.TeamWork.Project = new Class({
         else if(d.priority == this.lp.emergency)taskItemHover.setStyle("background-color","#ff0000");
         var taskItemContent = new Element("div.taskItemContent",{styles:this.css.taskItemContent}).inject(taskItemContainer);
         var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle,text:d.name}).inject(taskItemContent);
+        var taskItemDetail = new Element("div.taskItemDetail",{styles:this.css.taskItemDetail}).inject(taskItemContent);
+        //时限
+        var taskItemLimit = new Element("div.taskItemLimit",{styles:this.css.taskItemLimit}).inject(taskItemDetail);
+        taskItemLimit.set("text",this.app.formatDate(d.startTime) + " - " + this.app.formatDate(d.endTime));
+        var intd = (this.app.compareWithNow(d.endTime)).intervalDay;
+
+        //alert(d.endTime + "**************" + intd);
+        if(intd==-1){
+            taskItemLimit.setStyle("background-color","#E6240E");
+        }else if(intd==0){
+            taskItemLimit.setStyle("background-color","#fa8c15");
+        }else{
+            taskItemLimit.setStyle("background-color","#1b9aee");
+        }
+        //标签 taskTag等
+
+        var taskItemTags = new Element("div.taskItemTags",{styles:this.css.taskItemTags}).inject(taskItemDetail);
+        this.rootActions.TaskTagAction.listWithTask(d.id,function(json){
+            json.data.each(function(data){
+                var taskTagContent = new Element("div.taskTagContent",{styles:this.css.taskTagContent}).inject(taskItemTags);
+                var taskTagColor = new Element("span",{styles:this.css.taskTagColor}).inject(taskTagContent);
+                taskTagColor.setStyle("background-color",data.tagColor);
+                new Element("span",{styles:this.css.taskTagText,text:data.tag}).inject(taskTagContent);
+            }.bind(this));
+        }.bind(this),null,false);
+
         taskItemHover.setStyles({"height":taskItemContainer.getHeight()});
     },
     openTask:function(id,callback){
@@ -796,7 +839,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         var _self = this;
         this.naviViewContainer.getElements(".naviItemContainer").each(function(d){
             this.naviItemChange(d,"leave")
-        }.bind(this))
+        }.bind(this));
         this.naviItemChange(obj,"enter");
 
         if(this.viewContainer) delete this.viewContainer;
@@ -940,6 +983,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
         "title":""
     },
     _createTableContent:function(){
+        this.rootActions = this.app.rootActions;
         if(this.formTopTextNode) this.formTopTextNode.set("text",this.lp.newTaskTitle);
         //this.formTableArea
         this.titleContainer = new Element("div.titleContainer",{styles:this.css.titleContainer}).inject(this.formTableArea);
@@ -955,7 +999,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
                     taskListIds:this.data.taskListIds || [],
                     name: this.titleValue.get("value").trim()
                 };
-                this.actions.taskSave(data,function(json){
+                this.rootActions.TaskAction.save(data,function(json){
                     if(json.data.id){
                         var data = {
                             projectObj:this.data.projectObj || null,
@@ -1004,11 +1048,12 @@ MWF.xApplication.TeamWork.Project.NewTaskGroup = new Class({
         "title":""
     },
     _createTableContent:function(){
+        this.rootActions = this.app.rootActions;
         this.explorer = this.data.projectObj;
         if(this.formTopTextNode) this.formTopTextNode.set("text",this.data.isNew?this.lp.taskGroupAdd:this.lp.taskGroupEdit);
         //this.formTableArea
         this.titleContainer = new Element("div.titleContainer",{styles:this.css.titleContainer}).inject(this.formTableArea);
-        this.titleValue = new Element("input.titleValue",{styles:this.css.titleValue,placeholder:this.lp.newTaskPlaceholder}).inject(this.titleContainer);
+        this.titleValue = new Element("input.titleValue",{styles:this.css.titleValue,placeholder:this.lp.newTaskListPlaceholder}).inject(this.titleContainer);
         var val = this.data.isNew?"":this.data.name;
         this.titleValue.set("value",val);
 
@@ -1023,13 +1068,13 @@ MWF.xApplication.TeamWork.Project.NewTaskGroup = new Class({
                     project:this.data.projectId,
                     name: this.titleValue.get("value").trim()
                 };
-                this.actions.taskGroupSave(data,function(json){
+                this.rootActions.TaskListAction.save(data,function(json){
                     this.fireEvent("createTask");
                     this.close(json);
                     if(this.explorer){
                         if(this.data.node){
                             if(json.data.id){
-                                this.actions.taskGroupGet(this.explorer.currentProjectGroupData.id,json.data.id,function(json){
+                                this.rootActions.TaskListAction.get(this.explorer.currentProjectGroupData.id,json.data.id,function(json){
                                     this.explorer.createTaskGroupItemLayout(this.data.node,json.data)
                                 }.bind(this));
                             }else{
@@ -1093,7 +1138,7 @@ MWF.xApplication.TeamWork.Project.TaskGroupMenu = new Class({
             click:function(e){
                 _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
                     if(_self.data.id){
-                        _self.actions.taskGroupDelete(_self.data.id,function(json){
+                        _self.rootActions.TaskListAction.delete(_self.data.id,function(json){
                             this.close();
                             _self.close(json)
                         }.bind(this))
@@ -1177,7 +1222,7 @@ MWF.xApplication.TeamWork.Project.ProjectList = new Class({
         this.itemLayout = new Element("div.itemLayout",{styles:this.css.itemLayout}).inject(this.contentNode);
         this.app.setLoading(this.itemLayout);
 
-        this.actions.projectStarListNext("(0)",100,{},function(json){
+        this.rootActions.ProjectAction.listStarNextWithFilter("(0)",100,{},function(json){
             this.app.setScrollBar(this.itemLayout);
             this.itemLayout.empty();
             if(json.data && json.data.length>0){
@@ -1206,7 +1251,7 @@ MWF.xApplication.TeamWork.Project.ProjectList = new Class({
             }
             var tmpContainer = new Element("div.tmpContainer").inject(this.itemLayout);
             this.app.setLoading(tmpContainer);
-            this.actions.projectListNext("(0)",100,{},function(json){
+            this.rootActions.ProjectAction.listNextWithFilter("(0)",100,{},function(json){
                 tmpContainer.destroy();
                 this.allItemText = new Element("div.allItemText",{styles:this.css.itemText,text:this.lp.allItem}).inject(this.itemLayout);
                 json.data.each(function(data){

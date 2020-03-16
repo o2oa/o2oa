@@ -99,6 +99,7 @@ MWF.xApplication.TeamWork.LP = {
 		"viewRemove":"删除视图",
 		"viewEdit":"编辑视图",
 
+		"taskGroupReload":"刷新",
 		"taskGroup":"任务列表",
 		"taskGroupAdd":"新建任务列表",
 		"taskGroupEdit":"编辑任务列表",
@@ -110,6 +111,7 @@ MWF.xApplication.TeamWork.LP = {
 
 		"newTaskTitle":"新建任务",
 		"newTaskPlaceholder":"输入任务名称",
+		"newTaskListPlaceholder":"输入任务列表名称",
 		"newTaskOk":"确定",
 		"newTaskClose":"取消"
 	},
@@ -215,7 +217,9 @@ MWF.xApplication.TeamWork.LP = {
 	"taskSub":{
 		"title":"转换为子任务",
 		"searchPlace":"按回车搜索",
-		"ok":"确定"
+		"subToSelf":"不能转给当前任务",
+		"ok":"确定",
+		"reload":"刷新"
 	},
 	"taskMove":{
 		"title":"转移任务",

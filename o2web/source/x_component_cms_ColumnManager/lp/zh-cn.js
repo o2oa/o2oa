@@ -89,6 +89,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "selectProcessApp":"选择流程应用",
         "setCategoryManager" : "设置分类管理者",
         "none" : "无",
+        "noProcess" : "系统中没有您可以管理的流程",
         "documentType" : "文档类型",
         "excelImportView" : "数据导入导出视图"
 	},

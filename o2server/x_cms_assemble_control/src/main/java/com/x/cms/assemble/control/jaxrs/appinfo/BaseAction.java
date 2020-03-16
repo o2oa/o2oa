@@ -56,9 +56,11 @@ public class BaseAction extends StandardJaxrsAction {
 			if( ListTools.isNotEmpty( inAppInfoIds )) {
 				viewableAppInfoIds = inAppInfoIds; //可发布栏目就限制为inAppInfoIds
 			}else {
-				if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
-					viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType);
-				}
+				//管理员应该能看所有的栏目
+				viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType);
+//				if (StringUtils.isNotEmpty(documentType) && !"全部".equals(documentType) && !"all".equalsIgnoreCase(documentType)) {
+//					viewableAppInfoIds = appInfoServiceAdv.listAllIds(documentType)
+//				}
 				if( ListTools.isEmpty( viewableAppInfoIds )) {
 					if( viewableAppInfoIds == null ){
 						viewableAppInfoIds = new ArrayList<>();

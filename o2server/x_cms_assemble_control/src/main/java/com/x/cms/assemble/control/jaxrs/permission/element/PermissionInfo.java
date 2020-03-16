@@ -8,13 +8,13 @@ public class PermissionInfo {
 	private String permission =  PermissionName.READER ;
 	
 	@FieldDescribe( "使用者类别：所有人|组织|人员|群组" )
-	private String permissionObjectType = "所有人";
+	private String permissionObjectType = "";
 	
 	@FieldDescribe( "使用者编码：所有人|组织编码|人员UID|群组编码" )
-	private String permissionObjectCode = "所有人";
+	private String permissionObjectCode = "";
 	
 	@FieldDescribe( "使用者名称：所有人|组织名称|人员名称|群组名称" )
-	private String permissionObjectName = "所有人";
+	private String permissionObjectName = "";
 
 	public PermissionInfo() {}
 	

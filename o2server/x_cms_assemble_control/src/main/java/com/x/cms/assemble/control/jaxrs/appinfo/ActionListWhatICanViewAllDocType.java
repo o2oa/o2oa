@@ -37,7 +37,7 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey(personName, "AllType", isXAdmin, isAnonymous);
+		String cacheKey = ApplicationCache.concreteCacheKey(personName, "ViewAppInfoAll", isXAdmin, isAnonymous);
 		Element element = cache.get(cacheKey);
 
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -55,8 +55,7 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 				}
 				if( ListTools.isNotEmpty( wos_out )){
 					for( Wo wo : wos_out ) {
-						if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
-
+//						if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
 							try {
 								wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
 							} catch (Exception e) {
@@ -65,9 +64,8 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 								result.error(exception);
 								logger.error(e, effectivePerson, request, null);
 							}
-
 							wos.add( wo );
-						}
+//						}
 					}
 					//按appInfoSeq列的值， 排个序
 					SortTools.asc( wos, "appInfoSeq");

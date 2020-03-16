@@ -367,7 +367,15 @@
         "right":"0px",
         "top":"0px",
         "bottom":"0px",
-        "background":"rgba(255,255,255,0.3)"
+        "background-color":"#000000",
+        "opacity":"0.3"
+    },
+    projectBlockItemContainer:{
+        "position":"absolute",
+        "left":"0px",
+        "right":"0px",
+        "top":"0px",
+        "bottom":"0px"
     },
     projectBlockItemIconContainer:{
         "height":"20px",

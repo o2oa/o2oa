@@ -20,13 +20,13 @@ public class ViewServiceAdv {
 	
 	private ViewService viewService = new ViewService();
 	
-	public View save( View wrapIn,  EffectivePerson currentPerson, List<ViewFieldConfig> fields ) throws Exception {
+	public View save( View wrapIn,  EffectivePerson effectivePerson, List<ViewFieldConfig> fields ) throws Exception {
 		if( wrapIn == null ){
 			throw new Exception("wrapIn for save is null!");
 		}
 		View view = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			view = viewService.save( emc, currentPerson, wrapIn, fields );
+			view = viewService.save( emc, effectivePerson, wrapIn, fields );
 		} catch ( Exception e ) {
 			throw e;
 		}

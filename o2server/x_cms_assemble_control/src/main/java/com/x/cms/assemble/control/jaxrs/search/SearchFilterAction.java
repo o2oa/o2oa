@@ -31,11 +31,11 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listPublishAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
 				((ActionListAppSearchFilterForDocStatus)proxy
 						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, currentPerson, "published", categoryId);
+						.execute(request, effectivePerson, "published", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -46,11 +46,11 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listDraftAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
 				((ActionListAppSearchFilterForDocStatus)proxy
 						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, currentPerson, "draft", categoryId);
+						.execute(request, effectivePerson, "draft", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
@@ -61,11 +61,11 @@ public class SearchFilterAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listArchivedAppSearchFilter( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId) {
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionListAppSearchFilterForDocStatus.Wo> result =
 				((ActionListAppSearchFilterForDocStatus)proxy
 						.getProxy(ActionListAppSearchFilterForDocStatus.class))
-						.execute(request, currentPerson, "archived", categoryId);
+						.execute(request, effectivePerson, "archived", categoryId);
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}	
 }

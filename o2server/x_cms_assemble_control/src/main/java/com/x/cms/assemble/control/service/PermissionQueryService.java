@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -27,8 +28,15 @@ public class PermissionQueryService {
 	public List<String>listViewableAppIdByPerson( String personName, Boolean isAnonymous, List<String> unitNames,
 			List<String> groupNames, List<String> inAppInfoIds, List<String> excludAppInfoIds, String documentType, String appType, Integer maxCount ) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return cmsPermissionService.listViewableAppIdByPerson(
+			List<String> list = cmsPermissionService.listViewableAppIdByPerson(
 					emc, personName, isAnonymous, unitNames, groupNames, inAppInfoIds, excludAppInfoIds, documentType, appType, maxCount);
+			List<String> result =  new ArrayList<>();
+			if( ListTools.isNotEmpty( list )) {
+				for( String id : list ) {
+					ListTools.addStringToList(id, result);
+				}
+			}
+			return result;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -70,11 +78,11 @@ public class PermissionQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames, String appType,
-			String documentType, Integer maxCount) throws Exception {
+	public List<String> listManageableAppIdsByPerson( String personName, List<String> unitNames, List<String> groupNames, 
+			List<String> inAppInfoIds, List<String> excludAppInfoIds, String appType,	String documentType, Integer maxCount) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return cmsPermissionService.listManageableAppIdsByPerson(
-					emc, personName, unitNames, groupNames, appType, documentType, maxCount);
+					emc, personName, unitNames, groupNames, inAppInfoIds, excludAppInfoIds, appType, documentType, maxCount);
 		} catch (Exception e) {
 			throw e;
 		}

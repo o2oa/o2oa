@@ -359,6 +359,26 @@ public class AppInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
+	@JaxrsMethodDescribe(value = "获取所有可管理的栏目分类信息列表.", action = ActionListAllManageableAppType.class)
+	@GET
+	@Path("list/appType/manager")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listManageableAllAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListAllManageableAppType.Wo>> result = new ActionResult<>();
+		try {
+			result = ((ActionListAllManageableAppType)proxy.getProxy(ActionListAllManageableAppType.class)).execute(request, effectivePerson);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e,
+					"系统在获取所有的栏目分类信息列表时发生异常。Name:" + effectivePerson.getDistinguishedName());
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "获取用户有权限管理的所有信息栏目信息列表.", action = ActionListWhatICanManage.class)
 	@GET
 	@Path("list/manage")

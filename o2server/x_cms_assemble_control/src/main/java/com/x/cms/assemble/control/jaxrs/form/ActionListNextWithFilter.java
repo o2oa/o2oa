@@ -29,7 +29,6 @@ public class ActionListNextWithFilter extends BaseAction {
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
 			Integer count, String appId, JsonElement jsonElement) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
 		EqualsTerms equals = new EqualsTerms();
 		LikeTerms likes = new LikeTerms();
 		Wi wrapIn = null;
@@ -42,7 +41,7 @@ public class ActionListNextWithFilter extends BaseAction {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
 			result.error(exception);
-			logger.error(e, currentPerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 		}
 
 		if (check) {

@@ -14,7 +14,9 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
 
         this.app = explorer.app;
         this.lp = this.app.lp.taskAttachmentList;
-        this.actions = this.app.restActions;
+
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.AttachmentAction;
 
         this.path = "/x_component_TeamWork/$TaskAttachmentList/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
@@ -86,10 +88,10 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         var attachmentName = new Element("div.attachmentName",{styles:this.css.attachmentName,text:att.name}).inject(attachmentItem);
         var attachmentSize = new Element("div.attachmentSize",{styles:this.css.attachmentSize}).inject(attachmentItem);
         var size = att.length.toFloat();
-        if(size<1024) size = "1k"
-        else if(size<1024*1024) size = Math.floor(size/1024) + "K"
-        else if(size<1024*1024*1024) size = Math.floor(size/1024/1024) + "MB"
-        attachmentSize.set("text",size)
+        if(size<1024) size = "1k";
+        else if(size<1024*1024) size = Math.floor(size/1024) + "K";
+        else if(size<1024*1024*1024) size = Math.floor(size/1024/1024) + "MB";
+        attachmentSize.set("text",size);
         var attachmentMore = new Element("div.attachmentMore",{styles:this.css.attachmentMore}).inject(attachmentItem);
         attachmentMore.addEvents({
             mouseover:function(){
@@ -154,10 +156,10 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
                         formData.append('file', file);
 
                         formData.append('site', this.data.id);
-                        this.actions.attachmentTaskUpload(this.data.id, function (json) {
+                        this.actions.taskAttachmentUpload(this.data.id,this.data.id,formData,file,function(json){
                             if(json.type=="success"){
                                 if(json.id){
-                                    this.actions.attachmentGet(json.id,  function (json) {
+                                    this.actions.get(json.id,  function (json) {
                                         json = this.transportData(json);
                                         if (json.data) {
                                             //this.load();
@@ -179,8 +181,35 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
                             }
                             this.uploadFileAreaNode.destroy();
                             this.uploadFileAreaNode = false;
-                            //this.attachmentController.checkActions();
-                        }.bind(this), null, formData, file,this.data.id);
+
+                        }.bind(this))
+                        // this.actions.attachmentTaskUpload(this.data.id, function (json) {
+                        //     if(json.type=="success"){
+                        //         if(json.id){
+                        //             this.actions.attachmentGet(json.id,  function (json) {
+                        //                 json = this.transportData(json);
+                        //                 if (json.data) {
+                        //                     //this.load();
+                        //                     this.getAttachment(json.data.id,function(json){
+                        //                         //alert(JSON.stringify(json))
+                        //                         this.loadAttachmentItem(json)
+                        //                     }.bind(this))
+                        //                 }
+                        //
+                        //                 this.fireEvent("upload", [json.data]);
+                        //             }.bind(this))
+                        //         }
+                        //         if(json.data.dynamics){
+                        //             json.data.dynamics.each(function(dd){
+                        //                 this.explorer.loadDynamicItem(dd,"bottom");
+                        //             }.bind(this));
+                        //             this.explorer.dynamicContent.scrollTo(0,this.explorer.dynamicContent.getScrollSize().y);
+                        //         }
+                        //     }
+                        //     this.uploadFileAreaNode.destroy();
+                        //     this.uploadFileAreaNode = false;
+                        //     //this.attachmentController.checkActions();
+                        // }.bind(this), function(){alert("err")}, formData, file,this.data.id);
 
                     }
                 }
@@ -215,7 +244,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         return json;
     },
     listAttachment: function( callback ){
-        this.actions.attachmentListByTaskId(this.data.id, function(json){
+        this.actions.listByTaskId(this.data.id, function(json){
             if(callback)callback(this.transportData(json));
         }.bind(this))
     },
@@ -242,7 +271,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         this.actions.attachmentDownloadUrl(attachment.id, this.data.id, callback);
     },
     getAttachment:function(id,callback){
-       this.actions.attachmentGet(id,function(json){
+       this.actions.get(id,function(json){
             if(json.type == "success"){
                 if(callback)callback(json.data)
             }
@@ -270,6 +299,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
         this.lp = this.options.lp;
         this.explorer = this.data.explorer;
         this.data = this.data.data;
+        this.rootActions = this.app.rootActions;
         //this.data
         //this.contentNode
 
@@ -315,11 +345,16 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
 
         if(callback)callback();
     },
-    downloadAttachment: function (attachment) {
-        this.actions.attachmentDownloadStream(attachment.id, attachment.site);
+    downloadAttachment: function (attachment) {debugger;
+        var address = this.rootActions.AttachmentAction.action.address;
+        var url = this.rootActions.AttachmentAction.action.actions.downLoad.uri;
+        url = url.replace("{id}", encodeURIComponent(attachment.id));debugger;
+        window.open(address+url)
+
     },
     deleteAttachment: function (attachment) {
-        this.actions.attachmentRemove(attachment.id, function (json) {
+        //this.actions.attachmentRemove(attachment.id, function (json) {
+        this.rootActions.AttachmentAction.delete(attachment.id, function (json) {
             if(json.type == "success"){
                 var dom = this.explorer.container.getElementById(json.data.id);
                 if(dom) dom.destroy();

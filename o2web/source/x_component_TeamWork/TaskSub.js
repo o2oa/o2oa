@@ -41,7 +41,9 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
         this.app = this.explorer.app;
         this.container = this.app.content;
         this.lp = this.app.lp.taskSub;
-        this.actions = this.explorer.actions || this.app.actions || this.app.rectActions;
+        //this.actions = this.explorer.actions || this.app.actions || this.app.rectActions;
+        this.rootActions = this.app.rootActions;
+        this.actions = this.rootActions.TaskAction;
 
         this.data = data || {};
         this.cssPath = "/x_component_TeamWork/$TaskSub/"+this.options.style+"/css.wcss";
@@ -87,6 +89,7 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
             click:function(){
                 this.total = 0;
                 this.curCount = 0;
+                this.searchInput.set("value","");
                 this.searchReset.show();
                 this.searchReset.hide();
                 this.taskListLayout.empty();
@@ -125,7 +128,7 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
         this.curCount = this.curCount || 0;
         this.isLoaded = false;
         //alert("curcount="+this.curCount+"total="+this.total);alert(id)
-        this.actions.taskListNext(id,count,filter,function(json){
+        this.actions.listNextWithFilter(id,count,filter,function(json){
             this.total = json.count;
             this.taskListData = json.data;
             tmploading.destroy();
@@ -162,7 +165,7 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
                 _self.okAction.setStyles({
                     "cursor":"pointer",
                     "background-color":"#4A90E2"
-                })
+                });
                 _self.selectedItem = this;
             }
         });
@@ -181,8 +184,14 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
                     var data = {
                         parent : this.selectedItem.get("id"),
                         id:this.data.data.id
+                    };
+
+                    if(this.selectedItem.get("id") == this.data.data.id){
+                        this.app.notice(this.lp.subToSelf,"info");
+                        return ;
                     }
-                    this.actions.taskSave(data,function(json){
+
+                    this.actions.save(data,function(json){
                         this.explorer._createTableContent();
                         this.close();
                     }.bind(this))

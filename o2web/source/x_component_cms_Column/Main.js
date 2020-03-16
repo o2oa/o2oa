@@ -116,7 +116,7 @@ MWF.xApplication.cms.Column.Main = new Class({
     },
     loadAppType : function(){
         var _self = this;
-        this.restActions.listAllAppType( function( json ){
+        this.restActions.listAllAppTypeByManager( function( json ){
             (json.data || []).each( function( typeObject ){
                 new Element( "div.columnTop_category", {
                     "styles" : this.css.columnTop_categoryItem,
@@ -646,8 +646,12 @@ MWF.xApplication.cms.Column.Column = new Class({
         var appId = "cms.ColumnManager" + this.data.id;
         if (this.app.desktop.apps[appId]) {
             var app = this.app.desktop.apps[appId];
-            app.setCurrent();
-            if( currentCategoryId )app.setCategory( currentCategoryId );
+            if( app && app.setCurrent )app.setCurrent();
+            if( currentCategoryId ){
+                if( app && app.setCategory ){
+                    app.setCategory( currentCategoryId );
+                }
+            }
         } else {
             this.app.desktop.openApplication(e, "cms.ColumnManager", {
                 "currentCategoryId" : currentCategoryId,

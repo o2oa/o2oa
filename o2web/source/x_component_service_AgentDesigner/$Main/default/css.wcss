@@ -237,7 +237,7 @@
 		"border-right": "1px solid #DDD"
 	},
 	"propertyContentArea": {
-		"overflow": "hidden",
+		"overflow": "auto",
 		"background": "#FFF",
 		"margin-bottom": "2px"
 	}

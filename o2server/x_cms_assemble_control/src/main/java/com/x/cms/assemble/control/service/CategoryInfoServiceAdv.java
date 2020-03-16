@@ -63,7 +63,14 @@ public class CategoryInfoServiceAdv {
 			inAppIds =  new ArrayList<>();
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-           return categoryInfoService.listByAppIds( emc, inAppIds, documentType, maxCount );
+        	List<String> list = categoryInfoService.listByAppIds( emc, inAppIds, documentType, maxCount );
+			List<String> result =  new ArrayList<>();
+			if( ListTools.isNotEmpty( list )) {
+				for( String id : list ) {
+					ListTools.addStringToList(id, result);
+				}
+			}
+			return result;
         } catch (Exception e) {
             throw e;
         }
@@ -134,7 +141,7 @@ public class CategoryInfoServiceAdv {
 		}
 	}
 
-	public CategoryInfo saveBaseInfo(CategoryInfo categoryInfo, EffectivePerson currentPerson) throws Exception {
+	public CategoryInfo saveBaseInfo(CategoryInfo categoryInfo, EffectivePerson effectivePerson) throws Exception {
 		if (categoryInfo == null) {
 			throw new Exception("categoryInfo is null.");
 		}
@@ -146,14 +153,14 @@ public class CategoryInfoServiceAdv {
 		return categoryInfo;
 	}
 
-	public CategoryInfo save( CategoryInfo categoryInfo, String extContent, EffectivePerson currentPerson ) throws Exception {
+	public CategoryInfo save( CategoryInfo categoryInfo, String extContent, EffectivePerson effectivePerson ) throws Exception {
 		if ( categoryInfo == null ) {
 			throw new Exception("wrapIn is null.");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			// 检查一下该应用栏目是否存在管理者，如果不存在，则将当前登录者作为应用栏目的管理者
 			if( ListTools.isEmpty( categoryInfo.getManageablePersonList())  && ListTools.isEmpty( categoryInfo.getManageableUnitList())  &&ListTools.isEmpty( categoryInfo.getManageableGroupList())) {
-				categoryInfo.addManageablePerson( currentPerson.getDistinguishedName() );
+				categoryInfo.addManageablePerson( effectivePerson.getDistinguishedName() );
 			}
 			categoryInfo = categoryInfoService.save( emc, categoryInfo, extContent );
 		} catch (Exception e) {
@@ -162,7 +169,7 @@ public class CategoryInfoServiceAdv {
 		return categoryInfo;
 	}
 	
-	public CategoryExt  saveExtContent( String categoryId, String extContent, EffectivePerson currentPerson ) throws Exception {
+	public CategoryExt  saveExtContent( String categoryId, String extContent, EffectivePerson effectivePerson ) throws Exception {
 		if ( categoryId == null ) {
 			throw new Exception("categoryId is null.");
 		}
@@ -173,7 +180,7 @@ public class CategoryInfoServiceAdv {
 		}
 	}
 
-	public void delete(String id, EffectivePerson currentPerson) throws Exception {
+	public void delete(String id, EffectivePerson effectivePerson) throws Exception {
 		if ( StringUtils.isEmpty( id )) {
 			throw new Exception("id is null.");
 		}
