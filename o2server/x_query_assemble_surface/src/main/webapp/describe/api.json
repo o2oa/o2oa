@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -55,13 +55,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -105,13 +105,13 @@
           "method": "GET"
         },
         {
-          "name": "listWithQuery",
-          "uri": "jaxrs/reveal/list/query/{queryFlag}",
+          "name": "getWithQuery",
+          "uri": "jaxrs/reveal/flag/{flag}/query/{queryFlag}",
           "method": "GET"
         },
         {
-          "name": "getWithQuery",
-          "uri": "jaxrs/reveal/flag/{flag}/query/{queryFlag}",
+          "name": "listWithQuery",
+          "uri": "jaxrs/reveal/list/query/{queryFlag}",
           "method": "GET"
         }
       ]
@@ -147,9 +147,10 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithQuery",
-          "uri": "jaxrs/stat/list/query/{queryFlag}",
-          "method": "GET"
+          "name": "executeWithQuery",
+          "uri": "jaxrs/stat/flag/{flag}/query/{queryFlag}/execute",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
           "name": "getWithQuery",
@@ -157,10 +158,9 @@
           "method": "GET"
         },
         {
-          "name": "executeWithQuery",
-          "uri": "jaxrs/stat/flag/{flag}/query/{queryFlag}/execute",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listWithQuery",
+          "uri": "jaxrs/stat/list/query/{queryFlag}",
+          "method": "GET"
         }
       ]
     },
@@ -210,8 +210,25 @@
           "method": "GET"
         },
         {
-          "name": "rowGet",
+          "name": "rowUpdate",
           "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "rowCountWhere",
+          "uri": "jaxrs/table/{tableFlag}/row/count/where/{where}",
+          "method": "GET"
+        },
+        {
+          "name": "rowDelete",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listRowNext",
+          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/next/{count}",
           "method": "GET"
         },
         {
@@ -221,13 +238,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listRowNext",
-          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/next/{count}",
-          "method": "GET"
-        },
-        {
-          "name": "rowCountWhere",
-          "uri": "jaxrs/table/{tableFlag}/row/count/where/{where}",
+          "name": "rowGet",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
           "method": "GET"
         },
         {
@@ -239,18 +251,6 @@
           "name": "rowDeleteAll",
           "uri": "jaxrs/table/{tableFlag}/row/delete/all",
           "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "rowDelete",
-          "uri": "jaxrs/table/{tableFlag}/row/{id}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "rowUpdate",
-          "uri": "jaxrs/table/{tableFlag}/row/{id}",
-          "method": "PUT",
           "enctype": "application/json"
         }
       ]
@@ -286,29 +286,19 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithQuery",
-          "uri": "jaxrs/view/list/query/{queryFlag}",
-          "method": "GET"
-        },
-        {
           "name": "excelResult",
           "uri": "jaxrs/view/excel/result/{flag}",
           "method": "GET"
         },
         {
-          "name": "getWithQuery",
-          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}",
-          "method": "GET"
-        },
-        {
-          "name": "executeWithQuery",
-          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/execute",
+          "name": "excelWithQuery",
+          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/excel",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "bundleWithQuery",
-          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/bundle",
+          "name": "executeWithQuery",
+          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/execute",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -319,10 +309,20 @@
           "enctype": "application/json"
         },
         {
-          "name": "excelWithQuery",
-          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/excel",
+          "name": "getWithQuery",
+          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "bundleWithQuery",
+          "uri": "jaxrs/view/flag/{flag}/query/{queryFlag}/bundle",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/view/list/query/{queryFlag}",
+          "method": "GET"
         }
       ]
     }

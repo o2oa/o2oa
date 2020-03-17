@@ -10,87 +10,9 @@
           "enctype": "application/json"
         },
         {
-          "name": "updateDataPath5",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createDataPath0",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createDataPath1",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createDataPath2",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath1",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath6",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath7",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath2",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath0",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateDataPath3",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "updateDataPath4",
           "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/data",
           "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createDataPath5",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteDataPath2",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createDataPath3",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
-          "method": "POST",
           "enctype": "application/json"
         },
         {
@@ -100,14 +22,38 @@
           "enctype": "application/json"
         },
         {
-          "name": "createDataPath7",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
-          "method": "POST",
+          "name": "deleteDataPath0",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
+          "method": "DELETE",
           "enctype": "application/json"
         },
         {
           "name": "createDataPath6",
           "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteDataPath5",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteDataPath7",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateDataPath1",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createDataPath1",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -118,14 +64,32 @@
           "enctype": "application/json"
         },
         {
-          "name": "deleteDataPath3",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "name": "updateDataPath0",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteDataPath6",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
           "method": "DELETE",
           "enctype": "application/json"
         },
         {
-          "name": "deleteDataPath0",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
+          "name": "createDataPath3",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateDataPath3",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteDataPath3",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
           "method": "DELETE",
           "enctype": "application/json"
         },
@@ -136,21 +100,57 @@
           "enctype": "application/json"
         },
         {
-          "name": "deleteDataPath5",
+          "name": "updateDataPath5",
           "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
-          "method": "DELETE",
+          "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "deleteDataPath6",
-          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteDataPath7",
+          "name": "updateDataPath7",
           "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteDataPath2",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
           "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateDataPath2",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createDataPath0",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createDataPath5",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createDataPath7",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createDataPath2",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateDataPath6",
+          "uri": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
+          "method": "PUT",
           "enctype": "application/json"
         }
       ]
@@ -171,18 +171,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "deleteWithWorkCompleted",
-          "uri": "jaxrs/attachment/{id}/workcompleted/{workCompletedId}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "exitText",
-          "uri": "jaxrs/attachment/edit/{id}/text",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "deleteWithWork",
           "uri": "jaxrs/attachment/{id}/work/{workId}",
           "method": "DELETE",
@@ -193,6 +181,18 @@
           "uri": "jaxrs/attachment/copy/work/{workId}",
           "method": "POST",
           "enctype": "application/json"
+        },
+        {
+          "name": "exitText",
+          "uri": "jaxrs/attachment/edit/{id}/text",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkCompleted",
+          "uri": "jaxrs/attachment/{id}/workcompleted/{workCompletedId}",
+          "method": "DELETE",
+          "enctype": "application/json"
         }
       ]
     },
@@ -200,219 +200,21 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
     {
       "name": "DataAction",
       "methods": [
-        {
-          "name": "createWithWorkPath5",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath5",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath6",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompleted",
-          "uri": "jaxrs/data/workcompleted/{id}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath7",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath6",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath4",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath7",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath3",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath2",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath4",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath6",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath0",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath1",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath1",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath0",
-          "uri": "jaxrs/data/work/{id}/{path0}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath2",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath3",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath4",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkCompletedPath5",
-          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath1",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath2",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath7",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "createWithWorkPath7",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath0",
-          "uri": "jaxrs/data/work/{id}/{path0}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath3",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath4",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath5",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "deleteWithWorkPath6",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath0",
-          "uri": "jaxrs/data/work/{id}/{path0}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath1",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath2",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateWithWorkPath3",
-          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
         {
           "name": "updateWithWorkCompletedPrimitivePath0",
           "uri": "jaxrs/data/workcompletedprimitive/{id}/{path0}",
@@ -426,15 +228,213 @@
           "enctype": "application/json"
         },
         {
-          "name": "createWithWork",
-          "uri": "jaxrs/data/work/{id}",
+          "name": "deleteWithWorkPath7",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath0",
+          "uri": "jaxrs/data/work/{id}/{path0}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath5",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath2",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath5",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath2",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
           "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath7",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath1",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath3",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath2",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath3",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath4",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath3",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath1",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath6",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath0",
+          "uri": "jaxrs/data/work/{id}/{path0}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath4",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath4",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath5",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath0",
+          "uri": "jaxrs/data/work/{id}/{path0}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath2",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath3",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath0",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath6",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath6",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath7",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompletedPath7",
+          "uri": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath1",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkCompleted",
+          "uri": "jaxrs/data/workcompleted/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWorkPath6",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath4",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateWithWorkPath1",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteWithWorkPath5",
+          "uri": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "method": "DELETE",
           "enctype": "application/json"
         },
         {
           "name": "updateWithWork",
           "uri": "jaxrs/data/work/{id}",
           "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "createWithWork",
+          "uri": "jaxrs/data/work/{id}",
+          "method": "POST",
           "enctype": "application/json"
         }
       ]
@@ -500,13 +500,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -635,6 +635,12 @@
           "enctype": "application/json"
         },
         {
+          "name": "V2Reset",
+          "uri": "jaxrs/task/v2/{id}/reset",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
           "name": "urge",
           "uri": "jaxrs/task/{id}/urge",
           "method": "GET"
@@ -650,8 +656,8 @@
           "method": "GET"
         },
         {
-          "name": "V2Reset",
-          "uri": "jaxrs/task/v2/{id}/reset",
+          "name": "updateNextTaskIdentity",
+          "uri": "jaxrs/task/prev/task/identity",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -659,12 +665,6 @@
           "name": "press",
           "uri": "jaxrs/task/{id}/press",
           "method": "GET"
-        },
-        {
-          "name": "updateNextTaskIdentity",
-          "uri": "jaxrs/task/prev/task/identity",
-          "method": "PUT",
-          "enctype": "application/json"
         }
       ]
     },
@@ -678,15 +678,15 @@
           "enctype": "application/json"
         },
         {
-          "name": "press",
-          "uri": "jaxrs/taskcompleted/{id}/press/work/{work}",
-          "method": "GET"
-        },
-        {
           "name": "updateNextTaskIdentity",
           "uri": "jaxrs/taskcompleted/next/task/identity",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "press",
+          "uri": "jaxrs/taskcompleted/{id}/press/work/{work}",
+          "method": "GET"
         }
       ]
     },
@@ -714,23 +714,23 @@
           "method": "GET"
         },
         {
-          "name": "dataMerge",
-          "uri": "jaxrs/test/datamerge",
-          "method": "GET"
-        },
-        {
           "name": "logLongDetained",
           "uri": "jaxrs/test/loglongdetained",
           "method": "GET"
         },
         {
-          "name": "touchDelay",
-          "uri": "jaxrs/test/touchdelay",
+          "name": "touchDetained",
+          "uri": "jaxrs/test/touchdetained",
           "method": "GET"
         },
         {
-          "name": "touchDetained",
-          "uri": "jaxrs/test/touchdetained",
+          "name": "dataMerge",
+          "uri": "jaxrs/test/datamerge",
+          "method": "GET"
+        },
+        {
+          "name": "touchDelay",
+          "uri": "jaxrs/test/touchdelay",
           "method": "GET"
         }
       ]
@@ -763,14 +763,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "addSplit",
-          "uri": "jaxrs/work/{id}/add/split",
+          "name": "reroute",
+          "uri": "jaxrs/work/{id}/reroute/activity/{activityId}/activitytype/{activityType}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "reroute",
-          "uri": "jaxrs/work/{id}/reroute/activity/{activityId}/activitytype/{activityType}",
+          "name": "addSplit",
+          "uri": "jaxrs/work/{id}/add/split",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -792,14 +792,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "V2Reroute",
-          "uri": "jaxrs/work/v2/{id}/reroute",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "V2Retract",
-          "uri": "jaxrs/work/v2/{id}/retract",
+          "name": "manualAppendIdentity",
+          "uri": "jaxrs/work/{id}/manual/append/identity",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -810,8 +804,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "manualAppendIdentity",
-          "uri": "jaxrs/work/{id}/manual/append/identity",
+          "name": "V2Reroute",
+          "uri": "jaxrs/work/v2/{id}/reroute",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "V2Retract",
+          "uri": "jaxrs/work/v2/{id}/retract",
           "method": "PUT",
           "enctype": "application/json"
         }

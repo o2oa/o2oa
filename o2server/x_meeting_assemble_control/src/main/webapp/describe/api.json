@@ -32,6 +32,12 @@
           "method": "GET"
         },
         {
+          "name": "uploadCallback",
+          "uri": "jaxrs/attachment/meeting/{meetingId}/upload/{summary}/callback/{callback}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/attachment/list/{id}/next/{count}",
           "method": "GET"
@@ -42,10 +48,10 @@
           "method": "GET"
         },
         {
-          "name": "uploadCallback",
-          "uri": "jaxrs/attachment/meeting/{meetingId}/upload/{summary}/callback/{callback}",
+          "name": "createFormProcessPlatform",
+          "uri": "jaxrs/attachment/create/from/processplatform",
           "method": "POST",
-          "enctype": "formData"
+          "enctype": "application/json"
         },
         {
           "name": "updateCallback",
@@ -57,12 +63,6 @@
           "name": "listWithMeeting",
           "uri": "jaxrs/attachment/list/meeting/{meetingId}",
           "method": "GET"
-        },
-        {
-          "name": "createFormProcessPlatform",
-          "uri": "jaxrs/attachment/create/from/processplatform",
-          "method": "POST",
-          "enctype": "application/json"
         }
       ]
     },
@@ -108,13 +108,13 @@
           "method": "GET"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/building/list/like/{key}",
+          "name": "listLikePinyin",
+          "uri": "jaxrs/building//list/like/pinyin/{key}",
           "method": "GET"
         },
         {
-          "name": "listLikePinyin",
-          "uri": "jaxrs/building//list/like/pinyin/{key}",
+          "name": "listLike",
+          "uri": "jaxrs/building/list/like/{key}",
           "method": "GET"
         }
       ]
@@ -123,15 +123,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -174,13 +174,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -211,13 +211,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listAppliedProcessing",
-          "uri": "jaxrs/meeting/list/applied/processing",
-          "method": "GET"
-        },
-        {
-          "name": "listAppliedCompleted",
-          "uri": "jaxrs/meeting/list/applied/completed",
+          "name": "manualCompleted",
+          "uri": "jaxrs/meeting/{id}/manual/completed",
           "method": "GET"
         },
         {
@@ -231,19 +226,24 @@
           "method": "GET"
         },
         {
-          "name": "manualCompleted",
-          "uri": "jaxrs/meeting/{id}/manual/completed",
-          "method": "GET"
-        },
-        {
           "name": "edit",
           "uri": "jaxrs/meeting/{id}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "lisInvitedCompleted",
-          "uri": "jaxrs/meeting/list/invited/completed",
+          "name": "listForwardMonthAll",
+          "uri": "jaxrs/meeting/list/forward/monthcount/{monthCount}/all",
+          "method": "GET"
+        },
+        {
+          "name": "lisInvitedRejected",
+          "uri": "jaxrs/meeting/list/invited/rejected",
+          "method": "GET"
+        },
+        {
+          "name": "listAppliedCompleted",
+          "uri": "jaxrs/meeting/list/applied/completed",
           "method": "GET"
         },
         {
@@ -252,18 +252,33 @@
           "method": "GET"
         },
         {
-          "name": "listForwardMonthAll",
-          "uri": "jaxrs/meeting/list/forward/monthcount/{monthCount}/all",
+          "name": "listAppliedProcessing",
+          "uri": "jaxrs/meeting/list/applied/processing",
           "method": "GET"
         },
         {
-          "name": "accpet",
-          "uri": "jaxrs/meeting/{id}/accept",
+          "name": "lisInvitedCompleted",
+          "uri": "jaxrs/meeting/list/invited/completed",
           "method": "GET"
         },
         {
-          "name": "listWaitAccept",
-          "uri": "jaxrs/meeting/list/wait/accept",
+          "name": "confirmDeny",
+          "uri": "jaxrs/meeting/{id}/confirm/deny",
+          "method": "GET"
+        },
+        {
+          "name": "checkInBindCode",
+          "uri": "jaxrs/meeting/{id}/checkin/code",
+          "method": "GET"
+        },
+        {
+          "name": "listComingDay",
+          "uri": "jaxrs/meeting/list/coming/day/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listOnMonth",
+          "uri": "jaxrs/meeting/list/year/{year}/month/{month}",
           "method": "GET"
         },
         {
@@ -272,13 +287,43 @@
           "method": "GET"
         },
         {
-          "name": "listAppliedWait",
-          "uri": "jaxrs/meeting/list/applied/wait",
+          "name": "listWaitAccept",
+          "uri": "jaxrs/meeting/list/wait/accept",
+          "method": "GET"
+        },
+        {
+          "name": "listOnDayAll",
+          "uri": "jaxrs/meeting/list/year/{year}/month/{month}/day/{day}/all",
+          "method": "GET"
+        },
+        {
+          "name": "listOnDay",
+          "uri": "jaxrs/meeting/list/year/{year}/month/{month}/day/{day}",
+          "method": "GET"
+        },
+        {
+          "name": "checkin",
+          "uri": "jaxrs/meeting/{id}/checkin",
+          "method": "GET"
+        },
+        {
+          "name": "lisInvitedWait",
+          "uri": "jaxrs/meeting/list/invited/wait",
           "method": "GET"
         },
         {
           "name": "listOnMonthAll",
           "uri": "jaxrs/meeting/list/year/{year}/month/{month}/all",
+          "method": "GET"
+        },
+        {
+          "name": "listWaitConfirm",
+          "uri": "jaxrs/meeting/list/wait/confirm",
+          "method": "GET"
+        },
+        {
+          "name": "accpet",
+          "uri": "jaxrs/meeting/{id}/accept",
           "method": "GET"
         },
         {
@@ -288,23 +333,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listOnDay",
-          "uri": "jaxrs/meeting/list/year/{year}/month/{month}/day/{day}",
-          "method": "GET"
-        },
-        {
-          "name": "confirmAllow",
-          "uri": "jaxrs/meeting/{id}/confirm/allow",
-          "method": "GET"
-        },
-        {
-          "name": "checkin",
-          "uri": "jaxrs/meeting/{id}/checkin",
-          "method": "GET"
-        },
-        {
-          "name": "listComingDay",
-          "uri": "jaxrs/meeting/list/coming/day/{count}",
+          "name": "listAppliedWait",
+          "uri": "jaxrs/meeting/list/applied/wait",
           "method": "GET"
         },
         {
@@ -313,38 +343,8 @@
           "method": "GET"
         },
         {
-          "name": "checkInBindCode",
-          "uri": "jaxrs/meeting/{id}/checkin/code",
-          "method": "GET"
-        },
-        {
-          "name": "listOnDayAll",
-          "uri": "jaxrs/meeting/list/year/{year}/month/{month}/day/{day}/all",
-          "method": "GET"
-        },
-        {
-          "name": "listOnMonth",
-          "uri": "jaxrs/meeting/list/year/{year}/month/{month}",
-          "method": "GET"
-        },
-        {
-          "name": "listWaitConfirm",
-          "uri": "jaxrs/meeting/list/wait/confirm",
-          "method": "GET"
-        },
-        {
-          "name": "lisInvitedWait",
-          "uri": "jaxrs/meeting/list/invited/wait",
-          "method": "GET"
-        },
-        {
-          "name": "confirmDeny",
-          "uri": "jaxrs/meeting/{id}/confirm/deny",
-          "method": "GET"
-        },
-        {
-          "name": "lisInvitedRejected",
-          "uri": "jaxrs/meeting/list/invited/rejected",
+          "name": "confirmAllow",
+          "uri": "jaxrs/meeting/{id}/confirm/allow",
           "method": "GET"
         }
       ]
@@ -392,13 +392,13 @@
           "method": "GET"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/room/list/like/{key}",
+          "name": "listLikePinyin",
+          "uri": "jaxrs/room/list/like/pinyin/{key}",
           "method": "GET"
         },
         {
-          "name": "listLikePinyin",
-          "uri": "jaxrs/room/list/like/pinyin/{key}",
+          "name": "listLike",
+          "uri": "jaxrs/room/list/like/{key}",
           "method": "GET"
         }
       ]
