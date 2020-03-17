@@ -37,7 +37,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.junit.Test;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
@@ -757,9 +756,4 @@ public class Describe {
 
 	}
 
-	@Test
-	public void test1() {
-		Describe o = new Describe();
-		o.scan("d:/x/x_processplatform_assemble_surface/describe", "x_processplatform_assemble_surface");
-	}
 }

@@ -17,7 +17,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.junit.Test;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -65,7 +64,6 @@ public class CheckCore {
 	/*
 	 * 检查数据库字段名是否是ColumnNamePrefix + fieldName
 	 */
-	@Test
 	public static void checkColumnName(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
@@ -84,7 +82,6 @@ public class CheckCore {
 	/*
 	 * 检查是否有将Lob类型字段增加索引
 	 */
-	@Test
 	public static void checkLobIndex(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
@@ -121,7 +118,6 @@ public class CheckCore {
 	 * @CheckPersist(allowEmpty = true, citationExists = @CitationExist(type =
 	 * Person.class)) private List<String> personList;
 	 */
-	@Test
 	public static void checkListFieldContainerTableName(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
@@ -145,7 +141,6 @@ public class CheckCore {
 	/*
 	 * 检查是否将@FieldDescribe注解到static字段上,如果是意味着上下行搞错了
 	 */
-	@Test
 	public static void checkFieldDescribeOnStatic(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class);
@@ -161,7 +156,6 @@ public class CheckCore {
 	/*
 	 * 检查约束名中的table名称和entity类中的TABLE名称是否一致
 	 */
-	@Test
 	public static void checkTableNameUniqueConstraintName(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			Table table = cls.getAnnotation(Table.class);
@@ -181,7 +175,6 @@ public class CheckCore {
 	/*
 	 * 检查类中是否有在createTime,updateTime和sequence上的索引,这几个索引已经用约束在类上了
 	 */
-	@Test
 	public static void checkIdCreateTimeUpdateTimeSequenceIndex(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			Field idField = FieldUtils.getField(cls, JpaObject.id_FIELDNAME, true);
@@ -200,7 +193,6 @@ public class CheckCore {
 	/*
 	 * 检查entity是否有重复的字段
 	 */
-	@Test
 	public static void checkEnum(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class);
@@ -219,7 +211,6 @@ public class CheckCore {
 	}
 
 	/* 检查是否有对String lob 之外的字段设定长度 */
-	@Test
 	public static void checkColumnLength(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
@@ -235,7 +226,6 @@ public class CheckCore {
 		}
 	}
 
-	@Test
 	public static void checkIdUnique(List<Class<?>> classes) throws Exception {
 		for (Class<?> cls : classes) {
 			Field idField = FieldUtils.getField(cls, JpaObject.id_FIELDNAME, true);
