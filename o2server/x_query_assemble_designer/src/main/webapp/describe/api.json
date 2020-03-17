@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -68,14 +68,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "prepareCreate",
-          "uri": "jaxrs/input/prepare/create",
+          "name": "prepareCover",
+          "uri": "jaxrs/input/prepare/cover",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "prepareCover",
-          "uri": "jaxrs/input/prepare/cover",
+          "name": "prepareCreate",
+          "uri": "jaxrs/input/prepare/create",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -100,13 +100,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -140,6 +140,12 @@
           "method": "GET"
         },
         {
+          "name": "createModel",
+          "uri": "jaxrs/neural/model",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "updateModel",
           "uri": "jaxrs/neural/model/{modelFlag}",
           "method": "PUT",
@@ -160,12 +166,6 @@
           "name": "stopGenerating",
           "uri": "jaxrs/neural/stop/generating/model/{modelFlag}",
           "method": "GET"
-        },
-        {
-          "name": "createModel",
-          "uri": "jaxrs/neural/model",
-          "method": "POST",
-          "enctype": "application/json"
         }
       ]
     },
@@ -217,19 +217,19 @@
           "enctype": "formData"
         },
         {
+          "name": "listAll",
+          "uri": "jaxrs/query/list/all",
+          "method": "GET"
+        },
+        {
           "name": "edit",
           "uri": "jaxrs/query/{flag}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listAll",
-          "uri": "jaxrs/query/list/all",
-          "method": "GET"
-        },
-        {
-          "name": "listQueryCategory",
-          "uri": "jaxrs/query/querycategory/list",
+          "name": "listSummary",
+          "uri": "jaxrs/query/list/summary",
           "method": "GET"
         },
         {
@@ -238,8 +238,8 @@
           "method": "GET"
         },
         {
-          "name": "listSummary",
-          "uri": "jaxrs/query/list/summary",
+          "name": "listQueryCategory",
+          "uri": "jaxrs/query/querycategory/list",
           "method": "GET"
         },
         {
@@ -434,28 +434,51 @@
           "method": "GET"
         },
         {
-          "name": "buildAll",
-          "uri": "jaxrs/table/build/all",
-          "method": "GET"
-        },
-        {
-          "name": "rowGet",
-          "uri": "jaxrs/table/{tableFlag}/row/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "statusBuild",
-          "uri": "jaxrs/table/{flag}/status/build",
-          "method": "GET"
-        },
-        {
           "name": "listWithQuery",
           "uri": "jaxrs/table/list/query/{flag}",
           "method": "GET"
         },
         {
+          "name": "rowSave",
+          "uri": "jaxrs/table/{tableFlag}/row/save",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "rowUpdate",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "rowCountWhere",
+          "uri": "jaxrs/table/{tableFlag}/row/count/where/{where}",
+          "method": "GET"
+        },
+        {
+          "name": "buildAll",
+          "uri": "jaxrs/table/build/all",
+          "method": "GET"
+        },
+        {
           "name": "statusDraft",
           "uri": "jaxrs/table/{flag}/status/draft",
+          "method": "GET"
+        },
+        {
+          "name": "rowDelete",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listRowNext",
+          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "statusBuild",
+          "uri": "jaxrs/table/{flag}/status/build",
           "method": "GET"
         },
         {
@@ -465,13 +488,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listRowNext",
-          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/next/{count}",
-          "method": "GET"
-        },
-        {
-          "name": "rowCountWhere",
-          "uri": "jaxrs/table/{tableFlag}/row/count/where/{where}",
+          "name": "rowGet",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
           "method": "GET"
         },
         {
@@ -486,27 +504,9 @@
           "enctype": "application/json"
         },
         {
-          "name": "rowDelete",
-          "uri": "jaxrs/table/{tableFlag}/row/{id}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "rowSave",
-          "uri": "jaxrs/table/{tableFlag}/row/save",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "exportRow",
           "uri": "jaxrs/table/export/{tableFlag}/count/{count}",
           "method": "GET"
-        },
-        {
-          "name": "rowUpdate",
-          "uri": "jaxrs/table/{tableFlag}/row/{id}",
-          "method": "PUT",
-          "enctype": "application/json"
         }
       ]
     },

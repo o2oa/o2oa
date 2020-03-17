@@ -54,25 +54,25 @@
           "enctype": "application/json"
         },
         {
+          "name": "archive",
+          "uri": "jaxrs/attendanceappealInfo/archive/{id}",
+          "method": "GET"
+        },
+        {
           "name": "audit",
           "uri": "jaxrs/attendanceappealInfo/audit",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "archive",
-          "uri": "jaxrs/attendanceappealInfo/archive/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/next/{count}",
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listPrevWithFilter",
-          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/prev/{count}",
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -99,11 +99,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "checkDetailWithPersonByCycle",
-          "uri": "jaxrs/attendancedetail/checkDetailWithPersonByCycle/{cycleYear}/{cycleMonth}",
-          "method": "GET"
-        },
-        {
           "name": "listUnitAttendanceDetail",
           "uri": "jaxrs/attendancedetail/filter/list/unit",
           "method": "PUT",
@@ -115,13 +110,8 @@
           "method": "GET"
         },
         {
-          "name": "analyseAttendanceDetail",
-          "uri": "jaxrs/attendancedetail/analyse/id/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "archiveAttendanceDetail",
-          "uri": "jaxrs/attendancedetail/archive/{id}",
+          "name": "listAttendanceDetailByBatchName",
+          "uri": "jaxrs/attendancedetail/list/{file_id}",
           "method": "GET"
         },
         {
@@ -131,14 +121,24 @@
           "enctype": "application/json"
         },
         {
+          "name": "archiveAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/archive/{id}",
+          "method": "GET"
+        },
+        {
           "name": "listUserAttendanceDetail",
           "uri": "jaxrs/attendancedetail/filter/list/user",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listAttendanceDetailByBatchName",
-          "uri": "jaxrs/attendancedetail/list/{file_id}",
+          "name": "analyseAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/analyse/id/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "checkDetailWithPersonByCycle",
+          "uri": "jaxrs/attendancedetail/checkDetailWithPersonByCycle/{cycleYear}/{cycleMonth}",
           "method": "GET"
         },
         {
@@ -148,14 +148,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/attendancedetail/filter/list/{id}/next/{count}",
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/attendancedetail/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listPrevWithFilter",
-          "uri": "jaxrs/attendancedetail/filter/list/{id}/prev/{count}",
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendancedetail/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -170,13 +170,13 @@
           "method": "GET"
         },
         {
-          "name": "getStatusDetail",
-          "uri": "jaxrs/fileimport/getStatus/{file_id}/detail",
+          "name": "getStatusAll",
+          "uri": "jaxrs/fileimport/getStatus/all",
           "method": "GET"
         },
         {
-          "name": "getStatusAll",
-          "uri": "jaxrs/fileimport/getStatus/all",
+          "name": "getStatusDetail",
+          "uri": "jaxrs/fileimport/getStatus/{file_id}/detail",
           "method": "GET"
         }
       ]
@@ -278,11 +278,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "listAllAttendanceScheduleSetting",
-          "uri": "jaxrs/attendanceschedulesetting/list/all",
-          "method": "GET"
-        },
-        {
           "name": "listAttendanceScheduleSettingByUnit",
           "uri": "jaxrs/attendanceschedulesetting/list/unit/{name}",
           "method": "GET"
@@ -290,6 +285,11 @@
         {
           "name": "listAttendanceScheduleSettingByTopUnit",
           "uri": "jaxrs/attendanceschedulesetting/list/topUnit/{name}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllAttendanceScheduleSetting",
+          "uri": "jaxrs/attendanceschedulesetting/list/all",
           "method": "GET"
         }
       ]
@@ -310,10 +310,9 @@
           "enctype": "application/json"
         },
         {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/attendanceselfholiday/filter/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listAllAttendanceSelfHoliday",
+          "uri": "jaxrs/attendanceselfholiday/list/all",
+          "method": "GET"
         },
         {
           "name": "listPrevWithFilter",
@@ -322,9 +321,10 @@
           "enctype": "application/json"
         },
         {
-          "name": "listAllAttendanceSelfHoliday",
-          "uri": "jaxrs/attendanceselfholiday/list/all",
-          "method": "GET"
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendanceselfholiday/filter/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
         }
       ]
     },
@@ -366,13 +366,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "getWithCode",
-          "uri": "jaxrs/attendancesetting/code/{code}",
+          "name": "listAllAttendanceSetting",
+          "uri": "jaxrs/attendancesetting/list/all",
           "method": "GET"
         },
         {
-          "name": "listAllAttendanceSetting",
-          "uri": "jaxrs/attendancesetting/list/all",
+          "name": "getWithCode",
+          "uri": "jaxrs/attendancesetting/code/{code}",
           "method": "GET"
         }
       ]
@@ -418,11 +418,6 @@
       "name": "AttendanceStatisticShowAction",
       "methods": [
         {
-          "name": "showStmForPerson",
-          "uri": "jaxrs/statisticshow/person/{name}/{year}/{month}",
-          "method": "GET"
-        },
-        {
           "name": "showStmForUnit",
           "uri": "jaxrs/statisticshow/unit/{name}/{year}/{month}",
           "method": "GET"
@@ -438,25 +433,35 @@
           "method": "GET"
         },
         {
-          "name": "showStdForTopUnit",
-          "uri": "jaxrs/statisticshow/topUnit/day/{name}/{year}/{month}",
+          "name": "showStmForPerson",
+          "uri": "jaxrs/statisticshow/person/{name}/{year}/{month}",
           "method": "GET"
+        },
+        {
+          "name": "listStmForTopUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "showStForPersonInUnitSubNested",
+          "uri": "jaxrs/statisticshow/persons/unit/subnested/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStmForUnitSubnested",
+          "uri": "jaxrs/statisticshow/unit/subnested/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "listStmForUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
           "name": "listStmForPersonNextWithFilter",
           "uri": "jaxrs/statisticshow/filter/personMonth/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listStmForTopUnitPrevWithFilter",
-          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listStdForUnitNextWithFilter",
-          "uri": "jaxrs/statisticshow/filter/unitDay/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -467,30 +472,24 @@
           "enctype": "application/json"
         },
         {
-          "name": "listStdForTopUnitNextWithFilter",
-          "uri": "jaxrs/statisticshow/filter/topUnitDay/list/{id}/next/{count}",
+          "name": "showStdForTopUnit",
+          "uri": "jaxrs/statisticshow/topUnit/day/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "listStmForTopUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "showStmForTopUnit",
+          "uri": "jaxrs/statisticshow/topUnit/{name}/{year}/{month}",
+          "method": "GET"
         },
         {
           "name": "listStdForTopUnitPrevWithFilter",
           "uri": "jaxrs/statisticshow/filter/topUnitDay/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "showStmForUnitSubnested",
-          "uri": "jaxrs/statisticshow/unit/subnested/{name}/{year}/{month}",
-          "method": "GET"
-        },
-        {
-          "name": "showStdForUnitInTopUnitWithDate",
-          "uri": "jaxrs/statisticshow/unit/day/topUnit/{name}/{date}",
-          "method": "GET"
-        },
-        {
-          "name": "listStmForPersonPrevWithFilter",
-          "uri": "jaxrs/statisticshow/filter/personMonth/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -500,14 +499,22 @@
           "method": "GET"
         },
         {
-          "name": "showStForPersonInUnitSubNested",
-          "uri": "jaxrs/statisticshow/persons/unit/subnested/{name}/{year}/{month}",
-          "method": "GET"
+          "name": "listStmForUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
-          "name": "showStmForTopUnit",
-          "uri": "jaxrs/statisticshow/topUnit/{name}/{year}/{month}",
-          "method": "GET"
+          "name": "listStmForPersonPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/personMonth/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStdForUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitDay/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
           "name": "showStdForUnitWithDate",
@@ -515,27 +522,20 @@
           "method": "GET"
         },
         {
-          "name": "listStmForUnitPrevWithFilter",
-          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listStmForUnitNextWithFilter",
-          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listStmForTopUnitNextWithFilter",
-          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "showStForUnitInTopUnit",
           "uri": "jaxrs/statisticshow/unit/topUnit/{name}/{year}/{month}",
           "method": "GET"
+        },
+        {
+          "name": "showStdForUnitInTopUnitWithDate",
+          "uri": "jaxrs/statisticshow/unit/day/topUnit/{name}/{date}",
+          "method": "GET"
+        },
+        {
+          "name": "listStdForTopUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitDay/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
         }
       ]
     },
@@ -560,13 +560,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "cycleDetail",
-          "uri": "jaxrs/attendancestatisticalcycle/cycleDetail/{year}/{month}",
+          "name": "listAllAttendanceStatisticalCycle",
+          "uri": "jaxrs/attendancestatisticalcycle/list/all",
           "method": "GET"
         },
         {
-          "name": "listAllAttendanceStatisticalCycle",
-          "uri": "jaxrs/attendancestatisticalcycle/list/all",
+          "name": "cycleDetail",
+          "uri": "jaxrs/attendancestatisticalcycle/cycleDetail/{year}/{month}",
           "method": "GET"
         }
       ]
@@ -592,15 +592,15 @@
           "enctype": "application/json"
         },
         {
+          "name": "listAllAttendanceWorkDayConfig",
+          "uri": "jaxrs/attendanceworkdayconfig/list/all",
+          "method": "GET"
+        },
+        {
           "name": "listWithFilter",
           "uri": "jaxrs/attendanceworkdayconfig/filter",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "listAllAttendanceWorkDayConfig",
-          "uri": "jaxrs/attendanceworkdayconfig/list/all",
-          "method": "GET"
         }
       ]
     },
@@ -635,15 +635,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -672,13 +672,13 @@
           "method": "GET"
         },
         {
-          "name": "selfHolidayExportStream",
-          "uri": "jaxrs/file/export/selfholiday/{startdate}/{enddate}/stream/{stream}",
+          "name": "abnormalDetailsExportStream",
+          "uri": "jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/{stream}",
           "method": "GET"
         },
         {
-          "name": "abnormalDetailsExportStream",
-          "uri": "jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/{stream}",
+          "name": "selfHolidayExportStream",
+          "uri": "jaxrs/file/export/selfholiday/{startdate}/{enddate}/stream/{stream}",
           "method": "GET"
         }
       ]
@@ -712,13 +712,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]

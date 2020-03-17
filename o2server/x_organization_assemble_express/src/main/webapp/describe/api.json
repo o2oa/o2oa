@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -68,6 +68,12 @@
           "enctype": "application/json"
         },
         {
+          "name": "hasRole",
+          "uri": "jaxrs/group/has/role",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "listWithPerson",
           "uri": "jaxrs/group/list/person",
           "method": "POST",
@@ -76,24 +82,6 @@
         {
           "name": "listObject",
           "uri": "jaxrs/group/list/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "hasRole",
-          "uri": "jaxrs/group/has/role",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroupSupDirectObject",
-          "uri": "jaxrs/group/list/group/sup/direct/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroupSupDirect",
-          "uri": "jaxrs/group/list/group/sup/direct",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -110,20 +98,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithGroupSupNested",
-          "uri": "jaxrs/group/list/group/sup/nested",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroupSubDirectObject",
-          "uri": "jaxrs/group/list/group/sub/direct/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroupSubNested",
-          "uri": "jaxrs/group/list/group/sub/nested",
+          "name": "listWithPersonObject",
+          "uri": "jaxrs/group/list/person/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -134,8 +110,32 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithPersonObject",
-          "uri": "jaxrs/group/list/person/object",
+          "name": "listWithGroupSupDirect",
+          "uri": "jaxrs/group/list/group/sup/direct",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithGroupSubNested",
+          "uri": "jaxrs/group/list/group/sub/nested",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithGroupSubDirectObject",
+          "uri": "jaxrs/group/list/group/sub/direct/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithGroupSupDirectObject",
+          "uri": "jaxrs/group/list/group/sup/direct/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithGroupSupNested",
+          "uri": "jaxrs/group/list/group/sup/nested",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -163,8 +163,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listObject",
-          "uri": "jaxrs/identity/list/object",
+          "name": "listWithUnitSubDirect",
+          "uri": "jaxrs/identity/list/unit/sub/direct",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -175,14 +175,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSubDirect",
-          "uri": "jaxrs/identity/list/unit/sub/direct",
+          "name": "listObject",
+          "uri": "jaxrs/identity/list/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSubDirectObject",
-          "uri": "jaxrs/identity/list/unit/sub/direct/object",
+          "name": "listWithPersonObject",
+          "uri": "jaxrs/identity/list/person/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -193,26 +193,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listMajorWithPersonObject",
-          "uri": "jaxrs/identity/list/major/person/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "listWithUnitSubNestedObject",
           "uri": "jaxrs/identity/list/unit/sub/nested/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroupObject",
-          "uri": "jaxrs/identity/list/group/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMajorWithPerson",
-          "uri": "jaxrs/identity/list/major/person",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -223,8 +205,26 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithPersonObject",
-          "uri": "jaxrs/identity/list/person/object",
+          "name": "listWithUnitSubDirectObject",
+          "uri": "jaxrs/identity/list/unit/sub/direct/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMajorWithPerson",
+          "uri": "jaxrs/identity/list/major/person",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMajorWithPersonObject",
+          "uri": "jaxrs/identity/list/major/person/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithGroupObject",
+          "uri": "jaxrs/identity/list/group/object",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -249,13 +249,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -276,18 +276,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "listObject",
-          "uri": "jaxrs/person/list/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithGroup",
-          "uri": "jaxrs/person/list/group",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "listAll",
           "uri": "jaxrs/person/list/all",
           "method": "GET"
@@ -299,8 +287,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithIdentity",
-          "uri": "jaxrs/person/list/identity",
+          "name": "listWithRole",
+          "uri": "jaxrs/person/list/role",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -311,10 +299,15 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithRole",
-          "uri": "jaxrs/person/list/role",
+          "name": "listWithIdentity",
+          "uri": "jaxrs/person/list/identity",
           "method": "POST",
           "enctype": "application/json"
+        },
+        {
+          "name": "listAllObject",
+          "uri": "jaxrs/person/list/all/object",
+          "method": "GET"
         },
         {
           "name": "listLoginRecent",
@@ -329,79 +322,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listAllObject",
-          "uri": "jaxrs/person/list/all/object",
-          "method": "GET"
-        },
-        {
-          "name": "listWithPersonSupDirectObject",
-          "uri": "jaxrs/person/list/person/sup/direct/object",
+          "name": "listWithGroup",
+          "uri": "jaxrs/person/list/group",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSubDirectObject",
-          "uri": "jaxrs/person/list/unit/sub/direct/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonAttribute",
-          "uri": "jaxrs/person/list/personattribute",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonSubNestedObject",
-          "uri": "jaxrs/person/list/person/sub/nested/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonSupNested",
-          "uri": "jaxrs/person/list/person/sup/nested",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitSubDirectLikeObject",
-          "uri": "jaxrs/person/list/unit/sub/direct/like/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitSubNestedLike",
-          "uri": "jaxrs/person/list/unit/sub/nested/like",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithIdentityObject",
-          "uri": "jaxrs/person/list/identity/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitSubNestedLikeObject",
-          "uri": "jaxrs/person/list/unit/sub/nested/like/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithRoleObject",
-          "uri": "jaxrs/person/list/role/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitSubNestedObject",
-          "uri": "jaxrs/person/list/unit/sub/nested/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonAttributeObject",
-          "uri": "jaxrs/person/list/personattribute/object",
+          "name": "listObject",
+          "uri": "jaxrs/person/list/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -412,20 +340,74 @@
           "enctype": "application/json"
         },
         {
+          "name": "listLoginRecentObject",
+          "uri": "jaxrs/person/list/login/recent/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonAttribute",
+          "uri": "jaxrs/person/list/personattribute",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonAttributeObject",
+          "uri": "jaxrs/person/list/personattribute/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitSubNestedObject",
+          "uri": "jaxrs/person/list/unit/sub/nested/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithIdentityObject",
+          "uri": "jaxrs/person/list/identity/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSubDirect",
+          "uri": "jaxrs/person/list/person/sub/direct",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitSubDirectObject",
+          "uri": "jaxrs/person/list/unit/sub/direct/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "listWithGroupObject",
           "uri": "jaxrs/person/list/group/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithPersonSubNested",
-          "uri": "jaxrs/person/list/person/sub/nested",
+          "name": "listWithUnitSubNestedLikeObject",
+          "uri": "jaxrs/person/list/unit/sub/nested/like/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
           "name": "listWithPersonSupNestedObject",
           "uri": "jaxrs/person/list/person/sup/nested/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitSubNestedLike",
+          "uri": "jaxrs/person/list/unit/sub/nested/like",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSupDirectObject",
+          "uri": "jaxrs/person/list/person/sup/direct/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -442,20 +424,38 @@
           "enctype": "application/json"
         },
         {
-          "name": "listLoginRecentObject",
-          "uri": "jaxrs/person/list/login/recent/object",
+          "name": "listWithRoleObject",
+          "uri": "jaxrs/person/list/role/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithPersonSubDirect",
-          "uri": "jaxrs/person/list/person/sub/direct",
+          "name": "listWithUnitSubDirectLikeObject",
+          "uri": "jaxrs/person/list/unit/sub/direct/like/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
           "name": "listWithPersonSupDirect",
           "uri": "jaxrs/person/list/person/sup/direct",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSubNested",
+          "uri": "jaxrs/person/list/person/sub/nested",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSubNestedObject",
+          "uri": "jaxrs/person/list/person/sub/nested/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSupNested",
+          "uri": "jaxrs/person/list/person/sup/nested",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -483,14 +483,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "appendWithPersonWithName",
-          "uri": "jaxrs/personattribute/append/person/name",
+          "name": "listNameWithPerson",
+          "uri": "jaxrs/personattribute/list/name/person",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listNameWithPerson",
-          "uri": "jaxrs/personattribute/list/name/person",
+          "name": "appendWithPersonWithName",
+          "uri": "jaxrs/personattribute/append/person/name",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -551,26 +551,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithIdentitySupNested",
-          "uri": "jaxrs/unit/list/identity/sup/nested",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "listWithUnitSubNested",
           "uri": "jaxrs/unit/list/unit/sub/nested",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithPerson",
-          "uri": "jaxrs/unit/list/person",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listObject",
-          "uri": "jaxrs/unit/list/object",
+          "name": "listWithIdentitySupNested",
+          "uri": "jaxrs/unit/list/identity/sup/nested",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -580,8 +568,8 @@
           "method": "GET"
         },
         {
-          "name": "listWithIdentity",
-          "uri": "jaxrs/unit/list/identity",
+          "name": "listWithPerson",
+          "uri": "jaxrs/unit/list/person",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -592,8 +580,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitDutyObject",
-          "uri": "jaxrs/unit/list/unitduty/object",
+          "name": "listWithIdentity",
+          "uri": "jaxrs/unit/list/identity",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithLevel",
+          "uri": "jaxrs/unit/list/level",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -609,14 +603,8 @@
           "method": "GET"
         },
         {
-          "name": "listWithLevel",
-          "uri": "jaxrs/unit/list/level",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "getWithIdentityWithType",
-          "uri": "jaxrs/unit/identity/type",
+          "name": "listObject",
+          "uri": "jaxrs/unit/list/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -627,32 +615,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSubDirectObject",
-          "uri": "jaxrs/unit/list/unit/sub/direct/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonSupNested",
-          "uri": "jaxrs/unit/list/person/sup/nested",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithIdentityObject",
-          "uri": "jaxrs/unit/list/identity/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitSubNestedObject",
-          "uri": "jaxrs/unit/list/unit/sub/nested/object",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithPersonSupNestedObject",
-          "uri": "jaxrs/unit/list/person/sup/nested/object",
+          "name": "getWithIdentityWithType",
+          "uri": "jaxrs/unit/identity/type",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -663,20 +627,20 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitAttribute",
-          "uri": "jaxrs/unit/list/unitattribute",
+          "name": "listWithUnitSubNestedObject",
+          "uri": "jaxrs/unit/list/unit/sub/nested/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithLevelObject",
-          "uri": "jaxrs/unit/list/level/object",
+          "name": "listWithIdentityObject",
+          "uri": "jaxrs/unit/list/identity/object",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "getWithIdentityWithLevelObject",
-          "uri": "jaxrs/unit/identity/level/object",
+          "name": "listWithUnitSubDirectObject",
+          "uri": "jaxrs/unit/list/unit/sub/direct/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -687,8 +651,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithIdentitySupNestedObject",
-          "uri": "jaxrs/unit/list/identity/sup/nested/object",
+          "name": "listWithUnitAttribute",
+          "uri": "jaxrs/unit/list/unitattribute",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSupNestedObject",
+          "uri": "jaxrs/unit/list/person/sup/nested/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -699,14 +669,20 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSupNestedObject",
-          "uri": "jaxrs/unit/list/unit/sup/nested/object",
+          "name": "listWithUnitSupDirect",
+          "uri": "jaxrs/unit/list/unit/sup/direct",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSupNested",
-          "uri": "jaxrs/unit/list/unit/sup/nested",
+          "name": "listWithLevelObject",
+          "uri": "jaxrs/unit/list/level/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithIdentitySupNestedObject",
+          "uri": "jaxrs/unit/list/identity/sup/nested/object",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -717,8 +693,32 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnitSupDirect",
-          "uri": "jaxrs/unit/list/unit/sup/direct",
+          "name": "listWithUnitSupNestedObject",
+          "uri": "jaxrs/unit/list/unit/sup/nested/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getWithIdentityWithLevelObject",
+          "uri": "jaxrs/unit/identity/level/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitDutyObject",
+          "uri": "jaxrs/unit/list/unitduty/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitSupNested",
+          "uri": "jaxrs/unit/list/unit/sup/nested",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPersonSupNested",
+          "uri": "jaxrs/unit/list/person/sup/nested",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -734,6 +734,12 @@
           "enctype": "application/json"
         },
         {
+          "name": "appendWithUnitWithName",
+          "uri": "jaxrs/unitattribute/append/unit/name",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "listAttributeWithUnitWithName",
           "uri": "jaxrs/unitattribute/list/attribute/unit/name",
           "method": "POST",
@@ -742,12 +748,6 @@
         {
           "name": "setWithUnitWithName",
           "uri": "jaxrs/unitattribute/set/unit/name",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "appendWithUnitWithName",
-          "uri": "jaxrs/unitattribute/append/unit/name",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -781,6 +781,12 @@
           "enctype": "application/json"
         },
         {
+          "name": "listWithUnitObject",
+          "uri": "jaxrs/unitduty/list/unit/object",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "listIdentityWithUnitWithName",
           "uri": "jaxrs/unitduty/list/identity/unit/name",
           "method": "POST",
@@ -789,12 +795,6 @@
         {
           "name": "listNameWithIdentity",
           "uri": "jaxrs/unitduty/list/name/identity",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithUnitObject",
-          "uri": "jaxrs/unitduty/list/unit/object",
           "method": "POST",
           "enctype": "application/json"
         }

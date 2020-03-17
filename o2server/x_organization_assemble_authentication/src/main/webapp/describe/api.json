@@ -4,13 +4,13 @@
       "name": "AuthenticationAction",
       "methods": [
         {
-          "name": "mode",
-          "uri": "jaxrs/authentication/mode",
+          "name": "bind",
+          "uri": "jaxrs/authentication/bind",
           "method": "GET"
         },
         {
-          "name": "bind",
-          "uri": "jaxrs/authentication/bind",
+          "name": "mode",
+          "uri": "jaxrs/authentication/mode",
           "method": "GET"
         },
         {
@@ -19,9 +19,10 @@
           "method": "GET"
         },
         {
-          "name": "who",
+          "name": "login",
           "uri": "jaxrs/authentication",
-          "method": "GET"
+          "method": "POST",
+          "enctype": "application/json"
         },
         {
           "name": "logout",
@@ -30,42 +31,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "login",
+          "name": "who",
           "uri": "jaxrs/authentication",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "oauthLogin",
-          "uri": "jaxrs/authentication/oauth/login/name/{name}/code/{code}/redirecturi/{redirectUri}",
-          "method": "GET"
-        },
-        {
-          "name": "oauthBind",
-          "uri": "jaxrs/authentication/oauth/bind/name/{name}/code/{code}/redirecturi/{redirectUri}",
-          "method": "GET"
-        },
-        {
-          "name": "switchUser",
-          "uri": "jaxrs/authentication/switchuser",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "captchaLogin",
-          "uri": "jaxrs/authentication/captcha",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "bindMeta",
-          "uri": "jaxrs/authentication/bind/meta/{meta}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "captcha",
-          "uri": "jaxrs/authentication/captcha/width/{width}/height/{height}",
           "method": "GET"
         },
         {
@@ -74,8 +41,8 @@
           "method": "GET"
         },
         {
-          "name": "codeLogin",
-          "uri": "jaxrs/authentication/code",
+          "name": "captchaLogin",
+          "uri": "jaxrs/authentication/captcha",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -85,8 +52,19 @@
           "method": "GET"
         },
         {
-          "name": "bindLogin",
-          "uri": "jaxrs/authentication/bind/meta/{meta}",
+          "name": "codeLogin",
+          "uri": "jaxrs/authentication/code",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "oauthList",
+          "uri": "jaxrs/authentication/oauth/list",
+          "method": "GET"
+        },
+        {
+          "name": "oauthLogin",
+          "uri": "jaxrs/authentication/oauth/login/name/{name}/code/{code}/redirecturi/{redirectUri}",
           "method": "GET"
         },
         {
@@ -95,13 +73,35 @@
           "method": "GET"
         },
         {
-          "name": "oauthList",
-          "uri": "jaxrs/authentication/oauth/list",
+          "name": "switchUser",
+          "uri": "jaxrs/authentication/switchuser",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "bindLogin",
+          "uri": "jaxrs/authentication/bind/meta/{meta}",
           "method": "GET"
         },
         {
-          "name": "qiyeweixinOauthConfig",
-          "uri": "jaxrs/authentication/oauth/qywx/config",
+          "name": "oauthBind",
+          "uri": "jaxrs/authentication/oauth/bind/name/{name}/code/{code}/redirecturi/{redirectUri}",
+          "method": "GET"
+        },
+        {
+          "name": "captcha",
+          "uri": "jaxrs/authentication/captcha/width/{width}/height/{height}",
+          "method": "GET"
+        },
+        {
+          "name": "bindMeta",
+          "uri": "jaxrs/authentication/bind/meta/{meta}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "oauthLoginDingding",
+          "uri": "jaxrs/authentication/oauth/login/dingding/code/{code}",
           "method": "GET"
         },
         {
@@ -110,8 +110,8 @@
           "method": "GET"
         },
         {
-          "name": "oauthLoginDingding",
-          "uri": "jaxrs/authentication/oauth/login/dingding/code/{code}",
+          "name": "qiyeweixinOauthConfig",
+          "uri": "jaxrs/authentication/oauth/qywx/config",
           "method": "GET"
         }
       ]
@@ -130,15 +130,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -197,13 +197,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -254,25 +254,25 @@
       "name": "SsoAction",
       "methods": [
         {
-          "name": "postEncrypt",
-          "uri": "jaxrs/sso/encrypt",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "postLogin",
           "uri": "jaxrs/sso",
           "method": "POST",
           "enctype": "application/json"
         },
         {
-          "name": "getEncrypt",
-          "uri": "jaxrs/sso/encrypt/client/{client}/key/{key}/credential/{credential}",
+          "name": "getLogin",
+          "uri": "jaxrs/sso/client/{client}/token/{token}",
           "method": "GET"
         },
         {
-          "name": "getLogin",
-          "uri": "jaxrs/sso/client/{client}/token/{token}",
+          "name": "postEncrypt",
+          "uri": "jaxrs/sso/encrypt",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getEncrypt",
+          "uri": "jaxrs/sso/encrypt/client/{client}/key/{key}/credential/{credential}",
           "method": "GET"
         }
       ]

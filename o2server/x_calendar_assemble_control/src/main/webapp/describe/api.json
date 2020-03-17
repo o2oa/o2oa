@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -28,6 +28,28 @@
           "name": "save",
           "uri": "jaxrs/calendar",
           "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithFilter",
+          "uri": "jaxrs/calendar/list/filter",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "followCalendar",
+          "uri": "jaxrs/calendar/follow/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listMyCalendar",
+          "uri": "jaxrs/calendar/list/my",
+          "method": "GET"
+        },
+        {
+          "name": "destory",
+          "uri": "jaxrs/calendar/{id}",
+          "method": "DELETE",
           "enctype": "application/json"
         },
         {
@@ -49,28 +71,6 @@
           "name": "isCalendarManager",
           "uri": "jaxrs/calendar/ismanager/calendar/{accountId}",
           "method": "GET"
-        },
-        {
-          "name": "followCalendar",
-          "uri": "jaxrs/calendar/follow/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "destory",
-          "uri": "jaxrs/calendar/{id}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithFilter",
-          "uri": "jaxrs/calendar/list/filter",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyCalendar",
-          "uri": "jaxrs/calendar/list/my",
-          "method": "GET"
         }
       ]
     },
@@ -89,6 +89,11 @@
           "enctype": "application/json"
         },
         {
+          "name": "getWithCode",
+          "uri": "jaxrs/setting/code/{code}",
+          "method": "GET"
+        },
+        {
           "name": "isManager",
           "uri": "jaxrs/setting/ismanager",
           "method": "GET"
@@ -96,11 +101,6 @@
         {
           "name": "listAllReportSetting",
           "uri": "jaxrs/setting/list/all",
-          "method": "GET"
-        },
-        {
-          "name": "getWithCode",
-          "uri": "jaxrs/setting/code/{code}",
           "method": "GET"
         }
       ]
@@ -120,42 +120,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "updateSingleEvent",
-          "uri": "jaxrs/event/update/single/{eventId}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "destoryAfterEvent",
-          "uri": "jaxrs/event/after/{eventId}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "updateAllEventsWithRepeatMaster",
-          "uri": "jaxrs/event/update/all/{eventId}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "destorySingleEvent",
-          "uri": "jaxrs/event/single/{eventId}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithFilterSample",
-          "uri": "jaxrs/event/list/filter/sample",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "destoryAllEventsWithRepeatMaster",
-          "uri": "jaxrs/event/all/{eventId}",
-          "method": "DELETE",
-          "enctype": "application/json"
-        },
-        {
           "name": "getRFC",
           "uri": "jaxrs/event/rfc/{id}",
           "method": "GET"
@@ -169,6 +133,42 @@
         {
           "name": "updateAfterEvent",
           "uri": "jaxrs/event/update/after/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateSingleEvent",
+          "uri": "jaxrs/event/update/single/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destoryAfterEvent",
+          "uri": "jaxrs/event/after/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destoryAllEventsWithRepeatMaster",
+          "uri": "jaxrs/event/all/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destorySingleEvent",
+          "uri": "jaxrs/event/single/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateAllEventsWithRepeatMaster",
+          "uri": "jaxrs/event/update/all/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithFilterSample",
+          "uri": "jaxrs/event/list/filter/sample",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -224,13 +224,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]

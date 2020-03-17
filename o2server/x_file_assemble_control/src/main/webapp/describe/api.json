@@ -32,8 +32,24 @@
           "method": "GET"
         },
         {
+          "name": "downloadImageWidthHeight",
+          "uri": "jaxrs/attachment2/{id}/download/image/width/{width}/height/{height}",
+          "method": "GET"
+        },
+        {
+          "name": "getImageScaleBase64",
+          "uri": "jaxrs/attachment2/{id}/image/scale/{scale}/binary/base64",
+          "method": "GET"
+        },
+        {
           "name": "postDownloadStream",
           "uri": "jaxrs/attachment2/{id}/download/stream",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listFileTypePaging",
+          "uri": "jaxrs/attachment2/list/type/{page}/size/{size}",
           "method": "POST",
           "enctype": "application/json"
         },
@@ -43,20 +59,9 @@
           "method": "GET"
         },
         {
-          "name": "getImageScaleBase64",
-          "uri": "jaxrs/attachment2/{id}/image/scale/{scale}/binary/base64",
+          "name": "listWithFilter",
+          "uri": "jaxrs/attachment2/list/filter/{name}",
           "method": "GET"
-        },
-        {
-          "name": "downloadImageWidthHeight",
-          "uri": "jaxrs/attachment2/{id}/download/image/width/{width}/height/{height}",
-          "method": "GET"
-        },
-        {
-          "name": "listFileTypePaging",
-          "uri": "jaxrs/attachment2/list/type/{page}/size/{size}",
-          "method": "POST",
-          "enctype": "application/json"
         },
         {
           "name": "uploadCallback",
@@ -65,23 +70,39 @@
           "enctype": "formData"
         },
         {
-          "name": "listWithFilter",
-          "uri": "jaxrs/attachment2/list/filter/{name}",
-          "method": "GET"
-        },
-        {
-          "name": "listTop",
-          "uri": "jaxrs/attachment2/list/top",
-          "method": "GET"
-        },
-        {
           "name": "listWithShare",
           "uri": "jaxrs/attachment2/list/share/{owner}",
           "method": "GET"
         },
         {
+          "name": "postDownload",
+          "uri": "jaxrs/attachment2/{id}/download",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithEditor",
+          "uri": "jaxrs/attachment2/list/editor/{owner}",
+          "method": "GET"
+        },
+        {
+          "name": "downloadStream",
+          "uri": "jaxrs/attachment2/{id}/download/stream",
+          "method": "GET"
+        },
+        {
           "name": "listWithFolder",
           "uri": "jaxrs/attachment2/list/folder/{folderId}",
+          "method": "GET"
+        },
+        {
+          "name": "officePreview",
+          "uri": "jaxrs/attachment2/{id}/office/preview/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listTop",
+          "uri": "jaxrs/attachment2/list/top",
           "method": "GET"
         },
         {
@@ -95,29 +116,8 @@
           "method": "GET"
         },
         {
-          "name": "listWithEditor",
-          "uri": "jaxrs/attachment2/list/editor/{owner}",
-          "method": "GET"
-        },
-        {
-          "name": "postDownload",
-          "uri": "jaxrs/attachment2/{id}/download",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "checkFileExist",
           "uri": "jaxrs/attachment2/exist/file/{fileMd5}",
-          "method": "GET"
-        },
-        {
-          "name": "officePreview",
-          "uri": "jaxrs/attachment2/{id}/office/preview/type/{type}",
-          "method": "GET"
-        },
-        {
-          "name": "downloadStream",
-          "uri": "jaxrs/attachment2/{id}/download/stream",
           "method": "GET"
         }
       ]
@@ -160,17 +160,6 @@
           "enctype": "formData"
         },
         {
-          "name": "postDownloadStream",
-          "uri": "jaxrs/attachment/{id}/download/stream",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "getImageWidthHeightBase64",
-          "uri": "jaxrs/attachment/{id}/image/width/{width}/height/{height}/binary/base64",
-          "method": "GET"
-        },
-        {
           "name": "getImageScaleBase64",
           "uri": "jaxrs/attachment/{id}/image/scale/{scale}/binary/base64",
           "method": "GET"
@@ -182,34 +171,25 @@
           "enctype": "formData"
         },
         {
+          "name": "postDownloadStream",
+          "uri": "jaxrs/attachment/{id}/download/stream",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getImageWidthHeightBase64",
+          "uri": "jaxrs/attachment/{id}/image/width/{width}/height/{height}/binary/base64",
+          "method": "GET"
+        },
+        {
           "name": "uploadCallback",
           "uri": "jaxrs/attachment/upload/folder/{folderId}/callback/{callback}",
           "method": "POST",
           "enctype": "formData"
         },
         {
-          "name": "listTop",
-          "uri": "jaxrs/attachment/list/top",
-          "method": "GET"
-        },
-        {
           "name": "listWithShare",
           "uri": "jaxrs/attachment/list/share/{owner}",
-          "method": "GET"
-        },
-        {
-          "name": "listWithFolder",
-          "uri": "jaxrs/attachment/list/folder/{folderId}",
-          "method": "GET"
-        },
-        {
-          "name": "getBase64",
-          "uri": "jaxrs/attachment/{id}/binary/base64",
-          "method": "GET"
-        },
-        {
-          "name": "listWithEditor",
-          "uri": "jaxrs/attachment/list/editor/{owner}",
           "method": "GET"
         },
         {
@@ -219,8 +199,28 @@
           "enctype": "application/json"
         },
         {
+          "name": "listWithEditor",
+          "uri": "jaxrs/attachment/list/editor/{owner}",
+          "method": "GET"
+        },
+        {
           "name": "downloadStream",
           "uri": "jaxrs/attachment/{id}/download/stream",
+          "method": "GET"
+        },
+        {
+          "name": "listWithFolder",
+          "uri": "jaxrs/attachment/list/folder/{folderId}",
+          "method": "GET"
+        },
+        {
+          "name": "listTop",
+          "uri": "jaxrs/attachment/list/top",
+          "method": "GET"
+        },
+        {
+          "name": "getBase64",
+          "uri": "jaxrs/attachment/{id}/binary/base64",
           "method": "GET"
         }
       ]
@@ -229,15 +229,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -307,10 +307,10 @@
           "method": "GET"
         },
         {
-          "name": "uploadPostOctetStream",
-          "uri": "jaxrs/file/upload/referencetype/{referenceType}/reference/{reference}/scale/{scale}",
+          "name": "postDownloadStream",
+          "uri": "jaxrs/file/{id}/download/stream",
           "method": "POST",
-          "enctype": "application/octet-stream"
+          "enctype": "application/json"
         },
         {
           "name": "listNextWithReferenceType",
@@ -323,20 +323,10 @@
           "method": "GET"
         },
         {
-          "name": "listNext",
-          "uri": "jaxrs/file/list/{id}/next/{count}",
-          "method": "GET"
-        },
-        {
-          "name": "listPrev",
-          "uri": "jaxrs/file/list/{id}/prev/{count}",
-          "method": "GET"
-        },
-        {
-          "name": "postDownloadStream",
-          "uri": "jaxrs/file/{id}/download/stream",
+          "name": "uploadPostOctetStream",
+          "uri": "jaxrs/file/upload/referencetype/{referenceType}/reference/{reference}/scale/{scale}",
           "method": "POST",
-          "enctype": "application/json"
+          "enctype": "application/octet-stream"
         },
         {
           "name": "uploadCallback",
@@ -356,13 +346,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listNextAll",
-          "uri": "jaxrs/file/list/{id}/next/{count}/all",
-          "method": "GET"
-        },
-        {
-          "name": "listPrevAll",
-          "uri": "jaxrs/file/list/{id}/prev/{count}/all",
+          "name": "downloadStream",
+          "uri": "jaxrs/file/{id}/download/stream",
           "method": "GET"
         },
         {
@@ -371,8 +356,23 @@
           "method": "GET"
         },
         {
-          "name": "downloadStream",
-          "uri": "jaxrs/file/{id}/download/stream",
+          "name": "listPrevAll",
+          "uri": "jaxrs/file/list/{id}/prev/{count}/all",
+          "method": "GET"
+        },
+        {
+          "name": "listNextAll",
+          "uri": "jaxrs/file/list/{id}/next/{count}/all",
+          "method": "GET"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/file/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/file/list/{id}/prev/{count}",
           "method": "GET"
         }
       ]
@@ -419,13 +419,13 @@
           "method": "GET"
         },
         {
-          "name": "listTop",
-          "uri": "jaxrs/folder2/list/top",
+          "name": "listWithFolder",
+          "uri": "jaxrs/folder2/list/{id}",
           "method": "GET"
         },
         {
-          "name": "listWithFolder",
-          "uri": "jaxrs/folder2/list/{id}",
+          "name": "listTop",
+          "uri": "jaxrs/folder2/list/top",
           "method": "GET"
         },
         {
@@ -462,13 +462,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "listTop",
-          "uri": "jaxrs/folder/list/top",
+          "name": "listWithFolder",
+          "uri": "jaxrs/folder/list/{id}",
           "method": "GET"
         },
         {
-          "name": "listWithFolder",
-          "uri": "jaxrs/folder/list/{id}",
+          "name": "listTop",
+          "uri": "jaxrs/folder/list/top",
           "method": "GET"
         }
       ]
@@ -492,13 +492,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -562,33 +562,13 @@
           "method": "GET"
         },
         {
-          "name": "listFolderWithFolder",
-          "uri": "jaxrs/share/list/folder/share/{shareId}/folder/{folderId}/",
-          "method": "GET"
-        },
-        {
           "name": "listAttWithFolder",
           "uri": "jaxrs/share/list/att/share/{shareId}/folder/{folderId}/",
           "method": "GET"
         },
         {
-          "name": "listMyShare2",
-          "uri": "jaxrs/share/list/my2/{shareType}/{fileType}",
-          "method": "GET"
-        },
-        {
-          "name": "listMyShare",
-          "uri": "jaxrs/share/list/my",
-          "method": "GET"
-        },
-        {
-          "name": "listShareToMe",
-          "uri": "jaxrs/share/list/to/me",
-          "method": "GET"
-        },
-        {
-          "name": "listShare",
-          "uri": "jaxrs/share/list",
+          "name": "listFolderWithFolder",
+          "uri": "jaxrs/share/list/folder/share/{shareId}/folder/{folderId}/",
           "method": "GET"
         },
         {
@@ -597,8 +577,23 @@
           "method": "GET"
         },
         {
+          "name": "shield",
+          "uri": "jaxrs/share/shield/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listShareToMe",
+          "uri": "jaxrs/share/list/to/me",
+          "method": "GET"
+        },
+        {
           "name": "getWithPassword",
           "uri": "jaxrs/share/{id}/password/{password}",
+          "method": "GET"
+        },
+        {
+          "name": "listMyShare",
+          "uri": "jaxrs/share/list/my",
           "method": "GET"
         },
         {
@@ -608,8 +603,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "shield",
-          "uri": "jaxrs/share/shield/{id}",
+          "name": "listShare",
+          "uri": "jaxrs/share/list",
+          "method": "GET"
+        },
+        {
+          "name": "listMyShare2",
+          "uri": "jaxrs/share/list/my2/{shareType}/{fileType}",
           "method": "GET"
         }
       ]

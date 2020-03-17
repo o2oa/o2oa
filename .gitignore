@@ -54,3 +54,5 @@ hs_err_pid*
 **/src/test/
 command.swap
 **/bin/
+**/src/main/webapp/describe/
+**/target/

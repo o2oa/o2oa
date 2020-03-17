@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -122,14 +122,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "prepareCreate",
-          "uri": "jaxrs/input/prepare/create",
+          "name": "prepareCover",
+          "uri": "jaxrs/input/prepare/cover",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "prepareCover",
-          "uri": "jaxrs/input/prepare/cover",
+          "name": "prepareCreate",
+          "uri": "jaxrs/input/prepare/create",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -154,13 +154,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -358,15 +358,15 @@
           "method": "GET"
         },
         {
+          "name": "listCategory",
+          "uri": "jaxrs/templatepage/list/category",
+          "method": "GET"
+        },
+        {
           "name": "listWithCategory",
           "uri": "jaxrs/templatepage/list/category",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "listCategory",
-          "uri": "jaxrs/templatepage/list/category",
-          "method": "GET"
         }
       ]
     },
