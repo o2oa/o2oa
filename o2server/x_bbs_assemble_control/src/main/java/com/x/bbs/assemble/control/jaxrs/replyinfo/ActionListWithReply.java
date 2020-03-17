@@ -1,6 +1,5 @@
 package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -10,13 +9,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionCountEmpty;
-import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionPageEmpty;
+import com.x.base.core.project.tools.SortTools;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.entity.BBSReplyInfo;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +26,20 @@ public class ActionListWithReply extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithReply.class);
 
-	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, Integer page,
-			Integer count, JsonElement jsonElement) throws Exception {
+	/**
+	 * 根据回复的ID获取针对该回复的回复列表
+	 * @param request
+	 * @param effectivePerson
+	 * @param replyId
+	 * @return
+	 * @throws Exception
+	 */
+	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String replyId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		Wi wrapIn = null;
 		Boolean check = true;
 
-		try {
-			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionReplyInfoProcess(e,
-					"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
-
 		if (check) {
-			String cacheKey = wrapIn.getSubjectId() + "#" + page + "#" + count;
+			String cacheKey = replyId + "#replys#all" ;
 			Element element = cache.get(cacheKey);
 
 			if ((null != element) && (null != element.getObjectValue())) {
@@ -55,15 +47,22 @@ public class ActionListWithReply extends BaseAction {
 				result.setData(result_cache.getData());
 				result.setCount(result_cache.getCount());
 			} else {
-				result = getReplyQueryResult(wrapIn, request, effectivePerson, page, count);
+				result = getReplyQueryResult( request, effectivePerson, replyId );
 				cache.put(new Element(cacheKey, result));
 			}
 		}
 		return result;
 	}
 
-	public ActionResult<List<Wo>> getReplyQueryResult(Wi wrapIn, HttpServletRequest request,
-			EffectivePerson effectivePerson, Integer page, Integer count) {
+	/**
+	 * 根据回复的ID获取针对该回复的回复列表
+	 * @param request
+	 * @param effectivePerson
+	 * @param replyId
+	 * @return
+	 */
+	public ActionResult<List<Wo>> getReplyQueryResult( HttpServletRequest request,
+			EffectivePerson effectivePerson, String replyId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		List<BBSReplyInfo> replyInfoList = null;
@@ -72,60 +71,19 @@ public class ActionListWithReply extends BaseAction {
 		Boolean check = true;
 
 		if (check) {
-			if (page == null) {
-				check = false;
-				Exception exception = new ExceptionPageEmpty();
-				result.error(exception);
-			}
-		}
-		if (check) {
-			if (count == null) {
-				check = false;
-				Exception exception = new ExceptionCountEmpty();
-				result.error(exception);
-			}
-		}
-		if (check) {
 			try {
-				total = replyInfoService.countWithSubjectForPage(wrapIn.getSubjectId());
+				replyInfoList = replyInfoService.listRelysWithRelyId(replyId);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionReplyInfoProcess(e,
-						"根据主题ID查询主题内所有的回复数量时发生异常。Subject:" + wrapIn.getSubjectId());
+				Exception exception = new ExceptionReplyInfoProcess(e,"根据回复ID查询针对该回复所有的二级回复数量时发生异常。replyId:" + replyId );
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
-			if (total > 0) {
+			if (ListTools.isNotEmpty(replyInfoList)) {
 				try {
-					replyInfoList = replyInfoService.listWithSubjectForPage(wrapIn.getSubjectId(), page * count);
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionReplyInfoProcess(e,
-							"根据主题ID查询主题内所有的回复列表时发生异常。Subject:" + wrapIn.getSubjectId());
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
-		}
-		if (check) {
-			if (page <= 0) {
-				page = 1;
-			}
-			if (count <= 0) {
-				count = 20;
-			}
-			int startIndex = (page - 1) * count;
-			int endIndex = page * count;
-			for (int i = 0; replyInfoList != null && i < replyInfoList.size(); i++) {
-				if (i < replyInfoList.size() && i >= startIndex && i < endIndex) {
-					replyInfoList_out.add(replyInfoList.get(i));
-				}
-			}
-			if (ListTools.isNotEmpty(replyInfoList_out)) {
-				try {
-					wraps = Wo.copier.copy(replyInfoList_out);
+					wraps = Wo.copier.copy(replyInfoList);
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionReplyInfoProcess(e, "将查询结果转换成可以输出的数据信息时发生异常。");
@@ -144,27 +102,12 @@ public class ActionListWithReply extends BaseAction {
 						wo.setAuditorNameShort(wo.getAuditorName().split("@")[0]);
 					}
 				}
+				SortTools.desc(wraps, "createTime" );
+				result.setCount( Long.parseLong(wraps.size()+"") );
 			}
 		}
 		result.setData(wraps);
-		result.setCount(total);
 		return result;
-	}
-
-	public static class Wi {
-
-		@FieldDescribe("主题Id")
-		private String subjectId = null;
-		
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-
-		public String getSubjectId() {
-			return subjectId;
-		}
-
-		public void setSubjectId(String subjectId) {
-			this.subjectId = subjectId;
-		}
 	}
 
 	public static class Wo extends BBSReplyInfo {
