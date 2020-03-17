@@ -1,0 +1,750 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ExportAction",
+      "methods": [
+        {
+          "name": "getResult",
+          "uri": "jaxrs/export/result/flag/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "zhengwuDingdingPerson",
+          "uri": "jaxrs/export/zhengwudingding/person",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "GroupAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/group/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/group/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/group",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/group/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/group/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/group/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/group/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLike",
+          "uri": "jaxrs/group/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/group/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSupDirect",
+          "uri": "jaxrs/group/list/{flag}/sup/direct",
+          "method": "GET"
+        },
+        {
+          "name": "deleteMember",
+          "uri": "jaxrs/group/{flag}/delete/member",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "addMember",
+          "uri": "jaxrs/group/{flag}/add/member",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithRole",
+          "uri": "jaxrs/group/list/role/{roleFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listSupNested",
+          "uri": "jaxrs/group/list/{flag}/sup/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubNested",
+          "uri": "jaxrs/group/list/{flag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirect",
+          "uri": "jaxrs/group/list/{flag}/sub/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listSupNestedWithPerson",
+          "uri": "jaxrs/group/list/person/{personFlag}/sup/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSupDirectWithPerson",
+          "uri": "jaxrs/group/list/person/{personFlag}/sup/direct",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "IdentityAction",
+      "methods": [
+        {
+          "name": "order",
+          "uri": "jaxrs/identity/{flag}/order/before/{followFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "get",
+          "uri": "jaxrs/identity/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/identity/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/identity",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/identity/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/identity/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/identity/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPerson",
+          "uri": "jaxrs/identity/list/person/{personFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/identity/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLike",
+          "uri": "jaxrs/identity/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/identity/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnit",
+          "uri": "jaxrs/identity/list/unit/{unitFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithUnitDutyName",
+          "uri": "jaxrs/identity/list/unitduty/name/{unitDutyName}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithUnitWithUnitDutyName",
+          "uri": "jaxrs/identity/list/{flag}/unitduty/name/{unitDutyName}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "InputPersonAction",
+      "methods": [
+        {
+          "name": "getResult",
+          "uri": "jaxrs/inputperson/result/flag/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "input",
+          "uri": "jaxrs/inputperson",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "template",
+          "uri": "jaxrs/inputperson/template",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoginRecordAction",
+      "methods": [
+        {
+          "name": "loginRecord",
+          "uri": "jaxrs/loginrecord/{stream}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PersonAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/person/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/person/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/person",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "setPassword",
+          "uri": "jaxrs/person/{flag}/set/password",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "setIcon",
+          "uri": "jaxrs/person/{flag}/icon",
+          "method": "PUT",
+          "enctype": "formData"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/person/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/person/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/person/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/person/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLike",
+          "uri": "jaxrs/person/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/person/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "checkPassword",
+          "uri": "jaxrs/person/check/password/{password}",
+          "method": "GET"
+        },
+        {
+          "name": "resetPassword",
+          "uri": "jaxrs/person/{flag}/reset/password",
+          "method": "GET"
+        },
+        {
+          "name": "listWithRole",
+          "uri": "jaxrs/person/list/role/{roleFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirectWithGroup",
+          "uri": "jaxrs/person/list/group/{groupFlag}/sub/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listSubNestedWithGroup",
+          "uri": "jaxrs/person/list/group/{groupFlag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "getIconWithPerson",
+          "uri": "jaxrs/person/{flag}/icon",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PersonAttributeAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/personattribute/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/personattribute/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/personattribute",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/personattribute/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/personattribute/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPerson",
+          "uri": "jaxrs/personattribute/list/person/{personFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "standardListPrev",
+          "uri": "jaxrs/personattribute/list/{flag}/prev/{count}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "RoleAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/role/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/role/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/role",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/role/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/role/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/role/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPerson",
+          "uri": "jaxrs/role/list/person/{personFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithGroup",
+          "uri": "jaxrs/role/list/group/{groupFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/role/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLike",
+          "uri": "jaxrs/role/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/role/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "UnitAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/unit/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/unit/{flag}",
+          "method": "DELETE"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/unit",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "list",
+          "uri": "jaxrs/unit/list",
+          "method": "POST"
+        },
+        {
+          "name": "listType",
+          "uri": "jaxrs/unit/list/type",
+          "method": "GET"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/unit/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/unit/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/unit/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/unit/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLike",
+          "uri": "jaxrs/unit/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/unit/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSupNested",
+          "uri": "jaxrs/unit/list/{flag}/sup/nested",
+          "method": "GET"
+        },
+        {
+          "name": "getSupDirect",
+          "uri": "jaxrs/unit/{flag}/sup/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listTopWithType",
+          "uri": "jaxrs/unit/list/top/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listTop",
+          "uri": "jaxrs/unit/list/top",
+          "method": "GET"
+        },
+        {
+          "name": "listSubNested",
+          "uri": "jaxrs/unit/list/{flag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirect",
+          "uri": "jaxrs/unit/list/{flag}/sub/direct",
+          "method": "GET"
+        },
+        {
+          "name": "getWithIdentityWithType",
+          "uri": "jaxrs/unit/identity/{identityFlag}/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirectWithType",
+          "uri": "jaxrs/unit/list/{flag}/sub/direct/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithUnitWithType",
+          "uri": "jaxrs/unit/list/unit/type",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getWithIdentityWithLevel",
+          "uri": "jaxrs/unit/identity/{identityFlag}/level/{level}",
+          "method": "GET"
+        },
+        {
+          "name": "listSupNestedWithType",
+          "uri": "jaxrs/unit/list/{flag}/sup/nested/type/{type}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "UnitAttributeAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/unitattribute/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/unitattribute/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/unitattribute",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/unitattribute/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/unitattribute/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/unitattribute/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnit",
+          "uri": "jaxrs/unitattribute/list/unit/{flag}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "UnitDutyAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/unitduty/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/unitduty/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/unitduty",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/unitduty/list/{flag}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/unitduty/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/unitduty/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithIdentity",
+          "uri": "jaxrs/unitduty/list/identity/{identityFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithName",
+          "uri": "jaxrs/unitduty/list/name/{name}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithUnit",
+          "uri": "jaxrs/unitduty/list/unit/{unitFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "distinctName",
+          "uri": "jaxrs/unitduty/distinct/name",
+          "method": "GET"
+        },
+        {
+          "name": "distinctNameLike",
+          "uri": "jaxrs/unitduty/distinct/name/like/{key}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

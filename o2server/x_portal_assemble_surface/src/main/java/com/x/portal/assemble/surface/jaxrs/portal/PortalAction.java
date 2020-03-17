@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -21,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -110,7 +107,6 @@ public class PortalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Test
 	public void test() throws Exception {
 		try (FileInputStream in = new FileInputStream(new File("d:/a.png"));
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

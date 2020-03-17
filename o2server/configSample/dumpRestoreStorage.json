@@ -1,0 +1,13 @@
+{
+  "includes": [],
+  "excludes": [],
+  "batchSize": 100.0,
+  "redistribute": true,
+  "exceptionInvalidStorage": true,
+  "###enable": "是否启用.###",
+  "###includes": "导出导入包含对象,可以使用通配符*.###",
+  "###excludes": "导出导入排除对象,可以使用通配符*.###",
+  "###batchSize": "批量对象数量.###",
+  "###redistribute": "是否进行重新分布.###",
+  "###exceptionInvalidStorage": "无法获取storage是否升起错误.###"
+}

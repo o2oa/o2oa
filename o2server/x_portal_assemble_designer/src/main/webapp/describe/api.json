@@ -1,0 +1,407 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FileAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/file/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/file/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/file/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/file",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "upload",
+          "uri": "jaxrs/file/{id}/upload",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "download",
+          "uri": "jaxrs/file/{id}/download",
+          "method": "GET"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/file/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/file/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithApplication",
+          "uri": "jaxrs/file/list/application/{applicationFlag}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "IdAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/id/{count}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "InputAction",
+      "methods": [
+        {
+          "name": "compare",
+          "uri": "jaxrs/input/compare",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/input/create",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "cover",
+          "uri": "jaxrs/input/cover",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "prepareCreate",
+          "uri": "jaxrs/input/prepare/create",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "prepareCover",
+          "uri": "jaxrs/input/prepare/cover",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "OutputAction",
+      "methods": [
+        {
+          "name": "list",
+          "uri": "jaxrs/output/list",
+          "method": "GET"
+        },
+        {
+          "name": "select",
+          "uri": "jaxrs/output/{portalFlag}/select",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "selectOutput",
+          "uri": "jaxrs/output/{flag}/select/file",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PageAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/page/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/page/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/page",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/page/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPortal",
+          "uri": "jaxrs/page/list/portal/{portalId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PortalAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/portal/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/portal/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/portal",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "list",
+          "uri": "jaxrs/portal/list",
+          "method": "GET"
+        },
+        {
+          "name": "setIcon",
+          "uri": "jaxrs/portal/{id}/icon",
+          "method": "PUT",
+          "enctype": "formData"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/portal/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSummary",
+          "uri": "jaxrs/portal/list/summary",
+          "method": "GET"
+        },
+        {
+          "name": "listWithPortalCategory",
+          "uri": "jaxrs/portal/list/portalcategory/{portalCategory}",
+          "method": "GET"
+        },
+        {
+          "name": "listSummaryWithPortalCategory",
+          "uri": "jaxrs/portal/list/summary/portalcategory/{portalCategory}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PortalCategoryAction",
+      "methods": [
+        {
+          "name": "listWith",
+          "uri": "jaxrs/portalcategory/list",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ScriptAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/script/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/script/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/script",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/script/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPortal",
+          "uri": "jaxrs/script/list/portal/{portalId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TemplatePageAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/templatepage/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/templatepage/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/templatepage",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "list",
+          "uri": "jaxrs/templatepage/list",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCategory",
+          "uri": "jaxrs/templatepage/list/category",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listCategory",
+          "uri": "jaxrs/templatepage/list/category",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "WidgetAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/widget/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/widget/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/widget",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/widget/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithPortal",
+          "uri": "jaxrs/widget/list/portal/{portalId}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

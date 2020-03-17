@@ -1,0 +1,13 @@
+package com.x.portal.assemble.surface.jaxrs.page;
+
+import com.x.base.core.project.exception.PromptException;
+
+class ExceptionPortalAccessDenied extends PromptException {
+
+	private static final long serialVersionUID = -4908883340253465376L;
+
+	ExceptionPortalAccessDenied(String person, String name, String id) {
+		super("用户: {}, 访问站点: {}, id: {}, 失败,权限不足.", person, name, id);
+	}
+
+}

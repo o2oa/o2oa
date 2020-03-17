@@ -1,0 +1,8 @@
+{
+  "ftp": {
+    "passive": true
+  },
+  "ftps": {
+    "passive": true
+  }
+}

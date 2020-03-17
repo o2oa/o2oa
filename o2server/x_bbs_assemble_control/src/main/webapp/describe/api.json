@@ -1,0 +1,713 @@
+{
+  "jaxrs": [
+    {
+      "name": "AttachmentAction",
+      "methods": [
+        {
+          "name": "delete",
+          "uri": "jaxrs/attachment/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "upload",
+          "uri": "jaxrs/attachment/upload/subject/{subjectId}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "downloadWithSubject",
+          "uri": "jaxrs/attachment/download/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithSubjectId",
+          "uri": "jaxrs/attachment/list/subject/{subjectId}",
+          "method": "GET"
+        },
+        {
+          "name": "downloadWithSubjectStream",
+          "uri": "jaxrs/attachment/download/{id}/stream/{stream}",
+          "method": "GET"
+        },
+        {
+          "name": "uploadCallback",
+          "uri": "jaxrs/attachment/upload/subject/{subjectId}/callback/{callback}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "getWithId",
+          "uri": "jaxrs/attachment/{id}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "BBSConfigSettingAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/user/setting/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/user/setting",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAll",
+          "uri": "jaxrs/user/setting/all",
+          "method": "GET"
+        },
+        {
+          "name": "getByCode",
+          "uri": "jaxrs/user/setting/code",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "BBSConfigSettingAnonymousAction",
+      "methods": [
+        {
+          "name": "getBBSName",
+          "uri": "jaxrs/setting/bbsName",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ForumInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/forum/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "viewAllWithMyPermission",
+          "uri": "jaxrs/forum/view/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ForumInfoManagerUserAction",
+      "methods": [
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/forum/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/user/forum",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAll",
+          "uri": "jaxrs/user/forum/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ImageBase64Action",
+      "methods": [
+        {
+          "name": "convert",
+          "uri": "jaxrs/image/encode/base64",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoginAction",
+      "methods": [
+        {
+          "name": "login",
+          "uri": "jaxrs/login",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "LogoutAction",
+      "methods": [
+        {
+          "name": "login",
+          "uri": "jaxrs/logout",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "MobileIndexAction",
+      "methods": [
+        {
+          "name": "viewAllWithMyPermission",
+          "uri": "jaxrs/mobile/view/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PermissionInfoAction",
+      "methods": [
+        {
+          "name": "getSubjectOperationPermissoin",
+          "uri": "jaxrs/permission/subject/{subjectId}",
+          "method": "GET"
+        },
+        {
+          "name": "subjectPublishable",
+          "uri": "jaxrs/permission/subjectPublishable/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "getSectionOperationPermissoin",
+          "uri": "jaxrs/permission/section/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "replyPublishable",
+          "uri": "jaxrs/permission/replyPublishable/{subjectId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PermissionInfoAdminAction",
+      "methods": [
+        {
+          "name": "listPermissionBySection",
+          "uri": "jaxrs/user/permission/section/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "listPermissionByRoleCode",
+          "uri": "jaxrs/user/permission/role/{roleCode}",
+          "method": "GET"
+        },
+        {
+          "name": "listPermissionByForumId",
+          "uri": "jaxrs/user/permission/forum/{forumId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "PictureAction",
+      "methods": [
+        {
+          "name": "sectionIconUpdate",
+          "uri": "jaxrs/picture/section/{id}/icon",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "pictureEncode",
+          "uri": "jaxrs/picture/encode/base64/size/{size}",
+          "method": "POST",
+          "enctype": "formData"
+        }
+      ]
+    },
+    {
+      "name": "ReplyInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/reply/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithSubjectForPage",
+          "uri": "jaxrs/reply/filter/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "ReplyInfoManagerUserAction",
+      "methods": [
+        {
+          "name": "accept",
+          "uri": "jaxrs/user/reply/accept",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/reply/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/user/reply",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyReplyForPage",
+          "uri": "jaxrs/user/reply/my/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "RoleInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/user/role/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/role/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/user/role",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSelectedRoleByUser",
+          "uri": "jaxrs/user/role/user/selected",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSelectedRoleByUnit",
+          "uri": "jaxrs/user/role/unit/selected",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listBindObjectByRoleCode",
+          "uri": "jaxrs/user/role/rolecode/selected",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAll",
+          "uri": "jaxrs/user/role/all",
+          "method": "GET"
+        },
+        {
+          "name": "bindRoleToUser",
+          "uri": "jaxrs/user/role/bind/object",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listByForum",
+          "uri": "jaxrs/user/role/forum/{forumId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "bindUserToRole",
+          "uri": "jaxrs/user/role/bind/role",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listBySection",
+          "uri": "jaxrs/user/role/section/{sectionId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "SectionInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/section/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listSubSectionByMainSectionId",
+          "uri": "jaxrs/section/viewsub/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "viewWithForum",
+          "uri": "jaxrs/section/viewforum/{forumId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SectionInfoManagerUserAction",
+      "methods": [
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/section/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/user/section",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllSubSectionByMainSectionId",
+          "uri": "jaxrs/user/section/sub/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithForum",
+          "uri": "jaxrs/user/section/forum/{forumId}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllSection",
+          "uri": "jaxrs/user/section/all",
+          "method": "GET"
+        },
+        {
+          "name": "deleteForce",
+          "uri": "jaxrs/user/section/force/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "SubjectAttachmentAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/subjectattach/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/subjectattach/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listBySubjectId",
+          "uri": "jaxrs/subjectattach/list/subject/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "imageToBase64",
+          "uri": "jaxrs/subjectattach/{id}/binary/base64/{size}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SubjectInfoAction",
+      "methods": [
+        {
+          "name": "listRecommendedSubjectForBBSIndex",
+          "uri": "jaxrs/subject/recommended/index/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listRecommendedSubjectForPage",
+          "uri": "jaxrs/subject/recommended/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSubjectForPage",
+          "uri": "jaxrs/subject/filter/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listSubjectForBBSIndex",
+          "uri": "jaxrs/subject/index/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "searchSubjectForPage",
+          "uri": "jaxrs/subject/search/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listCreamedSubjectForPage",
+          "uri": "jaxrs/subject/creamed/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listTopSubject",
+          "uri": "jaxrs/subject/top/{sectionId}",
+          "method": "GET"
+        },
+        {
+          "name": "viewSubject",
+          "uri": "jaxrs/subject/view/{id}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SubjectInfoManagerUserAction",
+      "methods": [
+        {
+          "name": "lock",
+          "uri": "jaxrs/user/subject/lock/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "get",
+          "uri": "jaxrs/user/subject/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/subject/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/user/subject",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "unlock",
+          "uri": "jaxrs/user/subject/unlock/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "topToMainSection",
+          "uri": "jaxrs/user/subject/topToMainSection/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "topToBBS",
+          "uri": "jaxrs/user/subject/topToBBS/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "topToForum",
+          "uri": "jaxrs/user/subject/topToForum/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "topToSection",
+          "uri": "jaxrs/user/subject/topToSection/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "complete",
+          "uri": "jaxrs/user/subject/complete/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "setRecommendToBBSIndex",
+          "uri": "jaxrs/user/subject/setRecommendToBBSIndex/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listVoteRecordForPage",
+          "uri": "jaxrs/user/subject/voterecord/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "nonRecommendToBBSIndex",
+          "uri": "jaxrs/user/subject/nonRecommendToBBSIndex/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listMySubjectForPage",
+          "uri": "jaxrs/user/subject/my/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "nonTopToMainSection",
+          "uri": "jaxrs/user/subject/nonTopToMainSection/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "voteSubmit",
+          "uri": "jaxrs/user/subject/vote/submit",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "unComplete",
+          "uri": "jaxrs/user/subject/uncomplete/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "nonTopToSection",
+          "uri": "jaxrs/user/subject/nonTopToSection/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "setOriginal",
+          "uri": "jaxrs/user/subject/setOriginal/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "changeSection",
+          "uri": "jaxrs/user/subject/change/section",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "nonOriginal",
+          "uri": "jaxrs/user/subject/nonOriginal/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "nonCream",
+          "uri": "jaxrs/user/subject/nonCream/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "acceptReply",
+          "uri": "jaxrs/user/subject/acceptreply/{id}/{replyId}",
+          "method": "GET"
+        },
+        {
+          "name": "nonTopToBBS",
+          "uri": "jaxrs/user/subject/nonTopToBBS/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "setCream",
+          "uri": "jaxrs/user/subject/setCream/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "nonTopToForum",
+          "uri": "jaxrs/user/subject/nonTopToForum/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "unAcceptReply",
+          "uri": "jaxrs/user/subject/unacceptreply/{id}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "UserInfoAction",
+      "methods": [
+        {
+          "name": "filterUserInfo",
+          "uri": "jaxrs/userinfo",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    }
+  ]
+}
