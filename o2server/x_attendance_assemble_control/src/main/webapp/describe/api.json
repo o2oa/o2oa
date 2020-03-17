@@ -1,0 +1,743 @@
+{
+  "jaxrs": [
+    {
+      "name": "AttendanceAdminAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceadmin/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceadmin/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendanceadmin",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceAdmin",
+          "uri": "jaxrs/attendanceadmin/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceAppealInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceappealInfo/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceappealInfo/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "check",
+          "uri": "jaxrs/attendanceappealInfo/check ",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/attendanceappealInfo/appeal/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "audit",
+          "uri": "jaxrs/attendanceappealInfo/audit",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "archive",
+          "uri": "jaxrs/attendanceappealInfo/archive/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/attendanceappealInfo/filter/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceDetailAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendancedetail/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendancedetail/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "recive",
+          "uri": "jaxrs/attendancedetail/recive",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "checkDetailWithPersonByCycle",
+          "uri": "jaxrs/attendancedetail/checkDetailWithPersonByCycle/{cycleYear}/{cycleMonth}",
+          "method": "GET"
+        },
+        {
+          "name": "listUnitAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/filter/list/unit",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "analyseAttendanceDetails",
+          "uri": "jaxrs/attendancedetail/analyse/{startDate}/{endDate}",
+          "method": "GET"
+        },
+        {
+          "name": "analyseAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/analyse/id/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "archiveAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/archive/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listTopUnitAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/filter/list/topUnit",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listUserAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/filter/list/user",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAttendanceDetailByBatchName",
+          "uri": "jaxrs/attendancedetail/list/{file_id}",
+          "method": "GET"
+        },
+        {
+          "name": "listAttendanceDetail",
+          "uri": "jaxrs/attendancedetail/filter/list",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendancedetail/filter/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/attendancedetail/filter/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceDetailFileImportAction",
+      "methods": [
+        {
+          "name": "getStatus",
+          "uri": "jaxrs/fileimport/getStatus/{file_id}",
+          "method": "GET"
+        },
+        {
+          "name": "getStatusDetail",
+          "uri": "jaxrs/fileimport/getStatus/{file_id}/detail",
+          "method": "GET"
+        },
+        {
+          "name": "getStatusAll",
+          "uri": "jaxrs/fileimport/getStatus/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceDetailMobileAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendancedetail/mobile/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendancedetail/mobile/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "reciveForMobile",
+          "uri": "jaxrs/attendancedetail/mobile/recive",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listDataForMobile",
+          "uri": "jaxrs/attendancedetail/mobile/filter/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceEmployeeConfigAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceemployeeconfig/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceemployeeconfig/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendanceemployeeconfig",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceEmployeeConfig",
+          "uri": "jaxrs/attendanceemployeeconfig/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceImportFileInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceimportfileinfo/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceimportfileinfo/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceImportFileInfo",
+          "uri": "jaxrs/attendanceimportfileinfo/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceScheduleSettingAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceschedulesetting/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceschedulesetting/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendanceschedulesetting",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceScheduleSetting",
+          "uri": "jaxrs/attendanceschedulesetting/list/all",
+          "method": "GET"
+        },
+        {
+          "name": "listAttendanceScheduleSettingByUnit",
+          "uri": "jaxrs/attendanceschedulesetting/list/unit/{name}",
+          "method": "GET"
+        },
+        {
+          "name": "listAttendanceScheduleSettingByTopUnit",
+          "uri": "jaxrs/attendanceschedulesetting/list/topUnit/{name}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceSelfHolidayAction",
+      "methods": [
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceselfholiday/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendanceselfholiday",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/attendanceselfholiday/filter/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/attendanceselfholiday/filter/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceSelfHoliday",
+          "uri": "jaxrs/attendanceselfholiday/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceSelfHolidaySimpleAction",
+      "methods": [
+        {
+          "name": "post",
+          "uri": "jaxrs/selfholidaysimple",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteByWfDocId",
+          "uri": "jaxrs/selfholidaysimple/docId/{docId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceSettingAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendancesetting/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendancesetting/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/attendancesetting",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getWithCode",
+          "uri": "jaxrs/attendancesetting/code/{code}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllAttendanceSetting",
+          "uri": "jaxrs/attendancesetting/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceStatisticAction",
+      "methods": [
+        {
+          "name": "doStatistic",
+          "uri": "jaxrs/statistic/do",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceStatisticRequireLogAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendancestatisticrequirelog/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendancestatisticrequirelog/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendancestatisticrequirelog",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceStatisticRequireLog",
+          "uri": "jaxrs/attendancestatisticrequirelog/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceStatisticShowAction",
+      "methods": [
+        {
+          "name": "showStmForPerson",
+          "uri": "jaxrs/statisticshow/person/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStmForUnit",
+          "uri": "jaxrs/statisticshow/unit/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "sumUnitStatistic",
+          "uri": "jaxrs/statisticshow/unit/sum/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStdForUnit",
+          "uri": "jaxrs/statisticshow/unit/day/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStdForTopUnit",
+          "uri": "jaxrs/statisticshow/topUnit/day/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "listStmForPersonNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/personMonth/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStmForTopUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStdForUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitDay/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStdForUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitDay/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStdForTopUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitDay/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStdForTopUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitDay/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "showStmForUnitSubnested",
+          "uri": "jaxrs/statisticshow/unit/subnested/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStdForUnitInTopUnitWithDate",
+          "uri": "jaxrs/statisticshow/unit/day/topUnit/{name}/{date}",
+          "method": "GET"
+        },
+        {
+          "name": "listStmForPersonPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/personMonth/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "showStForPersonInUnit",
+          "uri": "jaxrs/statisticshow/persons/unit/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStForPersonInUnitSubNested",
+          "uri": "jaxrs/statisticshow/persons/unit/subnested/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStmForTopUnit",
+          "uri": "jaxrs/statisticshow/topUnit/{name}/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "showStdForUnitWithDate",
+          "uri": "jaxrs/statisticshow/unit/day/{name}/{date}",
+          "method": "GET"
+        },
+        {
+          "name": "listStmForUnitPrevWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStmForUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/unitMonth/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStmForTopUnitNextWithFilter",
+          "uri": "jaxrs/statisticshow/filter/topUnitMonth/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "showStForUnitInTopUnit",
+          "uri": "jaxrs/statisticshow/unit/topUnit/{name}/{year}/{month}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceStatisticalCycleAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendancestatisticalcycle/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendancestatisticalcycle/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendancestatisticalcycle",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "cycleDetail",
+          "uri": "jaxrs/attendancestatisticalcycle/cycleDetail/{year}/{month}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllAttendanceStatisticalCycle",
+          "uri": "jaxrs/attendancestatisticalcycle/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceWorkDayConfigAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attendanceworkdayconfig/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attendanceworkdayconfig/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/attendanceworkdayconfig",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithFilter",
+          "uri": "jaxrs/attendanceworkdayconfig/filter",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceWorkDayConfig",
+          "uri": "jaxrs/attendanceworkdayconfig/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "AttendanceWorkPlaceAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/workplace/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/workplace/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "post",
+          "uri": "jaxrs/workplace",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllAttendanceWorkPlace",
+          "uri": "jaxrs/workplace/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FileImportExportAction",
+      "methods": [
+        {
+          "name": "upload",
+          "uri": "jaxrs/file/upload",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "fileDownloadStream",
+          "uri": "jaxrs/file/download/{id}/stream/{stream}",
+          "method": "GET"
+        },
+        {
+          "name": "selfHolidayExportStream",
+          "uri": "jaxrs/file/export/selfholiday/{startdate}/{enddate}/stream/{stream}",
+          "method": "GET"
+        },
+        {
+          "name": "abnormalDetailsExportStream",
+          "uri": "jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/{stream}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

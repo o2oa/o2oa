@@ -1,0 +1,569 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "IdAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/id/{count}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "InputAction",
+      "methods": [
+        {
+          "name": "compare",
+          "uri": "jaxrs/input/compare",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/input/create",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "cover",
+          "uri": "jaxrs/input/cover",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "prepareCreate",
+          "uri": "jaxrs/input/prepare/create",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "prepareCover",
+          "uri": "jaxrs/input/prepare/cover",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "NeuralAction",
+      "methods": [
+        {
+          "name": "generate",
+          "uri": "jaxrs/neural/generate/model/{modelFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "getModel",
+          "uri": "jaxrs/neural/model/{modelFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "learn",
+          "uri": "jaxrs/neural/learn/model/{modelFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "stopLearning",
+          "uri": "jaxrs/neural/stop/learn/model/{modelFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "listModel",
+          "uri": "jaxrs/neural/list/model",
+          "method": "GET"
+        },
+        {
+          "name": "updateModel",
+          "uri": "jaxrs/neural/model/{modelFlag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "deleteModel",
+          "uri": "jaxrs/neural/model/{modelFlag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "resetStatus",
+          "uri": "jaxrs/neural/model/{modelFlag}/reset/status",
+          "method": "GET"
+        },
+        {
+          "name": "stopGenerating",
+          "uri": "jaxrs/neural/stop/generating/model/{modelFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "createModel",
+          "uri": "jaxrs/neural/model",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "OutputAction",
+      "methods": [
+        {
+          "name": "list",
+          "uri": "jaxrs/output/list",
+          "method": "GET"
+        },
+        {
+          "name": "select",
+          "uri": "jaxrs/output/{queryFlag}/select",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "selectOutput",
+          "uri": "jaxrs/output/{flag}/select/file",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "QueryAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/query/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/query/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/query",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "setIcon",
+          "uri": "jaxrs/query/{flag}/icon",
+          "method": "PUT",
+          "enctype": "formData"
+        },
+        {
+          "name": "edit",
+          "uri": "jaxrs/query/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAll",
+          "uri": "jaxrs/query/list/all",
+          "method": "GET"
+        },
+        {
+          "name": "listQueryCategory",
+          "uri": "jaxrs/query/querycategory/list",
+          "method": "GET"
+        },
+        {
+          "name": "listWithQueryCategory",
+          "uri": "jaxrs/query/list/querycategory/{queryCategory}",
+          "method": "GET"
+        },
+        {
+          "name": "listSummary",
+          "uri": "jaxrs/query/list/summary",
+          "method": "GET"
+        },
+        {
+          "name": "listSummaryWithApplicationCategory",
+          "uri": "jaxrs/query/list/summary/querycategory/{queryCategory}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "RevealAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/reveal/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/reveal/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/reveal/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/reveal",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/reveal/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/reveal/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/reveal/list/query/{flag}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "StatAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/stat/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/stat/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/stat/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/stat",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/stat/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/stat/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "simulate",
+          "uri": "jaxrs/stat/{id}/simulate",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/stat/list/query/{flag}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "StatementAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/statement/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/statement/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/statement/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "execute",
+          "uri": "jaxrs/statement/{flag}/execute/page/{page}/size/{size}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/statement",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/statement/list/query/{flag}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TableAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/table/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/table/{flag}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/table/{flag}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "execute",
+          "uri": "jaxrs/table/{flag}/execute",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/table",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listRowSelectWhere",
+          "uri": "jaxrs/table/list/{tableFlag}/row/select/where/{where}",
+          "method": "GET"
+        },
+        {
+          "name": "buildAll",
+          "uri": "jaxrs/table/build/all",
+          "method": "GET"
+        },
+        {
+          "name": "rowGet",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "statusBuild",
+          "uri": "jaxrs/table/{flag}/status/build",
+          "method": "GET"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/table/list/query/{flag}",
+          "method": "GET"
+        },
+        {
+          "name": "statusDraft",
+          "uri": "jaxrs/table/{flag}/status/draft",
+          "method": "GET"
+        },
+        {
+          "name": "rowInsert",
+          "uri": "jaxrs/table/{tableFlag}/row",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listRowNext",
+          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "rowCountWhere",
+          "uri": "jaxrs/table/{tableFlag}/row/count/where/{where}",
+          "method": "GET"
+        },
+        {
+          "name": "listRowPrev",
+          "uri": "jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "rowDeleteAll",
+          "uri": "jaxrs/table/{tableFlag}/row/delete/all",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "rowDelete",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "rowSave",
+          "uri": "jaxrs/table/{tableFlag}/row/save",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "exportRow",
+          "uri": "jaxrs/table/export/{tableFlag}/count/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "rowUpdate",
+          "uri": "jaxrs/table/{tableFlag}/row/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "ViewAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/view/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "update",
+          "uri": "jaxrs/view/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/view/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/view",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "bundle",
+          "uri": "jaxrs/view/{id}/bundle",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/view/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/view/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "simulate",
+          "uri": "jaxrs/view/{id}/simulate",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithQuery",
+          "uri": "jaxrs/view/list/query/{flag}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

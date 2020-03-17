@@ -1,12 +1,13 @@
 package com.x.base.core.project.tools;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -20,6 +21,8 @@ import com.x.base.core.project.exception.ExceptionUnsupportedMediaType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.WrapString;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 public class DocumentTools {
 

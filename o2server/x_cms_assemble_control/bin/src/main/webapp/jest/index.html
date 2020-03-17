@@ -68,8 +68,9 @@
 </style>
 	
 <script>
+    var describe;
     $.getScript('./describe.js?rd=' + Math.random()).then(function() {
-		var describe = new Describe();
+		describe = new Describe();
 		describe.load();
     }).catch( function() {
 		alert('get describe error.'); 
@@ -77,6 +78,19 @@
 	
 	$(document).ready(function(){
         var clipboard = new Clipboard("#btn_copy");
+		$('#butSearch').click(function() {
+		var  strKey = $('#inpSearch').val();
+		  if(strKey == ""){
+		  window.location.reload();
+		  }else{
+		   describe.search(strKey);
+		  }
+		})
+		$('#inpSearch').bind('keyup', function(event) {
+　　     if (event.keyCode == "13") {
+　　　　     $('#butSearch').click();
+　　       }
+       });
 	});	
 </script>
 </head>
@@ -85,6 +99,10 @@
 	<table style="width: 1800px; margin: 0 auto">
 		<tr>
 			<td style="width: 350px;" valign="top">
+				<fieldset>
+					<legend>search</legend>
+					<div><input id="inpSearch" style="width:70%;height: 23px; overflow: auto;"/>&nbsp; <button id="butSearch">search</button></div>
+				</fieldset>
 				<fieldset>
 					<legend>API Menu</legend>
 					<div id="menu" style="height: 850px; overflow: auto;">&nbsp;</div>
@@ -99,7 +117,14 @@
 				
 				<div id="content"
 						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word;border-image: linear-gradient(#ffffff, #e7e7e7 15%, #e7e7e7 100%, #ffffff);box-shadow: inset 15px 0 5px -16px #e7e7e7;background-image: -webkit-radial-gradient(right, #f2f2f2, #ffffff 100%);">&nbsp;</div>
-						
+				<fieldset>
+					<legend>
+						Result&nbsp;<a id="btn_copy" href="javascript:" data-clipboard-target="#result">copy</a>&nbsp;
+					</legend>
+					<div id="result"
+						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; width: 1400px">&nbsp;</div>
+				</fieldset>
+				
 			    <fieldset>
 					<legend>
 						Sample&nbsp;<a  id="btn_copy"  href="javascript:" data-clipboard-target="#Sample">copy</a>&nbsp;
@@ -109,13 +134,7 @@
 						</div>
 				</fieldset>		
 						
-				<fieldset>
-					<legend>
-						Result&nbsp;<a id="btn_copy" href="javascript:" data-clipboard-target="#result">copy</a>&nbsp;
-					</legend>
-					<div id="result"
-						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; width: 1400px">&nbsp;</div>
-				</fieldset>
+
 			</td>
 		</tr>
 	</table>

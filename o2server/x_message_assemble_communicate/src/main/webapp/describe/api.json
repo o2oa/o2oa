@@ -1,0 +1,338 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ConnectorAction",
+      "methods": [
+        {
+          "name": "create",
+          "uri": "jaxrs/connector",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "ConsumeAction",
+      "methods": [
+        {
+          "name": "update",
+          "uri": "jaxrs/consume/type/{type}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "list",
+          "uri": "jaxrs/consume/list/{consume}/count/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithPerson",
+          "uri": "jaxrs/consume/list/{consume}/person/{person}/count/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "updateSingle",
+          "uri": "jaxrs/consume/{id}/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPerson",
+          "uri": "jaxrs/consume/list/{consume}/currentperson/count/{count}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ImAction",
+      "methods": [
+        {
+          "name": "create",
+          "uri": "jaxrs/im/conversation",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "conversationRead",
+          "uri": "jaxrs/im/conversation/{id}/read",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "conversation",
+          "uri": "jaxrs/im/conversation/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "msgCreate",
+          "uri": "jaxrs/im/msg",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "msgListByPaging",
+          "uri": "jaxrs/im/msg/list/{page}/size/{size}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "conversationSetTop",
+          "uri": "jaxrs/im/conversation/{id}/top/set",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "conversationCancelTop",
+          "uri": "jaxrs/im/conversation/{id}/top/cancel",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "myConversationList",
+          "uri": "jaxrs/im/conversation/list/my",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "InstantAction",
+      "methods": [
+        {
+          "name": "listNext",
+          "uri": "jaxrs/instant/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/instant/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPersonConsumedAsc",
+          "uri": "jaxrs/instant/list/currentperson/consumed/count/{count}/asc",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPersonAsc",
+          "uri": "jaxrs/instant/list/currentperson/count/{count}/asc",
+          "method": "GET"
+        },
+        {
+          "name": "currentPersonConsumedAll",
+          "uri": "jaxrs/instant/currentperson/consumed/all",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPersonDesc",
+          "uri": "jaxrs/instant/list/currentperson/count/{count}/desc",
+          "method": "GET"
+        },
+        {
+          "name": "currentPersonConsumed",
+          "uri": "jaxrs/instant/currentperson/consumed",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithCurrentNotConsumedPersonDesc",
+          "uri": "jaxrs/instant/list/currentperson/not/consumed/count/{count}/desc",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentConsumedPersonDesc",
+          "uri": "jaxrs/instant/list/currentperson/consumed/count/{count}/desc",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPersonNotConsumedAsc",
+          "uri": "jaxrs/instant/list/currentperson/not/consumed/count/{count}/asc",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "MassAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/mass/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/mass/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/mass",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/mass/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/mass/list/{id}/prev/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "enableType",
+          "uri": "jaxrs/mass/enable/type",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "MessageAction",
+      "methods": [
+        {
+          "name": "customCreate",
+          "uri": "jaxrs/message/custom/create",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "OrgAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/org/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/org/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/org/create",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "query",
+          "uri": "jaxrs/org/query",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "consumed",
+          "uri": "jaxrs/org/consumed",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNext",
+          "uri": "jaxrs/org/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/org/list/{id}/prev/{count}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "WsAction",
+      "methods": [
+        {
+          "name": "create",
+          "uri": "jaxrs/ws",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    }
+  ]
+}
