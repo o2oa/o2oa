@@ -16,7 +16,6 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.Tika;
-import org.junit.Test;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
@@ -167,11 +166,6 @@ public class ExtractTextTools {
 			}
 		}
 		return tika;
-	}
-
-	@Test
-	public void test1() throws Exception {
-		System.out.println(word(FileUtils.readFileToByteArray(new File("d:/1.html"))));
 	}
 
 }
