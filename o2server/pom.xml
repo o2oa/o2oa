@@ -888,7 +888,6 @@
 	</dependencyManagement>
 	<repositories>
 		<repository>
-		<!-- o2oa mvn -->
 			<id>nexus-o2oa</id>
 			<name>nexus-o2oa</name>
 			<url>http://maven.o2oa.net/repository/maven-public/</url>

@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;

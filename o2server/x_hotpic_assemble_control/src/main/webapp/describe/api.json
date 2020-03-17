@@ -1,0 +1,152 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "HotPictureInfoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/user/hotpic/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/hotpic/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/user/hotpic/{application}/{infoId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/user/hotpic",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "changeTitle",
+          "uri": "jaxrs/user/hotpic/changeTitle",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "existsCheck",
+          "uri": "jaxrs/user/hotpic/exists/check",
+          "method": "GET"
+        },
+        {
+          "name": "listForPage",
+          "uri": "jaxrs/user/hotpic/filter/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listByApplicationAndInfoId",
+          "uri": "jaxrs/user/hotpic/{application}/{infoId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "HotPictureInfoCipherAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/cipher/hotpic/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listForPage",
+          "uri": "jaxrs/cipher/hotpic/filter/list/page/{page}/count/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

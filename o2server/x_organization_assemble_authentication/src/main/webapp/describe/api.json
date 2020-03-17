@@ -1,0 +1,313 @@
+{
+  "jaxrs": [
+    {
+      "name": "AuthenticationAction",
+      "methods": [
+        {
+          "name": "mode",
+          "uri": "jaxrs/authentication/mode",
+          "method": "GET"
+        },
+        {
+          "name": "bind",
+          "uri": "jaxrs/authentication/bind",
+          "method": "GET"
+        },
+        {
+          "name": "code",
+          "uri": "jaxrs/authentication/code/credential/{credential}",
+          "method": "GET"
+        },
+        {
+          "name": "who",
+          "uri": "jaxrs/authentication",
+          "method": "GET"
+        },
+        {
+          "name": "logout",
+          "uri": "jaxrs/authentication",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "login",
+          "uri": "jaxrs/authentication",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "oauthLogin",
+          "uri": "jaxrs/authentication/oauth/login/name/{name}/code/{code}/redirecturi/{redirectUri}",
+          "method": "GET"
+        },
+        {
+          "name": "oauthBind",
+          "uri": "jaxrs/authentication/oauth/bind/name/{name}/code/{code}/redirecturi/{redirectUri}",
+          "method": "GET"
+        },
+        {
+          "name": "switchUser",
+          "uri": "jaxrs/authentication/switchuser",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "captchaLogin",
+          "uri": "jaxrs/authentication/captcha",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "bindMeta",
+          "uri": "jaxrs/authentication/bind/meta/{meta}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "captcha",
+          "uri": "jaxrs/authentication/captcha/width/{width}/height/{height}",
+          "method": "GET"
+        },
+        {
+          "name": "checkCredential",
+          "uri": "jaxrs/authentication/check/credential/{credential}",
+          "method": "GET"
+        },
+        {
+          "name": "codeLogin",
+          "uri": "jaxrs/authentication/code",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "oauth",
+          "uri": "jaxrs/authentication/oauth/name/{name}",
+          "method": "GET"
+        },
+        {
+          "name": "bindLogin",
+          "uri": "jaxrs/authentication/bind/meta/{meta}",
+          "method": "GET"
+        },
+        {
+          "name": "oauthLoginQywx",
+          "uri": "jaxrs/authentication/oauth/login/qywx/code/{code}",
+          "method": "GET"
+        },
+        {
+          "name": "oauthList",
+          "uri": "jaxrs/authentication/oauth/list",
+          "method": "GET"
+        },
+        {
+          "name": "qiyeweixinOauthConfig",
+          "uri": "jaxrs/authentication/oauth/qywx/config",
+          "method": "GET"
+        },
+        {
+          "name": "dingdingOauthConfig",
+          "uri": "jaxrs/authentication/oauth/dingding/config",
+          "method": "GET"
+        },
+        {
+          "name": "oauthLoginDingding",
+          "uri": "jaxrs/authentication/oauth/login/dingding/code/{code}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "BindAction",
+      "methods": [
+        {
+          "name": "listNext",
+          "uri": "jaxrs/bind/list",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "DingdingAction",
+      "methods": [
+        {
+          "name": "info",
+          "uri": "jaxrs/dingding/info",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getLogin",
+          "uri": "jaxrs/dingding/code/{code}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "OauthAction",
+      "methods": [
+        {
+          "name": "getInfo",
+          "uri": "jaxrs/oauth/info",
+          "method": "GET"
+        },
+        {
+          "name": "auth",
+          "uri": "jaxrs/oauth/auth",
+          "method": "GET"
+        },
+        {
+          "name": "getToken",
+          "uri": "jaxrs/oauth/token",
+          "method": "GET"
+        },
+        {
+          "name": "postInfo",
+          "uri": "jaxrs/oauth/info",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "postToken",
+          "uri": "jaxrs/oauth/token",
+          "method": "POST",
+          "enctype": "formData"
+        }
+      ]
+    },
+    {
+      "name": "QiyeweixinAction",
+      "methods": [
+        {
+          "name": "getLogin",
+          "uri": "jaxrs/qiyeweixin/code/{code}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SsoAction",
+      "methods": [
+        {
+          "name": "postEncrypt",
+          "uri": "jaxrs/sso/encrypt",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "postLogin",
+          "uri": "jaxrs/sso",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getEncrypt",
+          "uri": "jaxrs/sso/encrypt/client/{client}/key/{key}/credential/{credential}",
+          "method": "GET"
+        },
+        {
+          "name": "getLogin",
+          "uri": "jaxrs/sso/client/{client}/token/{token}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ZhengwuDingdingAction",
+      "methods": [
+        {
+          "name": "info",
+          "uri": "jaxrs/zhengwudingding/info",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getLogin",
+          "uri": "jaxrs/zhengwudingding/code/{code}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}
