@@ -15,7 +15,6 @@ import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.StorageProtocol;
@@ -31,7 +30,6 @@ public class CreateSample {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateSample.class);
 
-	@Test
 	public void test() throws Exception {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(AppStyle.class);
