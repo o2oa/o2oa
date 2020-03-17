@@ -1,0 +1,6270 @@
+{
+  "jaxrs": [
+    {
+      "name": "ApplicationDictAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ApplicationDictAction",
+      "description": "数据字典操作",
+      "methods": [
+        {
+          "name": "createDataPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath0",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath1",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath2",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath3",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath4",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath5",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath6",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createDataPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionCreateDataPath7",
+          "description": "根据字典ID和路径添加Application下的新的局部数据.",
+          "type": "POST",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath0",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath1",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath2",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath3",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath4",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath5",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath6",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDataPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionDeleteDataPath7",
+          "description": "根据字典ID和路径删除Application下的数据字典局部数据.",
+          "type": "DELETE",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdate",
+          "description": "更新数据字典以及数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "data",
+              "type": "JsonElement",
+              "isCollection": false,
+              "description": "写入数据",
+              "isBaseType": false
+            },
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成.",
+              "isBaseType": true
+            },
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用.",
+              "isBaseType": true
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "字典名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "alias",
+              "type": "String",
+              "isCollection": false,
+              "description": "别名.",
+              "isBaseType": true
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明.",
+              "isBaseType": true
+            },
+            {
+              "name": "distributeFactor",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "分布式存储标识位.",
+              "isBaseType": true
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中.",
+              "isBaseType": true
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中.",
+              "isBaseType": true
+            },
+            {
+              "name": "sequence",
+              "type": "String",
+              "isCollection": false,
+              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath0",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath1",
+          "description": "根据字典和路径更新Application下的数据字典局部数据..",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath2",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath3",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath4",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath5",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath6",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateDataPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.applicationdict.ActionUpdateDataPath7",
+          "description": "根据字典和路径更新Application下的数据字典局部数据.",
+          "type": "PUT",
+          "path": "jaxrs/applicationdict/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "数据字典标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AttachmentAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.attachment.AttachmentAction",
+      "description": "附件操作",
+      "methods": [
+        {
+          "name": "copyToWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionCopyToWork",
+          "description": "由指定的工作拷贝附件.",
+          "type": "POST",
+          "path": "jaxrs/attachment/copy/work/{workId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "workId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "attachmentList",
+              "type": "List\u003cWiAttachment\u003e",
+              "isCollection": true,
+              "description": "附件对象",
+              "isBaseType": false
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionDelete",
+          "description": "删除指定附件.",
+          "type": "DELETE",
+          "path": "jaxrs/attachment/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "附件标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionDeleteWithWork",
+          "description": "删除指定work下的附件.",
+          "type": "DELETE",
+          "path": "jaxrs/attachment/{id}/work/{workId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "附件标识"
+            },
+            {
+              "name": "workId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkCompleted",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionDeleteWithWorkCompleted",
+          "description": "删除指定work下的附件.",
+          "type": "DELETE",
+          "path": "jaxrs/attachment/{id}/workcompleted/{workCompletedId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "附件标识"
+            },
+            {
+              "name": "workCompletedId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "edit",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionEdit",
+          "description": "更新附件信息.",
+          "type": "PUT",
+          "path": "jaxrs/attachment/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "附件标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "readIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以访问的身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "readUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以访问的组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "editIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以修改的用户.",
+              "isBaseType": true
+            },
+            {
+              "name": "editUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以修改的组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "controllerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以管理的用户.",
+              "isBaseType": true
+            },
+            {
+              "name": "controllerUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "可以管理的组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "divisionList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "分组.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "exitText",
+          "className": "com.x.processplatform.service.processing.jaxrs.attachment.ActionEditText",
+          "description": "更新附件文本.",
+          "type": "PUT",
+          "path": "jaxrs/attachment/edit/{id}/text",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "附件标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "text",
+              "type": "String",
+              "isCollection": false,
+              "description": "文本.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CacheAction",
+      "className": "com.x.base.core.project.jaxrs.cache.CacheAction",
+      "description": "缓存操作",
+      "methods": [
+        {
+          "name": "configFlush",
+          "className": "com.x.base.core.project.jaxrs.cache.ActionConfigFlush",
+          "description": "接收config flush 信号.",
+          "type": "GET",
+          "path": "jaxrs/cache/config/flush",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "receive",
+          "className": "com.x.base.core.project.jaxrs.cache.ActionReceive",
+          "description": "接收Cache刷新信息.",
+          "type": "PUT",
+          "path": "jaxrs/cache",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "nodeName",
+              "type": "String",
+              "isCollection": false,
+              "description": "节点名",
+              "isBaseType": true
+            },
+            {
+              "name": "className",
+              "type": "String",
+              "isCollection": false,
+              "description": "类名",
+              "isBaseType": true
+            },
+            {
+              "name": "keys",
+              "type": "List\u003cObject\u003e",
+              "isCollection": true,
+              "description": "关键字",
+              "isBaseType": false
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DataAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.data.DataAction",
+      "description": "数据操作",
+      "methods": [
+        {
+          "name": "createWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWork",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath0",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath1",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath2",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath3",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath4",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath5",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath6",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionCreateWithWorkPath7",
+          "description": "对指定的work添加局部data数据.",
+          "type": "POST",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWork",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath0",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath1",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath2",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath3",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath4",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath5",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath6",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteWithWorkPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionDeleteWithWorkPath7",
+          "description": "对指定的work删除局部data数据.",
+          "type": "DELETE",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWork",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompleted",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompleted",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath0",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath1",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath2",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath3",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath4",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath5",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath6",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPath7",
+          "description": "更新指定WorkCompleted的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkCompletedPrimitivePath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkCompletedPrimitivePath0",
+          "description": "更新指定WorkCompleted的Data数据Path0基本字段特殊处理.",
+          "type": "PUT",
+          "path": "jaxrs/data/workcompletedprimitive/{id}/{path0}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": true,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "完成工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath0",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath0",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath1",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath1",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath2",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath2",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath3",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath3",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath4",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath4",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath5",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath5",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath6",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath6",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateWithWorkPath7",
+          "className": "com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWorkPath7",
+          "description": "更新指定Work的Data数据.",
+          "type": "PUT",
+          "path": "jaxrs/data/work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "path0",
+              "type": "String",
+              "description": "0级路径"
+            },
+            {
+              "name": "path1",
+              "type": "String",
+              "description": "1级路径"
+            },
+            {
+              "name": "path2",
+              "type": "String",
+              "description": "2级路径"
+            },
+            {
+              "name": "path3",
+              "type": "String",
+              "description": "3级路径"
+            },
+            {
+              "name": "path4",
+              "type": "String",
+              "description": "4级路径"
+            },
+            {
+              "name": "path5",
+              "type": "String",
+              "description": "5级路径"
+            },
+            {
+              "name": "path6",
+              "type": "String",
+              "description": "6级路径"
+            },
+            {
+              "name": "path7",
+              "type": "String",
+              "description": "7级路径"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DocumentVersionAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.documentversion.DocumentVersionAction",
+      "description": "版式文件版本",
+      "methods": [
+        {
+          "name": "processing",
+          "className": "com.x.processplatform.service.processing.jaxrs.documentversion.ActionCreate",
+          "description": "创建版式文件版本.",
+          "type": "POST",
+          "path": "jaxrs/documentversion/work/{work}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "work",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "job",
+              "type": "String",
+              "isCollection": false,
+              "description": "任务.",
+              "isBaseType": true
+            },
+            {
+              "name": "person",
+              "type": "String",
+              "isCollection": false,
+              "description": "当前处理人",
+              "isBaseType": true
+            },
+            {
+              "name": "category",
+              "type": "String",
+              "isCollection": false,
+              "description": "类别,一份work中允许有多个版式文件.",
+              "isBaseType": true
+            },
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用.",
+              "isBaseType": true
+            },
+            {
+              "name": "process",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程.",
+              "isBaseType": true
+            },
+            {
+              "name": "data",
+              "type": "String",
+              "isCollection": false,
+              "description": "版式文件数据.",
+              "isBaseType": true
+            },
+            {
+              "name": "activity",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动ID.",
+              "isBaseType": true
+            },
+            {
+              "name": "activityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "activityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动别名.",
+              "isBaseType": true
+            },
+            {
+              "name": "activityDescription",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动说明.",
+              "isBaseType": true
+            },
+            {
+              "name": "activityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "activityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动Token.",
+              "isBaseType": true
+            },
+            {
+              "name": "completed",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "整个job是否已经完成.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "className": "com.x.base.core.project.jaxrs.echo.EchoAction",
+      "description": "响应",
+      "methods": [
+        {
+          "name": "get",
+          "className": "com.x.base.core.project.jaxrs.echo.ActionGet",
+          "description": "获取应答.",
+          "type": "GET",
+          "path": "jaxrs/echo",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "servletContextName",
+              "type": "String",
+              "isCollection": false,
+              "description": "上下文根"
+            },
+            {
+              "name": "serverTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "服务器时间"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "className": "com.x.base.core.project.jaxrs.fireschedule.FireScheduleAction",
+      "description": "触发任务",
+      "methods": [
+        {
+          "name": "execute",
+          "className": "com.x.base.core.project.jaxrs.fireschedule.ActionExecute",
+          "description": "接受x_program_center发送过来的运行schedule.",
+          "type": "GET",
+          "path": "jaxrs/fireschedule/classname/{className}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "className",
+              "type": "String",
+              "description": "运行类"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "JobAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.job.JobAction",
+      "description": "工作",
+      "methods": [
+        {
+          "name": "deleteWithJob",
+          "className": "com.x.processplatform.service.processing.jaxrs.job.ActionDelete",
+          "description": "删除Job所有相关联的工作.",
+          "type": "DELETE",
+          "path": "jaxrs/job/{job}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "job",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "className": "com.x.base.core.project.jaxrs.logger.LoggerAction",
+      "description": "日志操作",
+      "methods": [
+        {
+          "name": "debug",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionDebug",
+          "description": "设置日志级别为DEBUG.",
+          "type": "GET",
+          "path": "jaxrs/logger/debug",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionGet",
+          "description": "获取当前日志级别.",
+          "type": "GET",
+          "path": "jaxrs/logger",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        },
+        {
+          "name": "info",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionInfo",
+          "description": "设置日志级别为INFO",
+          "type": "GET",
+          "path": "jaxrs/logger/info",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "trace",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionTrace",
+          "description": "设置日志级别为TRACE.",
+          "type": "GET",
+          "path": "jaxrs/logger/trace",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "warn",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionWarn",
+          "description": "设置日志级别为WARN",
+          "type": "GET",
+          "path": "jaxrs/logger/warn",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ReadAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.read.ReadAction",
+      "description": "待阅操作",
+      "methods": [
+        {
+          "name": "createWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.read.ActionCreateWithWork",
+          "description": "对工作添加待阅,选择是否重发通知",
+          "type": "POST",
+          "path": "jaxrs/read/work/{workId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "workId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "identityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "待阅标识",
+              "isBaseType": true
+            },
+            {
+              "name": "notify",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "发送待阅通知",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkCompleted",
+          "className": "com.x.processplatform.service.processing.jaxrs.read.ActionCreateWithWorkCompleted",
+          "description": "根据工作创建待阅.",
+          "type": "POST",
+          "path": "jaxrs/read/workcompleted/{workCompletedId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "workCompletedId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "identityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "待阅标识",
+              "isBaseType": true
+            },
+            {
+              "name": "notify",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "发送待阅通知",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.read.ActionDelete",
+          "description": "删除待阅.",
+          "type": "DELETE",
+          "path": "jaxrs/read/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "待阅标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "processing",
+          "className": "com.x.processplatform.service.processing.jaxrs.read.ActionProcessing",
+          "description": "处理待阅，生成已阅.",
+          "type": "PUT",
+          "path": "jaxrs/read/{id}/processing",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": true,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "待阅标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RecordAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.record.RecordAction",
+      "description": "记录",
+      "methods": [
+        {
+          "name": "createWithJob",
+          "className": "com.x.processplatform.service.processing.jaxrs.record.ActionCreateWithJob",
+          "description": "根据job标识创建记录.",
+          "type": "POST",
+          "path": "jaxrs/record/job/{job}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "job",
+              "type": "String",
+              "description": "工作"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用.",
+              "isBaseType": true
+            },
+            {
+              "name": "process",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程ID.",
+              "isBaseType": true
+            },
+            {
+              "name": "job",
+              "type": "String",
+              "isCollection": false,
+              "description": "任务标识",
+              "isBaseType": true
+            },
+            {
+              "name": "work",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作",
+              "isBaseType": true
+            },
+            {
+              "name": "workCompleted",
+              "type": "String",
+              "isCollection": false,
+              "description": "已完成工作",
+              "isBaseType": true
+            },
+            {
+              "name": "completed",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "工作是否已经完成.",
+              "isBaseType": true
+            },
+            {
+              "name": "display",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否显示.",
+              "isBaseType": true
+            },
+            {
+              "name": "order",
+              "type": "Long",
+              "isCollection": false,
+              "description": "显示排序.",
+              "isBaseType": true
+            },
+            {
+              "name": "properties",
+              "type": "RecordProperties",
+              "isCollection": false,
+              "description": "属性对象存储字段.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动Id",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "开始活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动名称",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动别名",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始节点Token",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Id，可能为空，如果是未Connected的流程记录",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "结束活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "arrivedActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Token.",
+              "isBaseType": true
+            },
+            {
+              "name": "recordTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "记录时间.",
+              "isBaseType": true
+            },
+            {
+              "name": "person",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员",
+              "isBaseType": true
+            },
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录身份",
+              "isBaseType": true
+            },
+            {
+              "name": "unit",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员所在组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.record.ActionDelete",
+          "description": "删除记录.",
+          "type": "DELETE",
+          "path": "jaxrs/record/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用.",
+              "isBaseType": true
+            },
+            {
+              "name": "process",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程ID.",
+              "isBaseType": true
+            },
+            {
+              "name": "job",
+              "type": "String",
+              "isCollection": false,
+              "description": "任务标识",
+              "isBaseType": true
+            },
+            {
+              "name": "work",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作",
+              "isBaseType": true
+            },
+            {
+              "name": "workCompleted",
+              "type": "String",
+              "isCollection": false,
+              "description": "已完成工作",
+              "isBaseType": true
+            },
+            {
+              "name": "completed",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "工作是否已经完成.",
+              "isBaseType": true
+            },
+            {
+              "name": "display",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否显示.",
+              "isBaseType": true
+            },
+            {
+              "name": "order",
+              "type": "Long",
+              "isCollection": false,
+              "description": "显示排序.",
+              "isBaseType": true
+            },
+            {
+              "name": "properties",
+              "type": "RecordProperties",
+              "isCollection": false,
+              "description": "属性对象存储字段.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动Id",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "开始活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动名称",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动别名",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始节点Token",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Id，可能为空，如果是未Connected的流程记录",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "结束活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "arrivedActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Token.",
+              "isBaseType": true
+            },
+            {
+              "name": "recordTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "记录时间.",
+              "isBaseType": true
+            },
+            {
+              "name": "person",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员",
+              "isBaseType": true
+            },
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录身份",
+              "isBaseType": true
+            },
+            {
+              "name": "unit",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员所在组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "edit",
+          "className": "com.x.processplatform.service.processing.jaxrs.record.ActionEdit",
+          "description": "编辑记录.",
+          "type": "PUT",
+          "path": "jaxrs/record/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用.",
+              "isBaseType": true
+            },
+            {
+              "name": "process",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程ID.",
+              "isBaseType": true
+            },
+            {
+              "name": "job",
+              "type": "String",
+              "isCollection": false,
+              "description": "任务标识",
+              "isBaseType": true
+            },
+            {
+              "name": "work",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作",
+              "isBaseType": true
+            },
+            {
+              "name": "workCompleted",
+              "type": "String",
+              "isCollection": false,
+              "description": "已完成工作",
+              "isBaseType": true
+            },
+            {
+              "name": "completed",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "工作是否已经完成.",
+              "isBaseType": true
+            },
+            {
+              "name": "display",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否显示.",
+              "isBaseType": true
+            },
+            {
+              "name": "order",
+              "type": "Long",
+              "isCollection": false,
+              "description": "显示排序.",
+              "isBaseType": true
+            },
+            {
+              "name": "properties",
+              "type": "RecordProperties",
+              "isCollection": false,
+              "description": "属性对象存储字段.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动Id",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "开始活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "fromActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动名称",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始活动别名",
+              "isBaseType": true
+            },
+            {
+              "name": "fromActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "开始节点Token",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Id，可能为空，如果是未Connected的流程记录",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityType",
+              "type": "ActivityType",
+              "isCollection": false,
+              "description": "结束活动类型.",
+              "isBaseType": false
+            },
+            {
+              "name": "arrivedActivityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityAlias",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动名称.",
+              "isBaseType": true
+            },
+            {
+              "name": "arrivedActivityToken",
+              "type": "String",
+              "isCollection": false,
+              "description": "结束活动Token.",
+              "isBaseType": true
+            },
+            {
+              "name": "recordTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "记录时间.",
+              "isBaseType": true
+            },
+            {
+              "name": "person",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员",
+              "isBaseType": true
+            },
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录身份",
+              "isBaseType": true
+            },
+            {
+              "name": "unit",
+              "type": "String",
+              "isCollection": false,
+              "description": "记录人员所在组织.",
+              "isBaseType": true
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ReviewAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.review.ReviewAction",
+      "description": "参阅",
+      "methods": [
+        {
+          "name": "createWithWork",
+          "className": "com.x.processplatform.service.processing.jaxrs.review.ActionCreateWithWork",
+          "description": "根据workId批量创建review.",
+          "type": "POST",
+          "path": "jaxrs/review/create/work",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "work",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作标识",
+              "isBaseType": true
+            },
+            {
+              "name": "personList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "人员列表",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "createWithWorkCompleted",
+          "className": "com.x.processplatform.service.processing.jaxrs.review.ActionCreateWithWorkCompleted",
+          "description": "根据workCompleted批量创建review.",
+          "type": "POST",
+          "path": "jaxrs/review/create/workcompleted",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.review.ActionDelete",
+          "description": "删除参阅.",
+          "type": "DELETE",
+          "path": "jaxrs/review/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "className": "com.x.base.core.project.jaxrs.sysresource.SysResourceAction",
+      "description": "系统资源",
+      "methods": [
+        {
+          "name": "listResource",
+          "className": "com.x.base.core.project.jaxrs.sysresource.ActionListResource",
+          "description": "获取静态资源信息.",
+          "type": "GET",
+          "path": "jaxrs/sysresource/filePath/{filePath}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "filePath",
+              "type": "String",
+              "description": "查找路径(根路径:(0))"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "uploadResource",
+          "className": "com.x.base.core.project.jaxrs.sysresource.ActionUploadResource",
+          "description": "上传静态资源(仅上传到当前服务器)",
+          "type": "POST",
+          "path": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "contentType": "multipart/form-data",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": true,
+          "pathParameters": [
+            {
+              "name": "asNew",
+              "type": "Boolean",
+              "description": "覆盖类型：true删除原文件然后上传，false覆盖原文件"
+            }
+          ],
+          "formParameters": [
+            {
+              "name": "file",
+              "type": "File",
+              "description": "上传文件"
+            },
+            {
+              "name": "fileName",
+              "type": "String",
+              "description": "附件名称"
+            },
+            {
+              "name": "filePath",
+              "type": "String",
+              "description": "附件存放目录(可以为空)"
+            }
+          ],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TaskAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.task.TaskAction",
+      "description": "待办",
+      "methods": [
+        {
+          "name": "V2Reset",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.V2Reset",
+          "description": "V2_重置处理人.",
+          "type": "PUT",
+          "path": "jaxrs/task/v2/{id}/reset",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "routeName",
+              "type": "String",
+              "isCollection": false,
+              "description": "路由名称",
+              "isBaseType": true
+            },
+            {
+              "name": "opinion",
+              "type": "String",
+              "isCollection": false,
+              "description": "意见",
+              "isBaseType": true
+            },
+            {
+              "name": "identityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "重置身份",
+              "isBaseType": true
+            },
+            {
+              "name": "keep",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "保留自身待办.",
+              "isBaseType": true
+            },
+            {
+              "name": "series",
+              "type": "String",
+              "isCollection": false,
+              "description": "操作串号",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "append",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionExpire",
+          "description": "标识待办过期.",
+          "type": "GET",
+          "path": "jaxrs/task/{id}/expired",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "append",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionAppend",
+          "description": "添加待办.",
+          "type": "PUT",
+          "path": "jaxrs/task/{id}/append",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "identityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的待办身份.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "valueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "字符串多值."
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionDelete",
+          "description": "删除待办.",
+          "type": "DELETE",
+          "path": "jaxrs/task/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "expire",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionExpire",
+          "description": "标识待办过期.",
+          "type": "GET",
+          "path": "jaxrs/task/{id}/expire",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "passExpired",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionPassExpired",
+          "description": "过期待办进行默认路由.",
+          "type": "GET",
+          "path": "jaxrs/task/{id}/pass/expired",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "press",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionPress",
+          "description": "提醒.",
+          "type": "GET",
+          "path": "jaxrs/task/{id}/press",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        },
+        {
+          "name": "processing",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionProcessing",
+          "description": "保存并继续流转.",
+          "type": "PUT",
+          "path": "jaxrs/task/{id}/processing",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "processingType",
+              "type": "String",
+              "isCollection": false,
+              "description": "流转类型.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "reset",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionReset",
+          "description": "重置处理人.",
+          "type": "PUT",
+          "path": "jaxrs/task/{id}/reset",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "identityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "身份",
+              "isBaseType": true
+            },
+            {
+              "name": "keep",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "保留自身待办.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "updateNextTaskIdentity",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionUpdatePrevTaskIdentity",
+          "description": "更新待办中的上一处理人记录值.",
+          "type": "PUT",
+          "path": "jaxrs/task/prev/task/identity",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "valueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "字符串多值."
+            }
+          ]
+        },
+        {
+          "name": "urge",
+          "className": "com.x.processplatform.service.processing.jaxrs.task.ActionUrge",
+          "description": "催办.",
+          "type": "GET",
+          "path": "jaxrs/task/{id}/urge",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TaskCompletedAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.taskcompleted.TaskCompletedAction",
+      "description": "已办",
+      "methods": [
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.taskcompleted.ActionDelete",
+          "description": "删除已办.",
+          "type": "DELETE",
+          "path": "jaxrs/taskcompleted/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "press",
+          "className": "com.x.processplatform.service.processing.jaxrs.taskcompleted.ActionPress",
+          "description": "提醒.",
+          "type": "GET",
+          "path": "jaxrs/taskcompleted/{id}/press/work/{work}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            },
+            {
+              "name": "work",
+              "type": "String",
+              "description": "工作"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "valueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "字符串多值."
+            }
+          ]
+        },
+        {
+          "name": "updateNextTaskIdentity",
+          "className": "com.x.processplatform.service.processing.jaxrs.taskcompleted.ActionUpdateNextTaskIdentity",
+          "description": "更新已办中的下一处理人记录值.",
+          "type": "PUT",
+          "path": "jaxrs/taskcompleted/next/task/identity",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "valueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "字符串多值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TestAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.test.TestAction",
+      "description": "测试",
+      "methods": [
+        {
+          "name": "dataMerge",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionDataMerge",
+          "description": "立即执行已完成工作数据合并任务.",
+          "type": "GET",
+          "path": "jaxrs/test/datamerge",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "deleteDraft",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionDeleteDraft",
+          "description": "立即执行删除滞留草稿任务.",
+          "type": "GET",
+          "path": "jaxrs/test/deletedraft",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "expire",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionExpire",
+          "description": "立即执行标识待办过期任务.",
+          "type": "GET",
+          "path": "jaxrs/test/expire",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "logLongDetained",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionLogLongDetained",
+          "description": "立即执行记录长期滞留工作,待办,待阅任务.",
+          "type": "GET",
+          "path": "jaxrs/test/loglongdetained",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "passExpired",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionPassExpired",
+          "description": "立即执行过期待办默认流转任务.",
+          "type": "GET",
+          "path": "jaxrs/test/passexpired",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "touchDelay",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionTouchDelay",
+          "description": "立即执行触发延时任务.",
+          "type": "GET",
+          "path": "jaxrs/test/touchdelay",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "touchDetained",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionTouchDetained",
+          "description": "立即执行触发滞留工作任务.",
+          "type": "GET",
+          "path": "jaxrs/test/touchdetained",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "urge",
+          "className": "com.x.processplatform.service.processing.jaxrs.test.ActionUrge",
+          "description": "立即执行催办任务.",
+          "type": "GET",
+          "path": "jaxrs/test/urge",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WorkAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.work.WorkAction",
+      "description": "工作",
+      "methods": [
+        {
+          "name": "V2Reroute",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.V2Reroute",
+          "description": "V2_调度.",
+          "type": "PUT",
+          "path": "jaxrs/work/v2/{id}/reroute",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "activity",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动节点",
+              "isBaseType": true
+            },
+            {
+              "name": "activityType",
+              "type": "String",
+              "isCollection": false,
+              "description": "节点类型",
+              "isBaseType": true
+            },
+            {
+              "name": "mergeWork",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否合并所有的work",
+              "isBaseType": true
+            },
+            {
+              "name": "manualForceTaskIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "人工活动强制处理人",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "V2Retract",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.V2Retract",
+          "description": "V2_撤回.",
+          "type": "PUT",
+          "path": "jaxrs/work/v2/{id}/retract",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "workLog",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作日志.",
+              "isBaseType": true
+            },
+            {
+              "name": "taskCompleted",
+              "type": "String",
+              "isCollection": false,
+              "description": "已完成工作标识.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "V2Rollback",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.V2Rollback",
+          "description": "V2_回滚.",
+          "type": "PUT",
+          "path": "jaxrs/work/v2/{id}/rollback",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "workLog",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作日志",
+              "isBaseType": true
+            },
+            {
+              "name": "taskCompletedIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "已完成工作处理人.",
+              "isBaseType": true
+            },
+            {
+              "name": "processing",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否尝试流转",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "addSplit",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionAddSplit",
+          "description": "指定文件增加一个副本.",
+          "type": "PUT",
+          "path": "jaxrs/work/{id}/add/split",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "splitValueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的拆分值.",
+              "isBaseType": true
+            },
+            {
+              "name": "workLog",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作日志.",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtArrive",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从arrive开始",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtInquire",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从inquire开始",
+              "isBaseType": true
+            },
+            {
+              "name": "ignoreEmpowerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "忽略授权的身份",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "activityName",
+              "type": "String",
+              "isCollection": false,
+              "description": "活动名称"
+            }
+          ]
+        },
+        {
+          "name": "assignCreate",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionAssignCreate",
+          "description": "赋值创建一个处于start状态的work.",
+          "type": "POST",
+          "path": "jaxrs/work",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "应用标识",
+              "isBaseType": true
+            },
+            {
+              "name": "process",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程标识",
+              "isBaseType": true
+            },
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "身份标识",
+              "isBaseType": true
+            },
+            {
+              "name": "title",
+              "type": "String",
+              "isCollection": false,
+              "description": "标题",
+              "isBaseType": true
+            },
+            {
+              "name": "data",
+              "type": "Data",
+              "isCollection": false,
+              "description": "业务数据",
+              "isBaseType": false
+            },
+            {
+              "name": "attachmentList",
+              "type": "List\u003cWiAttachment\u003e",
+              "isCollection": true,
+              "description": "附件",
+              "isBaseType": false
+            },
+            {
+              "name": "processing",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "自动流转",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionCreate",
+          "description": "创建一个处于start状态的工作.",
+          "type": "POST",
+          "path": "jaxrs/work/process/{processId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "processId",
+              "type": "String",
+              "description": "流程标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionDelete",
+          "description": "删除单个工作.",
+          "type": "DELETE",
+          "path": "jaxrs/work/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "deleteDraft",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionDeleteDraft",
+          "description": "删除滞留的草稿工作.",
+          "type": "DELETE",
+          "path": "jaxrs/work/{id}/draft",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "manualAppendIdentity",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionManualAppendIdentity",
+          "description": "添加人工环节处理人,不会自动产生,需要processing之后才会执行.",
+          "type": "PUT",
+          "path": "jaxrs/work/{id}/manual/append/identity",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "taskIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的待办身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "readIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的待阅身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "reviewIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的参阅身份.",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "taskIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的待办身份."
+            },
+            {
+              "name": "readIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的待阅身份."
+            },
+            {
+              "name": "reviewIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "添加的参阅身份."
+            },
+            {
+              "name": "valueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "字符串多值."
+            }
+          ]
+        },
+        {
+          "name": "processing",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionProcessing",
+          "description": "流转一个流程实例.",
+          "type": "PUT",
+          "path": "jaxrs/work/{id}/processing",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "forceJoinAtArrive",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从arrive开始",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtInquire",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从inquire开始",
+              "isBaseType": true
+            },
+            {
+              "name": "ignoreEmpowerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "忽略授权的身份",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "projection",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionProjection",
+          "description": "指定Work运行映射.",
+          "type": "GET",
+          "path": "jaxrs/work/{id}/projection",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "reroute",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionReroute",
+          "description": "调度.",
+          "type": "PUT",
+          "path": "jaxrs/work/{id}/reroute/activity/{activityId}/activitytype/{activityType}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            },
+            {
+              "name": "activityId",
+              "type": "String",
+              "description": "活动标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "forceJoinAtArrive",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从arrive开始",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtInquire",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从inquire开始",
+              "isBaseType": true
+            },
+            {
+              "name": "ignoreEmpowerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "忽略授权的身份",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "rollback",
+          "className": "com.x.processplatform.service.processing.jaxrs.work.ActionRollback",
+          "description": "回滚指定的工作到指定的workLog.",
+          "type": "PUT",
+          "path": "jaxrs/work/{id}/rollback",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "workLog",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作日志标识",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtArrive",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从arrive开始",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtInquire",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从inquire开始",
+              "isBaseType": true
+            },
+            {
+              "name": "ignoreEmpowerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "忽略授权的身份",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WorkCompletedAction",
+      "className": "com.x.processplatform.service.processing.jaxrs.workcompleted.WorkCompletedAction",
+      "description": "完成工作",
+      "methods": [
+        {
+          "name": "create",
+          "className": "com.x.processplatform.service.processing.jaxrs.workcompleted.ActionCreate",
+          "description": "创建已完成工作.",
+          "type": "POST",
+          "path": "jaxrs/workcompleted/process/{processFlag}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "processFlag",
+              "type": "String",
+              "description": "流程标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "title",
+              "type": "String",
+              "isCollection": false,
+              "description": "标题.",
+              "isBaseType": true
+            },
+            {
+              "name": "serial",
+              "type": "String",
+              "isCollection": false,
+              "description": "序号.",
+              "isBaseType": true
+            },
+            {
+              "name": "form",
+              "type": "String",
+              "isCollection": false,
+              "description": "指定表单.",
+              "isBaseType": true
+            },
+            {
+              "name": "formData",
+              "type": "String",
+              "isCollection": false,
+              "description": "指定表单数据.",
+              "isBaseType": true
+            },
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "启动人员身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "startTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "开始日期.",
+              "isBaseType": true
+            },
+            {
+              "name": "completedTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "结束日期.",
+              "isBaseType": true
+            },
+            {
+              "name": "data",
+              "type": "JsonElement",
+              "isCollection": false,
+              "description": "工作数据.",
+              "isBaseType": false
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "dataMerge",
+          "className": "com.x.processplatform.service.processing.jaxrs.workcompleted.ActionDataMerge",
+          "description": "指定的已完成工作进行数据合并.",
+          "type": "GET",
+          "path": "jaxrs/workcompleted/{flag}/data/merge",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "flag",
+              "type": "String",
+              "description": "完成工作"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "rollback",
+          "className": "com.x.processplatform.service.processing.jaxrs.workcompleted.ActionRollback",
+          "description": "回滚指定的完成工作到指定的workLog.",
+          "type": "PUT",
+          "path": "jaxrs/workcompleted/{flag}/rollback",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "flag",
+              "type": "String",
+              "description": "完成工作"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "workLog",
+              "type": "String",
+              "isCollection": false,
+              "description": "工作日志标识",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtArrive",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从arrive开始",
+              "isBaseType": true
+            },
+            {
+              "name": "forceJoinAtInquire",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "强制从inquire开始",
+              "isBaseType": true
+            },
+            {
+              "name": "ignoreEmpowerIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "忽略授权的身份",
+              "isBaseType": true
+            }
+          ],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

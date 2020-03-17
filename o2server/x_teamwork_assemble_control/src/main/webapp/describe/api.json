@@ -1,0 +1,657 @@
+{
+  "jaxrs": [
+    {
+      "name": "AttachmentAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/attachment/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/attachment/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "downloadStream",
+          "uri": "jaxrs/attachment/download/{id}/stream/{stream}",
+          "method": "GET"
+        },
+        {
+          "name": "downLoad",
+          "uri": "jaxrs/attachment/download/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listByProjectId",
+          "uri": "jaxrs/attachment/list/project/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listByTaskId",
+          "uri": "jaxrs/attachment/list/task/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "taskAttachmentUpload",
+          "uri": "jaxrs/attachment/upload/task/{id}/site/{site}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "projectAttachmentUpload",
+          "uri": "jaxrs/attachment/upload/project/{id}/site/{site}",
+          "method": "POST",
+          "enctype": "formData"
+        }
+      ]
+    },
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ChatAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/chat/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/chat/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/chat",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getContent",
+          "uri": "jaxrs/chat/{id}/content",
+          "method": "GET"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/chat/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "DynamicAction",
+      "methods": [
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/dynamic/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithTask",
+          "uri": "jaxrs/dynamic/list/{id}/next/{count}/task/{taskId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithProject",
+          "uri": "jaxrs/dynamic/list/{id}/next/{count}/project/{projectId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ProjectAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/project/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/project/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/project",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPageInGroupWithFilter",
+          "uri": "jaxrs/project/list/{page}/size/{size}/group/{groupId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/project/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPageWithFilter",
+          "uri": "jaxrs/project/list/{page}/size/{size}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateIcon",
+          "uri": "jaxrs/project/{id}/icon",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "statiticMyProject",
+          "uri": "jaxrs/project/statitic/my",
+          "method": "GET"
+        },
+        {
+          "name": "statiticMyProjectGroup",
+          "uri": "jaxrs/project/statitic/group",
+          "method": "GET"
+        },
+        {
+          "name": "star",
+          "uri": "jaxrs/project/star/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "unStar",
+          "uri": "jaxrs/project/unstar/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listMyNextWithFilter",
+          "uri": "jaxrs/project/list/my/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listStarNextWithFilter",
+          "uri": "jaxrs/project/list/star/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listRecycleNextWithFilter",
+          "uri": "jaxrs/project/list/recycle/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNoGroupNextWithFilter",
+          "uri": "jaxrs/project/list/groupness/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextInGroupWithFilter",
+          "uri": "jaxrs/project/list/{id}/next/{count}/group/{groupId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listArchiveNextWithFilter",
+          "uri": "jaxrs/project/list/archive/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listCompletedNextWithFilter",
+          "uri": "jaxrs/project/list/completed/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "ProjectExtFieldReleAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/extfield/rele/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/extfield/relevance/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/extfield/relevance",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listFieldsWithProject",
+          "uri": "jaxrs/extfield/list/{projectId}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllUseableFields",
+          "uri": "jaxrs/extfield/list/fields/all",
+          "method": "GET"
+        },
+        {
+          "name": "getNextUseableFieldName",
+          "uri": "jaxrs/extfield/next/field/{projectId}/{fieldType}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "ProjectGroupAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/project_group/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/project_group/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/project_group",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithIds",
+          "uri": "jaxrs/project_group",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listGroups",
+          "uri": "jaxrs/project_group/list/my",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SystemConfigAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/config/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/config",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "isManager",
+          "uri": "jaxrs/config/ismanager",
+          "method": "GET"
+        },
+        {
+          "name": "getWithCode",
+          "uri": "jaxrs/config/code/{code}",
+          "method": "GET"
+        },
+        {
+          "name": "listAllSystemConfig",
+          "uri": "jaxrs/config/list/all",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TaskAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/task/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/task/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/task",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "archive",
+          "uri": "jaxrs/task/archive/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "updateManager",
+          "uri": "jaxrs/task/manager/{id}/update",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/task/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPageWithFilter",
+          "uri": "jaxrs/task/list/{page}/size/{size}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "statiticMyProject",
+          "uri": "jaxrs/task/statitic/{projectId}",
+          "method": "GET"
+        },
+        {
+          "name": "statiticMyProjectGroup",
+          "uri": "jaxrs/task/statitic/group/{projectId}",
+          "method": "GET"
+        },
+        {
+          "name": "listSubTaskWithTaskId",
+          "uri": "jaxrs/task/list/sub/{taskId}",
+          "method": "GET"
+        },
+        {
+          "name": "updateSingleProperty",
+          "uri": "jaxrs/task/{id}/property",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listAllTaskWithTaskListId",
+          "uri": "jaxrs/task/list/project/{projectId}/tasklist/{taskListId}/all",
+          "method": "GET"
+        },
+        {
+          "name": "updateParticipant",
+          "uri": "jaxrs/task/participant/{id}/update",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyTaskWithTaskListId",
+          "uri": "jaxrs/task/list/project/{projectId}/tasklist/{taskListId}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TaskGroupAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/task_group/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/task_group/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/task_group",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithIds",
+          "uri": "jaxrs/task_group",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listGroups",
+          "uri": "jaxrs/task_group/list/{project}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TaskListAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/task_list/taskgroup/{taskGroupId}/tasklist/{taskListId}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/task_list/delete/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/task_list",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "refreshTaskList",
+          "uri": "jaxrs/task_list/tasklist/refresh",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithTaskGroup",
+          "uri": "jaxrs/task_list/list/taskgroup/{taskgroup}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithTaskGroupWithTask",
+          "uri": "jaxrs/task_list/list/taskgroup/{taskgroup}/{withTask}",
+          "method": "GET"
+        },
+        {
+          "name": "removeTaskFromList",
+          "uri": "jaxrs/task_list/remove/{listId}/task/{taskId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "addTask2ListWithOrderNumber",
+          "uri": "jaxrs/task_list/add2list/{listId}/order",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "addTask2ListWithBehindTask",
+          "uri": "jaxrs/task_list/add2list/{listId}/behindTask",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "TaskTagAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/task_tag/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/task_tag/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/task_tag",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithProject",
+          "uri": "jaxrs/task_tag/list/project/{projectId}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithTask",
+          "uri": "jaxrs/task_tag/list/task/{taskId}",
+          "method": "GET"
+        },
+        {
+          "name": "addTagRele",
+          "uri": "jaxrs/task_tag/rele/{taskId}/{tagId}/add",
+          "method": "GET"
+        },
+        {
+          "name": "removeTagRele",
+          "uri": "jaxrs/task_tag/rele/{taskId}/{tagId}/remove",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "TaskViewAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/task_view/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "delete",
+          "uri": "jaxrs/task_view/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/task_view",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/task_view/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "executePageWithFilter",
+          "uri": "jaxrs/task_view/execute/view/{viewId}/page/{pageNum}/{pageSize}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "executeNextWithFilter",
+          "uri": "jaxrs/task_view/execute/view/{viewId}/flag/{flag}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyTaskWithTaskListId",
+          "uri": "jaxrs/task_view/list/project/{projectId}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

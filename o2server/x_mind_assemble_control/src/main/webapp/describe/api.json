@@ -1,0 +1,226 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "MindFolderInfoAction",
+      "methods": [
+        {
+          "name": "moveMindAndFolder",
+          "uri": "jaxrs/folder/move/{folderId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "folderDeleteForce",
+          "uri": "jaxrs/folder/{id}/force",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "folderDelete",
+          "uri": "jaxrs/folder/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "treeMyFolder",
+          "uri": "jaxrs/folder/tree/my",
+          "method": "GET"
+        },
+        {
+          "name": "saveFolder",
+          "uri": "jaxrs/folder/save",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "MindInfoAction",
+      "methods": [
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/mind/filter/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getMindBaseInfoWithId",
+          "uri": "jaxrs/mind/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "getMindIconWithId",
+          "uri": "jaxrs/mind/{id}/icon",
+          "method": "GET"
+        },
+        {
+          "name": "listVersionsWithMindId",
+          "uri": "jaxrs/mind/list/{id}/version",
+          "method": "GET"
+        },
+        {
+          "name": "listShareRecordsWithMindId",
+          "uri": "jaxrs/mind/list/{id}/shareRecords",
+          "method": "GET"
+        },
+        {
+          "name": "listMyRecivedMindNextWithFilter",
+          "uri": "jaxrs/mind/filter/recived/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "shareCancelWithId",
+          "uri": "jaxrs/mind/share/{shareId}/cancel",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "recycleMindWithId",
+          "uri": "jaxrs/mind/recycle/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "viewMindVersionWithId",
+          "uri": "jaxrs/mind/version/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "restoreMindWithId",
+          "uri": "jaxrs/mind/restore/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "destoryFromRecycle",
+          "uri": "jaxrs/mind/{recycleId}/destoryrecycle",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMySharedMindNextWithFilter",
+          "uri": "jaxrs/mind/filter/shared/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destoryFromNormal",
+          "uri": "jaxrs/mind/{id}/destorymind",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyRecycleNextWithFilter",
+          "uri": "jaxrs/mind/filter/recycle/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "viewMindWithId",
+          "uri": "jaxrs/mind/view/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "changeMindIcon",
+          "uri": "jaxrs/mind/{mindId}/icon/size/{size}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "saveMind",
+          "uri": "jaxrs/mind/save",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "shareMindWithId",
+          "uri": "jaxrs/mind/share/{id}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

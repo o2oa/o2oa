@@ -336,10 +336,10 @@ public class Describe {
 						jaxrsField.setIsBaseType(true);
 					}
 				} else {
-					//O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
-					if( StringUtils.equalsAnyIgnoreCase( "String[]", jaxrsField.getType() )) {
+					// O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
+					if (StringUtils.equalsAnyIgnoreCase("String[]", jaxrsField.getType())) {
 						jaxrsField.setIsCollection(true);
-					}else {
+					} else {
 						jaxrsField.setIsCollection(false);
 					}
 					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
@@ -755,5 +755,4 @@ public class Describe {
 		}
 
 	}
-
 }

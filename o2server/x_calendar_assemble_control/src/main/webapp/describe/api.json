@@ -1,0 +1,255 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "methods": [
+        {
+          "name": "receive",
+          "uri": "jaxrs/cache",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "CalendarAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/calendar/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/calendar",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "isManager",
+          "uri": "jaxrs/calendar/ismanager",
+          "method": "GET"
+        },
+        {
+          "name": "listPublicCalendar",
+          "uri": "jaxrs/calendar/list/public",
+          "method": "GET"
+        },
+        {
+          "name": "followCalendarCancel",
+          "uri": "jaxrs/calendar/follow/{id}/cancel",
+          "method": "GET"
+        },
+        {
+          "name": "isCalendarManager",
+          "uri": "jaxrs/calendar/ismanager/calendar/{accountId}",
+          "method": "GET"
+        },
+        {
+          "name": "followCalendar",
+          "uri": "jaxrs/calendar/follow/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "destory",
+          "uri": "jaxrs/calendar/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithFilter",
+          "uri": "jaxrs/calendar/list/filter",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyCalendar",
+          "uri": "jaxrs/calendar/list/my",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "CalendarSettingAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/setting/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "save",
+          "uri": "jaxrs/setting",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "isManager",
+          "uri": "jaxrs/setting/ismanager",
+          "method": "GET"
+        },
+        {
+          "name": "listAllReportSetting",
+          "uri": "jaxrs/setting/list/all",
+          "method": "GET"
+        },
+        {
+          "name": "getWithCode",
+          "uri": "jaxrs/setting/code/{code}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "Calendar_EventAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/event/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "create",
+          "uri": "jaxrs/event",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateSingleEvent",
+          "uri": "jaxrs/event/update/single/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destoryAfterEvent",
+          "uri": "jaxrs/event/after/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateAllEventsWithRepeatMaster",
+          "uri": "jaxrs/event/update/all/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destorySingleEvent",
+          "uri": "jaxrs/event/single/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithFilterSample",
+          "uri": "jaxrs/event/list/filter/sample",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "destoryAllEventsWithRepeatMaster",
+          "uri": "jaxrs/event/all/{eventId}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getRFC",
+          "uri": "jaxrs/event/rfc/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithFilter",
+          "uri": "jaxrs/event/list/filter",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "updateAfterEvent",
+          "uri": "jaxrs/event/update/after/{eventId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "Calendar_EventMessageAction",
+      "methods": [
+        {
+          "name": "messageReceive",
+          "uri": "jaxrs/message",
+          "method": "POST",
+          "enctype": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/echo",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "methods": [
+        {
+          "name": "execute",
+          "uri": "jaxrs/fireschedule/classname/{className}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "methods": [
+        {
+          "name": "get",
+          "uri": "jaxrs/logger",
+          "method": "GET"
+        },
+        {
+          "name": "debug",
+          "uri": "jaxrs/logger/debug",
+          "method": "GET"
+        },
+        {
+          "name": "trace",
+          "uri": "jaxrs/logger/trace",
+          "method": "GET"
+        },
+        {
+          "name": "info",
+          "uri": "jaxrs/logger/info",
+          "method": "GET"
+        },
+        {
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "methods": [
+        {
+          "name": "uploadResource",
+          "uri": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "method": "POST",
+          "enctype": "formData"
+        },
+        {
+          "name": "listResource",
+          "uri": "jaxrs/sysresource/filePath/{filePath}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}
