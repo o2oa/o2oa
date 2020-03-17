@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -55,13 +55,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -85,21 +85,25 @@
           "method": "GET"
         },
         {
-          "name": "listByWorkReportId",
-          "uri": "jaxrs/okrattachmentfileinfo/list/report/{id}",
-          "method": "GET"
-        },
-        {
           "name": "deleteCenterAttachment",
           "uri": "jaxrs/okrattachmentfileinfo/center/attachment/{id}",
           "method": "DELETE",
           "enctype": "application/json"
         },
         {
-          "name": "deleteWorkAttachment",
-          "uri": "jaxrs/okrattachmentfileinfo/work/attachment/{id}",
-          "method": "DELETE",
-          "enctype": "application/json"
+          "name": "workAttachmentDownLoad",
+          "uri": "jaxrs/okrattachmentfileinfo/download/work/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "workAttachmentDownloadStream",
+          "uri": "jaxrs/okrattachmentfileinfo/download/work/{id}/stream/{stream}",
+          "method": "GET"
+        },
+        {
+          "name": "listByWorkReportId",
+          "uri": "jaxrs/okrattachmentfileinfo/list/report/{id}",
+          "method": "GET"
         },
         {
           "name": "deleteReportAttachment",
@@ -108,10 +112,20 @@
           "enctype": "application/json"
         },
         {
-          "name": "reportAttachmentUpload",
-          "uri": "jaxrs/okrattachmentfileinfo/upload/report/{id}/site/{site}",
+          "name": "workAttachmentUpload",
+          "uri": "jaxrs/okrattachmentfileinfo/upload/work/{id}/site/{site}",
           "method": "POST",
           "enctype": "formData"
+        },
+        {
+          "name": "centerAttachmentDownLoad",
+          "uri": "jaxrs/okrattachmentfileinfo/download/center/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "centerAttachmentDownloadStream",
+          "uri": "jaxrs/okrattachmentfileinfo/download/center/{id}/stream/{stream}",
+          "method": "GET"
         },
         {
           "name": "centerAttachmentUpload",
@@ -125,44 +139,30 @@
           "method": "GET"
         },
         {
-          "name": "workAttachmentDownloadStream",
-          "uri": "jaxrs/okrattachmentfileinfo/download/work/{id}/stream/{stream}",
-          "method": "GET"
-        },
-        {
-          "name": "centerAttachmentDownLoad",
-          "uri": "jaxrs/okrattachmentfileinfo/download/center/{id}",
-          "method": "GET"
-        },
-        {
           "name": "reportAttachmentDownloadStream",
           "uri": "jaxrs/okrattachmentfileinfo/download/report/{id}/stream/{stream}",
           "method": "GET"
         },
         {
-          "name": "workAttachmentUpload",
-          "uri": "jaxrs/okrattachmentfileinfo/upload/work/{id}/site/{site}",
+          "name": "deleteWorkAttachment",
+          "uri": "jaxrs/okrattachmentfileinfo/work/attachment/{id}",
+          "method": "DELETE",
+          "enctype": "application/json"
+        },
+        {
+          "name": "reportAttachmentUpload",
+          "uri": "jaxrs/okrattachmentfileinfo/upload/report/{id}/site/{site}",
           "method": "POST",
           "enctype": "formData"
         },
         {
-          "name": "centerAttachmentDownloadStream",
-          "uri": "jaxrs/okrattachmentfileinfo/download/center/{id}/stream/{stream}",
-          "method": "GET"
-        },
-        {
-          "name": "workAttachmentDownLoad",
-          "uri": "jaxrs/okrattachmentfileinfo/download/work/{id}",
+          "name": "listByCenterId",
+          "uri": "jaxrs/okrattachmentfileinfo/list/center/{id}",
           "method": "GET"
         },
         {
           "name": "listByWorkId",
           "uri": "jaxrs/okrattachmentfileinfo/list/work/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "listByCenterId",
-          "uri": "jaxrs/okrattachmentfileinfo/list/center/{id}",
           "method": "GET"
         }
       ]
@@ -198,18 +198,6 @@
           "method": "GET"
         },
         {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/okrcenterworkinfo/filter/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listPrevWithFilter",
-          "uri": "jaxrs/okrcenterworkinfo/filter/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "listDraftNextWithFilter",
           "uri": "jaxrs/okrcenterworkinfo/draft/list/{id}/next/{count}",
           "method": "PUT",
@@ -222,26 +210,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listMyReadPrevWithFilter",
-          "uri": "jaxrs/okrcenterworkinfo/read/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyArchivePrevWithFilter",
-          "uri": "jaxrs/okrcenterworkinfo/archive/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "listMyDeployedNextWithFilter",
           "uri": "jaxrs/okrcenterworkinfo/deployed/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyReadNextWithFilter",
-          "uri": "jaxrs/okrcenterworkinfo/read/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -254,6 +224,36 @@
         {
           "name": "listMyArchiveNextWithFilter",
           "uri": "jaxrs/okrcenterworkinfo/archive/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyArchivePrevWithFilter",
+          "uri": "jaxrs/okrcenterworkinfo/archive/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyReadNextWithFilter",
+          "uri": "jaxrs/okrcenterworkinfo/read/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyReadPrevWithFilter",
+          "uri": "jaxrs/okrcenterworkinfo/read/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/okrcenterworkinfo/filter/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/okrcenterworkinfo/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -313,14 +313,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/okrconfigsecretary/filter/list/{id}/next/{count}",
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/okrconfigsecretary/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listPrevWithFilter",
-          "uri": "jaxrs/okrconfigsecretary/filter/list/{id}/prev/{count}",
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/okrconfigsecretary/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -357,15 +357,15 @@
           "enctype": "application/json"
         },
         {
+          "name": "allowedDeployWork",
+          "uri": "jaxrs/okrconfigsystem/allowed/deploy",
+          "method": "GET"
+        },
+        {
           "name": "getByCode",
           "uri": "jaxrs/okrconfigsystem/code",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "allowedDeployWork",
-          "uri": "jaxrs/okrconfigsystem/allowed/deploy",
-          "method": "GET"
         }
       ]
     },
@@ -480,6 +480,23 @@
           "enctype": "application/json"
         },
         {
+          "name": "listReportContentByCondition",
+          "uri": "jaxrs/streportcontent/filter/sub/{parentId}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listDateByCondition",
+          "uri": "jaxrs/streportcontent/date/list",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "excuteAll",
+          "uri": "jaxrs/streportcontent/excute/all",
+          "method": "GET"
+        },
+        {
           "name": "excute",
           "uri": "jaxrs/streportcontent/excute",
           "method": "GET"
@@ -495,23 +512,6 @@
           "uri": "jaxrs/streportcontent/filter/tree",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "excuteAll",
-          "uri": "jaxrs/streportcontent/excute/all",
-          "method": "GET"
-        },
-        {
-          "name": "listReportContentByCondition",
-          "uri": "jaxrs/streportcontent/filter/sub/{parentId}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listDateByCondition",
-          "uri": "jaxrs/streportcontent/date/list",
-          "method": "PUT",
-          "enctype": "application/json"
         }
       ]
     },
@@ -525,9 +525,10 @@
           "enctype": "application/json"
         },
         {
-          "name": "excute",
-          "uri": "jaxrs/streportstatus/excute",
-          "method": "GET"
+          "name": "listReportStatusByCondition",
+          "uri": "jaxrs/streportstatus/filter/list",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
           "name": "excuteAll",
@@ -535,10 +536,9 @@
           "method": "GET"
         },
         {
-          "name": "listReportStatusByCondition",
-          "uri": "jaxrs/streportstatus/filter/list",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "excute",
+          "uri": "jaxrs/streportstatus/excute",
+          "method": "GET"
         }
       ]
     },
@@ -551,14 +551,14 @@
           "method": "GET"
         },
         {
-          "name": "errorInfoFilterListNextWithFilter",
-          "uri": "jaxrs/error/identity/filter/list/{id}/next/{count}",
+          "name": "getOkrErrorIdentityRecords",
+          "uri": "jaxrs/error/identity/errorrecords/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "getOkrErrorIdentityRecords",
-          "uri": "jaxrs/error/identity/errorrecords/filter/list/{id}/next/{count}",
+          "name": "errorInfoFilterListNextWithFilter",
+          "uri": "jaxrs/error/identity/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -590,6 +590,16 @@
           "method": "GET"
         },
         {
+          "name": "showTaskCollect",
+          "uri": "jaxrs/okrtask/unit/reportTaskCollect/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "processRead",
+          "uri": "jaxrs/okrtask/process/read/{id}",
+          "method": "GET"
+        },
+        {
           "name": "listMyTaskNext",
           "uri": "jaxrs/okrtask/filter/my/{id}/next/{count}",
           "method": "PUT",
@@ -600,16 +610,6 @@
           "uri": "jaxrs/okrtask/sms/send/{workId}",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "showTaskCollect",
-          "uri": "jaxrs/okrtask/unit/reportTaskCollect/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "processRead",
-          "uri": "jaxrs/okrtask/process/read/{id}",
-          "method": "GET"
         }
       ]
     },
@@ -628,14 +628,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "filterListTaskPrev",
-          "uri": "jaxrs/admin/okrtask/filter/{id}/prev/{count}",
+          "name": "filterListTaskNext",
+          "uri": "jaxrs/admin/okrtask/filter/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "filterListTaskNext",
-          "uri": "jaxrs/admin/okrtask/filter/{id}/next/{count}",
+          "name": "filterListTaskPrev",
+          "uri": "jaxrs/admin/okrtask/filter/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -666,14 +666,14 @@
       "name": "OkrWorkAuthorizeAction",
       "methods": [
         {
-          "name": "takeback",
-          "uri": "jaxrs/okrauthorize/takeback",
+          "name": "workAuthorize",
+          "uri": "jaxrs/okrauthorize/work",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "workAuthorize",
-          "uri": "jaxrs/okrauthorize/work",
+          "name": "takeback",
+          "uri": "jaxrs/okrauthorize/takeback",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -726,26 +726,14 @@
           "method": "GET"
         },
         {
-          "name": "getOperation",
-          "uri": "jaxrs/okrworkbaseinfo/getOperation/{id}",
-          "method": "GET"
-        },
-        {
           "name": "recycle",
           "uri": "jaxrs/okrworkbaseinfo/recycle/{id}",
           "method": "GET"
         },
         {
-          "name": "listMyResponsibilityNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/responsibility/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyResponsibilityPrevWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/responsibility/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "getOperation",
+          "uri": "jaxrs/okrworkbaseinfo/getOperation/{id}",
+          "method": "GET"
         },
         {
           "name": "listDraftNextWithFilter",
@@ -760,8 +748,54 @@
           "enctype": "application/json"
         },
         {
-          "name": "listMyWorkNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/filter/list/{id}/next/{count}",
+          "name": "listMyDeployedNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/deployed/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyDeployedPrevWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/deployed/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyArchiveNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/archive/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyDelegateNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/delegate/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWorkByCenterId",
+          "uri": "jaxrs/okrworkbaseinfo/center/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listMyCooperateNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/cooperate/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyArchivePrevWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/archive/list/{id}/prev/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "canDismantlingWork",
+          "uri": "jaxrs/okrworkbaseinfo/canDismantlingWork/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "listMyReadNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/read/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -778,31 +812,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "listMyReadPrevWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/read/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listMyDeployWorkInCenterForForm",
+          "uri": "jaxrs/okrworkbaseinfo/deploy/form/center/{id}",
+          "method": "GET"
         },
         {
           "name": "listMyProcessWorkInCenterForForm",
           "uri": "jaxrs/okrworkbaseinfo/process/form/center/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "listMyArchivePrevWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/archive/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyDeployedNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/deployed/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWorkByCenterId",
-          "uri": "jaxrs/okrworkbaseinfo/center/{id}",
           "method": "GET"
         },
         {
@@ -812,44 +828,33 @@
           "enctype": "application/json"
         },
         {
-          "name": "listMyReadNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/read/list/{id}/next/{count}",
+          "name": "listMyReadPrevWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/read/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listMyDeployedPrevWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/deployed/list/{id}/prev/{count}",
+          "name": "listMyWorkNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listMyDelegateNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/delegate/list/{id}/next/{count}",
+          "name": "listMyResponsibilityNextWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/responsibility/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listMyCooperateNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/cooperate/list/{id}/next/{count}",
+          "name": "listMyResponsibilityPrevWithFilter",
+          "uri": "jaxrs/okrworkbaseinfo/responsibility/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listMyDeployWorkInCenterForForm",
-          "uri": "jaxrs/okrworkbaseinfo/deploy/form/center/{id}",
+          "name": "progressAdjust",
+          "uri": "jaxrs/okrworkbaseinfo/progress/{id}/{percent}",
           "method": "GET"
-        },
-        {
-          "name": "canDismantlingWork",
-          "uri": "jaxrs/okrworkbaseinfo/canDismantlingWork/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "listMyArchiveNextWithFilter",
-          "uri": "jaxrs/okrworkbaseinfo/archive/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
         },
         {
           "name": "appraise",
@@ -857,8 +862,8 @@
           "method": "GET"
         },
         {
-          "name": "listSubWork",
-          "uri": "jaxrs/okrworkbaseinfo/list/sub/{id}",
+          "name": "getMyStatistic",
+          "uri": "jaxrs/okrworkbaseinfo/statistic/my",
           "method": "GET"
         },
         {
@@ -867,13 +872,8 @@
           "method": "GET"
         },
         {
-          "name": "progressAdjust",
-          "uri": "jaxrs/okrworkbaseinfo/progress/{id}/{percent}",
-          "method": "GET"
-        },
-        {
-          "name": "getMyStatistic",
-          "uri": "jaxrs/okrworkbaseinfo/statistic/my",
+          "name": "listSubWork",
+          "uri": "jaxrs/okrworkbaseinfo/list/sub/{id}",
           "method": "GET"
         }
       ]
@@ -893,11 +893,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWorkInCenter",
-          "uri": "jaxrs/admin/okrworkbaseinfo/center/{id}",
-          "method": "GET"
-        },
-        {
           "name": "filterListNextWithFilter",
           "uri": "jaxrs/admin/okrworkbaseinfo/filter/list/{id}/next/{count}",
           "method": "PUT",
@@ -908,6 +903,11 @@
           "uri": "jaxrs/admin/okrworkbaseinfo/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "listWorkInCenter",
+          "uri": "jaxrs/admin/okrworkbaseinfo/center/{id}",
+          "method": "GET"
         }
       ]
     },
@@ -932,14 +932,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listNextWithFilter",
-          "uri": "jaxrs/okrworkchat/filter/list/{id}/next/{count}",
+          "name": "listPrevWithFilter",
+          "uri": "jaxrs/okrworkchat/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listPrevWithFilter",
-          "uri": "jaxrs/okrworkchat/filter/list/{id}/prev/{count}",
+          "name": "listNextWithFilter",
+          "uri": "jaxrs/okrworkchat/filter/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -1048,36 +1048,14 @@
           "method": "GET"
         },
         {
-          "name": "listMyArchivePrevWithFilter",
-          "uri": "jaxrs/okrworkreportbaseinfo/archive/list/{id}/prev/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "listMyArchiveNextWithFilter",
           "uri": "jaxrs/okrworkreportbaseinfo/archive/list/{id}/next/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listByWork",
-          "uri": "jaxrs/okrworkreportbaseinfo/list/work/{workId}",
-          "method": "GET"
-        },
-        {
-          "name": "dispatchOver",
-          "uri": "jaxrs/okrworkreportbaseinfo/dispatch/{id}/over",
-          "method": "GET"
-        },
-        {
-          "name": "listMyTaskNextWithFilter",
-          "uri": "jaxrs/okrworkreportbaseinfo/task/list/{id}/next/{count}",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listMyProcessNextWithFilter",
-          "uri": "jaxrs/okrworkreportbaseinfo/process/list/{id}/next/{count}",
+          "name": "listMyArchivePrevWithFilter",
+          "uri": "jaxrs/okrworkreportbaseinfo/archive/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -1100,10 +1078,32 @@
           "enctype": "application/json"
         },
         {
+          "name": "listMyProcessNextWithFilter",
+          "uri": "jaxrs/okrworkreportbaseinfo/process/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listMyTaskNextWithFilter",
+          "uri": "jaxrs/okrworkreportbaseinfo/task/list/{id}/next/{count}",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
           "name": "listMyDraftPrevWithFilter",
           "uri": "jaxrs/okrworkreportbaseinfo/draft/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "dispatchOver",
+          "uri": "jaxrs/okrworkreportbaseinfo/dispatch/{id}/over",
+          "method": "GET"
+        },
+        {
+          "name": "listByWork",
+          "uri": "jaxrs/okrworkreportbaseinfo/list/work/{workId}",
+          "method": "GET"
         }
       ]
     },
@@ -1122,11 +1122,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "reportAutoCreate",
-          "uri": "jaxrs/admin/okrworkreportbaseinfo/create",
-          "method": "GET"
-        },
-        {
           "name": "filterListNextWithFilter",
           "uri": "jaxrs/admin/okrworkreportbaseinfo/filter/list/{id}/next/{count}",
           "method": "PUT",
@@ -1137,6 +1132,11 @@
           "uri": "jaxrs/admin/okrworkreportbaseinfo/filter/list/{id}/prev/{count}",
           "method": "PUT",
           "enctype": "application/json"
+        },
+        {
+          "name": "reportAutoCreate",
+          "uri": "jaxrs/admin/okrworkreportbaseinfo/create",
+          "method": "GET"
         }
       ]
     },

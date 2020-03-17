@@ -269,12 +269,6 @@
               "description": "最后的编辑时间."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "编码后文本内容."
-            },
-            {
               "name": "fileName",
               "type": "String",
               "isCollection": false,
@@ -287,12 +281,6 @@
               "description": "文件大小."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -303,12 +291,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         }
@@ -528,28 +510,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -562,12 +526,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -623,28 +581,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -657,12 +597,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -723,28 +657,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -757,12 +673,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -823,28 +733,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -857,12 +749,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -918,28 +804,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -952,12 +820,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         }
@@ -1080,12 +942,6 @@
               "description": "是否在移动设备显示."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1096,12 +952,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -1214,18 +1064,6 @@
               "description": "描述."
             },
             {
-              "name": "availableIdentityList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "在指定启动时候,允许新建的用户."
-            },
-            {
-              "name": "availableUnitList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "在指定启动时候,允许新建的组织."
-            },
-            {
               "name": "portalCategory",
               "type": "String",
               "isCollection": false,
@@ -1242,12 +1080,6 @@
               "type": "String",
               "isCollection": false,
               "description": "默认首页."
-            },
-            {
-              "name": "controllerList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "应用管理者。"
             },
             {
               "name": "creatorPerson",
@@ -1280,12 +1112,6 @@
               "description": "是否在移动设备显示."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1296,12 +1122,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         }
@@ -1413,12 +1233,6 @@
               "description": "最后的编辑时间."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1429,12 +1243,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -1526,12 +1334,6 @@
               "description": "最后的编辑时间."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1542,12 +1344,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -1644,12 +1440,6 @@
               "description": "最后的编辑时间."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1660,12 +1450,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -1727,18 +1511,6 @@
               "description": "脚本所属应用."
             },
             {
-              "name": "text",
-              "type": "String",
-              "isCollection": false,
-              "description": "脚本内容."
-            },
-            {
-              "name": "dependScriptList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "依赖的函数列表."
-            },
-            {
               "name": "creatorPerson",
               "type": "String",
               "isCollection": false,
@@ -1757,12 +1529,6 @@
               "description": "最后的编辑时间."
             },
             {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
-            },
-            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -1773,12 +1539,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         }
@@ -1915,28 +1675,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -1949,12 +1691,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -2010,28 +1746,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -2044,12 +1762,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -2110,28 +1822,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -2144,12 +1838,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -2210,28 +1898,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -2244,12 +1914,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         },
@@ -2305,28 +1969,10 @@
               "description": "所属的Portal."
             },
             {
-              "name": "data",
-              "type": "String",
-              "isCollection": false,
-              "description": "文本内容."
-            },
-            {
-              "name": "mobileData",
-              "type": "String",
-              "isCollection": false,
-              "description": "移动端文本内容."
-            },
-            {
               "name": "hasMobile",
               "type": "Boolean",
               "isCollection": false,
               "description": "是否有移动端内容."
-            },
-            {
-              "name": "distributeFactor",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "分布式存储标识位."
             },
             {
               "name": "createTime",
@@ -2339,12 +1985,6 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "sequence",
-              "type": "String",
-              "isCollection": false,
-              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
             }
           ]
         }

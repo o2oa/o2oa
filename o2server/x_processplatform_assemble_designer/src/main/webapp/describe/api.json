@@ -101,15 +101,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -127,8 +127,8 @@
       "name": "ElementToolAction",
       "methods": [
         {
-          "name": "applicationDictOrphan",
-          "uri": "jaxrs/elementtool/applicationdict/orphan",
+          "name": "formOrphan",
+          "uri": "jaxrs/elementtool/form/orphan",
           "method": "GET"
         },
         {
@@ -137,13 +137,13 @@
           "method": "GET"
         },
         {
-          "name": "formOrphan",
-          "uri": "jaxrs/elementtool/form/orphan",
+          "name": "scriptOrphan",
+          "uri": "jaxrs/elementtool/script/orphan",
           "method": "GET"
         },
         {
-          "name": "scriptOrphan",
-          "uri": "jaxrs/elementtool/script/orphan",
+          "name": "applicationDictOrphan",
+          "uri": "jaxrs/elementtool/applicationdict/orphan",
           "method": "GET"
         }
       ]
@@ -322,14 +322,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "prepareCreate",
-          "uri": "jaxrs/input/prepare/create",
+          "name": "prepareCover",
+          "uri": "jaxrs/input/prepare/cover",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "prepareCover",
-          "uri": "jaxrs/input/prepare/cover",
+          "name": "prepareCreate",
+          "uri": "jaxrs/input/prepare/create",
           "method": "PUT",
           "enctype": "application/json"
         }
@@ -354,13 +354,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -461,15 +461,15 @@
           "method": "GET"
         },
         {
+          "name": "leadOut",
+          "uri": "jaxrs/process/{id}/lead/out",
+          "method": "GET"
+        },
+        {
           "name": "executeProjection",
           "uri": "jaxrs/process/{id}/execute/projection",
           "method": "POST",
           "enctype": "application/json"
-        },
-        {
-          "name": "leadOut",
-          "uri": "jaxrs/process/{id}/lead/out",
-          "method": "GET"
         }
       ]
     },
@@ -593,15 +593,15 @@
           "method": "GET"
         },
         {
+          "name": "listCategory",
+          "uri": "jaxrs/templateform/list/category",
+          "method": "GET"
+        },
+        {
           "name": "listWithCategory",
           "uri": "jaxrs/templateform/list/category",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "listCategory",
-          "uri": "jaxrs/templateform/list/category",
-          "method": "GET"
         }
       ]
     },

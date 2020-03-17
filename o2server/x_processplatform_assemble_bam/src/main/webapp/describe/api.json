@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -55,13 +55,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -69,21 +69,6 @@
     {
       "name": "PeriodAction",
       "methods": [
-        {
-          "name": "listCountCompletedWorkByApplication",
-          "uri": "jaxrs/period/list/count/completed/work/unit/{unit}/person/{person}/by/application",
-          "method": "GET"
-        },
-        {
-          "name": "listCountCompletedTaskByApplication",
-          "uri": "jaxrs/period/list/count/completed/task/unit/{unit}/person/{person}/by/application",
-          "method": "GET"
-        },
-        {
-          "name": "listCountExpiredWorkByApplication",
-          "uri": "jaxrs/period/list/count/expired/work/unit/{unit}/person/{person}/by/application",
-          "method": "GET"
-        },
         {
           "name": "listCompletedWorkApplicationStubs",
           "uri": "jaxrs/period/list/completed/work/applicationstubs",
@@ -95,23 +80,38 @@
           "method": "GET"
         },
         {
+          "name": "listCountCompletedWorkByApplication",
+          "uri": "jaxrs/period/list/count/completed/work/unit/{unit}/person/{person}/by/application",
+          "method": "GET"
+        },
+        {
+          "name": "listCountExpiredWorkByApplication",
+          "uri": "jaxrs/period/list/count/expired/work/unit/{unit}/person/{person}/by/application",
+          "method": "GET"
+        },
+        {
           "name": "listCompletedTaskApplicationStubs",
           "uri": "jaxrs/period/list/completed/task/applicationstubs",
           "method": "GET"
         },
         {
-          "name": "listExpiredTaskApplicationStubs",
-          "uri": "jaxrs/period/list/expired/task/applicationstubs",
+          "name": "listCountCompletedTaskByApplication",
+          "uri": "jaxrs/period/list/count/completed/task/unit/{unit}/person/{person}/by/application",
           "method": "GET"
         },
         {
-          "name": "listCountStartWorkByApplication",
-          "uri": "jaxrs/period/list/count/start/work/unit/{unit}/person/{person}/by/application",
+          "name": "listStartTaskApplicationStubs",
+          "uri": "jaxrs/period/list/start/task/applicationstubs",
           "method": "GET"
         },
         {
-          "name": "listCountCompletedWorkByProcess",
-          "uri": "jaxrs/period/list/count/completed/work/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "name": "listStartTaskCompanyStubs",
+          "uri": "jaxrs/period/list/start/task/unitstubs",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartTask",
+          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
           "method": "GET"
         },
         {
@@ -120,8 +120,53 @@
           "method": "GET"
         },
         {
-          "name": "listCompletedWorkCompanyStubs",
-          "uri": "jaxrs/period/list/completed/work/unitstubs",
+          "name": "listCountStartTaskByActivity",
+          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartTaskByUnit",
+          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartTaskByApplication",
+          "uri": "jaxrs/period/list/count/start/task/unit/{unit}/person/{person}/by/application",
+          "method": "GET"
+        },
+        {
+          "name": "listCompletedTaskCompanyStubs",
+          "uri": "jaxrs/period/list/completed/task/unitstubs",
+          "method": "GET"
+        },
+        {
+          "name": "listCountCompletedTask",
+          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
+          "method": "GET"
+        },
+        {
+          "name": "listCountCompletedTaskByProcess",
+          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "method": "GET"
+        },
+        {
+          "name": "listCountCompletedTaskByActivity",
+          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
+          "method": "GET"
+        },
+        {
+          "name": "listCountCompletedTaskByUnit",
+          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit",
+          "method": "GET"
+        },
+        {
+          "name": "listStartWorkApplicationStubs",
+          "uri": "jaxrs/period/list/start/work/applicationstubs",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartWorkByCompany",
+          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/by/unit",
           "method": "GET"
         },
         {
@@ -130,8 +175,28 @@
           "method": "GET"
         },
         {
-          "name": "listCountCompletedTaskByProcess",
-          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "name": "listCountCompletedWorkByProcess",
+          "uri": "jaxrs/period/list/count/completed/work/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "method": "GET"
+        },
+        {
+          "name": "listExpiredWorkCompanyStubs",
+          "uri": "jaxrs/period/list/expired/work/unitstubs",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartWork",
+          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}",
+          "method": "GET"
+        },
+        {
+          "name": "listCountStartWorkByProcess",
+          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "method": "GET"
+        },
+        {
+          "name": "listCountCompletedWork",
+          "uri": "jaxrs/period/list/count/completed/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}",
           "method": "GET"
         },
         {
@@ -145,53 +210,33 @@
           "method": "GET"
         },
         {
+          "name": "listCountStartWorkByApplication",
+          "uri": "jaxrs/period/list/count/start/work/unit/{unit}/person/{person}/by/application",
+          "method": "GET"
+        },
+        {
+          "name": "listCompletedWorkCompanyStubs",
+          "uri": "jaxrs/period/list/completed/work/unitstubs",
+          "method": "GET"
+        },
+        {
           "name": "listStartWorkUnitStubs",
           "uri": "jaxrs/period/list/start/work/unitstubs",
           "method": "GET"
         },
         {
-          "name": "listCountStartWorkByProcess",
-          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/unit/{unit}/person/{person}/by/process",
+          "name": "listCountExpiredTask",
+          "uri": "jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
+          "method": "GET"
+        },
+        {
+          "name": "listExpiredTaskApplicationStubs",
+          "uri": "jaxrs/period/list/expired/task/applicationstubs",
           "method": "GET"
         },
         {
           "name": "listCountExpiredWorkByCompany",
           "uri": "jaxrs/period/list/count/expired/work/application/{applicationId}/process/{processId}/by/unit",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartTaskByApplication",
-          "uri": "jaxrs/period/list/count/start/task/unit/{unit}/person/{person}/by/application",
-          "method": "GET"
-        },
-        {
-          "name": "listCountCompletedTaskByActivity",
-          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
-          "method": "GET"
-        },
-        {
-          "name": "listCountExpiredTaskByActivity",
-          "uri": "jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
-          "method": "GET"
-        },
-        {
-          "name": "listCompletedTaskCompanyStubs",
-          "uri": "jaxrs/period/list/completed/task/unitstubs",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartTaskByActivity",
-          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartWorkByCompany",
-          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/by/unit",
-          "method": "GET"
-        },
-        {
-          "name": "listCountExpiredTask",
-          "uri": "jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
           "method": "GET"
         },
         {
@@ -205,28 +250,8 @@
           "method": "GET"
         },
         {
-          "name": "listCountCompletedWork",
-          "uri": "jaxrs/period/list/count/completed/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartWork",
-          "uri": "jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}",
-          "method": "GET"
-        },
-        {
-          "name": "listCountCompletedTask",
-          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
-          "method": "GET"
-        },
-        {
-          "name": "listExpiredWorkApplicationStubs",
-          "uri": "jaxrs/period/list/expired/work/applicationstubs",
-          "method": "GET"
-        },
-        {
-          "name": "listStartWorkApplicationStubs",
-          "uri": "jaxrs/period/list/start/work/applicationstubs",
+          "name": "listCountExpiredTaskByActivity",
+          "uri": "jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{person}/by/activity",
           "method": "GET"
         },
         {
@@ -235,33 +260,8 @@
           "method": "GET"
         },
         {
-          "name": "listExpiredWorkCompanyStubs",
-          "uri": "jaxrs/period/list/expired/work/unitstubs",
-          "method": "GET"
-        },
-        {
-          "name": "listCountCompletedTaskByUnit",
-          "uri": "jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit",
-          "method": "GET"
-        },
-        {
-          "name": "listStartTaskCompanyStubs",
-          "uri": "jaxrs/period/list/start/task/unitstubs",
-          "method": "GET"
-        },
-        {
-          "name": "listStartTaskApplicationStubs",
-          "uri": "jaxrs/period/list/start/task/applicationstubs",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartTask",
-          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/person/{person}",
-          "method": "GET"
-        },
-        {
-          "name": "listCountStartTaskByUnit",
-          "uri": "jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit",
+          "name": "listExpiredWorkApplicationStubs",
+          "uri": "jaxrs/period/list/expired/work/applicationstubs",
           "method": "GET"
         }
       ]

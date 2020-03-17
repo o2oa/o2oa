@@ -19,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -108,7 +107,6 @@ public class PortalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Test
 	public void test() throws Exception {
 		try (FileInputStream in = new FileInputStream(new File("d:/a.png"));
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
