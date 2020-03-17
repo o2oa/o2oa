@@ -1,12 +1,5 @@
 package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -21,17 +14,20 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionCountEmpty;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionPageEmpty;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.entity.BBSReplyInfo;
-
 import net.sf.ehcache.Element;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @apiNote 根据主帖的ID 返回针对主帖的回复列表（其中要包含一个标志 及说明针对该回复的回复内容条数 ）
- * @author O2LEE
+ * @apiNote 根据回复内容ID 查询 针对该回帖的回复内容的列表
+ * @Author O2LEE
  */
-public class ActionListWithSubjectForPage extends BaseAction {
+public class ActionListWithReply extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithSubjectForPage.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithReply.class);
 
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, Integer page,
