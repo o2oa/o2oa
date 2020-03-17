@@ -37,7 +37,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.junit.Test;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
@@ -337,10 +336,10 @@ public class Describe {
 						jaxrsField.setIsBaseType(true);
 					}
 				} else {
-					//O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
-					if( StringUtils.equalsAnyIgnoreCase( "String[]", jaxrsField.getType() )) {
+					// O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
+					if (StringUtils.equalsAnyIgnoreCase("String[]", jaxrsField.getType())) {
 						jaxrsField.setIsCollection(true);
-					}else {
+					} else {
 						jaxrsField.setIsCollection(false);
 					}
 					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
@@ -755,11 +754,5 @@ public class Describe {
 			this.type = type;
 		}
 
-	}
-
-	@Test
-	public void test1() {
-		Describe o = new Describe();
-		o.scan("d:/x/x_processplatform_assemble_surface/describe", "x_processplatform_assemble_surface");
 	}
 }

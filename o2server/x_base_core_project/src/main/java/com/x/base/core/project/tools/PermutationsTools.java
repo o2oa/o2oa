@@ -3,8 +3,6 @@ package com.x.base.core.project.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.project.gson.XGsonBuilder;
-
 public class PermutationsTools {
 
 	public static <T> List<List<T>> combination(int count, List<T> elements) throws Exception {
