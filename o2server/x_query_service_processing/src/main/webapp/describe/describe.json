@@ -1,0 +1,756 @@
+{
+  "jaxrs": [
+    {
+      "name": "CacheAction",
+      "className": "com.x.base.core.project.jaxrs.cache.CacheAction",
+      "description": "缓存操作",
+      "methods": [
+        {
+          "name": "configFlush",
+          "className": "com.x.base.core.project.jaxrs.cache.ActionConfigFlush",
+          "description": "接收config flush 信号.",
+          "type": "GET",
+          "path": "jaxrs/cache/config/flush",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "receive",
+          "className": "com.x.base.core.project.jaxrs.cache.ActionReceive",
+          "description": "接收Cache刷新信息.",
+          "type": "PUT",
+          "path": "jaxrs/cache",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [
+            {
+              "name": "nodeName",
+              "type": "String",
+              "isCollection": false,
+              "description": "节点名",
+              "isBaseType": true
+            },
+            {
+              "name": "className",
+              "type": "String",
+              "isCollection": false,
+              "description": "类名",
+              "isBaseType": true
+            },
+            {
+              "name": "keys",
+              "type": "List\u003cObject\u003e",
+              "isCollection": true,
+              "description": "关键字",
+              "isBaseType": false
+            }
+          ],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EchoAction",
+      "className": "com.x.base.core.project.jaxrs.echo.EchoAction",
+      "description": "响应",
+      "methods": [
+        {
+          "name": "get",
+          "className": "com.x.base.core.project.jaxrs.echo.ActionGet",
+          "description": "获取应答.",
+          "type": "GET",
+          "path": "jaxrs/echo",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "servletContextName",
+              "type": "String",
+              "isCollection": false,
+              "description": "上下文根"
+            },
+            {
+              "name": "serverTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "服务器时间"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FireScheduleAction",
+      "className": "com.x.base.core.project.jaxrs.fireschedule.FireScheduleAction",
+      "description": "触发任务",
+      "methods": [
+        {
+          "name": "execute",
+          "className": "com.x.base.core.project.jaxrs.fireschedule.ActionExecute",
+          "description": "接受x_program_center发送过来的运行schedule.",
+          "type": "GET",
+          "path": "jaxrs/fireschedule/classname/{className}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "className",
+              "type": "String",
+              "description": "运行类"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LoggerAction",
+      "className": "com.x.base.core.project.jaxrs.logger.LoggerAction",
+      "description": "日志操作",
+      "methods": [
+        {
+          "name": "debug",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionDebug",
+          "description": "设置日志级别为DEBUG.",
+          "type": "GET",
+          "path": "jaxrs/logger/debug",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionGet",
+          "description": "获取当前日志级别.",
+          "type": "GET",
+          "path": "jaxrs/logger",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        },
+        {
+          "name": "info",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionInfo",
+          "description": "设置日志级别为INFO",
+          "type": "GET",
+          "path": "jaxrs/logger/info",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "trace",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionTrace",
+          "description": "设置日志级别为TRACE.",
+          "type": "GET",
+          "path": "jaxrs/logger/trace",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "warn",
+          "className": "com.x.base.core.project.jaxrs.logger.ActionWarn",
+          "description": "设置日志级别为WARN",
+          "type": "GET",
+          "path": "jaxrs/logger/warn",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NeuralAction",
+      "className": "com.x.query.service.processing.jaxrs.neural.NeuralAction",
+      "description": "神经网络多层感知机",
+      "methods": [
+        {
+          "name": "generate",
+          "className": "com.x.query.service.processing.jaxrs.neural.ActionGenerate",
+          "description": "创建用于学习的数据集.",
+          "type": "GET",
+          "path": "jaxrs/neural/generate/model/{modelFlag}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "modelFlag",
+              "type": "String",
+              "description": "模型标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "learn",
+          "className": "com.x.query.service.processing.jaxrs.neural.ActionLearn",
+          "description": "学习.",
+          "type": "GET",
+          "path": "jaxrs/neural/learn/model/{modelFlag}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "modelFlag",
+              "type": "String",
+              "description": "模型标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "listCalculateWithWork",
+          "className": "com.x.query.service.processing.jaxrs.neural.ActionListCalculateWithWork",
+          "description": "计算输入工作ID进行计算.",
+          "type": "GET",
+          "path": "jaxrs/neural/list/calculate/model/{modelFlag}/work/{workId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "modelFlag",
+              "type": "String",
+              "description": "模型标识"
+            },
+            {
+              "name": "workId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "stopGenerating",
+          "className": "com.x.query.service.processing.jaxrs.neural.ActionStopGenerating",
+          "description": "停止数据生成.",
+          "type": "GET",
+          "path": "jaxrs/neural/stop/generating/model/{modelFlag}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "modelFlag",
+              "type": "String",
+              "description": "项目标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "stopLearning",
+          "className": "com.x.query.service.processing.jaxrs.neural.ActionStopLearning",
+          "description": "停止学习.",
+          "type": "GET",
+          "path": "jaxrs/neural/stop/learning/model/{modelFlag}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "modelFlag",
+              "type": "String",
+              "description": "模型标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SegmentAction",
+      "className": "com.x.query.service.processing.jaxrs.segment.SegmentAction",
+      "description": "分词",
+      "methods": [
+        {
+          "name": "clean",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionClean",
+          "description": "清空所有分词内容.",
+          "type": "GET",
+          "path": "jaxrs/segment/clean/work/{cleanWork}/workCompleted/{cleanWorkCompleted}/cms/{cleanCms}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "cleanWork",
+              "type": "Boolean",
+              "description": "是否清空工作索引"
+            },
+            {
+              "name": "cleanWorkCompleted",
+              "type": "Boolean",
+              "description": "是否清空已完成工作索引"
+            },
+            {
+              "name": "cleanCms",
+              "type": "Boolean",
+              "description": "是否清空内容管理索引"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "crawlCms",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCrawlCms",
+          "description": "对内容管理文档进行索引.",
+          "type": "GET",
+          "path": "jaxrs/segment/crawl/cms/{documentId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "documentId",
+              "type": "String",
+              "description": "文档标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "crawlWork",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCrawlWork",
+          "description": "对工作进行索引.",
+          "type": "GET",
+          "path": "jaxrs/segment/crawl/work/{workId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "workId",
+              "type": "String",
+              "description": "工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "crawlWorkCompleted",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCrawlWorkCompleted",
+          "description": "对已完成工作进行索引.",
+          "type": "GET",
+          "path": "jaxrs/segment/crawl/workcompleted/{workCompletedId}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "workCompletedId",
+              "type": "String",
+              "description": "已完成工作标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SysResourceAction",
+      "className": "com.x.base.core.project.jaxrs.sysresource.SysResourceAction",
+      "description": "系统资源",
+      "methods": [
+        {
+          "name": "listResource",
+          "className": "com.x.base.core.project.jaxrs.sysresource.ActionListResource",
+          "description": "获取静态资源信息.",
+          "type": "GET",
+          "path": "jaxrs/sysresource/filePath/{filePath}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "filePath",
+              "type": "String",
+              "description": "查找路径(根路径:(0))"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "uploadResource",
+          "className": "com.x.base.core.project.jaxrs.sysresource.ActionUploadResource",
+          "description": "上传静态资源(仅上传到当前服务器)",
+          "type": "POST",
+          "path": "jaxrs/sysresource/upload/resource/as/new/{asNew}",
+          "contentType": "multipart/form-data",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": true,
+          "pathParameters": [
+            {
+              "name": "asNew",
+              "type": "Boolean",
+              "description": "覆盖类型：true删除原文件然后上传，false覆盖原文件"
+            }
+          ],
+          "formParameters": [
+            {
+              "name": "file",
+              "type": "File",
+              "description": "上传文件"
+            },
+            {
+              "name": "fileName",
+              "type": "String",
+              "description": "附件名称"
+            },
+            {
+              "name": "filePath",
+              "type": "String",
+              "description": "附件存放目录(可以为空)"
+            }
+          ],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TestAction",
+      "className": "com.x.query.service.processing.jaxrs.test.TestAction",
+      "description": "测试",
+      "methods": [
+        {
+          "name": "crawlCms",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionCrawlCms",
+          "description": "执行crawlCms.",
+          "type": "GET",
+          "path": "jaxrs/test/crawl/cms",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "crawlWork",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionCrawlWork",
+          "description": "执行crawlWork.",
+          "type": "GET",
+          "path": "jaxrs/test/crawl/work",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "crawlWorkCompleted",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionCrawlWorkCompleted",
+          "description": "执行crawlWorkCompleted.",
+          "type": "GET",
+          "path": "jaxrs/test/crawl/workcompleted",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "extract",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionExtract",
+          "description": "文字转换.",
+          "type": "POST",
+          "path": "jaxrs/test/extract",
+          "contentType": "multipart/form-data",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": true,
+          "pathParameters": [],
+          "formParameters": [
+            {
+              "name": "file",
+              "type": "File",
+              "description": ""
+            }
+          ],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "字符串值"
+            }
+          ]
+        },
+        {
+          "name": "group2",
+          "className": "com.x.query.service.processing.jaxrs.test.ActionGroup2",
+          "description": "执行group.",
+          "type": "GET",
+          "path": "jaxrs/test/group2",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

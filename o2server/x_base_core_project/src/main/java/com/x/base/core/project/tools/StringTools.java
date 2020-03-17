@@ -26,7 +26,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
 import org.slf4j.helpers.MessageFormatter;
 
 public class StringTools {
