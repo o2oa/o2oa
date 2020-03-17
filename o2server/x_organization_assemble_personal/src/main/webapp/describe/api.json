@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -107,6 +107,11 @@
           "enctype": "application/json"
         },
         {
+          "name": "listWithCurrentPerson",
+          "uri": "jaxrs/empower/list/currentperson",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/empower/list/{id}/next/{count}",
           "method": "GET"
@@ -128,21 +133,6 @@
           "method": "GET"
         },
         {
-          "name": "listWithCurrentPerson",
-          "uri": "jaxrs/empower/list/currentperson",
-          "method": "GET"
-        },
-        {
-          "name": "listToEnable",
-          "uri": "jaxrs/empower/list/to/enable",
-          "method": "GET"
-        },
-        {
-          "name": "listTo",
-          "uri": "jaxrs/empower/list/to",
-          "method": "GET"
-        },
-        {
           "name": "listWithCurrentPersonEnable",
           "uri": "jaxrs/empower/list/currentperson/enable",
           "method": "GET"
@@ -152,6 +142,16 @@
           "uri": "jaxrs/empower/manager/list/paging/{page}/size/{size}",
           "method": "POST",
           "enctype": "application/json"
+        },
+        {
+          "name": "listTo",
+          "uri": "jaxrs/empower/list/to",
+          "method": "GET"
+        },
+        {
+          "name": "listToEnable",
+          "uri": "jaxrs/empower/list/to/enable",
+          "method": "GET"
         }
       ]
     },
@@ -175,6 +175,12 @@
           "method": "GET"
         },
         {
+          "name": "listToCurrentPersonPaging",
+          "uri": "jaxrs/empowerlog/list/to/currentperson/paging/{page}/size/{size}",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
           "name": "managerlistPaging",
           "uri": "jaxrs/empowerlog/manager/list/paging/{page}/size/{size}",
           "method": "POST",
@@ -183,12 +189,6 @@
         {
           "name": "listWithCurrentPersonPaging",
           "uri": "jaxrs/empowerlog/list/currentperson/paging/{page}/size/{size}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listToCurrentPersonPaging",
-          "uri": "jaxrs/empowerlog/list/to/currentperson/paging/{page}/size/{size}",
           "method": "POST",
           "enctype": "application/json"
         }
@@ -218,13 +218,13 @@
           "method": "GET"
         },
         {
-          "name": "listTitlePassive",
-          "uri": "jaxrs/exmail/list/title/passive",
+          "name": "newCountPassive",
+          "uri": "jaxrs/exmail/new/count/passive",
           "method": "GET"
         },
         {
-          "name": "newCountPassive",
-          "uri": "jaxrs/exmail/new/count/passive",
+          "name": "listTitlePassive",
+          "uri": "jaxrs/exmail/list/title/passive",
           "method": "GET"
         }
       ]
@@ -268,13 +268,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -354,13 +354,13 @@
           "method": "GET"
         },
         {
-          "name": "captcha",
-          "uri": "jaxrs/regist/captcha/width/{width}/height/{height}",
+          "name": "checkPassword",
+          "uri": "jaxrs/regist/check/password/{password}",
           "method": "GET"
         },
         {
-          "name": "checkPassword",
-          "uri": "jaxrs/regist/check/password/{password}",
+          "name": "captcha",
+          "uri": "jaxrs/regist/captcha/width/{width}/height/{height}",
           "method": "GET"
         },
         {

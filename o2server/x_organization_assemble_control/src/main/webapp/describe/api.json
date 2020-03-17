@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -72,6 +72,16 @@
           "enctype": "application/json"
         },
         {
+          "name": "listSubNested",
+          "uri": "jaxrs/group/list/{flag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirect",
+          "uri": "jaxrs/group/list/{flag}/sub/direct",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/group/list/{flag}/next/{count}",
           "method": "GET"
@@ -88,14 +98,35 @@
           "enctype": "application/json"
         },
         {
-          "name": "listPinyinInitial",
-          "uri": "jaxrs/group/list/pinyininitial",
+          "name": "listWithRole",
+          "uri": "jaxrs/group/list/role/{roleFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "addMember",
+          "uri": "jaxrs/group/{flag}/add/member",
           "method": "PUT",
           "enctype": "application/json"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/group/list/like",
+          "name": "listSupDirect",
+          "uri": "jaxrs/group/list/{flag}/sup/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listSupNested",
+          "uri": "jaxrs/group/list/{flag}/sup/nested",
+          "method": "GET"
+        },
+        {
+          "name": "deleteMember",
+          "uri": "jaxrs/group/{flag}/delete/member",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/group/list/pinyininitial",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -106,41 +137,10 @@
           "enctype": "application/json"
         },
         {
-          "name": "listSupDirect",
-          "uri": "jaxrs/group/list/{flag}/sup/direct",
-          "method": "GET"
-        },
-        {
-          "name": "deleteMember",
-          "uri": "jaxrs/group/{flag}/delete/member",
+          "name": "listLike",
+          "uri": "jaxrs/group/list/like",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "addMember",
-          "uri": "jaxrs/group/{flag}/add/member",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listWithRole",
-          "uri": "jaxrs/group/list/role/{roleFlag}",
-          "method": "GET"
-        },
-        {
-          "name": "listSupNested",
-          "uri": "jaxrs/group/list/{flag}/sup/nested",
-          "method": "GET"
-        },
-        {
-          "name": "listSubNested",
-          "uri": "jaxrs/group/list/{flag}/sub/nested",
-          "method": "GET"
-        },
-        {
-          "name": "listSubDirect",
-          "uri": "jaxrs/group/list/{flag}/sub/direct",
-          "method": "GET"
         },
         {
           "name": "listSupNestedWithPerson",
@@ -201,14 +201,13 @@
           "method": "GET"
         },
         {
-          "name": "listPinyinInitial",
-          "uri": "jaxrs/identity/list/pinyininitial",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listWithUnit",
+          "uri": "jaxrs/identity/list/unit/{unitFlag}",
+          "method": "GET"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/identity/list/like",
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/identity/list/pinyininitial",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -219,18 +218,19 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithUnit",
-          "uri": "jaxrs/identity/list/unit/{unitFlag}",
+          "name": "listLike",
+          "uri": "jaxrs/identity/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listWithUnitWithUnitDutyName",
+          "uri": "jaxrs/identity/list/{flag}/unitduty/name/{unitDutyName}",
           "method": "GET"
         },
         {
           "name": "listWithUnitDutyName",
           "uri": "jaxrs/identity/list/unitduty/name/{unitDutyName}",
-          "method": "GET"
-        },
-        {
-          "name": "listWithUnitWithUnitDutyName",
-          "uri": "jaxrs/identity/list/{flag}/unitduty/name/{unitDutyName}",
           "method": "GET"
         }
       ]
@@ -275,13 +275,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -329,6 +329,16 @@
           "enctype": "formData"
         },
         {
+          "name": "listSubNestedWithGroup",
+          "uri": "jaxrs/person/list/group/{groupFlag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirectWithGroup",
+          "uri": "jaxrs/person/list/group/{groupFlag}/sub/direct",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/person/list/{flag}/next/{count}",
           "method": "GET"
@@ -345,22 +355,14 @@
           "enctype": "application/json"
         },
         {
-          "name": "listPinyinInitial",
-          "uri": "jaxrs/person/list/pinyininitial",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "getIconWithPerson",
+          "uri": "jaxrs/person/{flag}/icon",
+          "method": "GET"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/person/list/like",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "listLikePinyin",
-          "uri": "jaxrs/person/list/like/pinyin",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listWithRole",
+          "uri": "jaxrs/person/list/role/{roleFlag}",
+          "method": "GET"
         },
         {
           "name": "checkPassword",
@@ -373,24 +375,22 @@
           "method": "GET"
         },
         {
-          "name": "listWithRole",
-          "uri": "jaxrs/person/list/role/{roleFlag}",
-          "method": "GET"
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/person/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
-          "name": "listSubDirectWithGroup",
-          "uri": "jaxrs/person/list/group/{groupFlag}/sub/direct",
-          "method": "GET"
+          "name": "listLikePinyin",
+          "uri": "jaxrs/person/list/like/pinyin",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
-          "name": "listSubNestedWithGroup",
-          "uri": "jaxrs/person/list/group/{groupFlag}/sub/nested",
-          "method": "GET"
-        },
-        {
-          "name": "getIconWithPerson",
-          "uri": "jaxrs/person/{flag}/icon",
-          "method": "GET"
+          "name": "listLike",
+          "uri": "jaxrs/person/list/like",
+          "method": "PUT",
+          "enctype": "application/json"
         }
       ]
     },
@@ -415,6 +415,11 @@
           "enctype": "application/json"
         },
         {
+          "name": "standardListPrev",
+          "uri": "jaxrs/personattribute/list/{flag}/prev/{count}",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/personattribute/list/{flag}/next/{count}",
           "method": "GET"
@@ -428,11 +433,6 @@
         {
           "name": "listWithPerson",
           "uri": "jaxrs/personattribute/list/person/{personFlag}",
-          "method": "GET"
-        },
-        {
-          "name": "standardListPrev",
-          "uri": "jaxrs/personattribute/list/{flag}/prev/{count}",
           "method": "GET"
         }
       ]
@@ -479,13 +479,14 @@
           "method": "GET"
         },
         {
-          "name": "listWithGroup",
-          "uri": "jaxrs/role/list/group/{groupFlag}",
-          "method": "GET"
-        },
-        {
           "name": "listPinyinInitial",
           "uri": "jaxrs/role/list/pinyininitial",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "listLikePinyin",
+          "uri": "jaxrs/role/list/like/pinyin",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -496,10 +497,9 @@
           "enctype": "application/json"
         },
         {
-          "name": "listLikePinyin",
-          "uri": "jaxrs/role/list/like/pinyin",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listWithGroup",
+          "uri": "jaxrs/role/list/group/{groupFlag}",
+          "method": "GET"
         }
       ]
     },
@@ -549,6 +549,21 @@
           "method": "GET"
         },
         {
+          "name": "listSubNested",
+          "uri": "jaxrs/unit/list/{flag}/sub/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirect",
+          "uri": "jaxrs/unit/list/{flag}/sub/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listTop",
+          "uri": "jaxrs/unit/list/top",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/unit/list/{flag}/next/{count}",
           "method": "GET"
@@ -565,14 +580,23 @@
           "enctype": "application/json"
         },
         {
-          "name": "listPinyinInitial",
-          "uri": "jaxrs/unit/list/pinyininitial",
-          "method": "PUT",
-          "enctype": "application/json"
+          "name": "listTopWithType",
+          "uri": "jaxrs/unit/list/top/type/{type}",
+          "method": "GET"
         },
         {
-          "name": "listLike",
-          "uri": "jaxrs/unit/list/like",
+          "name": "getSupDirect",
+          "uri": "jaxrs/unit/{flag}/sup/direct",
+          "method": "GET"
+        },
+        {
+          "name": "listSupNested",
+          "uri": "jaxrs/unit/list/{flag}/sup/nested",
+          "method": "GET"
+        },
+        {
+          "name": "listPinyinInitial",
+          "uri": "jaxrs/unit/list/pinyininitial",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -583,48 +607,8 @@
           "enctype": "application/json"
         },
         {
-          "name": "listSupNested",
-          "uri": "jaxrs/unit/list/{flag}/sup/nested",
-          "method": "GET"
-        },
-        {
-          "name": "getSupDirect",
-          "uri": "jaxrs/unit/{flag}/sup/direct",
-          "method": "GET"
-        },
-        {
-          "name": "listTopWithType",
-          "uri": "jaxrs/unit/list/top/type/{type}",
-          "method": "GET"
-        },
-        {
-          "name": "listTop",
-          "uri": "jaxrs/unit/list/top",
-          "method": "GET"
-        },
-        {
-          "name": "listSubNested",
-          "uri": "jaxrs/unit/list/{flag}/sub/nested",
-          "method": "GET"
-        },
-        {
-          "name": "listSubDirect",
-          "uri": "jaxrs/unit/list/{flag}/sub/direct",
-          "method": "GET"
-        },
-        {
-          "name": "getWithIdentityWithType",
-          "uri": "jaxrs/unit/identity/{identityFlag}/type/{type}",
-          "method": "GET"
-        },
-        {
-          "name": "listSubDirectWithType",
-          "uri": "jaxrs/unit/list/{flag}/sub/direct/type/{type}",
-          "method": "GET"
-        },
-        {
-          "name": "listWithUnitWithType",
-          "uri": "jaxrs/unit/list/unit/type",
+          "name": "listLike",
+          "uri": "jaxrs/unit/list/like",
           "method": "PUT",
           "enctype": "application/json"
         },
@@ -636,6 +620,22 @@
         {
           "name": "listSupNestedWithType",
           "uri": "jaxrs/unit/list/{flag}/sup/nested/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listWithUnitWithType",
+          "uri": "jaxrs/unit/list/unit/type",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "getWithIdentityWithType",
+          "uri": "jaxrs/unit/identity/{identityFlag}/type/{type}",
+          "method": "GET"
+        },
+        {
+          "name": "listSubDirectWithType",
+          "uri": "jaxrs/unit/list/{flag}/sub/direct/type/{type}",
           "method": "GET"
         }
       ]
@@ -704,6 +704,11 @@
           "enctype": "application/json"
         },
         {
+          "name": "listWithName",
+          "uri": "jaxrs/unitduty/list/name/{name}",
+          "method": "GET"
+        },
+        {
           "name": "listNext",
           "uri": "jaxrs/unitduty/list/{flag}/next/{count}",
           "method": "GET"
@@ -720,18 +725,13 @@
           "enctype": "application/json"
         },
         {
-          "name": "listWithIdentity",
-          "uri": "jaxrs/unitduty/list/identity/{identityFlag}",
-          "method": "GET"
-        },
-        {
-          "name": "listWithName",
-          "uri": "jaxrs/unitduty/list/name/{name}",
-          "method": "GET"
-        },
-        {
           "name": "listWithUnit",
           "uri": "jaxrs/unitduty/list/unit/{unitFlag}",
+          "method": "GET"
+        },
+        {
+          "name": "distinctNameLike",
+          "uri": "jaxrs/unitduty/distinct/name/like/{key}",
           "method": "GET"
         },
         {
@@ -740,8 +740,8 @@
           "method": "GET"
         },
         {
-          "name": "distinctNameLike",
-          "uri": "jaxrs/unitduty/distinct/name/like/{key}",
+          "name": "listWithIdentity",
+          "uri": "jaxrs/unitduty/list/identity/{identityFlag}",
           "method": "GET"
         }
       ]

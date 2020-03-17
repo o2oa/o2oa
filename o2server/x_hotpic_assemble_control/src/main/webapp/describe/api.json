@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -63,10 +63,9 @@
           "enctype": "application/json"
         },
         {
-          "name": "changeTitle",
-          "uri": "jaxrs/user/hotpic/changeTitle",
-          "method": "POST",
-          "enctype": "application/json"
+          "name": "listByApplicationAndInfoId",
+          "uri": "jaxrs/user/hotpic/{application}/{infoId}",
+          "method": "GET"
         },
         {
           "name": "existsCheck",
@@ -80,9 +79,10 @@
           "enctype": "application/json"
         },
         {
-          "name": "listByApplicationAndInfoId",
-          "uri": "jaxrs/user/hotpic/{application}/{infoId}",
-          "method": "GET"
+          "name": "changeTitle",
+          "uri": "jaxrs/user/hotpic/changeTitle",
+          "method": "POST",
+          "enctype": "application/json"
         }
       ]
     },
@@ -121,13 +121,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]

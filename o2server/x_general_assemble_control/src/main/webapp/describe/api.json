@@ -4,16 +4,6 @@
       "name": "AreaAction",
       "methods": [
         {
-          "name": "listStreet",
-          "uri": "jaxrs/area/list/province/{province}/city/{city}/district/{district}",
-          "method": "GET"
-        },
-        {
-          "name": "listCity",
-          "uri": "jaxrs/area/list/province/{province}",
-          "method": "GET"
-        },
-        {
           "name": "listDistrict",
           "uri": "jaxrs/area/list/province/{province}/city/{city}",
           "method": "GET"
@@ -22,6 +12,16 @@
           "name": "listProvince",
           "uri": "jaxrs/area/list",
           "method": "GET"
+        },
+        {
+          "name": "listCity",
+          "uri": "jaxrs/area/list/province/{province}",
+          "method": "GET"
+        },
+        {
+          "name": "listStreet",
+          "uri": "jaxrs/area/list/province/{province}/city/{city}/district/{district}",
+          "method": "GET"
         }
       ]
     },
@@ -29,15 +29,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -91,13 +91,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
@@ -112,15 +112,15 @@
           "enctype": "formData"
         },
         {
-          "name": "htmlToWordResult",
-          "uri": "jaxrs/office/html/to/word/result/{flag}",
-          "method": "GET"
-        },
-        {
           "name": "htmlToWord",
           "uri": "jaxrs/office/html/to/word",
           "method": "POST",
           "enctype": "application/json"
+        },
+        {
+          "name": "htmlToWordResult",
+          "uri": "jaxrs/office/html/to/word/result/{flag}",
+          "method": "GET"
         }
       ]
     },

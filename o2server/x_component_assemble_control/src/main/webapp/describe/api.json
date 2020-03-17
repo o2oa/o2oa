@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -43,15 +43,15 @@
           "enctype": "application/json"
         },
         {
+          "name": "listAll",
+          "uri": "jaxrs/component/list/all",
+          "method": "GET"
+        },
+        {
           "name": "edit",
           "uri": "jaxrs/component/{flag}",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "listAll",
-          "uri": "jaxrs/component/list/all",
-          "method": "GET"
         }
       ]
     },
@@ -94,13 +94,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]

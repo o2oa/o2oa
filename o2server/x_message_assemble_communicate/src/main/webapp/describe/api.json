@@ -4,15 +4,15 @@
       "name": "CacheAction",
       "methods": [
         {
+          "name": "configFlush",
+          "uri": "jaxrs/cache/config/flush",
+          "method": "GET"
+        },
+        {
           "name": "receive",
           "uri": "jaxrs/cache",
           "method": "PUT",
           "enctype": "application/json"
-        },
-        {
-          "name": "configFlush",
-          "uri": "jaxrs/cache/config/flush",
-          "method": "GET"
         }
       ]
     },
@@ -42,6 +42,11 @@
           "method": "GET"
         },
         {
+          "name": "listWithCurrentPerson",
+          "uri": "jaxrs/consume/list/{consume}/currentperson/count/{count}",
+          "method": "GET"
+        },
+        {
           "name": "listWithPerson",
           "uri": "jaxrs/consume/list/{consume}/person/{person}/count/{count}",
           "method": "GET"
@@ -49,11 +54,6 @@
         {
           "name": "updateSingle",
           "uri": "jaxrs/consume/{id}/type/{type}",
-          "method": "GET"
-        },
-        {
-          "name": "listWithCurrentPerson",
-          "uri": "jaxrs/consume/list/{consume}/currentperson/count/{count}",
           "method": "GET"
         }
       ]
@@ -88,29 +88,6 @@
           "enctype": "application/json"
         },
         {
-          "name": "conversationRead",
-          "uri": "jaxrs/im/conversation/{id}/read",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
-          "name": "conversation",
-          "uri": "jaxrs/im/conversation/{id}",
-          "method": "GET"
-        },
-        {
-          "name": "msgCreate",
-          "uri": "jaxrs/im/msg",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
-          "name": "msgListByPaging",
-          "uri": "jaxrs/im/msg/list/{page}/size/{size}",
-          "method": "POST",
-          "enctype": "application/json"
-        },
-        {
           "name": "conversationSetTop",
           "uri": "jaxrs/im/conversation/{id}/top/set",
           "method": "PUT",
@@ -126,6 +103,29 @@
           "name": "myConversationList",
           "uri": "jaxrs/im/conversation/list/my",
           "method": "GET"
+        },
+        {
+          "name": "conversation",
+          "uri": "jaxrs/im/conversation/{id}",
+          "method": "GET"
+        },
+        {
+          "name": "msgCreate",
+          "uri": "jaxrs/im/msg",
+          "method": "POST",
+          "enctype": "application/json"
+        },
+        {
+          "name": "conversationRead",
+          "uri": "jaxrs/im/conversation/{id}/read",
+          "method": "PUT",
+          "enctype": "application/json"
+        },
+        {
+          "name": "msgListByPaging",
+          "uri": "jaxrs/im/msg/list/{page}/size/{size}",
+          "method": "POST",
+          "enctype": "application/json"
         }
       ]
     },
@@ -133,14 +133,10 @@
       "name": "InstantAction",
       "methods": [
         {
-          "name": "listNext",
-          "uri": "jaxrs/instant/list/{id}/next/{count}",
-          "method": "GET"
-        },
-        {
-          "name": "listPrev",
-          "uri": "jaxrs/instant/list/{id}/prev/{count}",
-          "method": "GET"
+          "name": "currentPersonConsumed",
+          "uri": "jaxrs/instant/currentperson/consumed",
+          "method": "PUT",
+          "enctype": "application/json"
         },
         {
           "name": "listWithCurrentPersonConsumedAsc",
@@ -163,14 +159,13 @@
           "method": "GET"
         },
         {
-          "name": "currentPersonConsumed",
-          "uri": "jaxrs/instant/currentperson/consumed",
-          "method": "PUT",
-          "enctype": "application/json"
-        },
-        {
           "name": "listWithCurrentNotConsumedPersonDesc",
           "uri": "jaxrs/instant/list/currentperson/not/consumed/count/{count}/desc",
+          "method": "GET"
+        },
+        {
+          "name": "listWithCurrentPersonNotConsumedAsc",
+          "uri": "jaxrs/instant/list/currentperson/not/consumed/count/{count}/asc",
           "method": "GET"
         },
         {
@@ -179,8 +174,13 @@
           "method": "GET"
         },
         {
-          "name": "listWithCurrentPersonNotConsumedAsc",
-          "uri": "jaxrs/instant/list/currentperson/not/consumed/count/{count}/asc",
+          "name": "listNext",
+          "uri": "jaxrs/instant/list/{id}/next/{count}",
+          "method": "GET"
+        },
+        {
+          "name": "listPrev",
+          "uri": "jaxrs/instant/list/{id}/prev/{count}",
           "method": "GET"
         }
       ]
@@ -204,13 +204,13 @@
           "method": "GET"
         },
         {
-          "name": "info",
-          "uri": "jaxrs/logger/info",
+          "name": "warn",
+          "uri": "jaxrs/logger/warn",
           "method": "GET"
         },
         {
-          "name": "warn",
-          "uri": "jaxrs/logger/warn",
+          "name": "info",
+          "uri": "jaxrs/logger/info",
           "method": "GET"
         }
       ]
