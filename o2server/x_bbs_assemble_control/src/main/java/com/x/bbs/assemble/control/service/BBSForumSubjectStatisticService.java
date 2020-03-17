@@ -99,7 +99,7 @@ public class BBSForumSubjectStatisticService {
 				emc.beginTransaction( BBSSubjectInfo.class );
 				subject = emc.find( s.getId(), BBSSubjectInfo.class );
 				if( subject != null ){
-					count = business.replyInfoFactory().countBySubjectId( s.getId() );
+					count = business.replyInfoFactory().countBySubjectId( s.getId(), true );
 					subject.setReplyTotal( count.longValue() );
 					emc.check( subject, CheckPersistType.all );
 				}
