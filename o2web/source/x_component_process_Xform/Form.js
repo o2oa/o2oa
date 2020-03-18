@@ -3195,7 +3195,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
 
                     _self.doDeleteWork(function () {
-                        _self.fireEvent("s");
+                        _self.fireEvent("afterDelete");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
                         _self.app.close();
