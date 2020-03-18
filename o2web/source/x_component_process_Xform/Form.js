@@ -990,12 +990,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return obj;
     },
 
-    saveWork: function (callback) {
+    saveWork: function (callback, silent ) {
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
-                if (this.app) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
+                if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
                 if (callback && typeOf(callback) === "function") callback();
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
@@ -3195,7 +3195,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
 
                     _self.doDeleteWork(function () {
-                        _self.fireEvent("s");
+                        _self.fireEvent("afterDelete");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
                         _self.app.close();

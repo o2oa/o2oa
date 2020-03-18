@@ -13,8 +13,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.alibaba.druid.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -99,6 +98,37 @@ public class ReplyInfoAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionReplyInfoProcess(e, "根据指定ID获取回贴信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据回复内容ID 查询 针对该回帖的回复内容的列表.", action = ActionListWithReply.class)
+	@GET
+	@Path("list/sub/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listSubRepliesWithReply(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("回复信息ID") @PathParam("id") String id) {
+		ActionResult<List<ActionListWithReply.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			if (StringUtils.isEmpty( id )) {
+				check = false;
+				Exception exception = new ExceptionReplyIdEmpty();
+				result.error(exception);
+			}
+		}
+		if (check) {
+			try {
+				result = new ActionListWithReply().execute(request, effectivePerson, id);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionReplyInfoProcess(e, "根据回复内容ID 查询 针对该回帖的回复内容的列表！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}

@@ -52,12 +52,15 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	}
 
 	//@MethodDescribe( "根据主贴ID统计主贴的回复数量" )
-	public Long countBySubjectId( String subjectId ) throws Exception {
+	public Long countBySubjectId(String subjectId, Boolean noLevel) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSReplyInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
+		if( !noLevel ){
+			p = cb.and( p,cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
+		}
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
@@ -86,7 +89,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe( "根据主题ID获取该主题所有的回复信息对象列表" )
-	public List<BBSReplyInfo> listWithSubjectForPage( String subjectId, Integer maxCount ) throws Exception {
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean noLevel, Integer maxCount) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
@@ -95,7 +98,10 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSReplyInfo> cq = cb.createQuery( BBSReplyInfo.class );
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
-		cq.orderBy( cb.asc( root.get( BBSReplyInfo_.orderNumber ) ) );
+		if( !noLevel ){
+			p = cb.and( p, cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
+		}
+		cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
 		if( maxCount == null ){
 			return em.createQuery(cq.where(p)).getResultList();
 		}else{
@@ -387,4 +393,26 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		cq.select( root.get( BBSReplyInfo_.id ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	/**
+	 * 根据回复ID，查询二级回复列表，状态：无审核|审核通过
+	 *
+	 * @param replyId
+	 * @return
+	 */
+    public List<BBSReplyInfo> listReplyWithReplyId(String replyId) throws Exception {
+		if( StringUtils.isEmpty( replyId ) ){
+			throw new Exception( "replyId is empty!" );
+		}
+		EntityManager em = this.entityManagerContainer().get( BBSReplyInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<BBSReplyInfo> cq = cb.createQuery( BBSReplyInfo.class );
+		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
+		Predicate p = cb.equal( root.get( BBSReplyInfo_.parentId ), replyId );
+		p = cb.and( p, cb.or(
+				cb.equal( root.get( BBSReplyInfo_.replyAuditStatus ), "无审核" ),
+				cb.equal( root.get( BBSReplyInfo_.replyAuditStatus ), "审核通过" )
+		));
+		return em.createQuery(cq.where(p)).getResultList();
+    }
 }
