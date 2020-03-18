@@ -1014,7 +1014,7 @@ MWF.xScript.Environment = function(ev){
         },
         "deleteWork": function(option){
             if (!option){
-                if (_form.businessData.control["allowDeleteWork"]) _form.deleteWork();
+                if (_form.businessData.control["allowDelete"]) _form.deleteWork();
             }else{
                 _form.doDeleteWork(option.success, option.failure);
             }
