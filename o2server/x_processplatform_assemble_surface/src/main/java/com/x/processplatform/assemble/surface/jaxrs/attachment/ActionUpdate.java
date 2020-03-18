@@ -42,6 +42,15 @@ class ActionUpdate extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
+
+			/* 天谷印章扩展 */
+			if (StringUtils.isNotEmpty(extraParam)) {
+				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
+				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
+					fileName = wiExtraParam.getFileName();
+				}
+			}
+
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
@@ -52,13 +61,6 @@ class ActionUpdate extends BaseAction {
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
-			}
-			/* 天谷印章扩展 */
-			if (StringUtils.isNotEmpty(extraParam)) {
-				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
-				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
-					fileName = wiExtraParam.getFileName();
-				}
 			}
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
