@@ -10,6 +10,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -347,6 +348,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
+			if(StringUtils.isEmpty(extraParam)){
+				extraParam = this.request2Json(request);
+			}
 			result = new ActionUpload().execute(effectivePerson, workId, site, fileName, bytes, disposition,
 					extraParam);
 		} catch (Exception e) {
@@ -372,6 +376,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		ActionResult<ActionUploadWithWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
+			if(StringUtils.isEmpty(extraParam)){
+				extraParam = this.request2Json(request);
+			}
 			result = new ActionUploadWithWorkCompleted().execute(effectivePerson, workCompletedId, site, fileName,
 					bytes, disposition, extraParam);
 		} catch (Exception e) {
@@ -421,6 +428,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
+			if(StringUtils.isEmpty(extraParam)){
+				extraParam = this.request2Json(request);
+			}
 			result = new ActionUpdate().execute(effectivePerson, id, workId, fileName, bytes, disposition, extraParam);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
@@ -488,6 +498,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
+			if(StringUtils.isEmpty(extraParam)){
+				extraParam = this.request2Json(request);
+			}
 			result = new ActionUpdate().execute(effectivePerson, id, workId, fileName, bytes, disposition, extraParam);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
