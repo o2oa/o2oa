@@ -990,12 +990,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return obj;
     },
 
-    saveWork: function (callback) {
+    saveWork: function (callback, silent ) {
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
-                if (this.app) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
+                if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
                 if (callback && typeOf(callback) === "function") callback();
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
