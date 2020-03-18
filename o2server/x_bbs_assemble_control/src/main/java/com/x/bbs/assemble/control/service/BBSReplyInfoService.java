@@ -3,6 +3,7 @@ package com.x.bbs.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -44,7 +45,7 @@ public class BBSReplyInfoService {
 	
 	/**
 	 * 向数据库保存BBSReplyInfo对象
-	 * @param wrapIn
+	 * @param _bBSReplyInfo
 	 */
 	public BBSReplyInfo save( BBSReplyInfo _bBSReplyInfo ) throws Exception {
 		BBSReplyInfo _bBSReplyInfo_tmp = null;
@@ -179,27 +180,27 @@ public class BBSReplyInfoService {
 		}
 	}
 
-	public List<BBSReplyInfo> listWithSubjectForPage( String subjectId, int maxCount ) throws Exception {
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean noLevel, int maxCount) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listWithSubjectForPage( subjectId, maxCount );
+			return business.replyInfoFactory().listWithSubjectForPage( subjectId, noLevel, maxCount );
 		}catch( Exception e ){
 			throw e;
 		}
 	}
 	
-	public Long countWithSubjectForPage( String subjectId ) throws Exception {
+	public Long countWithSubjectForPage(String subjectId, Boolean noLevel) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().countBySubjectId( subjectId );
+			return business.replyInfoFactory().countBySubjectId( subjectId, noLevel );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -232,7 +233,7 @@ public class BBSReplyInfoService {
 	}
 
 	public Long countReplyForTodayByUserName( String userName ) throws Exception {
-		if( userName == null ){
+		if( StringUtils.isEmpty(userName) ){
 			throw new Exception( "userName can not null." );
 		}
 		Business business = null;
@@ -243,4 +244,22 @@ public class BBSReplyInfoService {
 			throw e;
 		}
 	}
+
+	/**
+	 * 根据回复ID，查询二级回复列表
+	 * @param replyId
+	 * @return
+	 */
+    public List<BBSReplyInfo> listRelysWithRelyId(String replyId) throws Exception {
+		if(StringUtils.isEmpty( replyId ) ){
+			throw new Exception( "replyId can not null." );
+		}
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			return business.replyInfoFactory().listReplyWithReplyId(replyId);
+		}catch( Exception e ){
+			throw e;
+		}
+    }
 }
