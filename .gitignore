@@ -56,3 +56,13 @@ command.swap
 **/bin/
 **/src/main/webapp/describe/
 **/target/
+
+#ignore folder
+version.o2
+/node_modules/
+/jvm/
+/commons/
+/config/
+/store/
+/servers/
+/describe/
