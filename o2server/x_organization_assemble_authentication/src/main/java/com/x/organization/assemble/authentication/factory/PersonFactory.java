@@ -122,10 +122,6 @@ public class PersonFactory extends AbstractFactory {
 		cq.select(root.get(Person_.id));
 		Query query = em.createQuery(cq.where(p));
 		List<String> list = em.createQuery(cq.where(p).distinct(true)).getResultList();
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(query);
-		System.out.println(XGsonBuilder.toJson(list));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		if (list.size() == 1) {
 			return list.get(0);
 		} else {
