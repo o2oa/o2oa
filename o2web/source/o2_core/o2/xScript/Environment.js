@@ -957,7 +957,7 @@ MWF.xScript.Environment = function(ev){
         "getAction": function(){return _form.workAction},
         "getDesktop": function(){return _form.app.desktop},
         "getData": function(){return new MWF.xScript.JSONData(_form.getData());},
-        "save": function(callback){_form.saveWork(callback);},
+        "save": function(callback, silent){_form.saveWork(callback, silent);},
         "close": function(){_form.closeWork();},
 
         "verify": function(){
