@@ -52,8 +52,6 @@ public class WorkLogFactory extends AbstractFactory {
 		} else if (list.size() == 1) {
 			return list.get(0);
 		} else {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(XGsonBuilder.toJson(list));
 			throw new Exception("find multiple workLog point to arrivedActivityToken{value:" + activityToken
 					+ "}, is not impossible.");
 		}
