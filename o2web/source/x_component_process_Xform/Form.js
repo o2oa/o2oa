@@ -990,7 +990,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return obj;
     },
 
-    saveWork: function (callback, silent) {
+    saveWork: function (callback, silent ) {
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
