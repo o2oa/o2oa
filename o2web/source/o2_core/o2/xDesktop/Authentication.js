@@ -84,10 +84,7 @@ MWF.xDesktop.Authentication = new Class({
                 this.socket.close();
                 this.socket = null;
             }
-            Cookie.dispose("x-token", {
-                "domain": ".ctc.com",
-                "path": "/"
-            });
+            Cookie.dispose("x-token");
             window.location.reload();
         }.bind(this));
     },

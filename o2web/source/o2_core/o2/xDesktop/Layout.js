@@ -1099,6 +1099,17 @@ MWF.xDesktop.Layout = new Class({
             this.messageAudio.play();
             this.playMessageAudioTime = new Date();
         }
+    },
+    logout: function(){
+        this.isLogout = true;
+
+        if (!this.notRecordStatus){
+            this.recordDesktopStatus(function(){
+                (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
+            }.bind(this.layout));
+        }else{
+            (layout.authentication ||  new o2.xDesktop.Authentication()).logout();
+        }
     }
 });
 MWF.xDesktop.Layout.Taskitem = new Class({
