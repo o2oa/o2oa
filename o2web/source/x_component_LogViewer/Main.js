@@ -1,19 +1,20 @@
 MWF.xApplication.LogViewer.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "LogViewer",
-		"icon": "icon.png",
-		"width": "800",
-		"height": "600",
-		"title": MWF.xApplication.LogViewer.LP.title
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.LogViewer.LP;
-	},
-	loadApplication: function(callback){
+    options: {
+        "style": "default",
+        "name": "LogViewer",
+        "icon": "icon.png",
+        "width": "800",
+        "height": "600",
+        "title": MWF.xApplication.LogViewer.LP.title
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.LogViewer.LP;
+        this.tagId = o2.uuid();
+    },
+    loadApplication: function(callback){
         if (!this.options.isRefresh){
             this.maxSize(function(){
                 this.doLog();
@@ -22,7 +23,7 @@ MWF.xApplication.LogViewer.Main = new Class({
             this.doLog();
         }
         if (callback) callback();
-	},
+    },
     doLog: function(){
         this.status = "prompt";
         this.actions = MWF.Actions.get("x_program_center");
@@ -49,9 +50,11 @@ MWF.xApplication.LogViewer.Main = new Class({
     },
 
     loadToolbar: function(){
-	    this.promptErrorButton = this.createTopButton("PromptError", "prompt.png", "prompt");
+        this.promptErrorButton = this.createTopButton("PromptError", "prompt.png", "prompt");
         this.unexpectedErrorButton = this.createTopButton("UnexpectedError", "unexpected.png", "unexpected");
         this.warnErrorButton = this.createTopButton("Warn", "warn.png", "warn");
+
+        this.systemLogButton = this.createTopButton("SystemLog", "systemLog.png", "systemLog");
 
         this.dateSelect = new Element("select", {"styles": this.css.toolbarDateSelect}).inject(this.toolbarNode);
         new Element("option", {
@@ -82,6 +85,24 @@ MWF.xApplication.LogViewer.Main = new Class({
         // this.warnErrorButton.addEvent("click", function(){
         //     this.showTypeLog("warn");
         // }.bind(this));
+
+        var clearBtn = new Element("button",{"text":"clear","style":"margin:10px"}).inject(this.toolbarNode);
+        clearBtn.addEvent("click",function () {
+            this.screenInforAreaNode.empty();
+            this.tagId = o2.uuid();
+        }.bind(this));
+        var loadBtn = new Element("button",{"text":"load","style":"margin:10px"}).inject(this.toolbarNode);
+        loadBtn.addEvent("click",function () {
+            if(this.method==="listSystemLog"){
+                this.actions[this.method](this.tagId, function(json){
+                    this.showSystemLog(json.data);
+                    this.screenInforAreaNode.scrollTop = this.screenInforAreaNode.scrollHeight;
+                }.bind(this));
+            }else {
+                this.initLog();
+                this.loadLog();
+            }
+        }.bind(this));
     },
     showTypeLog: function(status){
         if (this.status!==status){
@@ -94,6 +115,9 @@ MWF.xApplication.LogViewer.Main = new Class({
                     break;
                 case "warn":
                     this.warnErrorButton.setStyles(this.css.toolbarButton);
+                    break;
+                case "systemLog":
+                    this.systemLogButton.setStyles(this.css.toolbarButton);
                     break;
             }
             switch (status){
@@ -108,6 +132,10 @@ MWF.xApplication.LogViewer.Main = new Class({
                 case "warn":
                     this.warnErrorButton.setStyles(this.css.toolbarButton_down);
                     this.status="warn";
+                    break;
+                case "systemLog":
+                    this.systemLogButton.setStyles(this.css.toolbarButton_down);
+                    this.status="systemLog";
                     break;
                 default:
                     this.promptErrorButton.setStyles(this.css.toolbarButton_down);
@@ -124,7 +152,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         var textNode = new Element("div", {"styles": this.css.toolbarTextButton, "text": text}).inject(node);
         iconNode.setStyle("background-image", "url("+"/x_component_LogViewer/$Main/default/"+img+")");
         if (status==this.status) node.setStyles(this.css.toolbarButton_down);
-        
+
         var _self = this;
         node.addEvents({
             "mouseover": function(){if (_self.status != status) this.setStyles(_self.css.toolbarButton_over);},
@@ -148,19 +176,35 @@ MWF.xApplication.LogViewer.Main = new Class({
             case "warn":
                 this.method = (this.date==="all") ? "listWarnLog" : "listWarnLogWithDate";
                 break;
+            case "systemLog":
+                this.method = "listSystemLog";
+                break;
             default:
                 this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
         }
-        if (this.date==="all"){
-            this.actions[this.method](this.currentId, this.count, function(json){
-                this.showLog(json.data);
+        if(this.method==="listSystemLog"){
+            this.actions[this.method](this.tagId, function(json){
+                this.showSystemLog(json.data);
             }.bind(this));
         }else{
-            var d = new Date().parse(this.date).format("%Y-%m-%d");
-            this.actions[this.method](this.currentId, this.count, d, function(json){
-                this.showLog(json.data);
-            }.bind(this));
+            if (this.date==="all"){
+                this.actions[this.method](this.currentId, this.count, function(json){
+                    this.showLog(json.data);
+                }.bind(this));
+            }else{
+                var d = new Date().parse(this.date).format("%Y-%m-%d");
+                this.actions[this.method](this.currentId, this.count, d, function(json){
+                    this.showLog(json.data);
+                }.bind(this));
+            }
         }
+    },
+    showSystemLog : function(data){
+        if(!data.valueList) return;
+        data.valueList.each(function (log) {
+            var node = new Element("div", {"styles": this.css.logItemNode}).inject(this.screenInforAreaNode);
+            node.set("text",log);
+        }.bind(this));
     },
     showLog: function(data){
         if (data.length){
