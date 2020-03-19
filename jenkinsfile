@@ -1,0 +1,10 @@
+pipeline {
+    agent {label: "132"}
+    stages {
+        stage('build') {
+            steps {
+                bat 'npm --v'
+            }
+        }
+    }
+}
