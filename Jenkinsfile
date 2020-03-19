@@ -9,6 +9,7 @@ pipeline {
         }
         stage('build server') {
             steps {
+                sh 'id'
                 sh 'npm run build_server'
             }
         }
