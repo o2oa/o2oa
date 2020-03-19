@@ -12,7 +12,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "paging" : "scroll",
         "perPageCount" : 50,
         "isload": "true",
-        "export": false
+        "export": false,
+        "moduleEvents": ["queryLoad", "postLoadData", "postLoad", "queryLoadRow", "postLoadRow", "selectRow", "unselectRow"]
+
         // "actions": {
         //     "lookup": {"uri": "/jaxrs/view/flag/{view}/query/{application}/execute", "method":"PUT"},
         //     "getView": {"uri": "/jaxrs/view/flag/{view}/query/{application}"}
@@ -21,6 +23,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // "actionRoot": "x_query_assemble_surface"
     },
     initialize: function(container, json, options){
+        //本类有三种事件，
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
+        //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
+
         this.setOptions(options);
 
         this.path = "/x_component_query_Query/$Viewer/";
@@ -67,8 +74,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     load: function(){
+        this._loadModuleEvents();
+        if (this.fireEvent("queryLoad")){
+            this._loadUserInterface();
+            //this._loadStyles();
+            this._loadDomEvents();
+        }
+    },
+    _loadUserInterface : function(){
         this.loadLayout();
-        this.createExportNode();
+        this.createActionbarNode();
         this.createSearchNode();
         this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
 
@@ -80,7 +95,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
-        if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
+        this.actionbarAreaNode =  new Element("div", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+        //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
         this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
@@ -89,7 +105,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     createExportNode: function(){
         if (this.options.export){
             MWF.require("MWF.widget.Toolbar", function(){
-                this.toolbar = new MWF.widget.Toolbar(this.exportAreaNode, {"style": "simple"}, this);
+                this.toolbar = new MWF.widget.Toolbar(this.actionbarAreaNode, {"style": "simple"}, this); //this.exportAreaNode
                 var actionNode = new Element("div", {
                     "id": "",
                     "MWFnodetype": "MWFToolBarButton",
@@ -97,7 +113,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     "title": this.lp.exportExcel,
                     "MWFButtonAction": "exportView",
                     "MWFButtonText": this.lp.exportExcel
-                }).inject(this.exportAreaNode);
+                }).inject(this.actionbarAreaNode); //this.exportAreaNode
 
                 this.toolbar.load();
             }.bind(this));
@@ -513,8 +529,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var size = this.node.getSize();
         var searchSize = this.searchAreaNode.getComputedSize();
         var h = size.y-searchSize.totalHeight;
-        if (this.exportAreaNode){
-            var exportSize = this.exportAreaNode.getComputedSize();
+        //if (this.exportAreaNode){
+        //    var exportSize = this.exportAreaNode.getComputedSize();
+        //    h = h-exportSize.totalHeight;
+        //}
+        if( this.actionbarAreaNode ){
+            var exportSize = this.actionbarAreaNode.getComputedSize();
             h = h-exportSize.totalHeight;
         }
         var pageSize = this.viewPageNode.getComputedSize();
@@ -528,6 +548,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         new Element("div", {"styles": this.css.viewLoadingIconNode}).inject(loadingNode);
         var loadingTextNode = new Element("div", {"styles": this.css.viewLoadingTextNode}).inject(loadingNode);
         loadingTextNode.set("text", "loading...");
+    },
+    createActionbarNode : function(){
+        this.actionbarAreaNode.empty();
+        if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
+            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
+            this.actionbar = new MWF.xApplication.query.Query.Viewer.Actionbar(this.actionbarAreaNode, this.viewJson.actionbarList[0], this, {});
+            this.actionbar.load();
+        }else{ //兼容以前的ExportNode
+            this.createExportNode();
+        }
     },
     createViewNode: function(data){
         this.viewAreaNode.empty();
@@ -545,11 +575,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
-                this.selectTitleCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode
-                }).inject(this.viewTitleLine);
-                this.selectTitleCell.setStyle("width", "10px");
-                if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
+            this.selectTitleCell = new Element("td", {
+                "styles": this.css.viewTitleCellNode
+            }).inject(this.viewTitleLine);
+            this.selectTitleCell.setStyle("width", "10px");
+            if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
 
             //序号
@@ -702,6 +732,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
             this.viewData = json.data;
+
+            this.fireEvent("postLoadData");
+
             if (this.viewJson.group.column){
                 this.gridJson = json.data.groupGrid;
                 this.loadGroupData();
@@ -714,7 +747,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadingAreaNode.destroy();
                 this.loadingAreaNode = null;
             }
-            this.fireEvent("loadView");
+            this.fireEvent("loadView"); //options 传入的事件
+
+            this.fireEvent("postLoad"); //用户配置的事件
         }.bind(this));
     },
 
@@ -722,9 +757,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     loadData: function(){
         if (this.gridJson.length){
             // if( !this.options.paging ){
-                this.gridJson.each(function(line, i){
-                    this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
-                }.bind(this));
+            this.gridJson.each(function(line, i){
+                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
+            }.bind(this));
             // }else{
             //     this.loadPaging();
             // }
@@ -917,6 +952,28 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }else{
             return [];
         }
+    },
+    _loadModuleEvents : function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
     }
 });
 
@@ -932,6 +989,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
     load: function(){
         debugger;
+        this.view.fireEvent("queryLoadRow", [this]);
+
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
         if (this.prev){
             this.node.inject(this.prev.node, "after");
@@ -940,9 +999,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-            this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-            this.selectTd.setStyles({"cursor": "pointer"});
-            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+        this.selectTd.setStyles({"cursor": "pointer"});
+        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //序号
@@ -958,22 +1017,22 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
-                if (this.view.hideColumns.indexOf(k)===-1){
-                    var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-                    if (k!== this.view.viewJson.group.column){
-                        //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                        var v = cell;
-                        if (c.isHtml){
-                            td.set("html", v);
-                        }else{
-                            td.set("text", v);
-                        }
+            if (this.view.hideColumns.indexOf(k)===-1){
+                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                if (k!== this.view.viewJson.group.column){
+                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                    var v = cell;
+                    if (c.isHtml){
+                        td.set("html", v);
+                    }else{
+                        td.set("text", v);
                     }
-                    if (this.view.openColumns.indexOf(k)!==-1){
-                        this.setOpenWork(td, c)
-                    }
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                 }
+                if (this.view.openColumns.indexOf(k)!==-1){
+                    this.setOpenWork(td, c)
+                }
+                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+            }
             //}
         }.bind(this));
 
@@ -992,6 +1051,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         // }.bind(this));
 
         this.setEvent();
+
+        this.view.fireEvent("postLoadRow", [this]);
     },
     setOpenWork: function(td, column){
         debugger;
@@ -1004,20 +1065,28 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                 }.bind(this), false);
             }
             td.addEvent("click", function( ev ){
-                return this.view.Macro.fire(column.clickCode, this, ev);
+                var result = this.view.Macro.fire(column.clickCode, this, ev);
+                ev.stopPropagation();
+                return result;
             }.bind(this));
         }else{
             if (this.view.json.type==="cms"){
-                td.addEvent("click", this.openCms.bind(this));
+                td.addEvent("click", function(ev){
+                    this.openCms(ev)
+                    ev.stopPropagation();
+                }.bind(this));
             }else{
-                td.addEvent("click", this.openWorkAndCompleted.bind(this));
+                td.addEvent("click", function(ev){
+                    this.openWorkAndCompleted(ev)
+                    ev.stopPropagation();
+                }.bind(this));
             }
         }
 
     },
     openCms: function(e){
         var options = {"documentId": this.data.bundle};
-        this.view.fireEvent("openDocument", [options, this]);
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
@@ -1137,22 +1206,23 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
     openWork: function(id, e){
         var options = {"workId": id};
-        this.view.fireEvent("openDocument", [options, this]);
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
         layout.desktop.openApplication(e, "process.Work", options);
     },
     openWorkCompleted: function(id, e){
         var options = {"workCompletedId": id};
-        this.view.fireEvent("openDocument", [options, this]);
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
         layout.desktop.openApplication(e, "process.Work", options);
     },
 
     setEvent: function(){
-        if (this.view.json.select==="single" || this.view.json.select==="multi"){
+        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
+        if ( flag ==="single" || flag==="multi"){
             this.node.addEvents({
                 "mouseover": function(){
                     if (!this.isSelected){
                         var iconName = "checkbox";
-                        if (this.view.json.select==="single") iconName = "radiobox";
+                        if (flag==="single") iconName = "radiobox";
                         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
                     }
                 }.bind(this),
@@ -1165,20 +1235,21 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     select: function(){
+        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
         if (this.isSelected){
-            if (this.view.json.select==="single"){
+            if (flag==="single"){
                 this.unSelectedSingle();
             }else{
                 this.unSelected();
             }
         }else{
-            if (this.view.json.select==="single"){
+            if (flag==="single"){
                 this.selectedSingle();
             }else{
                 this.selected();
             }
         }
-        this.view.fireEvent("select");
+        this.view.fireEvent("select"); //options 传入的事件
     },
 
     selected: function(){
@@ -1186,12 +1257,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
+        this.view.fireEvent("selectRow", [this]);
     },
     unSelected: function(){
         this.view.selectedItems.erase(this);
         this.selectTd.setStyles({"background": "transparent"});
         this.node.setStyles(this.css.viewContentTrNode);
         this.isSelected = false;
+        this.view.fireEvent("unselectRow", [this]);
     },
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
@@ -1200,6 +1273,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
+        this.view.fireEvent("selectRow", [this]);
     },
     unSelectedSingle: function(){
         this.view.selectedItems = [];
@@ -1207,6 +1281,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "transparent"});
         this.node.setStyles(this.css.viewContentTrNode);
         this.isSelected = false;
+        this.view.fireEvent("unselectRow", [this]);
     }
 });
 
@@ -1221,10 +1296,12 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.load();
     },
     load: function(){
+        this.view.fireEvent("queryLoadRow", [this]);
+
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-            this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
-            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
         this.categoryTd = new Element("td", {
             "styles": this.css.viewContentCategoryTdNode,
@@ -1249,12 +1326,14 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
+
+        this.view.fireEvent("postLoadRow", [this]);
     },
     setEvent: function(){
         //if (this.selectTd){
-            this.node.addEvents({
-                "click": function(){this.expandOrCollapse();}.bind(this)
-            });
+        this.node.addEvents({
+            "click": function(){this.expandOrCollapse();}.bind(this)
+        });
         //}
     },
     expandOrCollapse: function(){
@@ -1354,5 +1433,270 @@ MWF.xApplication.query.Query.Viewer.Filter = new Class({
     destroy: function(){
         this.node.destroy();
         MWF.release(this);
+    }
+});
+
+
+
+MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
+    Implements: [Events],
+    options: {
+        "style" : "default",
+        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
+    },
+    initialize: function(node, json, form, options){
+
+        this.node = $(node);
+        this.node.store("module", this);
+        this.json = json;
+        this.form = form;
+        this.view = form;
+    },
+    hide: function(){
+        var dsp = this.node.getStyle("display");
+        if (dsp!=="none") this.node.store("mwf_display", dsp);
+        this.node.setStyle("display", "none");
+    },
+    show: function(){
+        var dsp = this.node.retrieve("mwf_display", dsp);
+        this.node.setStyle("display", dsp);
+    },
+    load: function(){
+
+        this._loadModuleEvents();
+        if (this.fireEvent("queryLoad")){
+            //this._queryLoaded();
+            this._loadUserInterface();
+            this._loadStyles();
+            this._loadDomEvents();
+            //this._loadEvents();
+
+            //this._afterLoaded();
+            this.fireEvent("postLoad");
+            this.fireEvent("load");
+        }
+    },
+
+    _loadStyles: function(){
+        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+                if (value.indexOf("/x_cms_assemble_control")!==-1){
+                    value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }else if (value.indexOf("x_cms_assemble_control")!==-1){
+                    value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }
+            }
+            this.node.setStyle(key, value);
+        }.bind(this));
+
+        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
+        //     var host = MWF.Actions.getHost(root);
+        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
+        // }
+        //if (this.json.styles) this.node.setStyles(this.json.styles);
+    },
+    _loadModuleEvents : function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
+    _loadUserInterface: function(){
+        // if (this.form.json.mode == "Mobile"){
+        //     this.node.empty();
+        // }else if (COMMON.Browser.Platform.isMobile){
+        //     this.node.empty();
+        // }else{
+        this.toolbarNode = this.node.getFirst("div");
+        if( !this.toolbarNode ){
+            this.toolbarNode = new Element("div").inject( this.node );
+        }
+        this.toolbarNode.empty();
+
+        MWF.require("MWF.widget.Toolbar", function(){
+            this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {
+                "style": this.json.style,
+                "onPostLoad" : function(){
+                    this.fireEvent("afterLoad");
+                }.bind(this)
+            }, this);
+            if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
+            //alert(this.readonly)
+
+            if (this.json.hideSystemTools){
+                this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                this.toolbarWidget.load();
+            }else{
+                if (this.json.defaultTools){
+                    this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
+                    this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                    this.toolbarWidget.load();
+                }else{
+                    MWF.getJSON(this.form.path+"toolbars.json", function(json){
+                        this.setToolbars(json, this.toolbarNode, this.readonly, true);
+                        this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                        this.toolbarWidget.load();
+                    }.bind(this), null);
+                }
+            }
+
+        }.bind(this));
+        // }
+    },
+
+    setCustomToolbars: function(tools, node){
+        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var iconPath = "";
+        if( this.json.customIconStyle ){
+            iconPath = this.json.customIconStyle+"/";
+        }
+        tools.each(function(tool){
+            var flag = true;
+            if (this.readonly){
+                flag = tool.readShow;
+            }else{
+                flag = tool.editShow;
+            }
+            if (flag){
+                flag = true;
+                if (tool.control){
+                    flag = this.form.businessData.control[tool.control]
+                }
+                if (tool.condition){
+                    var hideFlag = this.form.Macro.exec(tool.condition, this);
+                    flag = !hideFlag;
+                }
+                if (flag){
+                    var actionNode = new Element("div", {
+                        "id": tool.id,
+                        "MWFnodetype": tool.type,
+                        "MWFButtonImage": path+""+this.form.options.style+"/custom/"+iconPath+tool.img,
+                        "title": tool.title,
+                        "MWFButtonAction": "runCustomAction",
+                        "MWFButtonText": tool.text
+                    }).inject(node);
+                    if( this.json.customIconOverStyle ){
+                        actionNode.set("MWFButtonImageOver" , path+""+this.form.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
+                    }
+                    if( tool.properties ){
+                        actionNode.set(tool.properties);
+                    }
+                    if (tool.actionScript){
+                        actionNode.store("script", tool.actionScript);
+                    }
+                    if (tool.sub){
+                        var subNode = node.getLast();
+                        this.setCustomToolbars(tool.sub, subNode);
+                    }
+                }
+            }
+        }.bind(this));
+    },
+
+    setToolbarItem: function(tool, node, readonly, noCondition){
+        //var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "/x_component_query_ViewDesigner/$View/";
+        var flag = true;
+        if (tool.control){
+            flag = this.form.businessData.control[tool.control]
+        }
+        if (!noCondition) if (tool.condition){
+            var hideFlag = this.form.Macro.exec(tool.condition, this);
+            flag = flag && (!hideFlag);
+        }
+        if (readonly) if (!tool.read) flag = false;
+        if (flag){
+            var actionNode = new Element("div", {
+                "id": tool.id,
+                "MWFnodetype": tool.type,
+                //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
+                "MWFButtonImage": path+this.options.style+"/actionbar/"+tool.img,
+                "title": tool.title,
+                "MWFButtonAction": tool.action,
+                "MWFButtonText": tool.text
+            }).inject(node);
+            if( this.json.iconOverStyle ){
+                actionNode.set("MWFButtonImageOver" , path+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img );
+                //actionNode.set("MWFButtonImageOver" , path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+tool.img );
+            }
+            if( tool.properties ){
+                actionNode.set(tool.properties);
+            }
+            if (tool.sub){
+                var subNode = node.getLast();
+                this.setToolbars(tool.sub, subNode, readonly, noCondition);
+            }
+        }
+    },
+    setToolbars: function(tools, node, readonly, noCondition){
+        tools.each(function(tool){
+            this.setToolbarItem(tool, node, readonly, noCondition);
+        }.bind(this));
+    },
+    runCustomAction: function(bt){
+        var script = bt.node.retrieve("script");
+        this.form.Macro.exec(script, this);
+    },
+    exportView : function(){
+        this.form.exportView();
+    },
+    deleteWork: function(){
+        this.form.deleteWork();
     }
 });

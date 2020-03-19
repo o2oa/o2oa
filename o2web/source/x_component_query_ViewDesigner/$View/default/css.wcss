@@ -1,8 +1,11 @@
 {
+    "actionbarNode" : {
+        "overflow": "hidden"
+    },
     "viewAreaNode": {
         "overflow": "hidden"
     },
-	"viewTitleNode": {
+    "viewTitleNode": {
         "height": "40px",
         "background-color": "#EEE",
         "border-bottom": "1px solid #999",
@@ -316,5 +319,33 @@
         "position": "relative",
         "margin-right": "8px",
         "top": "-38px"
+    },
+
+    "toolbarWarpNode": {
+        "border": "1px dashed #999",
+        "height": "auto",
+        "overflow": "hidden",
+        "margin": "auto",
+        "display": "block",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "opacity": 1,
+        "width": "auto",
+        "margin": "3px 3px",
+        "background-color": "#999",
+        "cursor": "pointer"
+    },
+    "toolbarWarpNode_selected": {
+        "background-color": "#FFF",
+        //        "height": "38px",
+        "border": "1px solid red",
+        "white-space": "nowrap"
+    },
+    "toolbarWarpNode_over": {
+        "background-color": "#F9F9F9",
+        //        "height": "38px",
+        "border": "1px dotted blue",
+        "white-space": "nowrap"
     }
 }

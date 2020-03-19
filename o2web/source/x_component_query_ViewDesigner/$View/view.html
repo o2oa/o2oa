@@ -46,6 +46,27 @@
                 <td class="editTableTitle">每页行数:</td>
                 <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">视图样式:</td>
+                <td class="editTableValue">
+                    <select class="MWFViewStyle" name="viewStyleType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">隐藏操作条:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden!==false)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden===false)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none"/>无
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single"/>单选
+                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi"/>多选
+                </td>
+            </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">最大行数:</td>-->
             <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
@@ -561,6 +582,9 @@
         </div>
     </div>
 
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="data.events"></div>
+    </div>
 
     <div title="JSON"  class="MWFTab">
         <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
