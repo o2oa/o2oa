@@ -1,0 +1,40 @@
+{
+  "name": "",
+  "id": "",
+  "application": "",
+  "alias": "",
+  "description": "",
+  "display": true,
+
+  "data": {
+    "exportGrid": true,
+    "exportGoupGrid": true,
+    "scopeType": "work",
+    "selectEntryList": [],
+    "restrictWhereEntry": {
+      "applicationList": [],
+      "processList": [],
+      "companyList": [],
+      "departmentList": [],
+      "personList": [],
+      "identityList": []
+    },
+    "restrictFilterEntryList": [],
+    "restrictDateRangeEntry": {
+      "dateRangeType": "none",
+      "dateEffectType": "start",
+      "year": "",
+      "month": "",
+      "date": "",
+      "season": 0,
+      "week": 0,
+      "adjust": 0
+    },
+    "orderEntryList": [],
+    "groupEntry": {},
+    "calculate": {}
+  },
+  "availableIdentityList": [],
+  "availableDepartmentList": [],
+  "availableCompanyList": []
+}

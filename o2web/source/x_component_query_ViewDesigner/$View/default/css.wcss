@@ -5,7 +5,7 @@
     "viewAreaNode": {
         "overflow": "hidden"
     },
-    "viewTitleNode": {
+	"viewTitleNode": {
         "height": "40px",
         "background-color": "#EEE",
         "border-bottom": "1px solid #999",
@@ -338,14 +338,14 @@
     },
     "toolbarWarpNode_selected": {
         "background-color": "#FFF",
-        //        "height": "38px",
+//        "height": "38px",
         "border": "1px solid red",
         "white-space": "nowrap"
     },
     "toolbarWarpNode_over": {
         "background-color": "#F9F9F9",
-        //        "height": "38px",
+//        "height": "38px",
         "border": "1px dotted blue",
         "white-space": "nowrap"
-    }
+    },
 }

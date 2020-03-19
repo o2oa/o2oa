@@ -438,14 +438,14 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     },
 
     loadViewColumns: function(){
-        //    for (var i=0; i<10; i++){
+    //    for (var i=0; i<10; i++){
         if (this.json.data.selectList) {
             this.json.data.selectList.each(function (json) {
                 this.items.push(new MWF.xApplication.query.ViewDesigner.View.Column(json, this));
 
             }.bind(this));
         }
-        //    }
+    //    }
     },
     loadViewSelectAllNode : function(){
         var _self = this;
@@ -569,10 +569,10 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     },
     save: function(callback){
         //if (this.designer.tab.showPage==this.page){
-        if (!this.data.name){
-            this.designer.notice(this.designer.lp.notice.inputName, "error");
-            return false;
-        }
+            if (!this.data.name){
+                this.designer.notice(this.designer.lp.notice.inputName, "error");
+                return false;
+            }
         //}
         this.designer.actions.saveView(this.data, function(json){
             this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -685,16 +685,16 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
 
 MWF.xApplication.query.ViewDesigner.View.Column = new Class({
-    initialize: function(json, view, next){
+	initialize: function(json, view, next){
         this.propertyPath = "/x_component_query_ViewDesigner/$View/column.html";
-        this.view = view;
+		this.view = view;
         this.json = json;
         this.next = next;
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
         this.load();
-    },
+	},
     load: function(){
         this.areaNode = new Element("td", {"styles": this.css.viewTitleColumnAreaNode});
         this.areaNode.store("column", this);
@@ -1536,24 +1536,13 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         //    this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
         //    this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         //}else{
-        this.toolbarNode = this.node.getFirst("div");
-        this.toolbarNode.empty();
-        this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
-        if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
-        this.toolbarWidget.css = this.json.actionStyles;
+            this.toolbarNode = this.node.getFirst("div");
+            this.toolbarNode.empty();
+            this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+            if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            this.toolbarWidget.css = this.json.actionStyles;
 
-        if (this.json.defaultTools){
-            var json = Array.clone(this.json.defaultTools);
-            //if (this.json.tools) json.append(this.json.tools);
-            this.setToolbars(json, this.toolbarNode);
-            if (this.json.tools){
-                this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
-            }
-            this.toolbarWidget.load();
-            //json = null;
-        }else{
-            MWF.getJSON(this.path+"toolbars.json", function(json){
-                this.json.defaultTools = json;
+            if (this.json.defaultTools){
                 var json = Array.clone(this.json.defaultTools);
                 //if (this.json.tools) json.append(this.json.tools);
                 this.setToolbars(json, this.toolbarNode);
@@ -1562,8 +1551,19 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
                 }
                 this.toolbarWidget.load();
                 //json = null;
-            }.bind(this), false);
-        }
+            }else{
+                MWF.getJSON(this.path+"toolbars.json", function(json){
+                    this.json.defaultTools = json;
+                    var json = Array.clone(this.json.defaultTools);
+                    //if (this.json.tools) json.append(this.json.tools);
+                    this.setToolbars(json, this.toolbarNode);
+                    if (this.json.tools){
+                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+                    }
+                    this.toolbarWidget.load();
+                    //json = null;
+                }.bind(this), false);
+            }
         //}
 
     },
@@ -1572,28 +1572,17 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         //    this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
         //    this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
         //}else{
-        this.toolbarNode = this.node.getFirst("div");
-        this.toolbarNode.empty();
-        this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
-        if (!this.json.actionStyles){
-            this.json.actionStyles = Object.clone(this.toolbarWidget.css);
-        }else{
-            this.toolbarWidget.css = Object.merge( Object.clone(this.json.actionStyles), this.toolbarWidget.css );
-            this.json.actionStyles = Object.clone(this.toolbarWidget.css);
-        }
-
-        if (this.json.defaultTools){
-            var json = Array.clone(this.json.defaultTools);
-            //if (this.json.tools) json.append(this.json.tools);
-            this.setToolbars(json, this.toolbarNode);
-            if (this.json.tools){
-                this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+            this.toolbarNode = this.node.getFirst("div");
+            this.toolbarNode.empty();
+            this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+            if (!this.json.actionStyles){
+                this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            }else{
+                this.toolbarWidget.css = Object.merge( Object.clone(this.json.actionStyles), this.toolbarWidget.css );
+                this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             }
-            this.toolbarWidget.load();
-            //json = null;
-        }else{
-            MWF.getJSON(this.path+"toolbars.json", function(json){
-                this.json.defaultTools = json;
+
+            if (this.json.defaultTools){
                 var json = Array.clone(this.json.defaultTools);
                 //if (this.json.tools) json.append(this.json.tools);
                 this.setToolbars(json, this.toolbarNode);
@@ -1602,8 +1591,19 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
                 }
                 this.toolbarWidget.load();
                 //json = null;
-            }.bind(this), false);
-        }
+            }else{
+                MWF.getJSON(this.path+"toolbars.json", function(json){
+                    this.json.defaultTools = json;
+                    var json = Array.clone(this.json.defaultTools);
+                    //if (this.json.tools) json.append(this.json.tools);
+                    this.setToolbars(json, this.toolbarNode);
+                    if (this.json.tools){
+                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+                    }
+                    this.toolbarWidget.load();
+                    //json = null;
+                }.bind(this), false);
+            }
         //}
     },
     setToolbars: function(tools, node){
