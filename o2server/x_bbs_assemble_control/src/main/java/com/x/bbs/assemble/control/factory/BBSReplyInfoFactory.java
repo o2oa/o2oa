@@ -51,14 +51,20 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
 
-	//@MethodDescribe( "根据主贴ID统计主贴的回复数量" )
-	public Long countBySubjectId(String subjectId, Boolean noLevel) throws Exception {
+	/**
+	 *
+	 * @param subjectId
+	 * @param showSubReply 是否平级显示所有的的回复, 如果为false则只显示第一层
+	 * @return
+	 * @throws Exception
+	 */
+	public Long countBySubjectId(String subjectId, Boolean showSubReply) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( BBSReplyInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
-		if( !noLevel ){
+		if( !showSubReply ){
 			p = cb.and( p,cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
 		}
 		cq.select( cb.count( root ) );
@@ -87,9 +93,16 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		cq.select( cb.count( root ) );		
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
-	
-	//@MethodDescribe( "根据主题ID获取该主题所有的回复信息对象列表" )
-	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean noLevel, Integer maxCount) throws Exception {
+
+	/**
+	 *根据主题ID获取该主题所有的回复信息对象列表
+	 * @param subjectId
+	 * @param showSubReply 是否平级显示所有的的回复, 如果为false则只显示第一层
+	 * @param maxCount
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, Integer maxCount) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
@@ -98,7 +111,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSReplyInfo> cq = cb.createQuery( BBSReplyInfo.class );
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
-		if( !noLevel ){
+		if( !showSubReply ){
 			p = cb.and( p, cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
 		}
 		cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
