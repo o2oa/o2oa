@@ -867,8 +867,9 @@ MWF.xApplication.Profile.Main = new Class({
         var oldPassword = this.oldPasswordInputNode.get("value");
         var password = this.passwordInputNode.get("value");
         var morePassword = this.morePasswordInputNode.get("value");
+        var remindNode = this.contentNode.getElement(".o2_profile_passwordWarmming");
 
-        if (password!=morePassword){
+        if (password!=morePassword||remindNode){
             this.notice(this.lp.passwordNotMatch, "error");
             this.passwordInputNode.setStyles(this.css.inforContentInputNode_error);
             this.morePasswordInputNode.setStyles(this.css.inforContentInputNode_error);
