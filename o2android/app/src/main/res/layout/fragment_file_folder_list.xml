@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_file_folder_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <HorizontalScrollView
+            android:id="@+id/hsv_file_folder_breadcrumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="0dp">
+
+            <LinearLayout
+                android:id="@+id/ll_file_folder_breadcrumb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:padding="@dimen/spacing_small">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_activity_yunpan"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/view_file_folder_split"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/hsv_file_folder_breadcrumb"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:background="@color/z_color_split_line_ddd" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_file_folder_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/ll_file_folder_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_file_folder_split" />
+
+        <LinearLayout
+            android:id="@+id/ll_file_folder_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_file_folder_list"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/z_color_background"
+            android:visibility="gone"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+            <Button
+                android:id="@+id/btn_file_folder_rename"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="29dp"
+                android:text="@string/yunpan_rename"
+                style="@style/whiteButtonStyle"
+                android:enabled="false"
+                />
+            <Button
+                android:id="@+id/btn_file_folder_delete"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="29dp"
+                android:layout_marginStart="6dp"
+                style="@style/whiteButtonStyle"
+                android:enabled="false"
+                android:text="@string/yunpan_delete"
+                />
+            <Button
+                android:id="@+id/btn_file_folder_share"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="29dp"
+                android:layout_marginStart="6dp"
+                style="@style/whiteButtonStyle"
+                android:enabled="false"
+                android:text="@string/yunpan_share"
+                />
+            <Button
+                android:id="@+id/btn_file_folder_move"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="29dp"
+                android:layout_marginStart="6dp"
+                style="@style/whiteButtonStyle"
+                android:enabled="false"
+                android:text="@string/yunpan_move"
+                />
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

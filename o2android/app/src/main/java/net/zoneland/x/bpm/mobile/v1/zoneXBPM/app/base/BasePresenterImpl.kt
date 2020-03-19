@@ -298,6 +298,21 @@ open class BasePresenterImpl<V: BaseView> : BasePresenter<V> {
         }
     }
 
+    /**
+     * 消息服务
+     */
+    fun getMessageCommunicateService(context: Context?): MessageCommunicateService? {
+        return try {
+            RetrofitClient.instance().messageCommunicateService()
+        }catch (e: Exception) {
+            XLog.error("", e)
+            if (context != null) {
+                XToast.toastLong(context, "消息服务器异常， 请联系管理员！")
+            }
+            null
+        }
+    }
+
 
     /**
      * 极光消息管理
@@ -359,6 +374,8 @@ open class BasePresenterImpl<V: BaseView> : BasePresenter<V> {
             }
         }
     }
+
+
 
 
     /**

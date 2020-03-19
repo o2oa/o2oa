@@ -30,7 +30,7 @@ class APIAddressHelper private constructor() {
     }
 
 
-    val webSocketHead = "ws://"
+    var webSocketHead = "ws://"
     var httpHead = "http://"
 
     val apiDistribute: HashMap<APIDistributeTypeEnum, APIDataBean> = HashMap()
@@ -43,6 +43,11 @@ class APIAddressHelper private constructor() {
      */
     fun setHttpProtocol(httpProtocol:String) {
         httpHead = "$httpProtocol://"
+        if (httpProtocol == "https") {
+            webSocketHead = "wss://"
+        }else {
+            webSocketHead = "ws://"
+        }
     }
 
     fun getCenterUrl(host: String, context: String, port: Int): String {
@@ -125,6 +130,25 @@ class APIAddressHelper private constructor() {
         return getAPIDistribute(APIDistributeTypeEnum.x_file_assemble_control) + "jaxrs/file/$pid/download/stream"
     }
 
+    /**
+     * 云盘图片地址
+     * @param fileId 图片文件id
+     * @param width 展现图片宽度
+     * @param height 展现图片高度
+     */
+    fun getCloudDiskImageUrl(fileId: String, width: Int, height: Int) : String {
+        val file = getAPIDistribute(APIDistributeTypeEnum.x_file_assemble_control)
+        return "${file}jaxrs/attachment2/$fileId/download/image/width/$width/height/$height"
+    }
+
+    /**
+     * 云盘文件下载地址
+     * @param fileId 文件id
+     */
+    fun getCloudDiskFileUrl(fileId: String) : String {
+        val file = getAPIDistribute(APIDistributeTypeEnum.x_file_assemble_control)
+        return "${file}jaxrs/attachment2/$fileId/download"
+    }
 
     /**
      * 新版用户头像地址
@@ -247,9 +271,6 @@ class APIAddressHelper private constructor() {
         if(data.x_organization_assemble_control != null) {
             apiDistribute[APIDistributeTypeEnum.x_organization_assemble_control] = data.x_organization_assemble_control
         }
-        if(data.x_collaboration_assemble_websocket != null) {
-            apiDistribute[APIDistributeTypeEnum.x_collaboration_assemble_websocket] = data.x_collaboration_assemble_websocket
-        }
         if(data.x_organization_assemble_custom != null) {
             apiDistribute[APIDistributeTypeEnum.x_organization_assemble_custom] = data.x_organization_assemble_custom
         }
@@ -281,15 +302,25 @@ class APIAddressHelper private constructor() {
             apiDistribute[APIDistributeTypeEnum.x_jpush_assemble_control] = data.x_jpush_assemble_control
         }
 
-    }
-
-    fun getAPIDistribute(typeEnum: APIDistributeTypeEnum): String {
-        var bean = apiDistribute[typeEnum]
-        return if (typeEnum == APIDistributeTypeEnum.x_collaboration_assemble_websocket) {
-            bean?.let { "$webSocketHead${it.host}:${it.port}${it.context}/" } ?: ""
-        } else {
-            bean?.let { "$httpHead${it.host}:${it.port}${it.context}/" } ?: ""
+        if(data.x_message_assemble_communicate != null) {
+            apiDistribute[APIDistributeTypeEnum.x_message_assemble_communicate] = data.x_message_assemble_communicate
         }
 
     }
+
+    fun getAPIDistribute(typeEnum: APIDistributeTypeEnum): String {
+        val bean = apiDistribute[typeEnum]
+        return bean?.let { "$httpHead${it.host}:${it.port}${it.context}/" } ?: ""
+    }
+
+
+    /**
+     * websocket 地址
+     */
+    fun webSocketUrl(): String {
+        val bean = apiDistribute[APIDistributeTypeEnum.x_message_assemble_communicate]
+        val xToken = O2SDKManager.instance().zToken
+        return bean?.let { "$webSocketHead${it.host}:${it.port}${it.context}/ws/collaboration?x-token=$xToken" } ?: ""
+    }
+
 }

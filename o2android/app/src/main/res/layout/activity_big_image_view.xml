@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_text_primary_dark"
+    tools:context=".app.clouddrive.v2.viewer.BigImageViewActivity">
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ZoomImageView
+        android:id="@+id/zoomImage_big_picture_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="fitCenter"
+        />
+
+    <ImageButton
+        android:id="@+id/btn_big_picture_close"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@mipmap/icon_off_round"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@null"
+        />
+
+    <TextView
+        android:id="@+id/tv_big_picture_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="标题标题标题标题标题"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:textAlignment="center"
+        />
+<!--    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleProgressBar-->
+<!--        android:id="@+id/cpb_big_picture_progressbar_id"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:mlpb_progress_color="@color/z_color_primary" />-->
+</android.support.constraint.ConstraintLayout>

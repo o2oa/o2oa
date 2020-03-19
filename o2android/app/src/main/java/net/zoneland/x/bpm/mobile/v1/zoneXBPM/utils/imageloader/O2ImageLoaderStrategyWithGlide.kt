@@ -7,6 +7,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
+import java.io.File
 
 /**
  * Created by fancy on 2017/7/13.
@@ -76,5 +77,31 @@ class O2ImageLoaderStrategyWithGlide : O2ImageLoaderStrategy {
          }
     }
 
-
+    override fun showImage(v: View, file: File, options: O2ImageLoaderOptions?) {
+        if (v is ImageView) {
+            val request = Glide.with(v.context).load(file)
+            if (options == null) {
+                request.into(v)
+            }else {
+                if (options.placeHolder != -1) {
+                    request.placeholder(options.placeHolder)
+                }
+                if (options.errorDrawable != -1) {
+                    request.error(options.errorDrawable)
+                }
+                if (options.isCrossFade) {
+                    request.crossFade()
+                }
+                if (options.isSkipCache) {
+                    request.skipMemoryCache(true)
+                    request.diskCacheStrategy(DiskCacheStrategy.NONE)
+                }
+                if (options.imageReSize != null) {
+                    val size = options.imageReSize!!
+                    request.override(size.reWidth, size.reHeight)
+                }
+                request.into(v)
+            }
+        }
+    }
 }

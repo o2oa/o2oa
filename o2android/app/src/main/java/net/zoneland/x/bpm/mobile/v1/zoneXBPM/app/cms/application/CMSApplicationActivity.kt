@@ -14,12 +14,14 @@ import android.view.MenuItem
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_cms_application.*
 import net.muliba.changeskin.FancySkinManager
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CMSApplicationPagerAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.ViewHolder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSAPPConfig
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSApplicationInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
@@ -148,9 +150,22 @@ class CMSApplicationActivity : BaseMVPActivity<CMSApplicationContract.View, CMSA
     }
 
     override fun documentDraft(list: List<CMSDocumentInfoJson>) {
+        val config = application?.config ?:  ""
+        var ignoreTitle = false
+        if (!TextUtils.isEmpty(config)) {
+            val cmsConfig = O2SDKManager.instance().gson.fromJson(config, CMSAPPConfig::class.java)
+            if (cmsConfig != null) {
+                ignoreTitle = cmsConfig.ignoreTitle
+                if (!cmsConfig.latest) {
+                    XLog.info("没有草稿，跳转到发布页面 有配置latest 。。。。。")
+                    go<CMSPublishDocumentActivity>(CMSPublishDocumentActivity.start(canPublishCategories[publishCategoryIndex], ignoreTitle))
+                    return
+                }
+            }
+        }
         if (list.isEmpty()) {
             XLog.info("没有草稿，跳转到发布页面")
-            go<CMSPublishDocumentActivity>(CMSPublishDocumentActivity.start(canPublishCategories[publishCategoryIndex]))
+            go<CMSPublishDocumentActivity>(CMSPublishDocumentActivity.start(canPublishCategories[publishCategoryIndex], ignoreTitle))
         }else {
             XLog.info("有草稿，跳转到详细页面")
             val document = list[0]

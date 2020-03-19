@@ -29,6 +29,16 @@ interface CloudFileControlService {
     @GET("jaxrs/attachment2/list/folder/{folderId}")
     fun listFileByFolderId(@Path("folderId") folderId: String): Observable<ApiResponse<List<FileJson>>>
 
+
+    /**
+     * 分页查询文件列表
+     * @param typeBody 分类
+     */
+    @Headers("Content-Type:application/json;charset=UTF-8")
+    @POST("jaxrs/attachment2/list/type/{page}/size/{count}")
+    fun listFileByPage(@Path("page") page: Int, @Path("count") count: Int,
+                       @Body typeBody: CloudDiskPageForm): Observable<ApiResponse<List<FileJson>>>
+
     /**
      * 顶层文件夹列表
      */
@@ -127,4 +137,9 @@ interface CloudFileControlService {
     fun downloadFile(@Path("id") id: String): Call<ResponseBody>
 
 
+    /**
+     * 分享
+     */
+    @POST("jaxrs/share")
+    fun share(@Body form: CloudDiskShareForm): Observable<ApiResponse<IdData>>
 }

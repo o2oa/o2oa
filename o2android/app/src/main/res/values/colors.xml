@@ -50,6 +50,11 @@
     <color name="z_color_meeting_room_free">#FF66CC80</color>
 
 
+    <!--im-->
+    <color name="z_color_im_right_bg">#E1F0FD</color>
+    <color name="z_color_im_left_bg">#F3F3F3</color>
+
+
     <!--chart -->
     <color name="z_pie_chart_normal">#91cd32</color>
     <color name="z_pie_chart_holiday">#4f94cd</color>

@@ -209,7 +209,84 @@
     </style>
 
 
+
     <!-- IM-->
+
+    <style name="o2_im_chat_message_outside">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="o2_im_chat_message_time_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">#555756</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="o2_im_chat_message_avatar_style">
+        <item name="android:layout_width">@dimen/item_head_icon_size</item>
+        <item name="android:layout_height">@dimen/item_head_icon_size</item>
+        <item name="android:src">@mipmap/icon_avatar_men</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="o2_im_chat_message_person_name_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/z_color_text_primary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="o2_im_chat_message_left_body_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/o2_chat_message_left_bg</item>
+        <item name="android:padding">@dimen/spacing_small</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="o2_im_chat_message_right_body_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/o2_chat_message_right_bg</item>
+        <item name="android:padding">@dimen/spacing_small</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="o2_im_chat_message_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">200dp</item>
+        <item name="android:textColor">@color/z_color_text_primary_dark</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="o2_im_chat_message_resend_style">
+        <item name="android:layout_width">21dp</item>
+        <item name="android:layout_height">21dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">@drawable/send_message_failed</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+    <style name="o2_im_chat_message_sending_style">
+        <item name="android:layout_width">21dp</item>
+        <item name="android:layout_height">21dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">@drawable/jmui_sending_img</item>
+    </style>
+
+
+
+
+
     <style name="IMBaseThemes" parent="Theme.AppCompat.Light.NoActionBar">
         <!--<item name="android:statusBarColor">#FB4747</item>-->
         <item name="android:windowNoTitle">true</item>

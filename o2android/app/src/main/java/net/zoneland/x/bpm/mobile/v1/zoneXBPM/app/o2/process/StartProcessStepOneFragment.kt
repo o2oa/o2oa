@@ -2,17 +2,21 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_start_process_step_one.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2CustomStyle
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPFragment
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.TaskWebViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessWOIdentityJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ApplicationData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessInfoData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
@@ -28,6 +32,7 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
     var currentChooseAppId = ""
     val appList = ArrayList<ApplicationData>()
     val processList = ArrayList<ProcessInfoData>()
+    var clickProcess : ProcessInfoData? = null
     val appAdapter: CommonRecycleViewAdapter<ApplicationData> by lazy {
         object : CommonRecycleViewAdapter<ApplicationData>(activity, appList, R.layout.item_start_process_application) {
             override fun convert(holder: CommonRecyclerViewHolder, t: ApplicationData) {
@@ -107,9 +112,55 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
         processAdapter.notifyDataSetChanged()
     }
 
+    override fun loadCurrentPersonIdentity(list: List<ProcessWOIdentityJson>) {
+        if (list.isNotEmpty() ) {
+            if (list.size == 1) {
+                startProcess(list[0].distinguishedName)
+            }else {
+                goToStepTwo()
+            }
+        }else {
+            hideLoadingDialog()
+            XToast.toastShort(activity, "没有获取到当前用户的身份！")
+        }
+    }
+
+    override fun loadCurrentPersonIdentityFail() {
+        hideLoadingDialog()
+        XToast.toastShort(activity, "没有获取到当前用户的身份，无法启动流程！")
+    }
+
+    override fun startProcessSuccess(workId: String) {
+        hideLoadingDialog()
+        val bundle = Bundle()
+        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
+        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, "拟稿")
+        (activity as StartProcessActivity).go<TaskWebViewActivity>(bundle)
+        (activity as StartProcessActivity).finish()
+    }
+
+    override fun startProcessFail(message: String) {
+        hideLoadingDialog()
+        XToast.toastShort(activity, message)
+    }
+
+    private fun startProcess(identity: String) {
+        //启动流程
+        mPresenter.startProcess(identity, clickProcess!!.id)
+    }
+
     private fun onProcessItemClick(processInfoData: ProcessInfoData) {
-        val stepTwo = StartProcessStepTwoFragment.newInstance(processInfoData.id, processInfoData.name)
-        (activity as StartProcessActivity).addFragment(stepTwo)
+        clickProcess = processInfoData
+        showLoadingDialog()
+        mPresenter.loadCurrentPersonIdentityWithProcess(processInfoData.id)
+    }
+
+    private fun goToStepTwo() {
+        hideLoadingDialog()
+        if (clickProcess != null) {
+            val stepTwo = StartProcessStepTwoFragment.newInstance(clickProcess!!.id, clickProcess!!.name)
+            (activity as StartProcessActivity).addFragment(stepTwo)
+        }
     }
 
 
