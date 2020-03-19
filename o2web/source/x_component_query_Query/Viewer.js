@@ -74,12 +74,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     load: function(){
-        this._loadModuleEvents();
-        if (this.fireEvent("queryLoad")){
-            this._loadUserInterface();
-            //this._loadStyles();
-            this._loadDomEvents();
-        }
+        this.loadMacro( function () {
+            this._loadModuleEvents();
+            if (this.fireEvent("queryLoad")){
+                this._loadUserInterface();
+                //this._loadStyles();
+                this._loadDomEvents();
+            }
+        })
     },
     _loadUserInterface : function(){
         this.loadLayout();
@@ -101,6 +103,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
         this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
+    },
+    loadMacro: function (callback) {
+        if( !this.Macro ){ //有可能是page\cms\process传入的macro
+            MWF.require("MWF.xScript.Macro", function () {
+                this.Macro = new MWF.Macro.ViewContext(this);
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
     },
     createExportNode: function(){
         if (this.options.export){
@@ -958,7 +970,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
+                        return this.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }
             }
@@ -969,7 +981,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)===-1){
                     this.node.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
+                        return this.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }
             }
@@ -1435,8 +1447,6 @@ MWF.xApplication.query.Query.Viewer.Filter = new Class({
         MWF.release(this);
     }
 });
-
-
 
 MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     Implements: [Events],

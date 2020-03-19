@@ -171,7 +171,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                             json.data.groupGrid.each(function(line, idx){
                                 var groupTr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
-                                var colSpan = this.items.length + 1 ;
+                                var colSpan = this.items.length ;
                                 var td = new Element("td", {"styles": this.css.viewContentGroupTdNode, "colSpan": colSpan}).inject(groupTr);
                                 var groupAreaNode = new Element("div", {"styles": this.css.viewContentTdGroupNode}).inject(td);
                                 var groupIconNode = new Element("div", {"styles": this.css.viewContentTdGroupIconNode}).inject(groupAreaNode);
