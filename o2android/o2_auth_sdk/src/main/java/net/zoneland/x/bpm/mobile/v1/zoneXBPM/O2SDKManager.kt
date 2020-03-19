@@ -358,11 +358,7 @@ class O2SDKManager private constructor()  {
                     }
                     onError { e, _ ->
                         Log.e(TAG, "", e)
-                        if (e is NoLoginException) {
-                            showState(LaunchState.NoLoginError)
-                        }else {
-                            showState(LaunchState.UnknownError)
-                        }
+                        showState(LaunchState.NoLoginError)
                     }
                 }
     }

@@ -2,6 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.application
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseView
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessWOIdentityJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.WoIdentityListItem
@@ -23,6 +24,6 @@ object CMSPublishDocumentContract {
     interface Presenter : BasePresenter<View> {
         fun findCurrentPersonIdentity()
         fun newDocument(doc: CMSDocumentInfoJson)
-        fun startProcess(title: String, identifyId: String, processId: String)
+        fun startProcess(title: String, identifyId: String, category: CMSCategoryInfoJson)
     }
 }

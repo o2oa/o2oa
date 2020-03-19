@@ -82,16 +82,15 @@ class ReadListActivity : BaseMVPActivity<ReadListContract.View, ReadListContract
             go<TaskWebViewActivity>(TaskWebViewActivity.start(itemList[position].work, itemList[position].workCompleted, itemList[position].title
             ))
         }
-
-        //初始化刷新数据
-        getDatas(true)
-        isRefresh = true
         MiscUtilK.swipeRefreshLayoutRun(todo_read_refresh_layout_id, this)
     }
 
 
     override fun onResume() {
         super.onResume()
+        //初始化刷新数据
+        isRefresh = true
+        getDatas(true)
         pictureLoaderService = PictureLoaderService(this)
     }
 

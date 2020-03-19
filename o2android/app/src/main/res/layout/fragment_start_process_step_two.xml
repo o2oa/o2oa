@@ -131,40 +131,40 @@
                             android:textSize="14sp"
                             tools:text="2017-03-04 12:12"/>
                     </LinearLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/z_color_split_line_ddd"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_small"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:orientation="horizontal">
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0.5dp"-->
+<!--                        android:background="@color/z_color_split_line_ddd"/>-->
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginBottom="@dimen/spacing_small"-->
+<!--                        android:layout_marginTop="@dimen/spacing_small"-->
+<!--                        android:orientation="horizontal">-->
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/start_process_step_two_title"
-                            android:textColor="@color/z_color_text_primary_dark"
-                            android:textSize="15sp"/>
+<!--                        <TextView-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text="@string/start_process_step_two_title"-->
+<!--                            android:textColor="@color/z_color_text_primary_dark"-->
+<!--                            android:textSize="15sp"/>-->
 
-                        <EditText
-                            android:id="@+id/edit_start_process_step_two_title"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:hint="@string/title_please_enter_start_process_step_two"
-                            android:textColor="@color/z_color_text_primary"
-                            android:textColorHint="@color/z_color_text_hint"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            android:imeOptions="actionNext"
-                            android:nextFocusForward="@+id/btn_start_process_step_two_positive"
-                            android:textSize="14sp"
-                            android:background="@null"/>
-                    </LinearLayout>
+<!--                        <EditText-->
+<!--                            android:id="@+id/edit_start_process_step_two_title"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="2"-->
+<!--                            android:hint="@string/title_please_enter_start_process_step_two"-->
+<!--                            android:textColor="@color/z_color_text_primary"-->
+<!--                            android:textColorHint="@color/z_color_text_hint"-->
+<!--                            android:inputType="text"-->
+<!--                            android:singleLine="true"-->
+<!--                            android:imeOptions="actionNext"-->
+<!--                            android:nextFocusForward="@+id/btn_start_process_step_two_positive"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:background="@null"/>-->
+<!--                    </LinearLayout>-->
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -179,30 +179,32 @@
                 android:id="@+id/linear_start_process_step_two_button_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal">
-                <Button
-                    android:id="@+id/btn_start_process_step_two_positive"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:background="@drawable/button_background_44dp"
-                    android:text="@string/submit"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    />
+
 
                 <Button
                     android:id="@+id/btn_start_process_step_two_cancel"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="44dp"
-                    android:layout_marginTop="15dp"
+
                     android:background="@drawable/button_background_44dp_border"
                     android:text="@string/cancel"
                     android:textColor="@color/z_color_text_primary"
+                    android:textSize="18sp"
+                    />
+                <Button
+                    android:id="@+id/btn_start_process_step_two_positive"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:background="@drawable/button_background_44dp"
+                    android:text="@string/submit"
+                    android:textColor="@android:color/white"
                     android:textSize="18sp"
                     />
             </LinearLayout>

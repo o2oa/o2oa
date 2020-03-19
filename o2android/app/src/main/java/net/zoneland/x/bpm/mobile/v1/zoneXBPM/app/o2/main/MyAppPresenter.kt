@@ -4,6 +4,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.ApplicationEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.realm.RealmDataService
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.portal.PortalData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.persistence.MyAppListObject
@@ -34,6 +35,10 @@ class MyAppPresenter : BasePresenterImpl<MyAppContract.View>(), MyAppContract.Pr
                         obj.appTitle = it.name
                         result.add(obj)
                     }
+                    val newCloudDiskApp = MyAppListObject()
+                    newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
+                    newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
+                    result.add(newCloudDiskApp)
                     service.findAllPortalList()
                 }
                 ?.flatMap { list ->
@@ -61,6 +66,10 @@ class MyAppPresenter : BasePresenterImpl<MyAppContract.View>(), MyAppContract.Pr
                                             obj.appTitle = it.name
                                             result.add(obj)
                                         }
+                                        val newCloudDiskApp = MyAppListObject()
+                                        newCloudDiskApp.appId = ApplicationEnum.clouddisk.key
+                                        newCloudDiskApp.appTitle = ApplicationEnum.clouddisk.appName
+                                        result.add(newCloudDiskApp)
                                         portalList.filter { portal -> portal.enable }.map {
                                             val obj = MyAppListObject()
                                             obj.appId = it.id

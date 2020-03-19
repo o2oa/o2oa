@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_o2_chat_outside"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".app.im.O2ChatActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_o2_chat_messages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_o2_chat_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_o2_chat_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_o2_chat_messages"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_o2_chat_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/o2_chat_input_bg"
+                android:maxLines="3"
+                android:minHeight="36dp"
+                android:hint="@string/chat_input_message"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:textSize="16sp"
+                android:imeOptions="actionSend"
+                />
+
+            <ImageView
+                android:id="@+id/btn_o2_chat_emotion"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:src="@mipmap/chat_emoji"
+                android:visibility="visible"
+                />
+
+            <Button
+                android:id="@+id/btn_o2_chat_send"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:background="@drawable/btn_bg_chat_send"
+                android:text="@string/btn_send"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+             <LinearLayout
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:orientation="vertical">
+                 <ImageView
+                     android:id="@+id/img_o2_chat_mic"
+                     android:layout_width="28dp"
+                     android:layout_height="28dp"
+                     android:layout_gravity="center"
+                     android:src="@mipmap/chat_mic" />
+             </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/img_o2_chat_img"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/chat_img" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/img_o2_chat_camera"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/chat_camera" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/img_o2_chat_location"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/chat_location" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

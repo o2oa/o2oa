@@ -12,7 +12,6 @@ import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.DistanceUtil
 import kotlinx.android.synthetic.main.fragment_attendance_check_in.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
@@ -28,6 +27,10 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
+import com.baidu.mapapi.map.MapStatusUpdateFactory
+import com.baidu.mapapi.map.MapStatus
+
+
 
 
 class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInContract.View, AttendanceCheckInContract.Presenter>(),
@@ -75,6 +78,9 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
 
     override fun initUI() {
         mBaiduMap = map_baidu_attendance_check_in.map
+        val builder = MapStatus.Builder()
+        builder.zoom(19.0f)
+        mBaiduMap?.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()))
         mBaiduMap?.mapType = BaiduMap.MAP_TYPE_NORMAL
         // 开启定位图层
         mBaiduMap?.isMyLocationEnabled = true

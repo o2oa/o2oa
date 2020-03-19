@@ -181,9 +181,19 @@
     <string name="yunpan_delete">删除</string>
     <string name="yunpan_share">分享</string>
     <string name="yunpan_send">发送</string>
+    <string name="yunpan_move">移动</string>
     <string name="yunpan_menu_list">列表展现</string>
+    <string name="yunpan_menu_pick_top">选择顶层</string>
     <string name="yunpan_menu_grid">网格展现</string>
     <string name="title_activity_picture_viewer">图片查看器</string>
+    <string name="yunpan_category_image">图片</string>
+    <string name="yunpan_category_doc">文档</string>
+    <string name="yunpan_category_music">音乐</string>
+    <string name="yunpan_category_video">视频</string>
+    <string name="yunpan_category_other">其它</string>
+    <string name="yunpan_category_share">分享</string>
+
+    <string name="yunpan_all_file">全部文件</string>
 
     <string name="share_file_menu_test">测试</string>
 
@@ -1116,6 +1126,9 @@
     <string name="scan_barcode_title">条形码扫描</string>
     <string name="scan_qrcode_title">返回</string>
     <string name="scan_qrcode_hint">将取景框对准二维码，即可自动扫描</string>
+
+
+    <string name="chat_input_message">请输入消息…</string>
 
 
 </resources>

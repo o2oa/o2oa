@@ -95,7 +95,7 @@
   "listUnexpectedErrorLogWithDate" : {"uri": "/jaxrs/unexpectederrorlog/list/{id}/next/{count}/date/{date}"},
   "listWarnLog" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}"},
   "listWarnLogWithDate" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}/date/{date}"},
-
+  "listSystemLog" : {"uri": "/jaxrs/warnlog/view/system/log/tag/{tag}"},
   "echo" : {"uri": "/jaxrs/echo"}
 
 
