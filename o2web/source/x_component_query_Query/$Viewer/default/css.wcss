@@ -164,7 +164,7 @@
         "border": "1px solid #cccccc",
         "float": "none",
         "margin": "10px",
-        "border-radius": "5px",
+        "border-radius": "5px"
     },
     "viewFilterSearchCustomActionNode": {
         "height": "24px",
@@ -249,16 +249,16 @@
     "viewFilterSearchCustomPathListNode": {
         "border": "0px",
         "border-radius": "5px",
-        "height": "80px",
+        "height": "74px",
         "padding": "3px",
-        "width": "99px",
+        "width": "93px",
         "font-size": "12px"
     },
     "viewFilterSearchCustomComparisonListNode": {
         "border": "0px",
-        "height": "80px",
+        "height": "74px",
         "padding": "3px",
-        "width": "99px",
+        "width": "93px",
         "font-size": "12px"
     },
     "viewFilterSearchOptionNode": {

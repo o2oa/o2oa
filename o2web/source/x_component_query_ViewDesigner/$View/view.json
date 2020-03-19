@@ -39,7 +39,37 @@
     "calculate": {},
     "afterGridScriptText": "",
     "afterGroupGridScriptText": "",
-    "afterCalculateGridScriptText": ""
+    "afterCalculateGridScriptText": "",
+    "events": {
+      "queryLoad" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoadData" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadRow": {
+        "code": "",
+        "html": ""
+      },
+      "selectRow" : {
+        "code": "",
+        "html": ""
+      },
+      "unselectRow" : {
+        "code": "",
+        "html": ""
+      }
+    }
   },
   "availableIdentityList": [],
   "availableUnitList": []

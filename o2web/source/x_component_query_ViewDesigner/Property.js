@@ -1,38 +1,38 @@
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.widget.JsonTemplate", null, false);
 MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
-	Extends: MWF.widget.Common,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
-		"path": "/x_component_query_FormDesigner/property/property.html"
-	},
-	
-	initialize: function(module, propertyNode, designer, options){
-		this.setOptions(options);
-		this.module = module;
-		this.view = module.view;
-		this.data = module.json;
+    Extends: MWF.widget.Common,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "path": "/x_component_query_FormDesigner/property/property.html"
+    },
+
+    initialize: function(module, propertyNode, designer, options){
+        this.setOptions(options);
+        this.module = module;
+        this.view = module.view;
+        this.data = module.json;
         this.data.vid = this.view.json.id;
         this.data.vtype = this.view.json.type;
-		this.data.pid = this.view.json.id+this.data.id;
-		this.htmlPath = this.options.path;
-		this.designer = designer;
-		
-		this.propertyNode = propertyNode;
-	},
+        this.data.pid = this.view.json.id+this.data.id;
+        this.htmlPath = this.options.path;
+        this.designer = designer;
 
-	load: function(){
-		if (this.fireEvent("queryLoad")){
-			MWF.getRequestText(this.htmlPath, function(responseText, responseXML){
-				this.htmlString = responseText;
+        this.propertyNode = propertyNode;
+    },
+
+    load: function(){
+        if (this.fireEvent("queryLoad")){
+            MWF.getRequestText(this.htmlPath, function(responseText, responseXML){
+                this.htmlString = responseText;
                 this.fireEvent("postLoad");
-			}.bind(this));
-		}
+            }.bind(this));
+        }
         this.propertyNode.addEvent("keydown", function(e){e.stopPropagation();});
-	},
-	editProperty: function(td){
-	},
+    },
+    editProperty: function(td){
+    },
     getHtmlString: function(callback){
         if (!this.htmlString){
             MWF.getRequestText(this.htmlPath, function(responseText, responseXML){
@@ -43,7 +43,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             if (callback) callback();
         }
     },
-	show: function(){
+    show: function(){
         if (!this.propertyContent){
             this.getHtmlString(function(){
                 if (this.htmlString){
@@ -62,23 +62,27 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadColumnExportEditor();
 
                     this.loadJSONArea();
+
+                    this.loadEventsEditor();
+                    this.loadActionStylesArea();
+                    this.loadActionArea();
                 }
             }.bind(this));
         }else{
             this.propertyContent.setStyle("display", "block");
         }
 
-		
 
-	},
-	hide: function(){
-		//this.JsonTemplate = null;
-		//this.propertyNode.set("html", "");
+
+    },
+    hide: function(){
+        //this.JsonTemplate = null;
+        //this.propertyNode.set("html", "");
         if (this.propertyContent) this.propertyContent.setStyle("display", "none");
-	},
+    },
 
-	loadJSONArea: function(){
-		var jsonNode = this.propertyContent.getElement(".MWFJSONArea");
+    loadJSONArea: function(){
+        var jsonNode = this.propertyContent.getElement(".MWFJSONArea");
 
         if (jsonNode){
             this.propertyTab.pages.each(function(page){
@@ -95,39 +99,39 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 }
             }.bind(this));
         }
-	},
-	loadPropertyTab: function(){
-		var tabNodes = this.propertyContent.getElements(".MWFTab");
-		if (tabNodes.length){
-			var tmpNode = this.propertyContent.getFirst();
-			var tabAreaNode = new Element("div", {
-				"styles": this.view.css.propertyTabNode
-			}).inject(tmpNode, "before");
-			
-			MWF.require("MWF.widget.Tab", function(){
-				var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
-				tab.load();
-				var tabPages = [];
-				tabNodes.each(function(node){
-					var page = tab.addTab(node, node.get("title"), false);
-					tabPages.push(page);
-					this.setScrollBar(page.contentNodeArea, "small", null, null);
-				}.bind(this));
-				tabPages[0].showTab();
-				
-				this.propertyTab = tab;
-				
-				this.designer.resizeNode();
-			}.bind(this), false);
-		}
-	},
-	
-	setEditNodeEvent: function(){
-		var property = this;
-	//	var inputs = this.process.propertyListNode.getElements(".editTableInput");
-		var inputs = this.propertyContent.getElements("input");
-		inputs.each(function(input){
-			var jsondata = input.get("name");
+    },
+    loadPropertyTab: function(){
+        var tabNodes = this.propertyContent.getElements(".MWFTab");
+        if (tabNodes.length){
+            var tmpNode = this.propertyContent.getFirst();
+            var tabAreaNode = new Element("div", {
+                "styles": this.view.css.propertyTabNode
+            }).inject(tmpNode, "before");
+
+            MWF.require("MWF.widget.Tab", function(){
+                var tab = new MWF.widget.Tab(tabAreaNode, {"style": "formPropertyList"});
+                tab.load();
+                var tabPages = [];
+                tabNodes.each(function(node){
+                    var page = tab.addTab(node, node.get("title"), false);
+                    tabPages.push(page);
+                    this.setScrollBar(page.contentNodeArea, "small", null, null);
+                }.bind(this));
+                tabPages[0].showTab();
+
+                this.propertyTab = tab;
+
+                this.designer.resizeNode();
+            }.bind(this), false);
+        }
+    },
+
+    setEditNodeEvent: function(){
+        var property = this;
+        //	var inputs = this.process.propertyListNode.getElements(".editTableInput");
+        var inputs = this.propertyContent.getElements("input");
+        inputs.each(function(input){
+            var jsondata = input.get("name");
             if (jsondata && jsondata.substr(0,1)!="_"){
                 if (this.module){
                     var id = this.module.json.id;
@@ -180,36 +184,36 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     }
                 }
             }
-		}.bind(this));
-		
-		var selects = this.propertyContent.getElements("select");
-		selects.each(function(select){
-			var jsondata = select.get("name");
-			if (jsondata){
-				select.addEvent("change", function(e){
-					property.setSelectValue(jsondata, this);
-				});
+        }.bind(this));
+
+        var selects = this.propertyContent.getElements("select");
+        selects.each(function(select){
+            var jsondata = select.get("name");
+            if (jsondata){
+                select.addEvent("change", function(e){
+                    property.setSelectValue(jsondata, this);
+                });
                 //property.setSelectValue(jsondata, select);
-			}
-		});
-		
-		var textareas = this.propertyContent.getElements("textarea");
-		textareas.each(function(input){
-			var jsondata = input.get("name");
-			if (jsondata){
-				input.addEvent("change", function(e){
-					property.setValue(jsondata, this.value);
-				});
-				input.addEvent("blur", function(e){
-					property.setValue(jsondata, this.value);
-				});
+            }
+        });
+
+        var textareas = this.propertyContent.getElements("textarea");
+        textareas.each(function(input){
+            var jsondata = input.get("name");
+            if (jsondata){
+                input.addEvent("change", function(e){
+                    property.setValue(jsondata, this.value);
+                });
+                input.addEvent("blur", function(e){
+                    property.setValue(jsondata, this.value);
+                });
                 input.addEvent("keydown", function(e){
                     e.stopPropagation();
                 });
-			}
-		}.bind(this));
-		
-	},
+            }
+        }.bind(this));
+
+    },
     loadCalendar: function(node, jsondata){
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(node, {
@@ -245,14 +249,14 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         }.bind(this));
         o[key[len]] = value;
     },
-	setRadioValue: function(name, input){
-		if (input.checked){
+    setRadioValue: function(name, input){
+        if (input.checked){
             var i = name.indexOf("*");
             var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
 
             var value = input.value;
-			if (value=="false") value = false;
-			if (value=="true") value = true;
+            if (value=="false") value = false;
+            if (value=="true") value = true;
 
             var oldValue = this.data;
             for (var idx = 0; idx<names.length; idx++){
@@ -264,32 +268,32 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 }
             }
 
-			//var oldValue = this.data[name];
-			this.changeJsonDate(names, value);
+            //var oldValue = this.data[name];
+            this.changeJsonDate(names, value);
             this.changeData(name, input, oldValue);
-		}
-	},
-	setCheckboxValue: function(name, input){
+        }
+    },
+    setCheckboxValue: function(name, input){
         var id = this.module.json.id;
         var checkboxList = $$("input[name='"+id+name+"']");
-		var values = [];
-		checkboxList.each(function(checkbox){
-			if (checkbox.get("checked")){
-				values.push(checkbox.value);
-			}
-		});
-		var oldValue = this.data[name];
-		//this.data[name] = values;
+        var values = [];
+        checkboxList.each(function(checkbox){
+            if (checkbox.get("checked")){
+                values.push(checkbox.value);
+            }
+        });
+        var oldValue = this.data[name];
+        //this.data[name] = values;
         this.changeJsonDate(name, values);
         this.changeData(name, input, oldValue);
-	},
-	setSelectValue: function(name, select){
-		var idx = select.selectedIndex;
-		var options = select.getElements("option");
-		var value = "";
-		if (options[idx]){
-			value = options[idx].get("value");
-		}
+    },
+    setSelectValue: function(name, select){
+        var idx = select.selectedIndex;
+        var options = select.getElements("option");
+        var value = "";
+        if (options[idx]){
+            value = options[idx].get("value");
+        }
 
         var i = name.indexOf("*");
         var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
@@ -305,13 +309,13 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }
         }
 
-		//var oldValue = this.data[name];
-		//this.data[name] = value;
+        //var oldValue = this.data[name];
+        //this.data[name] = value;
         this.changeJsonDate(names, value);
         this.changeData(name, select, oldValue);
-	},
-	
-	setValue: function(name, value, obj){
+    },
+
+    setValue: function(name, value, obj){
         var names = name.split(".");
         var oldValue = this.data;
         for (var idx = 0; idx<names.length; idx++){
@@ -323,23 +327,23 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }
         }
 
-		//var oldValue = this.data[name];
-		//this.data[name] = value;
+        //var oldValue = this.data[name];
+        //this.data[name] = value;
         this.changeJsonDate(names, value);
         this.changeData(name, obj, oldValue);
-	},
-	setEditNodeStyles: function(node){
-		var nodes = node.getChildren();
-		if (nodes.length){
-			nodes.each(function(el){
-				var cName = el.get("class");
-				if (cName){
-					if (this.view.css[cName]) el.setStyles(this.view.css[cName]);
-				}
-				this.setEditNodeStyles(el);
-			}.bind(this));
-		}
-	},
+    },
+    setEditNodeStyles: function(node){
+        var nodes = node.getChildren();
+        if (nodes.length){
+            nodes.each(function(el){
+                var cName = el.get("class");
+                if (cName){
+                    if (this.view.css[cName]) el.setStyles(this.view.css[cName]);
+                }
+                this.setEditNodeStyles(el);
+            }.bind(this));
+        }
+    },
     loadScriptArea: function(){
         var scriptAreas = this.propertyContent.getElements(".MWFScriptArea");
         var formulaAreas = this.propertyContent.getElements(".MWFFormulaArea");
@@ -703,6 +707,129 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         this.data.filterList.push(op);
         var filter = new MWF.xApplication.query.ViewDesigner.Property.Filter(op, table, this);
         filter.editMode();
+    },
+    loadActionStylesArea: function(){
+        var _self = this;
+        var actionAreas = this.propertyContent.getElements(".MWFActionStylesArea");
+        actionAreas.each(function(node){
+            var name = node.get("name");
+            var actionStyles = this.data[name];
+            MWF.require("MWF.widget.Maplist", function(){
+                var maps = [];
+                Object.each(actionStyles, function(v, k){
+                    var mapNode = new Element("div").inject(node);
+                    mapNode.empty();
+
+                    var maplist = new MWF.widget.Maplist(mapNode, {
+                        "title": k,
+                        "collapse": true,
+                        "onChange": function(){
+                            var oldData = _self.data[name];
+                            maps.each(function(o){
+                                _self.data[name][o.key] = o.map.toJson();
+                            }.bind(this));
+                            _self.changeData(name, node, oldData);
+                        }
+                    });
+                    maps.push({"key": k, "map": maplist});
+                    maplist.load(v);
+                }.bind(this));
+            }.bind(this));
+
+
+        }.bind(this));
+    },
+    loadEventsEditor: function(){
+        MWF.xApplication.process = MWF.xApplication.process || {};
+        MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+        MWF.xDesktop.requireApp("process.FormDesigner", "lp."+o2.language, null, false);
+
+        var events = this.propertyContent.getElement(".MWFEventsArea");
+        if (events){
+            var name = events.get("name");
+            var eventsObj = this.data;
+            Array.each( name.split("."), function(n){
+                if(eventsObj)eventsObj = eventsObj[n];
+            })
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.EventsEditor", function(){
+                var eventsEditor = new MWF.xApplication.process.FormDesigner.widget.EventsEditor(events, this.designer, {
+                    //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.contentNode
+                });
+                eventsEditor.load(eventsObj, this.data, name);
+            }.bind(this));
+        }
+    },
+    loadActionArea: function(){
+        MWF.xApplication.process = MWF.xApplication.process || {};
+        MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+        MWF.xDesktop.requireApp("process.FormDesigner", "lp."+o2.language, null, false);
+
+        var actionAreas = this.propertyContent.getElements(".MWFActionArea");
+        actionAreas.each(function(node){
+            var name = node.get("name");
+            var actionContent = this.data[name];
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
+
+                // debugger;
+                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                //     "noCreate": true,
+                //     "noDelete": true,
+                //     "noCode": true,
+                //     "onChange": function(){
+                //         this.data[name] = actionEditor.data;
+                //     }.bind(this)
+                // });
+                // actionEditor.load(this.module.defaultToolBarsData);
+
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "noEditShow" : true,
+                    "noReadShow" : true,
+                    "onChange": function(){
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+            }.bind(this));
+
+        }.bind(this));
+
+        var actionAreas = this.propertyContent.getElements(".MWFDefaultActionArea");
+        actionAreas.each(function(node){
+            var name = node.get("name");
+            var actionContent = this.data[name] || this.module.defaultToolBarsData;
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
+
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "isSystemTool" : true,
+                    "systemToolsAddress" : "/x_component_query_ViewDesigner/$View/toolbars.json",
+                    "noCreate": true,
+                    "noDelete": false,
+                    "noCode": true,
+                    "noReadShow": true,
+                    "noEditShow": true,
+                    "onChange": function(){
+                        this.data[name] = actionEditor.data;
+                        this.changeData(name);
+                    }.bind(this)
+                });
+                actionEditor.load(actionContent);
+
+                // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {
+                //     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                //     "onChange": function(){
+                //         this.data[name] = actionEditor.data;
+                //     }.bind(this)
+                // });
+                // actionEditor.load(actionContent);
+            }.bind(this));
+
+        }.bind(this));
+
     }
     //initWhereEntryData: function(){
     //    if (!this.data.data.restrictWhereEntry) this.data.data.restrictWhereEntry = {
@@ -1011,26 +1138,26 @@ MWF.xApplication.query.ViewDesigner.Property.Filter = new Class({
         switch (this.property.data.type){
             case "text":
                 html += "<option value=''></option><option value='==' "+((this.data.comparison=="==") ? "selected": "")+">等于(==)</option>" +
-                "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>" +
-                "<option value='@' "+((this.data.comparison=="@") ? "selected": "")+">包含(@)</option>";
+                    "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>" +
+                    "<option value='@' "+((this.data.comparison=="@") ? "selected": "")+">包含(@)</option>";
                 break;
             case "date":
                 html += "<option value=''></option><option value='&gt;' "+((this.data.comparison==">") ? "selected": "")+">大于(&gt;)</option>" +
-                "<option value='&lt;' "+((this.data.comparison=="<") ? "selected": "")+">小于(&lt;)</option>" +
-                "<option value='&gt;=' "+((this.data.comparison==">=") ? "selected": "")+">大于等于(&gt;=)</option>" +
-                "<option value='&lt;=' "+((this.data.comparison=="<=") ? "selected": "")+">小于等于(&lt;=)</option>";
+                    "<option value='&lt;' "+((this.data.comparison=="<") ? "selected": "")+">小于(&lt;)</option>" +
+                    "<option value='&gt;=' "+((this.data.comparison==">=") ? "selected": "")+">大于等于(&gt;=)</option>" +
+                    "<option value='&lt;=' "+((this.data.comparison=="<=") ? "selected": "")+">小于等于(&lt;=)</option>";
                 break;
             case "number":
                 html += "<option value=''></option><option value='==' "+((this.data.comparison=="==") ? "selected": "")+">等于(==)</option>" +
-                "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>" +
-                "<option value='&gt;' "+((this.data.comparison==">") ? "selected": "")+">大于(&gt;)</option>" +
-                "<option value='&lt;' "+((this.data.comparison=="<") ? "selected": "")+">小于(&lt;)</option>" +
-                "<option value='&gt;=' "+((this.data.comparison==">=") ? "selected": "")+">大于等于(&gt;=)</option>" +
-                "<option value='&lt;=' "+((this.data.comparison=="<=") ? "selected": "")+">小于等于(&lt;=)</option>";
+                    "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>" +
+                    "<option value='&gt;' "+((this.data.comparison==">") ? "selected": "")+">大于(&gt;)</option>" +
+                    "<option value='&lt;' "+((this.data.comparison=="<") ? "selected": "")+">小于(&lt;)</option>" +
+                    "<option value='&gt;=' "+((this.data.comparison==">=") ? "selected": "")+">大于等于(&gt;=)</option>" +
+                    "<option value='&lt;=' "+((this.data.comparison=="<=") ? "selected": "")+">小于等于(&lt;=)</option>";
                 break;
             case "boolean":
                 html += "<option value=''></option><option value='==' "+((this.data.comparison=="==") ? "selected": "")+">等于(==)</option>" +
-                "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>";
+                    "<option value='!=' "+((this.data.comparison=="!=") ? "selected": "")+">不等于(!=)</option>";
                 break;
         }
         comparisonSelect.set("html", html);
