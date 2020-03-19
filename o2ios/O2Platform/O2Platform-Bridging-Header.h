@@ -12,7 +12,7 @@
 #import "ZSSRichTextEditor.h"
 //jPush
 #import "JPUSHService.h"
-#import "JPushNotificationExtensionService.h"
+//#import "JPushNotificationExtensionService.h"
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
 #endif
@@ -30,7 +30,8 @@
 #import <BaiduMapAPI_Base/BMKBaseComponent.h>
 #import <BaiduMapAPI_Map/BMKMapComponent.h>
 #import <BaiduMapAPI_Search/BMKSearchComponent.h>
-#import <BaiduMapAPI_Location/BMKLocationComponent.h>
+//#import <BaiduMapAPI_Location/BMKLocationComponent.h>
+#import <BMKLocationKit/BMKLocationComponent.h>
 #import <BaiduMapAPI_Utils/BMKUtilsComponent.h>
 #import <BaiduMapAPI_Map/BMKMapView.h>
 

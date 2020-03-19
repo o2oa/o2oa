@@ -7,7 +7,9 @@ PODS:
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.3)
+  - BaiduMapKit (5.2.0)
   - BetterSegmentedControl (1.2.1)
+  - BMKLocationKit (1.8.5)
   - BSGridCollectionViewLayout (1.2.2)
   - BSImagePicker (2.9.0):
     - BSGridCollectionViewLayout (= 1.2.2)
@@ -35,6 +37,11 @@ PODS:
     - ImageSlideshow/Core
   - ImageSlideshow/Core (1.7.0)
   - IQKeyboardManagerSwift (6.2.0)
+  - JCore (2.1.2)
+  - JMessage (3.9.1):
+    - JCore (< 3.0.0, >= 2.0.0)
+  - JPush (3.2.4):
+    - JCore (< 3.0.0, >= 2.0.0)
   - JTCalendar (2.2.3)
   - MBProgressHUD (1.0.0)
   - MJRefresh (3.2.0)
@@ -76,7 +83,9 @@ DEPENDENCIES:
   - AlamofireImage (~> 3.3)
   - AlamofireNetworkActivityIndicator (~> 2.0)
   - AlamofireObjectMapper (~> 5.1)
+  - BaiduMapKit
   - BetterSegmentedControl (~> 1.2)
+  - BMKLocationKit
   - BSImagePicker
   - Bugly
   - Charts
@@ -90,6 +99,9 @@ DEPENDENCIES:
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
+  - JCore (= 2.1.2)
+  - JMessage
+  - JPush (= 3.2.4)
   - JTCalendar (~> 2.0)
   - MBProgressHUD (~> 1.0.0)
   - MJRefresh
@@ -114,7 +126,9 @@ SPEC REPOS:
     - AlamofireImage
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
+    - BaiduMapKit
     - BetterSegmentedControl
+    - BMKLocationKit
     - BSGridCollectionViewLayout
     - BSImagePicker
     - BSImageView
@@ -129,6 +143,9 @@ SPEC REPOS:
     - HandyJSON
     - ImageSlideshow
     - IQKeyboardManagerSwift
+    - JCore
+    - JMessage
+    - JPush
     - JTCalendar
     - MBProgressHUD
     - MJRefresh
@@ -165,7 +182,9 @@ SPEC CHECKSUMS:
   AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
+  BaiduMapKit: 075465cf7134d0ebf81796b93a59d504c350d9a4
   BetterSegmentedControl: b27bddbdff29b6cae988678d6cd106858986cd03
+  BMKLocationKit: fd3d6b4a9a3a1a2763819f56b780bda5fc5b8726
   BSGridCollectionViewLayout: 3e6f23b3a2b4f0ca9afae09ca01389d1057f7b32
   BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
   BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
@@ -180,6 +199,9 @@ SPEC CHECKSUMS:
   HandyJSON: 992f2d661716d6a91de82d0056927bc7813b5770
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
+  JCore: 1a426120b510cdebfd67b82bfb9483238ee09413
+  JMessage: 43dfcd5348573b2f4f24357b12e9b19076322606
+  JPush: 29466e5f30dbd703f640d70540e411e829cac1fa
   JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MJRefresh: ed450d6eb9d3346a2cb033ab7eb6de090aeef437
@@ -202,6 +224,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: db6dc37779e3ff6c2f895a785cf1e5e8d9415f5c
+PODFILE CHECKSUM: d1360080e7994d58c830e43b2e9d56aa35f3e3e6
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.8.4

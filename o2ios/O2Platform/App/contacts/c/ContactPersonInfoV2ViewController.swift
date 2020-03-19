@@ -112,7 +112,7 @@ class ContactPersonInfoV2ViewController: UITableViewController {
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: kUpdateConversation), object: nil, userInfo: nil)
                 self.navigationController?.pushViewController(vc, animated: true)
             }else{
-                O2Logger.error(error.debugDescription)
+                DDLogError(error.debugDescription)
                 MBProgressHUD_JChat.show(text: "创建会话失败，请重试", view: self.view)
             }
         }

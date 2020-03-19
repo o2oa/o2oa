@@ -110,6 +110,11 @@ class CMSCategoryListViewController: UIViewController {
             destVC.fromCreateDocVC = true
         }else if segue.identifier == "createDocument" {
             let createVC = segue.destination as! CMSCreateDocViewController
+            if let configJson = self.cmsData?.config, !configJson.isEmpty {
+                if let config = try? CMSAppConfig(configJson) {
+                    createVC.config = config
+                }
+            }
             createVC.category = self.selectedCategory
         }
     }
@@ -256,11 +261,23 @@ class CMSCategoryListViewController: UIViewController {
             switch response.result {
             case .success(let val):
                 DDLogDebug(JSON(val).description)
-                let res = Mapper<CMSCategory>().map(JSONObject: val)
-                if let docList = res?.data, docList.count > 0 {
-                    self.performSegue(withIdentifier: "showDetailContentSegue", sender: docList[0])
-                }else {
+                var needLatest = false
+                if let configJson = self.cmsData?.config, !configJson.isEmpty {
+                    if let config = try? CMSAppConfig(configJson) {
+                        if let latest = config.latest, latest == false {
+                            needLatest = true
+                        }
+                    }
+                }
+                if needLatest {
                     self.gotoNewDocController()
+                }else {
+                    let res = Mapper<CMSCategory>().map(JSONObject: val)
+                    if let docList = res?.data, docList.count > 0 {
+                        self.performSegue(withIdentifier: "showDetailContentSegue", sender: docList[0])
+                    }else {
+                        self.gotoNewDocController()
+                    }
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)

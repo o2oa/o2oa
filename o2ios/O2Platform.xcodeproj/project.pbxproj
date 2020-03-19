@@ -54,12 +54,8 @@
 		B108F400229E34D400778050 /* LBXPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3F9229E34D300778050 /* LBXPermissions.swift */; };
 		B108F401229E34D400778050 /* LBXScanWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FA229E34D300778050 /* LBXScanWrapper.swift */; };
 		B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FB229E34D300778050 /* LBXScanViewController.swift */; };
-		B10A2F52233DBA7C0011CE3D /* jpush-extension-ios-1.1.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F4D233DBA7B0011CE3D /* jpush-extension-ios-1.1.2.a */; };
-		B10A2F53233DBA7C0011CE3D /* jpush-ios-3.2.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F4E233DBA7B0011CE3D /* jpush-ios-3.2.4.a */; };
-		B10A2F54233DBA7C0011CE3D /* jcore-ios-2.1.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F51233DBA7C0011CE3D /* jcore-ios-2.1.2.a */; };
 		B10A2F56233DDA990011CE3D /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F55233DDA990011CE3D /* AdSupport.framework */; };
 		B10A2F58233DDAE10011CE3D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F57233DDAE10011CE3D /* Security.framework */; };
-		B10A2F5A233E05550011CE3D /* JMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F59233E05550011CE3D /* JMessage.framework */; };
 		B1298E50236692AB006E9236 /* CloudFileListBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */; };
 		B1298E7C23669BA2006E9236 /* CloudFileTypeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */; };
 		B1298E7E2366AE4C006E9236 /* CloudFileImageCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */; };
@@ -202,6 +198,7 @@
 		B1B7470621523ED70041948D /* SignatureViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B746CF21523ED60041948D /* SignatureViewCell.swift */; };
 		B1B7470721523ED70041948D /* SignatureViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1B7470521523ED60041948D /* SignatureViewCell.xib */; };
 		B1B7470921523F010041948D /* O2UISignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B7470821523F010041948D /* O2UISignatureView.swift */; };
+		B1BA42B824133AC40081CED8 /* TaskCreateData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BA42B724133AC40081CED8 /* TaskCreateData.swift */; };
 		B1BC8CDA216B3D5F00AF571F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B1BC8CD9216B3D5E00AF571F /* libc++.tbd */; };
 		B1C19025211437E200935829 /* OOCalendarLeftMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */; };
 		B1C1905D2114410D00935829 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */; };
@@ -339,7 +336,6 @@
 		E428AF5D20AC1CD100D964B9 /* OOAttandanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428AF5C20AC1CD100D964B9 /* OOAttandanceViewModel.swift */; };
 		E428AF6020AD4DCE00D964B9 /* OOAttanceCheckInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428AF5E20AD4DCE00D964B9 /* OOAttanceCheckInController.swift */; };
 		E428AF6120AD4DCE00D964B9 /* OOAttanceCheckInController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E428AF5F20AD4DCE00D964B9 /* OOAttanceCheckInController.xib */; };
-		E428AF6320ADA06600D964B9 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E428AF6220ADA06600D964B9 /* mapapi.bundle */; };
 		E428AF6720AEA5E300D964B9 /* OOAttandanceSettingDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E428AF6620AEA5E300D964B9 /* OOAttandanceSettingDataView.swift */; };
 		E428AF6920AEA5EE00D964B9 /* OOAttandanceSettingDataView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E428AF6820AEA5EE00D964B9 /* OOAttandanceSettingDataView.xib */; };
 		E42E41C61E6E570E00C5B5C7 /* MainPublishTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42E41C51E6E570E00C5B5C7 /* MainPublishTableViewCell.swift */; };
@@ -951,13 +947,6 @@
 		E4D23114209C42E700837868 /* OOSelectPersonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4D23112209C42E700837868 /* OOSelectPersonTableViewCell.xib */; };
 		E4D23118209EF74D00837868 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D23116209EF74C00837868 /* libcrypto.a */; };
 		E4D23119209EF74D00837868 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D23117209EF74C00837868 /* libssl.a */; };
-		E4D23122209F3CD200837868 /* BaiduMapAPI_Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D2311B209F3CCE00837868 /* BaiduMapAPI_Utils.framework */; };
-		E4D23123209F3CD200837868 /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D2311C209F3CCE00837868 /* BaiduMapAPI_Cloud.framework */; };
-		E4D23124209F3CD200837868 /* BaiduMapAPI_Search.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D2311D209F3CCF00837868 /* BaiduMapAPI_Search.framework */; };
-		E4D23125209F3CD200837868 /* BaiduMapAPI_Location.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D2311E209F3CCF00837868 /* BaiduMapAPI_Location.framework */; };
-		E4D23126209F3CD200837868 /* BaiduMapAPI_Map.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D2311F209F3CD100837868 /* BaiduMapAPI_Map.framework */; };
-		E4D23127209F3CD200837868 /* BaiduMapAPI_Radar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D23120209F3CD200837868 /* BaiduMapAPI_Radar.framework */; };
-		E4D23128209F3CD200837868 /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D23121209F3CD200837868 /* BaiduMapAPI_Base.framework */; };
 		E4D2312B20A29E2700837868 /* OOAppMainCollectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4D2312920A29E2600837868 /* OOAppMainCollectionHeaderView.xib */; };
 		E4D2312E20A29E7500837868 /* OOAppMainCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D2312D20A29E7500837868 /* OOAppMainCollectionHeaderView.swift */; };
 		E4D2313020A29E9F00837868 /* OOAppMainCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D2312F20A29E9F00837868 /* OOAppMainCollectionReusableView.swift */; };
@@ -1367,14 +1356,8 @@
 		B108F3F9229E34D300778050 /* LBXPermissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXPermissions.swift; sourceTree = "<group>"; };
 		B108F3FA229E34D300778050 /* LBXScanWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanWrapper.swift; sourceTree = "<group>"; };
 		B108F3FB229E34D300778050 /* LBXScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewController.swift; sourceTree = "<group>"; };
-		B10A2F4D233DBA7B0011CE3D /* jpush-extension-ios-1.1.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-extension-ios-1.1.2.a"; sourceTree = "<group>"; };
-		B10A2F4E233DBA7B0011CE3D /* jpush-ios-3.2.4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.2.4.a"; sourceTree = "<group>"; };
-		B10A2F4F233DBA7B0011CE3D /* JPushNotificationExtensionService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPushNotificationExtensionService.h; sourceTree = "<group>"; };
-		B10A2F50233DBA7B0011CE3D /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
-		B10A2F51233DBA7C0011CE3D /* jcore-ios-2.1.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-2.1.2.a"; sourceTree = "<group>"; };
 		B10A2F55233DDA990011CE3D /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		B10A2F57233DDAE10011CE3D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		B10A2F59233E05550011CE3D /* JMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JMessage.framework; sourceTree = "<group>"; };
 		B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileListBaseController.swift; sourceTree = "<group>"; };
 		B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileTypeListController.swift; sourceTree = "<group>"; };
 		B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileImageCollectionController.swift; sourceTree = "<group>"; };
@@ -1514,6 +1497,7 @@
 		B1B746CF21523ED60041948D /* SignatureViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureViewCell.swift; sourceTree = "<group>"; };
 		B1B7470521523ED60041948D /* SignatureViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SignatureViewCell.xib; sourceTree = "<group>"; };
 		B1B7470821523F010041948D /* O2UISignatureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = O2UISignatureView.swift; sourceTree = "<group>"; };
+		B1BA42B724133AC40081CED8 /* TaskCreateData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCreateData.swift; sourceTree = "<group>"; };
 		B1BC8CD9216B3D5E00AF571F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarLeftMenuController.swift; sourceTree = "<group>"; };
 		B1C1905C2114410D00935829 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
@@ -1658,7 +1642,6 @@
 		E428AF5C20AC1CD100D964B9 /* OOAttandanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOAttandanceViewModel.swift; sourceTree = "<group>"; };
 		E428AF5E20AD4DCE00D964B9 /* OOAttanceCheckInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOAttanceCheckInController.swift; sourceTree = "<group>"; };
 		E428AF5F20AD4DCE00D964B9 /* OOAttanceCheckInController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OOAttanceCheckInController.xib; sourceTree = "<group>"; };
-		E428AF6220ADA06600D964B9 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = mapapi.bundle; path = BaiduMapAPI_Map.framework/Resources/mapapi.bundle; sourceTree = "<group>"; };
 		E428AF6620AEA5E300D964B9 /* OOAttandanceSettingDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOAttandanceSettingDataView.swift; sourceTree = "<group>"; };
 		E428AF6820AEA5EE00D964B9 /* OOAttandanceSettingDataView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OOAttandanceSettingDataView.xib; sourceTree = "<group>"; };
 		E42E41C51E6E570E00C5B5C7 /* MainPublishTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPublishTableViewCell.swift; sourceTree = "<group>"; };
@@ -2328,13 +2311,6 @@
 		E4D23112209C42E700837868 /* OOSelectPersonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OOSelectPersonTableViewCell.xib; sourceTree = "<group>"; };
 		E4D23116209EF74C00837868 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		E4D23117209EF74C00837868 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		E4D2311B209F3CCE00837868 /* BaiduMapAPI_Utils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Utils.framework; sourceTree = "<group>"; };
-		E4D2311C209F3CCE00837868 /* BaiduMapAPI_Cloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Cloud.framework; sourceTree = "<group>"; };
-		E4D2311D209F3CCF00837868 /* BaiduMapAPI_Search.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Search.framework; sourceTree = "<group>"; };
-		E4D2311E209F3CCF00837868 /* BaiduMapAPI_Location.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Location.framework; sourceTree = "<group>"; };
-		E4D2311F209F3CD100837868 /* BaiduMapAPI_Map.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Map.framework; sourceTree = "<group>"; };
-		E4D23120209F3CD200837868 /* BaiduMapAPI_Radar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Radar.framework; sourceTree = "<group>"; };
-		E4D23121209F3CD200837868 /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
 		E4D2312920A29E2600837868 /* OOAppMainCollectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OOAppMainCollectionHeaderView.xib; sourceTree = "<group>"; };
 		E4D2312D20A29E7500837868 /* OOAppMainCollectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOAppMainCollectionHeaderView.swift; sourceTree = "<group>"; };
 		E4D2312F20A29E9F00837868 /* OOAppMainCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOAppMainCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -2371,11 +2347,8 @@
 				B130E64A223B774D00B68354 /* shared_preferences.framework in Frameworks */,
 				E40958C920805211000FECC3 /* AVFoundation.framework in Frameworks */,
 				B130E644223B774400B68354 /* Flutter.framework in Frameworks */,
-				E4D23122209F3CD200837868 /* BaiduMapAPI_Utils.framework in Frameworks */,
-				B10A2F5A233E05550011CE3D /* JMessage.framework in Frameworks */,
 				E4375B1C207CABF00065A880 /* MobileCoreServices.framework in Frameworks */,
 				E4375B1E207CAC020065A880 /* ImageIO.framework in Frameworks */,
-				B10A2F54233DBA7C0011CE3D /* jcore-ios-2.1.2.a in Frameworks */,
 				E40958C7208051DE000FECC3 /* CoreTelephony.framework in Frameworks */,
 				E4418C5F1DDC1AC80066348D /* CoreGraphics.framework in Frameworks */,
 				E4375B12207CABAB0065A880 /* SystemConfiguration.framework in Frameworks */,
@@ -2389,22 +2362,14 @@
 				E4375B0E207CAB980065A880 /* CoreData.framework in Frameworks */,
 				E4375B0C207CAB860065A880 /* libz.tbd in Frameworks */,
 				E4375B08207CAB770065A880 /* libsqlite3.0.tbd in Frameworks */,
-				E4D23128209F3CD200837868 /* BaiduMapAPI_Base.framework in Frameworks */,
 				E4375B06207CAB6D0065A880 /* libresolv.tbd in Frameworks */,
 				E4418C691DDC1AF70066348D /* Foundation.framework in Frameworks */,
-				E4D23127209F3CD200837868 /* BaiduMapAPI_Radar.framework in Frameworks */,
-				E4D23126209F3CD200837868 /* BaiduMapAPI_Map.framework in Frameworks */,
 				E4418C671DDC1AEE0066348D /* UIKit.framework in Frameworks */,
-				E4D23124209F3CD200837868 /* BaiduMapAPI_Search.framework in Frameworks */,
 				E4418C651DDC1AE70066348D /* Accelerate.framework in Frameworks */,
 				E4418C631DDC1AD60066348D /* CoreImage.framework in Frameworks */,
 				E4418C611DDC1ACF0066348D /* QuartzCore.framework in Frameworks */,
 				E4D23118209EF74D00837868 /* libcrypto.a in Frameworks */,
 				37D63E73FDC49F690C780FD1 /* Pods_O2Platform.framework in Frameworks */,
-				E4D23125209F3CD200837868 /* BaiduMapAPI_Location.framework in Frameworks */,
-				B10A2F53233DBA7C0011CE3D /* jpush-ios-3.2.4.a in Frameworks */,
-				E4D23123209F3CD200837868 /* BaiduMapAPI_Cloud.framework in Frameworks */,
-				B10A2F52233DBA7C0011CE3D /* jpush-extension-ios-1.1.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3860,10 +3825,8 @@
 				B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */,
 				B19BCE442228272500BD454C /* O2OA_Flutter_SDK */,
 				B1AE4E2221A3DA0F00183FCD /* O2OA_Auth_SDK.framework */,
-				E4D2311A209F3CA800837868 /* BaiduMap */,
 				E4D23115209EF74C00837868 /* thirdlibs */,
 				E4C24A5120844F2600E426B0 /* JMessage */,
-				E4C24A332081B05E00E426B0 /* JPUSH */,
 				E40502C120722208009A8D30 /* ImageRow */,
 				E4CB277F1E793AE6004A7ACB /* ZonePickerView */,
 				09E02E6B1F16319600579887 /* Haneke */,
@@ -4172,6 +4135,7 @@
 				E4B8884F1D9D48F1002E1A46 /* Module.swift */,
 				E4B888501D9D48F1002E1A46 /* TodoTask.swift */,
 				B1908E1322685E8F00D75632 /* O2WebViewModels.swift */,
+				B1BA42B724133AC40081CED8 /* TaskCreateData.swift */,
 			);
 			path = m;
 			sourceTree = "<group>";
@@ -4232,19 +4196,6 @@
 				E4B889311D9D6308002E1A46 /* BaseCoreData.swift */,
 			);
 			path = Base;
-			sourceTree = "<group>";
-		};
-		E4C24A332081B05E00E426B0 /* JPUSH */ = {
-			isa = PBXGroup;
-			children = (
-				B10A2F59233E05550011CE3D /* JMessage.framework */,
-				B10A2F51233DBA7C0011CE3D /* jcore-ios-2.1.2.a */,
-				B10A2F4D233DBA7B0011CE3D /* jpush-extension-ios-1.1.2.a */,
-				B10A2F4E233DBA7B0011CE3D /* jpush-ios-3.2.4.a */,
-				B10A2F4F233DBA7B0011CE3D /* JPushNotificationExtensionService.h */,
-				B10A2F50233DBA7B0011CE3D /* JPUSHService.h */,
-			);
-			path = JPUSH;
 			sourceTree = "<group>";
 		};
 		E4C24A5120844F2600E426B0 /* JMessage */ = {
@@ -4965,21 +4916,6 @@
 			path = thirdlibs;
 			sourceTree = "<group>";
 		};
-		E4D2311A209F3CA800837868 /* BaiduMap */ = {
-			isa = PBXGroup;
-			children = (
-				E428AF6220ADA06600D964B9 /* mapapi.bundle */,
-				E4D23121209F3CD200837868 /* BaiduMapAPI_Base.framework */,
-				E4D2311C209F3CCE00837868 /* BaiduMapAPI_Cloud.framework */,
-				E4D2311E209F3CCF00837868 /* BaiduMapAPI_Location.framework */,
-				E4D2311F209F3CD100837868 /* BaiduMapAPI_Map.framework */,
-				E4D23120209F3CD200837868 /* BaiduMapAPI_Radar.framework */,
-				E4D2311D209F3CCF00837868 /* BaiduMapAPI_Search.framework */,
-				E4D2311B209F3CCE00837868 /* BaiduMapAPI_Utils.framework */,
-			);
-			path = BaiduMap;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4995,6 +4931,7 @@
 				E4C24A322081AFD500E426B0 /* Embed App Extensions */,
 				B1AE4E2821A3DCC200183FCD /* Embed Frameworks */,
 				B144D7B222B76E71000AAD8F /* Run Script */,
+				1B32B645931F2C29F159EFD7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -5472,7 +5409,6 @@
 				E45755A51E0BA72E00EC44F4 /* qrcode_scan_light_green@2x.png in Resources */,
 				E46E6CB21DD41F5D00AB7561 /* ZSSunorderedlist@2x.png in Resources */,
 				E457559F1E0BA72E00EC44F4 /* qrcode_scan_btn_myqrcode_down@2x.png in Resources */,
-				E428AF6320ADA06600D964B9 /* mapapi.bundle in Resources */,
 				E46E6C731DD41F5D00AB7561 /* ZSSforcejustify.png in Resources */,
 				E4B888D91D9D48F1002E1A46 /* 004.jpg in Resources */,
 				E4F45447208EC359002FBC32 /* OOPersonsViewController.xib in Resources */,
@@ -5636,13 +5572,31 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1B32B645931F2C29F159EFD7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-O2Platform/Pods-O2Platform-resources.sh",
+				"${PODS_ROOT}/BaiduMapKit/BaiduMapKit/BaiduMapAPI_Map.framework/mapapi.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/mapapi.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-O2Platform/Pods-O2Platform-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		50A3AB6E115C21464BEE9779 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-O2Platform/Pods-O2Platform-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
@@ -5727,7 +5681,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-O2Platform/Pods-O2Platform-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6CB43AA0AD5C9B1268F7531A /* [CP] Check Pods Manifest.lock */ = {
@@ -5937,6 +5891,7 @@
 				E41512631ED80AF3006531B0 /* ZoneNavigationBarManager.swift in Sources */,
 				E4B888771D9D48F1002E1A46 /* Group.swift in Sources */,
 				E4B888911D9D48F1002E1A46 /* UIViewExt.m in Sources */,
+				B1BA42B824133AC40081CED8 /* TaskCreateData.swift in Sources */,
 				09E02E871F16319600579887 /* DiskCache.swift in Sources */,
 				B1DE856623603408003C36E2 /* DispatchQueue+Extension.swift in Sources */,
 				E4B69772207630240062F6E8 /* String+Extenstion.swift in Sources */,
@@ -6664,14 +6619,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 66;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/O2Platform/framework",
-					"$(PROJECT_DIR)/O2Platform/framework/JPUSH",
-					"$(PROJECT_DIR)/O2Platform/framework/BaiduMap",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Moya",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Alamofire",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Result",
@@ -6682,7 +6635,6 @@
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK/plugins",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK/engine",
-					"$(PROJECT_DIR)/O2Platform/Framework/JPUSH",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -6695,14 +6647,11 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/O2Platform/framework/JPUSH",
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
-					"$(PROJECT_DIR)/O2Platform/framework/MGFaceppSDK",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
-					"$(PROJECT_DIR)/O2Platform/Framework/JPUSH",
 				);
-				MARKETING_VERSION = 5.0.4;
+				MARKETING_VERSION = 5.0.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6784,14 +6733,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 66;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/O2Platform/framework",
-					"$(PROJECT_DIR)/O2Platform/framework/JPUSH",
-					"$(PROJECT_DIR)/O2Platform/framework/BaiduMap",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Moya",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Alamofire",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_SDK_Dependents/Result",
@@ -6802,7 +6749,6 @@
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK/plugins",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK/engine",
-					"$(PROJECT_DIR)/O2Platform/Framework/JPUSH",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -6815,14 +6761,11 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/O2Platform/framework/JPUSH",
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
-					"$(PROJECT_DIR)/O2Platform/framework/MGFaceppSDK",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
-					"$(PROJECT_DIR)/O2Platform/Framework/JPUSH",
 				);
-				MARKETING_VERSION = 5.0.4;
+				MARKETING_VERSION = 5.0.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

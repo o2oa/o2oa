@@ -8,6 +8,7 @@
 
 import UIKit
 import O2OA_Auth_SDK
+import CocoaLumberjack
 
 
 class OOAttanceCheckInController: UITableViewController {
@@ -92,7 +93,7 @@ class OOAttanceCheckInController: UITableViewController {
     }
     
     @objc private func locationReceive(_ notification:Notification){
-        if  let result = notification.object as?  BMKReverseGeoCodeResult {
+        if  let result = notification.object as?  BMKReverseGeoCodeSearchResult {
             checkinForm.recordAddress = result.address
             checkinForm.desc = result.sematicDescription
             checkinForm.longitude = String(result.location.longitude)
@@ -109,7 +110,7 @@ class OOAttanceCheckInController: UITableViewController {
             // button enable
             myButton.isEnabled = true
             headerView.addSubview(promptView)
-            O2Logger.debug("checkForm set completed")
+            DDLogDebug("checkForm set completed")
         }else{
             myButton.isEnabled = false
             promptView.removeSubviews()

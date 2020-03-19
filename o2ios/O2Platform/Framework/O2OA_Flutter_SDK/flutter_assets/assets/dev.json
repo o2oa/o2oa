@@ -1,0 +1,11 @@
+{
+  "id":"",
+  "pinyin":"",
+  "pinyinInitial":"",
+  "name":"开发服务器",
+  "centerHost":"dev.o2oa.net",
+  "centerContext":"/x_program_center",
+  "centerPort":20030,
+  "httpProtocol":"http"
+
+}
