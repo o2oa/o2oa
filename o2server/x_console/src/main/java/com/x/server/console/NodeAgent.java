@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,7 +11,6 @@ import com.x.base.core.project.tools.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -48,7 +46,7 @@ public class NodeAgent extends Thread {
 
 	public static final Pattern read_log_pattern = Pattern.compile("^readLog:(.+)$", Pattern.CASE_INSENSITIVE);
 
-	public static final int LOG_MAX_READ_SIZE = 10 * 1024;
+	public static final int LOG_MAX_READ_SIZE = 6 * 1024;
 
 	@Override
 	public void run() {
@@ -59,7 +57,7 @@ public class NodeAgent extends Thread {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						String json = dis.readUTF();
-						logger.print("receive socket json={}",json);
+						logger.info("receive socket json={}",json);
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
@@ -95,7 +93,7 @@ public class NodeAgent extends Thread {
 								}
 								bytes = bos.toByteArray();
 							}
-							logger.print("receive resource bytes {}", bytes.length);
+							logger.info("receive resource bytes {}", bytes.length);
 							String result = this.uploadResource(commandObject.getParam(), bytes);
 							dos.writeUTF(result);
 							dos.flush();
@@ -130,7 +128,7 @@ public class NodeAgent extends Thread {
 		try {
 			File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
 			if(logFile.exists()){
-				Map<String, String> map = new HashMap<>();
+				List<Map<String, String>> list = new ArrayList<>();
 				try(RandomAccessFile randomFile = new RandomAccessFile(logFile,"r")) {
 					long curFileSize = randomFile.length();
 					if (lastTimeFileSize <= 0 || lastTimeFileSize > curFileSize) {
@@ -159,29 +157,36 @@ public class NodeAgent extends Thread {
 							}
 						} else {
 							if (StringUtils.isEmpty(curTime)) {
-								time = "2020-01-01 00:00:01.001";
+								continue;
 							} else {
 								time = curTime;
 							}
 						}
-						map.put(time+"#"+Config.node(), lineStr);
+						Map<String, String> map = new HashMap<>();
+						map.put("logTime",time+"#"+Config.node());
+						map.put("lineLog", lineStr);
+						list.add(map);
 						if (curReadSize > LOG_MAX_READ_SIZE){
 							break;
 						}
 					}
-					lastTimeFileSize = curReadSize - 1;
+					if(curReadSize>0) {
+						lastTimeFileSize = lastTimeFileSize + curReadSize - 1;
+					}
 				}
+				dos.writeUTF(XGsonBuilder.toJson(list));
+				dos.flush();
+
 				dos.writeLong(lastTimeFileSize);
 				dos.flush();
 
-				dos.writeUTF(XGsonBuilder.toJson(map));
-				dos.flush();
+				return;
 			}
 		} catch (Exception e) {
 			logger.print("readLog error:{}", e.getMessage());
-			dos.writeUTF("failure");
-			dos.flush();
 		}
+		dos.writeUTF("failure");
+		dos.flush();
 	}
 
 	private String uploadResource(Map<String,Object> param, byte[] bytes){
