@@ -1,0 +1,201 @@
+{
+    "type": "success",
+    "data": [
+             {
+             "roomList": [
+                          {
+                          "meetingList": [
+                                          {
+                                          "createTime": "2018-01-18 16:10:10",
+                                          "updateTime": "2018-01-18 16:10:10",
+                                          "id": "a5b32237-7c3b-4e3a-91d5-4da2dba3e12c",
+                                          "subject": "test",
+                                          "pinyin": "test",
+                                          "pinyinInitial": "test",
+                                          "description": "test!!!",
+                                          "room": "709f96bf-57cf-4486-84f2-fdb72a638fa7",
+                                          "startTime": "2018-01-24 10:00:00",
+                                          "completedTime": "2018-01-24 11:00:00",
+                                          "invitePersonList": [
+                                                               "黃兆文@2d389753-4bb4-483b-93ce-98b94568cb2b@P",
+                                                               "王志強@15d8d58d-d712-4e0a-9ca9-15c1c4d1aee5@P"
+                                                               ],
+                                          "acceptPersonList": [],
+                                          "rejectPersonList": [],
+                                          "confirmStatus": "allow",
+                                          "manualCompleted": false,
+                                          "applicant": "李杰@lijie@P"
+                                          }
+                                          ],
+                          "idle": true,
+                          "createTime": "2017-08-03 14:23:48",
+                          "updateTime": "2017-08-03 14:23:48",
+                          "id": "709f96bf-57cf-4486-84f2-fdb72a638fa7",
+                          "pinyin": "benbuxiaohuiyishi",
+                          "pinyinInitial": "bbxhys",
+                          "name": "本部小会议室",
+                          "building": "a5a5448a-a776-4d88-b4b4-c2a0e24301cf",
+                          "floor": 1,
+                          "roomNumber": "603",
+                          "phoneNumber": "",
+                          "device": "wifi#phone",
+                          "capacity": 6,
+                          "available": true
+                          },
+                          {
+                          "meetingList": [],
+                          "idle": true,
+                          "createTime": "2017-08-03 14:22:23",
+                          "updateTime": "2017-08-08 16:32:22",
+                          "id": "2639e272-14e1-4602-83b4-5fdbae5cc07a",
+                          "pinyin": "benbuzhonghuiyishi",
+                          "pinyinInitial": "bbzhys",
+                          "name": "本部中会议室",
+                          "building": "a5a5448a-a776-4d88-b4b4-c2a0e24301cf",
+                          "floor": 6,
+                          "roomNumber": "602",
+                          "phoneNumber": "",
+                          "device": "projector#board#tvset#camera",
+                          "capacity": 15,
+                          "available": false
+                          },
+                          {
+                          "meetingList": [
+                                          {
+                                          "createTime": "2018-01-18 17:23:02",
+                                          "updateTime": "2018-01-18 17:23:04",
+                                          "id": "ed3c7c30-4c9f-4254-84bd-12c007310ef7",
+                                          "subject": "测试邀请的会议。。。。。",
+                                          "pinyin": "ceshiyaoqingdehuiyi。。。。。",
+                                          "pinyinInitial": "csyqdhy。。。。。",
+                                          "description": "这个是会议描述。。。。。。",
+                                          "room": "a30d25d9-1d15-4626-8fa3-06fe8df39418",
+                                          "startTime": "2018-03-08 15:21:00",
+                                          "completedTime": "2018-03-08 17:21:00",
+                                          "invitePersonList": [
+                                                               "李杰@lijie@P",
+                                                               "劉嘉明@50e505f2-3e26-4968-a549-7b54a5a82c37@P",
+                                                               "黃兆文@2d389753-4bb4-483b-93ce-98b94568cb2b@P",
+                                                               "張艷玲@1bae336c-dafe-4ecc-ab96-aae63187f895@P",
+                                                               "張靜琳@89bb652c-0a76-4da0-9540-5b7b0c37b022@P"
+                                                               ],
+                                          "acceptPersonList": [],
+                                          "rejectPersonList": [],
+                                          "confirmStatus": "allow",
+                                          "manualCompleted": false,
+                                          "applicant": "楼国栋@louguodong@P"
+                                          }
+                                          ],
+                          "idle": true,
+                          "createTime": "2017-08-03 14:18:41",
+                          "updateTime": "2017-08-03 14:18:41",
+                          "id": "a30d25d9-1d15-4626-8fa3-06fe8df39418",
+                          "pinyin": "benbudahuiyishi",
+                          "pinyinInitial": "bbdhys",
+                          "name": "本部大会议室",
+                          "building": "a5a5448a-a776-4d88-b4b4-c2a0e24301cf",
+                          "floor": 6,
+                          "roomNumber": "601",
+                          "phoneNumber": "",
+                          "device": "board#tvset#tv",
+                          "capacity": 20,
+                          "available": true
+                          }
+                          ],
+             "createTime": "2017-08-03 14:18:40",
+             "updateTime": "2017-08-04 22:27:24",
+             "id": "a5a5448a-a776-4d88-b4b4-c2a0e24301cf",
+             "pinyin": "gongsibenbu",
+             "pinyinInitial": "gsbb",
+             "name": "公司本部",
+             "address": "杭州市西湖区古翠路108号节能公司E中6楼兰德纵横"
+             },
+             {
+             "roomList": [
+                          {
+                          "meetingList": [
+                                          {
+                                          "createTime": "2018-01-18 17:23:48",
+                                          "updateTime": "2018-01-18 17:23:48",
+                                          "id": "4be6a0f0-628e-4755-96f3-7b5b4a2073be",
+                                          "subject": "测试邀请会议222222",
+                                          "pinyin": "ceshiyaoqinghuiyi222222",
+                                          "pinyinInitial": "csyqhy222222",
+                                          "description": "2222222222222222",
+                                          "room": "804f1f6c-0811-4be7-bcfb-c1edcc78a70f",
+                                          "startTime": "2018-02-15 18:00:00",
+                                          "completedTime": "2018-02-15 19:00:00",
+                                          "invitePersonList": [
+                                                               "李杰@lijie@P",
+                                                               "劉家華@9fb540d1-6e10-4861-98d2-d30043c6b74f@P",
+                                                               "廖家樂@c740975b-87bf-4d49-8215-f4175f5612ec@P"
+                                                               ],
+                                          "acceptPersonList": [],
+                                          "rejectPersonList": [],
+                                          "confirmStatus": "allow",
+                                          "manualCompleted": false,
+                                          "applicant": "楼国栋@louguodong@P",
+                                          "auditor": ""
+                                          }
+                                          ],
+                          "idle": true,
+                          "createTime": "2017-07-22 13:21:20",
+                          "updateTime": "2017-08-15 11:29:50",
+                          "id": "804f1f6c-0811-4be7-bcfb-c1edcc78a70f",
+                          "pinyin": "20cengxiaohuiyishi",
+                          "pinyinInitial": "20cxhys",
+                          "name": "20层小会议室",
+                          "building": "25a491ad-7700-4451-9718-29a0c63b6adf",
+                          "floor": 20,
+                          "roomNumber": "22",
+                          "phoneNumber": "2222",
+                          "device": "projector#board#tvset#tv#camera#wifi#phone",
+                          "capacity": 33,
+                          "auditor": "",
+                          "available": true
+                          }
+                          ],
+             "createTime": "2017-08-15 11:29:50",
+             "updateTime": "2017-08-15 11:30:34",
+             "id": "25a491ad-7700-4451-9718-29a0c63b6adf",
+             "pinyin": "nanjingfengongsi",
+             "pinyinInitial": "njfgs",
+             "name": "南京分公司",
+             "address": "南京市中山北路267号"
+             },
+             {
+             "roomList": [
+                          {
+                          "meetingList": [],
+                          "idle": true,
+                          "createTime": "2017-08-04 00:02:01",
+                          "updateTime": "2017-08-04 00:02:01",
+                          "id": "d5a71bca-b24a-489c-b69d-4b324f45b9dc",
+                          "pinyin": "xidoumenfenshe",
+                          "pinyinInitial": "xdmfs",
+                          "name": "西斗门分社",
+                          "building": "9396d8d8-0ba6-4066-a7c4-e017a40f9f61",
+                          "floor": 6,
+                          "roomNumber": "",
+                          "phoneNumber": "",
+                          "device": "board#wifi",
+                          "capacity": 6,
+                          "available": true
+                          }
+                          ],
+             "createTime": "2017-08-04 00:02:01",
+             "updateTime": "2017-08-09 09:51:33",
+             "id": "9396d8d8-0ba6-4066-a7c4-e017a40f9f61",
+             "pinyin": "xidoumen",
+             "pinyinInitial": "xdm",
+             "name": "西斗门",
+             "address": "杭州市西湖区西斗门路湖畔莲花港家园16-602"
+             }
+             ],
+    "message": "",
+    "date": "2018-01-19 11:30:52",
+    "spent": 78,
+    "size": 3,
+    "count": 0,
+    "position": 0
+}

@@ -19,6 +19,7 @@ import CocoaLumberjack
 class CMSCreateDocViewController: FormViewController {
 
     var category: CMSWrapOutCategoryList?
+    var config: CMSAppConfig?
     
     var  identityList:[IdentityV2] = []
     
@@ -47,6 +48,10 @@ class CMSCreateDocViewController: FormViewController {
             
         }
         title = self.category?.categoryName
+        
+        if let ignoreTitle = self.config?.ignoreTitle, ignoreTitle == true {
+            self.showLoading()
+        }
         loadDepartAndIdentity()
     }
     
@@ -62,7 +67,12 @@ class CMSCreateDocViewController: FormViewController {
                     self.identityList = identities
                 }
                 DispatchQueue.main.async {
-                    self.showInputUI()
+                    if let ignoreTitle = self.config?.ignoreTitle, ignoreTitle == true, self.identityList.count == 1 {
+                       self.createDocument("", self.identityList[0].distinguishedName!)
+                    }else {
+                        self.hideLoading()
+                        self.showInputUI()
+                    }
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
@@ -78,6 +88,13 @@ class CMSCreateDocViewController: FormViewController {
     func showInputUI(){
         form +++ Section("创建文档")
             <<< TextRow("title") {row in
+                row.hidden = Condition.function(["title"], { form in
+                    if let ignoreTitle = self.config?.ignoreTitle, ignoreTitle == true {
+                        return true
+                    }else {
+                        return false
+                    }
+                })
                 row.title = "文档标题"
                 row.placeholder = "请输入文档标题"
                 }.cellSetup({ (cell, row) in
@@ -94,16 +111,22 @@ class CMSCreateDocViewController: FormViewController {
                 }.cellSetup({ (cell, row) in
                     //cell.height = 50
                 })
-            
+        
             +++ Section()
             <<< ButtonRow("createButton") { (row:ButtonRow) in
                 row.title = "创建"
                 }.onCellSelection({ (cell, row) in
                     let titleRow:TextRow = self.form.rowBy(tag:"title")!
                     let identityRow:ActionSheetRow<IdentityV2> = self.form.rowBy(tag:"selectedIdentity")!
-                    guard let title = titleRow.value else{
-                        self.showError(title: "请输入标题")
-                        return
+                    var title = ""
+                    if let ignoreTitle = self.config?.ignoreTitle, ignoreTitle == true {
+                        title = ""
+                    }else {
+                        guard let ctitle = titleRow.value else{
+                            self.showError(title: "请输入标题")
+                            return
+                        }
+                        title = ctitle
                     }
                     guard let id = identityRow.value  else {
                         self.showError(title: "请选择身份")
@@ -111,6 +134,7 @@ class CMSCreateDocViewController: FormViewController {
                     }
                     self.createDocument(title, id.distinguishedName!)
                 })
+        
     }
     
     func createDocument(_ title: String, _ identity: String) {
@@ -159,11 +183,33 @@ class CMSCreateDocViewController: FormViewController {
     
     func createProcess(_ title:String,identity:String, processId: String){
         DDLogDebug("title = \(title),identity = \(identity)")
-        let bean = CreateProcessBean()
+        let bean = CreateProcessCmsBean()
         bean.title = title
         bean.identity = identity
+        let data = CmsDocData()
+        let categoryId = self.category!.id!
+        let appId = self.category!.appId!
+        data.title = title
+        data.creatorIdentity = identity
+        data.isNewDocument = true
+        data.appId = appId
+        data.categoryId = categoryId
+        data.docStatus = "draft"
+        data.createTime = Date().toString("yyyy-MM-dd HH:mm:ss")
+        data.categoryName = self.category!.categoryName
+        data.categoryAlias = self.category!.categoryAlias
+        let d = CreateProcessCmsData()
+        d.cmsDocument = data
+        bean.data = d
+        
+        
+        
         let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":processId as AnyObject])
-        self.showLoading(title: "创建中，请稍候...")
+        if let ignoreTitle = self.config?.ignoreTitle, ignoreTitle == true, self.identityList.count == 1 {
+           
+        }else {
+            self.showLoading(title: "创建中，请稍候...")
+        }
         Alamofire.request(createURL!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
             debugPrint(response.result)
             switch response.result {

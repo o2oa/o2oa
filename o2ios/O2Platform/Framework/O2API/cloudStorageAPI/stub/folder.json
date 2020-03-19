@@ -1,0 +1,44 @@
+{
+    "type": "success",
+    "data": {
+        "attachmentList": [
+                           {
+                           "id": "5cd15700-b4f4-4d33-b361-6cd19ddb1e26",
+                           "createTime": "2017-12-08 14:27:07",
+                           "updateTime": "2017-12-08 14:27:07",
+                           "person": "刘振兴@100009@P",
+                           "name": "一般纳税人通知书_兰摩云创.jpg",
+                           "extension": "jpg",
+                           "storage": "251",
+                           "length": 170723,
+                           "shareList": [],
+                           "editorList": [],
+                           "folder": "aa3daa82-f130-4eec-b79d-a2c3b5c30de6",
+                           "lastUpdateTime": "2017-12-08 14:27:07",
+                           "lastUpdatePerson": "刘振兴@100009@P"
+                           },
+                           {
+                           "id": "90426f48-212a-4be1-af8e-6dd4e2309a72",
+                           "createTime": "2017-12-08 14:27:21",
+                           "updateTime": "2017-12-08 14:27:21",
+                           "person": "刘振兴@100009@P",
+                           "name": "微信图片_20171121094148.jpg",
+                           "extension": "jpg",
+                           "storage": "251",
+                           "length": 110246,
+                           "shareList": [],
+                           "editorList": [],
+                           "folder": "aa3daa82-f130-4eec-b79d-a2c3b5c30de6",
+                           "lastUpdateTime": "2017-12-08 14:27:21",
+                           "lastUpdatePerson": "刘振兴@100009@P"
+                           }
+                           ],
+        "folderList": []
+    },
+    "message": "",
+    "date": "2017-12-08 14:45:38",
+    "spent": 16,
+    "size": -1,
+    "count": 0,
+    "position": 0
+}

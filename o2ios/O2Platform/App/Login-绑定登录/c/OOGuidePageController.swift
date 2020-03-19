@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 class OOGuidePageController: UIViewController,UIScrollViewDelegate {
     
@@ -95,7 +96,18 @@ class OOGuidePageController: UIViewController,UIScrollViewDelegate {
     }
     
     @IBAction func startAppAction(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+        var login: LoginViewController?
+        if self.presentingViewController is LoginViewController {
+            DDLogDebug(" presenting is LoginViewController。")
+            login = self.presentingViewController as? LoginViewController
+        }
+        self.dismiss(animated: true, completion: {
+           DDLogDebug("关闭引导。。。。。。。。。。。。。。")
+            if let lo = login {
+                DDLogDebug(" 开始继续  LoginViewController。")
+                lo.startFlowForPromise()
+            }
+        })
     }
     
 

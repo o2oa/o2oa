@@ -1,0 +1,97 @@
+{
+    "type": "success",
+    "data": [
+             {
+             "status": "completed",
+             "myApply": true,
+             "myWaitConfirm": false,
+             "myWaitAccept": false,
+             "myAccept": false,
+             "myReject": false,
+             "attachmentList": [
+                                {
+                                "createTime": "2018-01-16 13:03:43",
+                                "updateTime": "2018-01-16 13:03:43",
+                                "id": "e2057feb-16ad-4771-8e64-0b29aeda33a1",
+                                "meeting": "bd4e3ec4-c39f-450d-b765-262e4509a7f7",
+                                "name": "重要通知－－开票说明.doc",
+                                "extension": "doc",
+                                "storage": "251",
+                                "length": 1272320,
+                                "summary": false,
+                                "lastUpdateTime": "2018-01-16 13:03:43",
+                                "lastUpdatePerson": "刘振兴@100009@P"
+                                }
+                                ],
+             "createTime": "2018-01-16 13:03:22",
+             "updateTime": "2018-01-16 13:03:45",
+             "id": "bd4e3ec4-c39f-450d-b765-262e4509a7f7",
+             "subject": "码云Pages使用",
+             "pinyin": "mayunpagesshiyong",
+             "pinyinInitial": "mypagessy",
+             "description": "码云Pages使用",
+             "room": "709f96bf-57cf-4486-84f2-fdb72a638fa7",
+             "startTime": "2018-01-16 14:00:00",
+             "completedTime": "2018-01-16 15:00:00",
+             "invitePersonList": [
+                                  "程剑@chengjain@P",
+                                  "楼国栋@louguodong@P"
+                                  ],
+             "acceptPersonList": [],
+             "rejectPersonList": [],
+             "confirmStatus": "allow",
+             "manualCompleted": false,
+             "applicant": "刘振兴@100009@P"
+             },
+             {
+             "status": "wait",
+             "myApply": true,
+             "myWaitConfirm": false,
+             "myWaitAccept": false,
+             "myAccept": false,
+             "myReject": false,
+             "attachmentList": [
+                                {
+                                "createTime": "2018-01-16 13:05:58",
+                                "updateTime": "2018-01-16 13:05:58",
+                                "id": "eb4073fd-e3de-4d44-84b4-479dd5b71e4e",
+                                "meeting": "f0226d5f-2fce-4ffb-bb32-caef1c505fd5",
+                                "name": "北方电信SSO for SAP部署说明.docx",
+                                "extension": "docx",
+                                "storage": "251",
+                                "length": 49543,
+                                "summary": false,
+                                "lastUpdateTime": "2018-01-16 13:05:58",
+                                "lastUpdatePerson": "刘振兴@100009@P"
+                                }
+                                ],
+             "createTime": "2018-01-16 13:05:41",
+             "updateTime": "2018-01-16 13:05:59",
+             "id": "f0226d5f-2fce-4ffb-bb32-caef1c505fd5",
+             "subject": "码云Pages使用码云Pages使用",
+             "pinyin": "mayunpagesshiyongmayunpagesshiyong",
+             "pinyinInitial": "mypagessymypagessy",
+             "description": "码云Pages使用",
+             "room": "804f1f6c-0811-4be7-bcfb-c1edcc78a70f",
+             "startTime": "2018-01-18 08:04:00",
+             "completedTime": "2018-01-18 13:04:00",
+             "invitePersonList": [
+                                  "王志強@15d8d58d-d712-4e0a-9ca9-15c1c4d1aee5@P",
+                                  "黃兆文@2d389753-4bb4-483b-93ce-98b94568cb2b@P",
+                                  "何小茵@67dd5ab0-cfb3-4a12-b6ca-2252be824808@P"
+                                  ],
+             "acceptPersonList": [],
+             "rejectPersonList": [],
+             "confirmStatus": "allow",
+             "manualCompleted": false,
+             "applicant": "刘振兴@100009@P",
+             "auditor": ""
+             }
+             ],
+    "message": "",
+    "date": "2018-01-17 10:00:16",
+    "spent": 94,
+    "size": 2,
+    "count": 0,
+    "position": 0
+}

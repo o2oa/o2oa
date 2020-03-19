@@ -26,7 +26,13 @@ class NewMainItemTableViewCell: UITableViewCell {
             }else if(model.isKind(of: TodoTask.self)){
                 let m = model as! TodoTask
                 self.categoryNameLabel.text = "【\(m.applicationName!)】"
-                self.titleLabel.text = m.title
+                var title = ""
+                if  m.title == nil || m.title?.isEmpty == true {
+                    title = "无标题"
+                }else {
+                    title = m.title!
+                }
+                self.titleLabel.text = title
                 self.timeLabel.text = m.updateTime?.split(separator:" ").first?.description
                 
             }

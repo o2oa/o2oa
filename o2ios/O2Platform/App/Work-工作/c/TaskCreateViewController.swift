@@ -65,40 +65,39 @@ class TaskCreateViewController: FormViewController {
             
         }
         title = process?.name
-        loadDepartAndIdentity()
-       // showInputUI()
+        showInputUI()
         
         
     }
     
-    func loadDepartAndIdentity(){
-        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(TaskContext.taskContextKey, query: TaskContext.todoCreateAvaiableIdentityByIdQuery, parameter: ["##processId##":process?.id as AnyObject])
-        Alamofire.request(url!).responseArray(keyPath:"data") { (response:DataResponse<[IdentityV2]>) in
-            switch response.result {
-            case .success(let identitys):
-                self.identitys = identitys
-                DispatchQueue.main.async {
-                    self.showInputUI()
-                }
-                
-            case .failure(let err):
-                DDLogError(err.localizedDescription)
-                DispatchQueue.main.async {
-                    self.showError(title: "读取身份列表失败")
-                }
-            }
-        }
-     
-    }
+//    func loadDepartAndIdentity(){
+//        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(TaskContext.taskContextKey, query: TaskContext.todoCreateAvaiableIdentityByIdQuery, parameter: ["##processId##":process?.id as AnyObject])
+//        Alamofire.request(url!).responseArray(keyPath:"data") { (response:DataResponse<[IdentityV2]>) in
+//            switch response.result {
+//            case .success(let identitys):
+//                self.identitys = identitys
+//                DispatchQueue.main.async {
+//                    self.showInputUI()
+//                }
+//
+//            case .failure(let err):
+//                DDLogError(err.localizedDescription)
+//                DispatchQueue.main.async {
+//                    self.showError(title: "读取身份列表失败")
+//                }
+//            }
+//        }
+//    }
     
     func showInputUI(){
         form +++ Section("创建流程")
-        <<< TextRow("title") {row in
-            row.title = "标题"
-            row.placeholder = "请输入标题"
-        }.cellSetup({ (cell, row) in
-            //cell.height = 50
-        })
+            //不需要标题
+//        <<< TextRow("title") {row in
+//            row.title = "标题"
+//            row.placeholder = "请输入标题"
+//        }.cellSetup({ (cell, row) in
+//            //cell.height = 50
+//        })
             
         <<< ActionSheetRow<IdentityV2>("selectedIdentity") {
                 $0.title = "用户身份"
@@ -126,24 +125,23 @@ class TaskCreateViewController: FormViewController {
             <<< ButtonRow("createButton") { (row:ButtonRow) in
                 row.title = "创建"
             }.onCellSelection({ (cell, row) in
-                let titleRow:TextRow = self.form.rowBy(tag:"title")!
+//                let titleRow:TextRow = self.form.rowBy(tag:"title")!
                 let identityRow:ActionSheetRow<IdentityV2> = self.form.rowBy(tag:"selectedIdentity")!
-                guard let title = titleRow.value else{
-                    self.showError(title: "请输入标题")
-                    return
-                }
+//                guard let title = titleRow.value else{
+//                    self.showError(title: "请输入标题")
+//                    return
+//                }
                 guard let id = identityRow.value  else {
                     self.showError(title: "请选择身份")
                     return
                 }
-                self.createProcess(title, identity: id.distinguishedName!)
+                self.createProcess(identity: id.distinguishedName!)
             })
     }
     
-    func createProcess(_ title:String,identity:String){
-        DDLogDebug("title = \(title),identity = \(identity)")
+    func createProcess(identity:String){
         let bean = CreateProcessBean()
-        bean.title = title
+        bean.title = ""//不需要标题
         bean.identity = identity
         let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":(process?.id)! as AnyObject])
         self.showLoading(title: "创建中，请稍候...")
@@ -162,15 +160,12 @@ class TaskCreateViewController: FormViewController {
                     DispatchQueue.main.async {
                         self.hideLoading()
                     }
-                    
-                    //ProgressHUD.showSuccess("创建成功")
                 } else {
                     self.showError(title: "创建失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
                 self.showError(title: "创建失败")
-
             }
            
         }
