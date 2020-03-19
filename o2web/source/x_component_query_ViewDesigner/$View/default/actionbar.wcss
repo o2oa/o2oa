@@ -1,0 +1,50 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"height": "30px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"display": "block",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"width": "100px",
+		"background-color": "#999",
+		"cursor": "move"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+        "height": "2px",
+        "cursor": "pointer",
+        "line-height": "22px",
+        "overflow": "hidden",
+        "margin": "3px 3px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "display": "block",
+        "top": "auto",
+        "left": "auto",
+        "width": "auto",
+        "opacity": 0.5,
+        "background": "#ffa200"
+	},
+	"moduleNode": {
+        "border": "1px dashed #999",
+        "height": "auto",
+        "overflow": "hidden",
+        "margin": "auto",
+        "display": "block",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "opacity": 1,
+        "width": "auto",
+        "margin": "3px 3px",
+        "background-color": "#999",
+        "cursor": "pointer"
+	}
+	
+}
