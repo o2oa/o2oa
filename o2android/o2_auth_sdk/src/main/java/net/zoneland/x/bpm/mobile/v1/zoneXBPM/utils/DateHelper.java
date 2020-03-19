@@ -513,6 +513,55 @@ public class DateHelper {
     }
 
     /**
+     * 聊天界面 显示的消息时间
+     * @param time
+     * @return
+     */
+    public static String imChatMessageTime(String time) {
+        if (time == null || time.isEmpty()) {
+            return "";
+        }
+        Date date = convertStringToDate(time);
+        if (date == null) {
+            return "";
+        }
+        Calendar cal = Calendar.getInstance();
+        long lt = date.getTime() / 86400000;
+        long ct = cal.getTimeInMillis() / 86400000;
+        int days = (int) (ct - lt);
+        String ftime = "";
+        if (days == 0) {
+            ftime = getDateTime("HH:mm", date);
+        }else if (days == 1) {
+            ftime = "昨天 " + getDateTime("HH:mm", date);
+        } else if (days == 2) {
+            ftime = "前天 " + getDateTime("HH:mm", date);
+        }else {
+            ftime = getDateTime("MM-dd HH:mm", date);
+        }
+        return ftime;
+    }
+
+    /**
+     * end是否大于start 1分钟以上
+     * @param start
+     * @param end
+     * @return
+     */
+    public static boolean imChatTimeBiggerThan1Minute(String start, String end) {
+        Date date1 = convertStringToDate(start);
+        Date date2 = convertStringToDate(end);
+        if (date1 !=null && date2 != null) {
+            long second1 = date1.getTime() / 1000 ;
+            long second2 = date2.getTime() / 1000 ;
+            if ((second2 - second1) > 60 ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 切割两个时间间隔的天数 包含开始和结束
      * @param startTime
      * @param endTime

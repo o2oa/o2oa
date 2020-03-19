@@ -58,11 +58,9 @@ public abstract class SwipeRefreshCommonRecyclerViewAdapter<T> extends RecyclerV
     public  RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == ITEM_VIEW_TYPE){
             View view = inflater.inflate(itemLayout, parent, false);
-            CommonRecyclerViewHolder viewHolder = new CommonRecyclerViewHolder(view);
-            return viewHolder;
+            return new CommonRecyclerViewHolder(view);
         }else{
-            FooterViewHolder viewHolder = new FooterViewHolder(footer);
-            return viewHolder;
+            return new FooterViewHolder(footer);
         }
 
     }
@@ -73,20 +71,12 @@ public abstract class SwipeRefreshCommonRecyclerViewAdapter<T> extends RecyclerV
             final CommonRecyclerViewHolder commonRecyclerViewHolder = (CommonRecyclerViewHolder) holder;
             convert(commonRecyclerViewHolder, getItem(position));
             if (onItemClickListener != null) {
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(commonRecyclerViewHolder.itemView, position);
-                    }
-                });
+                holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(commonRecyclerViewHolder.itemView, position));
             }
             if(onItemLongClickListner!=null){
-                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        onItemLongClickListner.onItemLongClick(commonRecyclerViewHolder.itemView, position);
-                        return false;
-                    }
+                holder.itemView.setOnLongClickListener(v -> {
+                    onItemLongClickListner.onItemLongClick(commonRecyclerViewHolder.itemView, position);
+                    return false;
                 });
             }
         }else{

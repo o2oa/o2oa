@@ -1,6 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader
 
 import android.view.View
+import java.io.File
 
 /**
  * Created by fancy on 2017/7/13.
@@ -11,5 +12,6 @@ interface O2ImageLoaderStrategy {
 
     fun showImage(v: View, url:String, options: O2ImageLoaderOptions? = null)
     fun showImage(v: View, drawable: Int, options: O2ImageLoaderOptions? = null)
+    fun showImage(v: View, file: File, options: O2ImageLoaderOptions? = null)
 
 }

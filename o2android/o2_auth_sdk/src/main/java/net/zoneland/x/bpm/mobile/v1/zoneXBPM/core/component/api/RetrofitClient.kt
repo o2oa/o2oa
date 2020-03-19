@@ -17,6 +17,8 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.HttpCacheUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.HttpsTrustManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocketListener
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -47,6 +49,7 @@ class RetrofitClient private constructor() {
     private val gson: Gson by lazy { GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create() }
     private val helper: APIAddressHelper by lazy { APIAddressHelper.instance() }
     private lateinit var o2HttpClient: OkHttpClient
+    private lateinit var o2WebSocketClient: OkHttpClient
     private lateinit var httpClientOutSide: OkHttpClient
     private lateinit var context: Context
 
@@ -73,6 +76,14 @@ class RetrofitClient private constructor() {
         httpClientOutSide = OkHttpClient.Builder()
                 .cache(HttpCacheUtil.getOkHttpCacheInstance(context))
                 .connectTimeout(60, TimeUnit.SECONDS).build()
+        o2WebSocketClient = OkHttpClient.Builder()
+                //设置读取超时时间
+                .readTimeout(3, TimeUnit.SECONDS)
+                //设置写的超时时间
+                .writeTimeout(3, TimeUnit.SECONDS)
+                //设置连接超时时间
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .build()
     }
 
 
@@ -108,6 +119,21 @@ class RetrofitClient private constructor() {
                     .retryOnConnectionFailure(true)
                     .connectTimeout(60, TimeUnit.SECONDS).build()
         }
+    }
+
+    /**
+     * 开启webSocket链接
+     */
+    fun openWebSocket(listener: WebSocketListener) {
+        val request = Request.Builder().url(APIAddressHelper.instance().webSocketUrl()).build()
+        o2WebSocketClient.newWebSocket(request, listener)
+    }
+
+    /**
+     * 关闭webSocket链接
+     */
+    fun closeWebSocket() {
+        o2WebSocketClient.dispatcher().executorService().shutdown()
     }
 
 
@@ -487,6 +513,20 @@ class RetrofitClient private constructor() {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
         return retrofitClient.create(JPushControlService::class.java)
+    }
+
+    /**
+     * 消息服务
+     */
+    fun messageCommunicateService(): MessageCommunicateService {
+        val url = helper.getAPIDistribute(APIDistributeTypeEnum.x_message_assemble_communicate)
+        val retrofitClient = Retrofit.Builder()
+                .baseUrl(url)
+                .client(o2HttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build()
+        return retrofitClient.create(MessageCommunicateService::class.java)
     }
 
 

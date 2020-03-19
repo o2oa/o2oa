@@ -22,7 +22,6 @@ public enum APIDistributeTypeEnum {
     x_processplatform_assemble_surface_applicationdict,
     x_cms_assemble_control,
     x_organization_assemble_control,//新组织人员管理
-    x_collaboration_assemble_websocket,
     x_organization_assemble_custom,
     x_processplatform_assemble_surface,
     x_processplatform_assemble_surface_read,
@@ -41,6 +40,8 @@ public enum APIDistributeTypeEnum {
     x_calendar_assemble_control, //日程
     x_jpush_assemble_control, //极光推送
     x_mind_assemble_control, //脑图
+
+    x_message_assemble_communicate, //通信模块 消息收发 还有websocket
 
     x_query_assemble_surface //查询模块包含 视图、统计、自定义表等
 

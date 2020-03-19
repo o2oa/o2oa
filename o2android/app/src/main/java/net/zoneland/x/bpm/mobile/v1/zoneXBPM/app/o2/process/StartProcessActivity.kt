@@ -66,7 +66,7 @@ class StartProcessActivity : AppCompatActivity() {
     }
 
     fun addFragment(fragment: Fragment){
-        replaceFragmentSafely(fragment, fragment.javaClass.simpleName, R.id.fragment_container_start_process, true, true)
+        replaceFragmentSafely(fragment, fragment.javaClass.simpleName, R.id.fragment_container_start_process, allowState = true, isAddBackStack = true)
     }
 
     fun removeFragment() {

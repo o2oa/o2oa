@@ -53,8 +53,10 @@ class WebChromeClientWithProgressAndValueCallback private constructor (val activ
     init {
         progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
         progressBar?.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, activity?.dip(2)?:10, Gravity.TOP)
-        val drawable = ContextCompat.getDrawable(activity, R.drawable.web_view_progress_bar)
-        progressBar?.progressDrawable = drawable
+        val drawable = ContextCompat.getDrawable(activity!!, R.drawable.web_view_progress_bar)
+        if (drawable != null) {
+            progressBar?.progressDrawable = drawable
+        }
         if (activity != null) {
             cameraImageUri = FileUtil.getUriFromFile(activity, File(FileExtensionHelper.getCameraCacheFilePath()))
         }

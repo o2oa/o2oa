@@ -1,6 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader
 
 import android.view.View
+import java.io.File
 
 /**
  * Created by fancy on 2017/7/13.
@@ -28,6 +29,10 @@ class O2ImageLoaderManager private constructor() {
 
     fun showImage(v: View, drawable: Int, options: O2ImageLoaderOptions? = null) {
         imageLoader.showImage(v, drawable, options)
+    }
+
+    fun showImage(v: View, file: File, options: O2ImageLoaderOptions? = null) {
+        imageLoader.showImage(v, file,  options)
     }
 
 }

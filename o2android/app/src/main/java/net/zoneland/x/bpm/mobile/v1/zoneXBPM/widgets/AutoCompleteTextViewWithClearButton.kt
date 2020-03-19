@@ -17,7 +17,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 
 class AutoCompleteTextViewWithClearButton : AutoCompleteTextView, View.OnFocusChangeListener, View.OnTouchListener, TextWatcher {
 
-    private val clearIcon: Drawable by lazy { ContextCompat.getDrawable(context, R.mipmap.icon_off_round)  }
+    private val clearIcon: Drawable? by lazy { ContextCompat.getDrawable(context, R.mipmap.icon_off_round)  }
     var onTextChangedListener: OnTextChangedListener? = null
 
     constructor(context: Context): super(context) {
@@ -33,7 +33,7 @@ class AutoCompleteTextViewWithClearButton : AutoCompleteTextView, View.OnFocusCh
     }
 
     private fun initSomeThing() {
-        clearIcon.setBounds(0, 0, clearIcon.intrinsicHeight, clearIcon.intrinsicHeight)
+        clearIcon?.setBounds(0, 0, clearIcon?.intrinsicHeight ?: 0, clearIcon?.intrinsicHeight ?: 0)
         visibleClearIcon(false)
         super.setOnTouchListener(this)
         super.setOnFocusChangeListener(this)
@@ -41,7 +41,7 @@ class AutoCompleteTextViewWithClearButton : AutoCompleteTextView, View.OnFocusCh
     }
 
     private fun visibleClearIcon(visible: Boolean) {
-        clearIcon.setVisible(visible, false)
+        clearIcon?.setVisible(visible, false)
         setCompoundDrawables(compoundDrawables[0],
                 compoundDrawables[1],
                 when(visible){
@@ -62,7 +62,7 @@ class AutoCompleteTextViewWithClearButton : AutoCompleteTextView, View.OnFocusCh
 
     override fun onTouch(v: View?, event: MotionEvent): Boolean {
         val x: Float = event.x
-        if (clearIcon.isVisible && x > width - paddingRight - clearIcon.intrinsicWidth) {
+        if (clearIcon?.isVisible == true && x > width - paddingRight - (clearIcon?.intrinsicWidth ?: 0)) {
             if (event.action == MotionEvent.ACTION_UP) {
                 setText("")
                 return true

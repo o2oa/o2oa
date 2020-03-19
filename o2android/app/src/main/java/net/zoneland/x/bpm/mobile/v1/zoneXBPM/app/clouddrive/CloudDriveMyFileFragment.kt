@@ -479,7 +479,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
         val bean = textView.tag as FileBreadcrumbBean
         var newLevel = 0
         breadcrumbBeans.mapIndexed { index, fileBreadcrumbBean ->
-            if (bean.equals(fileBreadcrumbBean)) {
+            if (bean == fileBreadcrumbBean) {
                 newLevel = index
                 //清空listview
                 swipe_refresh_myFile_layout.isRefreshing = true
@@ -488,10 +488,10 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
         }
         //处理breadcrumbBeans 把多余的去掉
         if (breadcrumbBeans.size > (newLevel + 1)) {
-            breadcrumbBeans.mapIndexed { index, fileBreadcrumbBean ->
-                if (index > newLevel) {
-                    breadcrumbBeans.remove(fileBreadcrumbBean)
-                }
+            val s = breadcrumbBeans.size
+            for (i in (s-1) downTo (newLevel+1)) {
+                println(i)
+                breadcrumbBeans.removeAt(i)
             }
         }
         loadBreadcrumb()

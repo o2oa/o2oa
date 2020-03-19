@@ -20,7 +20,6 @@ public class APIAssemblesData {
     private APIDataBean x_processplatform_assemble_surface_applicationdict;
     private APIDataBean x_cms_assemble_control;
     private APIDataBean x_organization_assemble_control;
-    private APIDataBean x_collaboration_assemble_websocket;
     private APIDataBean x_organization_assemble_custom;
     private APIDataBean x_processplatform_assemble_surface;
     private APIDataBean x_processplatform_assemble_surface_read;
@@ -39,7 +38,16 @@ public class APIAssemblesData {
     private APIDataBean x_calendar_assemble_control; //日程
     private APIDataBean x_mind_assemble_control; //脑图
     private APIDataBean x_jpush_assemble_control; //极光推送服务
+    private APIDataBean x_message_assemble_communicate; //通信模块 消息收发 还有websocket
 
+
+    public APIDataBean getX_message_assemble_communicate() {
+        return x_message_assemble_communicate;
+    }
+
+    public void setX_message_assemble_communicate(APIDataBean x_message_assemble_communicate) {
+        this.x_message_assemble_communicate = x_message_assemble_communicate;
+    }
 
     private APIDataBean  x_query_assemble_surface;//查询模块包含 视图、统计、自定义表等
 
@@ -190,13 +198,7 @@ public class APIAssemblesData {
         this.x_organization_assemble_control = x_organization_assemble_control;
     }
 
-    public APIDataBean getX_collaboration_assemble_websocket() {
-        return x_collaboration_assemble_websocket;
-    }
 
-    public void setX_collaboration_assemble_websocket(APIDataBean x_collaboration_assemble_websocket) {
-        this.x_collaboration_assemble_websocket = x_collaboration_assemble_websocket;
-    }
 
     public APIDataBean getX_organization_assemble_custom() {
         return x_organization_assemble_custom;

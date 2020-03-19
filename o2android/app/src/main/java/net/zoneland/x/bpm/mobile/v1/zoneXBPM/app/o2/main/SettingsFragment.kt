@@ -103,6 +103,9 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
                 val token = JPushInterface.getRegistrationID(activity)
                 mPresenter.jPushUnBindDevice(token)
             }
+            if (activity is MainActivity) {
+                (activity as MainActivity).webSocketClose()
+            }
             mPresenter.logout()
         })
     }
