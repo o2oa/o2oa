@@ -1,5 +1,5 @@
 /o2cloud/
-/.settings/
+**/.settings/
 .classpath
 .project
 /target/
@@ -66,3 +66,4 @@ version.o2
 /store/
 /servers/
 /describe/
+.factorypath

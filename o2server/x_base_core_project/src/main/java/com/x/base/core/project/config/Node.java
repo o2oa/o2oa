@@ -31,6 +31,7 @@ public class Node extends ConfigObject {
 		o.nodeAgentEncrypt = true;
 		o.nodeAgentPort = default_nodeAgentPort;
 		o.quickStartWebApp = false;
+		o.autoStart = true;
 		return o;
 	}
 
@@ -82,7 +83,7 @@ public class Node extends ConfigObject {
 	/* 20191009兼容centerServer end */
 
 	public Boolean autoStart() {
-		return BooleanUtils.isTrue(autoStart);
+		return BooleanUtils.isNotFalse(autoStart);
 	}
 
 	public Boolean getEnable() {
