@@ -1737,7 +1737,13 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 						if( this.app.userData.icon ){
 							return "data:image/png;base64," + this.app.userData.icon
 						}else{
-							return "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif"
+							var src = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+							this.app.getUserData( this.app.userData.distinguishedName, function(json ){
+								src = json.data.icon;
+							}.bind(this), function(){
+								var src = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+							}, false );
+							return src;
 						}
 					}.bind(this)},
 					creatorName: { type : "innerText", value : ( this.app.userName || "" ).split('@')[0] },
