@@ -29,7 +29,7 @@ pipeline {
                 //sh 'nohup target/o2server/start_linux.sh &'
                 //sh 'cd target/o2server'
                 sh 'pwd'
-                sh 'nohup target/o2server/start_linux.sh > nohup.out &'
+                sh 'JENKINS_NODE_COOKIE=dontKillMe nohup target/o2server/start_linux.sh > nohup.out &'
             }
         }
     }
