@@ -4,7 +4,7 @@ pipeline {
         stage('preperation') {
             steps {
                 sh 'npm install'
-                sh 'npm run preperation'
+                sh 'npm run preperation:linux'
             }
         }
         stage('build server') {
@@ -20,7 +20,13 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'npm run deploy'
+                sh 'npm run deploy:linux'
+                sh 'chmod 777 target/o2server/*.sh'
+            }
+        }
+        stage('run') {
+            steps {
+                sh '/target/o2server/start_linux.sh'
             }
         }
     }
