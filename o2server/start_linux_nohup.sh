@@ -1,0 +1,1 @@
+nohup ./start_linux.sh &
