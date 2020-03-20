@@ -55,6 +55,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.load();
             }.bind(this));
         }
+
     },
     loadView: function(){
         if (this.viewJson){
@@ -105,6 +106,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
     loadMacro: function (callback) {
+        this.viewInfor = this.json;
         if( !this.Macro ){ //有可能是page\cms\process传入的macro
             MWF.require("MWF.xScript.Macro", function () {
                 this.Macro = new MWF.Macro.ViewContext(this);
