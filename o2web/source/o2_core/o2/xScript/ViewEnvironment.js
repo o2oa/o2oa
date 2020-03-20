@@ -26,7 +26,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // this.setData(_data);
 
     this.viewContext = {
-
+        viewInfor : _form.viewInfor,
+        getPageNumber : _form.getPageNumber()
     };
 
     //dict
