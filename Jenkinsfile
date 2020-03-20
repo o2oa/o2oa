@@ -3,21 +3,27 @@ pipeline {
     stages {
         stage('preperation') {
             steps {
+                catchError {
+                    sh 'target/o2server/stop_linux.sh'
+                }
                 sh 'npm install'
                 sh 'npm run preperation:linux'
             }
         }
-        stage('build server') {
-            steps {
-                sh 'id'
-                sh 'npm run build_server'
+        parallel {
+            stage('build server') {
+                steps {
+                    sh 'id'
+                    sh 'npm run build_server'
+                }
+            }
+            stage('build web') {
+                steps {
+                    sh 'npm run build_web'
+                }
             }
         }
-        stage('build web') {
-            steps {
-                sh 'npm run build_web'
-            }
-        }
+
         stage('deploy') {
             steps {
                 sh 'npm run deploy:linux'
