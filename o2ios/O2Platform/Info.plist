@@ -163,7 +163,7 @@
 		<key>centerContext</key>
 		<string>/x_program_center</string>
 		<key>centerHost</key>
-		<string>qywx2.o2oa.net</string>
+		<string>qywx.o2oa.net</string>
 		<key>centerPort</key>
 		<integer>20030</integer>
 		<key>httpProtocol</key>

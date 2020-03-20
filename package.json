@@ -1,0 +1,57 @@
+{
+  "name": "o2oa",
+  "version": "4.0.3763",
+  "description": "o2oa",
+  "main": "",
+  "scripts": {
+    "preperation": "gulp preperation",
+    "preperation:win": "gulp preperation --e windows",
+    "preperation:linux": "gulp preperation --e linux",
+    "preperation:aix": "gulp preperation --e aix",
+    "preperation:kylinos": "gulp preperation --e kylinos",
+    "preperation:macos": "gulp preperation --e macos",
+    "preperation:neokylin": "gulp preperation --e neokylin",
+    "preperation:rpi": "gulp preperation --e raspberrypi",
+
+    "build_server": "cd o2server && mvn clean && mvn install",
+    "build_web": "cd o2server && npm install && gulp",
+    "build_parallel": "npm run build_server & npm run build_web",
+
+    "deploy": "gulp deploy",
+    "deploy:win": "gulp deploy --e windows",
+    "deploy:linux": "gulp deploy --e linux",
+    "deploy:aix": "gulp deploy --e aix",
+    "deploy:kylinos": "gulp deploy --e kylinos",
+    "deploy:macos": "gulp deploy --e macos",
+    "deploy:neokylin": "gulp deploy --e neokylin",
+    "deploy:rpi": "gulp deploy --e raspberrypi",
+
+    "typeInfor": "type welcome && echo Your server is build success: target/o2server/",
+
+    "build": "npm run preperation && npm run build_parallel && npm run deploy && npm run typeInfor",
+    "build:win": "npm run preperation:win && npm run build_parallel && npm run deploy:win && npm run typeInfor",
+    "build:linux": "npm run preperation:linux && npm run build_parallel && npm run deploy:linux && npm run typeInfor",
+    "build:aix": "npm run preperation:aix && npm run build_parallel && npm run deploy:aix && npm run typeInfor",
+    "build:kylinos": "npm run preperation:kylinos && npm run build_parallel && npm run deploy:kylinos && npm run typeInfor",
+    "build:macos": "npm run preperation:macos && npm run build_parallel && npm run deploy:macos && npm run typeInfor",
+    "build:neokylin": "npm run preperation:neokylin && npm run build_parallel && npm run deploy:neokylin && npm run typeInfor",
+    "build:rpi": "npm run preperation:rpi && npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
+
+    "test": "type welcome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/o2oa/o2oa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "gulp": "^4.0.2",
+    "gulp-util": "^3.0.8",
+    "progress-stream": "^2.0.0",
+    "request": "^2.88.2",
+    "single-line-log": "^1.1.2",
+    "targz": "^1.0.1"
+  }
+}

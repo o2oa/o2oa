@@ -86,8 +86,17 @@ data class CMSApplicationInfoJson(var id: String = "",
                                   var creatorIdentity: String = "",
                                   var creatorDepartment: String = "",
                                   var creatorCompany: String = "",
+                                  var config: String = "", //配置参数用的 json字符串
                                   var categoryList: List<String> = ArrayList(),
                                   var wrapOutCategoryList: List<CMSCategoryInfoJson> = ArrayList()) : Serializable
+
+/**
+ * 栏目配置属性
+ */
+data class CMSAPPConfig(
+        var ignoreTitle: Boolean = false,
+        var latest: Boolean = true
+): Serializable
 
 /**
  * 文章对象

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,10 +9,12 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar"/>
     <ScrollView
+        android:id="@+id/scroll_cms_publish_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,31 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@android:color/white"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/tv_cms_publish_header"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="center|center_horizontal"-->
-                        <!--android:layout_marginLeft="@dimen/spacing_normal"-->
-                        <!--android:layout_marginTop="18dp"-->
-                        <!--android:layout_marginRight="@dimen/spacing_normal"-->
-                        <!--android:layout_marginBottom="18dp"-->
-                        <!--android:textColor="@color/z_color_text_primary_dark"-->
-                        <!--android:textSize="17sp"-->
-                        <!--tools:text="新建文档 - test" />-->
-
-                    <!--<View-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0.5dp"-->
-                        <!--android:background="@color/z_color_split_line_ddd" />-->
-                <!--</LinearLayout>-->
 
                 <View
                     android:layout_width="match_parent"
@@ -94,6 +70,7 @@
                         android:background="@color/z_color_split_line_ddd" />
 
                     <LinearLayout
+                        android:id="@+id/ll_cms_publish_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_small"

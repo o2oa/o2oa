@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ZSSRichTextEditor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- Custom CSS Styling -->
+<style type="text/css">
+    
+    /* Custom CSS Styling */
+    
+    /*customcss*/
+    
+</style>
+
+<!-- jQuery Source For ZSSRichTextEditor -->
+<script>
+<!-- jQuery -->
+</script>
+        
+<!-- JSBeautifier Source for ZSSRichTextEditor -->
+<script>
+<!-- jsbeautifier -->
+</script>
+
+<!-- Javascript for ZSSRichTextEditor -->
+<script>
+<!--editor-->
+</script>
+
+<!-- CSS Styles for ZSSRichTextEditor -->
+<style type="text/css">
+
+/* Default ZSSRichTextEditor Styling */
+* {
+	outline: 0px solid transparent;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-touch-callout: none;
+}
+ 
+html, body {
+	padding: 0;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+      
+body {
+	padding: 10px;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	height: 100%;
+}
+
+img.zs_active {
+	border: 2px dashed #000;
+}
+
+img {
+    width: 98%;
+    margin-left:auto;
+    margin-right:auto;
+}
+      
+audio {
+	padding: 20px 0;
+}
+
+div.zs_editor_content {
+	width: 100%;
+	height: 100%;
+	-webkit-overflow-scrolling: touch;
+	overflow:auto;
+}
+
+[placeholder]:empty:before {
+    content: attr(placeholder);
+    color: #555; 
+}
+
+[placeholder]:empty:focus:before {
+    content: "";
+}
+	
+</style>
+
+</head>
+
+<body onLoad="zss_editor.init();">
+
+	<!-- ZSSRichTextEditor Editable Content -->
+	<div id="zss_editor_content" class="zs_editor_content" contenteditable="true" placeholder=""></div>
+
+	<!-- Footer -->
+	<div id="zss_editor_footer"></div>
+
+</body>
+</html>

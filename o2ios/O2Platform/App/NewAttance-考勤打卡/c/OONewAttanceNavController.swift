@@ -20,7 +20,7 @@ class OONewAttanceNavController: ZLNavigationController {
     }
     
     @objc func closeWindow() {
-        O2Logger.debug("======closeWindow")
+        
     }
 
 }

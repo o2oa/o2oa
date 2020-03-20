@@ -5,13 +5,12 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.text.TextUtils
@@ -25,13 +24,13 @@ import net.muliba.changeskin.FancySkinManager
 import net.muliba.fancyfilepickerlibrary.PicturePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2IM
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.fm.O2IMConversationFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.my.ClipAvatarActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.MainActivityFragmentAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.ApplicationEnum
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.ClearTempFileJobService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.CollectLogJobService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.PictureLoaderService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.RestartSelfService
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
@@ -72,6 +71,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         super.beforeSetContentView()
         setTheme(R.style.XBPMTheme_NoActionBar)
     }
+
     override fun afterSetContentView(savedInstanceState: Bundle?) {
         mCurrentSelectIndex = savedInstanceState?.getInt(mCurrentSelectIndexKey, 2) ?: 2
         setupToolBar(getString(R.string.app_name))
@@ -81,6 +81,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "")
         XLog.info("main activity isIndex $indexType..............")
 
+//        val newsFragment = O2IMConversationFragment()
         val newsFragment = NewsFragment()
         fragmentList.add(newsFragment)
         fragmentTitles.add(getString(R.string.tab_message))
@@ -129,6 +130,20 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         //初始化拍照地址等
         SDCardHelper.generateNewFile(FileExtensionHelper.getCameraCacheFilePath())
 
+        //register scheduler job
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            registerSchedulerJob()
+        }
+        //注册极光设备号
+        if (BuildConfig.InnerServer) {
+            val token = JPushInterface.getRegistrationID(this)
+            mPresenter.jPushBindDevice(token)
+        }
+        //绑定启动webSocket 服务
+        val webSocketServiceIntent = Intent(this, WebSocketService::class.java)
+        bindService(webSocketServiceIntent, serviceConnect, BIND_AUTO_CREATE)
+
+        registerBroadcast()
     }
 
     override fun o2AIEnable(enable: Boolean) {
@@ -147,13 +162,8 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         pictureLoaderService = PictureLoaderService(this)
         changeBottomIcon(mCurrentSelectIndex)
         calDpi()
-        //register scheduler job
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            registerSchedulerJob()
-        }
-
         val unit = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_HOST_KEY, "")
-        if (!TextUtils.isEmpty(unit) && unit == "demo.o2oa.io") {
+        if (!TextUtils.isEmpty(unit) && unit == "sample.o2oa.net") {
             val day = O2SDKManager.instance().prefs().getString(O2.PRE_DEMO_ALERT_REMIND_DAY, "")
             val today = DateHelper.nowByFormate("yyyy-MM-dd")
             if (day != today) {
@@ -165,9 +175,11 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                 }
             }
         }
-        if (BuildConfig.InnerServer) {
-            val token = JPushInterface.getRegistrationID(this)
-            mPresenter.jPushBindDevice(token)
+        //退出重新登录的情况下 重连webSocket
+        if (webSocketService != null) {
+            if (webSocketService?.isWebSocketOpen() == false) {
+                webSocketService?.webSocketOpen()
+            }
         }
     }
 
@@ -188,6 +200,10 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     }
 
     override fun onDestroy() {
+        unbindService(serviceConnect)
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver)
+        }
         super.onDestroy()
     }
 
@@ -259,6 +275,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     fun refreshMenu() {
         invalidateOptionsMenu()
     }
+
     //跳转到应用页面 首页使用
     fun gotoApp() {
         selectTab(3)
@@ -334,7 +351,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                 val path = O2CustomStyle.indexMenuLogoFocusImagePath(this)
                 if (!TextUtils.isEmpty(path)) {
                     BitmapUtil.setImageFromFile(path!!, icon_main_bottom_index)
-                }else {
+                } else {
                     icon_main_bottom_index.setImageResource(R.mipmap.index_bottom_menu_logo_focus)
                 }
             }
@@ -380,7 +397,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         val path = O2CustomStyle.indexMenuLogoBlurImagePath(this)
         if (!TextUtils.isEmpty(path)) {
             BitmapUtil.setImageFromFile(path!!, icon_main_bottom_index)
-        }else {
+        } else {
             icon_main_bottom_index.setImageResource(R.mipmap.index_bottom_menu_logo_blur)
         }
         image_icon_main_bottom_app.setImageDrawable(FancySkinManager.instance().getDrawable(this, R.mipmap.icon_main_app))
@@ -448,6 +465,65 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         context.startService(intent)
 
         android.os.Process.killProcess(android.os.Process.myPid())
+    }
+
+    /*************websocket service*********/
+
+    private var webSocketService: WebSocketService? = null
+    private val serviceConnect: ServiceConnection by lazy {
+        object : ServiceConnection {
+            override fun onServiceDisconnected(name: ComponentName?) {
+                XLog.debug("onServiceDisconnected...............name:$name")
+            }
+
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                val binder = service as WebSocketService.WebSocketBinder
+                webSocketService = binder.service
+                XLog.debug("onServiceConnected............webSocketService.")
+                webSocketService?.webSocketOpen()
+            }
+        }
+    }
+
+    /**
+     * 登出的时候调用
+     */
+    fun webSocketClose() {
+        webSocketService?.webSocketClose()
+    }
+
+    /**************im 消息接收器***************/
+
+    var mReceiver: IMMessageReceiver? = null
+
+    private fun registerBroadcast() {
+        mReceiver = IMMessageReceiver()
+        val filter = IntentFilter(O2IM.IM_Message_Receiver_Action)
+        registerReceiver(mReceiver, filter)
+    }
+
+    private fun receiveIMMessage(message: IMMessage) {
+        val newsFragment = fragmentList[0]
+        if (newsFragment is O2IMConversationFragment) {
+            newsFragment.receiveMessageFromWebsocket(message)
+        }
+    }
+
+    inner class IMMessageReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val body = intent?.getStringExtra(O2IM.IM_Message_Receiver_name)
+            if (body != null && body.isNotEmpty()) {
+                XLog.debug("接收到im消息, $body")
+                try {
+                    val message = O2SDKManager.instance().gson.fromJson<IMMessage>(body, IMMessage::class.java)
+                    receiveIMMessage(message)
+                } catch (e: Exception) {
+                    XLog.error("", e)
+                }
+
+            }
+        }
+
     }
 
 }

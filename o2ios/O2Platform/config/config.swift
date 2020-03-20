@@ -10,7 +10,7 @@ import Foundation
 
 
 //是否连接到collect服务器 直连版本false 需要在Info.plist配置服务器信息
-let O2IsConnect2Collect = true
+let O2IsConnect2Collect = false
 
 //一些常量
 //bugly

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -26,8 +27,10 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.main.BBSMainActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.CalendarMainActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.CloudDriveActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.CloudDiskActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.index.CMSIndexActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2ChatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.main.MeetingMainActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.ai.O2AIActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.*
@@ -79,6 +82,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                 ApplicationEnum.BBS.key -> activity.go<BBSMainActivity>()
                 ApplicationEnum.CMS.key -> activity.go<CMSIndexActivity>()
                 ApplicationEnum.YUNPAN.key -> activity.go<CloudDriveActivity>()
+                ApplicationEnum.clouddisk.key -> activity.go<CloudDiskActivity>()
                 ApplicationEnum.MEETING.key -> activity.go<MeetingMainActivity>()
                 ApplicationEnum.ATTENDANCE.key -> activity.go<AttendanceMainActivity>()
                 ApplicationEnum.CALENDAR.key -> activity.go<CalendarMainActivity>()
@@ -131,7 +135,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
     val hotPictureList = ArrayList<HotPictureOutData>()
     var currentType = BUSINESS_TYPE_MESSAGE_CENTER
     var isLoadHotPictureList = false
-    var isRedPointShow = true
+//    var isRedPointShow = true
     //load more refresh
     var lastTaskId = ""
     var lastNewsId = ""
@@ -231,7 +235,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
             }
             R.id.linear_main_todo_new_task_center_button -> {
                 currentType = BUSINESS_TYPE_WORK_CENTER
-                isRedPointShow = false
+//                isRedPointShow = false
                 refreshRecyclerView()
             }
         }
@@ -339,7 +343,8 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
     private val adapter: CommonRecycleViewAdapter<ToDoFragmentListViewItemVO> by lazy {
         object : CommonRecycleViewAdapter<ToDoFragmentListViewItemVO>(activity, itemList, R.layout.item_todo_fragment_list) {
             override fun convert(holder: CommonRecyclerViewHolder?, t: ToDoFragmentListViewItemVO?) {
-                holder?.setText(R.id.tv_todo_fragment_task_title, t?.title ?: "")
+                val title = if (TextUtils.isEmpty(t?.title)) { "无标题" } else { t?.title }
+                holder?.setText(R.id.tv_todo_fragment_task_title, title)
                         ?.setText(R.id.tv_todo_fragment_task_type, t?.type ?: "")
                         ?.setText(R.id.tv_todo_fragment_task_date, t?.time ?: "")
                 val newIcon = holder?.getView<ImageView>(R.id.image_todo_fragment_task_new)
@@ -523,7 +528,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
             }
         }
         image_main_todo_new_task_center_red_point?.gone()
-        if (isRedPointShow && taskList.size > 0) {
+        if (taskList.size > 0) {
             image_main_todo_new_task_center_red_point?.visible()
         }
 

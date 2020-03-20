@@ -55,7 +55,7 @@ class OOAttandanceSettingDataView: UIView {
     }
     
     @objc private func submitClicked(_ sender:Any?){
-        O2Logger.debug("submitClicked")
+        DDLogDebug("submitClicked")
         superview?.endEditing(true)
         let someValues = (workPlaceNameTextField.text!,workAliasNameTextField.text!,checkErrorRangeTextField.text!)
         NotificationCenter.post(customeNotification: .newWorkPlace, object: someValues)

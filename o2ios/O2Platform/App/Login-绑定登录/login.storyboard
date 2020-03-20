@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2FW-oB-Z7W">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2FW-oB-Z7W">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -29,7 +27,7 @@
                                 </connections>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1bI-e6-ANg">
-                                <rect key="frame" x="147.5" y="90" width="80" height="80"/>
+                                <rect key="frame" x="147.5" y="70" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="2zO-EG-G0T"/>
                                     <constraint firstAttribute="width" constant="80" id="uey-R9-gFc"/>
@@ -91,7 +89,6 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="41I-dW-fmr"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <userDefinedRuntimeAttributes>
@@ -110,7 +107,6 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="xvt-De-9D4"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <userDefinedRuntimeAttributes>
@@ -192,7 +188,7 @@
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="OONodeUnitTableViewCell" id="sh0-GF-gvO" customClass="OONodeUnitTableViewCell" customModule="O2Platform" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sh0-GF-gvO" id="EcZ-57-FOC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -272,21 +268,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_o2_moren1" highlightedImage="pic_o2_moren1" translatesAutoresizingMaskIntoConstraints="NO" id="wxO-Qg-4fw">
-                                <rect key="frame" x="140" y="80" width="95" height="95"/>
+                                <rect key="frame" x="140" y="60" width="95" height="95"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="95" id="AFL-pU-hnM"/>
                                     <constraint firstAttribute="height" constant="95" id="ef6-XN-IYs"/>
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="VlL-pa-xtW">
-                                <rect key="frame" x="16" y="195" width="343" height="180"/>
+                                <rect key="frame" x="16" y="175" width="343" height="180"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入用户名" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lEi-tc-UYF" customClass="OOUITextField" customModule="O2Platform" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="PAM-WB-VG7"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <userDefinedRuntimeAttributes>
@@ -305,7 +300,6 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="YG6-dA-cc6"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <userDefinedRuntimeAttributes>
@@ -330,7 +324,6 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="jfy-Ns-KfD"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" textContentType="password"/>
                                         <userDefinedRuntimeAttributes>
@@ -380,7 +373,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdH-Rd-Uu5">
-                                <rect key="frame" x="243" y="383" width="100" height="35"/>
+                                <rect key="frame" x="243" y="363" width="100" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="McM-ZF-FyV"/>
                                     <constraint firstAttribute="width" constant="100" id="kFw-P8-2nn"/>
@@ -393,7 +386,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VU6-Hu-1I4">
-                                <rect key="frame" x="32" y="383" width="100" height="35"/>
+                                <rect key="frame" x="32" y="363" width="100" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="DyV-tz-NyM"/>
                                     <constraint firstAttribute="width" constant="100" id="xav-tr-QlL"/>
@@ -455,14 +448,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_o2_moren1" translatesAutoresizingMaskIntoConstraints="NO" id="8xt-gj-zyd">
-                                <rect key="frame" x="127.5" y="140" width="120" height="120"/>
+                                <rect key="frame" x="127.5" y="120" width="120" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="7sa-Bj-Y2n"/>
                                     <constraint firstAttribute="height" constant="120" id="bqd-au-JQf"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Q-4z-Rfe" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
-                                <rect key="frame" x="26" y="290" width="323" height="40"/>
+                                <rect key="frame" x="26" y="270" width="323" height="40"/>
                                 <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="m5T-Za-xxO"/>
@@ -481,7 +474,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLj-hW-IW3">
-                                <rect key="frame" x="257" y="350" width="92" height="30"/>
+                                <rect key="frame" x="257" y="330" width="92" height="30"/>
                                 <state key="normal" title="其它方式登录"/>
                                 <connections>
                                     <segue destination="0kn-3s-0PH" kind="unwind" identifier="goBack2Login" unwindAction="unwindFromBioAuthLogin:" id="Yuv-L0-JEi"/>

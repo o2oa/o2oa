@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>image</key>
+		<string>icon/com.qq.default.png</string>
+		<key>identifier</key>
+		<string>com.qq.default</string>
+		<key>is_default</key>
+		<true/>
+		<key>sub_groups</key>
+		<array>
+			<dict>
+				<key>image</key>
+				<string>icon/com.apple.emoji.png</string>
+				<key>identifier</key>
+				<string>com.apple.emoji</string>
+			</dict>
+			<dict>
+				<key>image</key>
+				<string>icon/com.qq.classic.png</string>
+				<key>identifier</key>
+				<string>com.qq.classic</string>
+				<key>is_default</key>
+				<true/>
+			</dict>
+		</array>
+	</dict>
+</array>
+</plist>

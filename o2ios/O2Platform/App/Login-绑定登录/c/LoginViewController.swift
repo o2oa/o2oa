@@ -21,6 +21,7 @@ class LoginViewController: UIViewController {
     
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var startImage: UIImageView!
+    var showView = 0
     
     var viewModel:OOLoginViewModel = {
         return OOLoginViewModel()
@@ -40,6 +41,8 @@ class LoginViewController: UIViewController {
             iconImageView.isHidden = false
         }
         self.startImage.image = UIImage(named: "startImage")
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,16 +52,18 @@ class LoginViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        self.showView += 1
         if AppConfigSettings.shared.isFirstTime == true {
-            O2Logger.info("启动开始 isFirstTime is true")
+            DDLogDebug("启动开始 isFirstTime is true")
             AppConfigSettings.shared.isFirstTime = false
             let pVC = OOGuidePageController(nibName: "OOGuidePageController", bundle: nil)
             //let navVC = ZLNavigationController(rootViewController: pVC)
             self.presentVC(pVC)
         }else{
-            O2Logger.info("启动开始 isFirstTime is false")
-            self.startFlowForPromise()
+            if self.showView == 1 {
+                DDLogDebug("启动开始 isFirstTime is false")
+                self.startFlowForPromise()
+            }
         }
     }
 
@@ -74,7 +79,7 @@ class LoginViewController: UIViewController {
                 let centerContext = o2Server?["centerContext"] as? String
                 let centerPort = o2Server?["centerPort"] as? Int
                 let httpProtocol = o2Server?["httpProtocol"] as? String
-                O2Logger.debug("连接服务器：\(String(describing: name)) , host:\(String(describing: centerHost)) , context:\(String(describing: centerContext)), port:\(centerPort ?? 0), portocal:\(String(describing: httpProtocol)) ")
+                DDLogDebug("连接服务器：\(String(describing: name)) , host:\(String(describing: centerHost)) , context:\(String(describing: centerContext)), port:\(centerPort ?? 0), portocal:\(String(describing: httpProtocol)) ")
                 if name == nil || centerHost == nil || centerContext == nil {
                     self.showError(title:  "服务器配置信息异常！")
                     return

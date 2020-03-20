@@ -13,6 +13,7 @@ public enum ApplicationEnum {
     READCOMPLETED("readcompleted", "已阅", R.mipmap.ic_todo_read_completed),
     MEETING("meeting", "会议管理", R.mipmap.app_meeting),
     YUNPAN("yunpan", "云盘", R.mipmap.app_yunpan),
+    clouddisk("clouddisk", "云盘2", R.mipmap.app_yunpan),
 //    OKR("okr", "工作管理", R.mipmap.app_okr),
     BBS("bbs", "论坛", R.mipmap.app_bbs),
     CMS("cms", "信息中心", R.mipmap.app_cms),

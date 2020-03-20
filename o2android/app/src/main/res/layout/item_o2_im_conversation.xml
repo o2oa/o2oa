@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small">
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/image_o2_im_con_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/spacing_small"
+            style="@style/o2_im_chat_message_avatar_style"/>
+
+        <TextView
+            android:id="@+id/tv_o2_im_con_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/z_color_text_primary"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
+            android:layout_marginStart="@dimen/spacing_small"
+            tools:text="FancyLou"/>
+
+        <TextView
+            android:id="@+id/tv_o2_im_con_last_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/z_color_text_hint"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toBottomOf="@+id/tv_o2_im_con_title"
+            app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            tools:text="消息" />
+
+        <TextView
+            android:id="@+id/tv_o2_im_con_last_message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/z_color_text_hint"
+            android:textAlignment="textEnd"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/spacing_small"
+            tools:text="9:10" />
+
+
+        <TextView
+            android:id="@+id/tv_o2_im_con_unread_number"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/image_o2_im_con_avatar"
+            app:layout_constraintTop_toTopOf="@+id/image_o2_im_con_avatar"
+            android:background="@drawable/unread_msg_red"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="9"
+            android:visibility="gone"/>
+
+    </android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/z_color_split_meeting_line"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="@dimen/spacing_small"/>
+</LinearLayout>

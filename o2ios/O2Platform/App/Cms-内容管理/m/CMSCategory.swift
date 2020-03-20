@@ -6,6 +6,8 @@ import Foundation
 import ObjectMapper
 
 
+
+
 class CMSCategory : NSObject, NSCoding, Mappable{
 
 	var count : Int?
