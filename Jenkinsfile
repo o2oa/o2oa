@@ -26,7 +26,7 @@ pipeline {
         }
         stage('run') {
             steps {
-                sh '/target/o2server/start_linux.sh'
+                sh 'target/o2server/start_linux.sh'
             }
         }
     }
