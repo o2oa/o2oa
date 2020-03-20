@@ -1,1 +1,1 @@
-nohup start_linux.sh &
+nohup target/o2server/start_linux.sh &
