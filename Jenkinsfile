@@ -28,7 +28,8 @@ pipeline {
             steps {
                 //sh 'nohup target/o2server/start_linux.sh &'
                 sh 'cd target/o2server'
-                sh './start_linux_nohup.sh'
+                sh 'pwd'
+                sh 'nohup start_linux.sh &'
             }
         }
     }

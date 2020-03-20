@@ -1,1 +1,1 @@
-nohup ./start_linux.sh &
+nohup start_linux.sh &
