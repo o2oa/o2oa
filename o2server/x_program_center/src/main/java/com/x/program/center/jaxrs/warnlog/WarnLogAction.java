@@ -140,4 +140,22 @@ public class WarnLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取系统日志.", action = ActionGetSystemLog.class)
+	@GET
+	@Path("view/system/log/tag/{tag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getSystemLog(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							 @JaxrsParameterDescribe("日志标识") @PathParam("tag") String tag) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionGetSystemLog.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionGetSystemLog().execute(effectivePerson, tag);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
