@@ -40,7 +40,7 @@
   },
   {
     "name": "LogViewer",
-    "title": "错误日志",
+    "title": "日志",
     "path": "LogViewer",
     "iconPath": "appicon.png",
     "allowList": ["xadmin", "Manager"]

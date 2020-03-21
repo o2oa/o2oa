@@ -180,27 +180,27 @@ public class BBSReplyInfoService {
 		}
 	}
 
-	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean noLevel, int maxCount) throws Exception {
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, int maxCount) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listWithSubjectForPage( subjectId, noLevel, maxCount );
+			return business.replyInfoFactory().listWithSubjectForPage( subjectId, showSubReply, maxCount );
 		}catch( Exception e ){
 			throw e;
 		}
 	}
 	
-	public Long countWithSubjectForPage(String subjectId, Boolean noLevel) throws Exception {
+	public Long countWithSubjectForPage(String subjectId, Boolean showSubReply) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().countBySubjectId( subjectId, noLevel );
+			return business.replyInfoFactory().countBySubjectId( subjectId, showSubReply );
 		}catch( Exception e ){
 			throw e;
 		}
