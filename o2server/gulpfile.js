@@ -193,7 +193,7 @@ function getMoveTask(path){
 function getCleanTask(path){
     return function(cb){
         var dest = destDir+path+'/';
-        del(dest, cb);
+        del(dest, {"force": true}, cb);
     }
 }
 
