@@ -253,7 +253,7 @@ function build_web_minimize(cb) {
     var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
     //var src_min = ['o2web/source/o2_core/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
-    var entries = fg.sync(src_min, { dot: true});
+    var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
 
     var pb = new ProgressBar('total: '+size, 50);
@@ -274,7 +274,7 @@ function build_web_move() {
     var dest = 'target/o2server/webServer/';
     var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
 
-    var entries = fg.sync(src_move, { dot: true});
+    var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
     var pb = new ProgressBar('total: '+size, 50);
     var doCount = 0;
@@ -309,7 +309,7 @@ function deploy_server(){
     source = source1.concat(scriptSource);
     var dest = "target/o2server/servers/"
 
-    var entries = fg.sync(source, { dot: true});
+    var entries = fg.sync(source, { dot: false});
     var size = entries.length;
     var pb = new ProgressBar('total: '+size, 50);
     var doCount = 0;
