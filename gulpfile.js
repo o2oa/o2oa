@@ -156,6 +156,9 @@ function initProgress(){
 
 function download_commons_and_jvm(cb){
     gutil.log(gutil.colors.green("begin download commons and jvm"));
+    console.log(`---------------------------------------------------------------------
+  . Start to download the dependencies needed for compilation ...
+---------------------------------------------------------------------`);
     var downloader = new Promise((resolve, reject) => {
         var commonLoaded = false;
         var jvmLoaded = false;
@@ -191,6 +194,9 @@ function download_commons_and_jvm(cb){
 }
 
 function decompress_commons_and_jvm(cb){
+    console.log(`---------------------------------------------------------------------
+  . Start to decompress the dependencies needed for compilation ...
+---------------------------------------------------------------------`);
     gutil.log(gutil.colors.green("begin decompress commons and jvm"));
     var count =0;
     var decompressor = new Promise((resolve, reject) => {
@@ -260,6 +266,10 @@ function getJsFileCount(p){
 
 
 function build_web_minimize(cb) {
+    console.log(`---------------------------------------------------------------------
+  . Start compiling the web ...
+---------------------------------------------------------------------`);
+
     var dest = 'target/o2server/webServer/';
     var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
     //var src_min = ['o2web/source/o2_core/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
@@ -335,11 +345,7 @@ function deploy_server(){
     //.pipe(gutil.noop());
 }
 
-exports.preperation =  gulp.series(()=>{
-    console.log(`---------------------------------------------------------------------
-  . Start to download the dependencies needed for compilation ...
----------------------------------------------------------------------`);
-}, download_commons_and_jvm, decompress_commons_and_jvm);
+exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm);
 
 var shell = require('gulp-shell')
 exports.build_server = function(){
@@ -348,10 +354,5 @@ exports.build_server = function(){
 ---------------------------------------------------------------------`);
     return (shell.task('npm run build_server_script'))();
 };
-exports.build_web = function(){
-    console.log(`---------------------------------------------------------------------
-  . Start compiling the web ...
----------------------------------------------------------------------`);
-    return (gulp.series(build_web_minimize, build_web_move))();
-}
+exports.build_web = gulp.series(build_web_minimize, build_web_move);
 exports.deploy = deploy_server;
