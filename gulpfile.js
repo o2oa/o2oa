@@ -73,11 +73,13 @@ function ProgressBar(description, bar_length){
         for (var i=0;i<cell_num;i++) { cell += '>'; }
 
         var empty = '';
-        for (var i=0;i<this.length-cell_num;i++) { empty += '-'; }
+        for (var i=0;i<this.length-cell_num;i++) { empty += '='; }
 
-        var d = new Date();
-        var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count;
-        slog(cmdText);
+        if (opts.completed <= opts.total){
+            var d = new Date();
+            var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count;
+            slog(cmdText);
+        }
     };
 }
 
@@ -187,7 +189,7 @@ function download_commons_and_jvm(cb){
         });
     });
     downloader.then(()=>{
-        console.log();
+        //console.log();
         gutil.log(gutil.colors.green("download commons and jvm completed"));
         cb();
     });
@@ -249,40 +251,44 @@ function build_web_minimize(cb) {
   . Start compiling the web ...
 ---------------------------------------------------------------------`);
 
-    var dest = 'target/o2server/webServer/';
+    var dest = 'target/o2server/servers/webServer/';
     var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
     var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
 
-    var pb = new ProgressBar('total: '+size, 50);
+    var pb = new ProgressBar('', 50);
     var doCount = 0;
-    return gulp.src(src_min)
-        .pipe(uglify())
+
+    var stream = gulp.src(src_min);
+    stream.on("end", ()=>{console.log();});
+
+    return stream.pipe(uglify())
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
-            if (doCount <= size){doCount++; pb.render({ completed: doCount, total: size, count: doCount})};
-            if (doCount > size) {console.log();}
+            doCount++;
+            if (doCount <= size){pb.render({ completed: doCount, total: size, count: doCount})};
         }))
         .pipe(gutil.noop());
 }
 
 function build_web_move() {
-    var dest = 'target/o2server/webServer/';
-    var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
+    var dest = 'target/o2server/servers/webServer/';
+    var src_move = ['o2web/source/o2_core/**/*', '!**/*.spec.js', '!**/test/**'];
 
     var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
-    var pb = new ProgressBar('total: '+size, 50);
+    var pb = new ProgressBar('', 50);
     var doCount = 0;
 
-    return gulp.src(src_move)
-        .pipe(gulp.dest(dest))
-        .pipe(logger(function(){
+    var stream = gulp.src(src_move);
+    stream.on("end", ()=>{console.log();});
 
-            if (doCount <= size) {doCount++;pb.render({ completed: doCount, total: size, count: doCount})};
-            if (doCount > size) {console.log();}
+    return stream.pipe(gulp.dest(dest))
+        .pipe(logger(function(){
+            doCount++;
+            if (doCount <= size) {pb.render({ completed: doCount, total: size, count: doCount})};
         }))
         .pipe(gutil.noop());
 }
@@ -293,7 +299,7 @@ function clear_build(cb){
   . clear old build ...
 ---------------------------------------------------------------------`);
     var dest = 'target';
-    del(dest, { dryRun: true, force: true });
+    del(dest, { force: true });
     cb();
 }
 exports.clear_build = clear_build;
@@ -305,19 +311,20 @@ function deploy_server(){
 ---------------------------------------------------------------------`);
     var source = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
     source = source.concat(scriptSource);
-    var dest = "target/o2server/servers/"
+    var dest = "target/o2server/"
 
     var entries = fg.sync(source, { dot: false});
     var size = entries.length;
-    var pb = new ProgressBar('total: '+size, 50);
+    var pb = new ProgressBar('', 50);
     var doCount = 0;
 
-    return gulp.src(source)
-        .pipe(gulp.dest(dest))
-        .pipe(logger(function(){
+    var stream = gulp.src(source);
+    stream.on("end", ()=>{console.log();});
 
-            if (doCount <= size) {doCount++; pb.render({ completed: doCount, total: size, count: doCount})};
-            if (doCount > size) {console.log();}
+    return stream.pipe(gulp.dest(dest))
+        .pipe(logger(function(){
+            doCount++;
+            if (doCount <= size) {pb.render({ completed: doCount, total: size, count: doCount})};
         }));
 }
 
