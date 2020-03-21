@@ -90,7 +90,7 @@ function getAppTask(path, isMin, thisOptions) {
                     port: option.port || 22,
                     remotePath: (option.remotePath || '/') + path
                 })))
-                .pipe(gulpif((option.ev == "dev") ,gulp.dest(dest)))
+                .pipe(gulpif((option.ev == "dev" || option.ev == "pro") ,gulp.dest(dest)))
 
                 .pipe(gulp.src(src_move))
                 .pipe(changed(dest))
@@ -367,3 +367,16 @@ gulp.task("git_dest", function () {
 gulp.task("git", gulp.series('git_clean', 'git_dest'));
 
 gulp.task("default", gulp.series(gulp.parallel(appTasks, 'index'), "o2:new-v"));
+
+function build(){
+    options.ev = "p";
+    options.upload = o_options.upload || "";
+    options.location = o_options.location || uploadOptions.location;
+    options.host = o_options.host || uploadOptions.host;
+    options.user = o_options.user || uploadOptions.user;
+    options.pass = o_options.pass || uploadOptions.pass;
+    options.port = o_options.port || uploadOptions.port;
+    options.remotePath = o_options.remotePath || uploadOptions.remotePath;
+    options.dest = o_options.dest || uploadOptions.dest || "dest";
+};
+gulp.task("build", gulp.series("clean", gulp.parallel(appTasks, 'index'), "o2:new-v"))
