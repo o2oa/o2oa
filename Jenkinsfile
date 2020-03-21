@@ -1,14 +1,22 @@
 pipeline {
     agent {label '132'}
     stages {
-        stage('preperation') {
+        stage('Stop Server') {
             steps {
-                catchError {
+                catchError(buildResult: 'SUCCESS') {
                     sh 'target/o2server/stop_linux.sh'
                 }
+            }
+        }
+        stage('init') {
+            steps {
                 sh 'npm install'
-                sh 'npm run preperation:linux'
                 sh 'npm run clear'
+            }
+        }
+        stage('dependency') {
+            steps {
+                sh 'npm run preperation:linux'
             }
         }
         stage('build') {
