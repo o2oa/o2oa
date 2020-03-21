@@ -57,6 +57,7 @@ command.swap
 **/src/main/webapp/describe/
 **/target/
 /target/**
+/o2server/servers/
 
 #ignore folder
 version.o2
