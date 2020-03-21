@@ -335,13 +335,11 @@ function deploy_server(){
     //.pipe(gutil.noop());
 }
 
-exports.preperation = function(cd){
+exports.preperation =  gulp.series(()=>{
     console.log(`---------------------------------------------------------------------
   . Start to download the dependencies needed for compilation ...
 ---------------------------------------------------------------------`);
-    (gulp.series(download_commons_and_jvm, decompress_commons_and_jvm))();
-    cb();
-}
+}, download_commons_and_jvm, decompress_commons_and_jvm);
 
 var shell = require('gulp-shell')
 exports.build_server = function(){
