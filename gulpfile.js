@@ -263,8 +263,7 @@ function build_web_minimize(cb) {
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
-            doCount++;
-            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount <= size){doCount++; pb.render({ completed: doCount, total: size, count: doCount})};
             if (doCount > size) {console.log();}
         }))
         .pipe(gutil.noop());
@@ -282,8 +281,8 @@ function build_web_move() {
     return gulp.src(src_move)
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
-            doCount++;
-            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+
+            if (doCount <= size) {doCount++;pb.render({ completed: doCount, total: size, count: doCount})};
             if (doCount > size) {console.log();}
         }))
         .pipe(gutil.noop());
@@ -317,8 +316,8 @@ function deploy_server(){
     return gulp.src(source)
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
-            doCount++;
-            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+
+            if (doCount <= size) {doCount++; pb.render({ completed: doCount, total: size, count: doCount})};
             if (doCount > size) {console.log();}
         }));
     //.pipe(gutil.noop());
