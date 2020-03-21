@@ -111,7 +111,7 @@ var apps = [
 ];
 
 var sourcePrefix = '../o2web/';
-var destDir = 'servers/webServer/';
+var destDir = '../target/o2server/servers/webServer/';
 
 var uploadOptions = {
     'location': 'E:/o2server/servers/webServer/',
