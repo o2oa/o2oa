@@ -152,3 +152,5 @@ typings/
 
 #vscode
 .factorypath
+/o2server/commons/
+/o2server/jvm/
