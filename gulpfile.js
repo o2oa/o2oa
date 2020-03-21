@@ -244,27 +244,6 @@ function decompress_commons_and_jvm(cb){
     });
 }
 
-function getJsFileCount(p){
-    var fileCount = 0;
-    function readFile(path,filesList, ){
-        files = fs.readdirSync(path);
-        files.forEach(walk);
-        function walk(file){
-            states = fs.statSync(path+'/'+file);
-            if(states.isDirectory()){
-                readFile(path+'/'+file,filesList);
-            }else{
-                // fileCount+=states.size;
-                fileCount++;
-            }
-        }
-    }
-    var filesList = [];
-    readFile(p, filesList);
-    return fileCount;
-}
-
-
 function build_web_minimize(cb) {
     console.log(`---------------------------------------------------------------------
   . Start compiling the web ...
@@ -285,8 +264,8 @@ function build_web_minimize(cb) {
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
             doCount++;
-            pb.render({ completed: doCount, total: size, count: doCount});
-            if (doCount == size) console.log();
+            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount > size) {console.log();}
         }))
         .pipe(gutil.noop());
 }
@@ -304,8 +283,8 @@ function build_web_move() {
         .pipe(gulp.dest(dest))
         .pipe(logger(function(){
             doCount++;
-            pb.render({ completed: doCount, total: size, count: doCount});
-            if (doCount == size) console.log();
+            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount > size) {console.log();}
         }))
         .pipe(gutil.noop());
 }
