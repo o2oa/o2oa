@@ -251,7 +251,6 @@ function build_web_minimize(cb) {
 
     var dest = 'target/o2server/webServer/';
     var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
-    //var src_min = ['o2web/source/o2_core/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
     var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
