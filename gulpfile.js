@@ -275,7 +275,7 @@ function build_web_minimize(cb) {
 
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
-    var src_move = ['o2web/source/o2_core/**/*', '!**/*.spec.js', '!**/test/**'];
+    var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
 
     var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
@@ -309,8 +309,9 @@ function deploy_server(){
     console.log(`---------------------------------------------------------------------
   . deploy to target ...
 ---------------------------------------------------------------------`);
-    var source = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
+    var source = ["o2server/*store/**/*", "o2server/*commons/**/*", "o2server/*jvm/**/*", "o2server/*configSample/**/*", "o2server/*localSample/**/*"];
     source = source.concat(scriptSource);
+    console.log(source)
     var dest = "target/o2server/"
 
     var entries = fg.sync(source, { dot: false});
