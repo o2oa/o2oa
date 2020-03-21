@@ -1,11 +1,20 @@
 module.exports = {
+    // "dev": {
+    //     'location': 'E:/o2server/servers/webServer/',
+    //     'host': 'dev.o2oa.net',
+    //     'user': 'xadmin',
+    //     'pass': 'o2No.one',
+    //     "port": 21,
+    //     "remotePath": "/",
+    //     "dest": "dest"
+    // },
     "dev": {
         'location': 'E:/o2server/servers/webServer/',
-        'host': 'dev.o2oa.net',
-        'user': 'xadmin',
-        'pass': 'o2No.one',
-        "port": 21,
-        "remotePath": "/",
+        'host': 'develop.o2oa.net',
+        'user': 'root',
+        'pass': 'zone2019',
+        "port": 22132,
+        "remotePath": "/data/jenkins/workspace/develop/target/o2server/servers/webServer/",
         "dest": "dest"
     },
     "release": {
