@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('preperation') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
                     sh 'target/o2server/stop_linux.sh'
                 }
                 sh 'npm install'
