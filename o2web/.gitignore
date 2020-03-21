@@ -9,5 +9,7 @@ npm-debug.log
 **/*.min.js
 package-lock.json
 /.svn/
+/ftpconfig.js
+/gulpconfig.js
 ftpconfig.js
 gulpconfig.js
