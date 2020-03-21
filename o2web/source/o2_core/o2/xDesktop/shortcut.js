@@ -45,7 +45,6 @@ MWF.shortcut = {
     }
 };
 
-debugger;
 MWF.shortcut.keyboard = new Keyboard({
     defaultEventType: 'keydown',
     events: {
