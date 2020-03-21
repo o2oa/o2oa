@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
+    del = require('del'),
     fs = require("fs"),
     minimist = require('minimist'),
     targz = require('targz'),
@@ -7,7 +8,13 @@ var gulp = require('gulp'),
     dateFormat = require('dateformat'),
     progress = require('progress-stream'),
     request = require("request"),
+    uglify = require('gulp-tm-uglify'),
+    rename = require('gulp-rename'),
+    changed = require('gulp-changed'),
+    gulpif = require('gulp-if'),
     http = require('http');
+var fg = require('fast-glob');
+var logger = require('gulp-logger');
 
 //var downloadHost = "download.o2oa.net";
 var downloadHost = "release.o2oa.net";
@@ -231,7 +238,7 @@ function decompress_commons_and_jvm(cb){
     });
 }
 
-function getFileCount(p){
+function getJsFileCount(p){
     var fileCount = 0;
     function readFile(path,filesList, ){
         files = fs.readdirSync(path);
@@ -252,160 +259,100 @@ function getFileCount(p){
 }
 
 
-function deploy_web(){
-    var path = "o2server/servers/"
-    var fileCount = getFileCount(path);
+function build_web_minimize(cb) {
+    var dest = 'target/o2server/webServer/';
+    var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    //var src_min = ['o2web/source/o2_core/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
-    //console.log(fileCount);
-    var pb = new ProgressBar('', 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
+    var entries = fg.sync(src_min, { dot: true});
+    var size = entries.length;
 
-    var source = "o2server/servers/**/*";
+    var pb = new ProgressBar('total: '+size, 50);
+    var doCount = 0;
+    return gulp.src(src_min)
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+        .pipe(logger(function(){
+            doCount++;
+            pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount == size) console.log();
+        }))
+        .pipe(gutil.noop());
+}
+
+function build_web_move() {
+    var dest = 'target/o2server/webServer/';
+    var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
+
+    var entries = fg.sync(src_move, { dot: true});
+    var size = entries.length;
+    var pb = new ProgressBar('total: '+size, 50);
+    var doCount = 0;
+
+    return gulp.src(src_move)
+        .pipe(gulp.dest(dest))
+        .pipe(logger(function(){
+            doCount++;
+            pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount == size) console.log();
+        }))
+        .pipe(gutil.noop());
+}
+exports.build_web_move = build_web_move;
+
+function clear_build(cb){
+    console.log(`-------------------------------------------------------------
+    . clear old build ...
+-------------------------------------------------------------`);
+    var dest = 'target';
+    del(dest, { dryRun: true, force: true });
+    cb();
+}
+exports.clear_build = clear_build;
+
+
+function deploy_server(){
+    console.log(`-------------------------------------------------------------
+    . deploy to target ...
+-------------------------------------------------------------`);
+    var source1 = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
+    source = source1.concat(scriptSource);
     var dest = "target/o2server/servers/"
+
+    var entries = fg.sync(source, { dot: true});
+    var size = entries.length;
+    var pb = new ProgressBar('total: '+size, 50);
+    var doCount = 0;
+
     return gulp.src(source)
-        .pipe(progressStream)
         .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_store(){
-    var path = "o2server/store/"
-    var fileCount = getFileCount(path);
-
-    var pb = new ProgressBar('total: '+fileCount, 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
-
-    var source = "o2server/store/**/*";
-    var dest = "target/o2server/store/";
-    return gulp.src(source)
-        .pipe(progressStream)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_commons(){
-    var path = "o2server/commons/";
-    var fileCount = getFileCount(path);
-
-    var pb = new ProgressBar('total: '+fileCount, 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
-
-    var source = "o2server/commons/**/*";
-    var dest = "target/o2server/commons/";
-    return gulp.src(source)
-        .pipe(progressStream)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_jvm(){
-    var path = "o2server/jvm/";
-    var fileCount = getFileCount(path);
-
-    var pb = new ProgressBar('total: '+fileCount, 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
-
-    var source = "o2server/jvm/**/*";
-    var dest = "target/o2server/jvm/";
-    return gulp.src(source)
-        .pipe(progressStream)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_config(){
-    var path = "o2server/configSample/";
-    var fileCount = getFileCount(path);
-
-    var pb = new ProgressBar('total: '+fileCount, 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
-
-    var source = "o2server/configSample/**/*";
-    var dest = "target/o2server/configSample/";
-    return gulp.src(source)
-        .pipe(progressStream)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_local(){
-    var path = "o2server/localSample/";
-    var fileCount = getFileCount(path);
-
-    var pb = new ProgressBar('total: '+fileCount, 50);
-    var progressStream = progress({
-        length: fileCount,
-        time: 100,
-        objectMode: true
-    });
-    progressStream.on('progress', function (stats) {
-        var n = (fileCount*stats.percentage/100).toFixed(0);
-        if (n>fileCount) n = fileCount;
-        pb.render({ completed: n, total: fileCount, count: n});
-    });
-
-    var source = "o2server/localSample/**/*";
-    var dest = "target/o2server/localSample/";
-    return gulp.src(source)
-        .pipe(progressStream)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
-}
-function deploy_server_script(){
-    var dest = "target/o2server/";
-    return gulp.src(scriptSource)
-        .pipe(gulp.dest(dest))
-        .pipe(gutil.noop());
+        .pipe(logger(function(){
+            doCount++;
+            if (doCount <= size) pb.render({ completed: doCount, total: size, count: doCount});
+            if (doCount > size) {console.log();}
+        }));
+    //.pipe(gutil.noop());
 }
 
+exports.preperation = function(){
+    console.log(`---------------------------------------------------------------------
+  . Start to download the dependencies needed for compilation ...
+---------------------------------------------------------------------`);
+    return (gulp.series(download_commons_and_jvm, decompress_commons_and_jvm))();
+}
 
-exports.preperation = gulp.series(download_commons_and_jvm, decompress_commons_and_jvm);
-//exports.deploy_web = deploy_web;
-exports.deploy_server_store = deploy_server_store;
-exports.deploy_server_commons = deploy_server_commons;
-exports.deploy_server_jvm = deploy_server_jvm;
-exports.deploy_server_config = deploy_server_config;
-exports.deploy_server_local = deploy_server_local;
-exports.deploy_server_script = deploy_server_script;
-exports.deploy_server = gulp.series(deploy_server_store, deploy_server_commons, deploy_server_jvm, deploy_server_config, deploy_server_local, deploy_server_script);
-exports.deploy = gulp.series(deploy_server_store, deploy_server_commons, deploy_server_jvm, deploy_server_config, deploy_server_local, deploy_server_script);
+var shell = require('gulp-shell')
+exports.build_server = function(){
+    console.log(`-------------------------------------------------------------
+  . Start compiling the server ...
+-------------------------------------------------------------`);
+    return (shell.task('npm run build_server_script'))();
+};
+exports.build_web = function(){
+    console.log(`-------------------------------------------------------------
+  . Start compiling the web ...
+-------------------------------------------------------------`);
+    return (gulp.series(build_web_minimize, build_web_move))();
+}
+exports.deploy = deploy_server;

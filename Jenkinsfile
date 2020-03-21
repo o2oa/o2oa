@@ -8,6 +8,7 @@ pipeline {
                 }
                 sh 'npm install'
                 sh 'npm run preperation:linux'
+                sh 'npm run clear'
             }
         }
         stage('build') {
@@ -26,38 +27,9 @@ pipeline {
             }
         }
         stage('deploy') {
-            parallel {
-                stage('deploy sotre') {
-                    steps {
-                        sh 'npm run deploy:sotre'
-                    }
-                }
-                stage('deploy commons') {
-                    steps {
-                        sh 'npm run deploy:commons'
-                    }
-                }
-                stage('deploy jvm') {
-                    steps {
-                        sh 'npm run deploy:jvm'
-                    }
-                }
-                stage('deploy config') {
-                    steps {
-                        sh 'npm run deploy:config'
-                    }
-                }
-                stage('deploy local') {
-                    steps {
-                        sh 'npm run deploy:local'
-                    }
-                }
-                stage('deploy script') {
-                    steps {
-                        sh 'deploy_script:linux'
-                        sh 'chmod 777 target/o2server/*.sh'
-                    }
-                }
+            steps {
+                sh 'deploy_script:linux'
+                sh 'chmod 777 target/o2server/*.sh'
             }
         }
         stage('run') {
