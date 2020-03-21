@@ -27,12 +27,12 @@ class StartProcessStepTwoPresenter : BasePresenterImpl<StartProcessStepTwoContra
     }
 
     override fun startProcess(title: String, identity: String, processId: String) {
-            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(identity) || TextUtils.isEmpty(processId)) {
-                mView?.startProcessFail("传入参数为空，无法启动流程，title:$title, identity:$identity,processId:$processId")
+            if (TextUtils.isEmpty(identity) || TextUtils.isEmpty(processId)) {
+                mView?.startProcessFail("传入参数为空，无法启动流程 identity:$identity,processId:$processId")
                 return
             }
             val body = ProcessStartBo()
-            body.title = title
+            body.title = ""
             body.identity = identity
             getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service->
                 service.startProcess(processId, body)

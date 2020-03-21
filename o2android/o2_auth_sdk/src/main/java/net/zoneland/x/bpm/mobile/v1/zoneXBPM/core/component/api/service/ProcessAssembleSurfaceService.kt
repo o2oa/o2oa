@@ -256,6 +256,19 @@ interface ProcessAssembleSurfaceService {
     @POST("jaxrs/work/process/{processId}")
     fun startProcess(@Path("processId") processId: String, @Body body: ProcessStartBo): Observable<ApiResponse<List<ProcessWorkData>>>
 
+
+    /**
+     * 启动流程
+     * @param processId
+     * *
+     * @param body
+     * *
+     * @return
+     */
+    @Headers("Content-Type:application/json;charset=UTF-8")
+    @POST("jaxrs/work/process/{processId}")
+    fun startProcessForCms(@Path("processId") processId: String, @Body body: ProcessStartCmsBo): Observable<ApiResponse<List<ProcessWorkData>>>
+
     /**
      * 已办撤回
      * @param workId

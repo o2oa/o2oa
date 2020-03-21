@@ -1,11 +1,13 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo;
 
+import java.io.Serializable;
+
 /**
  * 云盘 面包屑导航条 对象类
  *
  * Created by FancyLou on 2015/10/26.
  */
-public class FileBreadcrumbBean {
+public class FileBreadcrumbBean implements Serializable {
 
     private String displayName;
     private String folderId;

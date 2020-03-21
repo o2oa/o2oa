@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.type.CloudDiskFileTypeItemAdapter;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.SwipeRefreshCommonRecyclerViewAdapter;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog;
 
@@ -197,23 +198,36 @@ public class RecyclerViewSwipeRefreshLayout extends SwipeRefreshLayout {
      */
     public void setLoading(boolean loading) {
         isLoading = loading;
-        SwipeRefreshCommonRecyclerViewAdapter adapter =  null;
+
         if (recyclerView==null) {//被回收
             return;
         }
         if (recyclerView.getAdapter() instanceof SwipeRefreshCommonRecyclerViewAdapter){
-            adapter = (SwipeRefreshCommonRecyclerViewAdapter) recyclerView.getAdapter();
-        }
-        if (isLoading) {
-            if (adapter!=null){
-                adapter.addFooter(footerView);
+            SwipeRefreshCommonRecyclerViewAdapter adapter  = (SwipeRefreshCommonRecyclerViewAdapter) recyclerView.getAdapter();
+            if (isLoading) {
+                if (adapter!=null){
+                    adapter.addFooter(footerView);
+                }
+            } else {
+                if (adapter!=null){
+                    adapter.removeFooter(footerView);
+                }
+                mYDown = 0;
+                mLastY = 0;
             }
-        } else {
-            if (adapter!=null){
-                adapter.removeFooter(footerView);
+        }else if (recyclerView.getAdapter() instanceof CloudDiskFileTypeItemAdapter) {
+            CloudDiskFileTypeItemAdapter adapter =  (CloudDiskFileTypeItemAdapter)recyclerView.getAdapter();
+            if (isLoading) {
+                if (adapter!=null){
+                    adapter.addFooter(footerView);
+                }
+            } else {
+                if (adapter!=null){
+                    adapter.removeFooter(footerView);
+                }
+                mYDown = 0;
+                mLastY = 0;
             }
-            mYDown = 0;
-            mLastY = 0;
         }
     }
 

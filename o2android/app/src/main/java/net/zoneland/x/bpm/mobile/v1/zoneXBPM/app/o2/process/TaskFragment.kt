@@ -39,7 +39,8 @@ class TaskFragment : BaseMVPViewPagerFragment<TaskContract.View, TaskContract.Pr
         object : SwipeRefreshCommonRecyclerViewAdapter<TaskData>(activity, taskDatas, R.layout.item_todo_list) {
             override fun convert(holder: CommonRecyclerViewHolder?, data: TaskData?) {
                 val time = data?.startTime?.substring(0, 10) ?: ""
-                holder?.setText(R.id.todo_card_view_title_id, data?.title)
+                val title = if (TextUtils.isEmpty(data?.title)) { "无标题" } else { data?.title }
+                holder?.setText(R.id.todo_card_view_title_id, title)
                         ?.setText(R.id.todo_card_view_content_id, "【${data?.processName}】")
                         ?.setText(R.id.todo_card_view_node_id, data?.activityName)
                         ?.setText(R.id.todo_card_view_time_id, time)

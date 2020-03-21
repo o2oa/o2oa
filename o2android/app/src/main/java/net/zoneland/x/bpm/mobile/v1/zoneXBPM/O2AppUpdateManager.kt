@@ -13,6 +13,8 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.lang.Exception
+import java.lang.RuntimeException
+import java.util.*
 
 
 class O2AppUpdateManager private constructor() {
@@ -34,8 +36,10 @@ class O2AppUpdateManager private constructor() {
 
 
     fun checkUpdate(activity: Activity, call: O2AppUpdateCallback) {
-        Observable.just(o2AppVersionJsonUrl).subscribeOn(Schedulers.io())
+        val ranStr = getRandomStringOfLength(6)
+        Observable.just("$o2AppVersionJsonUrl?$ranStr").subscribeOn(Schedulers.io())
                 .map { url ->
+                    XLog.debug(url)
                     val request = Request.Builder().url(url).build()
                     try {
                         val response = client.newCall(request).execute()
@@ -78,6 +82,21 @@ class O2AppUpdateManager private constructor() {
     }
 
 
+    private val characters = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+
+    fun getRandomStringOfLength(len: Int): String {
+        if (len < 0) {
+            throw RuntimeException("len 不能小于 1")
+        }
+        var ret = ""
+        val r = Random()
+        for (x in 0..len ) {
+            val index = r.nextInt(characters.size)
+            val rc = characters[index]
+            ret += rc.toString()
+        }
+        return ret
+    }
 
 
 }

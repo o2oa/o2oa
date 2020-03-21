@@ -157,10 +157,16 @@ class CircleRippleView : View {
         invalidate()
     }
 
-    private fun getVoiceBitmapFromVectorDrawable(context: Context): Bitmap {
+    private fun getVoiceBitmapFromVectorDrawable(context: Context): Bitmap? {
         var drawable = ContextCompat.getDrawable(context, R.drawable.voice_vector)
+        if (drawable == null) {
+            return null
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = DrawableCompat.wrap(drawable).mutate()
+        }
+        if (drawable == null) {
+            return null
         }
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)

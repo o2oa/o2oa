@@ -5,15 +5,16 @@ import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessStartBo
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessWorkData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
 
 /**
  * Created by fancyLou on 2019-07-03.
@@ -63,16 +64,33 @@ class CMSPublishDocumentPresenter : BasePresenterImpl<CMSPublishDocumentContract
                 }
     }
 
-    override fun startProcess(title: String, identifyId: String, processId: String) {
+    override fun startProcess(title: String, identifyId: String, category: CMSCategoryInfoJson) {
+        val processId = category.workflowFlag
+        val categoryId = category.id
+        val appId = category.appId
         if (TextUtils.isEmpty(identifyId) || TextUtils.isEmpty(processId)) {
             mView?.startProcessFail("传入参数为空，无法启动流程，identity:$identifyId,processId:$processId")
             return
         }
-        val body = ProcessStartBo()
+        val body = ProcessStartCmsBo()
         body.title = title
         body.identity = identifyId
+        val data = PData()
+        val cms = CmsDocument()
+        cms.creatorIdentity = identifyId
+        cms.title = title
+        cms.categoryId = categoryId
+        cms.appId = appId
+        cms.isNewDocument = true
+        cms.categoryAlias = category.categoryAlias
+        cms.categoryName = category.categoryName
+        cms.docStatus = "draft"
+        cms.createTime = Date()
+        data.cmsDocument = cms
+        body.data = data
+
         getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service ->
-            service.startProcess(processId, body)
+            service.startProcessForCms(processId, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ResponseHandler<List<ProcessWorkData>> { list ->

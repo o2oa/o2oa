@@ -1,4 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
+
+# source 'https://git.coding.net/hging/Specs.git'
 platform :ios, '10.0'
 
 # swift50里面的库已经支持swift5了 其他暂时先用4.1版本
@@ -80,6 +82,16 @@ target 'O2Platform' do
     
     # 日历控件
     pod 'JTCalendar', '~> 2.0'
+    
+    #百度地图SDK
+    pod 'BaiduMapKit'
+    #百度定位 
+    pod 'BMKLocationKit'
+    
+    # 极光
+    pod 'JCore', '2.1.2'
+    pod 'JPush', '3.2.4'
+    pod 'JMessage'
     
     
     

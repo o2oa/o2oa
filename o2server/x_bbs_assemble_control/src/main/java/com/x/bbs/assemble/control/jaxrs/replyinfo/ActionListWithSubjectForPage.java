@@ -42,6 +42,9 @@ public class ActionListWithSubjectForPage extends BaseAction {
 
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
+			if( wrapIn.getShowSubReply() == null ){
+				wrapIn.setShowSubReply(true);
+			}
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionReplyInfoProcess(e,"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
@@ -50,7 +53,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		}
 
 		if (check) {
-			String cacheKey = wrapIn.getSubjectId() + "#" + page + "#" + count + "#" + wrapIn.getNoLevel();
+			String cacheKey = wrapIn.getSubjectId() + "#" + page + "#" + count + "#" + wrapIn.getShowSubReply();
 			Element element = cache.get(cacheKey);
 
 			if ((null != element) && (null != element.getObjectValue())) {
@@ -91,7 +94,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		}
 		if (check) {
 			try {
-				total = replyInfoService.countWithSubjectForPage(wrapIn.getSubjectId(), wrapIn.getNoLevel() );
+				total = replyInfoService.countWithSubjectForPage(wrapIn.getSubjectId(), wrapIn.getShowSubReply() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionReplyInfoProcess(e,"根据主题ID查询主题内所有的回复数量时发生异常。Subject:" + wrapIn.getSubjectId());
@@ -102,7 +105,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		if (check) {
 			if (total > 0) {
 				try {
-					replyInfoList = replyInfoService.listWithSubjectForPage( wrapIn.getSubjectId(), wrapIn.getNoLevel(), page * count );
+					replyInfoList = replyInfoService.listWithSubjectForPage( wrapIn.getSubjectId(), wrapIn.getShowSubReply(), page * count );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionReplyInfoProcess(e,"根据主题ID查询主题内所有的回复列表时发生异常。Subject:" + wrapIn.getSubjectId());
@@ -176,16 +179,12 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		@FieldDescribe("主题Id")
 		private String subjectId = null;
 
-		@FieldDescribe("是否平级显示所有的的回复, 如果为true则只显示第一层")
-		private Boolean noLevel = false;
+		@FieldDescribe("是否平级显示所有的的回复, 如果为false则只显示第一层")
+		private Boolean showSubReply = true;
 
-		public Boolean getNoLevel() {
-			return noLevel;
-		}
+		public Boolean getShowSubReply() { return showSubReply; }
 
-		public void setNoLevel(Boolean noLevel) {
-			this.noLevel = noLevel;
-		}
+		public void setShowSubReply(Boolean showSubReply) { this.showSubReply = showSubReply; }
 
 		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 

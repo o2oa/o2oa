@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <item android:id="@+id/cloud_disk_menu_upload_file"
+        android:title="@string/yunpan_menu_upload_file"
+        android:orderInCategory="100"/>
+
+    <item android:id="@+id/cloud_disk_menu_create_folder"
+        android:title="@string/yunpan_menu_create_folder"
+        android:orderInCategory="200"/>
+
+
+</menu>

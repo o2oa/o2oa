@@ -106,7 +106,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         _setupJMessage()
         
         _mapManager = BMKMapManager()
-        BMKMapManager.setCoordinateTypeUsedInBaiduMapSDK(BMK_COORDTYPE_BD09LL)
+        BMKMapManager.setCoordinateTypeUsedInBaiduMapSDK(.COORDTYPE_BD09LL)
         _mapManager?.start(BAIDU_MAP_KEY, generalDelegate: nil)
         
         

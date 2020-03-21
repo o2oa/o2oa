@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 class OOAttanceHeaderView: UIView {
     
@@ -14,7 +15,7 @@ class OOAttanceHeaderView: UIView {
     
     var userLocation:BMKUserLocation!
     
-    var locService:BMKLocationService!
+    var locService: BMKLocationManager!
     
     var searchAddress:BMKGeoCodeSearch!
     
@@ -52,10 +53,21 @@ class OOAttanceHeaderView: UIView {
         self.addSubview(mapView)
         
         
-        locService = BMKLocationService()
-        locService.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locService =  BMKLocationManager()
+        locService.desiredAccuracy = kCLLocationAccuracyBest
+        //设置返回位置的坐标系类型
+        locService.coordinateType = .BMK09LL
+        //设置距离过滤参数
+        locService.distanceFilter = kCLDistanceFilterNone;
+        //设置预期精度参数
+        locService.desiredAccuracy = kCLLocationAccuracyBest;
+        //设置应用位置类型
+        locService.activityType = .automotiveNavigation
+        //设置是否自动停止位置更新
+        locService.pausesLocationUpdatesAutomatically = false
+        
         locService.delegate = self
-        locService.startUserLocationService()
+        locService.startUpdatingLocation()
       
         searchAddress = BMKGeoCodeSearch()
         searchAddress.delegate = self
@@ -95,7 +107,7 @@ class OOAttanceHeaderView: UIView {
         let annotation = BMKPointAnnotation()
         let longitude  = Double((workPlace.longitude)!)
         let latitude  = Double((workPlace.latitude)!)
-        O2Logger.debug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(longitude),latitude=\(latitude)")
+        DDLogDebug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(longitude),latitude=\(latitude)")
         annotation.coordinate = CLLocationCoordinate2DMake(latitude!,longitude!);
         annotation.title = workPlace.placeAlias ?? ""
         annotation.subtitle = workPlace.placeName ?? ""
@@ -103,7 +115,7 @@ class OOAttanceHeaderView: UIView {
     }
     
     func stopBMKMapViewService() {
-        locService.stopUserLocationService()
+        locService.stopUpdatingLocation()
         locService.delegate = nil
         searchAddress.delegate = nil
         mapView.delegate = nil
@@ -128,32 +140,38 @@ extension OOAttanceHeaderView:BMKMapViewDelegate {
     }
 
     func mapViewDidFinishLoading(_ mapView: BMKMapView!) {
-        O2Logger.debug("mapViewDidFinishLoading")
+        DDLogDebug("mapViewDidFinishLoading")
     }
     
     func mapViewDidFinishRendering(_ mapView: BMKMapView!) {
-        O2Logger.debug("mapViewDidFinishRendering")
+        DDLogDebug("mapViewDidFinishRendering")
     }
 }
 
-extension OOAttanceHeaderView:BMKLocationServiceDelegate {
+extension OOAttanceHeaderView: BMKLocationManagerDelegate {
     
-    
-    func didUpdate(_ userLocation: BMKUserLocation!) {
-        O2Logger.debug("当前位置,\(userLocation.location.coordinate.latitude),\(userLocation.location.coordinate.longitude)")
-        mapView.updateLocationData(userLocation)
-        mapView.centerCoordinate = userLocation.location.coordinate
-        //搜索到指定的地点
-        let re = BMKReverseGeoCodeOption()
-        re.reverseGeoPoint = userLocation.location.coordinate
-        let _ = searchAddress.reverseGeoCode(re)
-
+    func bmkLocationManager(_ manager: BMKLocationManager, didUpdate location: BMKLocation?, orError error: Error?) {
+        if let loc = location?.location {
+            DDLogDebug("当前位置,\(loc.coordinate.latitude),\(loc.coordinate.longitude)")
+            let user = BMKUserLocation()
+            user.location = loc
+            mapView.updateLocationData(user)
+            mapView.centerCoordinate = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
+            //搜索到指定的地点
+            let re = BMKReverseGeoCodeSearchOption()
+            re.location = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
+            let _ = searchAddress.reverseGeoCode(re)
+        }else {
+            DDLogError("没有获取到定位信息！！！！！")
+        }
     }
+    
+   
 }
 
 extension OOAttanceHeaderView:BMKGeoCodeSearchDelegate {
     
-    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch?, result: BMKReverseGeoCodeResult?, errorCode error: BMKSearchErrorCode) {
+    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch?, result: BMKReverseGeoCodeSearchResult?, errorCode error: BMKSearchErrorCode) {
         //发送定位的实时位置及名称信息
         if let location = result?.location, calcErrorRange(location) == true {
             NotificationCenter.post(customeNotification: .location, object: result)
@@ -162,11 +180,11 @@ extension OOAttanceHeaderView:BMKGeoCodeSearchDelegate {
         }
     }
     
-    func onGetGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKGeoCodeResult!, errorCode error: BMKSearchErrorCode) {
+    func onGetGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKGeoCodeSearchResult!, errorCode error: BMKSearchErrorCode) {
         if Int(error.rawValue) == 0 {
-            O2Logger.debug("result \(String(describing: result.address))")
+            DDLogDebug("result \(String(describing: result))")
         }else{
-            O2Logger.debug("result error  errorCode = \(Int(error.rawValue))")
+            DDLogDebug("result error  errorCode = \(Int(error.rawValue))")
         }
         
     }

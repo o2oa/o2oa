@@ -14,7 +14,7 @@ class OOAttanceSettingController: UIViewController {
     
     var mapView:BMKMapView!
     
-    var locService:BMKLocationService!
+    var locService:BMKLocationManager!
 
     var searchAddress:BMKGeoCodeSearch!
     
@@ -145,9 +145,9 @@ class OOAttanceSettingController: UIViewController {
         mapView.delegate = self
         //mapView.showsUserLocation = true
         //locService.desiredAccuracy = 100
-        locService = BMKLocationService()
+        locService = BMKLocationManager()
         locService.delegate = self
-        locService.startUserLocationService()
+        locService.startUpdatingLocation()
         searchAddress = BMKGeoCodeSearch()
         searchAddress.delegate = self
     }
@@ -175,7 +175,7 @@ class OOAttanceSettingController: UIViewController {
     deinit {
         mapView.delegate = nil
         locService.delegate = nil
-        locService.stopUserLocationService()
+        locService.stopUpdatingLocation()
         searchAddress.delegate = nil
     }
     
@@ -201,19 +201,19 @@ extension OOAttanceSettingController:BMKMapViewDelegate {
         }
        
         //反向查询具体地址名称
-        let re = BMKReverseGeoCodeOption()
-        re.reverseGeoPoint = coordinate
+        let re = BMKReverseGeoCodeSearchOption()
+        re.location = coordinate
         let flag = searchAddress.reverseGeoCode(re)
-        O2Logger.debug("searchAddress \(flag)")
+        DDLogDebug("searchAddress \(flag)")
     }
     
     
     func mapView(_ mapView: BMKMapView!, onClickedMapPoi mapPoi: BMKMapPoi!) {
-        let re = BMKReverseGeoCodeOption()
+        let re = BMKReverseGeoCodeSearchOption()
         let coordinate = mapPoi.pt
-        re.reverseGeoPoint = coordinate
+        re.location = coordinate
         let flag = searchAddress.reverseGeoCode(re)
-        O2Logger.debug("searchAddress \(flag)")
+        DDLogDebug("searchAddress \(flag)")
         
     }
     
@@ -222,43 +222,41 @@ extension OOAttanceSettingController:BMKMapViewDelegate {
     }
 }
 
-extension OOAttanceSettingController:BMKLocationServiceDelegate {
+extension OOAttanceSettingController:BMKLocationManagerDelegate {
     
     func willStartLocatingUser() {
-        O2Logger.debug("willStartLocatingUser")
+        DDLogDebug("willStartLocatingUser")
         MBProgressHUD_JChat.showMessage(message:"正在定位中，请稍候", toView: self.mapView)
     }
     
     func didUpdate(_ userLocation: BMKUserLocation!) {
-        O2Logger.debug("当前位置,\(userLocation.location.coordinate.latitude),\(userLocation.location.coordinate.longitude)")
+        DDLogDebug("当前位置,\(userLocation.location.coordinate.latitude),\(userLocation.location.coordinate.longitude)")
         mapView.updateLocationData(userLocation)
         mapView.centerCoordinate = userLocation.location.coordinate
         //定位完成停止定位
-        locService.stopUserLocationService()
+        locService.stopUpdatingLocation()
     }
     
     func didStopLocatingUser() {
-        O2Logger.debug("didStopLocatingUser")
+        
         MBProgressHUD_JChat.hide(forView: self.mapView, animated: true)
     }
 }
 
 extension OOAttanceSettingController:BMKGeoCodeSearchDelegate {
     
-    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKReverseGeoCodeResult!, errorCode error: BMKSearchErrorCode) {
+    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKReverseGeoCodeSearchResult!, errorCode error: BMKSearchErrorCode) {
         dataView.workPlaceNameTextField.text = result.address
         dataView.workAliasNameTextField.text = result.sematicDescription
-        for item in result.poiList {
-            let m = item as! BMKPoiInfo
-            print(m.name)            ///<POI名称
-            print(m.uid)
-            print(m.address)      ///<POI地址
-            print(m.city)        ///<POI所在城市
-            print(m.phone)        ///<POI电话号码
-            print(m.postcode)        ///<POI邮编
-            print(m.epoitype) ///<POI类型，0:普通点 1:公交站 2:公交线路 3:地铁站 4:地铁线路
-            print(m.pt.longitude,m.pt.latitude)    ///<POI坐标
-        }
+//        for item in result.poiList {
+//            let m = item as! BMKPoiInfo
+//            print(m.name)            ///<POI名称
+//            print(m.uid)
+//            print(m.address)      ///<POI地址
+//            print(m.city)        ///<POI所在城市
+//            print(m.phone)        ///<POI电话号码
+//            print(m.pt.longitude,m.pt.latitude)    ///<POI坐标
+//        }
         //设置settingBean
         settingBean.placeName = result.address
         settingBean.placeAlias = result.sematicDescription

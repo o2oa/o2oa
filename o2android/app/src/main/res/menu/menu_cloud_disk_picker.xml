@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item android:id="@+id/menu_cloud_disk_picker_top"
+        app:showAsAction="always"
+        android:orderInCategory="90"
+        android:title="@string/yunpan_menu_pick_top"/>
+
+
+</menu>
