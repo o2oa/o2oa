@@ -28,7 +28,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'deploy_script:linux'
+                sh 'npm run deploy:linux'
                 sh 'chmod 777 target/o2server/*.sh'
             }
         }
