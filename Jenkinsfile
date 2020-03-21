@@ -3,8 +3,12 @@ pipeline {
     stages {
         stage('preperation') {
             steps {
-                catchError {
-                    sh 'target/o2server/stop_linux.sh'
+                script {
+                    try {
+                        sh 'target/o2server/stop_linux.sh'
+                    } catch (err) {
+                        echo err
+                    }
                 }
                 sh 'npm install'
                 sh 'npm run preperation:linux'
