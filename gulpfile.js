@@ -320,7 +320,6 @@ function deploy_server(){
             if (doCount <= size) {doCount++; pb.render({ completed: doCount, total: size, count: doCount})};
             if (doCount > size) {console.log();}
         }));
-    //.pipe(gutil.noop());
 }
 
 exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm);
