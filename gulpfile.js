@@ -302,9 +302,9 @@ function build_web_move() {
 exports.build_web_move = build_web_move;
 
 function clear_build(cb){
-    console.log(`-------------------------------------------------------------
-    . clear old build ...
--------------------------------------------------------------`);
+    console.log(`---------------------------------------------------------------------
+  . clear old build ...
+---------------------------------------------------------------------`);
     var dest = 'target';
     del(dest, { dryRun: true, force: true });
     cb();
@@ -313,9 +313,9 @@ exports.clear_build = clear_build;
 
 
 function deploy_server(){
-    console.log(`-------------------------------------------------------------
-    . deploy to target ...
--------------------------------------------------------------`);
+    console.log(`---------------------------------------------------------------------
+  . deploy to target ...
+---------------------------------------------------------------------`);
     var source1 = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
     source = source1.concat(scriptSource);
     var dest = "target/o2server/servers/"
@@ -335,24 +335,25 @@ function deploy_server(){
     //.pipe(gutil.noop());
 }
 
-exports.preperation = function(){
+exports.preperation = function(cd){
     console.log(`---------------------------------------------------------------------
   . Start to download the dependencies needed for compilation ...
 ---------------------------------------------------------------------`);
-    return (gulp.series(download_commons_and_jvm, decompress_commons_and_jvm))();
+    (gulp.series(download_commons_and_jvm, decompress_commons_and_jvm))();
+    cb();
 }
 
 var shell = require('gulp-shell')
 exports.build_server = function(){
-    console.log(`-------------------------------------------------------------
+    console.log(`---------------------------------------------------------------------
   . Start compiling the server ...
--------------------------------------------------------------`);
+---------------------------------------------------------------------`);
     return (shell.task('npm run build_server_script'))();
 };
 exports.build_web = function(){
-    console.log(`-------------------------------------------------------------
+    console.log(`---------------------------------------------------------------------
   . Start compiling the web ...
--------------------------------------------------------------`);
+---------------------------------------------------------------------`);
     return (gulp.series(build_web_minimize, build_web_move))();
 }
 exports.deploy = deploy_server;
