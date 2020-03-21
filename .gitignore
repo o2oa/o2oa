@@ -154,5 +154,4 @@ typings/
 .factorypath
 /o2server/commons/
 /o2server/jvm/
-/o2web/ftpconfig.js
 /o2web/gulpconfig.js
