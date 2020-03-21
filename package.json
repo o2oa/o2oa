@@ -26,6 +26,19 @@
     "deploy:neokylin": "gulp deploy --e neokylin",
     "deploy:rpi": "gulp deploy --e raspberrypi",
 
+    "deploy:sotre": "gulp deploy_server_store",
+    "deploy:commons": "gulp deploy_server_commons",
+    "deploy:jvm": "gulp deploy_server_jvm",
+    "deploy:config": "gulp deploy_server_config",
+    "deploy:local": "gulp deploy_server_local",
+    "deploy_script:win": "gulp deploy_server_script --e windows",
+    "deploy_script:linux": "gulp deploy_server_script --e linux",
+    "deploy_script:aix": "gulp deploy_server_script --e aix",
+    "deploy_script:kylinos": "gulp deploy_server_script --e kylinos",
+    "deploy_script:macos": "gulp deploy_server_script --e macos",
+    "deploy_script:neokylin": "gulp deploy_server_script --e neokylin",
+    "deploy_script:rpi": "gulp deploy_server_script --e raspberrypi",
+
     "typeInfor": "type welcome && echo Your server is build success: target/o2server/",
 
     "build": "npm run preperation && npm run build_parallel && npm run deploy && npm run typeInfor",

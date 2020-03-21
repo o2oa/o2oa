@@ -293,14 +293,14 @@ function deploy_server_store(){
     });
 
     var source = "o2server/store/**/*";
-    var dest = "target/o2server/store/"
+    var dest = "target/o2server/store/";
     return gulp.src(source)
         .pipe(progressStream)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 function deploy_server_commons(){
-    var path = "o2server/commons/"
+    var path = "o2server/commons/";
     var fileCount = getFileCount(path);
 
     var pb = new ProgressBar('total: '+fileCount, 50);
@@ -316,14 +316,14 @@ function deploy_server_commons(){
     });
 
     var source = "o2server/commons/**/*";
-    var dest = "target/o2server/commons/"
+    var dest = "target/o2server/commons/";
     return gulp.src(source)
         .pipe(progressStream)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 function deploy_server_jvm(){
-    var path = "o2server/jvm/"
+    var path = "o2server/jvm/";
     var fileCount = getFileCount(path);
 
     var pb = new ProgressBar('total: '+fileCount, 50);
@@ -339,14 +339,14 @@ function deploy_server_jvm(){
     });
 
     var source = "o2server/jvm/**/*";
-    var dest = "target/o2server/jvm/"
+    var dest = "target/o2server/jvm/";
     return gulp.src(source)
         .pipe(progressStream)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 function deploy_server_config(){
-    var path = "o2server/configSample/"
+    var path = "o2server/configSample/";
     var fileCount = getFileCount(path);
 
     var pb = new ProgressBar('total: '+fileCount, 50);
@@ -362,14 +362,14 @@ function deploy_server_config(){
     });
 
     var source = "o2server/configSample/**/*";
-    var dest = "target/o2server/configSample/"
+    var dest = "target/o2server/configSample/";
     return gulp.src(source)
         .pipe(progressStream)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 function deploy_server_local(){
-    var path = "o2server/localSample/"
+    var path = "o2server/localSample/";
     var fileCount = getFileCount(path);
 
     var pb = new ProgressBar('total: '+fileCount, 50);
@@ -385,19 +385,27 @@ function deploy_server_local(){
     });
 
     var source = "o2server/localSample/**/*";
-    var dest = "target/o2server/localSample/"
+    var dest = "target/o2server/localSample/";
     return gulp.src(source)
         .pipe(progressStream)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 function deploy_server_script(){
-    var dest = "target/o2server/"
+    var dest = "target/o2server/";
     return gulp.src(scriptSource)
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
 }
 
 
-exports.preperation = gulp.series(download_commons_and_jvm, decompress_commons_and_jvm,);
-exports.deploy = gulp.series(deploy_web, deploy_server_store, deploy_server_commons, deploy_server_jvm, deploy_server_config, deploy_server_local, deploy_server_script);
+exports.preperation = gulp.series(download_commons_and_jvm, decompress_commons_and_jvm);
+//exports.deploy_web = deploy_web;
+exports.deploy_server_store = deploy_server_store;
+exports.deploy_server_commons = deploy_server_commons;
+exports.deploy_server_jvm = deploy_server_jvm;
+exports.deploy_server_config = deploy_server_config;
+exports.deploy_server_local = deploy_server_local;
+exports.deploy_server_script = deploy_server_script;
+exports.deploy_server = gulp.series(deploy_server_store, deploy_server_commons, deploy_server_jvm, deploy_server_config, deploy_server_local, deploy_server_script);
+exports.deploy = gulp.series(deploy_server_store, deploy_server_commons, deploy_server_jvm, deploy_server_config, deploy_server_local, deploy_server_script);
