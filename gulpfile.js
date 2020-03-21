@@ -303,8 +303,8 @@ function deploy_server(){
     console.log(`---------------------------------------------------------------------
   . deploy to target ...
 ---------------------------------------------------------------------`);
-    var source1 = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
-    source = source1.concat(scriptSource);
+    var source = ["o2server/store/**/*", "o2server/commons/**/*", "o2server/jvm/**/*", "o2server/configSample/**/*", "o2server/localSample/**/*"];
+    source = source.concat(scriptSource);
     var dest = "target/o2server/servers/"
 
     var entries = fg.sync(source, { dot: false});
