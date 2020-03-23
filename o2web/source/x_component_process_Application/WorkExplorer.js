@@ -889,10 +889,9 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         this.readyReroute = true;
 
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var width = 480;
+            var width = 560;
             var height = 260;
             var p = MWF.getCenterPosition(this.explorer.app.content, width, height);
-            var _self = this;
 
             var _self = this;
             var dlg = new MWF.xDesktop.Dialog({
@@ -1082,7 +1081,13 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         }.bind(this));
     },
     rerouteWorkToActivity: function(activity, type, opinion, nameArr, success, failure){
-        o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Reroute(this.data.id, activity, type, {"manualForceTaskIdentityList": nameArr}, function(){
+        var body = {
+            "activity": activity,
+            "activityType": type,
+            "mergeWork": false,
+            "manualForceTaskIdentityList": nameArr
+        };
+        o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Reroute(this.data.id, body, function(){
             if (success) success();
         }.bind(this), function (xhr, text, error) {
             if (failure) failure(xhr, text, error);
