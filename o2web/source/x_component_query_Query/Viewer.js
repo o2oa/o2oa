@@ -13,7 +13,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "perPageCount" : 50,
         "isload": "true",
         "export": false,
-        "moduleEvents": ["queryLoad", "postLoadData", "postLoad", "queryLoadRow", "postLoadRow", "selectRow", "unselectRow"]
+        "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
+            "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow"]
 
         // "actions": {
         //     "lookup": {"uri": "/jaxrs/view/flag/{view}/query/{application}/execute", "method":"PUT"},
@@ -37,6 +38,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.container = $(container);
         this.json = json;
+
+        debugger;
+        this.originalJson = Object.clone(json);
 
         this.viewJson = null;
         this.filterItems = [];
@@ -82,7 +86,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 //this._loadStyles();
                 this._loadDomEvents();
             }
-        })
+        }.bind(this))
     },
     _loadUserInterface : function(){
         this.loadLayout();
@@ -106,7 +110,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
     loadMacro: function (callback) {
-        this.viewInfor = this.json;
         if( !this.Macro ){ //有可能是page\cms\process传入的macro
             MWF.require("MWF.xScript.Macro", function () {
                 this.Macro = new MWF.Macro.ViewContext(this);
@@ -718,7 +721,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                     this._initPage();
                     if (this.bundleItems.length){
-                        this.loadCurrentPageData();
+                        this.loadCurrentPageData( function () {
+                            this.fireEvent("postLoad"); //用户配置的事件
+                        }.bind(this));
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
@@ -726,14 +731,87 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
                         }
+                        this.fireEvent("postLoad"); //用户配置的事件
                     }
-
-
                 }.bind(this));
             }
         }.bind(this));
     },
-    loadCurrentPageData: function(){
+    //api 使用 开始
+    getViewInfor : function(){
+        return this.json;
+    },
+    getPageInfor : function(){
+        return {
+            pages : this.pages,
+            perPageCount : this.options.perPageCount,
+            currentPageNumber : this.currentPage
+        };
+    },
+    getPageData : function () {
+        return this.gridJson;
+    },
+    toPage : function( pageNumber, callback ){
+        this.currentPage = pageNumber;
+        this.loadCurrentPageData( callback );
+    },
+    selectAll : function(){
+        var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( flag==="multi"){
+            this.items.each( function (item) {
+                if( item.clazzType === "item" ){
+                    item.selected();
+                }else{
+                    item.expand();
+                    item.items.each( function (it) {
+                        item.selected();
+                    })
+                }
+            })
+        }
+    },
+    unSelectAll : function(){
+        var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( flag==="multi"){
+            this.items.each( function (item) {
+                if( item.clazzType === "item" ){
+                    item.unSelected();
+                }else{
+                    if(item.items)item.items.each( function (it) {
+                        item.unSelected();
+                    })
+                }
+            })
+        }
+    },
+    switchView : function( json ){
+        debugger;
+        // json = {
+        //     "application": application,
+        //     "viewName": viewName,
+        //     "isTitle": "yes",
+        //     "select": "none",
+        //     "titleStyles": titleStyles,
+        //     "itemStyles": itemStyles,
+        //     "isExpand": "no",
+        //     "filter": filter
+        // }
+        this.node.setStyle("display", "block");
+        if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
+
+        this.searchMorph = null;
+        this.viewSearchCustomContentNode = null;
+
+        var newJson = Object.merge( Object.clone(this.originalJson), json );
+        this.container.empty();
+        this.initialize( this.container, newJson, Object.clone(this.options));
+    },
+    //api 使用 结束
+    loadCurrentPageData: function( callback ){
+        debugger;
+        //是否需要在翻页的时候清空之前的items ?
+        this.items = [];
+
         var p = this.currentPage;
         var d = {};
         var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
@@ -747,7 +825,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
             this.viewData = json.data;
 
-            this.fireEvent("postLoadData");
+            this.fireEvent("postLoadPageData");
 
             if (this.viewJson.group.column){
                 this.gridJson = json.data.groupGrid;
@@ -761,9 +839,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadingAreaNode.destroy();
                 this.loadingAreaNode = null;
             }
+
             this.fireEvent("loadView"); //options 传入的事件
 
-            this.fireEvent("postLoad"); //用户配置的事件
+            this.fireEvent("postLoadPage");
+
+            if(callback)callback();
         }.bind(this));
     },
 
@@ -968,18 +1049,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     _loadModuleEvents : function(){
-        Object.each(this.json.events, function(e, key){
+        debugger;
+        Object.each(this.viewJson.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event){
-                        return this.Macro.fire(e.code, this, event);
+                    this.addEvent(key, function(event, target){
+                        debugger;
+                        return this.Macro.fire(e.code, target || this, event);
                     }.bind(this));
                 }
             }
         }.bind(this));
     },
     _loadDomEvents: function(){
-        Object.each(this.json.events, function(e, key){
+        Object.each(this.viewJson.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)===-1){
                     this.node.addEvent(key, function(event){
@@ -999,11 +1082,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.isSelected = false;
         this.prev = prev;
         this.idx = i;
+        this.clazzType = "item";
         this.load();
     },
     load: function(){
-        debugger;
-        this.view.fireEvent("queryLoadRow", [this]);
+        this.view.fireEvent("queryLoadItemRow", [null, this]);
 
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
         if (this.prev){
@@ -1027,7 +1110,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         Object.each(this.view.entries, function(c, k){
-            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
@@ -1066,10 +1148,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         this.setEvent();
 
-        this.view.fireEvent("postLoadRow", [this]);
+        this.view.fireEvent("postLoadItemRow", [null, this]);
     },
     setOpenWork: function(td, column){
-        debugger;
         td.setStyle("cursor", "pointer");
         if( column.clickCode ){
             if( !this.view.Macro ){
@@ -1307,10 +1388,11 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.items = [];
         this.loadChild = false;
         this.idx = i;
+        this.clazzType = "category";
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadRow", [this]);
+        this.view.fireEvent("queryLoadCategoryRow", [null, this]);
 
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
@@ -1341,7 +1423,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
 
         this.setEvent();
 
-        this.view.fireEvent("postLoadRow", [this]);
+        this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
     setEvent: function(){
         //if (this.selectTd){
