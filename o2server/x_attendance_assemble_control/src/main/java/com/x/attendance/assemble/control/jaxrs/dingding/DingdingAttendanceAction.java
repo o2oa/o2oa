@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.dingding;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -52,16 +53,16 @@ public class DingdingAttendanceAction extends StandardJaxrsAction {
 
     //获取7天数据   可以做定时每天晚上更新
     @JaxrsMethodDescribe(value = "同步钉钉考勤结果", action = ActionSyncData.class)
-    @POST
-    @Path("sync")
+    @GET
+    @Path("sync/{way}/start")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void syncData(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                         JsonElement jsonElement) {
+                         @JaxrsParameterDescribe("同步方式") @PathParam("way") String way) {
         ActionResult<WrapBoolean> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionSyncData().execute(effectivePerson, jsonElement);
+            result = new ActionSyncData().execute(effectivePerson, way);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
