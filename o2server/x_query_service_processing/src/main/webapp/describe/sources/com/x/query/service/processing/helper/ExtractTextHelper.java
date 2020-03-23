@@ -150,12 +150,12 @@ public class ExtractTextHelper {
 		return tika;
 	}
 
-	@Test
-	public void test1() throws Exception {
-		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
-				true, true, false));
-		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
-				true, true, false));
-	}
+//	@Test
+//	public void test1() throws Exception {
+//		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
+//				true, true, false));
+//		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
+//				true, true, false));
+//	}
 
 }
