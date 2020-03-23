@@ -25,16 +25,6 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // };
     // this.setData(_data);
 
-    this.viewContext = {
-        getViewInfor : function () { return _form.getViewInfor(); },
-        getPageInfor : function () { return _form.getPageInfor(); },
-        getPageData : function () { return _form.getPageData(); },
-        toPage : function ( pageNumber ) { return _form.toPage(pageNumber); },
-        selectAll : function () { return _form.selectAll(); },
-        unSelectAll : function () { return _form.unSelectAll(); },
-        switchView : function ( options ) { return _form.switchView(options); }
-    };
-
     //dict
     this.Dict = MWF.xScript.createDict();
     //org
@@ -670,7 +660,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }
 
                     MWF.xDesktop.requireApp("query.Query", "Viewer", function () {
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, { "style": "select" });
+                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, { "style": "select" }, _form.app);
                     }.bind(this));
                 }.bind(this));
             }
@@ -757,7 +747,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //仅前台对象-----------------------------------------
     //form
-    this.page = this.form = {
+    this.page = this.form = this.queryView = {
+
+        "getViewInfor" : function () { return _form.getViewInfor(); },
+        "getPageInfor" : function () { return _form.getPageInfor(); },
+        "getPageData" : function () { return _form.getPageData(); },
+        "toPage" : function ( pageNumber, callback ) { return _form.toPage(pageNumber, callback); },
+        "selectAll" : function () { return _form.selectAll(); },
+        "unSelectAll" : function () { return _form.unSelectAll(); },
+        "switchView" : function ( options ) { return _form.switchView(options); },
+
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
         "getApp": function () { return _form.app; },
@@ -774,7 +773,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "getDesktop": function () { return _form.app.desktop },
         // "getData": function () { return new MWF.xScript.JSONData(_form.getData()); },
         //"save": function(callback){_form.saveWork(callback);},
-        "close": function () { _form.closeWork(); },
+        // "close": function () { _form.closeWork(); },
 
         // "print": function (application, form) {
         //     _form.printWork(application, form);
@@ -809,9 +808,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
             _form.notice(content, type, target, where, offset, option);
         },
         "addEvent": function (e, f) { _form.addEvent(e, f); },
-        "openWindow": function (form, app) {
-            _form.openWindow(form, app);
-        },
+        // "openWindow": function (form, app) {
+        //     _form.openWindow(form, app);
+        // },
         // "toPage": function (name, par, nohis) {
         //     _form.app.toPage(name, par, nohis);
         // },
