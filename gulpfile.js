@@ -128,7 +128,7 @@ function downloadFile(path, filename, headcb, progresscb, cb){
                     });
                     request.get(options).pipe(str).pipe(stream);
                 } else {
-                    gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+response.statusCode);
+                    gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
                 }
             })
             req.on('error', (e) => {
