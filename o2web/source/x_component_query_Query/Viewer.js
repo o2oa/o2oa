@@ -23,7 +23,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // },
         // "actionRoot": "x_query_assemble_surface"
     },
-    initialize: function(container, json, options){
+    initialize: function(container, json, options, app){
         //本类有三种事件，
         //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
@@ -35,6 +35,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.cssPath = "/x_component_query_Query/$Viewer/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = MWF.xApplication.query.Query.LP;
+
+        this.app = app;
 
         this.container = $(container);
         this.json = json;
@@ -110,14 +112,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
     loadMacro: function (callback) {
-        if( !this.Macro ){ //有可能是page\cms\process传入的macro
-            MWF.require("MWF.xScript.Macro", function () {
-                this.Macro = new MWF.Macro.ViewContext(this);
-                if (callback) callback();
-            }.bind(this));
-        }else{
+        MWF.require("MWF.xScript.Macro", function () {
+            this.Macro = new MWF.Macro.ViewContext(this);
             if (callback) callback();
-        }
+        }.bind(this));
     },
     createExportNode: function(){
         if (this.options.export){
@@ -804,7 +802,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         var newJson = Object.merge( Object.clone(this.originalJson), json );
         this.container.empty();
-        this.initialize( this.container, newJson, Object.clone(this.options));
+        this.initialize( this.container, newJson, Object.clone(this.options), this.app);
+    },
+    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
+        this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
+    },
+    alert: function (type, title, text, width, height) {
+        this.app.alert(type, "center", title, text, width, height);
+    },
+    notice: function (content, type, target, where, offset, option) {
+        this.app.notice(content, type, target, where, offset, option)
     },
     //api 使用 结束
     loadCurrentPageData: function( callback ){

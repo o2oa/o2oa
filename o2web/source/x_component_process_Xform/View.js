@@ -80,7 +80,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
                     this.fireEvent("openDocument");
                     this.openOptions = null;
                 }.bind(this)
-            });
+            }, this.form.app);
         //}.bind(this));
     },
 

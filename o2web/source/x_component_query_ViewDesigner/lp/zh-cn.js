@@ -48,7 +48,10 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "numberKey": "项目名称不能为数字，请重新输入",
 
         "inputName": "请输入视图名称",
-        "noModifyName": "不能修改名称或者别名"
+        "noModifyName": "不能修改名称或者别名",
+
+        "deleteEventTitle": "删除事件确认",
+        "deleteEvent": "是否确定删除当前事件吗？"
     },
     "actionbar": {
         "readhide": "设置阅读时是否显示",
