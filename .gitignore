@@ -56,6 +56,7 @@ command.swap
 **/bin/
 /o2server/**/src/main/webapp/describe/
 **/target/
+/o2server/servers/
 #ignore folder
 version.o2
 /node_modules/
@@ -147,3 +148,6 @@ typings/
 
 #vscode
 .factorypath
+/o2server/commons/
+/o2server/jvm/
+/o2web/gulpconfig.js
