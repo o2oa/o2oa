@@ -6,10 +6,12 @@ import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
+import com.x.base.core.project.jaxrs.WoValue;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -30,29 +32,29 @@ class ActionGetSystemLog extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionGetSystemLog.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tag) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String tag) throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
 
-		Wo wo = new Wo();
+		List<Wo> woList = new ArrayList<>();
 		String key = effectivePerson.getDistinguishedName();
 		if(key.indexOf("@") > -1){
 			key = key.split("@")[1] + tag;
 		}
 
 		if(Config.node().equals(Config.resource_node_centersPirmaryNode())){
-			wo.setValueList(getSystemLog(key));
+			woList = getSystemLog(key);
 		}else{
 			List<NameValuePair> headers = ListTools.toList(new NameValuePair(HttpToken.X_Token, effectivePerson.getToken()));
-			wo = ConnectionAction.get(Config.url_x_program_center_jaxrs("warnlog", "view", "system", "log", "tag", tag), headers).getData(Wo.class);
+			woList = ConnectionAction.get(Config.url_x_program_center_jaxrs("warnlog", "view", "system", "log", "tag", tag), headers).getDataAsList(Wo.class);
 		}
 
-		result.setData(wo);
+		result.setData(woList);
 		return result;
 	}
 
-	synchronized private List<String> getSystemLog(String key) throws Exception{
+	synchronized private List<Wo> getSystemLog(String key) throws Exception{
 		Nodes nodes = Config.nodes();
-		List<SystemLog> allLogs = new ArrayList<>();
+		List<Wo> allLogs = new ArrayList<>();
 		for (String node : nodes.keySet()){
 			if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
 				try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
@@ -82,7 +84,7 @@ class ActionGetSystemLog extends BaseAction {
 
 						String result = dis.readUTF();
 						if(StringUtils.isNotEmpty(result) && result.startsWith("[")){
-							List<SystemLog> list = gson.fromJson(result, new TypeToken<List<SystemLog>>(){}.getType());
+							List<Wo> list = gson.fromJson(result, new TypeToken<List<Wo>>(){}.getType());
 							allLogs.addAll(list);
 							long returnLastPoint = dis.readLong();
 							logger.info("用户的cacheKey={}，最后日志标志：{}", cacheKey, returnLastPoint);
@@ -103,23 +105,20 @@ class ActionGetSystemLog extends BaseAction {
 				}
 			}
 		}
-		List<String> list = new ArrayList<>();
 		allLogs.stream().sorted((o1, o2) -> {
 			return o1.logTime.compareTo(o2.logTime);
-		}).forEach(o -> {
-			list.add(o.getLineLog());
 		});
-		return list;
+		return allLogs;
 	}
 
-	public static class Wo extends WrapStringList {
-
-	}
-
-	public static class SystemLog {
+	public static class Wo extends GsonPropertyObject {
 		private String logTime;
 
 		private String lineLog;
+
+		private String node;
+
+		private String logLevel;
 
 		public String getLogTime() {
 			return logTime;
@@ -135,6 +134,22 @@ class ActionGetSystemLog extends BaseAction {
 
 		public void setLineLog(String lineLog) {
 			this.lineLog = lineLog;
+		}
+
+		public String getNode() {
+			return node;
+		}
+
+		public void setNode(String node) {
+			this.node = node;
+		}
+
+		public String getLogLevel() {
+			return logLevel;
+		}
+
+		public void setLogLevel(String logLevel) {
+			this.logLevel = logLevel;
 		}
 	}
 
