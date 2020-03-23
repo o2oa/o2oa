@@ -32,6 +32,9 @@ if (o_options.ev && o_options.ev=="dev"){
 }else if (o_options.ev && o_options.ev=="wrdp"){
     options.ev = "wrdp";
     uploadOptions = ftpconfig.wrdp;
+}else if (o_options.ev && o_options.ev=="develop"){
+    options.ev = "develop";
+    uploadOptions = ftpconfig.develop;
 }else{
     options.ev = "dev";
     uploadOptions = ftpconfig.dev;
@@ -56,6 +59,11 @@ release_options.pass = o_options.pass || ftpconfig.release.pass;
 release_options.port = o_options.port || ftpconfig.release.port;
 release_options.remotePath = o_options.remotePath || ftpconfig.release.remotePath;
 release_options.dest = o_options.dest || ftpconfig.release.dest || "dest";
+
+console.log(options.host);
+console.log(options.user);
+console.log(options.pass);
+console.log(options.port);
 
 
 var appTasks = [];
