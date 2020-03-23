@@ -1,4 +1,4 @@
-var dev = [
+var apps = [
     { "folder": "o2_lib", "tasks": ["move"] },
     { "folder": "o2_core", "tasks": ["move", "min"] },
     { "folder": "x_component_ANN", "tasks": ["move", "min"] },
@@ -86,4 +86,4 @@ var dev = [
     { "folder": "x_desktop", "tasks": ["move", "min"] },
 ];
 
-module.exports = dev;
+module.exports = apps;

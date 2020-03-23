@@ -1,21 +1,37 @@
 pipeline {
     agent {label '132'}
     stages {
-        stage('preperation') {
+        stage('Stop Server') {
+            steps {
+                catchError(buildResult: 'SUCCESS') {
+                    sh 'target/o2server/stop_linux.sh'
+                }
+            }
+        }
+        stage('init') {
             steps {
                 sh 'npm install'
+                sh 'npm run clear'
+            }
+        }
+        stage('dependency') {
+            steps {
                 sh 'npm run preperation:linux'
             }
         }
-        stage('build server') {
-            steps {
-                sh 'id'
-                sh 'npm run build_server'
-            }
-        }
-        stage('build web') {
-            steps {
-                sh 'npm run build_web'
+        stage('build') {
+            parallel {
+                stage('build server') {
+                    steps {
+                        sh 'id'
+                        sh 'npm run build_server'
+                    }
+                }
+                stage('build web') {
+                    steps {
+                        sh 'npm run build_web'
+                    }
+                }
             }
         }
         stage('deploy') {
@@ -26,7 +42,7 @@ pipeline {
         }
         stage('run') {
             steps {
-                sh '/target/o2server/start_linux.sh'
+                sh 'JENKINS_NODE_COOKIE=dontKillMe nohup target/o2server/start_linux.sh > nohup.out &'
             }
         }
     }

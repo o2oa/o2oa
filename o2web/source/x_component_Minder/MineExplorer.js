@@ -68,7 +68,7 @@ MWF.xApplication.Minder.MineExplorer = new Class({
         var treeSize = this.treeNode.getSize();
         var naviSize = this.app.naviNode.getSize();
 
-        var x = size.x - treeSize.x - naviSize.x;
+        var x = size.x - treeSize.x - naviSize.x - 5;
 
         this.treeNode.setStyle("height", size.y);
 
