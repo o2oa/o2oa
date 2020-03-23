@@ -26,8 +26,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // this.setData(_data);
 
     this.viewContext = {
-        viewInfor : _form.viewInfor,
-        getPageNumber : _form.getPageNumber()
+        getViewInfor : function () { return _form.getViewInfor(); },
+        getPageInfor : function () { return _form.getPageInfor(); },
+        getPageData : function () { return _form.getPageData(); },
+        toPage : function ( pageNumber ) { return _form.toPage(pageNumber); },
+        selectAll : function () { return _form.selectAll(); },
+        unSelectAll : function () { return _form.unSelectAll(); },
+        switchView : function ( options ) { return _form.switchView(options); }
     };
 
     //dict

@@ -45,19 +45,31 @@
         "code": "",
         "html": ""
       },
-      "postLoadData" : {
-        "code": "",
-        "html": ""
-      },
       "postLoad": {
         "code": "",
         "html": ""
       },
-      "queryLoadRow": {
+      "postLoadPageData" : {
         "code": "",
         "html": ""
       },
-      "postLoadRow": {
+      "postLoadPage": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadCategoryRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadCategoryRow": {
         "code": "",
         "html": ""
       },

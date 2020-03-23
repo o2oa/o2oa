@@ -144,5 +144,10 @@ MWF.xApplication.query.Query.LP = {
     "selecteAllRow": "选择所有行",
 
     "firstPage": "第一页",
-    "lastPage": "最后一页"
+    "lastPage": "最后一页",
+
+    "notice": {
+        "deleteEventTitle": "删除事件确认",
+        "deleteEvent": "是否确定删除当前事件吗？"
+    }
 };
