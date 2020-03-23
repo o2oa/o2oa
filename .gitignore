@@ -54,21 +54,17 @@ hs_err_pid*
 **/src/test/
 command.swap
 **/bin/
-**/src/main/webapp/describe/
+/o2server/**/src/main/webapp/describe/
 **/target/
-/target/**
 /o2server/servers/
-
 #ignore folder
 version.o2
 /node_modules/
-/jvm/
-/commons/
-/config/
-/store/
-/servers/
-/describe/
-
+/o2server/jvm/
+/o2server/commons/
+/o2server/config/
+/o2server/servers/
+/o2server/local/
 # for node
 package-lock.json
 # Logs
