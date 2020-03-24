@@ -35,33 +35,23 @@ class ActionCreate extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					Process process = business.element().get(processId, Process.class);
-					Application application = business.element().get(process.getApplication(), Application.class);
-					Begin begin = business.element().getBeginWithProcess(process.getId());
-
-					Work work = create(application, process, begin);
-					emc.beginTransaction(Work.class);
-					if ((null != jsonElement) && jsonElement.isJsonObject()) {
-						WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
-						workDataHelper.update(jsonElement);
-					}
-					emc.persist(work, CheckPersistType.all);
-					emc.commit();
-					wo.setId(work.getId());
-					MessageFactory.work_create(work);
-				}
-				return "";
+		Work work = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Process process = business.element().get(processId, Process.class);
+			Application application = business.element().get(process.getApplication(), Application.class);
+			Begin begin = business.element().getBeginWithProcess(process.getId());
+			work = create(application, process, begin);
+			emc.beginTransaction(Work.class);
+			if ((null != jsonElement) && jsonElement.isJsonObject()) {
+				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
+				workDataHelper.update(jsonElement);
 			}
-		};
-
-		/* 根据流程应用id分派进程号. */
-		ProcessPlatformExecutorFactory.get(processId).submit(callable).get();
-
+			emc.persist(work, CheckPersistType.all);
+			emc.commit();
+			wo.setId(work.getId());
+		}
+		MessageFactory.work_create(work);
 		result.setData(wo);
 		return result;
 	}
@@ -85,7 +75,7 @@ class ActionCreate extends BaseAction {
 		work.setProcessAlias(process.getAlias());
 		work.setJob(StringTools.uniqueToken());
 		work.setStartTime(now);
-//		work.setErrorRetry(0);
+		// work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.start);
 		work.setDestinationActivity(begin.getId());
 		work.setDestinationActivityType(ActivityType.begin);

@@ -120,7 +120,6 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.open4Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open5Id), credential));
 		cq.select(root.get(Person_.id));
-		Query query = em.createQuery(cq.where(p));
 		List<String> list = em.createQuery(cq.where(p).distinct(true)).getResultList();
 		if (list.size() == 1) {
 			return list.get(0);
