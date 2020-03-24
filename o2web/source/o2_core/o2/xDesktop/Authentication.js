@@ -85,6 +85,7 @@ MWF.xDesktop.Authentication = new Class({
                 this.socket = null;
             }
             Cookie.dispose("x-token");
+            if (layout.session && layout.session.user) layout.session.user.token = "";
             window.location.reload();
         }.bind(this));
     },
