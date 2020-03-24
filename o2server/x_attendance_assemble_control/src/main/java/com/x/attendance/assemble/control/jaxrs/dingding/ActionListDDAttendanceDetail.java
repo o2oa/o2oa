@@ -33,7 +33,7 @@ public class ActionListDDAttendanceDetail extends BaseAction {
             Date end = DateTools.parseDateTime(wi.getEndTime());
             String dingdingUser = null;
             //转化dingding的id
-            if (wi.getPerson() != null) {
+            if (wi.getPerson() != null && !wi.getPerson().isEmpty()) {
                 Person person = business.organization().person().getObject(wi.getPerson());
                 dingdingUser = person.getDingdingId();
             }

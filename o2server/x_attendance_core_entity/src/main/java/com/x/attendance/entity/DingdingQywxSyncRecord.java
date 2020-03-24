@@ -61,11 +61,13 @@ public class DingdingQywxSyncRecord extends SliceJpaObject  {
     @Column(name = ColumnNamePrefix + "type", length = length_32B)
     private String type;
 
-    public static final String syncWay_year = "year";
-    public static final String syncWay_week = "week";
-    @FieldDescribe("同步方式，year(同步一年数据) ， week(同步一周数据)")
-    @Column(name = ColumnNamePrefix + "way", length = length_32B)
-    private String way;
+    @FieldDescribe("同步打卡记录的开始时间")
+    @Column(name = ColumnNamePrefix + "dateFrom")
+    private long dateFrom;
+
+    @FieldDescribe("同步打卡记录的结束时间， 起始与结束工作日最多相隔7天")
+    @Column(name = ColumnNamePrefix + "dateTo")
+    private long dateTo;
 
     public static final String status_loading = "loading";
     public static final String status_end = "end";
@@ -104,12 +106,20 @@ public class DingdingQywxSyncRecord extends SliceJpaObject  {
         this.type = type;
     }
 
-    public String getWay() {
-        return way;
+    public long getDateFrom() {
+        return dateFrom;
     }
 
-    public void setWay(String way) {
-        this.way = way;
+    public void setDateFrom(long dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public long getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(long dateTo) {
+        this.dateTo = dateTo;
     }
 
     public String getStatus() {
