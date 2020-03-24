@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control;
 
 import com.x.attendance.assemble.control.exception.DingDingRequestException;
 import com.x.attendance.entity.AttendanceDingtalkDetail;
+import com.x.attendance.entity.AttendanceDingtalkDetail_;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,6 +20,11 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.x_organization_assemble_control;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,33 +35,41 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
 
     @Override
     protected void execute(DingdingQywxSyncRecord record) throws Exception {
-        logger.info("开始执行钉钉打卡数据同步，" + record.getWay());
+        logger.info("开始执行钉钉打卡数据同步，from:" + record.getDateFrom() + ", to:"+record.getDateTo());
         if (DingdingQywxSyncRecord.syncType_dingding.equals(record.getType())) {
-            dingdingSync(record);
+            try {
+                dingdingSync(record);
+            }catch (Exception e) {
+                logger.error(e);
+                updateSyncRecord(record, e.getMessage());
+            }
         } else {
-            logger.info("其它类型：");
+            logger.info("不是钉钉同步任务。。。。。。。。。。。。。");
         }
     }
 
     private void dingdingSync(DingdingQywxSyncRecord record) throws Exception {
-        logger.debug(record.toString());
         Application app = ThisApplication.context().applications().randomWithWeight(x_organization_assemble_control.class.getName());
         //开始分页查询人员
         boolean hasNextPerson = true;
         int personPageSize = 50;
+        //开始时间和结束时间
+        Date fromDate = new Date();
+        fromDate.setTime(record.getDateFrom());
+        Date toDate =new Date();
+        toDate.setTime(record.getDateTo());
+        //先删除
+        deleteDingdingAttendance(fromDate, toDate);
+        //人员查询地址
         String uri = "person/list/(0)/next/50";
+        //钉钉考勤同步接口地址
         String dingdingUrl = "https://oapi.dingtalk.com/attendance/list?access_token=" + Config.dingding().corpAccessToken();
-        logger.debug("dingding url :"+dingdingUrl);
+        int saveNumber = 0;
         while (hasNextPerson) {
-            logger.info("查询人员 uri:" + uri);
             List<Person> list = ThisApplication.context().applications().getQuery(false, app, uri).getDataAsList(Person.class);
             if (list != null && list.size() > 0) {
                 //钉钉用户id
                 List<String> ddUsers = list.stream().map(Person::getDingdingId).collect(Collectors.toList());
-                //week
-                Date today = new Date();
-                today = DateTools.floorDate(today, null);
-                Date sevenDayBefore = DateTools.addDay(today, -7);
                 //分页查询
                 int page = 0;
                 boolean hasMoreResult = true;
@@ -64,14 +78,17 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                     //post传入 时间（时间间隔不能超过7天） 人员（人员数量不能超过50个）
                     post.setLimit(50L);
                     post.setOffset(page * 50L);//从0开始翻页
-                    post.setWorkDateFrom(DateTools.format(sevenDayBefore, DateTools.format_yyyyMMddHHmmss));
-                    post.setWorkDateTo(DateTools.format(today, DateTools.format_yyyyMMddHHmmss));
+                    //这里的开始时间和结束时间 查询的是钉钉返回结果中的workDate
+                    //查询考勤打卡记录的起始工作日
+                    post.setWorkDateFrom(DateTools.format(fromDate));
+                    //查询考勤打卡记录的结束工作日
+                    post.setWorkDateTo(DateTools.format(toDate));
                     post.setUserIdList(ddUsers);
-                    String body = post.toString();
-                    logger.info("查询钉钉打卡结果：" + body);
                     DingdingAttendanceResult result = HttpConnection.postAsObject(dingdingUrl, null, post.toString(), DingdingAttendanceResult.class);
                     if (result.errcode != null && result.errcode == 0) {
-                        saveDingdingRecord(result.getRecordresult());
+                        List<DingdingAttendanceResultItem> resultList = result.getRecordresult();
+                        saveDingdingAttendance(resultList);
+                        saveNumber += resultList.size();
                         if (result.hasMore) {
                             page++;
                         } else {
@@ -100,10 +117,36 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                 updateSyncRecord(record, null);
             }
         }
+        logger.info("结束 插入："+saveNumber+" 条");
 
     }
+    private void deleteDingdingAttendance(Date fromDate, Date toDate) throws Exception{
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            //先删除 再同步
+            EntityManager em = emc.get(AttendanceDingtalkDetail.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<AttendanceDingtalkDetail> query = cb.createQuery(AttendanceDingtalkDetail.class);
+            Root<AttendanceDingtalkDetail> root = query.from(AttendanceDingtalkDetail.class);
+            long start = fromDate.getTime();
+            long end = toDate.getTime();
+            Predicate p = cb.between(root.get(AttendanceDingtalkDetail_.workDate), start, end);
+            query.select(root).where(p);
+            List<AttendanceDingtalkDetail> detailList = em.createQuery(query).getResultList();
+            //先删除
+            logger.info("删除");
+            if (detailList != null) {
+                logger.info("删除 list:"+detailList.size());
+                emc.beginTransaction(AttendanceDingtalkDetail.class);
+                for (int i = 0; i < detailList.size(); i++) {
+                    emc.remove(detailList.get(i));
+                }
+                emc.commit();
+            }
+            logger.info("删除结束");
+        }
+    }
 
-    private void saveDingdingRecord(List<DingdingAttendanceResultItem> list) throws Exception {
+    private void saveDingdingAttendance(List<DingdingAttendanceResultItem> list) throws Exception {
         if (list != null && !list.isEmpty()) {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                 emc.beginTransaction(AttendanceDingtalkDetail.class);
@@ -121,12 +164,13 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
     private void updateSyncRecord(DingdingQywxSyncRecord record, String errMsg) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             emc.beginTransaction(DingdingQywxSyncRecord.class);
-            record.setEndTime(new Date());
+            DingdingQywxSyncRecord entity = emc.find(record.getId(), DingdingQywxSyncRecord.class);
+            entity.setEndTime(new Date());
             if (errMsg == null || errMsg.isEmpty()) {
-                record.setExceptionMessage(errMsg);
-                record.setStatus(DingdingQywxSyncRecord.status_error);
+                entity.setStatus(DingdingQywxSyncRecord.status_end);
             } else {
-                record.setStatus(DingdingQywxSyncRecord.status_end);
+                entity.setStatus(DingdingQywxSyncRecord.status_error);
+                entity.setExceptionMessage(errMsg);
             }
             emc.commit();
         }
