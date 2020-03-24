@@ -2211,12 +2211,12 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }).inject(this.node, "after");
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
-        // var subIdList = this.selector._getChildrenItemIds(this.data);
-        // if (subIdList){
-        //     var count = subIdList.length;
-        //     this.childrenHeight = count*this.selector.options.itemHeight;
-        //     this.children.setStyle("height", ""+this.childrenHeight+"px");
-        // }
+        var subIdList = this.selector._getChildrenItemIds(this.data);
+        if (subIdList){
+            var count = subIdList.length;
+            this.childrenHeight = count*this.selector.options.itemHeight;
+            this.children.setStyle("height", ""+this.childrenHeight+"px");
+        }
 
         if (!this._hasChild()){
             this.actionNode.setStyle("background", "transparent");
@@ -2346,7 +2346,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }else if (display === "none"){
                 this.children.setStyles({
                     "display": "block",
-                    "height": this.childrenHeight+"px"
+                    "height": "auto"
                 });
                 this.node.setStyles( this.selector.css.flatCategoryItemNode_selected );
                 this.isExpand = true;
