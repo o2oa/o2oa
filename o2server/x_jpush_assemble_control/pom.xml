@@ -121,7 +121,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>../../o2server/custom</outputDirectory>
+							<outputDirectory>../store</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>
