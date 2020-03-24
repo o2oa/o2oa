@@ -20,6 +20,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -61,9 +62,7 @@ public class PassExpired extends AbstractJob {
 			Map<String, Route> manualToRoute = null;
 			AtomicInteger count = new AtomicInteger(0);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (null == manualToRoute) {
 					manualToRoute = this.linkPassExpiredManualToRoute(emc);
-				}
 			}
 			if (!manualToRoute.isEmpty()) {
 				do {
@@ -74,7 +73,9 @@ public class PassExpired extends AbstractJob {
 						sequence = targets.get(targets.size() - 1).getSequence();
 						for (Task task : targets) {
 							try {
+								logger.print("执行超时工作默认路由流转:{}, id:{}.", task.getTitle(),task.getId());
 								this.execute(task);
+								count.incrementAndGet();
 							} catch (Exception e) {
 								logger.error(e);
 							}
@@ -286,12 +287,13 @@ public class PassExpired extends AbstractJob {
 		Path<String> id_path = root.get(Task_.id);
 		Path<String> job_path = root.get(Task_.job);
 		Path<String> sequence_path = root.get(Task_.sequence);
+		Path<String> work_path = root.get(Task_.work);
 		Predicate p = cb.equal(root.get(Task_.expired), true);
 		p = cb.and(p, root.get(Task_.activity).in(manualToRoute.keySet()));
 		if (StringUtils.isNotEmpty(sequence)) {
 			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		cq.multiselect(id_path, job_path, sequence_path,work_path).where(p).orderBy(cb.asc(sequence_path));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Task> list = new ArrayList<>();
 		for (Tuple o : os) {
@@ -299,6 +301,7 @@ public class PassExpired extends AbstractJob {
 			task.setId(o.get(id_path));
 			task.setJob(o.get(job_path));
 			task.setSequence(o.get(sequence_path));
+			task.setWork(o.get(work_path));
 			list.add(task);
 		}
 		return list;

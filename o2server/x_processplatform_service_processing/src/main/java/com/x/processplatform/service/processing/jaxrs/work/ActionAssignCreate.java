@@ -3,16 +3,12 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -27,7 +23,6 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -51,11 +46,15 @@ import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 创建处于start状态的work
  * 
  * @author Rui
  *
+ * 此方法不需要推入线程池运行
  */
 class ActionAssignCreate extends BaseAction {
 
@@ -67,84 +66,68 @@ class ActionAssignCreate extends BaseAction {
 		Wo wo = new Wo();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Boolean processing = wi.getProcessing();
-		CallWrapObject callWrapObject = new CallWrapObject();
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					List<String> applicationIds = listApplication(business, wi.getApplication());
-					if (ListTools.isEmpty(applicationIds)) {
-						throw new ExceptionEntityNotExist(wi.getApplication(), Application.class);
-					}
-					Process process = getProcess(business, applicationIds, wi.getProcess());
-					Application application = business.element().get(process.getApplication(), Application.class);
-					Begin begin = business.element().getBeginWithProcess(process.getId());
-					Work work = create(application, process, begin);
-					callWrapObject.job = work.getJob();
-					callWrapObject.id = work.getId();
-					String identityDn = business.organization().identity().get(wi.getIdentity());
-					if (StringUtils.isEmpty(identityDn)) {
-						throw new ExceptionIdentityNotExist(wi.getIdentity());
-					}
-					work.setTitle(wi.getTitle());
-					work.setCreatorIdentity(identityDn);
-					work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
-					work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
-					/* 通过赋值调用的是不能被作为草稿删除的 */
-					work.setDataChanged(true);
-					if (ListTools.isNotEmpty(wi.getAttachmentList())) {
-						emc.beginTransaction(Attachment.class);
-						/** 这个attachmentList要手动初始化 */
-						// work.setAttachmentList(new ArrayList<String>());
-						for (WiAttachment o : wi.getAttachmentList()) {
-							StorageMapping fromMapping = ThisApplication.context().storageMappings()
-									.get(Attachment.class, o.getStorage());
-							if (null == fromMapping) {
-								throw new ExceptionFromMappingNotExist(o.getStorage());
-							}
-							StorageMapping toMapping = ThisApplication.context().storageMappings()
-									.random(Attachment.class);
-							if (null == toMapping) {
-								throw new ExceptionToMappingNotExist(Attachment.class);
-							}
-							Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(),
-									o.getSite());
-							attachment.setActivity(begin.getId());
-							attachment.setActivityName(begin.getName());
-							attachment.setActivityType(ActivityType.begin);
-							attachment.setActivityToken(work.getActivityToken());
-							attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
-							emc.persist(attachment, CheckPersistType.all);
-						}
-					}
-					emc.beginTransaction(Work.class);
-					emc.persist(work, CheckPersistType.all);
-					if (null != wi.getData()) {
-						WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
-						workDataHelper.update(wi.getData());
-					}
-					emc.commit();
-					MessageFactory.work_create(work);
-				}
-				return "";
+		Work work = null;
+
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			List<String> applicationIds = listApplication(business, wi.getApplication());
+			if (ListTools.isEmpty(applicationIds)) {
+				throw new ExceptionEntityNotExist(wi.getApplication(), Application.class);
 			}
-		};
-
-		ProcessPlatformExecutorFactory.get(wi.getProcess()).submit(callable).get();
-
+			Process process = getProcess(business, applicationIds, wi.getProcess());
+			Application application = business.element().get(process.getApplication(), Application.class);
+			Begin begin = business.element().getBeginWithProcess(process.getId());
+			work = create(application, process, begin);
+			String identityDn = business.organization().identity().get(wi.getIdentity());
+			if (StringUtils.isEmpty(identityDn)) {
+				throw new ExceptionIdentityNotExist(wi.getIdentity());
+			}
+			work.setTitle(wi.getTitle());
+			work.setCreatorIdentity(identityDn);
+			work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
+			work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
+			/* 通过赋值调用的是不能被作为草稿删除的 */
+			work.setDataChanged(true);
+			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
+				emc.beginTransaction(Attachment.class);
+				/** 这个attachmentList要手动初始化 */
+				// work.setAttachmentList(new ArrayList<String>());
+				for (WiAttachment o : wi.getAttachmentList()) {
+					StorageMapping fromMapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							o.getStorage());
+					if (null == fromMapping) {
+						throw new ExceptionFromMappingNotExist(o.getStorage());
+					}
+					StorageMapping toMapping = ThisApplication.context().storageMappings().random(Attachment.class);
+					if (null == toMapping) {
+						throw new ExceptionToMappingNotExist(Attachment.class);
+					}
+					Attachment attachment = new Attachment(work, effectivePerson.getDistinguishedName(), o.getSite());
+					attachment.setActivity(begin.getId());
+					attachment.setActivityName(begin.getName());
+					attachment.setActivityType(ActivityType.begin);
+					attachment.setActivityToken(work.getActivityToken());
+					attachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
+					emc.persist(attachment, CheckPersistType.all);
+				}
+			}
+			emc.beginTransaction(Work.class);
+			emc.persist(work, CheckPersistType.all);
+			if (null != wi.getData()) {
+				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
+				workDataHelper.update(wi.getData());
+			}
+			emc.commit();
+		}
+		MessageFactory.work_create(work);
 		if (BooleanUtils.isTrue(processing)) {
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", callWrapObject.id, "processing"), null, callWrapObject.job);
+					Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
 		}
-		wo.setId(callWrapObject.id);
+		wo.setId(work.getId());
 		result.setData(wo);
 		return result;
-	}
-
-	public static class CallWrapObject {
-		private String job;
-		private String id;
 	}
 
 	public static class Wi extends GsonPropertyObject {
@@ -282,7 +265,7 @@ class ActionAssignCreate extends BaseAction {
 		work.setProcessAlias(process.getAlias());
 		work.setJob(StringTools.uniqueToken());
 		work.setStartTime(now);
-//		work.setErrorRetry(0);
+		// work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.start);
 		work.setDestinationActivity(begin.getId());
 		work.setDestinationActivityType(ActivityType.begin);
