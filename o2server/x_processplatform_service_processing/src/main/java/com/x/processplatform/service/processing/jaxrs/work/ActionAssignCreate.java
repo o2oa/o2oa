@@ -41,6 +41,7 @@ import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -50,7 +51,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 创建处于start状态的work
+ * 创建处于start状态的work 此方法不需要进入队列运行
  * 
  * @author Rui
  *
@@ -122,9 +123,12 @@ class ActionAssignCreate extends BaseAction {
 		}
 		MessageFactory.work_create(work);
 		if (BooleanUtils.isTrue(processing)) {
+			// ProcessingAttributes req = new ProcessingAttributes();
+			// req.setType(ProcessingAttributes.TYPE_BEGIN);
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
 		}
+ 
 		wo.setId(work.getId());
 		result.setData(wo);
 		return result;
