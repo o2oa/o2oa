@@ -312,6 +312,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             }
 
             if (!parentNode.isIntoView()) parentNode.scrollIntoView();
+
         }
     },
     showNotValidationMode: function(node){
