@@ -32,6 +32,9 @@ if (o_options.ev && o_options.ev=="dev"){
 }else if (o_options.ev && o_options.ev=="wrdp"){
     options.ev = "wrdp";
     uploadOptions = ftpconfig.wrdp;
+}else if (o_options.ev && o_options.ev=="develop"){
+    options.ev = "develop";
+    uploadOptions = ftpconfig.develop;
 }else{
     options.ev = "dev";
     uploadOptions = ftpconfig.dev;
@@ -57,6 +60,11 @@ release_options.port = o_options.port || ftpconfig.release.port;
 release_options.remotePath = o_options.remotePath || ftpconfig.release.remotePath;
 release_options.dest = o_options.dest || ftpconfig.release.dest || "dest";
 
+console.log(options.host);
+console.log(options.user);
+console.log(options.pass);
+console.log(options.port);
+
 
 var appTasks = [];
 function getAppTask(path, isMin, thisOptions) {
@@ -71,8 +79,34 @@ function getAppTask(path, isMin, thisOptions) {
 
             gutil.log("Move-Uglify", ":", gutil.colors.green(gutil.colors.blue(path), gutil.colors.white('->'), dest));
 
-            return gulp.src(src_min)
-                .pipe(changed(dest))
+            var stream = gulp.src(src_min);
+            stream.on("end", function(){
+                let moveStream = gulp.src(src_move);
+                moveStream.on("end", function(){
+                    cb();
+                });
+
+                moveStream.pipe(changed(dest))
+                    .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+                    .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                        host: option.host,
+                        user: option.user || 'anonymous',
+                        pass: option.pass || '@anonymous',
+                        port: option.port || 21,
+                        remotePath: (option.remotePath || '/') + path
+                    })))
+                    .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                        host: option.host,
+                        user: option.user || 'anonymous',
+                        pass: option.pass || null,
+                        port: option.port || 22,
+                        remotePath: (option.remotePath || '/') + path
+                    })))
+                    .pipe(gulp.dest(dest))
+                    .pipe(gutil.noop());
+
+            });
+            stream.pipe(changed(dest))
                 .pipe(uglify())
                 .pipe(rename({ extname: '.min.js' }))
                 .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -91,25 +125,6 @@ function getAppTask(path, isMin, thisOptions) {
                     remotePath: (option.remotePath || '/') + path
                 })))
                 .pipe(gulpif((option.ev == "dev" || option.ev == "pro") ,gulp.dest(dest)))
-
-                .pipe(gulp.src(src_move))
-                .pipe(changed(dest))
-                .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
-                .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
-                    host: option.host,
-                    user: option.user || 'anonymous',
-                    pass: option.pass || '@anonymous',
-                    port: option.port || 21,
-                    remotePath: (option.remotePath || '/') + path
-                })))
-                .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
-                    host: option.host,
-                    user: option.user || 'anonymous',
-                    pass: option.pass || null,
-                    port: option.port || 22,
-                    remotePath: (option.remotePath || '/') + path
-                })))
-                .pipe(gulp.dest(dest))
                 .pipe(gutil.noop());
 
 

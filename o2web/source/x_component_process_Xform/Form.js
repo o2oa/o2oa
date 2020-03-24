@@ -3091,7 +3091,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }.bind(this));
     },
     rerouteWorkToActivity: function (activity, type, opinion, nameArr, success, failure) {
-        debugger;
         var body = {
             "activity": activity,
             "activityType": type,
