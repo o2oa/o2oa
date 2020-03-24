@@ -55,6 +55,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Rui
  *
+ * 此方法不需要推入线程池运行
  */
 class ActionAssignCreate extends BaseAction {
 
@@ -66,7 +67,9 @@ class ActionAssignCreate extends BaseAction {
 		Wo wo = new Wo();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Boolean processing = wi.getProcessing();
+
 		Work work = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			List<String> applicationIds = listApplication(business, wi.getApplication());
@@ -125,7 +128,7 @@ class ActionAssignCreate extends BaseAction {
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
 		}
-
+ 
 		wo.setId(work.getId());
 		result.setData(wo);
 		return result;
